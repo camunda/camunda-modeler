@@ -59,8 +59,14 @@ export default class PluginsRoot extends PureComponent {
     const {
       config,
       settings,
-      pluginsAndSubscribers,
+      pluginsAndSubscribers
     } = this;
+
+    const pluginSettings = {
+      register: settings.register.bind(settings),
+      get: settings.get.bind(settings),
+      subscribe: settings.subscribe.bind(settings),
+    };
 
     return pluginsAndSubscribers.map((pluginAndSubscriber, index) => {
 
@@ -94,7 +100,7 @@ export default class PluginsRoot extends PureComponent {
             subscribe={ subscribe }
             log={ this.log }
             displayNotification={ this.displayNotification }
-            settings={ settings }
+            settings={ pluginSettings }
             _getFromApp={ getFromApp }
             _getGlobal={ app.getGlobal }
           />

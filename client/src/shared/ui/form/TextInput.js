@@ -13,6 +13,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import FormFeedback from './FormFeedback';
+import DocumentationIcon from './DocumentationIcon';
 
 import {
   fieldError as defaultFieldError
@@ -30,6 +31,7 @@ export default function TextInput(props) {
     children,
     multiline,
     description,
+    documentationUrl,
     ...restProps
   } = props;
 
@@ -80,7 +82,10 @@ export default function TextInput(props) {
   return (
     <React.Fragment>
       <div className="form-group">
-        <label htmlFor={ fieldName }>{ label }</label>
+        <label htmlFor={ fieldName }>
+          { label }
+          <DocumentationIcon url={ documentationUrl } />
+        </label>
         { textElement() }
         <FormFeedback
           error={ error }
