@@ -20,6 +20,7 @@ import UserJourneyStatistics from './user-journey-statistics';
 import VersionInfo from './version-info';
 import ZeebePlugin from './zeebe-plugin';
 import ConnectorTemplates from './connector-templates';
+import Settings from './settings';
 
 export default [
   CamundaPlugin,
@@ -33,5 +34,6 @@ export default [
   VersionInfo,
   ZeebePlugin,
   UserJourneyStatistics,
-  ConnectorTemplates
+  ConnectorTemplates,
+  Settings
 ];
