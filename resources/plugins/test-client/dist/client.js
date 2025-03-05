@@ -32,7 +32,8 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
   constructor(props) {
     super(props);
     const {
-      subscribe
+      subscribe,
+      settings
     } = props;
     subscribe('tab.saved', event => {
       const {
@@ -53,10 +54,6 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
         tabType: activeTab.type
       });
     });
-    this.state = {
-      saveCounter: 0,
-      tabType: null
-    };
     const pluginSettings = {
       id: 'testClientPlugin',
       title: 'Test Client Plugin',
@@ -90,6 +87,12 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
         heartbeat: value
       });
     });
+    this.state = {
+      saveCounter: 0,
+      tabType: null,
+      color: settings.get('testClientPlugin.iconColor'),
+      heartbeat: settings.get('testClientPlugin.heartbeat')
+    };
   }
   async componentDidMount() {
     const {
@@ -110,7 +113,9 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
   render() {
     const {
       saveCounter,
-      tabType
+      tabType,
+      color,
+      heartbeat
     } = this.state;
 
     /**
@@ -131,7 +136,10 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
       style: {
         color: '#10ad73'
       }
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TestIcon, null))), /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
+    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TestIcon, {
+      color: color,
+      heartbeat: heartbeat
+    }))), /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
       slot: "status-bar__app",
       group: "0_first"
     }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -147,14 +155,18 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
     }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Hello World")));
   }
 }
-function TestIcon() {
+function TestIcon({
+  color,
+  heartbeat
+}) {
+  if (!heartbeat) return null;
   return /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 16 16",
     width: "16",
     height: "16"
   }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
-    fill: "#10ad73",
+    fill: color,
     fillRule: "evenodd",
     d: "M7.655 14.916L8 14.25l.345.666a.752.752 0 01-.69 0zm0 0L8 14.25l.345.666.002-.001.006-.003.018-.01a7.643 7.643 0 00.31-.17 22.08 22.08 0 003.433-2.414C13.956 10.731 16 8.35 16 5.5 16 2.836 13.914 1 11.75 1 10.203 1 8.847 1.802 8 3.02 7.153 1.802 5.797 1 4.25 1 2.086 1 0 2.836 0 5.5c0 2.85 2.045 5.231 3.885 6.818a22.075 22.075 0 003.744 2.584l.018.01.006.003h.002z"
   }));
@@ -171,12 +183,17 @@ function TestIcon() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Fill": () => (/* binding */ Fill),
-/* harmony export */   "Modal": () => (/* binding */ Modal),
-/* harmony export */   "NotCompatible": () => (/* binding */ NotCompatible),
-/* harmony export */   "Overlay": () => (/* binding */ Overlay),
-/* harmony export */   "Section": () => (/* binding */ Section),
-/* harmony export */   "ToggleSwitch": () => (/* binding */ ToggleSwitch)
+/* harmony export */   CachedComponent: () => (/* binding */ CachedComponent),
+/* harmony export */   Fill: () => (/* binding */ Fill),
+/* harmony export */   Modal: () => (/* binding */ Modal),
+/* harmony export */   NotCompatible: () => (/* binding */ NotCompatible),
+/* harmony export */   Overlay: () => (/* binding */ Overlay),
+/* harmony export */   Section: () => (/* binding */ Section),
+/* harmony export */   TextInput: () => (/* binding */ TextInput),
+/* harmony export */   ToggleSwitch: () => (/* binding */ ToggleSwitch),
+/* harmony export */   WithCache: () => (/* binding */ WithCache),
+/* harmony export */   WithCachedState: () => (/* binding */ WithCachedState),
+/* harmony export */   createTab: () => (/* binding */ createTab)
 /* harmony export */ });
 if (!window.components) {
   throw notCompatible('3.4');
@@ -339,6 +356,103 @@ const Section = window.components.Section || NotCompatible('5.0');
  */
 const ToggleSwitch = window.components.ToggleSwitch || NotCompatible('5.0');
 
+ /**
+ * TextInput component.
+ *
+ * @type {import('react').ComponentType<{ hint: string, name: string, label: string, fieldError: string, multiline: boolean, description: string }>}
+ *
+ * @example
+ * 
+ * import { TextInput } from 'camunda-modeler-plugin-helpers/components';
+ *
+ * function CustomInput(props) {
+ *   return (
+ *    <Formik initialValues={ initialValues } onSubmit={ this.onSubmit }>
+ *      {() => (
+ *        <Form>
+ *          <Field
+ *            component={ TextInput }
+ *            label="My input"
+ *            id={ id }
+ *            multiline={ false }
+ *            name={ name }
+ *            description="Custom description"
+ *          />
+ *        </Form>
+ *       )}
+ *    </Formik>
+ *   );
+ * }
+ */
+const TextInput = window.components.TextInput || NotCompatible('5.29');
+
+ /**
+ * CachedComponent class.
+ *
+ * @type {import('react').ComponentClass}
+ *
+ * @example
+ * 
+ * import { CachedComponent } from 'camunda-modeler-plugin-helpers/components';
+ * 
+ * class ComponentWithCachedState extends CachedComponent {
+ *  constructor(props) {
+ *   super(props);
+ *  }
+ * 
+ *  getCachedState() {
+ *    return this.getCached()
+ *  }
+ * 
+ *  setCachedState(values) {
+ *    this.setCached(values)
+ *  }
+ * }
+ * 
+ */
+const CachedComponent = window.components.CachedComponent || NotCompatible('5.29');
+
+/**
+ * A higher order component that passes cache to a wrapped component.
+ * Forwards refs, too.
+ * 
+ * @type {Function}
+ * @param {Component} Comp
+ */
+const WithCache = window.components.WithCache || NotCompatible('5.29');
+
+/**
+ * A higher order component that lazily
+ * initiates the given wrapped component
+ * via the `Comp#createCachedState` method.
+ *
+ * Passes props as well as destructured
+ * wrapped component state to `Comp`.
+ *
+ * The resulting component must be called
+ * with the `id` and `cache` prop.
+ *
+ * Forwards refs, too.
+ *
+ * @type {Function}
+ * @param {Component} Comp
+ */
+const WithCachedState = window.components.WithCachedState || NotCompatible('5.29');
+
+/**
+ * A helper function to create Tab components
+ * to be used with the TabProvider.
+ *
+ * @type {Function}
+ * @param {string} tabName - The name of the tab.
+ * @param {object} providers - The providers object.
+ * @param {string} providers.type - The type of the provider.
+ * @param {React.Component} providers.editor - The editor component.
+ * @param {string} providers.defaultName - The default name of the provider.
+ * @returns {React.Component} The created EditorTab component.
+ */
+const createTab = window.components.createTab || NotCompatible('5.29');
+
 /***/ }),
 
 /***/ "../node_modules/camunda-modeler-plugin-helpers/index.js":
@@ -350,22 +464,22 @@ const ToggleSwitch = window.components.ToggleSwitch || NotCompatible('5.0');
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getModelerDirectory": () => (/* binding */ getModelerDirectory),
-/* harmony export */   "getPluginsDirectory": () => (/* binding */ getPluginsDirectory),
-/* harmony export */   "registerBpmnJSModdleExtension": () => (/* binding */ registerBpmnJSModdleExtension),
-/* harmony export */   "registerBpmnJSPlugin": () => (/* binding */ registerBpmnJSPlugin),
-/* harmony export */   "registerClientExtension": () => (/* binding */ registerClientExtension),
-/* harmony export */   "registerClientPlugin": () => (/* binding */ registerClientPlugin),
-/* harmony export */   "registerCloudBpmnJSModdleExtension": () => (/* binding */ registerCloudBpmnJSModdleExtension),
-/* harmony export */   "registerCloudBpmnJSPlugin": () => (/* binding */ registerCloudBpmnJSPlugin),
-/* harmony export */   "registerCloudDmnJSModdleExtension": () => (/* binding */ registerCloudDmnJSModdleExtension),
-/* harmony export */   "registerCloudDmnJSPlugin": () => (/* binding */ registerCloudDmnJSPlugin),
-/* harmony export */   "registerDmnJSModdleExtension": () => (/* binding */ registerDmnJSModdleExtension),
-/* harmony export */   "registerDmnJSPlugin": () => (/* binding */ registerDmnJSPlugin),
-/* harmony export */   "registerPlatformBpmnJSModdleExtension": () => (/* binding */ registerPlatformBpmnJSModdleExtension),
-/* harmony export */   "registerPlatformBpmnJSPlugin": () => (/* binding */ registerPlatformBpmnJSPlugin),
-/* harmony export */   "registerPlatformDmnJSModdleExtension": () => (/* binding */ registerPlatformDmnJSModdleExtension),
-/* harmony export */   "registerPlatformDmnJSPlugin": () => (/* binding */ registerPlatformDmnJSPlugin)
+/* harmony export */   getModelerDirectory: () => (/* binding */ getModelerDirectory),
+/* harmony export */   getPluginsDirectory: () => (/* binding */ getPluginsDirectory),
+/* harmony export */   registerBpmnJSModdleExtension: () => (/* binding */ registerBpmnJSModdleExtension),
+/* harmony export */   registerBpmnJSPlugin: () => (/* binding */ registerBpmnJSPlugin),
+/* harmony export */   registerClientExtension: () => (/* binding */ registerClientExtension),
+/* harmony export */   registerClientPlugin: () => (/* binding */ registerClientPlugin),
+/* harmony export */   registerCloudBpmnJSModdleExtension: () => (/* binding */ registerCloudBpmnJSModdleExtension),
+/* harmony export */   registerCloudBpmnJSPlugin: () => (/* binding */ registerCloudBpmnJSPlugin),
+/* harmony export */   registerCloudDmnJSModdleExtension: () => (/* binding */ registerCloudDmnJSModdleExtension),
+/* harmony export */   registerCloudDmnJSPlugin: () => (/* binding */ registerCloudDmnJSPlugin),
+/* harmony export */   registerDmnJSModdleExtension: () => (/* binding */ registerDmnJSModdleExtension),
+/* harmony export */   registerDmnJSPlugin: () => (/* binding */ registerDmnJSPlugin),
+/* harmony export */   registerPlatformBpmnJSModdleExtension: () => (/* binding */ registerPlatformBpmnJSModdleExtension),
+/* harmony export */   registerPlatformBpmnJSPlugin: () => (/* binding */ registerPlatformBpmnJSPlugin),
+/* harmony export */   registerPlatformDmnJSModdleExtension: () => (/* binding */ registerPlatformDmnJSModdleExtension),
+/* harmony export */   registerPlatformDmnJSPlugin: () => (/* binding */ registerPlatformDmnJSPlugin)
 /* harmony export */ });
 /**
  * Validate and register a client plugin.
@@ -812,7 +926,7 @@ module.exports = window.react;
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 (() => {
 "use strict";
 /*!*************************!*\
