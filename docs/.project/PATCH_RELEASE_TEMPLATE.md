@@ -18,12 +18,13 @@ _To be done to prepare and build the release._
   * `bpmn-js`, `dmn-js`, `*-properties-panel`, `*-moddle`, `camunda-bpmn-js`, `form-js`, ...
 * [ ] make sure dependencies to upstream libraries are updated and can be installed (`rm -rf node_modules && npm i && npm run all` works)
 * [ ] close all issues which are solved by dependency updates
-* [ ] ensure that the modeler is free of major security vulnerabilities via `npm audit`
 * [ ] smoke test to verify all diagrams can be created
-* [ ] update [Release Info](https://github.com/camunda/camunda-modeler/blob/master/client/src/plugins/version-info/ReleaseInfo.js)
+* [ ] ~~update [Release Info](https://github.com/camunda/camunda-modeler/blob/master/client/src/plugins/version-info/ReleaseInfo.js)~~
+  * [ ] We don't usually do this
 * [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/master/CHANGELOG.md)
-* [ ] create release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/tree/master/release-schema)
+* [ ] create release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/main/releases/RELEASE_SCHEMA.md)
   * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
+* [ ] make sure Windows artifacts are signed
 * [ ] prepare a list of what was changed or needs to be tested
 * [ ] execute integration test, verifying fixed things are actually fixed
 * [ ] (optional) trigger QA for testing
@@ -33,6 +34,7 @@ _To be done to make the release publicly available._
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
 * [ ] trigger [downloads page](https://camunda.com/download/modeler/) update via [marketing request form](https://confluence.camunda.com/display/MAR/Marketing+Request+Form)
 * [ ] add new version to [update server releases](https://github.com/camunda/camunda-modeler-update-server/blob/master/releases.json)
+  * Usually this does not contain an updated release info 
 * [ ] publish release via update server (push to `live`)
 
 _To be done post release._

@@ -13,6 +13,12 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: trim trailing whitespaces from all input fields except expressions ([#4818](https://github.com/camunda/camunda-modeler/issues/4818), [#2385](https://github.com/camunda/camunda-modeler/issues/2385), [bpmn-io/properties-panel#309](https://github.com/bpmn-io/properties-panel/issues/309))
 
+## 5.33.1
+
+### General
+
+* `FIX`: C8 OAuth connection with custom audience ([#4871](https://github.com/camunda/camunda-modeler/issues/4871))
+
 ## 5.33.0
 
 * `DEPS`: update to `bpmn-js@18.3.1`
