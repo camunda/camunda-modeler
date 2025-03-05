@@ -21,6 +21,7 @@ import {
   Dialog,
   FileSystem,
   Plugins,
+  Settings,
   SystemClipboard,
   Workspace,
   ZeebeAPI
@@ -160,6 +161,7 @@ function createApp(options = {}) {
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     plugins: new Plugins(),
+    settings: new Settings(),
     systemClipboard: new SystemClipboard(),
     workspace: new Workspace(),
     zeebeAPI: new ZeebeAPI()

@@ -529,6 +529,18 @@ export class Log extends Mock {
   error() {}
 }
 
+export class Settings extends Mock {
+  register() {}
+
+  get() {}
+
+  set() {}
+
+  getSchema() {}
+
+  subscribe() {}
+}
+
 /**
  * Response mock. Returns responses in desired order.
  *

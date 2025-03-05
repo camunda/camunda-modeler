@@ -39,6 +39,12 @@ class MacMenuBuilder extends MenuBuilder {
       {
         type: 'separator'
       }, {
+        label: 'Settings',
+        accelerator: 'Command+,',
+        click: () => app.emit('menu:action', 'settings-open')
+      }, {
+        type: 'separator'
+      }, {
         label: 'Services',
         role: 'services',
         submenu: []
@@ -136,6 +142,13 @@ class MacMenuBuilder extends MenuBuilder {
 
     this.appendSeparator();
 
+    return this;
+  }
+
+  /**
+   * Settings are added via application menu instead of default file menu.
+   */
+  appendSettings() {
     return this;
   }
 

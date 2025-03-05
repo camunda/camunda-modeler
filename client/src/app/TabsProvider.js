@@ -142,8 +142,9 @@ const formLinter = new FormLinter();
  */
 export default class TabsProvider {
 
-  constructor(plugins = []) {
+  constructor(plugins = [], settings) {
     const self = this;
+    this.settings = settings;
     this.providers = {
       empty: {
         canOpen(file) {
@@ -703,7 +704,14 @@ export default class TabsProvider {
   _getInitialFileContents(type) {
     const rawContents = this.getProvider(type).getInitialContents();
 
-    return rawContents && replaceHistoryTimeToLive(replaceExporter(replaceVersions(replaceIds(rawContents, generateId))));
+    return rawContents && replaceHistoryTimeToLive(
+      replaceExporter(
+        replaceVersions(
+          replaceIds(rawContents, generateId),
+          this.settings
+        )
+      )
+    );
   }
 
   _getTabType(file) {
