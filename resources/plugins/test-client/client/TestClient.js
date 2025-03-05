@@ -22,7 +22,8 @@ export default class TestClient extends Component {
     super(props);
 
     const {
-      subscribe
+      subscribe,
+      settings
     } = props;
 
     subscribe('tab.saved', (event) => {
@@ -51,6 +52,36 @@ export default class TestClient extends Component {
       saveCounter: 0,
       tabType: null
     };
+
+    const defaultSettings = {
+      id: 'testClientPlugin',
+      title: 'Test Client Plugin',
+      properties: {
+        'testClientPlugin.iconColor': {
+          type: 'text',
+          default: '#10ad73',
+          label: 'Icon Color',
+          description: 'Color of the lovely heart icon in the Status Bar.'
+        },
+        'testClientPlugin.heartbeat': {
+          type: 'boolean',
+          default: false,
+          label: 'Heartbeat',
+          description: 'Will My Heart Go On?'
+        }
+      }
+    };
+
+    settings.register(defaultSettings);
+
+    settings.subscribe('testClientPlugin.iconColor' , (color) => {
+      this.setState({ color });
+    });
+
+    settings.subscribe('testClientPlugin.heartbeat', (heartbeat) => {
+      this.setState({ heartbeat });
+    });
+
   }
 
   async componentDidMount() {
@@ -84,7 +115,8 @@ export default class TestClient extends Component {
 
     const {
       saveCounter,
-      tabType
+      tabType,
+      color
     } = this.state;
 
     /**
@@ -103,7 +135,7 @@ export default class TestClient extends Component {
 
         <Fill slot="status-bar__file">
           <button className="btn" title="Just an icon (test-client plug-in contributed)" style={ { color: '#10ad73' } }>
-            <TestIcon />
+            <TestIcon color={ color } />
           </button>
         </Fill>
 
@@ -124,8 +156,8 @@ export default class TestClient extends Component {
 }
 
 
-function TestIcon() {
+function TestIcon({ color }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill="#10ad73" fillRule="evenodd" d="M7.655 14.916L8 14.25l.345.666a.752.752 0 01-.69 0zm0 0L8 14.25l.345.666.002-.001.006-.003.018-.01a7.643 7.643 0 00.31-.17 22.08 22.08 0 003.433-2.414C13.956 10.731 16 8.35 16 5.5 16 2.836 13.914 1 11.75 1 10.203 1 8.847 1.802 8 3.02 7.153 1.802 5.797 1 4.25 1 2.086 1 0 2.836 0 5.5c0 2.85 2.045 5.231 3.885 6.818a22.075 22.075 0 003.744 2.584l.018.01.006.003h.002z"></path></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill={ color } fillRule="evenodd" d="M7.655 14.916L8 14.25l.345.666a.752.752 0 01-.69 0zm0 0L8 14.25l.345.666.002-.001.006-.003.018-.01a7.643 7.643 0 00.31-.17 22.08 22.08 0 003.433-2.414C13.956 10.731 16 8.35 16 5.5 16 2.836 13.914 1 11.75 1 10.203 1 8.847 1.802 8 3.02 7.153 1.802 5.797 1 4.25 1 2.086 1 0 2.836 0 5.5c0 2.85 2.045 5.231 3.885 6.818a22.075 22.075 0 003.744 2.584l.018.01.006.003h.002z"></path></svg>
   );
 }
