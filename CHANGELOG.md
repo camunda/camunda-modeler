@@ -6,6 +6,12 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.33.1
+
+### General
+
+* `FIX`: C8 OAuth connection with custom audience ([#4871](https://github.com/camunda/camunda-modeler/issues/4871))
+
 ## 5.33.0
 
 * `DEPS`: update to `bpmn-js@18.3.1`
