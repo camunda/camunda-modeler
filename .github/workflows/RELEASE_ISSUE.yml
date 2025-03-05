@@ -110,4 +110,4 @@ jobs:
       env:
         # Release manager is either the assignee from the newly created issue or the new assigned from the `assigned` trigger
         RELEASE_MANAGER: ${{ needs.create_release_issue.outputs.assignee || github.event.issue.assignee.login }}
-        ISSUE_LINK: https://github.com/${{ github.repository }}/issues/${{ fromJson(needs.create_release_issue.outputs.issue).number }}
+        ISSUE_LINK: https://github.com/${{ github.repository }}/issues/${{ needs.create_release_issue.outputs.issue && fromJson(needs.create_release_issue.outputs.issue).number || github.event.issue.number }}
