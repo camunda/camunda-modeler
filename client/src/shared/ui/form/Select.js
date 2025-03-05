@@ -10,14 +10,11 @@
 
 import React from 'react';
 
-import classNames from 'classnames';
-
 import DocumentationIcon from './DocumentationIcon';
 
-export default function CheckBox(props) {
+export default function Select(props) {
 
   const {
-    hint,
     label,
     field,
     form,
@@ -33,23 +30,22 @@ export default function CheckBox(props) {
   return (
     <React.Fragment>
       <div className="form-group">
-        <div className={
-          classNames('custom-control', 'custom-checkbox')
-        }>
-          <input
-            { ...field }
-            disabled={ form.isSubmitting }
-            className="custom-control-input"
-            id={ fieldName }
-            { ...restProps }
-          />
+        <div className="custom-control custom-select">
           <label className="custom-control-label" htmlFor={ fieldName }>
             { label }
             <DocumentationIcon url={ documentationUrl } />
           </label>
+          <select
+            { ...field }
+            disabled={ form.isSubmitting }
+            className="form-control"
+            id={ fieldName }
+            { ...restProps }
+          >
+            {props.options.map(({ value, label }) => <option key={ value } value={ value }>{label}</option>)}
+          </select>
           {<div className="custom-control-description">{ description }</div>}
         </div>
-        {description && <p className="form-control">{ description }</p>}
       </div>
     </React.Fragment>
   );
