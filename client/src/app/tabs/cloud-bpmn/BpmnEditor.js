@@ -82,6 +82,8 @@ export class BpmnEditor extends CachedComponent {
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
 
+    this.settings = props.settings;
+
     this.handleEngineProfileChangeDebounced = debounce(this.handleEngineProfileChange);
 
     this.engineProfile = new EngineProfileHelper({
@@ -123,7 +125,40 @@ export class BpmnEditor extends CachedComponent {
 
     this.handlePropertiesPanelLayoutChange = this.handlePropertiesPanelLayoutChange.bind(this);
     this.handleLayoutChange = this.handleLayoutChange.bind(this);
+
+    // TODO(@jarekdanielak): This is just for testing purposes. Remove before going live.
+    const defaultSettings = {
+      id: 'bpmnEditor',
+      title: 'BPMN Editor',
+      properties: {
+        'bpmnEditor.forceLinting': {
+          type: 'boolean',
+          default: false,
+          label: 'Force Linting',
+          description: 'Force linting even when the Problem panel is closed.'
+        }
+      }
+    };
+
+    // When using Settings, a module has the following responsibilities:
+
+    // Register BPMN editor settings
+    this.settings.register(defaultSettings);
+
+    // (try to register them again just to get the console error)
+    this.settings.register(defaultSettings);
+
+    // Set the initial value (it can be set in the settings.json file)
+    this.forceLinting = this.settings.get('bpmnEditor.forceLinting');
+
+    // Subscribe to the forceLinting setting change
+    this.settings.subscribe('bpmnEditor.forceLinting', this.onSettingsChanged);
   }
+
+  // TODO(@jarekdanielak): This is just for testing purposes. Remove before going live.
+  onSettingsChanged = (value) => {
+    this.forceLinting = value;
+  };
 
   async componentDidMount() {
     this._isMounted = true;
@@ -195,7 +230,8 @@ export class BpmnEditor extends CachedComponent {
 
     const { panel = {} } = layout;
 
-    if (panel.open && panel.tab === 'linting') {
+    // TODO(@jarekdanielak): This is just for testing purposes. Remove before going live.
+    if ((panel.open && panel.tab === 'linting') || this.forceLinting) {
       this.getModeler().get('linting').activate();
     } else if (!panel.open || panel.tab !== 'linting') {
       this.getModeler().get('linting').deactivate();

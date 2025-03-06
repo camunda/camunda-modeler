@@ -14,6 +14,7 @@ const DefaultProvider = require('./providers/DefaultProvider');
 const ElementTemplatesProvider = require('./providers/ElementTemplatesProvider');
 const UUIDProvider = require('./providers/UUIDProvider');
 const OSInfoProvider = require('./providers/OSInfoProvider');
+const SettingsProvider = require('./providers/SettingsProvider');
 
 const { isFunction } = require('min-dash');
 
@@ -34,7 +35,8 @@ class Config {
     this._providers = {
       'bpmn.elementTemplates': new ElementTemplatesProvider(resourcesPaths, ignoredPaths, defaultProvider),
       'editor.id': new UUIDProvider(path.join(userPath, '.editorid')),
-      'os.info': new OSInfoProvider()
+      'os.info': new OSInfoProvider(),
+      'settings': new SettingsProvider(path.join(userPath, 'settings.json'))
     };
   }
 
