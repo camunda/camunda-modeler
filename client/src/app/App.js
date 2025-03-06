@@ -93,12 +93,12 @@ const INITIAL_STATE = {
   recentTabs: [],
   layout: {},
   tabs: [],
+  tabGroups: {},
   tabState: {},
   lintingState: {},
   logEntries: [],
   notifications: [],
-  currentModal: null,
-  endpoints: []
+  currentModal: null
 };
 
 
@@ -155,6 +155,29 @@ export class App extends PureComponent {
     this.currentNotificationId = 0;
   }
 
+  /**
+   * Set group for tab.
+   *
+   * @param {string} id ID of the tab
+   * @param {string} group Group name
+   */
+  setTabGroup(id, group) {
+    const tab = this.state.tabs.find((tab) => tab.id === id);
+
+    if (!tab) {
+      throw new Error(`Tab with ID ${id} not found`);
+    }
+
+    this.setState(({ tabGroups }) => {
+      return {
+        tabGroups: {
+          ...tabGroups,
+          [ id ]: group
+        }
+      };
+    });
+  }
+
   createDiagram = async (type = 'bpmn') => {
 
     const {
@@ -193,6 +216,8 @@ export class App extends PureComponent {
         unsavedState = this.setUnsaved(tab, properties.unsaved);
       }
 
+      this._onTabOpened(tab);
+
       return {
         ...unsavedState,
         tabs: [
@@ -205,7 +230,6 @@ export class App extends PureComponent {
 
     return tab;
   }
-
 
   /**
    * Navigate shown tabs in given direction.
@@ -427,6 +451,8 @@ export class App extends PureComponent {
     });
 
     await this._removeTab(tab);
+
+    this._onTabClosed(tab);
 
     return true;
   };
@@ -1043,6 +1069,8 @@ export class App extends PureComponent {
     this.emit('tab.saved', { tab });
     this.triggerAction('lint-tab', { tab });
 
+    this._onTabSaved(tab);
+
     return tab;
   }
 
@@ -1102,8 +1130,7 @@ export class App extends PureComponent {
       recentTabs,
       tabLoadingState,
       tabState,
-      layout,
-      endpoints
+      layout
     } = this.state;
 
     const {
@@ -1136,8 +1163,7 @@ export class App extends PureComponent {
     if (
       activeTab !== prevState.activeTab ||
       tabs !== prevState.tabs ||
-      layout !== prevState.layout ||
-      endpoints !== prevState.endpoints
+      layout !== prevState.layout
     ) {
       this.workspaceChanged();
     }
@@ -1191,15 +1217,13 @@ export class App extends PureComponent {
     const {
       layout,
       tabs,
-      activeTab,
-      endpoints
+      activeTab
     } = this.state;
 
     return onWorkspaceChanged({
       tabs,
       activeTab,
-      layout,
-      endpoints
+      layout
     });
   };
 
@@ -1746,7 +1770,7 @@ export class App extends PureComponent {
     return this.getGlobal('dialog').show(options);
   }
 
-  triggerAction = failSafe((action, options) => {
+  triggerAction = failSafe((action, options = {}) => {
 
     const {
       activeTab
@@ -1754,6 +1778,15 @@ export class App extends PureComponent {
 
 
     log('App#triggerAction %s %o', action, options);
+
+    if (action === 'set-tab-group') {
+      const {
+        id,
+        group
+      } = options;
+
+      return this.setTabGroup(id, group);
+    }
 
     if (action === 'lint-tab') {
       const {
@@ -1813,6 +1846,12 @@ export class App extends PureComponent {
     }
 
     if (action === 'open-diagram') {
+      const { path } = options;
+
+      if (path) {
+        return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
+      }
+
       return this.showOpenFilesDialog();
     }
 
@@ -2068,10 +2107,43 @@ export class App extends PureComponent {
     return fn;
   };
 
+  _onTabOpened(tab) {
+    if (!this.isUnsaved(tab)) {
+      const {
+        file,
+        type
+      } = tab;
+
+      this.getGlobal('backend').send('file-context:file-opened', file.path, {
+        processor: getProcessor(type)
+      });
+    }
+  }
+
+  _onTabClosed(tab) {
+    if (!this.isUnsaved(tab)) {
+      const { file } = tab;
+
+      this.getGlobal('backend').send('file-context:file-closed', file.path);
+    }
+  }
+
+  _onTabSaved(tab) {
+    const {
+      file,
+      type
+    } = tab;
+
+    this.getGlobal('backend').send('file-context:file-content-changed', file.path, file.contents, {
+      processor: getProcessor(type)
+    });
+  }
+
   render() {
 
     const {
       tabs,
+      tabGroups,
       activeTab,
       layout,
       logEntries
@@ -2098,6 +2170,7 @@ export class App extends PureComponent {
               <div className="tabs">
                 <TabLinks
                   tabs={ tabs }
+                  tabGroups={ tabGroups }
                   isDirty={ isDirty }
                   activeTab={ activeTab }
                   getTabIcon={ this._getTabIcon }
@@ -2183,7 +2256,10 @@ export class App extends PureComponent {
   }
 
   _getNewFileItems = () => {
+
+    // TODO: make this configurable
     let items = [];
+
     const providers = this.props.tabsProvider.getProviders();
 
     forEach(providers, provider => {
@@ -2476,4 +2552,20 @@ function failSafe(fn, errorHandler) {
       errorHandler(error);
     }
   };
+}
+
+function getProcessor(type) {
+  if (type === 'cloud-bpmn') {
+    return 'bpmn';
+  }
+
+  if (type === 'cloud-dmn') {
+    return 'dmn';
+  }
+
+  if (type === 'cloud-form') {
+    return 'form';
+  }
+
+  return null;
 }

@@ -22,6 +22,7 @@ const handledInPreload = [
 
 const allowedEvents = [
   ...handledInPreload,
+  'activeTab:change',
   'app:reload',
   'app:quit-aborted',
   'app:quit-allowed',
@@ -41,7 +42,12 @@ const allowedEvents = [
   'file:read',
   'file:read-stats',
   'file:write',
-  'activeTab:change',
+  'file-context:add-root',
+  'file-context:changed',
+  'file-context:file-closed',
+  'file-context:file-content-changed',
+  'file-context:file-opened',
+  'file-context:remove-root',
   'menu:register',
   'menu:update',
   'system-clipboard:write-text',

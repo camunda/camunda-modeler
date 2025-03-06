@@ -66,6 +66,8 @@ import Flags, {
 import BPMNIcon from '../../resources/icons/file-types/BPMN.svg';
 import DMNIcon from '../../resources/icons/file-types/DMN.svg';
 import FormIcon from '../../resources/icons/file-types/Form.svg';
+import DefaultIcon from '../../resources/icons/Warning.svg';
+
 import { getDefaultVersion } from './tabs/EngineProfile';
 
 import { getCloudTemplates } from '../util/elementTemplates';
@@ -104,6 +106,9 @@ const noopProvider = {
   },
   getInitialContents() {
     return null;
+  },
+  getIcon() {
+    return DefaultIcon;
   }
 };
 

@@ -7,15 +7,15 @@
   --tab-font-size: var(--font-size-default);
   --tab-icon-color: var(--color-grey-225-10-35);
   --tab-border-right-color: var(--color-grey-225-10-75);
-  --tab-close-background-color: var(--color-grey-225-10-85);
-  --tab-close-hover-background-color: var(--color-grey-225-10-80);
+  --tab-close-background-color: transparent;
+  --tab-close-hover-background-color: var(--color-grey-225-10-70);
   --tab-close-icon-fill-color: var(--color-grey-225-10-15);
   --tab-dirty-icon-fill-color: var(--color-grey-225-10-75);
   --tab-line-active-background-color: var(--color-grey-225-10-15);
   --tab-line-hover-background-color: var(--color-grey-225-10-55);
   --tab-dirty-marker-background-color: var(--color-blue-205-100-50);
   --tab-dirty-marker-border-color: var(--color-blue-205-100-45);
-  --tab-dirty-marker-box-shadow-color: var(--color-grey-225-10-85);
+  --tab-active-background-color: var(--color-grey-225-10-75);
 }
 
 .tab-base() {
@@ -121,7 +121,7 @@
       background-color: var(--tab-dirty-marker-background-color);
       border: 1px solid var(--tab-dirty-marker-border-color);
       box-sizing: content-box;
-      box-shadow: 0 0 0 2px var(--tab-dirty-marker-box-shadow-color);
+      box-shadow: 0 0 0 2px var(--tab-bar-background-color);
     }
 
     .tab__close {
@@ -129,7 +129,7 @@
       pointer-events: all;
       right: 6px;
       z-index: 4;
-      padding: 0 2px;
+      padding: 0;
       line-height: 26px;
       width: 18px;
       height: 18px;
@@ -138,7 +138,6 @@
       background-color: var(--tab-close-background-color);
 
       .tab__icon-close {
-        margin: auto 0 1px -1px;
         fill: var(--tab-close-icon-fill-color);
       }
 
@@ -193,24 +192,24 @@
       }
     }
 
-    /* tab bottom lines (active + hover) */
-    &.tab--active::after,
-    &:not(.tab--active):hover::after {
+    &.tab--active,
+    &:not(.tab--active):hover {
+      background-color: var(--tab-active-background-color);
+
+      .tab__dirty-marker {
+        box-shadow: 0 0 0 2px var(--tab-active-background-color);
+      }
+    }
+
+    &.tab--group:after {
       z-index: 3;
       position: absolute;
       content: '';
-      bottom: -1px;
-      left: -1px;
-      right: -1px;
+      bottom: -0.5px;
+      left: 0px;
+      right: 0px;
       height: 2px;
-    }
-
-    &:not(.tab--active):hover::after {
-      background-color: var(--tab-line-hover-background-color);
-    }
-
-    &.tab--active::after {
-      background-color: var(--tab-line-active-background-color);
+      background-color: var(--tab-line-group-background-color);
     }
   }
 }

@@ -364,6 +364,148 @@ describe('<App>', function() {
   });
 
 
+  describe('file context', function() {
+
+    it('should send <file-context:opened> event to backend on tab opened', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      // when
+      const file1 = createFile('1.cloud-bpmn');
+
+      await app.openFiles([ file1 ]);
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('file-context:file-opened', file1.path, {
+        processor: 'bpmn'
+      });
+    });
+
+
+    it('should not send <file-context:opened> to backend event on unsaved tab opened', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      // when
+      await app.createDiagram('cloud-bpmn');
+
+      // then
+      expect(sendSpy).not.to.have.been.calledWith('file-context:file-opened');
+    });
+
+
+    it('should send <file-context:file-closed> to backend on tab closed', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      // when
+      const file1 = createFile('1.cloud-bpmn');
+
+      const [ tab ] = await app.openFiles([ file1 ]);
+
+      await app.closeTab(tab);
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('file-context:file-closed', file1.path);
+    });
+
+
+    it('should not send <file-context:file-closed> to backend on unsaved tab closed', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          backend
+        }
+      });
+
+      // when
+      const tab = await app.createDiagram('cloud-bpmn');
+
+      await app.closeTab(tab);
+
+      // then
+      expect(sendSpy).not.to.have.been.calledWith('file-context:file-closed');
+    });
+
+
+    it('should send <file-context:file-content-changed> to backend on tab saved', async function() {
+
+      // given
+      const sendSpy = spy();
+
+      const backend = new Backend({
+        send: sendSpy
+      });
+
+      const fileSystem = new FileSystem();
+
+      const { app } = createApp({
+        globals: {
+          backend,
+          fileSystem
+        }
+      });
+
+      // when
+      const file1 = createFile('1.cloud-bpmn');
+
+      fileSystem.setWriteFileResponse(0, Promise.resolve({
+        ...file1
+      }));
+
+      await app.openFiles([ file1 ]);
+
+      await app.triggerAction('save');
+
+      // then
+      expect(sendSpy).to.have.been.calledWith('file-context:file-content-changed', file1.path, file1.contents, {
+        processor: 'bpmn'
+      });
+    });
+
+  });
+
+
   describe('#openFiles', function() {
 
     it('should create tabs', async function() {
@@ -1038,7 +1180,7 @@ describe('<App>', function() {
     it('should save tab with correct extension', async function() {
 
       // given
-      const file = createFile('diagram_1.bpmn', { type: 'cloud-bpmn' });
+      const file = createFile('diagram_1.bpmn');
 
       await app.openFiles([ file ]);
 
@@ -3314,8 +3456,7 @@ describe('<App>', function() {
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
-          contents: 'foo',
-          type: 'form'
+          contents: 'foo'
         })
       ]);
 
@@ -3339,8 +3480,7 @@ describe('<App>', function() {
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
-          contents: 'linting-errors',
-          type: 'form'
+          contents: 'linting-errors'
         })
       ]);
 
@@ -3372,8 +3512,7 @@ describe('<App>', function() {
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
-          contents,
-          type: 'form'
+          contents
         })
       ]);
 
@@ -3419,8 +3558,7 @@ describe('<App>', function() {
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
-          contents: 'foo',
-          type: 'form'
+          contents: 'foo'
         })
       ]);
 
@@ -3444,8 +3582,7 @@ describe('<App>', function() {
 
       await app.openFiles([
         createFile('1.form', {
-          contents: 'linting-errors',
-          type: 'form'
+          contents: 'linting-errors'
         })
       ]);
 
@@ -3716,16 +3853,14 @@ function createFile(name, options = {}) {
   const {
     contents = 'foo',
     lastModified,
-    path = name,
-    type = 'bpmn'
+    path = name
   } = options;
 
   return {
     contents,
     lastModified,
     name,
-    path,
-    type
+    path
   };
 }
 
