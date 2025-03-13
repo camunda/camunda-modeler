@@ -6,12 +6,17 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `DEPS`: update to `bpmn-js-properties-panel@5.33.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.34.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.26.3`
+* `DEPS`: update to `@camunda/linting@3.35.0`
 
 ### General
 
 * `FEAT`: trim trailing whitespaces from all input fields except expressions ([#4818](https://github.com/camunda/camunda-modeler/issues/4818), [#2385](https://github.com/camunda/camunda-modeler/issues/2385), [bpmn-io/properties-panel#309](https://github.com/bpmn-io/properties-panel/issues/309))
+
+### BPMN
+
+`FEAT`: add ad-hoc subprocess completion support ([#4850](https://github.com/camunda/camunda-modeler/issues/4850))
 
 ## 5.33.1
 
