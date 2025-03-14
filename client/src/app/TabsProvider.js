@@ -597,7 +597,7 @@ export default class TabsProvider {
       delete this.providersByFileType.form;
     }
 
-    if (Flags.get(DISABLE_RPA, true)) {
+    if (Flags.get(DISABLE_RPA)) {
       delete this.providers.rpa;
       delete this.providersByFileType.rpa;
     }
