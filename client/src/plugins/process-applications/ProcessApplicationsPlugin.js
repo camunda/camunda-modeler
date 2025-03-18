@@ -21,6 +21,8 @@ export default function ProcessApplicationsPlugin(props) {
   const {
     _getFromApp: getFromApp,
     _getGlobal: getGlobal,
+    deregisterAction,
+    registerAction,
     subscribe,
     triggerAction
   } = props;
@@ -69,6 +71,14 @@ export default function ProcessApplicationsPlugin(props) {
       });
     });
 
+    registerAction('processApplications.getOpen', () => {
+      return processApplications.getOpen();
+    });
+
+    registerAction('processApplications.getItems', () => {
+      return processApplications.getItems();
+    });
+
     getGlobal('backend').on('file-context:changed', (_, items) => {
       console.log('file-context:changed', items);
 
@@ -91,6 +101,11 @@ export default function ProcessApplicationsPlugin(props) {
         setProcessApplicationItems([]);
       }
     });
+
+    return () => {
+      deregisterAction('processApplications.getOpen');
+      deregisterAction('processApplications.getItems');
+    };
   }, []);
 
   useEffect(() => {
