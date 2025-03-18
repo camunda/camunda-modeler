@@ -1752,6 +1752,14 @@ export class App extends PureComponent {
     return this.getGlobal('dialog').show(options);
   }
 
+  registerAction = (action, callback) => {
+    this.getGlobal('actions').registerAction(action, callback);
+  };
+
+  deregisterAction = (action) => {
+    this.getGlobal('actions').deregisterAction(action);
+  };
+
   triggerAction = failSafe((action, options = {}) => {
 
     const {
@@ -1760,6 +1768,10 @@ export class App extends PureComponent {
 
 
     log('App#triggerAction %s %o', action, options);
+
+    if (this.getGlobal('actions').hasAction(action)) {
+      return this.getGlobal('actions').triggerAction(action, options);
+    }
 
     if (action === 'set-tab-group') {
       const {
