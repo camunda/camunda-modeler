@@ -85,6 +85,8 @@ export default class PluginsRoot extends PureComponent {
           onError={ app.handleError }
         >
           <PluginComponent
+            deregisterAction={ app.deregisterAction }
+            registerAction={ app.registerAction }
             triggerAction={ app.triggerAction }
             config={ config }
             getConfig={ app.getConfig }

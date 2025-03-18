@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import Actions from './Actions';
 import Config from './Config';
 import Dialog from './Dialog';
 import FileSystem from './FileSystem';
@@ -23,6 +24,8 @@ const {
   plugins: appPlugins,
   backend: appBackend
 } = window.getAppPreload();
+
+export const actions = new Actions();
 
 export const backend = appBackend;
 
