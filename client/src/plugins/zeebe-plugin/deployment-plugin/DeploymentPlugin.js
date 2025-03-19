@@ -32,17 +32,13 @@ import { CAMUNDA_CLOUD, SELF_HOSTED } from '../shared/ZeebeTargetTypes';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
+import CloudLink from './CloudLink';
+
 import DeploymentPluginValidator from './DeploymentPluginValidator';
 
 import { ENGINES } from '../../../util/Engines';
 
 import * as css from './DeploymentPlugin.less';
-
-import {
-  getClusterUrl,
-  getProcessId,
-  getProcessVersion
-} from '../shared/util';
 
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 
@@ -632,39 +628,6 @@ export default class DeploymentPlugin extends PureComponent {
       }
     </React.Fragment>;
   }
-}
-
-
-function CloudLink(props) {
-  const {
-    endpoint,
-    response
-  } = props;
-
-  const processId = getProcessId(response);
-
-  if (!processId) {
-    return null;
-  }
-
-  const clusterUrl = getClusterUrl(endpoint, response);
-  const processesUrl = new URL(`${clusterUrl}/processes`);
-  processesUrl.searchParams.set('process', processId);
-  processesUrl.searchParams.set('version', getProcessVersion(response) || 'all');
-  processesUrl.searchParams.set('active', 'true');
-  processesUrl.searchParams.set('incidents', 'true');
-
-  return (
-    <div className={ css.CloudLink }>
-      <div>
-        Process Definition ID:
-        <code>{processId}</code>
-      </div>
-      <a href={ processesUrl.toString() }>
-        Open in Camunda Operate
-      </a>
-    </div>
-  );
 }
 
 // helpers //////////
