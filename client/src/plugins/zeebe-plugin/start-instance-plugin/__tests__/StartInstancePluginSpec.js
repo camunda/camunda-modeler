@@ -12,609 +12,189 @@
 
 import React from 'react';
 
-import { mount, shallow } from 'enzyme';
+import { waitFor } from '@testing-library/react';
 
-import { Config } from '../../../../app/__tests__/mocks';
+import { mount } from 'enzyme';
 
 import StartInstancePlugin from '../StartInstancePlugin';
-import { CAMUNDA_CLOUD } from '../../shared/ZeebeTargetTypes';
+
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
 
-const BUTTON_SELECTOR = '[title="Start current diagram"]';
+describe('StartInstancePlugin', function() {
 
+  beforeEach(function() {
+    document.body.innerHTML = '';
+  });
 
-describe('<StartInstancePlugin> (Zeebe)', function() {
-
-  describe('render', function() {
-
-    it('should render', function() {
-      createStartInstancePlugin();
-    });
-
-
-    it('should display for active zeebe tabs', function() {
-
-      // when
-      const { wrapper } = createStartInstancePlugin({
-        activeTab: {
-          type: 'cloud-bpmn'
-        }
-      });
-
-      // then
-      expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(1);
-    });
-
-
-    it('should NOT display when no active tab', function() {
-
-      // when
-      const { wrapper } = createStartInstancePlugin({
-        activeTab: false
-      });
-
-      // then
-      expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
-    });
-
-
-    it('should NOT display for other tabs', function() {
-
-      // when
-      const { wrapper } = createStartInstancePlugin();
-
-      // then
-      expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
-    });
-
+  afterEach(function() {
+    document.body.innerHTML = '';
   });
 
 
-  describe('deploy', function() {
+  it('should not render status bar item by default', function() {
 
-    it('should send "getDeployConfig" message', async function() {
+    // when
+    const wrapper = createStartInstancePlugin();
 
-      // given
-      const runSpy = sinon.spy();
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const broadcastMessage = sinon.spy();
-      const { instance } = createStartInstancePlugin({ zeebeAPI, broadcastMessage });
+    const statusBarItem = wrapper.find('.btn');
 
-      // when
-      instance.startInstance();
-
-      // then
-      expect(broadcastMessage).to.have.been.calledOnce;
-      expect(broadcastMessage).to.have.been.calledOnceWith('getDeployConfig');
-
-    });
-
-
-    it('should send "deployWithConfig" message', async function() {
-
-      // given
-      const runSpy = sinon.spy();
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const broadcastMessage = sinon.spy();
-
-      const { instance } = createStartInstancePlugin({ zeebeAPI, broadcastMessage });
-
-      // when
-      instance.startInstanceProcess();
-
-      // then
-      expect(broadcastMessage).to.have.been.calledOnce;
-      expect(broadcastMessage).to.have.been.calledOnceWith('deployWithConfig');
-    });
+    // then
+    expect(statusBarItem.exists()).to.be.false;
   });
 
 
-  describe('start instance', function() {
+  it('should render status bar item when active tab can be started', async function() {
 
-    it('should start process instance if deployment was successful', async function() {
-
-      // given
-      const runSpy = sinon.spy();
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const { instance } = createStartInstancePlugin({ zeebeAPI });
-
-      // when
-      await instance.startInstance();
-
-      // then
-      expect(runSpy).to.have.been.calledOnce;
+    // given
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
     });
 
+    // when
+    const wrapper = createStartInstancePlugin({ subscribe });
 
-    it('should start process instance if deployment was successful (multi-tenancy)', async function() {
+    // then
+    const statusBarItem = wrapper.find('.btn');
 
-      // given
-      const runSpy = sinon.spy(function(args) {
-        expect(args.name).to.eql('DEPLOYMENT_NAME');
-        expect(args.tenantId).to.eql('TENANT_ID');
-      });
-
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const { instance } = createStartInstancePlugin({
-        deployment: {
-          name: 'DEPLOYMENT_NAME',
-          tenantId: 'TENANT_ID'
-        },
-        zeebeAPI
-      });
-
-      // when
-      await instance.startInstance();
-
-      // then
-      expect(runSpy).to.have.been.calledOnce;
-    });
+    expect(statusBarItem.exists()).to.be.true;
+    expect(statusBarItem.prop('title')).to.equal('Open start instance');
+  });
 
 
-    it('should NOT start process instance if deployment failed', async function() {
+  it('should not render status bar item when active tab cannot be started', async function() {
 
-      // given
-      const runSpy = sinon.spy();
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const { instance } = createStartInstancePlugin({
-        deploymentResult: {
-          success: false,
-          response: {
-            message: 'Error'
+    // given
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: {
+            type: 'cloud-dmn'
           }
-        },
-        zeebeAPI
-      });
-
-      // when
-      await instance.startInstance();
-
-      // then
-      expect(runSpy).not.to.have.been.called;
+        });
+      }
     });
 
+    // when
+    const wrapper = createStartInstancePlugin({ subscribe });
 
-    it('should NOT start process instance if deployment was cancelled', async function() {
+    // then
+    const statusBarItem = wrapper.find('.btn');
 
-      // given
-      const runSpy = sinon.spy();
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const { instance } = createStartInstancePlugin({ deploymentResult: null, zeebeAPI });
+    expect(statusBarItem.exists()).to.be.false;
+  });
 
-      // when
-      await instance.startInstance();
 
-      // then
-      expect(runSpy).not.to.have.been.called;
+  it('should render overlay when clicking status bar item', async function() {
+
+    // given
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
     });
 
-
-    it('should NOT start process instance if user cancelled', async function() {
-
-      // given
-      const runSpy = sinon.spy();
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const { instance } = createStartInstancePlugin({ zeebeAPI , userAction: 'cancel' });
-
-      // when
-      await instance.startInstance();
-
-      // then
-      expect(runSpy).not.to.have.been.called;
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
     });
 
+    const wrapper = createStartInstancePlugin({ subscribe, triggerAction });
 
-    it('should start process instance with variables', async function() {
+    // when
+    wrapper.find('.btn').simulate('click');
 
-      // given
-      const runSpy = sinon.spy();
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
+    // then
+    await waitFor(() => {
+      const overlay = document.querySelector('[role="dialog"]');
 
-      const variables =
-        {
-          'aVariable' : {
-            'value' : 'aStringValue',
-            'type': 'String'
-          },
-          'anotherVariable' : {
-            'value' : true,
-            'type': 'Boolean'
-          }
-        };
-
-      const config = {
-        getForFile: () => {
-          return { variables: JSON.stringify(variables) };
-        }
-      };
-
-      const { instance } = createStartInstancePlugin({ zeebeAPI, config });
-
-      // when
-      await instance.startInstance();
-
-      // then
-      expect(runSpy).to.have.been.calledOnce;
-      expect(runSpy.args[0][0].variables).to.eql(variables);
-    });
-
-
-    it('should invoke zeebe API with the process id', async function() {
-
-      // given
-      const processId = '123';
-      const deploymentResult = {
-        success: true,
-        response: {
-          deployments: [
-            {
-              process: {
-                bpmnProcessId: processId
-              }
-            }
-          ]
-        }
-      };
-      const runSpy = sinon.spy();
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const { instance } = createStartInstancePlugin({ deploymentResult, zeebeAPI });
-
-      // when
-      await instance.startInstance();
-
-      // then
-      expect(runSpy).to.have.been.calledOnce;
-    });
-
-
-    it('should handle start instance error', async function() {
-
-      // given
-      const runSpy = sinon.stub().throws(new Error());
-      const displayNotification = sinon.spy();
-
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const { instance } = createStartInstancePlugin({ zeebeAPI, displayNotification });
-
-      // when
-      await instance.startInstance();
-
-      // then
-      expect(runSpy).to.have.been.called;
-      expect(displayNotification).to.have.been.calledOnce;
-      expect(displayNotification.args[0][0].title).to.eql('Starting process instance failed');
+      expect(overlay).to.exist;
     });
   });
 
 
-  describe('overlay', function() {
+  it('should not render overlay when clicking status bar item (overlay rendered)', async function() {
 
-    it('should open', async function() {
-
-      // given
-      const activeTab = createTab({ type: 'cloud-bpmn' });
-
-      const {
-        wrapper
-      } = createStartInstancePlugin({
-        activeTab,
-        withFillSlot: true,
-        keepOpen: true
-      }, mount);
-
-      // when
-      const statusBarBtn = wrapper.find("button[title='Start current diagram']");
-      statusBarBtn.simulate('click');
-
-      await new Promise(function(resolve) {
-        setTimeout(resolve, 10);
-      });
-
-      // then
-      expect(wrapper.html().includes('form')).to.be.true;
+    // given
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
     });
 
-
-    it('should close when active tab changes', async function() {
-
-      // given
-      const activeTab = createTab({ type: 'cloud-bpmn' });
-      const { subscribe, callSubscriber } = createSubscribe(activeTab);
-
-      const {
-        wrapper
-      } = createStartInstancePlugin({
-        activeTab,
-        subscribe,
-        withFillSlot: true,
-        keepOpen: true
-      }, mount);
-
-      // open overlay
-      const statusBarBtn = wrapper.find("button[title='Start current diagram']");
-      statusBarBtn.simulate('click');
-
-      await new Promise(function(resolve) {
-        setTimeout(resolve, 10);
-      });
-
-      // assume
-      expect(wrapper.html().includes('form')).to.be.true;
-
-      // then
-      callSubscriber({ activeTab: createTab() });
-
-      // expect
-      expect(wrapper.html().includes('form')).to.not.be.true;
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
     });
 
+    const wrapper = createStartInstancePlugin({ subscribe, triggerAction });
 
-    it('should close when button is clicked', async function() {
+    // when
+    wrapper.find('.btn').simulate('click');
 
-      // given
-      const activeTab = createTab({ type: 'cloud-bpmn' });
+    // then
+    await waitFor(() => {
+      const overlay = document.querySelector('[role="dialog"]');
 
-      const {
-        wrapper
-      } = createStartInstancePlugin({
-        activeTab,
-        withFillSlot: true,
-        keepOpen: true
-      }, mount);
-
-      // open overlay
-      const statusBarBtn = wrapper.find("button[title='Start current diagram']");
-      statusBarBtn.simulate('click');
-
-      await new Promise(function(resolve) {
-        setTimeout(resolve, 10);
-      });
-
-      // assume
-      expect(wrapper.html().includes('form')).to.be.true;
-
-      // then
-      statusBarBtn.simulate('click');
-
-      // expect
-      expect(wrapper.html().includes('form')).to.not.be.true;
+      expect(overlay).to.exist;
     });
 
-  });
+    // when
+    wrapper.find('.btn').simulate('click');
 
+    await waitFor(() => {
+      const overlay = document.querySelector('[role="dialog"]');
 
-  describe('Operate link', function() {
-
-    it('should display notification without link after starting process instance', async function() {
-
-      // given
-      const displayNotification = sinon.spy();
-      const { instance } = createStartInstancePlugin({ displayNotification });
-
-      // when
-      await instance.startInstance();
-
-      // then
-      expect(displayNotification).to.have.been.calledWith({
-        type: 'success',
-        content: null,
-        title: 'Process instance started',
-        duration: 8000
-      });
-
+      expect(overlay).not.to.exist;
     });
-
-
-    it('should display notification with link after starting process instance', async function() {
-
-      // given
-      const displayNotification = sinon.spy();
-      const { instance } = createStartInstancePlugin({
-        displayNotification,
-        deploymentEndpoint: {
-          targetType: CAMUNDA_CLOUD,
-          camundaCloudClusterRegion: 'region',
-          camundaCloudClusterId: 'CLUSTER_ID'
-        },
-      });
-
-      // when
-      await instance.startInstance();
-
-      expect(displayNotification).to.have.been.calledOnce;
-
-      const notification = displayNotification.getCall(0).args[0];
-
-      expect(
-        {
-          type: notification.type,
-          title: notification.title,
-          duration: notification.duration
-        }
-      ).to.eql(
-        {
-          type: 'success',
-          title: 'Process instance started',
-          duration: 8000
-        }
-      );
-
-      expect(notification.content).to.exist;
-
-      const notificationHTML = shallow(notification.content).html().replace(/&amp;/g, '&');
-
-      expect(notificationHTML).to.include(
-        'https://region.operate.camunda.io/CLUSTER_ID/processes/test'
-      );
-    });
-
   });
 
 });
 
+const DEFAULT_ACTIVE_TAB = {
+  type: 'cloud-bpmn'
+};
 
+const DEFAULT_TABS_PROVIDER = {
+  getTabIcon: () => {},
+  getProvider: () => {}
+};
 
-function createStartInstancePlugin({
-  zeebeAPI = new MockZeebeAPI(),
-  activeTab = createTab(),
-  deployment = { name: 'Hello' },
-  deploymentResult = {
-    success: true,
-    response: {
-      deployments: [
-        {
-          process: {
-            bpmnProcessId: 'test'
-          }
-        }
-      ]
-    }
-  },
-  deploymentEndpoint = {},
-  ...props
-} = {}, render = shallow) {
-  const subscribe = (key, callback) => {
-    if (key === 'app.activeTabChanged') {
-      callback({
-        activeTab: activeTab || { type: 'empty', name: 'testName' }
-      });
-    }
-  };
-
-  const config = new Config({
-    get: (_, defaultValue) => defaultValue,
-    ...props.config
-  });
-
-  const broadcastMessage = (key, body) => {
-    if (key === 'deploy') {
-      body.done({ deploymentResult, endpoint: deploymentEndpoint });
-    }
-
-    if (key === 'getDeployConfig') {
-      body.done({
-        config: {
-          deployment,
-          endpoint: deploymentEndpoint,
-          savedTab: activeTab
-        }
-      });
-    }
-
-    if (key === 'deployWithConfig') {
-      body.done({ deploymentResult, endpoint: deploymentEndpoint });
-    }
-  };
-
-  const StartInstancePlugin = (
-    <TestStartInstancePlugin
-      subscribe={ props.subscribe || subscribe }
-      _getGlobal={ key => key === 'zeebeAPI' && zeebeAPI }
-      displayNotification={ noop }
-      log={ noop }
-      triggerAction={ key => key === 'save' && activeTab }
-      subscribeToMessaging={ noop }
-      unsubscribeFromMessaging={ noop }
-      broadcastMessage={ broadcastMessage }
-      { ...props }
-      config={ config }
-    />
-  );
-
-  const StartInstancePluginWithFillSlot = (
-    <SlotFillRoot>
-      <Slot name="status-bar__file" />
-      {StartInstancePlugin}
-    </SlotFillRoot>
-  );
-
-  const wrapper = render(
-    props.withFillSlot ? StartInstancePluginWithFillSlot : StartInstancePlugin
-  );
-
-
-  const instance = wrapper.instance();
-
-  return { wrapper, instance };
-}
-
-function noop() {
-  return null;
-}
-
-function MockZeebeAPI({ runSpy, runResult } = {}) {
-  this.run = (...args) => {
-    if (runSpy) {
-      runSpy(...args);
-    }
-
-    const result = runResult ||
-      { success: true, response: { processInstanceKey: 'test' } };
-
-    return Promise.resolve(result);
-  };
-}
-
-function createTab(overrides = {}) {
-  return {
-    id: 42,
-    name: 'foo.bar',
-    type: 'bar',
-    title: 'unsaved',
-    file: {
-      name: 'foo.bar',
-      contents: '',
-      path: null
-    },
-    ...overrides
-  };
-}
-
-class TestStartInstancePlugin extends StartInstancePlugin {
-  constructor(props) {
-    super(props);
+const DEFAULT_GET_FROM_APP = (key) => {
+  if (key === 'props') {
+    return {
+      tabsProvider: DEFAULT_TABS_PROVIDER
+    };
   }
+};
 
-  componentDidUpdate(...args) {
-    super.componentDidUpdate && super.componentDidUpdate(...args);
+function createStartInstancePlugin(props = {}) {
+  const {
+    _getFromApp = DEFAULT_GET_FROM_APP,
+    _getGlobal = () => {},
+    displayNotification = () => {},
+    log = () => {},
+    subscribe = () => {},
+    triggerAction = () => {}
+  } = props;
 
-    const { overlayState } = this.state;
-    const {
-      userAction,
-      keepOpen
-    } = this.props;
-
-
-    if (overlayState && overlayState.isStart) {
-      const action = userAction || 'start';
-
-      const configuration = action !== 'cancel' && overlayState.configuration;
-
-      if (!keepOpen) {
-        overlayState.onClose(action, configuration);
-      }
-    }
-  }
-}
-
-function createSubscribe(activeTab) {
-  let callback = null;
-
-  function subscribe(event, _callback) {
-    if (event === 'app.activeTabChanged') {
-      callback = _callback;
-      callback({ activeTab });
-    }
-  }
-
-  async function callSubscriber(...args) {
-    if (callback) {
-      await callback(...args);
-    }
-  }
-
-  return {
-    callSubscriber,
-    subscribe
-  };
+  return mount(<SlotFillRoot>
+    <Slot name="status-bar__file" />
+    <StartInstancePlugin
+      _getFromApp={ _getFromApp }
+      _getGlobal={ _getGlobal }
+      displayNotification={ displayNotification }
+      log={ log }
+      subscribe={ subscribe }
+      triggerAction={ triggerAction } />
+  </SlotFillRoot>);
 }
