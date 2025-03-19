@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import ConnectionChecker from './ConnectionChecker';
+
 import {
   MUST_PROVIDE_A_VALUE,
   CONTACT_POINT_MUST_NOT_BE_EMPTY,
@@ -25,9 +27,6 @@ import {
 import { AUTH_TYPES } from '../shared/ZeebeAuthTypes';
 
 import { CAMUNDA_CLOUD, SELF_HOSTED } from '../shared/ZeebeTargetTypes';
-
-import pDefer from 'p-defer';
-
 
 export default class DeploymentPluginValidator {
 
@@ -146,180 +145,7 @@ export default class DeploymentPluginValidator {
   }
 }
 
-class ConnectionChecker {
-
-  constructor(validator) {
-    this.validator = validator;
-  }
-
-  subscribe(hooks) {
-    this.hooks = hooks;
-  }
-
-  unsubscribe() {
-
-    if (this.checkTimer) {
-      clearTimeout(this.checkTimer);
-
-      this.checkTimer = null;
-    }
-
-    this.endpoint = null;
-
-    this.lastCheck = null;
-
-    this.hooks = null;
-  }
-
-  check(endpoint) {
-    this.setEndpoint(endpoint);
-
-    const {
-      lastCheck
-    } = this;
-
-    // return cached result if endpoint did not change
-    // we'll periodically re-check in background anyway
-    if (lastCheck && shallowEquals(endpoint, lastCheck.endpoint)) {
-      return Promise.resolve(lastCheck.result);
-    }
-
-    const deferred = this.scheduleCheck();
-
-    return deferred.promise;
-  }
-
-  setEndpoint(endpoint) {
-    this.endpoint = endpoint;
-  }
-
-  checkCompleted(endpoint, result) {
-
-    const {
-      endpoint: currentEndpoint,
-      deferred,
-      hooks
-    } = this;
-
-    if (!shallowEquals(endpoint, currentEndpoint)) {
-      return;
-    }
-
-    const {
-      endpointErrors
-    } = result;
-
-    this.lastCheck = {
-      endpoint,
-      result
-    };
-
-    this.deferred = null;
-
-    deferred.resolve(result);
-
-    hooks && hooks.onComplete && hooks.onComplete(result);
-
-    if (!hasKeys(endpointErrors)) {
-      this.scheduleCheck();
-    }
-  }
-
-  checkStart() {
-
-    const {
-      hooks
-    } = this;
-
-    hooks && hooks.onStart && hooks.onStart();
-  }
-
-  scheduleCheck() {
-
-    const {
-      endpoint,
-      lastCheck,
-      checkTimer,
-      validator
-    } = this;
-
-    const deferred = this.deferred = this.deferred || pDefer();
-
-    // stop scheduled check
-    if (checkTimer) {
-      clearTimeout(checkTimer);
-    }
-
-    const endpointErrors = validator.validateEndpoint(endpoint);
-
-    if (hasKeys(endpointErrors)) {
-      this.checkCompleted(endpoint, {
-        endpointErrors
-      });
-    } else {
-
-      const delay = this.getCheckDelay(endpoint, lastCheck);
-
-      this.checkTimer = setTimeout(() => {
-        this.triggerCheck();
-      }, delay);
-    }
-
-    return deferred;
-  }
-
-  triggerCheck() {
-    const {
-      endpoint,
-      validator
-    } = this;
-
-    this.checkStart();
-
-    validator.validateConnection(endpoint).then(connectionResult => {
-
-      this.checkCompleted(endpoint, {
-        connectionResult
-      });
-
-    }).catch(error => {
-      console.error('connection check failed', error);
-    });
-  }
-
-  getCheckDelay(endpoint, lastCheck) {
-
-    if (!lastCheck) {
-      return 1000;
-    }
-
-    const {
-      endpoint: lastEndpoint
-    } = lastCheck;
-
-    const endpointChanged = !shallowEquals(endpoint, lastEndpoint);
-
-    if (endpointChanged) {
-      return 1000;
-    }
-
-    return 5000;
-  }
-}
-
 // helpers /////////////////
-
-function hasKeys(obj) {
-  return obj && Object.keys(obj).length > 0;
-}
-
-function hash(el) {
-  return JSON.stringify(el);
-}
-
-function shallowEquals(a, b) {
-  return hash(a) === hash(b);
-}
 
 function validCloudUrl(url) {
   return /^(https:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url);
