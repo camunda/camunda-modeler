@@ -6,13 +6,22 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `DEPS`: update to `bpmn-js-properties-panel@5.33.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.34.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.26.3`
+* `DEPS`: update to `@camunda/linting@3.36.0`
 
 ### General
 
 * `FEAT`: trim trailing whitespaces from all input fields except expressions ([#4818](https://github.com/camunda/camunda-modeler/issues/4818), [#2385](https://github.com/camunda/camunda-modeler/issues/2385), [bpmn-io/properties-panel#309](https://github.com/bpmn-io/properties-panel/issues/309))
 
+### BPMN
+
+* `FEAT`: add ad-hoc subprocess completion support ([#4850](https://github.com/camunda/camunda-modeler/issues/4850)) 
+* `FIX`: make `link-event` rule check only BPMN compliance ([#4870](https://github.com/camunda/camunda-modeler/issues/4870))
+* `FIX`: do not require start and end events in ad-hoc subprocess ([bpmn-io/bpmnlint#176](https://github.com/bpmn-io/bpmnlint/pull/176))
+* `FIX`: allow escalation boundary event to be attached to ad-hoc sub-process ([#4859](https://github.com/camunda/camunda-modeler/issues/4859))
+* `FIX`: clarify wording for input/output groups ([#4889](https://github.com/camunda/camunda-modeler/issues/4889))
+  
 ## 5.33.1
 
 ### General
