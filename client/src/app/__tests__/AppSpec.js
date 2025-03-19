@@ -26,6 +26,7 @@ import Panel from '../panel/Panel';
 import Flags, { DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
 
 import {
+  Actions,
   Backend,
   Cache,
   Config,
@@ -3782,6 +3783,7 @@ function createApp(options = {}, mountFn = shallow) {
   const cache = options.cache || new Cache();
 
   const defaultGlobals = {
+    actions: new Actions(),
     backend: new Backend(),
     config: new Config(),
     dialog: new Dialog(),
