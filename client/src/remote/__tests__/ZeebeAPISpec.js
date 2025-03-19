@@ -14,74 +14,101 @@ import ZeebeAPI from '../ZeebeAPI';
 
 import {
   AUTH_TYPES,
-  ENDPOINT_TYPES
+  TARGET_TYPES
 } from '../ZeebeAPI';
 
 
 describe('<ZeebeAPI>', function() {
 
-  let backend,
-      sendSpy;
-
-  beforeEach(function() {
-    sendSpy = sinon.spy();
-
-    backend = new BackendMock({
-      sendSpy
-    });
-  });
-
   describe('#checkConnection', function() {
 
-    it('should check on self hosted', function() {
+    it('should check connection (self-managed, no auth)', function() {
 
       // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const contactPoint = 'contactPoint';
-
       const endpoint = {
-        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        targetType: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        contactPoint
+        contactPoint: 'http://localhost:26500'
       };
 
       // when
       zeebeAPI.checkConnection(endpoint);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:checkConnection', {
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
+          type: TARGET_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: contactPoint
+          url: endpoint.contactPoint
         }
       });
     });
 
 
-    it('should check on basic auth', function() {
+    it('should check connection (self-managed, no auth, add protocol)', function() {
 
       // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const contactPoint = 'contactPoint';
-
       const endpoint = {
-        targetType: ENDPOINT_TYPES.SELF_HOSTED,
-        authType: AUTH_TYPES.BASIC,
-        basicAuthUsername: 'username',
-        basicAuthPassword: 'password',
-        contactPoint
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'localhost:26500'
       };
 
       // when
       zeebeAPI.checkConnection(endpoint);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:checkConnection', {
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: `http://${ endpoint.contactPoint }`
+        }
+      });
+    });
+
+
+    it('should check connection (self-managed, basic auth)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const contactPoint = 'http://localhost:26500';
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.BASIC,
+        contactPoint,
+        basicAuthUsername: 'username',
+        basicAuthPassword: 'password'
+      };
+
+      // when
+      zeebeAPI.checkConnection(endpoint);
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.BASIC,
           url: contactPoint,
           basicAuthUsername: 'username',
@@ -91,78 +118,112 @@ describe('<ZeebeAPI>', function() {
     });
 
 
-    it('should check on oauth', function() {
+    it('should check connection (self-managed, oauth)', function() {
 
       // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const targetType = ENDPOINT_TYPES.SELF_HOSTED;
-      const authType = AUTH_TYPES.OAUTH;
-      const contactPoint = 'contactPoint';
-      const oauthURL = 'oauthURL';
-      const audience = 'audience';
-      const scope = 'scope';
-      const clientId = 'oauthClientId';
-      const clientSecret = 'oauthClientSecret';
       const endpoint = {
-        targetType,
-        authType,
-        contactPoint,
-        oauthURL,
-        audience,
-        scope,
-        clientId,
-        clientSecret
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OAUTH,
+        contactPoint: 'http://localhost:26500',
+        oauthURL: 'foo.com',
+        audience: 'bar.com',
+        scope: 'baz',
+        clientId: 'foo',
+        clientSecret: 'bar'
       };
 
       // when
       zeebeAPI.checkConnection(endpoint);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:checkConnection', {
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
+          type: TARGET_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.OAUTH,
-          url: contactPoint,
-          oauthURL,
-          audience,
-          scope,
-          clientId,
-          clientSecret
+          url: endpoint.contactPoint,
+          oauthURL: endpoint.oauthURL,
+          audience: endpoint.audience,
+          scope: endpoint.scope,
+          clientId: endpoint.clientId,
+          clientSecret: endpoint.clientSecret
         }
       });
     });
 
 
-    it('should check on camunda cloud', function() {
+    it('should check connection (self-managed, oauth, remove scope)', function() {
 
       // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const targetType = ENDPOINT_TYPES.CAMUNDA_CLOUD;
-      const camundaCloudClientId = 'camundaCloudClientId';
-      const camundaCloudClientSecret = 'camundaCloudClientSecret';
-      const camundaCloudClusterUrl = 'camundaCloudClusterUrl';
       const endpoint = {
-        targetType,
-        camundaCloudClientId,
-        camundaCloudClientSecret,
-        camundaCloudClusterUrl
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OAUTH,
+        contactPoint: 'http://localhost:26500',
+        oauthURL: 'foo.com',
+        audience: 'bar.com',
+        scope: '',
+        clientId: 'foo',
+        clientSecret: 'bar'
       };
 
       // when
       zeebeAPI.checkConnection(endpoint);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:checkConnection', {
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
         endpoint: {
-          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-          clientId: camundaCloudClientId,
-          clientSecret: camundaCloudClientSecret,
-          url: camundaCloudClusterUrl
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.OAUTH,
+          url: endpoint.contactPoint,
+          oauthURL: endpoint.oauthURL,
+          audience: endpoint.audience,
+          scope: undefined,
+          clientId: endpoint.clientId,
+          clientSecret: endpoint.clientSecret
         }
       });
+    });
 
+
+    it('should check connection (SaaS)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClientId: 'foo',
+        camundaCloudClientSecret: 'bar',
+        camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443'
+      };
+
+      // when
+      zeebeAPI.checkConnection(endpoint);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
+        endpoint: {
+          type: TARGET_TYPES.CAMUNDA_CLOUD,
+          url: endpoint.camundaCloudClusterUrl,
+          clientId: endpoint.camundaCloudClientId,
+          clientSecret: endpoint.camundaCloudClientSecret
+        }
+      });
     });
 
   });
@@ -170,37 +231,242 @@ describe('<ZeebeAPI>', function() {
 
   describe('#run', function() {
 
-    it('should execute', function() {
+    it('should start instance (self-managed, no auth)', function() {
 
       // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const contactPoint = 'contactPoint';
-
-      const processId = 'processId';
+      const processId = 'Process_1';
 
       const endpoint = {
-        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        targetType: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        contactPoint
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const variables = {
+        foo: 'bar'
       };
 
       // when
       zeebeAPI.run({
         processId,
-        endpoint
+        endpoint,
+        variables
       });
 
       // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:run', {
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:run', {
         processId,
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: contactPoint
-        }
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: endpoint.contactPoint
+        },
+        tenantId: undefined,
+        variables
+      });
+    });
+
+
+    it('should start instance (self-managed, no auth, add protocol)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
       });
 
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const processId = 'Process_1';
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'localhost:26500'
+      };
+
+      const variables = {
+        foo: 'bar'
+      };
+
+      // when
+      zeebeAPI.run({
+        processId,
+        endpoint,
+        variables
+      });
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:run', {
+        processId,
+        endpoint: {
+          authType: AUTH_TYPES.NONE,
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: `http://${ endpoint.contactPoint }`
+        },
+        tenantId: undefined,
+        variables
+      });
+    });
+
+
+    it('should start instance (self-managed, basic auth)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const processId = 'Process_1';
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.BASIC,
+        contactPoint: 'http://localhost:26500',
+        basicAuthUsername: 'username',
+        basicAuthPassword: 'password'
+      };
+
+      const variables = {
+        foo: 'bar'
+      };
+
+      // when
+      zeebeAPI.run({
+        processId,
+        endpoint,
+        variables
+      });
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:run', {
+        processId,
+        endpoint: {
+          authType: AUTH_TYPES.BASIC,
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: endpoint.contactPoint,
+          basicAuthUsername: endpoint.basicAuthUsername,
+          basicAuthPassword: endpoint.basicAuthPassword
+        },
+        tenantId: undefined,
+        variables
+      });
+    });
+
+
+    it('should start instance (self-managed, oauth)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const processId = 'Process_1';
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OAUTH,
+        contactPoint: 'http://localhost:26500',
+        oauthURL: 'foo.com',
+        audience: 'bar.com',
+        scope: 'baz',
+        clientId: 'foo',
+        clientSecret: 'bar'
+      };
+
+      const variables = {
+        foo: 'bar'
+      };
+
+      // when
+      zeebeAPI.run({
+        processId,
+        endpoint,
+        variables
+      });
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:run', {
+        processId,
+        endpoint: {
+          authType: AUTH_TYPES.OAUTH,
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: endpoint.contactPoint,
+          oauthURL: endpoint.oauthURL,
+          audience: endpoint.audience,
+          scope: endpoint.scope,
+          clientId: endpoint.clientId,
+          clientSecret: endpoint.clientSecret
+        },
+        tenantId: undefined,
+        variables
+      });
+    });
+
+
+    it('should start instance (self-managed, oauth, remove scope)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const processId = 'Process_1';
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OAUTH,
+        contactPoint: 'http://localhost:26500',
+        oauthURL: 'foo.com',
+        audience: 'bar.com',
+        scope: '',
+        clientId: 'foo',
+        clientSecret: 'bar'
+      };
+
+      const variables = {
+        foo: 'bar'
+      };
+
+      // when
+      zeebeAPI.run({
+        processId,
+        endpoint,
+        variables
+      });
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:run', {
+        processId,
+        endpoint: {
+          authType: AUTH_TYPES.OAUTH,
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: endpoint.contactPoint,
+          oauthURL: endpoint.oauthURL,
+          audience: endpoint.audience,
+          scope: undefined,
+          clientId: endpoint.clientId,
+          clientSecret: endpoint.clientSecret
+        },
+        tenantId: undefined,
+        variables
+      });
     });
 
   });
@@ -208,134 +474,237 @@ describe('<ZeebeAPI>', function() {
 
   describe('#deploy', function() {
 
-    it('should deploy without auth', function() {
+    it('should deploy (self-managed, no auth)', function() {
 
       // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const contactPoint = 'contactPoint';
-
-      const filePath = 'filePath';
-
-      const name = 'deployment';
-
       const endpoint = {
-        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        targetType: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        contactPoint
+        contactPoint: 'http://localhost:26500'
       };
 
-      // when
-      zeebeAPI.deploy({
-        filePath,
-        name,
-        endpoint
-      });
-
-      // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:deploy', {
-        filePath,
-        name,
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          authType: AUTH_TYPES.NONE,
-          url: contactPoint
+      const resourceConfigs = [
+        {
+          path: '/path/to/file.bpmn',
+          type: 'bpmn'
         }
-      });
-
-    });
-
-
-    it('should deploy with basic auth', function() {
-
-      // given
-      const zeebeAPI = new ZeebeAPI(backend);
-
-      const contactPoint = 'contactPoint';
-
-      const filePath = 'filePath';
-
-      const name = 'deployment';
-
-      const endpoint = {
-        targetType: ENDPOINT_TYPES.SELF_HOSTED,
-        authType: AUTH_TYPES.BASIC,
-        basicAuthUsername: 'username',
-        basicAuthPassword: 'password',
-        contactPoint
-      };
+      ];
 
       // when
       zeebeAPI.deploy({
-        filePath,
-        name,
-        endpoint
-      });
-
-      // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:deploy', {
-        filePath,
-        name,
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          authType: AUTH_TYPES.BASIC,
-          url: contactPoint,
-          basicAuthUsername: 'username',
-          basicAuthPassword: 'password'
-        }
-      });
-    });
-
-
-    it('should deploy with OAuth', function() {
-
-      // given
-      const zeebeAPI = new ZeebeAPI(backend);
-
-      const contactPoint = 'contactPoint';
-
-      const filePath = 'filePath';
-
-      const name = 'deployment';
-
-      const tenantId = 'tenant-1';
-
-      const endpoint = {
-        targetType: ENDPOINT_TYPES.SELF_HOSTED,
-        authType: AUTH_TYPES.OAUTH,
-        contactPoint,
-        oauthURL: 'oauthURL',
-        audience: 'audience',
-        scope: 'scope',
-        clientId: 'oauthClientId',
-        clientSecret: 'oauthClientSecret'
-      };
-
-      // when
-      zeebeAPI.deploy({
-        filePath,
-        name,
         endpoint,
-        tenantId
+        resourceConfigs
       });
 
       // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:deploy', {
-        filePath,
-        name,
-        tenantId,
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:deploy', {
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          authType: AUTH_TYPES.OAUTH,
-          url: contactPoint,
-          oauthURL: 'oauthURL',
-          audience: 'audience',
-          scope: 'scope',
-          clientId: 'oauthClientId',
-          clientSecret: 'oauthClientSecret'
-        }
+          authType: AUTH_TYPES.NONE,
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: endpoint.contactPoint
+        },
+        resourceConfigs,
+        tenantId: undefined
+      });
+    });
+
+
+    it('should deploy (self-managed, no auth, add protocol)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
       });
 
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'localhost:26500'
+      };
+
+      const resourceConfigs = [
+        {
+          path: '/path/to/file.bpmn',
+          type: 'bpmn'
+        }
+      ];
+
+      // when
+      zeebeAPI.deploy({
+        endpoint,
+        resourceConfigs
+      });
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:deploy', {
+        endpoint: {
+          authType: AUTH_TYPES.NONE,
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: `http://${ endpoint.contactPoint }`
+        },
+        resourceConfigs,
+        tenantId: undefined
+      });
+    });
+
+
+    it('should deploy (self-managed, basic auth)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.BASIC,
+        contactPoint: 'http://localhost:26500',
+        basicAuthUsername: 'username',
+        basicAuthPassword: 'password'
+      };
+
+      const resourceConfigs = [
+        {
+          path: '/path/to/file.bpmn',
+          type: 'bpmn'
+        }
+      ];
+
+      // when
+      zeebeAPI.deploy({
+        endpoint,
+        resourceConfigs
+      });
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:deploy', {
+        endpoint: {
+          authType: AUTH_TYPES.BASIC,
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: endpoint.contactPoint,
+          basicAuthUsername: endpoint.basicAuthUsername,
+          basicAuthPassword: endpoint.basicAuthPassword
+        },
+        resourceConfigs,
+        tenantId: undefined
+      });
+    });
+
+
+    it('should start instance (self-managed, oauth)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OAUTH,
+        contactPoint: 'http://localhost:26500',
+        oauthURL: 'foo.com',
+        audience: 'bar.com',
+        scope: 'baz',
+        clientId: 'foo',
+        clientSecret: 'bar'
+      };
+
+      const resourceConfigs = [
+        {
+          path: '/path/to/file.bpmn',
+          type: 'bpmn'
+        }
+      ];
+
+      // when
+      zeebeAPI.deploy({
+        endpoint,
+        resourceConfigs
+      });
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:deploy', {
+        endpoint: {
+          authType: AUTH_TYPES.OAUTH,
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: endpoint.contactPoint,
+          oauthURL: endpoint.oauthURL,
+          audience: endpoint.audience,
+          scope: endpoint.scope,
+          clientId: endpoint.clientId,
+          clientSecret: endpoint.clientSecret
+        },
+        resourceConfigs,
+        tenantId: undefined
+      });
+    });
+
+
+    it('should start instance (self-managed, oauth, remove scope)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OAUTH,
+        contactPoint: 'http://localhost:26500',
+        oauthURL: 'foo.com',
+        audience: 'bar.com',
+        scope: '',
+        clientId: 'foo',
+        clientSecret: 'bar'
+      };
+
+      const resourceConfigs = [
+        {
+          path: '/path/to/file.bpmn',
+          type: 'bpmn'
+        }
+      ];
+
+      // when
+      zeebeAPI.deploy({
+        endpoint,
+        resourceConfigs
+      });
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:deploy', {
+        endpoint: {
+          authType: AUTH_TYPES.OAUTH,
+          type: TARGET_TYPES.SELF_HOSTED,
+          url: endpoint.contactPoint,
+          oauthURL: endpoint.oauthURL,
+          audience: endpoint.audience,
+          scope: undefined,
+          clientId: endpoint.clientId,
+          clientSecret: endpoint.clientSecret
+        },
+        resourceConfigs,
+        tenantId: undefined
+      });
     });
 
   });
@@ -343,28 +712,30 @@ describe('<ZeebeAPI>', function() {
 
   describe('#getGatewayVersion', function() {
 
-    it('should execute', function() {
+    it('should get gateway version', function() {
 
       // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const contactPoint = 'contactPoint';
-
       const endpoint = {
-        targetType: ENDPOINT_TYPES.SELF_HOSTED,
+        targetType: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        contactPoint
+        contactPoint: 'http://localhost:26500'
       };
 
       // when
       zeebeAPI.getGatewayVersion(endpoint);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('zeebe:getGatewayVersion', {
+      expect(backend.send).to.have.been.calledWith('zeebe:getGatewayVersion', {
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
+          type: TARGET_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: contactPoint
+          url: endpoint.contactPoint
         }
       });
 
@@ -374,17 +745,14 @@ describe('<ZeebeAPI>', function() {
 
 });
 
-
-// helpers ////////////////
-
-class BackendMock {
-
-  constructor(options) {
-    this._sendSpy = options.sendSpy;
+class Mock {
+  constructor(overrides = {}) {
+    Object.assign(this, overrides);
   }
+}
 
-  send(event, options) {
-    this._sendSpy && this._sendSpy(event, options);
+class MockBackend extends Mock {
+  send() {
+    return Promise.resolve();
   }
-
 }
