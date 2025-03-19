@@ -203,7 +203,7 @@ export default class StartInstancePlugin extends PureComponent {
       }
     };
 
-    this.props.broadcastMessage('getDeployConfig', body);
+    this.props.triggerAction('deploymentPlugin.getDeployConfig', body);
 
     return deferred.promise;
   }
@@ -219,7 +219,7 @@ export default class StartInstancePlugin extends PureComponent {
       deploymentConfig
     };
 
-    this.props.broadcastMessage('deployWithConfig', body);
+    this.props.triggerAction('deploymentPlugin.deployWithConfig', body);
 
     return deferred.promise;
   }
@@ -299,7 +299,7 @@ export default class StartInstancePlugin extends PureComponent {
     } else if (!overlayState && activeButton) {
 
       // (1.2) close deploy overlay
-      this.props.broadcastMessage('cancel');
+      this.props.triggerAction('deploymentPlugin.cancel');
       return true;
     }
   }

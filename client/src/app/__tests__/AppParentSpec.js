@@ -20,6 +20,7 @@ import AppParent from '../AppParent';
 import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../../util/Flags';
 
 import {
+  Actions,
   Backend,
   Config,
   Dialog,
@@ -1025,6 +1026,7 @@ function createAppParent(options = {}, mountFn = shallow) {
   let appParent;
 
   const defaultGlobals = {
+    actions: new Actions(),
     backend: new Backend(),
     config: new Config(),
     dialog: new Dialog(),

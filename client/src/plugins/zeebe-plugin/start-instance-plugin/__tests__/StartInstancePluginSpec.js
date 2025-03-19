@@ -20,6 +20,8 @@ import StartInstancePlugin from '../StartInstancePlugin';
 import { CAMUNDA_CLOUD } from '../../shared/ZeebeTargetTypes';
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
 
+import Actions from '../../../../remote/Actions';
+
 const BUTTON_SELECTOR = '[title="Start current diagram"]';
 
 
@@ -72,39 +74,55 @@ describe('<StartInstancePlugin> (Zeebe)', function() {
 
   describe('deploy', function() {
 
-    it('should send "getDeployConfig" message', async function() {
+    it('should trigger deploymentPlugin.getDeployConfig action', async function() {
 
       // given
+      const actions = new Actions();
+
+      const getDeployConfigSpy = sinon.spy();
+
+      actions.registerAction('deploymentPlugin.getDeployConfig', getDeployConfigSpy);
+
       const runSpy = sinon.spy();
+
       const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const broadcastMessage = sinon.spy();
-      const { instance } = createStartInstancePlugin({ zeebeAPI, broadcastMessage });
+
+      const { instance } = createStartInstancePlugin({
+        triggerAction: actions.triggerAction.bind(actions),
+        zeebeAPI
+      });
 
       // when
       instance.startInstance();
 
       // then
-      expect(broadcastMessage).to.have.been.calledOnce;
-      expect(broadcastMessage).to.have.been.calledOnceWith('getDeployConfig');
-
+      expect(getDeployConfigSpy).to.have.been.calledOnce;
     });
 
 
-    it('should send "deployWithConfig" message', async function() {
+    it('should trigger deploymentPlugin.deployWithConfig action', async function() {
 
       // given
-      const runSpy = sinon.spy();
-      const zeebeAPI = new MockZeebeAPI({ runSpy });
-      const broadcastMessage = sinon.spy();
+      const actions = new Actions();
 
-      const { instance } = createStartInstancePlugin({ zeebeAPI, broadcastMessage });
+      const getDeployConfigSpy = sinon.spy();
+
+      actions.registerAction('deploymentPlugin.deployWithConfig', getDeployConfigSpy);
+
+      const runSpy = sinon.spy();
+
+      const zeebeAPI = new MockZeebeAPI({ runSpy });
+
+      const { instance } = createStartInstancePlugin({
+        triggerAction: actions.triggerAction.bind(actions),
+        zeebeAPI
+      });
 
       // when
       instance.startInstanceProcess();
 
       // then
-      expect(broadcastMessage).to.have.been.calledOnce;
-      expect(broadcastMessage).to.have.been.calledOnceWith('deployWithConfig');
+      expect(getDeployConfigSpy).to.have.been.calledOnce;
     });
   });
 
@@ -486,12 +504,14 @@ function createStartInstancePlugin({
     ...props.config
   });
 
-  const broadcastMessage = (key, body) => {
-    if (key === 'deploy') {
-      body.done({ deploymentResult, endpoint: deploymentEndpoint });
+  const triggerAction = (action, ...args) => {
+    if (action === 'save') {
+      return activeTab;
     }
 
-    if (key === 'getDeployConfig') {
+    if (action === 'deploymentPlugin.getDeployConfig') {
+      const body = args[0];
+
       body.done({
         config: {
           deployment,
@@ -501,7 +521,9 @@ function createStartInstancePlugin({
       });
     }
 
-    if (key === 'deployWithConfig') {
+    if (action === 'deploymentPlugin.deployWithConfig') {
+      const body = args[0];
+
       body.done({ deploymentResult, endpoint: deploymentEndpoint });
     }
   };
@@ -512,10 +534,9 @@ function createStartInstancePlugin({
       _getGlobal={ key => key === 'zeebeAPI' && zeebeAPI }
       displayNotification={ noop }
       log={ noop }
-      triggerAction={ key => key === 'save' && activeTab }
-      subscribeToMessaging={ noop }
-      unsubscribeFromMessaging={ noop }
-      broadcastMessage={ broadcastMessage }
+      deregisterAction={ noop }
+      registerAction={ noop }
+      triggerAction={ triggerAction }
       { ...props }
       config={ config }
     />
