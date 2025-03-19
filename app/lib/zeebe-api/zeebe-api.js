@@ -179,7 +179,6 @@ class ZeebeAPI {
     let {
       endpoint,
       resourceConfigs,
-      name,
       tenantId
     } = parameters;
 
@@ -192,7 +191,7 @@ class ZeebeAPI {
     try {
 
       /** @type {Array<Resource>} */
-      const resources = this._getResources(resourceConfigs, name, tenantId);
+      const resources = this._getResources(resourceConfigs, tenantId);
 
       let response;
 
@@ -510,25 +509,24 @@ class ZeebeAPI {
   }
 
   /**
-   * Get resources based on the provided configs, name, and tenantId.
+   * Get resources based on the provided configs and tenantId.
    *
    * @param {resourceConfigs: Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }} files
-   * @param {string} [name]
    * @param {string} [tenantId]
    *
    * @returns {Array<Resource>}
    */
-  _getResources(resourceConfigs, name, tenantId) {
+  _getResources(resourceConfigs, tenantId) {
     return resourceConfigs.map(resourceConfig => {
       const { contents } = this._fs.readFile(resourceConfig.path, { encoding: false });
 
-      const resource = {};
+      const extension = `.${ resourceConfig.type }`;
 
-      if (resourceConfigs.length === 1 && name && name.length) {
-        resource.name = this._fixResourceName(name, resourceConfigs[0].type);
-      } else {
-        resource.name = this._getResourceNameFromFile(resourceConfig);
-      }
+      const name = `${ path.basename(resourceConfig.path, path.extname(resourceConfig.path)) }${ extension }`;
+
+      const resource = {
+        name
+      };
 
       if (resourceConfig.type === RESOURCE_TYPES.BPMN) {
         resource.process = contents;
@@ -549,37 +547,6 @@ class ZeebeAPI {
 
       return resource;
     });
-  }
-
-  /**
-   * Make sure the resource name ends with a file extension.
-   *
-   * @param {string} name
-   * @param {'bpmn'|'dmn'|'form'} type
-   *
-   * @returns {string}
-   */
-  _fixResourceName(name, type) {
-    if (!name.endsWith(`.${ type }`)) {
-      return `${ name }.${ type }`;
-    }
-
-    return name;
-  }
-
-  /**
-   * @param { {
-   *   path: string,
-   *   contents: string,
-   *   type: 'bpmn'|'dmn'|'form'
-   * } } file
-   *
-   * @returns {string}
-   */
-  _getResourceNameFromFile(file) {
-    const extension = `.${ file.type }`;
-
-    return `${ path.basename(file.path, path.extname(file.path)) }${ extension }`;
   }
 }
 

@@ -8,100 +8,123 @@
  * except in compliance with the MIT License.
  */
 
+/**
+ * @typedef {import('../plugins/zeebe-plugin/deployment-plugin/types').Endpoint} Endpoint
+ */
+
 export const AUTH_TYPES = {
   NONE: 'none',
   BASIC: 'basic',
   OAUTH: 'oauth'
 };
 
-export const ENDPOINT_TYPES = {
-  SELF_HOSTED: 'selfHosted',
-  CAMUNDA_CLOUD: 'camundaCloud'
+export const TARGET_TYPES = {
+  CAMUNDA_CLOUD: 'camundaCloud',
+  SELF_HOSTED: 'selfHosted'
 };
 
 /**
- * ZeebeAPI for deployment/run instance.
+ * Frontend API for Zeebe.
  */
 export default class ZeebeAPI {
-
   constructor(backend) {
-    this.backend = backend;
+    this._backend = backend;
   }
 
   checkConnection(endpoint) {
-    const configuration = getEndpointConfiguration(endpoint);
+    endpoint = getEndpointForTargetType(endpoint);
 
-    return this.backend.send('zeebe:checkConnection', { endpoint: configuration });
+    return this._backend.send('zeebe:checkConnection', {
+      endpoint
+    });
   }
 
   deploy(options) {
-    const {
-      endpoint
+    let {
+      endpoint,
+      resourceConfigs,
+      tenantId
     } = options;
 
-    const configuration = getEndpointConfiguration(endpoint);
+    endpoint = getEndpointForTargetType(endpoint);
 
-    return this.backend.send('zeebe:deploy', {
-      ...options,
-      endpoint: configuration
+    return this._backend.send('zeebe:deploy', {
+      endpoint,
+      resourceConfigs,
+      tenantId: getTenantId(tenantId, endpoint)
     });
   }
 
   run(options) {
-    const {
-      endpoint
+    let {
+      endpoint,
+      processId,
+      tenantId,
+      variables
     } = options;
 
-    const configuration = getEndpointConfiguration(endpoint);
+    endpoint = getEndpointForTargetType(endpoint);
 
-    return this.backend.send('zeebe:run', {
-      ...options,
-      endpoint: configuration
+    return this._backend.send('zeebe:run', {
+      endpoint,
+      processId,
+      tenantId: getTenantId(tenantId, endpoint),
+      variables
     });
   }
 
   getGatewayVersion(endpoint) {
-    const configuration = getEndpointConfiguration(endpoint);
+    endpoint = getEndpointForTargetType(endpoint);
 
-    return this.backend.send('zeebe:getGatewayVersion', { endpoint: configuration });
+    return this._backend.send('zeebe:getGatewayVersion', {
+      endpoint
+    });
   }
-
 }
 
-
-// helpers //////////////////
-
-function getEndpointConfiguration(endpoint) {
-
-  const {
-    authType,
+/**
+ * Get endpoint for target type.
+ *
+ * @param {Endpoint} endpoint
+ */
+export function getEndpointForTargetType(endpoint) {
+  let {
     audience,
-    scope,
-    targetType,
-    clientId,
-    clientSecret,
-    basicAuthUsername,
+    authType,
     basicAuthPassword,
-    oauthURL,
-    contactPoint,
+    basicAuthUsername,
     camundaCloudClientId,
     camundaCloudClientSecret,
-    camundaCloudClusterUrl
+    camundaCloudClusterUrl,
+    clientId,
+    clientSecret,
+    contactPoint,
+    oauthURL,
+    scope,
+    targetType
   } = endpoint;
 
-  if (targetType === ENDPOINT_TYPES.SELF_HOSTED) {
+  if (targetType === TARGET_TYPES.SELF_HOSTED && !isHttpOrHttps(contactPoint)) {
+    contactPoint = `http://${ contactPoint }`;
+  }
+
+  if (!scope || !scope.length) {
+    scope = undefined;
+  }
+
+  if (targetType === TARGET_TYPES.SELF_HOSTED) {
     switch (authType) {
 
     case AUTH_TYPES.NONE:
       return {
-        type: ENDPOINT_TYPES.SELF_HOSTED,
+        type: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
         url: contactPoint
       };
 
     case AUTH_TYPES.BASIC:
       return {
-        type: ENDPOINT_TYPES.SELF_HOSTED,
+        type: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.BASIC,
         url: contactPoint,
         basicAuthUsername,
@@ -110,7 +133,7 @@ function getEndpointConfiguration(endpoint) {
 
     case AUTH_TYPES.OAUTH:
       return {
-        type: ENDPOINT_TYPES.SELF_HOSTED,
+        type: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.OAUTH,
         url: contactPoint,
         oauthURL,
@@ -122,13 +145,50 @@ function getEndpointConfiguration(endpoint) {
     }
   }
 
-  if (targetType === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
+  if (targetType === TARGET_TYPES.CAMUNDA_CLOUD) {
     return {
-      type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-      clientId: camundaCloudClientId,
-      clientSecret: camundaCloudClientSecret,
+      type: TARGET_TYPES.CAMUNDA_CLOUD,
       url: camundaCloudClusterUrl,
+      clientId: camundaCloudClientId,
+      clientSecret: camundaCloudClientSecret
     };
   }
 
+}
+
+function getTenantId(tenantId, endpoint) {
+  if (endpoint.authType !== AUTH_TYPES.OAUTH) {
+    return undefined;
+  }
+
+  return tenantId;
+}
+
+/**
+ * Check if the URL is HTTP or HTTPS.
+ *
+ * @example
+ *
+ * ```javascript
+ * let isHttpOrHttps = isHttpOrHttps('http://foo.com');
+ * console.log(isHttpOrHttps); // true
+ *
+ * isHttpOrHttps = isHttpOrHttps('https://foo.com');
+ * console.log(isHttpOrHttps); // true
+ *
+ * isHttpOrHttps = isHttpOrHttps('ftp://foo.com');
+ * console.log(isHttpOrHttps); // false
+ * ```
+ *
+ * @param {string} url
+ *
+ * @returns {boolean}
+ */
+function isHttpOrHttps(url) {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+  } catch (error) {
+    return false;
+  }
 }
