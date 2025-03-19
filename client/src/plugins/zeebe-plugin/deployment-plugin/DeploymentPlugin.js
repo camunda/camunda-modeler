@@ -97,11 +97,29 @@ export default class DeploymentPlugin extends PureComponent {
       });
     });
 
-    this.props.subscribeToMessaging('deploymentPlugin', this.onMessageReceived);
+    this.props.registerAction('deploymentPlugin.getDeployConfig', (body) => {
+      this.getDeployConfig(this.state.activeTab, body);
+    });
+
+    this.props.registerAction('deploymentPlugin.deployWithConfig', (body) => {
+      const { deploymentConfig } = body;
+
+      this.deployWithConfig(body, deploymentConfig);
+    });
+
+    this.props.registerAction('deploymentPlugin.cancel', () => {
+      const { overlayState } = this.state;
+
+      if (overlayState) {
+        this.state.overlayState.onClose(null);
+      }
+    });
   }
 
   componentWillUnmount() {
-    this.props.unsubscribeFromMessaging('deploymentPlugin');
+    this.props.deregisterAction('deploymentPlugin.getDeployConfig');
+    this.props.deregisterAction('deploymentPlugin.deployWithConfig');
+    this.props.deregisterAction('deploymentPlugin.cancel');
   }
 
   async deploy(options = {}) {
@@ -134,7 +152,6 @@ export default class DeploymentPlugin extends PureComponent {
 
     return done && done(result);
   }
-
 
   async getDeployConfig(tab, options) {
 
@@ -315,26 +332,6 @@ export default class DeploymentPlugin extends PureComponent {
 
     return p.promise;
   }
-
-  onMessageReceived = async (msg, body) => {
-
-    if (msg === 'deployWithConfig') {
-      const { deploymentConfig } = body;
-      this.deployWithConfig(body, deploymentConfig);
-    }
-
-    if (msg === 'getDeployConfig') {
-      this.getDeployConfig(this.state.activeTab, body);
-    }
-
-    if (msg === 'cancel') {
-      const { overlayState } = this.state;
-
-      if (overlayState) {
-        this.state.overlayState.onClose(null);
-      }
-    }
-  };
 
   async saveConfig(tab, config) {
     const {

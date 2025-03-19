@@ -21,6 +21,8 @@ import { CAMUNDA_CLOUD, SELF_HOSTED } from '../../shared/ZeebeTargetTypes';
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
 import { AUTH_TYPES } from '../../shared/ZeebeAuthTypes';
 
+import Actions from '../../../../remote/Actions';
+
 const DEPLOYMENT_CONFIG_KEY = 'zeebe-deployment-tool';
 const ZEEBE_ENDPOINTS_CONFIG_KEY = 'zeebeEndpoints';
 
@@ -774,181 +776,215 @@ describe('<DeploymentPlugin> (Zeebe)', function() {
   });
 
 
-  it('should allow to get deploy config via message', function(done) {
-
-    const body = {
-      isStart: true,
-      skipNotificationOnSuccess: true,
-      done: doneCallback,
-      notifyResult: true
-    };
+  it('should register deploymentPlugin.getConfig action', function(done) {
 
     // given
-    const subscribeToMessaging = (_, callback) => {
-      callback('getDeployConfig', body);
-    };
+    const actions = new Actions();
 
-    // when
-    createDeploymentPlugin({ subscribeToMessaging });
+    actions.registerAction('save', () => Promise.resolve(createTab()));
 
-    // then
-    function doneCallback() {
+    const doneSpy = sinon.spy((result) => {
+
+      // then
+      expect(result).to.have.property('config');
+      expect(result).to.have.property('savedTab');
+
       done();
-    }
+    });
+
+    const body = {
+      done: doneSpy,
+      isStart: true,
+      notifyResult: true,
+      skipNotificationOnSuccess: true
+    };
+
+    createDeploymentPlugin({
+      registerAction: actions.registerAction.bind(actions),
+      triggerAction: actions.triggerAction.bind(actions)
+    });
+
+    // when
+    actions.triggerAction('deploymentPlugin.getDeployConfig', body);
   });
 
 
-  it('should allow to deploy with config via message', function(done) {
-
-    const body = {
-      done: doneCallback,
-      deploymentConfig: {
-        config: { deployment:{ name:'foo' } , endpoint:{} },
-        savedTab: { id: 1, name: 'foo.bar', type: 'bar', title: 'unsaved', file: {} }
-      }
-    };
+  it('should register deploymentPlugin.deployWithConfig action', function(done) {
 
     // given
-    const subscribeToMessaging = (_, callback) => {
-      callback('deployWithConfig', body);
-    };
+    const actions = new Actions();
 
-    // when
-    createDeploymentPlugin({ subscribeToMessaging });
+    const tab = createTab();
 
-    // then
-    function doneCallback() {
+    actions.registerAction('save', () => Promise.resolve(tab));
+
+    const doneSpy = sinon.spy(() => {
+
       done();
-    }
-  });
-
-
-  it('should pass null if tab was not saved', function(done) {
+    });
 
     const body = {
-      isStart: true,
-      skipNotificationOnSuccess: true,
-      done: doneCallback,
-      notifyResult: true
-    };
-
-    // given
-    const subscribeToMessaging = (_, callback) => {
-      callback('getDeployConfig', body);
-    };
-
-    // when
-    createDeploymentPlugin({ subscribeToMessaging, triggerAction: noop });
-
-    // then
-    function doneCallback(result) {
-      let error;
-
-      try {
-        expect(result).to.be.null;
-      } catch (err) {
-        error = err;
-      } finally {
-        done(error);
-      }
-    }
-  });
-
-
-  it('should pass null if config was not provided', function(done) {
-
-    const body = {
-      isStart: true,
-      skipNotificationOnSuccess: true,
-      done: doneCallback,
-      notifyResult: true
-    };
-
-    // given
-    const subscribeToMessaging = (_, callback) => {
-      callback('getDeployConfig', body);
-    };
-
-    // when
-    createDeploymentPlugin({ subscribeToMessaging, userAction: 'cancel' });
-
-    // then
-    function doneCallback(result) {
-      let error;
-
-      try {
-        expect(result).to.be.null;
-      } catch (err) {
-        error = err;
-      } finally {
-        done(error);
-      }
-    }
-  });
-
-
-  it('should pass both the deployment result and endpoint config', function(done) {
-
-    // given
-    const deploySpy = sinon.spy();
-    const deploymentResult = { success: true, response: {} };
-    const zeebeAPI = new MockZeebeAPI({ deploySpy, deploymentResult });
-
-    const body = {
-      done: doneCallback,
+      done: doneSpy,
       deploymentConfig: {
-        config: { deployment:{ name:'foo' } , endpoint:{} },
-        savedTab: { id: 1, name: 'foo.bar', type: 'bar', title: 'unsaved', file: {} }
+        config: {
+          deployment: {
+            name:'foo'
+          },
+          endpoint: {}
+        },
+        savedTab: tab
       }
     };
 
-    const subscribeToMessaging = (_, callback) => {
-      callback('deployWithConfig', body);
-    };
+    // given
+    createDeploymentPlugin({
+      registerAction: actions.registerAction.bind(actions),
+      triggerAction: actions.triggerAction.bind(actions)
+    });
 
     // when
-    createDeploymentPlugin({ subscribeToMessaging, zeebeAPI });
+    actions.triggerAction('deploymentPlugin.deployWithConfig', body);
+  });
 
-    // then
-    function doneCallback(result) {
-      let error;
 
-      try {
-        expect(result).to.eql({
-          deploymentResult,
-          endpoint: deploySpy.args[0][0].endpoint
-        });
-      } catch (err) {
-        error = err;
-      } finally {
-        done(error);
+  it('should call done with null if tab not saved', function(done) {
+
+    // given
+    const actions = new Actions();
+
+    actions.registerAction('save', () => Promise.resolve(null));
+
+    const doneSpy = sinon.spy((result) => {
+
+      // then
+      expect(result).to.be.null;
+
+      done();
+    });
+
+    const body = {
+      done: doneSpy,
+      isStart: true,
+      notifyResult: true,
+      skipNotificationOnSuccess: true
+    };
+
+    createDeploymentPlugin({
+      registerAction: actions.registerAction.bind(actions),
+      triggerAction: actions.triggerAction.bind(actions)
+    });
+
+    // when
+    actions.triggerAction('deploymentPlugin.getDeployConfig', body);
+  });
+
+
+  it('should call done with null if no config', function(done) {
+
+    // given
+    const actions = new Actions();
+
+    actions.registerAction('save', () => Promise.resolve(createTab()));
+
+    const doneSpy = sinon.spy((result) => {
+
+      // then
+      expect(result).to.be.null;
+
+      done();
+    });
+
+    const body = {
+      done: doneSpy,
+      isStart: true,
+      notifyResult: true,
+      skipNotificationOnSuccess: true
+    };
+
+    createDeploymentPlugin({
+      registerAction: actions.registerAction.bind(actions),
+      triggerAction: actions.triggerAction.bind(actions),
+      userAction: 'cancel'
+    });
+
+    // when
+    actions.triggerAction('deploymentPlugin.getDeployConfig', body);
+  });
+
+
+  it('should call done with deployment result and endpoint if deloyment successful', function(done) {
+
+    // given
+    const actions = new Actions();
+
+    const tab = createTab();
+
+    actions.registerAction('save', () => Promise.resolve(tab));
+
+    const doneSpy = sinon.spy((result) => {
+
+      // then
+      expect(result).to.have.property('deploymentResult');
+      expect(result).to.have.property('endpoint');
+
+      done();
+    });
+
+    const body = {
+      done: doneSpy,
+      deploymentConfig: {
+        config: {
+          deployment: {
+            name:'foo'
+          },
+          endpoint: {}
+        },
+        savedTab: tab
       }
-    }
+    };
+
+    // given
+    createDeploymentPlugin({
+      registerAction: actions.registerAction.bind(actions),
+      triggerAction: actions.triggerAction.bind(actions)
+    });
+
+    // when
+    actions.triggerAction('deploymentPlugin.deployWithConfig', body);
   });
 
 
-  it('should subscribe to messaging when mounted', function() {
+  it('should register actions on mount', function() {
 
     // given
-    const subscribeToMessaging = sinon.spy();
-    createDeploymentPlugin({ subscribeToMessaging });
+    const registerActionSpy = sinon.spy();
+
+    // when
+    createDeploymentPlugin({ registerAction: registerActionSpy });
 
     // then
-    expect(subscribeToMessaging).to.have.been.calledWith('deploymentPlugin');
+    expect(registerActionSpy.callCount).to.eql(3);
+    expect(registerActionSpy.getCall(0).args[0]).to.eql('deploymentPlugin.getDeployConfig');
+    expect(registerActionSpy.getCall(1).args[0]).to.eql('deploymentPlugin.deployWithConfig');
+    expect(registerActionSpy.getCall(2).args[0]).to.eql('deploymentPlugin.cancel');
   });
 
 
-  it('should unsubscribe from messaging when unmounted', function() {
+  it('should deregister actions on unmount', function() {
 
     // given
-    const unsubscribeFromMessaging = sinon.spy();
-    const { wrapper } = createDeploymentPlugin({ unsubscribeFromMessaging });
+    const deregisterActionSpy = sinon.spy();
+
+    const { wrapper } = createDeploymentPlugin({ deregisterAction: deregisterActionSpy });
 
     // when
     wrapper.unmount();
 
     // then
-    expect(unsubscribeFromMessaging).to.have.been.calledWith('deploymentPlugin');
+    expect(deregisterActionSpy.callCount).to.eql(3);
+    expect(deregisterActionSpy.getCall(0).args[0]).to.eql('deploymentPlugin.getDeployConfig');
+    expect(deregisterActionSpy.getCall(1).args[0]).to.eql('deploymentPlugin.deployWithConfig');
+    expect(deregisterActionSpy.getCall(2).args[0]).to.eql('deploymentPlugin.cancel');
   });
 
 
@@ -1488,9 +1524,8 @@ function createDeploymentPlugin({
 
   const DeploymentPlugin = (
     <TestDeploymentPlugin
-      broadcastMessage={ noop }
-      subscribeToMessaging={ noop }
-      unsubscribeFromMessaging={ noop }
+      deregisterAction={ noop }
+      registerAction={ noop }
       triggerAction={ triggerAction }
       log={ noop }
       displayNotification={ noop }
