@@ -10,6 +10,11 @@
 
 import pDefer from 'p-defer';
 
+const DELAYS = {
+  SHORT: 1000,
+  LONG: 5000
+};
+
 export default class ConnectionChecker {
 
   constructor(validator) {
@@ -154,7 +159,7 @@ export default class ConnectionChecker {
   getCheckDelay(endpoint, lastCheck) {
 
     if (!lastCheck) {
-      return 1000;
+      return DELAYS.SHORT;
     }
 
     const {
@@ -164,10 +169,10 @@ export default class ConnectionChecker {
     const endpointChanged = !shallowEquals(endpoint, lastEndpoint);
 
     if (endpointChanged) {
-      return 1000;
+      return DELAYS.SHORT;
     }
 
-    return 5000;
+    return DELAYS.LONG;
   }
 }
 
