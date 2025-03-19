@@ -13,11 +13,14 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-dmn-js@^3.2.0`
 * `DEPS`: update to `bpmn-js@18.4.0`
 * `DEPS`: update to `camunda-bpmn-js@5.7.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.15.0`
+* `DEPS`: update to `@camunda/form-linting@0.22.0`
+* `DEPS`: update to `@camunda/form-playground@0.21.0`
 
 ### BPMN
 
 * `FEAT`: render collapsed event subprocess icons ([bpmn-io/bpmn-js#50](https://github.com/bpmn-io/bpmn-js/issues/50))
-* `FEAT`: add ad-hoc subprocess completion support ([#4850](https://github.com/camunda/camunda-modeler/issues/4850)) 
+* `FEAT`: add ad-hoc subprocess completion support ([#4850](https://github.com/camunda/camunda-modeler/issues/4850))
 * `FIX`: make `link-event` rule check only BPMN compliance ([#4870](https://github.com/camunda/camunda-modeler/issues/4870))
 * `FIX`: do not require start and end events in ad-hoc subprocess ([bpmn-io/bpmnlint#176](https://github.com/bpmn-io/bpmnlint/pull/176))
 * `FIX`: allow escalation boundary event to be attached to ad-hoc sub-process ([#4859](https://github.com/camunda/camunda-modeler/issues/4859))
@@ -28,6 +31,13 @@ ___Note:__ Yet to be released changes appear here._
 ### DMN
 
 * `FEAT`: add delete action for multi element context ([#4554](https://github.com/camunda/camunda-modeler/issues/4554))
+
+### Forms
+
+- `FEAT`: update form-js@1.15.0 mapping and add 8.8 ([`camunda/form-linting#5810775`](https://github.com/camunda/form-linting/commit/5810775)))
+- `FEAT`: remove Camunda special document endpoint logic ([bpmn-io/form-js#1375](https://github.com/bpmn-io/form-js/pull/1375))
+- `FIX`: reset default value when static option is deleted ([bpmn-io/form-js#1364](https://github.com/bpmn-io/form-js/pull/1364))
+- `FIX`: fix form editor input autocomplete ([#4758](https://github.com/camunda/camunda-modeler/issues/4758))
 
 ## 5.33.1
 
