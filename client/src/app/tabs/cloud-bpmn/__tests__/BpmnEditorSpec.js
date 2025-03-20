@@ -1702,6 +1702,38 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
   });
 
 
+  describe('resources', function() {
+
+    it('should reload resources on action triggered', async function() {
+
+      // given
+      const resourceLoaderStub = sinon.stub({ reload() {} });
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              'resources.resourceLoader': resourceLoaderStub
+            }
+          })
+        }
+      });
+
+      // when
+      const { instance } = await renderEditor(diagramXML, {
+        cache
+      });
+
+      await instance.triggerAction('resources.reload');
+
+      // expect
+      expect(resourceLoaderStub.reload).to.be.calledOnce;
+    });
+  });
+
+
   describe('dirty state', function() {
 
     let instance;

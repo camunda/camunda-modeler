@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react';
 
 import ProcessApplications from './ProcessApplications';
 import ProcessApplicationsStatusBar from './ProcessApplicationsStatusBar';
+import { ResourcesProviderModule } from './ResourcesProvider';
 
 const processApplications = new ProcessApplications();
 
@@ -91,7 +92,40 @@ export default function ProcessApplicationsPlugin(props) {
         setProcessApplicationItems([]);
       }
     });
+
+    subscribe('bpmn.modeler.configure', ({ middlewares, tab }) => {
+
+      if (tab.type !== 'cloud-bpmn') {
+        return;
+      }
+
+      const processApplicationsHelper = {
+        getItems() {
+          return processApplications.getItems();
+        }
+      };
+
+      middlewares.push(config => {
+        return {
+          ...config,
+          additionalModules: [
+            ...config.additionalModules || [],
+            {
+              processApplications: [ 'value', processApplicationsHelper ]
+            },
+            ResourcesProviderModule
+          ]
+        };
+      });
+
+    });
   }, []);
+
+  useEffect(() => {
+    if (activeTab?.type === 'cloud-bpmn') {
+      triggerAction('resources.reload');
+    }
+  }, [ activeTab, processApplicationItems ]);
 
   useEffect(() => {
     const tabGroups = tabs.reduce((tabGroups, tab) => {

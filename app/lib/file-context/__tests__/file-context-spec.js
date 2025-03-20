@@ -96,7 +96,12 @@ describe('FileContext', function() {
     expect(item.metadata).to.exist;
     expect(item.metadata).eql({
       type: 'bpmn',
-      ids: [ 'FooProcess' ],
+      processes: [
+        {
+          id: 'FooProcess',
+          name: 'FooProcess'
+        }
+      ],
       linkedIds: [
         {
           type: 'bpmn',
@@ -386,7 +391,7 @@ describe('FileContext', function() {
       expect(item).to.exist;
       expect(item.metadata).to.eql({
         type: 'bpmn',
-        ids: [],
+        processes: [],
         linkedIds: []
       });
 
@@ -406,7 +411,7 @@ describe('FileContext', function() {
       expect(item).to.exist;
       expect(item.metadata).to.eql({
         type: 'dmn',
-        ids: [],
+        decisions: [],
         linkedIds: []
       });
 
@@ -426,7 +431,7 @@ describe('FileContext', function() {
       expect(item).to.exist;
       expect(item.metadata).to.eql({
         type: 'form',
-        ids: [],
+        forms: [],
         linkedIds: []
       });
 
@@ -501,8 +506,11 @@ describe('FileContext', function() {
       expect(item).to.exist;
 
       expect(item.metadata).to.eql({
-        'ids': [
-          'FooProcess'
+        'processes': [
+          {
+            'id': 'FooProcess',
+            'name': 'FooProcess'
+          }
         ],
         'linkedIds': [
           {
@@ -535,10 +543,19 @@ describe('FileContext', function() {
       expect(item).to.exist;
 
       expect(item.metadata).to.eql({
-        'ids': [
-          'BarDecision',
-          'BazDecision',
-          'FooDecision'
+        'decisions': [
+          {
+            'id': 'BarDecision',
+            'name': 'BarDecision'
+          },
+          {
+            'id': 'BazDecision',
+            'name': 'BazDecision'
+          },
+          {
+            'id': 'FooDecision',
+            'name': 'FooDecision'
+          },
         ],
         'linkedIds': [],
         'type': 'dmn'
@@ -565,8 +582,11 @@ describe('FileContext', function() {
       expect(item).to.exist;
 
       expect(item.metadata).to.eql({
-        'ids': [
-          'BazForm',
+        'forms': [
+          {
+            'id': 'BazForm',
+            'name': 'BazForm'
+          }
         ],
         'linkedIds': [],
         'type': 'form'

@@ -197,6 +197,31 @@ describe('ProcessApplications', function() {
 
   });
 
+
+  describe('events', function() {
+
+    it('should allow to subscribe and unsubscribe', function() {
+
+      // given
+      const callback = spy();
+
+      // when
+      processApplications.on('event', callback);
+      processApplications.emit('event');
+
+      // then
+      expect(callback).to.have.been.calledOnce;
+
+      // and when
+      callback.resetHistory();
+      processApplications.off('event', callback);
+      processApplications.emit('event');
+
+      // then
+      expect(callback).not.to.have.been.called;
+    });
+  });
+
 });
 
 const DEFAULT_ITEMS = [

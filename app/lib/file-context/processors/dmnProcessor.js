@@ -26,39 +26,42 @@ module.exports = {
     if (!item.file.contents) {
       return {
         type: 'dmn',
-        ids: [],
+        decisions: [],
         linkedIds: []
       };
     }
 
-    let rootElement, ids;
+    let rootElement, decisions;
 
     try {
       ({ rootElement } = await moddle.fromXML(item.file.contents));
 
-      ids = findDecisionIds(rootElement);
+      decisions = findDecisions(rootElement);
     } catch (error) {
       throw new Error(`Failed to parse DMN file: ${ error.message }`);
     };
 
     return {
       type: 'dmn',
-      ids,
+      decisions,
       linkedIds: []
     };
   }
 };
 
-function findDecisionIds(definitions) {
-  const decisionIds = [];
+function findDecisions(definitions) {
+  const decisions = [];
 
   traverse(definitions, {
     enter(element) {
       if (is(element, 'dmn:Decision')) {
-        decisionIds.push(element.get('id'));
+        decisions.push({
+          id: element.get('id'),
+          name: element.get('name') || element.get('id')
+        });
       }
     }
   });
 
-  return decisionIds;
+  return decisions;
 }

@@ -130,6 +130,10 @@ export default class ProcessApplications {
     this._events.on(...args);
   }
 
+  off(...args) {
+    this._events.off(...args);
+  }
+
   /**
    * Check if item is process application item.
    *
