@@ -61,7 +61,7 @@ describe('<DeploymentPlugin> (Zeebe)', function() {
 
     // then
     expect(deploySpy).to.have.been.calledOnce;
-    expect(deploySpy.args[0][0]).to.have.property('resourceType', 'bpmn');
+    expect(deploySpy.getCall(0).args[0].files[0]).to.have.property('type', 'bpmn');
   });
 
 
@@ -77,7 +77,7 @@ describe('<DeploymentPlugin> (Zeebe)', function() {
 
     // then
     expect(deploySpy).to.have.been.calledOnce;
-    expect(deploySpy.args[0][0]).to.have.property('resourceType', 'dmn');
+    expect(deploySpy.getCall(0).args[0].files[0]).to.have.property('type', 'dmn');
   });
 
 
@@ -93,7 +93,7 @@ describe('<DeploymentPlugin> (Zeebe)', function() {
 
     // then
     expect(deploySpy).to.have.been.calledOnce;
-    expect(deploySpy.args[0][0]).to.have.property('resourceType', 'form');
+    expect(deploySpy.getCall(0).args[0].files[0]).to.have.property('type', 'form');
   });
 
 

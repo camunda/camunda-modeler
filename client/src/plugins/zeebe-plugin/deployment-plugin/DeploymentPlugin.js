@@ -239,11 +239,15 @@ export default class DeploymentPlugin extends PureComponent {
     const zeebeAPI = this.props._getGlobal('zeebeAPI');
 
     return zeebeAPI.deploy({
-      filePath: path,
       name,
       tenantId,
       endpoint,
-      resourceType: getResourceType(tab)
+      files: [
+        {
+          path,
+          type: getResourceType(tab)
+        }
+      ]
     });
   }
 
