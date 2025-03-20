@@ -715,6 +715,10 @@ export class BpmnEditor extends CachedComponent {
       return this.loadTemplates();
     }
 
+    if (action === 'resources.reload') {
+      return modeler.get('resources.resourceLoader').reload();
+    }
+
     // TODO(nikku): handle all editor actions
     return modeler.get('editorActions').trigger(action, context);
   };

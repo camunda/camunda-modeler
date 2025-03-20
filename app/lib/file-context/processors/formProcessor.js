@@ -19,25 +19,28 @@ module.exports = {
     if (!item.file.contents) {
       return {
         type: 'form',
-        ids: [],
+        forms: [],
         linkedIds: []
       };
     }
 
-    let formId;
+    let forms = [];
 
     try {
       const form = JSON.parse(item.file.contents);
-      formId = form.id;
+      forms.push({
+        id: form.id,
+        name: form.name || form.id
+      });
 
-      assert(formId, 'Form must have an id');
+      assert(form.id, 'Form must have an id');
     } catch (error) {
       throw new Error(`Failed to parse form file: ${ error.message }`);
     }
 
     return {
       type: 'form',
-      ids: [ formId ],
+      forms,
       linkedIds: []
     };
   }

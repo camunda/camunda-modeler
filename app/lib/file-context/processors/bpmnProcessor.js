@@ -29,17 +29,17 @@ module.exports = {
     if (!item.file.contents) {
       return {
         type: 'bpmn',
-        ids: [],
+        processes: [],
         linkedIds: []
       };
     }
 
-    let rootElement, ids, linkedIds;
+    let rootElement, processes, linkedIds;
 
     try {
       ({ rootElement } = await moddle.fromXML(item.file.contents));
 
-      ids = findProcessIds(rootElement);
+      processes = findProcesses(rootElement);
       linkedIds = [
         ...findLinkedProcessIds(rootElement),
         ...findLinkedDecisionIds(rootElement),
@@ -51,24 +51,27 @@ module.exports = {
 
     return {
       type: 'bpmn',
-      ids,
+      processes,
       linkedIds
     };
   }
 };
 
-function findProcessIds(definitions) {
-  const processIds = [];
+function findProcesses(definitions) {
+  const processes = [];
 
   traverse(definitions, {
     enter(element) {
       if (is(element, 'bpmn:Process')) {
-        processIds.push(element.get('id'));
+        processes.push({
+          id: element.get('id'),
+          name: element.get('name') || element.get('id')
+        });
       }
     }
   });
 
-  return processIds;
+  return processes;
 }
 
 /**
