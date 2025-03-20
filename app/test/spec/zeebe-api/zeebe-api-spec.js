@@ -542,7 +542,6 @@ describe('ZeebeAPI', function() {
 
   describe('#deploy', function() {
 
-
     it('should set success=true for successful deployment', async function() {
 
       // given
@@ -552,7 +551,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
-        }
+        },
+        resourceConfigs: [
+          {
+            path: './foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -581,7 +586,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
-        }
+        },
+        resourceConfigs: [
+          {
+            path: './foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -611,7 +622,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
-        }
+        },
+        resourceConfigs: [
+          {
+            path: './foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -633,11 +650,16 @@ describe('ZeebeAPI', function() {
       const zeebeAPI = createZeebeAPI({ fs });
 
       const parameters = {
-        filePath: 'filePath',
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
-        }
+        },
+        resourceConfigs: [
+          {
+            path: './foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -646,7 +668,7 @@ describe('ZeebeAPI', function() {
       // then
       expect(fs.readFile).to.have.been.calledOnce;
       expect(fs.readFile.args).to.eql([
-        [ parameters.filePath, { encoding: false } ]
+        [ parameters.resourceConfigs[0].path, { encoding: false } ]
       ]);
     });
 
@@ -661,29 +683,28 @@ describe('ZeebeAPI', function() {
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
             deployResource: deployResourceSpy
-          },
-          fs: {
-            readFile() {
-              return { contents: '</>' };
-            }
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'process.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
         expect(args[0].process).to.exist;
-        expect(args[0].process).to.eql('</>');
+        expect(args[0].process).to.be.an.instanceOf(Buffer);
       });
 
 
@@ -695,30 +716,28 @@ describe('ZeebeAPI', function() {
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
             deployResource: deployResourceSpy
-          },
-          fs: {
-            readFile() {
-              return { contents: '</>' };
-            }
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'decision.dmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'dmn'
+          resourceConfigs: [
+            {
+              path: 'foo.dmn',
+              type: 'dmn'
+            }
+          ]
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
         expect(args[0].decision).to.exist;
-        expect(args[0].decision).to.eql('</>');
+        expect(args[0].decision).to.be.an.instanceOf(Buffer);
       });
 
 
@@ -730,228 +749,360 @@ describe('ZeebeAPI', function() {
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
             deployResource: deployResourceSpy
-          },
-          fs: {
-            readFile() {
-              return { contents: '{}' };
-            }
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'form.form',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'form'
+          resourceConfigs: [
+            {
+              path: 'foo.form',
+              type: 'form'
+            }
+          ]
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
         expect(args[0].form).to.exist;
-        expect(args[0].form).to.eql('{}');
+        expect(args[0].form).to.be.an.instanceOf(Buffer);
       });
 
     });
 
 
-    describe('deployment name', function() {
+    describe('resource names', function() {
 
-      it('should suffix deployment name with .bpmn if necessary', async function() {
-
-        // given
-        const deployResourceSpy = sinon.spy();
-
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
-          }
-        });
-
-        // when
-        await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'not_suffixed',
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        });
-
-        const { args } = deployResourceSpy.getCall(0);
-
-        // then
-        expect(args[0].name).to.eql('not_suffixed.bpmn');
-      });
-
-
-      it('should suffix deployment name with .dmn if necessary', async function() {
+      it('should accept deployment name as resource name if single file', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
+            deployResource: deployResourceSpy
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'not_suffixed',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'dmn'
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ],
+          name: 'bar.bpmn'
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('not_suffixed.dmn');
+        expect(args[0].name).to.eql('bar.bpmn');
       });
 
 
-      it('should suffix deployment name with .form if necessary', async function() {
+      it('should accept deployment name as resource name and add extension if single file', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
+            deployResource: deployResourceSpy
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'not_suffixed',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'form'
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ],
+          name: 'bar'
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('not_suffixed.form');
+        expect(args[0].name).to.eql('bar.bpmn');
       });
 
 
-      it('should not suffix deployment name with .bpmn if not necessary', async function() {
+      it('should not accept deployment name as resource name if multiple files', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
+            deployResources: deployResourcesSpy
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'suffixed.bpmn',
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        });
-
-        const { args } = deployResourceSpy.getCall(0);
-
-        // then
-        expect(args[0].name).to.eql('suffixed.bpmn');
-      });
-
-
-      it('should not suffix deployment name with .dmn if not necessary', async function() {
-
-        // given
-        const deployResourceSpy = sinon.spy();
-
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
-          }
-        });
-
-        // when
-        await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'suffixed.dmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'dmn'
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            },
+            {
+              path: 'bar.dmn',
+              type: 'dmn'
+            }
+          ],
+          name: 'bar.bpmn'
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('suffixed.dmn');
+        expect(args[0][0].name).to.eql('foo.bpmn');
+        expect(args[0][1].name).to.eql('bar.dmn');
       });
 
 
-      it('should not suffix deployment name with .form if not necessary', async function() {
+      it('should add .bpmn extension to deployment name to create resource name', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
+            deployResource: deployResourceSpy
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'suffixed.form',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'form'
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ],
+          name: 'bar'
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('suffixed.form');
+        expect(args[0].name).to.eql('bar.bpmn');
       });
 
 
-      it('should use file path if deployment name is empty', async function() {
+      it('should add .dmn extension to deployment name to create resource name', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
+            deployResource: deployResourceSpy
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: '/Users/Test/Stuff/Zeebe/process.bpmn',
-          name: '',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.dmn',
+              type: 'dmn'
+            }
+          ],
+          name: 'bar'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('bar.dmn');
+      });
+
+
+      it('should add .form extension to deployment name to create resource name', async function() {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResource: deployResourceSpy
           }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.form',
+              type: 'form'
+            }
+          ],
+          name: 'bar'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('bar.form');
+      });
+
+
+      it('should not add .bpmn extension deployment name to create resource name', async function() {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResource: deployResourceSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ],
+          name: 'bar.bpmn'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('bar.bpmn');
+      });
+
+
+      it('should not add .dmn extension deployment name to create resource name', async function() {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResource: deployResourceSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.dmn',
+              type: 'dmn'
+            }
+          ],
+          name: 'bar.dmn'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('bar.dmn');
+      });
+
+
+      it('should not add .form extension deployment name to create resource name', async function() {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResource: deployResourceSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.form',
+              type: 'form'
+            }
+          ],
+          name: 'bar.form'
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('bar.form');
+      });
+
+
+      it('should use file path as resource name by default', async function() {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResource: deployResourceSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'process.bpmn',
+              type: 'bpmn'
+            }
+          ]
         });
 
         const { args } = deployResourceSpy.getCall(0);
@@ -961,92 +1112,39 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should add bpmn suffix to filename if extension is other than bpmn', async function() {
+      it('should add .bpmn extension to resource name if extension not .bpmn', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
+            deployResource: deployResourceSpy
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
-          name: '',
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        });
-
-        const { args } = deployResourceSpy.getCall(0);
-
-        // then
-        expect(args[0].name).to.eql('xmlFile.bpmn');
-      });
-
-
-      it('should add bpmn extension if name ends with bpmn without extension', async function() {
-
-        // given
-        const deployResourceSpy = sinon.spy();
-
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
-          }
-        });
-
-        // when
-        await zeebeAPI.deploy({
-          filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
-          name: 'orchestrae-location-check-bpmn',
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        });
-
-        const { args } = deployResourceSpy.getCall(0);
-
-        // then
-        expect(args[0].name).to.eql('orchestrae-location-check-bpmn.bpmn');
-      });
-
-
-      it('should add dmn suffix if extension is other than dmn and resourceType=dmn', async function() {
-
-        // given
-        const deployResourceSpy = sinon.spy();
-
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
-          }
-        });
-
-        // when
-        await zeebeAPI.deploy({
-          filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
-          name: '',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'dmn'
+          resourceConfigs: [
+            {
+              path: 'foo.xml',
+              type: 'bpmn'
+            }
+          ]
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('xmlFile.dmn');
+        expect(args[0].name).to.eql('foo.bpmn');
       });
 
 
-      it('should add dmn extension if name ends with dmn without extension', async function() {
+      it('should add .bpmn extension to resource name if file path ends with bpmn but not .bpmn', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1059,77 +1157,150 @@ describe('ZeebeAPI', function() {
 
         // when
         await zeebeAPI.deploy({
-          filePath: '/Users/Test/Stuff/Zeebe/xmlFile.xml',
-          name: 'orchestrae-location-check-dmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'dmn'
+          resourceConfigs: [
+            {
+              path: 'foo-bpmn',
+              type: 'bpmn'
+            }
+          ]
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('orchestrae-location-check-dmn.dmn');
+        expect(args[0].name).to.eql('foo-bpmn.bpmn');
       });
 
 
-      it('should add form suffix if extension is other than form and resourceType=form', async function() {
+      it('should add .dmn extension to resource name if extension not .dmn', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
+            deployResource: deployResourceSpy
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: '/Users/Test/Stuff/Zeebe/jsonFile.json',
-          name: '',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'form'
+          resourceConfigs: [
+            {
+              path: 'foo.xml',
+              type: 'dmn'
+            }
+          ]
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('jsonFile.form');
+        expect(args[0].name).to.eql('foo.dmn');
       });
 
 
-      it('should add form extension if name ends with form without extension', async function() {
+      it('should add .dmn extension to resource name if file path ends with dmn but not .dmn', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
+            deployResource: deployResourceSpy
           }
         });
 
         // when
         await zeebeAPI.deploy({
-          filePath: '/Users/Test/Stuff/Zeebe/jsonFile.json',
-          name: 'application-form',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           },
-          resourceType: 'form'
+          resourceConfigs: [
+            {
+              path: 'foo-dmn',
+              type: 'dmn'
+            }
+          ]
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('application-form.form');
+        expect(args[0].name).to.eql('foo-dmn.dmn');
+      });
+
+
+      it('should add .form extension to resource name if extension not .form', async function() {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResource: deployResourceSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.json',
+              type: 'form'
+            }
+          ]
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('foo.form');
+      });
+
+
+      it('should add .form extension to resource name if name ends with form but not .form', async function() {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResource: deployResourceSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'foo-form',
+              type: 'form'
+            }
+          ]
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('foo-form.form');
       });
 
     });
@@ -1153,15 +1324,19 @@ describe('ZeebeAPI', function() {
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'process.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.BASIC,
             url: TEST_URL,
             basicAuthUsername: 'username',
             basicAuthPassword: 'password'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         });
 
         // then
@@ -1178,7 +1353,7 @@ describe('ZeebeAPI', function() {
         });
 
         // deployment is executed appropriately
-        expect(deployResourceSpy).to.have.been.calledWith({ name: 'process.bpmn', process: undefined });
+        expect(deployResourceSpy).to.have.been.calledWithMatch({ name: 'foo.bpmn' });
       });
 
     });
@@ -1201,8 +1376,6 @@ describe('ZeebeAPI', function() {
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'process.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
@@ -1212,7 +1385,13 @@ describe('ZeebeAPI', function() {
             scope: 'scope',
             clientId: 'clientId',
             clientSecret: 'clientSecret'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         });
 
         // then
@@ -1232,7 +1411,7 @@ describe('ZeebeAPI', function() {
         });
 
         // deployment is executed appropriately
-        expect(deployResourceSpy).to.have.been.calledWith({ name: 'process.bpmn', process: undefined });
+        expect(deployResourceSpy).to.have.been.calledWithMatch({ name: 'foo.bpmn' });
       });
 
     });
@@ -1240,7 +1419,7 @@ describe('ZeebeAPI', function() {
 
     describe('tenant ID', function() {
 
-      it('should add tenant ID if exists', async function() {
+      it('should add tenant ID (single file)', async function() {
 
         // given
         const deployResourceSpy = sinon.spy();
@@ -1253,8 +1432,6 @@ describe('ZeebeAPI', function() {
 
         // when
         await zeebeAPI.deploy({
-          filePath: 'filePath',
-          name: 'process.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
@@ -1263,13 +1440,62 @@ describe('ZeebeAPI', function() {
             clientId: 'clientId',
             clientSecret: 'clientSecret'
           },
-          tenantId: 'tenantId'
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ],
+          tenantId: 'bar'
         });
 
         const { args } = deployResourceSpy.getCall(0);
 
         // then
-        expect(args[0].tenantId).to.eql('tenantId');
+        expect(args[0].tenantId).to.eql('bar');
+      });
+
+
+      it('should add tenant ID (multiple files)', async function() {
+
+        // given
+        const deployResourcesSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResources: deployResourcesSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
+            url: TEST_URL,
+            oauthURL: 'oauthURL',
+            clientId: 'clientId',
+            clientSecret: 'clientSecret'
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            },
+            {
+              path: 'bar.dmn',
+              type: 'dmn'
+            }
+          ],
+          tenantId: 'baz'
+        });
+
+        const { args } = deployResourcesSpy.getCall(0);
+
+        // then
+        expect(args[0][0].tenantId).not.to.exist;
+        expect(args[0][1].tenantId).not.to.exist;
+        expect(args[1]).to.eql('baz');
       });
 
     });
@@ -1683,7 +1909,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://camunda.com'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1706,7 +1938,13 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: 'foo'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1717,7 +1955,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should reuse the client instance if config is the same', async function() {
+    it('should reuse client instance if config is same', async function() {
 
       // given
       const createSpy = sinon.spy();
@@ -1730,7 +1968,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1756,7 +2000,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1786,11 +2036,18 @@ describe('ZeebeAPI', function() {
           close: closeSpy
         }
       });
+
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1809,7 +2066,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `CAMUNDA_SECURE_CONNECTION` to true for https endpoint', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION` to true for https:// endpoint', async function() {
 
       // given
       let usedConfig;
@@ -1824,7 +2081,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://camunda.com'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1835,7 +2098,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `CAMUNDA_SECURE_CONNECTION=false` for http endpoint (no auth)', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION` to false for http:// endpoint (no auth)', async function() {
 
       // given
       let usedConfig;
@@ -1850,7 +2113,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'http://camunda.com'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1861,7 +2130,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `CAMUNDA_SECURE_CONNECTION=false` for http endpoint (oauth)', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION` to false for http:// endpoint (oauth)', async function() {
 
       // given
       let usedConfig;
@@ -1877,7 +2146,13 @@ describe('ZeebeAPI', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.OAUTH,
           url: 'http://camunda.com'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1888,7 +2163,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `CAMUNDA_SECURE_CONNECTION=true` for no protocol endpoint (cloud)', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION` to true for no protocol endpoint (cloud)', async function() {
 
       // given
       let usedConfig;
@@ -1903,7 +2178,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
           url: 'camunda.com'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1914,33 +2195,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should have secure connection for no protocol endpoint (cloud)', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-          url: 'camunda.com'
-        }
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', true);
-    });
-
-
-    it('should NOT change provided port', async function() {
+    it('should accept port', async function() {
 
       // given
       let usedConfig;
@@ -1955,7 +2210,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'http://camunda.com:1337'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1966,7 +2227,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should infer port=80 if missing for http endpoint', async function() {
+    it('should infer port=80 for http:// endpoint', async function() {
 
       // given
       let usedConfig;
@@ -1981,7 +2242,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'http://camunda.com'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -1992,7 +2259,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should infer port=443 if missing for https endpoint', async function() {
+    it('should infer port=443 for https:// endpoint', async function() {
 
       // given
       let usedConfig;
@@ -2007,7 +2274,13 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: 'https://camunda.com'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
@@ -2022,10 +2295,12 @@ describe('ZeebeAPI', function() {
 
       function setup(certificate) {
         const configSpy = sinon.spy();
+
         const log = {
           error: sinon.spy(),
           warn: sinon.spy()
         };
+
         const zeebeAPI = createZeebeAPI({
           configSpy,
           flags: {
@@ -2057,17 +2332,23 @@ describe('ZeebeAPI', function() {
 
         // given
         const cert = readFile('./root-self-signed.pem');
+
         const {
           configSpy,
           zeebeAPI
         } = setup(cert);
 
         const parameters = {
-          filePath: '/path/to/file.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         };
 
         // when
@@ -2081,22 +2362,28 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should pass root certificate in oAuth config too', async function() {
+      it('should pass root certificate in oauth config too', async function() {
 
         // given
         const cert = readFile('./root-self-signed.pem');
+
         const {
           configSpy,
           zeebeAPI
         } = setup(cert);
 
         const parameters = {
-          filePath: '/path/to/file.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
             url: 'https://camunda.com'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         };
 
         // when
@@ -2110,21 +2397,27 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('should pass certificate to zeebe even if appears non-root', async function() {
+      it('should pass certificate to Zeebe even if appears non-root', async function() {
 
         // given
         const cert = 'invalid';
+
         const {
           configSpy,
           zeebeAPI
         } = setup(cert);
 
         const parameters = {
-          filePath: '/path/to/file.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         };
 
         // when
@@ -2142,17 +2435,23 @@ describe('ZeebeAPI', function() {
 
         // given
         const cert = readFile('./not-root.pem');
+
         const {
           configSpy,
           zeebeAPI
         } = setup(cert);
 
         const parameters = {
-          filePath: '/path/to/file.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         };
 
         // when
@@ -2175,11 +2474,16 @@ describe('ZeebeAPI', function() {
         } = setup(readFile('./root-self-signed.pem'));
 
         const parameters = {
-          filePath: '/path/to/file.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         };
 
         // when
@@ -2200,11 +2504,16 @@ describe('ZeebeAPI', function() {
         } = setup(readFile('./not-root.pem'));
 
         const parameters = {
-          filePath: '/path/to/file.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         };
 
         // when
@@ -2224,11 +2533,16 @@ describe('ZeebeAPI', function() {
         } = setup('invalid');
 
         const parameters = {
-          filePath: '/path/to/file.bpmn',
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             url: 'https://camunda.com'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         };
 
         // when
@@ -2236,9 +2550,11 @@ describe('ZeebeAPI', function() {
 
         // then
         expect(log.warn).to.have.been.calledOnce;
-        expect(log.warn.args[0][0].startsWith('Failed to parse custom SSL certificate')).be.true;
+        expect(log.warn.args[0][0].startsWith('Failed to parse custom SSL certificate')).to.be.true;
       });
+
     });
+
   });
 
 
@@ -2265,15 +2581,19 @@ describe('ZeebeAPI', function() {
           basicAuthUsername: 'username',
           basicAuthPassword: 'password',
           url: TEST_URL
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
       await zeebeAPI.deploy(parameters);
 
       // then
-      console.log(logSpy.getCalls().map(call => JSON.stringify(call.args), null, 2));
-
       expect(logSpy).to.have.been.called;
 
       const createClientCall = logSpy.getCalls().find(call => call.args[ 0 ] === 'creating client');
@@ -2298,7 +2618,7 @@ describe('ZeebeAPI', function() {
 
       expect(deployCall).to.exist;
 
-      expect(deployCall.args[ 1 ]).to.eql({
+      expect(deployCall.args[1]).to.eql({
         parameters: {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
@@ -2306,7 +2626,13 @@ describe('ZeebeAPI', function() {
             basicAuthUsername: 'username',
             basicAuthPassword: '******',
             url: TEST_URL
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         }
       });
     });
@@ -2336,15 +2662,19 @@ describe('ZeebeAPI', function() {
           scope: 'scope',
           clientId: 'clientId',
           clientSecret: 'clientSecret'
-        }
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
       };
 
       // when
       await zeebeAPI.deploy(parameters);
 
       // then
-      console.log(logSpy.getCalls().map(call => JSON.stringify(call.args), null, 2));
-
       expect(logSpy).to.have.been.called;
 
       const createClientCall = logSpy.getCalls().find(call => call.args[ 0 ] === 'creating client');
@@ -2384,7 +2714,13 @@ describe('ZeebeAPI', function() {
             scope: 'scope',
             clientId: 'clientId',
             clientSecret: '******'
-          }
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
         }
       });
     });
@@ -2411,11 +2747,23 @@ function setupPlatformStub() {
 
 function createZeebeAPI(options = {}) {
   const fs = options.fs || {
-    readFile: () => ({})
+    readFile: (_, { encoding = 'utf8' } = {}) => {
+      if (encoding === false) {
+        return {
+          contents: Buffer.from('contents')
+        };
+      }
+
+      return {
+        contents: 'contents'
+      };
+    }
   };
+
   const flags = options.flags || {
     get: () => {}
   };
+
   const log = {
     error() {},
     debug() {},
@@ -2433,6 +2781,7 @@ function createZeebeAPI(options = {}) {
       return Object.assign({
         topology: noop,
         deployResource: noop,
+        deployResources: noop,
         createProcessInstance: noop,
         close: noop
       }, options.ZeebeGrpcApiClient);
