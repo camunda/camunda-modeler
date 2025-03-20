@@ -9,6 +9,9 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-properties-panel@5.34.2`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.26.4`
 * `DEPS`: update to `@camunda/linting@3.36.0`
+* `DEPS`: update to `dmn-js@17.2.0`
+* `DEPS`: update to `camunda-dmn-js@^3.2.0`
+
 
 
 ### BPMN
@@ -18,7 +21,11 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: do not require start and end events in ad-hoc subprocess ([bpmn-io/bpmnlint#176](https://github.com/bpmn-io/bpmnlint/pull/176))
 * `FIX`: allow escalation boundary event to be attached to ad-hoc sub-process ([#4859](https://github.com/camunda/camunda-modeler/issues/4859))
 * `FIX`: clarify wording for input/output groups ([#4889](https://github.com/camunda/camunda-modeler/issues/4889))
-  
+
+### DMN
+
+* `FEAT`: add delete action for multi element context ([#4554](https://github.com/camunda/camunda-modeler/issues/4554))
+
 ## 5.33.1
 
 ### General
