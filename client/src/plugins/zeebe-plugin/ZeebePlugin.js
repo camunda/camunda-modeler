@@ -10,14 +10,32 @@
 
 import React, { PureComponent } from 'react';
 
+import Deployment from './deployment-plugin/Deployment';
+import DeploymentPluginValidator from './deployment-plugin/DeploymentPluginValidator';
+import ConnectionChecker from './deployment-plugin/ConnectionChecker';
+import ZeebeAPI from '../../remote/ZeebeAPI';
+
 import DeploymentPlugin from './deployment-plugin';
 import StartInstancePlugin from './start-instance-plugin';
 
 export default class ZeebePlugin extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    const backend = props._getGlobal('backend');
+
+    const zeebeAPI = new ZeebeAPI(backend);
+
+    const validator = this.validator = new DeploymentPluginValidator(zeebeAPI);
+    const connectionChecker = this.connectionChecker = new ConnectionChecker(validator);
+
+    this.deployment = new Deployment(props.config, zeebeAPI, validator, connectionChecker);
+  }
+
   render() {
     return <React.Fragment>
-      <DeploymentPlugin { ...this.props } />
-      <StartInstancePlugin { ...this.props } />
+      <DeploymentPlugin { ...this.props } deployment={ this.deployment } />
+      <StartInstancePlugin { ...this.props } deployment={ this.deployment } />
     </React.Fragment>;
   }
 }
