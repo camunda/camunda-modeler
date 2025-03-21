@@ -19,7 +19,7 @@ import Deployment from '../Deployment';
 
 import ZeebeAPI from '../../../../remote/ZeebeAPI';
 
-describe.only('Deployment', function() {
+describe('Deployment', function() {
 
   it('creates instance', function() {
 

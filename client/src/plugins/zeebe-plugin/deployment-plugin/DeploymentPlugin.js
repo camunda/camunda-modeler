@@ -297,6 +297,7 @@ export default class DeploymentPlugin extends PureComponent {
   }
 
   async getConfigFromUser(savedConfig, tab, options = {}) {
+    console.log('#getConfigFromUser', savedConfig, tab, options);
 
     const p = pDefer();
 
@@ -354,10 +355,12 @@ export default class DeploymentPlugin extends PureComponent {
   }
 
   async getSavedConfig(tab) {
+    console.log('#getSavedConfig', tab);
 
     const tabConfig = await this.getTabConfiguration(tab);
 
     if (!tabConfig) {
+      console.log('no tab config found', tabConfig);
       return {};
     }
 
@@ -365,12 +368,17 @@ export default class DeploymentPlugin extends PureComponent {
       deployment
     } = tabConfig;
 
+    // Example: { deployment: { name: "Foo" }, endpointId: "bar" }
+    console.log('tab config found', tabConfig);
+
     return {
       deployment,
     };
   }
 
   async getDefaultEndpoint(tab) {
+    console.log('#getDefaultEndpoint', tab);
+
     const credentials = {
       basicAuthUsername: '',
       basicAuthPassword: '',
@@ -409,6 +417,8 @@ export default class DeploymentPlugin extends PureComponent {
   }
 
   async getDefaultConfig(savedConfig, tab) {
+    console.log('#getDefaultConfig', savedConfig, tab);
+
     const deployment = {
       name: withoutExtension(tab.name)
     };
@@ -446,6 +456,7 @@ export default class DeploymentPlugin extends PureComponent {
   }
 
   getTabConfiguration(tab) {
+    console.log('#getTabConfiguration (config.getForFile)', tab);
     return this.props.config.getForFile(tab.file, DEPLOYMENT_CONFIG_KEY);
   }
 

@@ -108,6 +108,8 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
   }
 
   endpointConfigurationFieldError = (meta, fieldName) => {
+    console.log('get field error', meta, fieldName, new Error().stack);
+
     return this.getConnectionError(fieldName) || (meta.touched && meta.error);
   };
 
