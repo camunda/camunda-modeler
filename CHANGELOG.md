@@ -6,17 +6,17 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `DEPS`: update to `bpmn-js-properties-panel@5.34.2`
+* `DEPS`: update to `bpmn-js-properties-panel@5.35.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.26.4`
 * `DEPS`: update to `@camunda/linting@3.36.0`
 * `DEPS`: update to `dmn-js@17.2.0`
 * `DEPS`: update to `camunda-dmn-js@^3.2.0`
-* `DEPS`: update to `bpmn-js@18.3.2`
-* `DEPS`: update to `camunda-bpmn-js@5.6.2`
-
+* `DEPS`: update to `bpmn-js@18.4.0`
+* `DEPS`: update to `camunda-bpmn-js@5.7.0`
 
 ### BPMN
 
+* `FEAT`: render collapsed event subprocess icons ([bpmn-io/bpmn-js#50](https://github.com/bpmn-io/bpmn-js/issues/50))
 * `FEAT`: add ad-hoc subprocess completion support ([#4850](https://github.com/camunda/camunda-modeler/issues/4850)) 
 * `FIX`: make `link-event` rule check only BPMN compliance ([#4870](https://github.com/camunda/camunda-modeler/issues/4870))
 * `FIX`: do not require start and end events in ad-hoc subprocess ([bpmn-io/bpmnlint#176](https://github.com/bpmn-io/bpmnlint/pull/176))
