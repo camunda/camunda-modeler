@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.34.0
+
 * `DEPS`: update to `bpmn-js-properties-panel@5.35.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.26.4`
 * `DEPS`: update to `@camunda/linting@3.36.0`
@@ -16,6 +18,14 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/form-js@1.15.0`
 * `DEPS`: update to `@camunda/form-linting@0.22.0`
 * `DEPS`: update to `@camunda/form-playground@0.21.0`
+* `DEPS`: update to `@camunda/rpa-integration@0.2.0`
+
+### General
+
+* `FEAT`: mark Camunda 7.23 and Camunda 8.7 as latest ([#4900](https://github.com/camunda/camunda-modeler/issues/4900))
+* `FEAT`: add process applications feature ([#4762](https://github.com/camunda/camunda-modeler/pull/4762))
+* `FEAT`: add resources linking in process application ([#4668](https://github.com/camunda/camunda-modeler/issues/4668))
+* `FEAT`: enable RPA editor per default ([#4895](https://github.com/camunda/camunda-modeler/issues/4895))
 
 ### BPMN
 
