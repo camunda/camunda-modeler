@@ -132,6 +132,29 @@ export class App extends PureComponent {
       config: this.getGlobal('config'),
     });
 
+    this.settings.register({
+      id: 'app',
+      title: 'App Settings',
+      properties: {
+        'app.newContextPad': {
+          type: 'boolean',
+          default: false,
+          flag: 'enable-new-context-pad',
+          label: 'New context pad',
+          description: 'Enable the new context pad.',
+          requireReload: true,
+        },
+        'app.disableRpa': {
+          type: 'boolean',
+          default: true,
+          flag: 'disable-rpa',
+          label: 'Disable RPA',
+          description: 'Disable the RPA editor.',
+          requireReload: true,
+        }
+      }
+    });
+
     this.tabRef = React.createRef();
 
     const userPlugins = this.getPlugins('client');

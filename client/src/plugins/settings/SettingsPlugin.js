@@ -16,6 +16,8 @@ import { omitBy } from 'lodash';
 
 import { Formik } from 'formik';
 
+import Flags from '../../util/Flags';
+
 import { Modal } from '../../shared/ui';
 
 import { SettingsForm } from './SettingsForm';
@@ -27,6 +29,7 @@ export default function SettingsPlugin(props) {
   const {
     settings: settingsProvider,
     subscribe,
+    triggerAction
   } = props;
 
   const [ open, setOpen ] = useState(false);

@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { Field, Form, useFormikContext } from 'formik';
 
@@ -16,14 +16,27 @@ import { map, forEach } from 'min-dash';
 
 import { Section, TextInput, CheckBox, Select } from '../../shared/ui';
 
+import Flags from '../../util/Flags';
 
 export function SettingsForm(props) {
 
-  const { schema, values } = props;
+  const { schema, values, handleClose } = props;
 
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, values: formikValues, submitForm } = useFormikContext();
 
   useEffect(() => {
+
+    // const flatten = flattenFormikValues(formikValues);
+    // const changedFields = Object.keys(flatten).filter(
+    //   (key) => flatten[key] !== values[key]
+    // );
+
+    // console.log('changedFields', changedFields);
+
+    // setReload(!!changedFields.length);
+    submitForm();
+
+  }, [ formikValues ]);
 
   useEffect(() => {
     forEach(values, (value, key) => {
