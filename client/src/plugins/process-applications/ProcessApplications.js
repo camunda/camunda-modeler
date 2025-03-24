@@ -62,6 +62,12 @@ export default class ProcessApplications {
 
       const item = this._items.find(item => item.file.path === file.path);
 
+      if (!item) {
+        this.close();
+
+        return;
+      }
+
       const processApplicationItem = this.findProcessApplicationItemForItem(item);
 
       if (processApplicationItem) {
