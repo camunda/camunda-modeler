@@ -45,15 +45,16 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Support for upcoming Camunda 8 features</h4>
+          It now offers full support for Camunda 8.7 and 7.23.
+          We have added support to configure <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc-subprocesses/#completion">attributes</a> to ad-hoc subprocesses. In forms, you can now pass a custom module to define URL-building logic for document URLs in preview component.
+        </li>
+        <li>
+          <h4>Support for Process Application</h4>
           We now support Process application and added resource linking. You can now use process application just like you would in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
         </li>
         <li>
-          <h4>Support for RPA editor</h4>
-          We introduced <a href="https://docs.camunda.io/docs/8.7/components/modeler/rpa/">support for Robotic Process Automation (RPA)</a>.
-        </li>
-        <li>
-          <h4>BPMN modeling improvements</h4>
-          We have added support to configure <a href="https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1114">attributes</a> to ad-hoc subprocesses. In forms, you can now pass a custom module to define URL-building logic for document URLs in preview component.
+          <h4>Added RPA editor</h4>
+          We introduced <a href="https://docs.camunda.io/docs/8.7/components/modeler/rpa/">Robotic Process Automation (RPA)</a> editor to write scripts to be executed by the RPA worker.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
