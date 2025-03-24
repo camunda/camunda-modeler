@@ -148,6 +148,19 @@ const DEFAULT_ITEMS_FORM = [
   }
 ];
 
+const NO_METADATA = [
+  {
+    file: {
+      name: 'bar.form',
+      uri: 'file:///C:/bar.form',
+      path: 'C://bar.form',
+      dirname: 'C://',
+      contents: '<?xml version="1.0" encoding="UTF-8"?>'
+    },
+    metadata: null
+  }
+];
+
 
 describe('ResourcesProvider', function() {
 
@@ -242,6 +255,22 @@ describe('ResourcesProvider', function() {
     // given
     const resourceLoader = createResourceLoader();
     const processApplications = createProcessApplications(DEFAULT_ITEMS_PROCESS_APPLICATION);
+
+    const resourcesProvider = new ResourcesProvider(resourceLoader, processApplications);
+
+    // when
+    const resources = resourcesProvider.getResources();
+
+    // then
+    expect(resources).to.eql([]);
+  });
+
+
+  it('should ignore file without metadata', function() {
+
+    // given
+    const resourceLoader = createResourceLoader();
+    const processApplications = createProcessApplications(NO_METADATA);
 
     const resourcesProvider = new ResourcesProvider(resourceLoader, processApplications);
 

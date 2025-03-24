@@ -19,7 +19,7 @@ export class ResourcesProvider {
     const items = this._processApplications.getItems();
 
     const resources = items.map((item) => {
-      switch (item.metadata.type) {
+      switch (item.metadata?.type) {
       case 'bpmn':
         return handleBpmnItem(item);
       case 'dmn':
