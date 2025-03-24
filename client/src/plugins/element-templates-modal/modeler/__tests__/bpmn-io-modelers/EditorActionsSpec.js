@@ -32,7 +32,10 @@ const DEFAULT_OPTIONS = {
     name: 'my-tool',
     version: '120-beta.100'
   },
-  changeTemplateCommand: 'propertiesPanel.camunda.changeTemplate'
+  changeTemplateCommand: 'propertiesPanel.camunda.changeTemplate',
+  settings: {
+    get: () => false,
+  }
 };
 
 

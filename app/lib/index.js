@@ -411,6 +411,11 @@ renderer.on('app:reload', async function() {
   app.mainWindow.reload();
 });
 
+renderer.on('app:restart', function() {
+  app.relaunch();
+  app.exit(0);
+});
+
 app.on('web-contents-created', (event, webContents) => {
 
   // open new window externally
@@ -689,7 +694,8 @@ function bootstrap() {
   // (3) config
   const ignoredPaths = [];
 
-  if (flags.get('disable-connector-templates', false)) {
+  const connectorTemplatesDisabled = areConnectorTemplatesDisabled(flags, userPath);
+  if (connectorTemplatesDisabled) {
     ignoredPaths.push(getConnectorTemplatesPath(userPath));
   }
 
@@ -727,7 +733,7 @@ function bootstrap() {
   let paths;
 
   // (8) plugins
-  const pluginsDisabled = flags.get('disable-plugins');
+  const pluginsDisabled = arePluginsDisabled(flags, config);
 
   if (pluginsDisabled) {
     paths = [];
@@ -752,7 +758,7 @@ function bootstrap() {
   const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
   // (10) connector templates
-  if (!flags.get('disable-connector-templates', false)) {
+  if (!connectorTemplatesDisabled) {
     registerConnectorTemplateUpdater(renderer, userPath);
   }
 
@@ -814,6 +820,23 @@ function setUserPath(path = DEFAULT_USER_PATH) {
   app.setPath('userData', path);
 }
 
+function areConnectorTemplatesDisabled(flags, userPath) {
+
+  // TODO(@barmac): use bootstrapped config or extract settings to a separate module
+  const settings = new Config({ userPath }).get('settings');
+
+  return (
+    flags.get('disable-connector-templates', false) || settings['app.disableConnectorTemplates']
+  );
+}
+
+function arePluginsDisabled(flags, config) {
+  const settings = config.get('settings');
+
+  return (
+    flags.get('disable-plugins', false) || settings['app.disablePlugins']
+  );
+}
 
 // expose app
 module.exports = app;

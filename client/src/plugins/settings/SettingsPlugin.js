@@ -16,12 +16,25 @@ import { omitBy } from 'lodash';
 
 import { Formik } from 'formik';
 
+import Flags from '../../util/Flags';
+
 import { Modal } from '../../shared/ui';
 
 import { SettingsForm } from './SettingsForm';
 
+import useBuiltInSettings from './useBuiltInSettings';
+
 import * as css from './SettingsPlugin.less';
 
+/**
+ * Provides UI for the settings API.
+ *
+ * @param {Object} props
+ * @param {import('../../app/Settings').Settings} props.settings
+ *
+ * @returns {JSX.Element}
+ *
+ */
 export default function SettingsPlugin(props) {
 
   const {
@@ -37,6 +50,8 @@ export default function SettingsPlugin(props) {
   const [ schema, setSchema ] = useState();
   const [ values, setValues ] = useState({});
 
+  useBuiltInSettings(settings);
+
   useEffect(() => {
     subscribe('app.settings-open', () => {
       setOpen(true);
@@ -47,13 +62,13 @@ export default function SettingsPlugin(props) {
     if (!open) return;
 
     // Schema is settings metadata e.g. type, default value, etc.
-    setSchema(settingsProvider.getSchema());
+    setSchema(settings.getSchema());
   }, [ open ]);
 
   useEffect(() => {
     if (!schema) return;
 
-    const values = settingsProvider.get();
+    const values = settings.get();
 
     // Setting can specify a flag
     // which will override the setting value if set
@@ -86,7 +101,7 @@ export default function SettingsPlugin(props) {
 
     setShowRestartWarning(restart);
 
-    settingsProvider.set(changedValues);
+    settings.set(changedValues);
     setValues({ ...values, ...changedValues });
   };
 

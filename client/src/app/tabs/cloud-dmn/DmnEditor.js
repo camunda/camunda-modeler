@@ -971,7 +971,8 @@ export class DmnEditor extends CachedComponent {
     const {
       getPlugins,
       onAction,
-      onError
+      onError,
+      settings
     } = props;
 
     // notify interested parties that modeler will be configured
@@ -991,7 +992,8 @@ export class DmnEditor extends CachedComponent {
       exporter: {
         name,
         version
-      }
+      },
+      settings
     }, handleMiddlewareExtensions, 'cloud');
 
     if (warnings.length && isFunction(onError)) {

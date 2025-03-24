@@ -21,6 +21,9 @@ const DEFAULT_OPTIONS = {
   exporter: {
     name: 'my-tool',
     version: '120-beta.100'
+  },
+  settings: {
+    get: () => false,
   }
 };
 

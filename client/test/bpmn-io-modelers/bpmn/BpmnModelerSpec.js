@@ -14,12 +14,13 @@ import BpmnModeler from '../../../src/app/tabs/bpmn/modeler/BpmnModeler';
 
 import diagramXML from './diagram.bpmn';
 
-import Flags, { ENABLE_NEW_CONTEXT_PAD } from '../../../src/util/Flags';
-
 const DEFAULT_OPTIONS = {
   exporter: {
     name: 'my-tool',
     version: '120-beta.100'
+  },
+  settings: {
+    get: () => false,
   }
 };
 
@@ -68,11 +69,6 @@ describe('BpmnModeler', function() {
 
   describe('new context pad', function() {
 
-    beforeEach(function() {
-      Flags.reset();
-    });
-
-
     it('should disable new context pad by default', async function() {
 
       // when
@@ -83,14 +79,14 @@ describe('BpmnModeler', function() {
     });
 
 
-    it('should enable new context pad if enabled through flag', async function() {
+    it('should enable new context pad if enabled through flag or setting', async function() {
 
       // when
-      Flags.init({
-        [ ENABLE_NEW_CONTEXT_PAD ]: true
-      });
+      const settings = {
+        get: () => true
+      };
 
-      const modeler = await createModeler();
+      const modeler = await createModeler({ settings });
 
       // then
       expect(modeler.get('improvedCanvas', false)).to.exist;
@@ -100,11 +96,11 @@ describe('BpmnModeler', function() {
     it('should not fail when append element is triggered', async function() {
 
       // when
-      Flags.init({
-        [ ENABLE_NEW_CONTEXT_PAD ]: true
-      });
+      const settings = {
+        get: () => true
+      };
 
-      const modeler = await createModeler();
+      const modeler = await createModeler({ settings });
 
       // then
       const editorActions = modeler.get('editorActions'),

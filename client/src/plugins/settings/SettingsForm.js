@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { Field, Form, useFormikContext } from 'formik';
 
@@ -16,6 +16,7 @@ import { map, forEach, sortBy } from 'min-dash';
 
 import { Section, TextInput, CheckBox, Select } from '../../shared/ui';
 
+import Flags from '../../util/Flags';
 
 /**
  * Formik form wrapper for the settings form.

@@ -53,8 +53,6 @@ import {
 import { SlotFillRoot } from '../../../slot-fill';
 import Panel from '../../../panel/Panel';
 
-import Flags, { ENABLE_NEW_CONTEXT_PAD } from '../../../../util/Flags';
-
 import Metadata from '../../../../util/Metadata';
 
 const { spy } = sinon;
@@ -229,6 +227,12 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     const circularModdleExtension = {};
     circularModdleExtension.name = circularModdleExtension;
 
+    const settings = {
+      get: noop,
+      register: noop,
+      subscribe: noop
+    };
+
     const props = {
       getPlugins(type) {
         switch (type) {
@@ -242,7 +246,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         return [];
       },
       onError: onErrorSpy,
-      onAction: noop
+      onAction: noop,
+      settings
     };
 
     // then
@@ -2070,11 +2075,6 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   describe('new context pad', function() {
 
-    beforeEach(function() {
-      Flags.reset();
-    });
-
-
     it('should disable new context pad by default', async function() {
 
       // when
@@ -2087,14 +2087,14 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     });
 
 
-    it('should enable new context pad if enabled through flag', async function() {
+    it('should enable new context pad if enabled through setting or flag', async function() {
 
       // when
-      Flags.init({
-        [ ENABLE_NEW_CONTEXT_PAD ]: true
-      });
+      const settings = {
+        get: () => true,
+      };
 
-      const { instance } = await renderEditor(diagramXML);
+      const { instance } = await renderEditor(diagramXML, { settings });
 
       // then
       expect(instance).to.exist;
@@ -2134,6 +2134,12 @@ const defaultLayout = {
   }
 };
 
+const defaultSettings = {
+  register: noop,
+  get: noop,
+  subscribe: noop,
+};
+
 function renderEditor(xml, options = {}) {
   const {
     cache = new Cache(),
@@ -2151,6 +2157,7 @@ function renderEditor(xml, options = {}) {
     onLayoutChanged = noop,
     onModal = noop,
     onWarning = noop,
+    settings = defaultSettings,
     waitForImport = true
   } = options;
 
@@ -2184,6 +2191,7 @@ function renderEditor(xml, options = {}) {
         onLayoutChanged={ onLayoutChanged }
         onModal={ onModal }
         onWarning={ onWarning }
+        settings={ settings }
         xml={ xml }
       />
     );

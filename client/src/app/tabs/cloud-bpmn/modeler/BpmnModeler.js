@@ -31,9 +31,7 @@ import { BpmnImprovedCanvasModule } from '../../bpmn/modeler/features/improved-c
 
 import Flags, {
   DISABLE_ADJUST_ORIGIN,
-  ENABLE_NEW_CONTEXT_PAD
 } from '../../../../util/Flags';
-
 
 export default class CloudBpmnModeler extends BpmnModeler {
 
@@ -42,10 +40,11 @@ export default class CloudBpmnModeler extends BpmnModeler {
     let {
       additionalModules = [],
       moddleExtensions = {},
+      settings,
       ...otherOptions
     } = options;
 
-    if (Flags.get(ENABLE_NEW_CONTEXT_PAD, false)) {
+    if (settings.get('app.newContextPad')) {
       additionalModules = [
         ...additionalModules,
         {
