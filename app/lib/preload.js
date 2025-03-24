@@ -43,6 +43,7 @@ const allowedEvents = [
   'file:read-stats',
   'file:write',
   'file-context:add-root',
+  'file-context:remove-root',
   'file-context:changed',
   'file-context:file-closed',
   'file-context:file-opened',
