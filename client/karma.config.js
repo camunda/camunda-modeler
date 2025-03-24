@@ -103,6 +103,10 @@ module.exports = function(karma) {
           }
         ]
       },
+      stats: 'normal',
+      cache: {
+        type: 'memory'
+      },
       plugins: [
         new DefinePlugin({
           'process.env': {
