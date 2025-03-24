@@ -857,7 +857,8 @@ export class BpmnEditor extends CachedComponent {
       getPlugins,
       onAction,
       onError,
-      layout = {}
+      layout = {},
+      settings
     } = props;
 
     // notify interested parties that modeler will be configured
@@ -878,6 +879,7 @@ export class BpmnEditor extends CachedComponent {
         name,
         version
       },
+      settings
     }, handleMiddlewareExtensions, 'cloud');
 
     if (warnings.length && isFunction(onError)) {

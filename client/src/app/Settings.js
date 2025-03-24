@@ -135,27 +135,22 @@ export class Settings {
   }
 
   /**
-   * Get value for the specified setting.
-   * @returns { string|boolean }
+   * Get value for the specified setting or all settings if no key is provided.
+   * @param { string|undefined } key
+   * @returns { Object.<string, string|boolean>|string|boolean }
    */
   get(key) {
-    return this._values[key];
+    return key ? this._values[key] : { ...this._values };
   }
 
   /**
-   * Get all settings values.
-   * @returns { Object.<string, string|boolean> }
-   */
-  getAll() {
-    return this._values;
-  }
-
-  /**
-   * Get all the registered settings and their metadata.
+   * Get the metadata for the specified setting or all settings if no key is provided.
+   * @param { string|undefined } key
    * @returns { SettingsSchema }
    */
-  getSchema() {
-    return this._settings;
+  getSchema(key) {
+    const prefix = key ? key.split('.')[0] : null;
+    return key ? this._settings[prefix].properties[key] : this._settings;
   }
 
   /**
