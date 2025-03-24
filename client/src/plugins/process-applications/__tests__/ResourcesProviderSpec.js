@@ -280,6 +280,7 @@ describe('ResourcesProvider', function() {
     // then
     expect(resources).to.eql([]);
   });
+
 });
 
 
