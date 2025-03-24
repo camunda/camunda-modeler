@@ -3,7 +3,7 @@
     [
       "@babel/preset-env", {
         "targets": {
-          "electron": "26"
+          "electron": "34"
         }
       }
     ],
