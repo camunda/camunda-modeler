@@ -15,7 +15,7 @@ import TestRenderer from 'react-test-renderer';
 import PluginsRoot from '../PluginsRoot';
 
 
-describe('<PluginParent>', function() {
+describe('<PluginsRoot>', function() {
 
   it('should render', function() {
     createPluginsRoot();
@@ -64,6 +64,10 @@ class App {
     if (name === 'config') {
       return new Config();
     }
+
+    if (name === 'settings') {
+      return new Settings();
+    }
   };
 
   triggerAction = () => {};
@@ -71,4 +75,12 @@ class App {
 
 class Config {
   get = () => {};
+}
+
+class Settings {
+  register = () => {};
+
+  get = () => {};
+
+  subscribe = () => {};
 }

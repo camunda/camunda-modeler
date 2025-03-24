@@ -47,7 +47,10 @@ const DEFAULT_OPTIONS = {
   propertiesProvider: {
     openElementTemplatesModal() {}
   },
-  elementTemplates: DEFAULT_ELEMENT_TEMPLATES
+  elementTemplates: DEFAULT_ELEMENT_TEMPLATES,
+  settings: {
+    get: () => false,
+  }
 };
 
 

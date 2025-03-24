@@ -195,8 +195,9 @@ export default class Settings {
    * @param { string|undefined } key
    * @returns { SettingsGroup }
    */
-  getSchema() {
-    return this._settings;
+  getSchema(key) {
+    const prefix = key ? key.split('.')[0] : null;
+    return key ? this._settings[prefix].properties[key] : this._settings;
   }
 
   /**

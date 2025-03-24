@@ -51,9 +51,9 @@ function render(props = {}) {
 
   const wrapper = mount(
     <SettingsPlugin
-      settings={ settings }
       subscribe={ subscribe }
       triggerAction={ noop }
+      _getGlobal={ () => settings }
       { ...props }
     />
   );

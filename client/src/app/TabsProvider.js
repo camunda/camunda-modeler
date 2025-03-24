@@ -676,6 +676,10 @@ export default class TabsProvider {
     };
   }
 
+  linkSettings(settings) {
+    this.settings = settings;
+  }
+
   _createFile(type) {
 
     const counter = (
@@ -800,10 +804,15 @@ function sortByPriority(providers) {
 }
 
 
-function replaceVersions(contents) {
+function replaceVersions(contents, settings) {
 
-  const platformVersion = getDefaultVersion(ENGINES.PLATFORM);
-  const cloudVersion = getDefaultVersion(ENGINES.CLOUD);
+  const settingsVersion = {
+    [ENGINES.PLATFORM]: settings?.get('app.defaultC7Version'),
+    [ENGINES.CLOUD]: settings?.get('app.defaultC8Version')
+  };
+
+  const platformVersion = getDefaultVersion(ENGINES.PLATFORM, settingsVersion[ENGINES.PLATFORM]);
+  const cloudVersion = getDefaultVersion(ENGINES.CLOUD, settingsVersion[ENGINES.CLOUD]);
 
   return (
     contents

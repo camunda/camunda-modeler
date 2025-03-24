@@ -17,12 +17,13 @@ import DrdViewer from '../../../src/app/tabs/dmn/modeler/DrdViewer';
 
 import diagramXML from './diagram.dmn';
 
-import Flags, { ENABLE_NEW_CONTEXT_PAD } from '../../../src/util/Flags';
-
 const DEFAULT_OPTIONS = {
   exporter: {
     name: 'my-tool',
     version: '120-beta.100'
+  },
+  settings: {
+    get: () => false,
   }
 };
 
@@ -425,11 +426,6 @@ describe('DmnModeler', function() {
 
   describe('new context pad', function() {
 
-    beforeEach(function() {
-      Flags.reset();
-    });
-
-
     it('should disable new context pad by default', async function() {
 
       // when
@@ -440,14 +436,13 @@ describe('DmnModeler', function() {
     });
 
 
-    it('should enable new context pad if enabled through flag', async function() {
+    it('should enable new context pad if enabled through flag or setting', async function() {
 
       // when
-      Flags.init({
-        [ ENABLE_NEW_CONTEXT_PAD ]: true
-      });
-
-      const modeler = await createModeler();
+      const settings = {
+        get: () => true
+      };
+      const modeler = await createModeler({ settings });
 
       // then
       expect(modeler.getActiveViewer().get('improvedCanvas', false)).to.exist;

@@ -18,8 +18,7 @@ import completeDirectEditingModule from '../../bpmn/modeler/features/complete-di
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 
 import Flags, {
-  DISABLE_ADJUST_ORIGIN,
-  ENABLE_NEW_CONTEXT_PAD
+  DISABLE_ADJUST_ORIGIN
 } from '../../../../util/Flags';
 
 import openDrgElementModule from '../../dmn/modeler/features/overview/open-drg-element';
@@ -53,12 +52,13 @@ export default class CamundaDmnModeler extends DmnModeler {
       literalExpression,
       exporter,
       overview,
+      settings,
       ...otherOptions
     } = options;
 
     let additionalModules = [];
 
-    if (Flags.get(ENABLE_NEW_CONTEXT_PAD, false)) {
+    if (settings.get('app.newContextPad')) {
       additionalModules = [
         ...additionalModules,
         DmnImprovedCanvasModule
@@ -76,7 +76,7 @@ export default class CamundaDmnModeler extends DmnModeler {
       ]),
       drd: mergeModules({
         ...drd,
-        disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN)
+        disableAdjustOrigin: Flags.get(DISABLE_ADJUST_ORIGIN),
       }, [
         propertiesPanelKeyboardBindingsModule,
         executionPlatformModule,
