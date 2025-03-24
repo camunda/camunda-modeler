@@ -82,9 +82,7 @@ module.exports = function(karma) {
         rules: [
           {
             test: /\.bpmnlintrc$/,
-            use: [
-              'bpmnlint-loader'
-            ]
+            use: 'bpmnlint-loader'
           },
           {
             test: /\.js$/,
