@@ -45,15 +45,15 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Support for upcoming Camunda 8 features</h4>
-          You can now create diagrams for Camunda 8.8. We also added support for an <code>updating</code> <a href="https://docs.camunda.io/docs/next/components/concepts/user-task-listeners?utm_source=modeler&utm_medium=referral#supported-events">user task listener.</a>
+          We now support Process application and added resource linking. You can now use process application just like you would in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
         </li>
         <li>
-          <h4>Better modeling guidance</h4>
-          We improved our validation of Camunda 8 ad-hoc subprocesses. Additionally, the modeler now <a href="https://github.com/camunda/camunda-modeler/pull/4843">recognizes documentation URLs provided by linter plug-ins.</a>
+          <h4>Support for RPA editor</h4>
+          We introduced <a href="https://docs.camunda.io/docs/8.7/components/modeler/rpa/">support for Robotic Process Automation (RPA)</a>.
         </li>
         <li>
           <h4>BPMN modeling improvements</h4>
-          Find elements using Camunda-specific search terms. Change the type of an event without losing its implementation details.
+          We have added support to configure <a href="https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1114">attributes</a> to ad-hoc subprocesses. In forms, you can now pass a custom module to define URL-building logic for document URLs in preview component.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
