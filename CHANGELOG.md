@@ -14,7 +14,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `dmn-js@17.2.0`
 * `DEPS`: update to `camunda-dmn-js@^3.2.0`
 * `DEPS`: update to `bpmn-js@18.4.0`
-* `DEPS`: update to `camunda-bpmn-js@5.7.0`
+* `DEPS`: update to `camunda-bpmn-js@5.7.1`
 * `DEPS`: update to `@bpmn-io/form-js@1.15.0`
 * `DEPS`: update to `@camunda/form-linting@0.22.0`
 * `DEPS`: update to `@camunda/form-playground@0.21.0`
