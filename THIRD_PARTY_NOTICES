@@ -192,7 +192,7 @@ This project incorporates components from the projects listed below. The origina
 185.  style-loader@4.0.0 (webpack-contrib/style-loader)
 186.  css-loader@7.1.2 (webpack-contrib/css-loader)
 187.  @camunda/form-playground@0.21.0 (git+https://github.com/camunda/form-playground.git)
-188.  camunda-bpmn-js@5.7.0 (https://github.com/camunda/camunda-bpmn-js)
+188.  camunda-bpmn-js@5.7.1 (https://github.com/camunda/camunda-bpmn-js)
 189.  camunda-dmn-js@3.2.0 (https://github.com/camunda/camunda-dmn-js)
 190.  @camunda/linting@3.36.0 (https://github.com/camunda/linting)
 191.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
@@ -358,7 +358,7 @@ This project incorporates components from the projects listed below. The origina
 351.  @bpmn-io/form-js-playground@1.15.0 (git+https://github.com/bpmn-io/form-js.git)
 352.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
 353.  file-drops@0.5.0 (git+ssh://git@github.com/nikku/file-drops.git)
-354.  @camunda/rpa-integration@0.2.0 (https://github.com/camunda/rpa-frontend)
+354.  @camunda/rpa-integration@0.3.0 (https://github.com/camunda/rpa-frontend)
 355.  @carbon/styles@1.70.0 (https://github.com/carbon-design-system/carbon.git)
 356.  @codemirror/search@6.5.6 (https://github.com/codemirror/search.git)
 357.  codemirror@6.0.1 (https://github.com/codemirror/basic-setup.git)
@@ -12950,7 +12950,7 @@ THE SOFTWARE.
 END OF @camunda/form-playground@0.21.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@5.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@5.7.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12974,7 +12974,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@5.7.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@5.7.1 NOTICES AND INFORMATION
 
 
 %% camunda-dmn-js@3.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -19019,7 +19019,7 @@ THE SOFTWARE.
 END OF file-drops@0.5.0 NOTICES AND INFORMATION
 
 
-%% @camunda/rpa-integration@0.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/rpa-integration@0.3.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Camunda License 1.0
 
@@ -19087,7 +19087,7 @@ Non-Production Environment means a setting in which the Software is used for dev
 testing, quality assurance, demonstration, or evaluation purposes, and not for any live or
 production systems. 
 ==========================================
-END OF @camunda/rpa-integration@0.2.0 NOTICES AND INFORMATION
+END OF @camunda/rpa-integration@0.3.0 NOTICES AND INFORMATION
 
 
 %% @carbon/styles@1.70.0 NOTICES AND INFORMATION BEGIN HERE
