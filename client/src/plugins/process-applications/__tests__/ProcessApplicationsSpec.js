@@ -119,6 +119,34 @@ describe('ProcessApplications', function() {
     });
 
 
+    it('should close process application on <activeTab-changed> (item not found)', function() {
+
+      // given
+      processApplications.emit('items-changed', [
+        DEFAULT_ITEMS_PROCESS_APPLICATION[0],
+        DEFAULT_ITEMS_PROCESS_APPLICATION[1]
+      ]);
+      processApplications.emit('activeTab-changed', DEFAULT_ACTIVE_TAB);
+
+      expect(processApplications.hasOpen()).to.be.true;
+
+      const changedSpy = spy();
+
+      processApplications.on('changed', changedSpy);
+
+      // when
+      processApplications.emit('activeTab-changed', {
+        file: DEFAULT_ITEMS_PROCESS_APPLICATION[2].file
+      });
+
+      // then
+      expect(processApplications.hasOpen()).to.be.false;
+      expect(processApplications.getItems()).to.have.length(0);
+
+      expect(changedSpy).to.have.been.calledOnce;
+    });
+
+
     it('should close process application on <activeTab-changed> (unsaved tab)', function() {
 
       // given

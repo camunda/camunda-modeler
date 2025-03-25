@@ -42,7 +42,7 @@ const {
 } = require('./connector-templates');
 
 const FileContext = require('./file-context/file-context');
-const { toFileUrl, toFilePath } = require('./file-context/util');
+const { toFileUrl } = require('./file-context/util');
 const {
   findProcessApplicationFile,
   isProcessApplicationFile
@@ -241,7 +241,15 @@ renderer.on('file-context:remove-root', function(options, done) {
 });
 
 renderer.on('file-context:file-opened', function(filePath, options, done) {
-  fileContext.fileOpened(toFileUrl(filePath), options);
+  const fileUrl = toFileUrl(filePath);
+
+  fileContext.fileOpened(fileUrl, options);
+
+  const processApplicationFile = findProcessApplicationFile(filePath);
+
+  if (processApplicationFile) {
+    fileContext.addRoot(path.dirname(processApplicationFile));
+  }
 
   done(null);
 });
@@ -253,7 +261,15 @@ renderer.on('file-context:file-updated', function(filePath, options, done) {
 });
 
 renderer.on('file-context:file-closed', function(filePath, done) {
-  fileContext.fileClosed(toFileUrl(filePath));
+  const fileUrl = toFileUrl(filePath);
+
+  const processApplicationFile = fileContext._indexer.getItems().find((item) => {
+    return path.dirname(filePath).startsWith(path.dirname(item.file.path)) && isProcessApplicationFile(item.file.path);
+  });
+
+  if (!processApplicationFile) {
+    fileContext.fileClosed(fileUrl);
+  }
 
   done(null);
 });
@@ -764,22 +780,6 @@ function bootstrap() {
 
   fileContext.on('indexer:updated', onIndexerUpdated);
   fileContext.on('indexer:removed', onIndexerUpdated);
-
-  function onFileOpened(fileUri) {
-    const filePath = toFilePath(fileUri);
-
-    if (isProcessApplicationFile(filePath)) {
-      return;
-    }
-
-    const processApplicationFile = findProcessApplicationFile(filePath);
-
-    if (processApplicationFile) {
-      fileContext.addRoot(path.dirname(processApplicationFile));
-    }
-  };
-
-  fileContext.on('indexer:file-opened', onFileOpened);
 
   app.on('quit', () => fileContext.close());
 
