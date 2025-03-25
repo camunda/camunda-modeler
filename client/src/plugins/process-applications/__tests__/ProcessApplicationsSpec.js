@@ -48,7 +48,7 @@ describe('ProcessApplications', function() {
     });
 
 
-    it('should not open process application on <items-changed>', function() {
+    it('should not open process application on <items-changed> (no process application)', function() {
 
       // given
       const changedSpy = spy();
@@ -61,6 +61,75 @@ describe('ProcessApplications', function() {
 
       // when
       processApplications.emit('items-changed', DEFAULT_ITEMS);
+
+      // then
+      expect(processApplications.hasOpen()).to.be.false;
+      expect(processApplications.getItems()).to.have.length(0);
+
+      expect(changedSpy).to.not.have.been.called;
+    });
+
+
+    it('should not open process application on <items-changed> (item not found)', function() {
+
+      // given
+      const changedSpy = spy();
+
+      processApplications.on('changed', changedSpy);
+
+      processApplications.emit('activeTab-changed', DEFAULT_ITEMS_PROCESS_APPLICATION[2]);
+
+      expect(processApplications.hasOpen()).to.be.false;
+
+      // when
+      processApplications.emit('items-changed', [
+        DEFAULT_ITEMS_PROCESS_APPLICATION[0],
+        DEFAULT_ITEMS_PROCESS_APPLICATION[1]
+      ]);
+
+      // then
+      expect(processApplications.hasOpen()).to.be.false;
+      expect(processApplications.getItems()).to.have.length(0);
+
+      expect(changedSpy).to.not.have.been.called;
+    });
+
+
+    it('should not open process application on <items-changed> (empty tab)', function() {
+
+      // given
+      const changedSpy = spy();
+
+      processApplications.on('changed', changedSpy);
+
+      processApplications.emit('activeTab-changed', EMPTY_TAB);
+
+      expect(processApplications.hasOpen()).to.be.false;
+
+      // when
+      processApplications.emit('items-changed', DEFAULT_ITEMS_PROCESS_APPLICATION);
+
+      // then
+      expect(processApplications.hasOpen()).to.be.false;
+      expect(processApplications.getItems()).to.have.length(0);
+
+      expect(changedSpy).to.not.have.been.called;
+    });
+
+
+    it('should not open process application on <items-changed> (unsaved tab)', function() {
+
+      // given
+      const changedSpy = spy();
+
+      processApplications.on('changed', changedSpy);
+
+      processApplications.emit('activeTab-changed', UNSAVED_TAB);
+
+      expect(processApplications.hasOpen()).to.be.false;
+
+      // when
+      processApplications.emit('items-changed', DEFAULT_ITEMS_PROCESS_APPLICATION);
 
       // then
       expect(processApplications.hasOpen()).to.be.false;

@@ -35,11 +35,15 @@ export default class ProcessApplications {
       } else if (this._activeTab) {
         const { file } = this._activeTab;
 
-        if (!file) {
+        if (!file || !file.path) {
           return;
         }
 
         const item = this._items.find(item => item.file.path === file.path);
+
+        if (!item) {
+          return;
+        }
 
         const processApplicationItem = this.findProcessApplicationItemForItem(item);
 
