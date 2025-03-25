@@ -44,13 +44,14 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for upcoming Camunda 8 features</h4>
-          It now offers full support for Camunda 8.7 and 7.23.
-          We have added support to configure <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc-subprocesses/#completion">attributes</a> to ad-hoc subprocesses. In forms, you can now pass a custom module to define URL-building logic for document URLs in preview component.
+          <h4>Support for upcoming Camunda features</h4>
+          Camunda 8.7 and 7.23 are now fully supported.
+          Also, you can now configure <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc-subprocesses/#completion">attributes</a> of ad-hoc subprocesses, and in forms, you can pass a custom module to define URL-building logic for document URLs in the preview component.
         </li>
         <li>
-          <h4>Support for Process Application</h4>
-          We now support Process application and added resource linking. You can now use process application just like you would in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
+          <h4>Support for process applications</h4>
+          {/* TODO: link process application docs */}
+          We now support process application and resource linking. You can use process applications to bundle related files and deploy them all at once, as in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
         </li>
         <li>
           <h4>Added RPA editor</h4>
