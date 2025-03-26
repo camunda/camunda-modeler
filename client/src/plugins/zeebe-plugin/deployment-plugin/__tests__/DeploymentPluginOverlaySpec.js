@@ -23,7 +23,7 @@ import {
   CAMUNDA_CLOUD
 } from '../../shared/ZeebeTargetTypes';
 
-describe('<DeploymentPluginModal> (Zeebe)', function() {
+describe('<DeploymentPluginOverlay>', function() {
 
   var anchor;
 
@@ -32,7 +32,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
   });
 
   it('should render', function() {
-    createDeploymentPluginModal({ anchor });
+    createDeploymentPluginOverlay({ anchor });
   });
 
 
@@ -43,7 +43,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     const validator = {
       createConnectionChecker: () => createConnectionChecker({ check: spy })
     };
-    createDeploymentPluginModal({ anchor, validator });
+    createDeploymentPluginOverlay({ anchor, validator });
 
     // then
     setTimeout(() => {
@@ -56,7 +56,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
   it('should deploy', function(done) {
 
     // given
-    const { wrapper } = createDeploymentPluginModal({ anchor, onDeploy });
+    const { wrapper } = createDeploymentPluginOverlay({ anchor, onDeploy });
 
     // when
     const form = wrapper.find('form');
@@ -77,7 +77,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
       createConnectionChecker: () => createConnectionChecker({ check: spy })
     };
 
-    const { wrapper } = createDeploymentPluginModal({
+    const { wrapper } = createDeploymentPluginOverlay({
       anchor,
       validator,
       config: {
@@ -110,13 +110,13 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     it('should not show for self-managed without OAuth', function() {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
+      const { wrapper } = createDeploymentPluginOverlay({
         anchor,
         config: {
           endpoint: {
             targetType: SELF_HOSTED,
             authType: AUTH_TYPES.NONE,
-            contactPoint: 'https://google.com'
+            contactPoint: 'https://foo.com'
           },
           deployment: {
             tenantId: 'tenant-1'
@@ -135,13 +135,13 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     it('should show for self-managed with OAuth', function() {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
+      const { wrapper } = createDeploymentPluginOverlay({
         anchor,
         config: {
           endpoint: {
             targetType: SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
-            contactPoint: 'https://google.com'
+            contactPoint: 'https://foo.com'
           },
           deployment: {
             tenantId: 'tenant-1'
@@ -161,14 +161,14 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     it('should not pass on deploy without OAuth', function(done) {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
+      const { wrapper } = createDeploymentPluginOverlay({
         anchor,
         onDeploy,
         config: {
           endpoint: {
             targetType: SELF_HOSTED,
             authType: AUTH_TYPES.NONE,
-            contactPoint: 'https://google.com',
+            contactPoint: 'https://foo.com',
           },
           deployment: {
             tenantId: 'tenant-1'
@@ -193,14 +193,14 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     it('should pass on deploy with OAuth', function(done) {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
+      const { wrapper } = createDeploymentPluginOverlay({
         anchor,
         onDeploy,
         config: {
           endpoint: {
             targetType: SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
-            contactPoint: 'https://google.com'
+            contactPoint: 'https://foo.com'
           },
           deployment: {
             tenantId: 'tenant-1'
@@ -225,7 +225,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     it('should not show for SaaS', function() {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
+      const { wrapper } = createDeploymentPluginOverlay({
         anchor,
         config: {
           endpoint: {
@@ -250,7 +250,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     it('should pass config on deploy', function(done) {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
+      const { wrapper } = createDeploymentPluginOverlay({
         anchor,
         onDeploy,
         config: {
@@ -286,14 +286,14 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     it('should pass config on deploy', function(done) {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
+      const { wrapper } = createDeploymentPluginOverlay({
         anchor,
         onDeploy,
         config: {
           endpoint: {
             targetType: SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
-            contactPoint: 'https://google.com',
+            contactPoint: 'https://foo.com',
             audience: 'audience'
           }
         }
@@ -318,14 +318,14 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     it('should pass <scope> on deploy', function(done) {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
+      const { wrapper } = createDeploymentPluginOverlay({
         anchor,
         onDeploy,
         config: {
           endpoint: {
             targetType: SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
-            contactPoint: 'https://google.com',
+            contactPoint: 'https://foo.com',
             audience: 'audience',
             scope: 'scope'
           }
@@ -353,7 +353,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
   it('should extract clusterId and clusterRegion', function(done) {
 
     // given
-    const { wrapper } = createDeploymentPluginModal({
+    const { wrapper } = createDeploymentPluginOverlay({
       anchor,
       onDeploy,
       config: {
@@ -380,7 +380,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
   it('should extract clusterId with https', function(done) {
 
     // given
-    const { wrapper } = createDeploymentPluginModal({
+    const { wrapper } = createDeploymentPluginOverlay({
       anchor,
       onDeploy,
       config: {
@@ -405,7 +405,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
 });
 
 
-const createDeploymentPluginModal = ({ ...props } = {}) => {
+const createDeploymentPluginOverlay = ({ ...props } = {}) => {
 
   const config = createConfig(props.config);
   const validator = new Validator(props.validator);
@@ -438,7 +438,7 @@ function createConfig({ endpoint = {}, deployment = {} } = {}) {
     endpoint: {
       targetType: SELF_HOSTED,
       authType: AUTH_TYPES.NONE,
-      contactPoint: 'https://google.com',
+      contactPoint: 'https://foo.com',
       ...endpoint
     }
   };

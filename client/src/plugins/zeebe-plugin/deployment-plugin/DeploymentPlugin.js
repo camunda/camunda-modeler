@@ -230,7 +230,6 @@ export default class DeploymentPlugin extends PureComponent {
 
     const {
       deployment: {
-        name,
         tenantId
       },
       endpoint
@@ -239,15 +238,14 @@ export default class DeploymentPlugin extends PureComponent {
     const zeebeAPI = this.props._getGlobal('zeebeAPI');
 
     return zeebeAPI.deploy({
-      name,
-      tenantId,
       endpoint,
       resourceConfigs: [
         {
           path,
           type: getResourceType(tab)
         }
-      ]
+      ],
+      tenantId
     });
   }
 
@@ -409,9 +407,7 @@ export default class DeploymentPlugin extends PureComponent {
   }
 
   async getDefaultConfig(savedConfig, tab) {
-    const deployment = {
-      name: withoutExtension(tab.name)
-    };
+    const deployment = {};
 
     const endpoint = await this.getDefaultEndpoint(tab);
 
@@ -635,10 +631,6 @@ export default class DeploymentPlugin extends PureComponent {
 }
 
 // helpers //////////
-
-function withoutExtension(name) {
-  return name.replace(/\.[^.]+$/, '');
-}
 
 function addOrUpdateById(collection, element) {
 
