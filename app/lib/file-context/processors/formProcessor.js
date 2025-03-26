@@ -10,6 +10,8 @@
 
 const assert = require('node:assert');
 
+const { isCamunda8Form } = require('./util');
+
 module.exports = {
   id: 'form',
   extensions: [ '.form' ],
@@ -24,10 +26,15 @@ module.exports = {
       };
     }
 
+    if (!isCamunda8Form(item.file.contents)) {
+      throw new Error('Not a Camunda 8 Form file');
+    }
+
     let forms = [];
 
     try {
       const form = JSON.parse(item.file.contents);
+
       forms.push({
         id: form.id,
         name: form.name || form.id

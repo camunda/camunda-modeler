@@ -439,7 +439,7 @@ describe('FileContext', function() {
     });
 
 
-    it('should NOT throw for form without `id`', async function() {
+    it('should NOT throw for null form', async function() {
 
       // given
       const filePath = path.resolve(__dirname, './tmp/broken-files/form-null.form');
@@ -454,7 +454,7 @@ describe('FileContext', function() {
       expectMessages(item, [
         {
           error: true,
-          message: /Failed to parse form file: Cannot read/,
+          message: /Failed to parse form file: Cannot/,
           source: 'process-error'
         }
       ]);
