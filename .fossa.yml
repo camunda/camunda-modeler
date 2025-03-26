@@ -1,0 +1,12 @@
+version: 3
+
+project:
+  id: camunda/camunda-modeler
+  labels:
+  - camunda-modeler
+  policy: Camunda8 Distribution
+  url: https://github.com/camunda/camunda-modeler
+
+paths:
+  exclude:
+  - ./resources
