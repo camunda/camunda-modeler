@@ -11,6 +11,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const { Parser } = require('saxen');
+
 const { getFileExtension } = require('../util');
 
 function findExtensionElement(element, type) {
@@ -95,3 +97,65 @@ function isProcessApplicationFile(filePath) {
 }
 
 module.exports.isProcessApplicationFile = isProcessApplicationFile;
+
+const XML_NS_MODELER = 'http://camunda.org/schema/modeler/1.0';
+const XML_NS_ZEEBE = 'http://camunda.org/schema/zeebe/1.0';
+
+const EXECUTION_PLATFORM_CAMUNDA_CLOUD = 'Camunda Cloud';
+
+function isCamunda8XML(xml) {
+  let result = false;
+
+  const parser = new Parser();
+
+  parser.on('error', function() {
+    parser.stop();
+  });
+
+  parser.on('openTag', (_, getAttributes) => {
+    parser.stop();
+
+    const attributes = getAttributes();
+
+    if (getAttribute(attributes, 'modeler', 'xmlns') === XML_NS_MODELER && getAttribute(attributes, 'executionPlatform', 'modeler') === EXECUTION_PLATFORM_CAMUNDA_CLOUD) {
+      result = true;
+    }
+
+    if (getAttribute(attributes, 'zeebe', 'xmlns') === XML_NS_ZEEBE) {
+      result = true;
+    }
+  });
+
+  parser.parse(xml);
+
+  return result;
+}
+
+module.exports.isCamunda8BPMN = isCamunda8XML;
+module.exports.isCamunda8DMN = isCamunda8XML;
+
+function isCamunda8Form(json) {
+  let executionPlatform;
+
+  try {
+    ({ executionPlatform } = JSON.parse(json));
+  } catch (error) {
+    throw new Error(`Failed to parse form file: ${ error.message }`);
+  }
+
+  return executionPlatform === EXECUTION_PLATFORM_CAMUNDA_CLOUD;
+
+}
+
+module.exports.isCamunda8Form = isCamunda8Form;
+
+/**
+ * @param {Map<string, string>} attributes
+ * @param {string} attribute
+ * @param {string} prefix
+ *
+ * @returns {string | undefined}
+ */
+function getAttribute(attributes, attribute, prefix) {
+  return attributes[ `${prefix}:${attribute}` ] || attributes[ attribute ];
+}

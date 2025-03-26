@@ -14,6 +14,7 @@ const moddle = new DmnModdle();
 
 const {
   is,
+  isCamunda8DMN,
   traverse
 } = require('./util');
 
@@ -29,6 +30,10 @@ module.exports = {
         decisions: [],
         linkedIds: []
       };
+    }
+
+    if (!isCamunda8DMN(item.file.contents)) {
+      throw new Error('Not a Camunda 8 DMN file');
     }
 
     let rootElement, decisions;
