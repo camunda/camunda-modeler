@@ -1,0 +1,35 @@
+name: CHECK_LICENSES
+
+on:
+  push:    
+    branches:
+    - main
+    - develop
+
+jobs:
+  analyze:
+    name: Analyze dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v4
+    # Import FOSSA_API_KEY from Vault
+    - name: Import Secrets
+      id: secrets
+      uses: hashicorp/vault-action@v3.0.0
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/desktop-modeler/ci/fossa FOSSA_API_KEY;
+    - name: Setup fossa-cli
+      uses: camunda/infra-global-github-actions/fossa/setup@32470949e549396aa5f2c5def890de831b8ca107
+    - name: Analyze project
+      uses: camunda/infra-global-github-actions/fossa/analyze@32470949e549396aa5f2c5def890de831b8ca107
+      with:
+        api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
+        branch: ${{ github.ref_name }}
+        revision-id: ${{ github.sha }}
