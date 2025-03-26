@@ -51,11 +51,11 @@ export function ReleaseInfo(props) {
         <li>
           <h4>Support for process applications</h4>
           {/* TODO: link process application docs */}
-          We now support process application and resource linking. You can use process applications to bundle related files and deploy them all at once, as in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
+          We now support process applications and resource linking. You can use process applications to bundle related files and deploy them all at once, as in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
         </li>
         <li>
-          <h4>Added RPA editor</h4>
-          We introduced <a href="https://docs.camunda.io/docs/8.7/components/modeler/rpa/">Robotic Process Automation (RPA)</a> editor to write scripts to be executed by the RPA worker.
+          <h4>RPA editor</h4>
+          Edit, test and deploy <a href="https://docs.camunda.io/docs/8.7/components/modeler/rpa/">Robotic Process Automation (RPA)</a> scripts with the new RPA editor.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
