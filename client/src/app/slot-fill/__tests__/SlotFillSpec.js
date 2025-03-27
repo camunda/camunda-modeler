@@ -313,6 +313,117 @@ describe('slot-fill', function() {
 
     });
 
+
+    describe('replacing', function() {
+
+      it('should replace', function() {
+
+        // when
+        const slotFillRoot = ReactDOM.render(
+          <SlotFillRoot>
+            <Fill slot="foo" name="foo-fill">
+              <div className="fill" id="foo" />
+            </Fill>
+            <Fill slot="foo" name="bar-fill" replaces="foo-fill">
+              <div className="fill" id="bar" />
+            </Fill>
+            <div className="slot">
+              <Slot name="foo" />
+            </div>
+          </SlotFillRoot>, container);
+
+        // then
+        const fills = findComponentsWithClass(slotFillRoot, 'fill'),
+              slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+
+        expect(fills.length).to.eql(1);
+        expect(fills.map(fill => fill.id)).to.eql([ 'bar' ]);
+        expect(fills.every(fill => slot.contains(fill))).to.be.true;
+      });
+
+
+      it('should not replace', function() {
+
+        // when
+        const slotFillRoot = ReactDOM.render(
+          <SlotFillRoot>
+            <Fill slot="foo" name="bar-fill" replaces="foo-fill">
+              <div className="fill" id="bar" />
+            </Fill>
+            <div className="slot">
+              <Slot name="foo" />
+            </div>
+          </SlotFillRoot>, container);
+
+        // then
+        const fills = findComponentsWithClass(slotFillRoot, 'fill'),
+              slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+
+        expect(fills.length).to.eql(1);
+        expect(fills.map(fill => fill.id)).to.eql([ 'bar' ]);
+        expect(fills.every(fill => slot.contains(fill))).to.be.true;
+      });
+
+
+      it('should replace replacement', function() {
+
+        // when
+        const slotFillRoot = ReactDOM.render(
+          <SlotFillRoot>
+            <Fill slot="foo" name="foo-fill">
+              <div className="fill" id="foo" />
+            </Fill>
+            <Fill slot="foo" name="bar-fill" replaces="foo-fill">
+              <div className="fill" id="bar" />
+            </Fill>
+            <Fill slot="foo" name="baz-fill" replaces="bar-fill">
+              <div className="fill" id="baz" />
+            </Fill>
+            <div className="slot">
+              <Slot name="foo" />
+            </div>
+          </SlotFillRoot>, container);
+
+        // then
+        const fills = findComponentsWithClass(slotFillRoot, 'fill'),
+              slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+
+        expect(fills.length).to.eql(1);
+        expect(fills.map(fill => fill.id)).to.eql([ 'baz' ]);
+        expect(fills.every(fill => slot.contains(fill))).to.be.true;
+      });
+
+
+      it('should not replace replacement', function() {
+
+        // when
+        const slotFillRoot = ReactDOM.render(
+          <SlotFillRoot>
+            <Fill slot="foo" name="foo-fill">
+              <div className="fill" id="foo" />
+            </Fill>
+            <Fill slot="foo" name="bar-fill" replaces="foo-fill">
+              <div className="fill" id="bar" />
+            </Fill>
+            <Fill slot="foo" name="baz-fill" replaces="foo-fill">
+              <div className="fill" id="baz" />
+            </Fill>
+            <div className="slot">
+              <Slot name="foo" />
+            </div>
+          </SlotFillRoot>, container);
+
+        // then
+        const fills = findComponentsWithClass(slotFillRoot, 'fill'),
+              slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+
+        expect(fills.length).to.eql(2);
+        expect(fills.map(fill => fill.id)).to.eql([ 'bar', 'baz' ]);
+        expect(fills.every(fill => slot.contains(fill))).to.be.true;
+      });
+
+    });
+
   });
 
 });
