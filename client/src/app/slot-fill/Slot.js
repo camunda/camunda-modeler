@@ -14,29 +14,32 @@ import SlotContext from './SlotContext';
 
 
 /**
- * A slot to be filled via <Fill> elements.
+ * A slot that may be filled by fills.
  *
- * @example
+ * @example <caption>Basic Usage</caption>
  *
- * <!-- default slot, shows fills in registration order -->
+ * ```jsx
+ * <Slot name="foo" />
+ * <Fill slot="foo" />
+ * ```
  *
- * <Slot name="status-bar__app" />
+ * @example <caption>Grouping</caption>
  *
- * <!-- slot with custom grouping and separators -->
- *
+ * ```jsx
  * <Slot
- *   name="status-bar__app"
+ *   name="foo-slot"
  *   group={ (fills) => [ fills ] }
  *   separator={ () => <hr /> }
  * />
+ * ```
  *
- * <!-- slot holding the first registered fill only -->
+ * @example <caption>Replacing</caption>
  *
- * <Slot
- *   name="special-button"
- *   limit={ 1 }
- * />
- *
+ * ```jsx
+ * <Slot name="foo-slot"/>
+ * <Fill name="foo-fill" slot="foo-slot" />
+ * <Fill name="bar-fill" slot="foo-slot" replaces="foo-fill" />
+ * ```
  */
 export default class Slot extends PureComponent {
 
@@ -45,21 +48,25 @@ export default class Slot extends PureComponent {
       name,
       group = groupFills,
       separator = nonSeparator,
-      limit,
       Component
     } = this.props;
 
     return (
       <SlotContext.Consumer>{
         ({ fills }) => {
+          const filtered = fills.filter(fill => fill.props.slot === name);
 
-          const filtered = fills.filter(fill => {
-            return fill.props.slot === name;
-          });
+          const replaced = filtered.reduce((replaced, fill) => {
+            if (!fill.props.name || !filtered.some(otherFill => otherFill.props.replaces === fill.props.name)) {
+              replaced.push(fill);
+            }
 
-          const cropped = limit ? filtered.slice(0, limit) : filtered;
+            return replaced;
+          }, []);
 
-          const grouped = group(cropped);
+          const sorted = replaced.slice().sort(comparePriority);
+
+          const grouped = group(sorted);
 
           return createFills(grouped, fillFragment(Component), separator);
         }
