@@ -72,6 +72,8 @@ import * as css from './App.less';
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
 
+import { Settings } from './Settings';
+
 const log = debug('App');
 
 export const EMPTY_TAB = {
@@ -124,6 +126,33 @@ export class App extends PureComponent {
     this.recentTabs = new RecentTabs({
       setState: value => this.setState({ recentTabs: value }),
       config: this.getGlobal('config')
+    });
+
+    this.settings = new Settings({
+      config: this.getGlobal('config'),
+    });
+
+    this.settings.register({
+      id: 'app',
+      title: 'App Settings',
+      properties: {
+        'app.newContextPad': {
+          type: 'boolean',
+          default: false,
+          flag: 'enable-new-context-pad',
+          label: 'New context pad',
+          description: 'Enable the new context pad.',
+          requireReload: true,
+        },
+        'app.disableRpa': {
+          type: 'boolean',
+          default: true,
+          flag: 'disable-rpa',
+          label: 'Disable RPA',
+          description: 'Disable the RPA editor.',
+          requireReload: true,
+        }
+      }
     });
 
     this.tabRef = React.createRef();
@@ -1972,6 +2001,10 @@ export class App extends PureComponent {
       return panel.open ? this.closePanel() : this.openPanel(panel.tab);
     }
 
+    if (action === 'settings-open') {
+      return this.emit('app.settings-open');
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
@@ -2187,6 +2220,7 @@ export class App extends PureComponent {
                       setConfig={ this.setConfig }
                       getPlugins={ this.getPlugins }
                       ref={ this.tabRef }
+                      settings={ this.settings }
                     />
                   }
                 </TabContainer>
