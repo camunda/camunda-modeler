@@ -44,16 +44,17 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for upcoming Camunda 8 features</h4>
-          You can now create diagrams for Camunda 8.8. We also added support for an <code>updating</code> <a href="https://docs.camunda.io/docs/next/components/concepts/user-task-listeners?utm_source=modeler&utm_medium=referral#supported-events">user task listener.</a>
+          <h4>Support for upcoming Camunda features</h4>
+          Camunda 8.7 and 7.23 are now fully supported.
+          Also, you can now configure <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc-subprocesses/?utm_source=modeler&utm_medium=referral#completion">attributes</a> of ad-hoc subprocesses, and in forms, you can pass a custom module to define URL-building logic for document URLs in the preview component.
         </li>
         <li>
-          <h4>Better modeling guidance</h4>
-          We improved our validation of Camunda 8 ad-hoc subprocesses. Additionally, the modeler now <a href="https://github.com/camunda/camunda-modeler/pull/4843">recognizes documentation URLs provided by linter plug-ins.</a>
+          <h4>Support for process applications</h4>
+          We now support <a href="https://docs.camunda.io/docs/8.7/components/modeler/desktop-modeler/process-applications/">process applications</a> and resource linking. You can use process applications to bundle related files and deploy them all at once, as in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
         </li>
         <li>
-          <h4>BPMN modeling improvements</h4>
-          Find elements using Camunda-specific search terms. Change the type of an event without losing its implementation details.
+          <h4>RPA editor</h4>
+          Edit, test and deploy <a href="https://docs.camunda.io/docs/8.7/components/modeler/rpa/">Robotic Process Automation (RPA)</a> scripts with the new RPA editor.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
