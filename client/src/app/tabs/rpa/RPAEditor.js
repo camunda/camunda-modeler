@@ -151,8 +151,6 @@ export class RPAEditor extends CachedComponent {
       lastXML: null,
     });
 
-    console.log(error);
-
     this.props.onImport(error);
   }
 
