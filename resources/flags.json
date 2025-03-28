@@ -1,3 +1,4 @@
 {
-  "disable-rpa": false
+  "disable-rpa": false,
+  "disable-connector-templates": true
 }

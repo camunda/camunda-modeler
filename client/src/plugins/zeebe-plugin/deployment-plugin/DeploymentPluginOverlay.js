@@ -8,259 +8,141 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+/**
+ * @typedef {import('./types').DeploymentConfig} DeploymentConfig
+ * @typedef {import('./types').DeploymentConnectionValidationResult} DeploymentConnectionValidationResult
+ */
 
-import {
-  OVERLAY_TITLE,
-  DEPLOY,
-  NEXT,
-  ERROR_REASONS,
-  CONNECTION_ERROR_MESSAGES,
-  TROUBLESHOOTING_URL
-} from './DeploymentPluginConstants';
-
-import { AUTH_TYPES } from './../shared/ZeebeAuthTypes';
-
-import {
-  CAMUNDA_CLOUD
-} from '../shared/ZeebeTargetTypes';
+import React, { useEffect, useState } from 'react';
 
 import { Overlay } from '../../../shared/ui';
 
-import EndpointConfigForm from './EndpointConfigForm';
+import DeploymentConfigForm from './DeploymentConfigForm';
+import DeploymentConfigValidator from './DeploymentConfigValidator';
+
+import { getDeploymentConnectionValidationError } from './DeploymentConnectionValidationErrors';
+
+import {
+  getSuccessNotification,
+  getErrorNotification
+} from './DeploymentNotifications';
+
+import { getResourceType } from '../shared/util';
 
 import * as css from './DeploymentPluginOverlay.less';
 
+export default function DeploymentPluginOverlay(props) {
+  const {
+    activeTab,
+    anchor,
+    deployment,
+    deploymentConfigValidator,
+    deploymentConnectionValidator,
+    onClose,
+    showNotification,
+    triggerAction
+  } = props;
 
-const CONNECTION_STATE = {
-  INITIAL: 'initial',
-  INVALID_ENDPOINT: 'invalidEndpoint',
-  ERROR: 'error',
-  CONNECTED: 'connected'
-};
+  /** @type {DeploymentConfig} */
+  const [ config, setConfig ] = useState(null);
 
-export default class DeploymentPluginOverlay extends React.PureComponent {
+  /** @type {DeploymentConnectionValidationResult} */
+  const [ validateConnectionResult, setValidateConnectionResult ] = useState(null);
 
-  constructor(props) {
-    super(props);
+  const getFieldError = (meta, fieldName) => {
+    return getDeploymentConnectionValidationError(fieldName, validateConnectionResult) || (meta.touched && meta.error);
+  };
 
-    this.state = {
-      connectionState: { type: CONNECTION_STATE.INITIAL },
-      configValues: {}
+  const onSubmit = async (values) => {
+    const config = values;
+
+    const { file } = activeTab;
+
+    const deploymentResponse = await deployment.deploy([
+      {
+        path: file.path,
+        type: getResourceType(activeTab)
+      }
+    ], config);
+
+    if (deploymentResponse.success) {
+      showNotification(getSuccessNotification(activeTab, config, deploymentResponse));
+    } else {
+      showNotification(getErrorNotification(triggerAction));
+    }
+  };
+
+  const validateForm = async (values) => {
+    const config = values;
+
+    const configValidationErrors = deploymentConfigValidator.validateConfig(values);
+
+    if (Object.keys(configValidationErrors).length > 0) {
+      deploymentConnectionValidator.stopConnectionValidation();
+
+      return configValidationErrors;
+    }
+
+    const connectionValidationResult = await deploymentConnectionValidator.validateConnection(config);
+
+    setValidateConnectionResult(connectionValidationResult);
+
+    deploymentConnectionValidator.startConnectionValidation(config);
+  };
+
+  useEffect(async () => {
+    const { file } = activeTab;
+
+    let config = await deployment.getConfigForFile(file);
+
+    const defaultEndpoint = deployment.getDefaultEndpoint();
+
+    config = {
+      ...config,
+      endpoint: {
+        ...defaultEndpoint,
+        ...config.endpoint
+      }
     };
 
-    const { validator } = props;
+    setConfig(config);
 
-    this.validatorFunctionsByFieldNames = {
-      contactPoint: validator.validateZeebeContactPoint,
-      basicAuthUsername: validator.validateBasicAuthUsername,
-      basicAuthPassword: validator.validateBasicAuthPassword,
-      oauthURL: validator.validateOAuthURL,
-      audience: validator.validateAudience,
-      scope: validator.validateScope,
-      clientId: validator.validateClientId,
-      clientSecret: validator.validateClientSecret,
-      camundaCloudClientId: validator.validateClientId,
-      camundaCloudClientSecret: validator.validateClientSecret,
-      camundaCloudClusterUrl: validator.validateClusterUrl
+    const configValidationErrors = deploymentConfigValidator.validateConfig(config);
+
+    if (Object.keys(configValidationErrors).length > 0) {
+      deploymentConnectionValidator.stopConnectionValidation();
+
+      return configValidationErrors;
+    }
+
+    const connectionValidationResult = await deploymentConnectionValidator.validateConnection(config);
+
+    setValidateConnectionResult(connectionValidationResult);
+
+    deploymentConnectionValidator.on('validate-connection-result', setValidateConnectionResult);
+
+    return () => {
+      deploymentConnectionValidator.off('validate-connection-result', setValidateConnectionResult);
+
+      deploymentConnectionValidator.stopConnectionValidation();
     };
+  }, [ setConfig, setValidateConnectionResult ]);
 
-    this.connectionChecker = validator.createConnectionChecker();
-  }
-
-  async componentDidMount() {
-    this.connectionChecker.subscribe({
-      onComplete: this.handleConnectionCheckResult
-    });
-  }
-
-  componentWillUnmount() {
-    this.connectionChecker.unsubscribe();
-  }
-
-  endpointConfigurationFieldError = (meta, fieldName) => {
-    return this.getConnectionError(fieldName) || (meta.touched && meta.error);
-  };
-
-  getConnectionError(rawFieldName) {
-    const { connectionState } = this.state;
-
-    // no connection error
-    if (connectionState.type !== CONNECTION_STATE.ERROR) {
-      return;
-    }
-
-    const fieldName = rawFieldName.replace('endpoint.', '');
-    const { failureReason } = connectionState;
-
-    switch (failureReason) {
-    case ERROR_REASONS.CONTACT_POINT_UNAVAILABLE:
-      return fieldName === 'contactPoint' &&
-        <>
-          { CONNECTION_ERROR_MESSAGES[failureReason] } <a href={ TROUBLESHOOTING_URL }>Troubleshoot</a>
-        </>;
-    case ERROR_REASONS.CLUSTER_UNAVAILABLE:
-      return fieldName === 'camundaCloudClusterUrl' &&
-        <>
-          { CONNECTION_ERROR_MESSAGES[failureReason] } <a href={ TROUBLESHOOTING_URL }>Troubleshoot</a>
-        </>;
-    case ERROR_REASONS.UNSUPPORTED_ENGINE:
-      return [
-        'contactPoint',
-        'camundaCloudClusterUrl'
-      ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
-    case ERROR_REASONS.UNAUTHORIZED:
-    case ERROR_REASONS.FORBIDDEN:
-      return [
-        'clientId',
-        'clientSecret',
-        'camundaCloudClientId',
-        'camundaCloudClientSecret',
-        'audience',
-        'scope'
-      ].includes(fieldName) && CONNECTION_ERROR_MESSAGES[failureReason];
-    case ERROR_REASONS.OAUTH_URL:
-      return fieldName === 'oauthURL' && CONNECTION_ERROR_MESSAGES[failureReason];
-    case ERROR_REASONS.UNKNOWN:
-      return [
-        'contactPoint',
-        'camundaCloudClusterUrl',
-        'oauthURL'
-      ].includes(fieldName) &&
-        <>
-          { CONNECTION_ERROR_MESSAGES[failureReason] } <a href={ TROUBLESHOOTING_URL }>Troubleshoot</a>
-        </>;
-    case ERROR_REASONS.INVALID_CLIENT_ID:
-      return fieldName === 'camundaCloudClientId' && CONNECTION_ERROR_MESSAGES[failureReason];
-    case ERROR_REASONS.INVALID_CREDENTIALS:
-      return fieldName === 'camundaCloudClientSecret' && CONNECTION_ERROR_MESSAGES[failureReason];
-    }
-  }
-
-  scheduleConnectionCheck = formValues => {
-    const { endpoint } = formValues;
-
-    // empty scope shall not be passed
-    if (!endpoint.scope) {
-      delete endpoint.scope;
-    }
-
-    this.connectionChecker.check(endpoint);
-
-    this.setState({ configValues: formValues });
-  };
-
-  handleConnectionCheckResult = result => {
-    const { connectionResult, endpointErrors } = result;
-
-    if (endpointErrors) {
-      return this.setConnectionState({ type: CONNECTION_STATE.INVALID_ENDPOINT });
-    }
-
-    if (!connectionResult.success) {
-      return this.setConnectionState({
-        type: CONNECTION_STATE.ERROR,
-        failureReason: connectionResult.reason
-      });
-    }
-
-    return this.setConnectionState({ type: CONNECTION_STATE.CONNECTED });
-  };
-
-  setConnectionState(connectionState) {
-    this.setState({ connectionState });
-  }
-
-  handleFormSubmit = async (values, { setSubmitting }) => {
-    const {
-      deployment,
-      endpoint
-    } = values;
-
-    // Extract clusterId and clusterRegion as required by zeebeAPI for camundaCloud
-    if (endpoint.targetType === CAMUNDA_CLOUD && endpoint.camundaCloudClusterUrl) {
-      endpoint.camundaCloudClusterId = extractClusterId(endpoint.camundaCloudClusterUrl);
-      endpoint.camundaCloudClusterRegion = extractClusterRegion(endpoint.camundaCloudClusterUrl);
-    }
-
-    if (!endpoint.scope) {
-      delete endpoint.scope;
-    }
-
-    if (endpoint.authType === AUTH_TYPES.NONE) {
-      delete deployment.tenantId;
-    }
-
-    // check connection
-    const { connectionResult } = await this.connectionChecker.check(endpoint);
-
-    if (!connectionResult.success) {
-      return setSubmitting(false);
-    }
-
-    this.props.onDeploy(values);
-  };
-
-  render() {
-
-    const {
-      onClose: closeOverlay,
-      config,
-      isStart,
-      anchor
-    } = this.props;
-
-    const onClose = () => closeOverlay(this.state.configValues, 'cancel');
-
-    const {
-      validatorFunctionsByFieldNames
-    } = this;
-
-    return (
-      <Overlay className={ css.DeploymentPluginOverlay } onClose={ onClose } anchor={ anchor }>
-        <EndpointConfigForm
-          getFieldError={ this.endpointConfigurationFieldError }
-          initialFieldValues={ config }
-          onSubmit={ this.handleFormSubmit }
-          renderHeader={ OVERLAY_TITLE }
-          renderSubmit={ isStart ? NEXT : DEPLOY }
-          validateForm={ this.scheduleConnectionCheck }
-          validateField={ (name, value) => {
-            const validateField = validatorFunctionsByFieldNames[name];
-
-            if (!validateField) {
-              return;
-            }
-
-            return validateField(value);
-          } } />
-      </Overlay>
-    );
-  }
-}
-
-
-// helper ////////
-
-/**
-  * extractClusterId
-  *
-  * @param  {string} camundaCloudClusterUrl
-  * @return {string} camundaCloudClusterId
-  */
-function extractClusterId(camundaCloudClusterUrl) {
-  const matches = camundaCloudClusterUrl.match(/([a-z\d]+-){2,}[a-z\d]+/g);
-  return matches ? matches[0] : null;
-}
-
-
-/**
- * extractClusterRegion
- *
- * @param  {type} camundaCloudClusterUrl
- * @return {type} camundaCloudClusterRegion
- */
-function extractClusterRegion(camundaCloudClusterUrl) {
-  const matches = camundaCloudClusterUrl.match(/(?<=\.)[a-z]+-[\d]+/g);
-  return matches ? matches[0] : null;
+  return (
+    <Overlay className={ css.DeploymentPluginOverlay } onClose={ onClose } anchor={ anchor }>
+      { config
+        ? (
+          <DeploymentConfigForm
+            getFieldError={ getFieldError }
+            initialFieldValues={ config }
+            onSubmit={ onSubmit }
+            renderHeader="Deploy diagram"
+            renderSubmit="Deploy diagram"
+            validateForm={ validateForm }
+            validateField={ (name, value) => DeploymentConfigValidator.validateConfigValue(name, value) } />
+        )
+        : <div>Loading...</div>
+      }
+    </Overlay>
+  );
 }

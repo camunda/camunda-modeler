@@ -21,34 +21,10 @@ describe('<ZeebePlugin>', function() {
   it('should render', function() {
 
     // when
-    const { component } = createZeebePlugin();
+    const wrapper = shallow(<ZeebePlugin _getGlobal={ () => {} } />);
 
     // then
-    expect(component).to.exist;
+    expect(wrapper.exists()).to.be.true;
   });
 
 });
-
-
-// helpers ////////////////////
-
-function createZeebePlugin(options = {}) {
-
-  const component = shallow(
-    <ZeebePlugin
-      { ...options }
-      config={ options.config || noop }
-      displayNotification={ options.displayNotification || noop }
-      subscribe={ options.subscribe || noop }
-    />
-  );
-
-  const instance = component.instance();
-
-  return {
-    component,
-    instance
-  };
-}
-
-function noop() {}

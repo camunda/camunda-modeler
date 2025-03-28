@@ -71,7 +71,17 @@ module.exports = function(karma) {
 
     browsers: browsers,
 
+    // Increase timeout for capturing a browser (in ms)
     browserNoActivityTimeout: 60000,
+
+    // Increase tolerance for browser disconnects
+    browserDisconnectTolerance: 3, // 3 times
+
+    // Increase timeout for browser disconnect (in ms)
+    browserDisconnectTimeout: 210000, // 3.5 minutes
+
+    // Increase timeout for browser inactivity (in ms)
+    browserNoActivityTimeout: 210000, // 3.5 minutes
 
     singleRun: true,
     autoWatch: false,

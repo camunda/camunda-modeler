@@ -9,9 +9,15 @@
  */
 
 /**
- * Get a link to cluster in Operate.
+ * @typedef {import('../deployment-plugin/types').Endpoint} Endpoint
+ */
+
+/**
+ * Get URL for Camunda Operate cluster.
  *
  * @param {Endpoint} endpoint
+ *
+ * @returns {URL}
  */
 export function getClusterUrl(endpoint) {
   const {
@@ -24,8 +30,8 @@ export function getClusterUrl(endpoint) {
   return url;
 }
 
-function getProcess(apiResponse) {
-  return apiResponse?.deployments?.[0]?.process || null;
+function getProcess(deploymentResponse) {
+  return deploymentResponse?.deployments?.[0]?.process || null;
 }
 
 export function getProcessId(response) {
@@ -34,4 +40,38 @@ export function getProcessId(response) {
 
 export function getProcessVersion(response) {
   return getProcess(response)?.version || null;
+}
+
+const RESOURCE_TYPES = {
+  BPMN: 'bpmn',
+  DMN: 'dmn',
+  FORM: 'form',
+  RPA: 'rpa'
+};
+
+/*
+  * Get resource type from tab.
+  *
+  * @param {{ type: string }} tab
+  *
+  * @returns {string|null}
+  */
+export function getResourceType({ type }) {
+  if (type === 'cloud-bpmn') {
+    return RESOURCE_TYPES.BPMN;
+  }
+
+  if (type === 'cloud-dmn') {
+    return RESOURCE_TYPES.DMN;
+  }
+
+  if (type === 'cloud-form') {
+    return RESOURCE_TYPES.FORM;
+  }
+
+  if (type === 'rpa') {
+    return RESOURCE_TYPES.RPA;
+  }
+
+  return null;
 }
