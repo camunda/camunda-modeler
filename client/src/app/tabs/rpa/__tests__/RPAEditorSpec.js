@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 
 import { mount } from 'enzyme';
 
@@ -21,31 +22,55 @@ import { RPAEditor } from '../RPAEditor';
 
 import { RPACodeEditor as MockRPACodeEditor } from 'test/mocks/rpa';
 
-const RPA = '{}';
+const RPA = '{"script": "Hello, World!"}';
+const INVALID_RPA = 'invalid rpa';
 
 /* global sinon */
 
 describe('<RPAEditor>', function() {
 
-  describe('#render', function() {
+  describe('import', function() {
 
-    it('should render with NO xml', function() {
+    it('should import with script', async function() {
+
+      // given
+      const onImportSpy = sinon.spy((errors) => {
+        expect(errors).not.to.exist;
+      });
 
       const {
         instance
-      } = renderEditor();
+      } = await renderEditor(RPA, {
+        onImport: onImportSpy,
+        cache: new Cache()
+      });
 
-      expect(instance).to.exist;
+      return waitFor(() => {
+        expect(instance).to.exist;
+        expect(onImportSpy).to.have.been.calledOnce;
+        expect(onImportSpy.args[0][0]).not.to.exist;
+      });
     });
 
 
-    it('should render with xml', function() {
+    it('should report import errors', async function() {
 
-      const {
-        instance
-      } = renderEditor(RPA);
+      // given
+      const onImportSpy = sinon.spy((errors) => {
+        expect(errors).to.exist;
+      });
 
-      expect(instance).to.exist;
+      // when
+      await renderEditor(INVALID_RPA, {
+        onImport: onImportSpy,
+        cache: new Cache()
+      });
+
+      // then
+      return waitFor(() => {
+        expect(onImportSpy).to.have.been.calledOnce;
+        expect(onImportSpy.args[0][0]).to.exist;
+      });
     });
 
   });
@@ -112,8 +137,16 @@ describe('<RPAEditor>', function() {
 
     let instance;
 
-    beforeEach(function() {
-      instance = renderEditor(RPA).instance;
+    beforeEach(async function() {
+      let resolve;
+      const promise = new Promise(r => resolve = r);
+      instance = renderEditor(RPA, {
+        onImport: resolve,
+        cache: new Cache()
+      }).instance;
+
+
+      return promise;
     });
 
 
@@ -128,9 +161,6 @@ describe('<RPAEditor>', function() {
 
     it('should NOT be dirty after save', async function() {
 
-      // given
-      instance.getCached();
-
       // when
       await instance.getXML();
 
@@ -144,17 +174,21 @@ describe('<RPAEditor>', function() {
     it('should be dirty after modeling', async function() {
 
       // given
-      const { editor } = instance.getCached();
       await instance.getXML();
 
       // when
-      editor.value = 'new value';
-      editor.eventBus.fire('model.changed');
+      const { editor } = instance.getCached();
+      editor.eventBus.fire('property.change', {
+        key: 'script',
+        value: 'new value'
+      });
 
       // then
-      const dirty = instance.isDirty();
-
-      expect(dirty).to.be.true;
+      // State update is async
+      return waitFor(() => {
+        const dirty = instance.isDirty();
+        expect(dirty).to.be.true;
+      });
     });
 
   });
@@ -227,6 +261,7 @@ function renderEditor(xml, options = {}) {
   const {
     id,
     onChanged,
+    onImport
   } = options;
 
   let cache = options.cache;
@@ -235,7 +270,8 @@ function renderEditor(xml, options = {}) {
     cache = new Cache();
     cache.add('editor', {
       cached: {
-        editor: new MockRPACodeEditor(),
+        editor: new MockRPACodeEditor({ value: xml }),
+        lastXML: xml,
         editorContainer: document.createElement('div'),
         propertiesContainer: document.createElement('div')
       }
@@ -244,6 +280,8 @@ function renderEditor(xml, options = {}) {
 
   const component = mount(
     <TestEditor
+      getConfig={ () => ({}) }
+      onImport={ onImport || noop }
       id={ id || 'editor' }
       xml={ xml }
       activeSheet={ options.activeSheet || { id: 'xml' } }
