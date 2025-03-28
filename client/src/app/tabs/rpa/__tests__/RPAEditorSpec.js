@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 
 import { mount } from 'enzyme';
 
@@ -44,7 +45,7 @@ describe('<RPAEditor>', function() {
         cache: new Cache()
       });
 
-      return expectEventually(() => {
+      return waitFor(() => {
         expect(instance).to.exist;
         expect(onImportSpy).to.have.been.calledOnce;
         expect(onImportSpy.args[0][0]).not.to.exist;
@@ -66,7 +67,7 @@ describe('<RPAEditor>', function() {
       });
 
       // then
-      return expectEventually(() => {
+      return waitFor(() => {
         expect(onImportSpy).to.have.been.calledOnce;
         expect(onImportSpy.args[0][0]).to.exist;
       });
@@ -160,9 +161,6 @@ describe('<RPAEditor>', function() {
 
     it('should NOT be dirty after save', async function() {
 
-      // given
-      instance.getCached();
-
       // when
       await instance.getXML();
 
@@ -176,16 +174,18 @@ describe('<RPAEditor>', function() {
     it('should be dirty after modeling', async function() {
 
       // given
-      const { editor } = instance.getCached();
       await instance.getXML();
 
       // when
-      editor.value = 'new value';
-      editor.eventBus.fire('model.changed');
+      const { editor } = instance.getCached();
+      editor.eventBus.fire('property.change', {
+        key: 'script',
+        value: 'new value'
+      });
 
       // then
       // State update is async
-      expectEventually(() => {
+      return waitFor(() => {
         const dirty = instance.isDirty();
         expect(dirty).to.be.true;
       });
@@ -299,31 +299,4 @@ function renderEditor(xml, options = {}) {
     instance,
     wrapper
   };
-}
-
-async function expectEventually(expectStatement) {
-  const sleep = time => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, time);
-    });
-  };
-
-  for (let i = 0; i < 10; i++) {
-    try {
-      expectStatement();
-
-      // success
-      return;
-    } catch {
-
-      // do nothing
-    }
-
-    await sleep(50);
-  }
-
-  // let it fail correctly
-  expectStatement();
 }
