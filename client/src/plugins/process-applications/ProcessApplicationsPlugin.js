@@ -22,6 +22,8 @@ export default function ProcessApplicationsPlugin(props) {
   const {
     _getFromApp: getFromApp,
     _getGlobal: getGlobal,
+    deregisterAction,
+    registerAction,
     subscribe,
     triggerAction
   } = props;
@@ -68,6 +70,14 @@ export default function ProcessApplicationsPlugin(props) {
         title: 'Process application created',
         content: <a href={ DOCUMENTATION_URL }>Learn more about process applications</a>
       });
+    });
+
+    registerAction('processApplications.getOpen', () => {
+      return processApplications.getOpen();
+    });
+
+    registerAction('processApplications.getItems', () => {
+      return processApplications.getItems();
     });
 
     getGlobal('backend').on('file-context:changed', (_, items) => {
@@ -119,6 +129,11 @@ export default function ProcessApplicationsPlugin(props) {
       });
 
     });
+
+    return () => {
+      deregisterAction('processApplications.getOpen');
+      deregisterAction('processApplications.getItems');
+    };
   }, []);
 
   useEffect(() => {

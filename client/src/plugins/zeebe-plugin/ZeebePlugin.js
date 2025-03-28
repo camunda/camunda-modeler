@@ -8,55 +8,50 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent } from 'react';
+import React, { useEffect, useState } from 'react';
+
+import Deployment from './deployment-plugin/Deployment';
+import DeploymentConnectionValidator from './deployment-plugin/DeploymentConnectionValidator';
+import DeploymentConfigValidator from './deployment-plugin/DeploymentConfigValidator';
+import ZeebeAPI from '../../remote/ZeebeAPI';
 
 import DeploymentPlugin from './deployment-plugin';
 import StartInstancePlugin from './start-instance-plugin';
 
-import { forEach, omit } from 'min-dash';
+export default function ZeebePlugin(props) {
+  const { _getGlobal } = props;
 
-/**
- * A parent plugin for these two Zeebe plugins:
- * a) DeploymentPlugin
- * b) StartInstancePlugin
- */
-export default class ZeebePlugin extends PureComponent {
+  const [ deployment, setDeployment ] = useState(null);
+  const [ deploymentConfigValidator, setDeploymentConfigValidator ] = useState(null);
+  const [ deploymentConnectionValidator, setDeploymentConnectionValidator ] = useState(null);
 
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    const backend = _getGlobal('backend');
+    const config = _getGlobal('config');
 
-    this.subscriptions = {};
+    const zeebeAPI = new ZeebeAPI(backend);
+
+    setDeployment(new Deployment(config, zeebeAPI));
+    setDeploymentConfigValidator(DeploymentConfigValidator);
+    setDeploymentConnectionValidator(new DeploymentConnectionValidator(zeebeAPI));
+  }, []);
+
+  if (!deployment) {
+    return null;
   }
 
-  subscribeToMessaging = (pluginName, callback) => {
-    this.subscriptions[pluginName] = callback;
-  };
-
-  unsubscribeFromMessaging = (pluginName) => {
-    this.subscriptions = omit(this.subscriptions, pluginName);
-  };
-
-  broadcastMessage = (message, body) => {
-    forEach(this.subscriptions, (callback) => {
-      callback(message, body);
-    });
-  };
-
-  render() {
-
-    return <React.Fragment>
+  return (
+    <React.Fragment>
       <DeploymentPlugin
-        { ...this.props }
-        subscribeToMessaging={ this.subscribeToMessaging }
-        broadcastMessage={ this.broadcastMessage }
-        unsubscribeFromMessaging={ this.unsubscribeFromMessaging }
-      />
+        { ...props }
+        deployment={ deployment }
+        deploymentConfigValidator={ deploymentConfigValidator }
+        deploymentConnectionValidator={ deploymentConnectionValidator } />
       <StartInstancePlugin
-        { ...this.props }
-        subscribeToMessaging={ this.subscribeToMessaging }
-        broadcastMessage={ this.broadcastMessage }
-        unsubscribeFromMessaging={ this.unsubscribeFromMessaging }
-      />
-    </React.Fragment>;
-  }
+        { ...props }
+        deployment={ deployment }
+        deploymentConfigValidator={ deploymentConfigValidator }
+        deploymentConnectionValidator={ deploymentConnectionValidator } />
+    </React.Fragment>
+  );
 }

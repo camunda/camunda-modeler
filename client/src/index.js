@@ -11,6 +11,7 @@
 import './styles/style.less';
 
 import {
+  actions,
   backend,
   config,
   dialog,
@@ -57,6 +58,7 @@ const keyboardBindings = new KeyboardBindings({
 });
 
 const globals = {
+  actions,
   backend,
   config,
   dialog,
