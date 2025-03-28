@@ -17,6 +17,7 @@ const moddle = new BpmnModdle({ zeebe });
 const {
   findExtensionElement,
   is,
+  isCamunda8BPMN,
   traverse
 } = require('./util');
 
@@ -32,6 +33,10 @@ module.exports = {
         processes: [],
         linkedIds: []
       };
+    }
+
+    if (!isCamunda8BPMN(item.file.contents)) {
+      throw new Error('Not a Camunda 8 BPMN file');
     }
 
     let rootElement, processes, linkedIds;
