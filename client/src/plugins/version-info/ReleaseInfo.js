@@ -50,8 +50,7 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Support for process applications</h4>
-          {/* TODO: link process application docs */}
-          We now support process applications and resource linking. You can use process applications to bundle related files and deploy them all at once, as in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
+          We now support <a href="https://docs.camunda.io/docs/8.7/components/modeler/desktop-modeler/process-applications/">process applications</a> and resource linking. You can use process applications to bundle related files and deploy them all at once, as in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
         </li>
         <li>
           <h4>RPA editor</h4>
