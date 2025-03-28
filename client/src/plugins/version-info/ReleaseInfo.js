@@ -46,7 +46,7 @@ export function ReleaseInfo(props) {
         <li>
           <h4>Support for upcoming Camunda features</h4>
           Camunda 8.7 and 7.23 are now fully supported.
-          Also, you can now configure <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc-subprocesses/#completion">attributes</a> of ad-hoc subprocesses, and in forms, you can pass a custom module to define URL-building logic for document URLs in the preview component.
+          Also, you can now configure <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc-subprocesses/?utm_source=modeler&utm_medium=referral#completion">attributes</a> of ad-hoc subprocesses, and in forms, you can pass a custom module to define URL-building logic for document URLs in the preview component.
         </li>
         <li>
           <h4>Support for process applications</h4>
