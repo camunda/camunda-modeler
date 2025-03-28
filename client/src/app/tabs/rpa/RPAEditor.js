@@ -63,30 +63,41 @@ export class RPAEditor extends CachedComponent {
   };
 
 
-  componentDidMount() {
+  async componentDidMount() {
 
     const {
-      editorContainer, propertiesContainer, editor
+      editorContainer,
+      propertiesContainer,
+      editor
     } = this.getCached();
 
     this.modelerRef.current.appendChild(editorContainer);
     this.propertiesPanelRef.current.appendChild(propertiesContainer);
 
-    if (!editor) {
+    let currentEditor = editor;
 
-      // Create editor if not present
-      this.createEditor().then(() => {
-        this.handleChanged();
-      });
-    } else {
+    try {
+      if (!currentEditor) {
 
-      // or reimport if config changed
-      this.checkImport();
-      this.handleListeners(editor);
-      this.setState({
-        loading: false
-      });
+        // Create editor if not present
+        currentEditor = await this.createEditor();
+      } else {
+
+        // or reimport if config changed
+        currentEditor = await this.checkImport();
+      }
+
+    } catch (e) {
+      this.handleError(e);
+      return;
     }
+
+    this.handleChanged();
+    this.handleListeners(currentEditor);
+    this.setState({
+      loading: false
+    });
+    this.props.onImport();
   }
 
   async createEditor() {
@@ -134,6 +145,15 @@ export class RPAEditor extends CachedComponent {
     return editor;
   }
 
+  handleError(error) {
+    this.setCached({
+      editor: null,
+      lastXML: null,
+    });
+
+    this.props.onImport(error);
+  }
+
   componentWillUnmount() {
     const {
       editorContainer,
@@ -143,6 +163,10 @@ export class RPAEditor extends CachedComponent {
 
     editorContainer.remove();
     propertiesContainer.remove();
+
+    if (!editor) {
+      return;
+    }
 
     this.handleListeners(editor, true);
   }
@@ -201,16 +225,16 @@ export class RPAEditor extends CachedComponent {
     } = this.getCached();
 
     if (isXMLChange(lastXML, xml)) {
-      this.createEditor();
-      return;
+      return this.createEditor();
     }
 
     const rpaConfig = await this.props.getConfig('rpa', {});
     if (isWorkerConfigChange(rpaConfig.workerConfig, lastWorkerConfig)) {
       editor.workerConfig = rpaConfig.workerConfig;
       editor.eventBus.fire('config.changed', rpaConfig.workerConfig);
-      return;
     }
+
+    return editor;
   }
 
   isDirty() {
@@ -231,6 +255,10 @@ export class RPAEditor extends CachedComponent {
     const {
       editor: monaco
     } = this.getCached();
+
+    if (!monaco) {
+      return;
+    }
 
     const undoState = {
       redo: monaco.editor.getModel().canRedo(),
