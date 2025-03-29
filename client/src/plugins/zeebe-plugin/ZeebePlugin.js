@@ -10,8 +10,8 @@
 
 import React, { useEffect, useState } from 'react';
 
+import ConnectionChecker from './deployment-plugin/ConnectionChecker';
 import Deployment from './deployment-plugin/Deployment';
-import DeploymentConnectionValidator from './deployment-plugin/DeploymentConnectionValidator';
 import DeploymentConfigValidator from './deployment-plugin/DeploymentConfigValidator';
 import ZeebeAPI from '../../remote/ZeebeAPI';
 
@@ -21,9 +21,9 @@ import StartInstancePlugin from './start-instance-plugin';
 export default function ZeebePlugin(props) {
   const { _getGlobal } = props;
 
+  const [ connectionChecker, setConnectionChecker ] = useState(null);
   const [ deployment, setDeployment ] = useState(null);
   const [ deploymentConfigValidator, setDeploymentConfigValidator ] = useState(null);
-  const [ deploymentConnectionValidator, setDeploymentConnectionValidator ] = useState(null);
 
   useEffect(() => {
     const backend = _getGlobal('backend');
@@ -33,7 +33,12 @@ export default function ZeebePlugin(props) {
 
     setDeployment(new Deployment(config, zeebeAPI));
     setDeploymentConfigValidator(DeploymentConfigValidator);
-    setDeploymentConnectionValidator(new DeploymentConnectionValidator(zeebeAPI));
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    setConnectionChecker();
+
+    return () => connectionChecker.stopChecking();
   }, []);
 
   if (!deployment) {
@@ -44,14 +49,14 @@ export default function ZeebePlugin(props) {
     <React.Fragment>
       <DeploymentPlugin
         { ...props }
+        connectionChecker={ connectionChecker }
         deployment={ deployment }
-        deploymentConfigValidator={ deploymentConfigValidator }
-        deploymentConnectionValidator={ deploymentConnectionValidator } />
+        deploymentConfigValidator={ deploymentConfigValidator } />
       <StartInstancePlugin
         { ...props }
+        connectionChecker={ connectionChecker }
         deployment={ deployment }
-        deploymentConfigValidator={ deploymentConfigValidator }
-        deploymentConnectionValidator={ deploymentConnectionValidator } />
+        deploymentConfigValidator={ deploymentConfigValidator } />
     </React.Fragment>
   );
 }

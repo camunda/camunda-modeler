@@ -22,9 +22,9 @@ import * as css from './DeploymentPlugin.less';
 
 export default function DeploymentPlugin(props) {
   const {
+    connectionChecker,
     deployment,
     deploymentConfigValidator,
-    deploymentConnectionValidator,
     subscribe,
     showNotification,
     triggerAction
@@ -76,10 +76,10 @@ export default function DeploymentPlugin(props) {
       <DeploymentPluginOverlay
         activeTab={ activeTab }
         anchor={ anchorRef.current }
-        onClose={ () => setOverlayOpen(false) }
+        connectionChecker={ connectionChecker }
         deployment={ deployment }
         deploymentConfigValidator={ deploymentConfigValidator }
-        deploymentConnectionValidator={ deploymentConnectionValidator }
+        onClose={ () => setOverlayOpen(false) }
         showNotification={ showNotification }
         triggerAction={ triggerAction }
       />

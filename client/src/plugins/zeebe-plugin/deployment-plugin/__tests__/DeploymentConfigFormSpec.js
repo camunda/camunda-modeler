@@ -24,7 +24,7 @@ import { AUTH_TYPES } from '../../shared/ZeebeAuthTypes';
 
 import * as TARGET_TYPES from '../../shared/ZeebeTargetTypes';
 
-describe.only('<DeploymentConfigForm>', function() {
+describe('<DeploymentConfigForm>', function() {
 
   it('should render', function() {
 

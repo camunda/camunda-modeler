@@ -10,7 +10,7 @@
 
 /**
  * @typedef {import('./types').DeploymentConfig} DeploymentConfig
- * @typedef {import('./types').DeploymentConnectionValidationResult} DeploymentConnectionValidationResult
+ * @typedef {import('./types').ConnectionCheckResult} ConnectionCheckResult
  */
 
 import React, { useEffect, useState } from 'react';
@@ -20,7 +20,7 @@ import { Overlay } from '../../../shared/ui';
 import DeploymentConfigForm from './DeploymentConfigForm';
 import DeploymentConfigValidator from './DeploymentConfigValidator';
 
-import { getDeploymentConnectionValidationError } from './DeploymentConnectionValidationErrors';
+import { getConnectionCheckError } from './ConnectionCheckErrors';
 
 import {
   getSuccessNotification,
@@ -35,9 +35,9 @@ export default function DeploymentPluginOverlay(props) {
   const {
     activeTab,
     anchor,
+    connectionChecker,
     deployment,
     deploymentConfigValidator,
-    deploymentConnectionValidator,
     onClose,
     showNotification,
     triggerAction
@@ -46,11 +46,11 @@ export default function DeploymentPluginOverlay(props) {
   /** @type {DeploymentConfig} */
   const [ config, setConfig ] = useState(null);
 
-  /** @type {DeploymentConnectionValidationResult} */
-  const [ validateConnectionResult, setValidateConnectionResult ] = useState(null);
+  /** @type {ConnectionCheckResult} */
+  const [ connectionCheckResult, setConnectionCheckResult ] = useState(null);
 
   const getFieldError = (meta, fieldName) => {
-    return getDeploymentConnectionValidationError(fieldName, validateConnectionResult) || (meta.touched && meta.error);
+    return getConnectionCheckError(fieldName, connectionCheckResult) || (meta.touched && meta.error);
   };
 
   const onSubmit = async (values) => {
@@ -78,16 +78,12 @@ export default function DeploymentPluginOverlay(props) {
     const configValidationErrors = deploymentConfigValidator.validateConfig(values);
 
     if (Object.keys(configValidationErrors).length > 0) {
-      deploymentConnectionValidator.stopConnectionValidation();
-
-      return configValidationErrors;
+      connectionChecker.updateConfig(null);
+    } else {
+      connectionChecker.updateConfig(config);
     }
 
-    const connectionValidationResult = await deploymentConnectionValidator.validateConnection(config);
-
-    setValidateConnectionResult(connectionValidationResult);
-
-    deploymentConnectionValidator.startConnectionValidation(config);
+    return configValidationErrors;
   };
 
   useEffect(async () => {
@@ -107,26 +103,12 @@ export default function DeploymentPluginOverlay(props) {
 
     setConfig(config);
 
-    const configValidationErrors = deploymentConfigValidator.validateConfig(config);
-
-    if (Object.keys(configValidationErrors).length > 0) {
-      deploymentConnectionValidator.stopConnectionValidation();
-
-      return configValidationErrors;
-    }
-
-    const connectionValidationResult = await deploymentConnectionValidator.validateConnection(config);
-
-    setValidateConnectionResult(connectionValidationResult);
-
-    deploymentConnectionValidator.on('validate-connection-result', setValidateConnectionResult);
+    connectionChecker.on('connectionCheck', setConnectionCheckResult);
 
     return () => {
-      deploymentConnectionValidator.off('validate-connection-result', setValidateConnectionResult);
-
-      deploymentConnectionValidator.stopConnectionValidation();
+      connectionChecker.off('connectionCheck', setConnectionCheckResult);
     };
-  }, [ setConfig, setValidateConnectionResult ]);
+  }, [ setConfig, setConnectionCheckResult ]);
 
   return (
     <Overlay className={ css.DeploymentPluginOverlay } onClose={ onClose } anchor={ anchor }>

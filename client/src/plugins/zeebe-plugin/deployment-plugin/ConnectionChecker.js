@@ -16,8 +16,10 @@ const DELAYS = {
 };
 
 export default class ConnectionChecker extends EventEmitter {
-  constructor() {
+  constructor(zeebeAPI) {
     super();
+
+    this._zeebeAPI = zeebeAPI;
 
     this._checkInterval = null;
     this._checkTimeout = null;
@@ -25,21 +27,25 @@ export default class ConnectionChecker extends EventEmitter {
     this._lastResult = null;
   }
 
-  updateConfig(config, startMonitoring = true) {
+  updateConfig(config, startChecking = true) {
     this._config = config;
 
-    this._cancelScheduledCheck();
+    this._cancelCheck();
 
     this._checkTimeout = setTimeout(() => {
-      this._performCheck();
+      this._check();
 
-      if (startMonitoring) {
-        this.startMonitoringInterval();
+      if (startChecking) {
+        this.startChecking();
       }
     }, DELAYS.SHORT);
   }
 
-  _cancelScheduledCheck() {
+  getLastResult() {
+    return this._lastResult;
+  }
+
+  _cancelCheck() {
     clearInterval(this._checkInterval);
     clearTimeout(this._checkTimeout);
 
@@ -47,53 +53,51 @@ export default class ConnectionChecker extends EventEmitter {
     this._checkTimeout = null;
   }
 
-  async _performCheck() {
+  async _check() {
     if (!this._config) {
       const result = {
         success: false,
-        error: new Error('No configuration provided'),
-        timestamp: new Date()
+        error: new Error('No configuration provided')
       };
 
       this._lastResult = result;
 
-      this.emit('check', result);
+      this.emit('connectionCheck', result);
 
       return;
     }
 
     try {
-      const success = await this.testConnection(this._config);
+      const { endpoint } = this._config;
 
-      const result = { success, timestamp: new Date() };
+      const result = await this._zeebeAPI.checkConnection(endpoint);
 
       this._lastResult = result;
 
-      this.emit('check', result);
+      this.emit('connectionCheck', result);
     } catch (error) {
       const result = {
         success: false,
-        error,
-        timestamp: new Date()
+        error
       };
 
       this._lastResult = result;
 
-      this.emit('check', result);
+      this.emit('connectionCheck', result);
     }
   }
 
-  startMonitoringInterval() {
-    if (this._checkInterval || !this._config) {
+  startChecking() {
+    if (this._checkInterval) {
       return;
     }
 
     this._checkInterval = setInterval(() => {
-      this._performCheck();
+      this._check();
     }, DELAYS.LONG);
   }
 
-  stopMonitoring() {
-    this._cancelScheduledCheck();
+  stopChecking() {
+    this._cancelCheck();
   }
 }

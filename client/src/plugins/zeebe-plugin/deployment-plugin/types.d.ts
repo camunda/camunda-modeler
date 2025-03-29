@@ -62,7 +62,7 @@ export enum DeploymentConnectionValidationReason {
   INVALID_CREDENTIALS = 'INVALID_CREDENTIALS'
 }
 
-export type DeploymentConnectionValidationResult = {
+export type ConnectionCheckResult = {
   success: boolean;
   reason?: DeploymentConnectionValidationReason;
 }
