@@ -41,8 +41,8 @@ export default function CheckBox(props) {
             { ...restProps }
           />
           <label className="custom-control-label" htmlFor={ fieldName }>{ label }</label>
+          {description && <p className="custom-control-description">{ description }</p>}
         </div>
-        {description && <p className="form-control">{ description }</p>}
       </div>
     </React.Fragment>
   );

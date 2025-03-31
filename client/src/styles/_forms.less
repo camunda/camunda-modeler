@@ -204,6 +204,17 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill-rule='evenodd' points='5.743 14.314 1 9.57 2.897 7.673 5.743 10.519 13.103 3.16 15 5.057'/%3E%3C/svg%3E%0A");
       box-sizing: content-box;
     }
+
+    .custom-control-input:disabled + label {
+      color: gray;
+      cursor: not-allowed;
+    }
+
+    .custom-control-description {
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: var(--color-grey-225-10-35);
+    }
   }
 
   .custom-radio {

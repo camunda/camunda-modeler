@@ -20,22 +20,12 @@ import Flags from '../../util/Flags';
 
 export function SettingsForm(props) {
 
-  const { schema, values, handleClose } = props;
+  const { schema, values } = props;
 
-  const { setFieldValue, values: formikValues, submitForm } = useFormikContext();
+  const { setFieldValue, dirty, values: formikValues, submitForm } = useFormikContext();
 
   useEffect(() => {
-
-    // const flatten = flattenFormikValues(formikValues);
-    // const changedFields = Object.keys(flatten).filter(
-    //   (key) => flatten[key] !== values[key]
-    // );
-
-    // console.log('changedFields', changedFields);
-
-    // setReload(!!changedFields.length);
-    submitForm();
-
+    dirty && submitForm();
   }, [ formikValues ]);
 
   useEffect(() => {
