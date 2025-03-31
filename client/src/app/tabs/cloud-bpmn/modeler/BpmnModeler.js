@@ -48,7 +48,7 @@ export default class CloudBpmnModeler extends BpmnModeler {
 
     const newContextPad =
       Flags.get(ENABLE_NEW_CONTEXT_PAD) === true ||
-      Flags.get(ENABLE_NEW_CONTEXT_PAD) === undefined && settings.get('app.newContextPad');
+      (Flags.get(ENABLE_NEW_CONTEXT_PAD) === undefined && settings?.get('app.newContextPad'));
 
     if (newContextPad) {
       additionalModules = [
