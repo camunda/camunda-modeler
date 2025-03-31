@@ -460,14 +460,18 @@ export class App extends PureComponent {
   /**
    * Reload modeler.
    *
+   * @param {boolean} restart if true, performs a hard app restart instead of a reload
+   *
    * @return {Promise<boolean>} resolved to true if modeler is reloaded
    */
-  reloadModeler = async () => {
+  reloadModeler = async (restart) => {
     const dialog = this.getGlobal('dialog');
     const hasUnsavedTabs = this.hasUnsavedTabs();
 
+    const reloadFn = restart === true ? this.restart : this.reload;
+
     if (!hasUnsavedTabs) {
-      this.reload();
+      reloadFn();
       return;
     }
 
@@ -475,16 +479,15 @@ export class App extends PureComponent {
 
     if (button === 'save') {
       await this.saveAllTabs();
-      this.reload();
+      reloadFn();
 
     } else if (button === 'reload') {
-      this.reload();
+      reloadFn();
       return true;
     } else {
       return false;
     }
   };
-
 
   hasUnsavedTabs = () => {
     const { tabs } = this.state;
@@ -495,6 +498,10 @@ export class App extends PureComponent {
 
   reload = async (options) => {
     this.getGlobal('backend').send('app:reload', options);
+  };
+
+  restart = async () => {
+    this.getGlobal('backend').send('app:restart');
   };
 
   isEmptyTab = (tab) => {
@@ -1926,7 +1933,11 @@ export class App extends PureComponent {
     }
 
     if (action === 'reload-modeler') {
-      return this.reloadModeler(options);
+      return this.reloadModeler();
+    }
+
+    if (action === 'restart-modeler') {
+      return this.reloadModeler(true);
     }
 
     if (action === 'log') {
