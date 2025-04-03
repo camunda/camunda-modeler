@@ -293,6 +293,12 @@ export class TabsProvider {
   getTabIcon() {
     return null;
   }
+
+  linkSettings() {
+    this.settings = {
+      get: () => ({})
+    };
+  }
 }
 
 
