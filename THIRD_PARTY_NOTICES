@@ -191,7 +191,7 @@ This project incorporates components from the projects listed below. The origina
 184.  epipebomb@1.0.0 (git://github.com/mhart/epipebomb.git)
 185.  style-loader@4.0.0 (webpack-contrib/style-loader)
 186.  css-loader@7.1.2 (webpack-contrib/css-loader)
-187.  @camunda/form-playground@0.21.0 (git+https://github.com/camunda/form-playground.git)
+187.  @camunda/form-playground@0.21.1 (git+https://github.com/camunda/form-playground.git)
 188.  camunda-bpmn-js@5.7.1 (https://github.com/camunda/camunda-bpmn-js)
 189.  camunda-dmn-js@3.2.0 (https://github.com/camunda/camunda-dmn-js)
 190.  @camunda/linting@3.36.0 (https://github.com/camunda/linting)
@@ -292,7 +292,7 @@ This project incorporates components from the projects listed below. The origina
 285.  tiny-svg@3.0.1 (https://github.com/bpmn-io/tiny-svg)
 286.  @bpmn-io/element-template-icon-renderer@0.5.2 (git+ssh://git@github.com/bpmn-io/element-template-icon-renderer.git)
 287.  @bpmn-io/form-variable-provider@1.3.0 (git+https://github.com/bpmn-io/form-variable-provider.git)
-288.  @bpmn-io/variable-outline@1.0.4
+288.  @bpmn-io/variable-outline@1.0.5
 289.  @camunda/example-data-properties-provider@1.2.1
 290.  camunda-bpmn-js-behaviors@1.9.1 (https://github.com/camunda/camunda-bpmn-js-behaviors)
 291.  @carbon/feature-flags@0.24.0 (https://github.com/carbon-design-system/carbon.git)
@@ -354,8 +354,8 @@ This project incorporates components from the projects listed below. The origina
 347.  inferno@5.6.3 (https://github.com/infernojs/inferno)
 348.  selection-ranges@3.0.3 (git+ssh://git@github.com/nikku/selection-ranges.git)
 349.  table-js@9.2.0 (https://github.com/bpmn-io/table-js)
-350.  @bpmn-io/form-js-editor@1.15.0 (git+https://github.com/bpmn-io/form-js.git)
-351.  @bpmn-io/form-js-playground@1.15.0 (git+https://github.com/bpmn-io/form-js.git)
+350.  @bpmn-io/form-js-editor@1.15.1 (git+https://github.com/bpmn-io/form-js.git)
+351.  @bpmn-io/form-js-playground@1.15.1 (git+https://github.com/bpmn-io/form-js.git)
 352.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
 353.  file-drops@0.5.0 (git+ssh://git@github.com/nikku/file-drops.git)
 354.  @camunda/rpa-integration@0.3.0 (https://github.com/camunda/rpa-frontend)
@@ -12923,7 +12923,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF css-loader@7.1.2 NOTICES AND INFORMATION
 
 
-%% @camunda/form-playground@0.21.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/form-playground@0.21.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12947,7 +12947,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @camunda/form-playground@0.21.0 NOTICES AND INFORMATION
+END OF @camunda/form-playground@0.21.1 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-js@5.7.1 NOTICES AND INFORMATION BEGIN HERE
@@ -16282,11 +16282,11 @@ THE SOFTWARE.
 END OF @bpmn-io/form-variable-provider@1.3.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/variable-outline@1.0.4 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/variable-outline@1.0.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 null
 ==========================================
-END OF @bpmn-io/variable-outline@1.0.4 NOTICES AND INFORMATION
+END OF @bpmn-io/variable-outline@1.0.5 NOTICES AND INFORMATION
 
 
 %% @camunda/example-data-properties-provider@1.2.1 NOTICES AND INFORMATION BEGIN HERE
@@ -18906,7 +18906,7 @@ THE SOFTWARE.
 END OF table-js@9.2.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-editor@1.15.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-editor@1.15.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -18932,10 +18932,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-editor@1.15.0 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-editor@1.15.1 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-playground@1.15.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-playground@1.15.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -18961,7 +18961,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-playground@1.15.0 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-playground@1.15.1 NOTICES AND INFORMATION
 
 
 %% downloadjs@1.4.7 NOTICES AND INFORMATION BEGIN HERE
