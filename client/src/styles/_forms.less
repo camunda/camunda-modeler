@@ -207,10 +207,9 @@
 
     .custom-control-input:disabled + label {
       color: gray;
-      cursor: not-allowed;
     }
 
-    .custom-control-description {
+    .custom-control-description:not(:empty) {
       margin-bottom: 10px;
       font-size: 13px;
       color: var(--color-grey-225-10-35);
@@ -496,5 +495,24 @@
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);
     transform: translateX(16px);
+  }
+}
+
+.custom-select {
+  min-height: 60px;
+}
+
+.documentation-icon {
+  margin-left: 8px;
+  margin-right: 8px;
+
+  svg {
+    color: var(--color-blue-205-100-50);
+    position: relative;
+    top: 2px;
+  }
+
+  &:hover svg {
+    color: var(--color-blue-205-100-45);
   }
 }
