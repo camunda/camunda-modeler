@@ -16,7 +16,7 @@ import { ResourcesProviderModule } from './ResourcesProvider';
 
 const processApplications = new ProcessApplications();
 
-const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/web-modeler/process-applications/';
+const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/process-applications/';
 
 export default function ProcessApplicationsPlugin(props) {
   const {
