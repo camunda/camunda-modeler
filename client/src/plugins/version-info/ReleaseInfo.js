@@ -46,15 +46,15 @@ export function ReleaseInfo(props) {
         <li>
           <h4>Support for upcoming Camunda features</h4>
           Camunda 8.7 and 7.23 are now fully supported.
-          Also, you can now configure <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc-subprocesses/?utm_source=modeler&utm_medium=referral#completion">attributes</a> of ad-hoc subprocesses, and in forms, you can pass a custom module to define URL-building logic for document URLs in the preview component.
+          Also, you can now configure <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc-subprocesses/?utm_source=modeler&utm_medium=referral#completion">completion attributes</a> of ad-hoc subprocesses.
         </li>
         <li>
           <h4>Support for process applications</h4>
-          We now support <a href="https://docs.camunda.io/docs/8.7/components/modeler/desktop-modeler/process-applications/">process applications</a> and resource linking. You can use process applications to bundle related files and deploy them all at once, as in <a href="https://docs.camunda.io/docs/8.7/components/modeler/web-modeler/process-applications/">Web Modeler.</a>
+          We now support <a href="https://docs.camunda.io/docs/8.7/components/modeler/desktop-modeler/process-applications/?utm_source=modeler&utm_medium=referral">process applications</a> and resource linking. You can use process applications to easily group processes, decisions, and forms in a project, and link them.
         </li>
         <li>
           <h4>RPA editor</h4>
-          Edit, test and deploy <a href="https://docs.camunda.io/docs/8.7/components/modeler/rpa/">Robotic Process Automation (RPA)</a> scripts with the new RPA editor.
+          Edit, test and deploy <a href="https://docs.camunda.io/docs/8.7/components/rpa/overview/?utm_source=modeler&utm_medium=referral">Robotic Process Automation (RPA)</a> scripts with the new RPA editor.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
