@@ -41,52 +41,48 @@ describe('config', function() {
       });
 
       // when
-      const configForFile = await config.getForFile(file, 'foo');
+      const value = await config.getForFile(file, 'foo');
 
       // then
-      expect(configForFile).to.equal(42);
+      expect(value).to.equal(42);
     });
 
 
-    it('should return null if no files config at all', async function() {
+    it('should return default value (no config for file)', async function() {
 
       // given
       const file = {
-        path: 'bar.bpmn'
+        path: 'foo.bpmn'
       };
 
-      backend.setSendResponse(null);
+      backend.setSendResponse({});
 
       // when
-      const configForFile = await config.getForFile(file, 'foo');
+      const value = await config.getForFile(file, 'foo', 42);
 
       // then
-      expect(configForFile).to.equal(null);
+      expect(value).to.equal(42);
     });
 
 
-    it('should return null if no config for file', async function() {
+    it('should return null (no config for file, no default value)', async function() {
 
       // given
       const file = {
-        path: 'bar.bpmn'
+        path: 'foo.bpmn'
       };
 
-      backend.setSendResponse({
-        'foo.bpmn': {
-          foo: 42
-        }
-      });
+      backend.setSendResponse({});
 
       // when
-      const configForFile = await config.getForFile(file, 'foo');
+      const value = await config.getForFile(file, 'foo');
 
       // then
-      expect(configForFile).to.equal(null);
+      expect(value).to.equal(null);
     });
 
 
-    it('should return null if no value or default value', async function() {
+    it('should return default value (no config value)', async function() {
 
       // given
       const file = {
@@ -94,20 +90,18 @@ describe('config', function() {
       };
 
       backend.setSendResponse({
-        'foo.bpmn': {
-          foo: 42
-        }
+        'foo.bpmn': {}
       });
 
       // when
-      const configForFile = await config.getForFile(file, 'bar');
+      const value = await config.getForFile(file, 'foo', 42);
 
       // then
-      expect(configForFile).to.equal(null);
+      expect(value).to.equal(42);
     });
 
 
-    it('should return default value if no value', async function() {
+    it('should return null (no config value, no default value)', async function() {
 
       // given
       const file = {
@@ -115,20 +109,18 @@ describe('config', function() {
       };
 
       backend.setSendResponse({
-        'foo.bpmn': {
-          foo: 42
-        }
+        'foo.bpmn': {}
       });
 
       // when
-      const configForFile = await config.getForFile(file, 'bar', 43);
+      const value = await config.getForFile(file, 'foo');
 
       // then
-      expect(configForFile).to.equal(43);
+      expect(value).to.equal(null);
     });
 
 
-    it('should return null if config does not exist yet', async function() {
+    it('should return null (no config)', async function() {
 
       // given
       const file = {
@@ -138,10 +130,10 @@ describe('config', function() {
       backend.setSendResponse(null);
 
       // when
-      const configForFile = await config.getForFile(file, 'bar');
+      const value = await config.getForFile(file, 'foo');
 
       // then
-      expect(configForFile).to.equal(null);
+      expect(value).to.equal(null);
     });
 
   });
@@ -163,16 +155,16 @@ describe('config', function() {
       });
 
       // when
-      const configForFile = await config.setForFile(file, 'foo', 43);
+      const value = await config.setForFile(file, 'foo', 42);
 
       // then
-      expect(configForFile).to.eql({
-        foo: 43
+      expect(value).to.eql({
+        foo: 42
       });
     });
 
 
-    it('should set, files config not present', async function() {
+    it('should set (no config)', async function() {
 
       // given
       const file = {
@@ -182,11 +174,11 @@ describe('config', function() {
       backend.setSendResponse(null);
 
       // when
-      const configForFile = await config.setForFile(file, 'foo', 43);
+      const value = await config.setForFile(file, 'foo', 42);
 
       // then
-      expect(configForFile).to.eql({
-        foo: 43
+      expect(value).to.eql({
+        foo: 42
       });
     });
 
@@ -212,7 +204,63 @@ describe('config', function() {
     });
 
 
-    it('should return null if no plugins config at all', async function() {
+    it('should return default value (no config for plugin)', async function() {
+
+      // given
+      backend.setSendResponse({});
+
+      // when
+      const value = await config.getForPlugin('fooPlugin', 'foo', 42);
+
+      // then
+      expect(value).to.equal(42);
+    });
+
+
+    it('should return null (no config for plugin, no default value)', async function() {
+
+      // given
+      backend.setSendResponse({});
+
+      // when
+      const value = await config.getForPlugin('fooPlugin', 'foo');
+
+      // then
+      expect(value).to.equal(null);
+    });
+
+
+    it('should return default value (no config value)', async function() {
+
+      // given
+      backend.setSendResponse({
+        fooPlugin: {}
+      });
+
+      // when
+      const value = await config.getForPlugin('fooPlugin', 'foo', 42);
+
+      // then
+      expect(value).to.equal(42);
+    });
+
+
+    it('should return null (no config value, no default value)', async function() {
+
+      // given
+      backend.setSendResponse({
+        fooPlugin: {}
+      });
+
+      // when
+      const value = await config.getForPlugin('fooPlugin', 'foo');
+
+      // then
+      expect(value).to.equal(null);
+    });
+
+
+    it('should return null (no config)', async function() {
 
       // given
       backend.setSendResponse(null);
@@ -222,57 +270,6 @@ describe('config', function() {
 
       // then
       expect(configForPlugin).to.equal(null);
-    });
-
-
-    it('should return null if no config for plugin', async function() {
-
-      // given
-      backend.setSendResponse({
-        fooPlugin: {
-          foo: 42
-        }
-      });
-
-      // when
-      const configForPlugin = await config.getForPlugin('barPlugin', 'foo');
-
-      // then
-      expect(configForPlugin).to.equal(null);
-    });
-
-
-    it('should return null if no value or default value', async function() {
-
-      // given
-      backend.setSendResponse({
-        fooPlugin: {
-          foo: 42
-        }
-      });
-
-      // when
-      const configForFile = await config.getForPlugin('fooPlugin', 'bar');
-
-      // then
-      expect(configForFile).to.equal(null);
-    });
-
-
-    it('should return default value if no value', async function() {
-
-      // given
-      backend.setSendResponse({
-        fooPlugin: {
-          foo: 42
-        }
-      });
-
-      // when
-      const configForFile = await config.getForPlugin('fooPlugin', 'bar', 43);
-
-      // then
-      expect(configForFile).to.equal(43);
     });
 
   });
@@ -290,26 +287,26 @@ describe('config', function() {
       });
 
       // when
-      const configForPlugin = await config.setForPlugin('fooPlugin', 'foo', 43);
+      const configForPlugin = await config.setForPlugin('fooPlugin', 'foo', 42);
 
       // then
       expect(configForPlugin).to.eql({
-        foo: 43
+        foo: 42
       });
     });
 
 
-    it('should set, plugins config not present', async function() {
+    it('should set (no config)', async function() {
 
       // given
       backend.setSendResponse(null);
 
       // when
-      const configForPlugin = await config.setForPlugin('fooPlugin', 'foo', 43);
+      const configForPlugin = await config.setForPlugin('fooPlugin', 'foo', 42);
 
       // then
       expect(configForPlugin).to.eql({
-        foo: 43
+        foo: 42
       });
     });
 
