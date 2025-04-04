@@ -55,7 +55,7 @@ export default class ZeebeAPI {
     });
   }
 
-  run(options) {
+  startInstance(options) {
     let {
       endpoint,
       processId,
@@ -65,7 +65,7 @@ export default class ZeebeAPI {
 
     endpoint = getEndpointForTargetType(endpoint);
 
-    return this._backend.send('zeebe:run', {
+    return this._backend.send('zeebe:startInstance', {
       endpoint,
       processId,
       tenantId: getTenantId(tenantId, endpoint),
