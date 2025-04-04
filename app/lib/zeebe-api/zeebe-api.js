@@ -227,7 +227,7 @@ class ZeebeAPI {
    *
    * @returns {{ success: boolean, response: object }}
    */
-  async run(parameters) {
+  async startInstance(config) {
 
     const {
       endpoint,
@@ -236,7 +236,7 @@ class ZeebeAPI {
       tenantId
     } = parameters;
 
-    this._log.debug('run', {
+    this._log.debug('start instance', {
       parameters: filterEndpointParameters(parameters)
     });
 
@@ -255,7 +255,7 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      this._log.error('run failed', {
+      this._log.error('start instance failed', {
         parameters: filterEndpointParameters(parameters)
       }, err);
 

@@ -324,9 +324,9 @@ renderer.on('zeebe:deploy', async function(options, done) {
   }
 });
 
-renderer.on('zeebe:run', async function(options, done) {
+renderer.on('zeebe:startInstance', async function(options, done) {
   try {
-    const runResult = await zeebeAPI.run(options);
+    const runResult = await zeebeAPI.startInstance(options);
 
     done(null, runResult);
   } catch (err) {

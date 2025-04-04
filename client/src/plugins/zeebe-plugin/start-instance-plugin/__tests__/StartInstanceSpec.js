@@ -27,7 +27,7 @@ describe('StartInstance', function() {
       const { endpoint } = config;
 
       const zeebeAPI = new MockZeebeAPI({
-        run: sinon.stub().resolves(startInstanceResult)
+        startInstance: sinon.stub().resolves(startInstanceResult)
       });
 
       const startInstance = createStartInstance({
@@ -44,8 +44,8 @@ describe('StartInstance', function() {
       // then
       expect(result).to.eql(startInstanceResult);
 
-      expect(zeebeAPI.run).to.have.been.calledOnce;
-      expect(zeebeAPI.run).to.have.been.calledWith({
+      expect(zeebeAPI.startInstance).to.have.been.calledOnce;
+      expect(zeebeAPI.startInstance).to.have.been.calledWith({
         processId: 'foo',
         tenantId: undefined,
         endpoint,
