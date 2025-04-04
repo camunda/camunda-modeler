@@ -61,22 +61,33 @@ export function Section(props) {
 
 
 Section.Header = function Header(props) {
+  const { className } = props;
+
   return (
-    <h3 className="section__header">
+    <h3 className={ classNames('section__header', {
+      [ className ]: className
+    }) }>
       { props.children }
     </h3>
   );
 };
 
 Section.Actions = function Actions(props) {
+  const { className } = props;
   return (
-    <span className="section__actions">{ props.children }</span>
+    <span className={ classNames('section__actions', {
+      [ className ]: className
+    }) }>{ props.children }</span>
   );
 };
 
 Section.Body = function Body(props) {
+  const { className } = props;
+
   return (
-    <div className="section__body">
+    <div className={ classNames('section__body', {
+      [ className ]: className
+    }) }>
       { props.children }
     </div>
   );
