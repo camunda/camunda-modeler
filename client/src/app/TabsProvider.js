@@ -675,6 +675,10 @@ export default class TabsProvider {
     };
   }
 
+  linkSettings(settings) {
+    this.settings = settings;
+  }
+
   _createFile(type) {
 
     const counter = (
@@ -703,7 +707,7 @@ export default class TabsProvider {
   _getInitialFileContents(type) {
     const rawContents = this.getProvider(type).getInitialContents();
 
-    return rawContents && replaceHistoryTimeToLive(replaceExporter(replaceVersions(replaceIds(rawContents, generateId))));
+    return rawContents && replaceHistoryTimeToLive(replaceExporter(replaceVersions(replaceIds(rawContents, generateId), this.settings)));
   }
 
   _getTabType(file) {
@@ -792,10 +796,15 @@ function sortByPriority(providers) {
 }
 
 
-function replaceVersions(contents) {
+function replaceVersions(contents, settings) {
 
-  const platformVersion = getDefaultVersion(ENGINES.PLATFORM);
-  const cloudVersion = getDefaultVersion(ENGINES.CLOUD);
+  const settingsVersion = {
+    [ENGINES.PLATFORM]: settings?.get('app.defaultC7Version'),
+    [ENGINES.CLOUD]: settings?.get('app.defaultC8Version')
+  };
+
+  const platformVersion = getDefaultVersion(ENGINES.PLATFORM, settingsVersion[ENGINES.PLATFORM]);
+  const cloudVersion = getDefaultVersion(ENGINES.CLOUD, settingsVersion[ENGINES.CLOUD]);
 
   return (
     contents
