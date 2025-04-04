@@ -445,6 +445,363 @@ describe('StartInstancePluginOverlay', function() {
 
   });
 
+
+  describe('customization', function() {
+
+    it('should render custom start instance header', async function() {
+
+      // when
+      const deploymentConfig = createMockDeploymentConfig();
+
+      const deployment = new MockDeployment({
+        getConfigForFile: () => Promise.resolve(deploymentConfig)
+      });
+
+      const startInstanceConfig = createMockStartInstanceConfig();
+
+      const startInstance = new MockStartInstance({
+        getConfigForFile: () => Promise.resolve(startInstanceConfig)
+      });
+
+      createStartInstancePluginOverlay({
+        deployment,
+        renderStartInstanceHeader: <div id="custom-start-instance-header" />,
+        startInstance
+      });
+
+      // then
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      expect(document.querySelector('#custom-start-instance-header')).to.exist;
+    });
+
+
+    it('should render custom start instance submit', async function() {
+
+      // when
+      const deploymentConfig = createMockDeploymentConfig();
+
+      const deployment = new MockDeployment({
+        getConfigForFile: () => Promise.resolve(deploymentConfig)
+      });
+
+      const startInstanceConfig = createMockStartInstanceConfig();
+
+      const startInstance = new MockStartInstance({
+        getConfigForFile: () => Promise.resolve(startInstanceConfig)
+      });
+
+      createStartInstancePluginOverlay({
+        deployment,
+        renderStartInstanceSubmit: <div id="custom-start-instance-submit" />,
+        startInstance
+      });
+
+      // then
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      expect(document.querySelector('#custom-start-instance-submit')).to.exist;
+    });
+
+
+    it('should render custom deployment header', async function() {
+
+      // when
+      const connectionChecker = new MockConnectionChecker();
+
+      const deploymentConfig = createMockDeploymentConfig();
+
+      const deployment = new MockDeployment({
+        getConfigForFile: () => Promise.resolve(deploymentConfig)
+      });
+
+      const startInstanceConfig = createMockStartInstanceConfig();
+
+      const startInstance = new MockStartInstance({
+        getConfigForFile: () => Promise.resolve(startInstanceConfig)
+      });
+
+      createStartInstancePluginOverlay({
+        connectionChecker,
+        deployment,
+        renderDeploymentHeader: <div id="custom-deployment-header" />,
+        startInstance
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      connectionChecker.emit('connectionCheck', {
+        success: false,
+        reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CLIENT_ID
+      });
+
+      // then
+      await waitFor(() => {
+        expect(document.querySelector('#custom-deployment-header')).to.exist;
+      });
+    });
+
+
+    it('should render custom deployment submit', async function() {
+
+      // when
+      const connectionChecker = new MockConnectionChecker();
+
+      const deploymentConfig = createMockDeploymentConfig();
+
+      const deployment = new MockDeployment({
+        getConfigForFile: () => Promise.resolve(deploymentConfig)
+      });
+
+      const startInstanceConfig = createMockStartInstanceConfig();
+
+      const startInstance = new MockStartInstance({
+        getConfigForFile: () => Promise.resolve(startInstanceConfig)
+      });
+
+      createStartInstancePluginOverlay({
+        connectionChecker,
+        deployment,
+        renderDeploymentSubmit: <div id="custom-deployment-submit" />,
+        startInstance
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      connectionChecker.emit('connectionCheck', {
+        success: false,
+        reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CLIENT_ID
+      });
+
+      // then
+      await waitFor(() => {
+        expect(document.querySelector('#custom-deployment-submit')).to.exist;
+      });
+    });
+
+
+    it('should deploy custom resources', async function() {
+
+      // given
+      const deploymentConfig = createMockDeploymentConfig();
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult({
+          response: {
+            deployments: [
+              {
+                process: {
+                  bpmnProcessId: 'foo',
+                  resourceName: 'foo.bpmn'
+                }
+              },
+              {
+                process: {
+                  bpmnProcessId: 'bar',
+                  resourceName: 'bar.bpmn'
+                }
+              }
+            ]
+          }
+        }))),
+        getConfigForFile: () => Promise.resolve(deploymentConfig)
+      });
+
+      const displayNotificationSpy = sinon.spy();
+
+      const startInstanceConfig = createMockStartInstanceConfig();
+
+      const startInstance = new MockStartInstance({
+        getConfigForFile: () => Promise.resolve(startInstanceConfig),
+        startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult()))
+      });
+
+      const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
+
+      const resourceConfigs = [
+        {
+          path: 'foo.bpmn',
+          type: 'bpmn'
+        },
+        {
+          path: 'bar.bpmn',
+          type: 'bpmn'
+        }
+      ];
+
+      createStartInstancePluginOverlay({
+        deployment,
+        displayNotification: displayNotificationSpy,
+        getResourceConfigs: () => resourceConfigs,
+        startInstance,
+        StartInstanceConfigForm: Form
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      // when
+      getFormProps().onSubmit(startInstanceConfig);
+
+      // expect
+      await waitFor(() => {
+        expect(startInstance.startInstance).to.have.been.calledOnce;
+      });
+
+      expect(deployment.deploy).to.have.been.calledOnce;
+      expect(deployment.deploy).to.have.been.calledWith([
+        {
+          path: 'foo.bpmn',
+          type: 'bpmn'
+        },
+        {
+          path: 'bar.bpmn',
+          type: 'bpmn'
+        }
+      ], deploymentConfig);
+
+      expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+        ...deploymentConfig,
+        ...startInstanceConfig
+      });
+
+      expect(displayNotificationSpy).to.have.been.calledOnce;
+      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+        title: 'Process instance started',
+        type: 'success'
+      }));
+    });
+
+
+    it('should display custom success notification', async function() {
+
+      // given
+      const deploymentConfig = createMockDeploymentConfig();
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+        getConfigForFile: () => Promise.resolve(deploymentConfig)
+      });
+
+      const displayNotificationSpy = sinon.spy();
+
+      const startInstanceConfig = createMockStartInstanceConfig();
+
+      const startInstance = new MockStartInstance({
+        getConfigForFile: () => Promise.resolve(startInstanceConfig),
+        startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult()))
+      });
+
+      const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
+
+      createStartInstancePluginOverlay({
+        deployment,
+        displayNotification: displayNotificationSpy,
+        getSuccessNotification: () => ({
+          title: 'Custom success notification',
+          type: 'success'
+        }),
+        startInstance,
+        StartInstanceConfigForm: Form
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      // when
+      getFormProps().onSubmit(startInstanceConfig);
+
+      // expect
+      await waitFor(() => {
+        expect(startInstance.startInstance).to.have.been.calledOnce;
+      });
+
+      expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+        ...deploymentConfig,
+        ...startInstanceConfig
+      });
+
+      expect(displayNotificationSpy).to.have.been.calledOnce;
+      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+        title: 'Custom success notification',
+        type: 'success'
+      }));
+    });
+
+
+    it('should display custom error notification', async function() {
+
+      // given
+      const deploymentConfig = createMockDeploymentConfig();
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+        getConfigForFile: () => Promise.resolve(deploymentConfig)
+      });
+
+      const displayNotificationSpy = sinon.spy();
+
+      const startInstanceConfig = createMockStartInstanceConfig();
+
+      const startInstance = new MockStartInstance({
+        getConfigForFile: () => Promise.resolve(startInstanceConfig),
+        startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult({
+          success: false,
+          response: {
+            details: 'foo'
+          }
+        })))
+      });
+
+      const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
+
+      createStartInstancePluginOverlay({
+        deployment,
+        displayNotification: displayNotificationSpy,
+        getErrorNotification: () => ({
+          title: 'Custom error notification',
+          type: 'error'
+        }),
+        startInstance,
+        StartInstanceConfigForm: Form
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      // when
+      getFormProps().onSubmit(startInstanceConfig);
+
+      // expect
+      await waitFor(() => {
+        expect(startInstance.startInstance).to.have.been.calledOnce;
+      });
+
+      expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+        ...deploymentConfig,
+        ...startInstanceConfig
+      });
+
+      expect(displayNotificationSpy).to.have.been.calledOnce;
+      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+        title: 'Custom error notification',
+        type: 'error'
+      }));
+    });
+
+  });
+
 });
 
 class Mock {
@@ -574,7 +931,8 @@ function createMockDeploymentResult(overrides = {}) {
       deployments: [
         {
           process: {
-            bpmnProcessId: 'foo'
+            bpmnProcessId: 'foo',
+            resourceName: 'foo.bpmn'
           }
         }
       ]
@@ -609,6 +967,7 @@ class MockAnchor extends Mock {
 const DEFAULT_ACTIVE_TAB = {
   type: 'cloud-bpmn',
   file: {
+    name: 'foo.bpmn',
     path: 'foo.bpmn'
   }
 };
@@ -648,8 +1007,17 @@ function createStartInstancePluginOverlay(props = {}) {
     DeploymentConfigForm,
     deploymentConfigValidator = MockConfigValidator,
     displayNotification = () => {},
+    getErrorNotification,
+    getResourceConfigs,
+    getSuccessNotification,
     log = () => {},
     onClose = () => {},
+    renderDeploymentDescription,
+    renderDeploymentHeader,
+    renderDeploymentSubmit,
+    renderStartInstanceDescription,
+    renderStartInstanceHeader,
+    renderStartInstanceSubmit,
     startInstance = new MockStartInstance(),
     StartInstanceConfigForm,
     startInstanceConfigValidator = MockConfigValidator,
@@ -665,8 +1033,17 @@ function createStartInstancePluginOverlay(props = {}) {
       DeploymentConfigForm={ DeploymentConfigForm }
       deploymentConfigValidator={ deploymentConfigValidator }
       displayNotification={ displayNotification }
+      getErrorNotification={ getErrorNotification }
+      getResourceConfigs={ getResourceConfigs }
+      getSuccessNotification={ getSuccessNotification }
       log={ log }
       onClose={ onClose }
+      renderDeploymentDescription={ renderDeploymentDescription }
+      renderDeploymentHeader={ renderDeploymentHeader }
+      renderDeploymentSubmit={ renderDeploymentSubmit }
+      renderStartInstanceDescription={ renderStartInstanceDescription }
+      renderStartInstanceHeader={ renderStartInstanceHeader }
+      renderStartInstanceSubmit={ renderStartInstanceSubmit }
       startInstance={ startInstance }
       StartInstanceConfigForm={ StartInstanceConfigForm }
       startInstanceConfigValidator={ startInstanceConfigValidator }
