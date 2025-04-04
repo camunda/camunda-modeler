@@ -49,15 +49,6 @@ const RESOURCE_TYPES = {
 };
 
 /**
- * @typedef {Object} ZeebeClientParameters
- * @property {Endpoint} endpoint
- */
-
-/**
- * @typedef {SelfHostedNoAuthEndpoint|SelfHostedBasicAuthEndpoint|SelfHostedOAuthEndpoint|CamundaCloudEndpoint} Endpoint
- */
-
-/**
  * @typedef {Object} SelfHostedNoAuthEndpoint
  * @property {'selfHosted'} type
  * @property {string} url
@@ -83,19 +74,24 @@ const RESOURCE_TYPES = {
 /**
  * @typedef {Object} CamundaCloudEndpoint
  * @property {'camundaCloud'} type
- * @property {string} clusterId
+ * @property {string} url
  * @property {string} clientId
  * @property {string} clientSecret
- * @property {string} [clusterRegion] if not provided, zeebe-node will assume 'bru-2'
  */
 
 /**
- * @typedef {Object} TopologyResponse
- * @property {'brokers'} type
- * @property {number} clusterSize
- * @property {number} partitionsCount
- * @property {number} replicationFactor
- * @property {string} gatewayVersion
+ * @typedef {SelfHostedNoAuthEndpoint|SelfHostedBasicAuthEndpoint|SelfHostedOAuthEndpoint|CamundaCloudEndpoint} Endpoint
+ */
+
+/**
+ * @typedef {Object} DeploymentConfig
+ * @property {Endpoint} endpoint
+ */
+
+/**
+ * @typedef {Object} StartInstanceConfig
+ * @property {Endpoint} endpoint
+ * @property {string} processId
  */
 
 /**
@@ -130,23 +126,19 @@ class ZeebeAPI {
   }
 
   /**
-   * @public
-   * Check connection with given broker/cluster.
+   * Check connection with given endpoint.
    *
-   * @param {ZeebeClientParameters} parameters
+   * @param {{ endpoint: Endpoint }} config
    *
-   * @returns {{ success: boolean, reason?: string }}
+   * @returns {Promise<{ success: boolean, reason?: string }>}
    */
-  async checkConnection(parameters) {
-
-    const {
-      endpoint
-    } = parameters;
+  async checkConnection(config) {
+    const { endpoint } = config;
 
     const client = await this._getZeebeClient(endpoint);
 
     this._log.debug('check connection', {
-      parameters: filterEndpointParameters(parameters)
+      parameters: filterEndpointParameters(config)
     });
 
     try {
@@ -154,7 +146,7 @@ class ZeebeAPI {
       return { success: true };
     } catch (err) {
       this._log.error('connection check failed', {
-        parameters: filterEndpointParameters(parameters)
+        parameters: filterEndpointParameters(config)
       }, err);
 
       return {
@@ -165,25 +157,21 @@ class ZeebeAPI {
   }
 
   /**
-   * Deploy resources.
+   * Deploy resources with given configuration.
    *
-   * @param { {
-   *   endpoint: object,
-   *   resourceConfigs: Array<{ path: string, type?: 'bpmn'|'dmn'|'form' }>,
-   *   tenantId?: string
-   * } } parameters
+   * @param {DeploymentConfig} config
    *
    * @returns {Promise<{ success: boolean, response: object }>}
    */
-  async deploy(parameters) {
-    let {
+  async deploy(config) {
+    const {
       endpoint,
       resourceConfigs,
       tenantId
-    } = parameters;
+    } = config;
 
     this._log.debug('deploy', {
-      parameters: filterEndpointParameters(parameters)
+      parameters: filterEndpointParameters(config)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -210,7 +198,7 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      this._log.error('deploy failed', filterEndpointParameters(parameters), err);
+      this._log.error('deploy failed', filterEndpointParameters(config), err);
 
       return {
         success: false,
@@ -220,24 +208,22 @@ class ZeebeAPI {
   }
 
   /**
-   * @public
-   * Run process instance.
+   * Start instance of process with given process ID and configuration.
    *
-   * @param {ZeebeClientParameters & { endpoint: object, processId: string, variables: object }} parameters
+   * @param {StartInstanceConfig} config
    *
    * @returns {{ success: boolean, response: object }}
    */
-  async run(parameters) {
-
+  async startInstance(config) {
     const {
       endpoint,
       variables,
       processId,
       tenantId
-    } = parameters;
+    } = config;
 
-    this._log.debug('run', {
-      parameters: filterEndpointParameters(parameters)
+    this._log.debug('start instance', {
+      parameters: filterEndpointParameters(config)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -255,8 +241,8 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      this._log.error('run failed', {
-        parameters: filterEndpointParameters(parameters)
+      this._log.error('start instance failed', {
+        parameters: filterEndpointParameters(config)
       }, err);
 
       return {
@@ -267,21 +253,19 @@ class ZeebeAPI {
   }
 
   /**
-   * @public
    * Get gateway version of given broker/cluster endpoint.
    *
-   * @param {ZeebeClientParameters} parameters
+   * @param {{ endpoint: Endpoint }} config
    *
    * @returns {{ success: boolean, response?: object, response?.gatewayVersion: string }}
    */
-  async getGatewayVersion(parameters) {
-
+  async getGatewayVersion(config) {
     const {
       endpoint
-    } = parameters;
+    } = config;
 
     this._log.debug('fetch gateway version', {
-      parameters: filterEndpointParameters(parameters)
+      parameters: filterEndpointParameters(config)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -297,12 +281,12 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('fetch gateway version failed', {
-        parameters: filterEndpointParameters(parameters)
+        parameters: filterEndpointParameters(config)
       }, err);
 
       return {
         success: false,
-        reason: getErrorReason(err, endpoint)
+        reason: getErrorReason(err, config.endpoint)
       };
     }
   }
