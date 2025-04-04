@@ -459,9 +459,9 @@ describe('ZeebeAPI', function() {
   });
 
 
-  describe('#run', function() {
+  describe('#startInstance', function() {
 
-    it('should set success=true for successful instance run', async function() {
+    it('should set success=true on success', async function() {
 
       // given
       const zeebeAPI = createZeebeAPI();
@@ -474,7 +474,7 @@ describe('ZeebeAPI', function() {
       };
 
       // when
-      const result = await zeebeAPI.run(parameters);
+      const result = await zeebeAPI.startInstance(parameters);
 
       // then
       expect(result).to.exist;
@@ -501,7 +501,7 @@ describe('ZeebeAPI', function() {
       };
 
       // when
-      const result = await zeebeAPI.run(parameters);
+      const result = await zeebeAPI.startInstance(parameters);
 
       // then
       expect(result).to.exist;
@@ -530,7 +530,7 @@ describe('ZeebeAPI', function() {
       };
 
       // when
-      const result = await zeebeAPI.run(parameters);
+      const result = await zeebeAPI.startInstance(parameters);
 
       // then
       expect(result.success).to.be.false;
