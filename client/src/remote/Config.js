@@ -75,7 +75,7 @@ export default class Config {
     const configForFile = files[ path ];
 
     if (!configForFile) {
-      return null;
+      return defaultValue;
     }
 
     if (!key) {
@@ -129,7 +129,7 @@ export default class Config {
     const configForPlugin = plugins[ name ];
 
     if (!configForPlugin) {
-      return null;
+      return defaultValue;
     }
 
     if (!key) {
