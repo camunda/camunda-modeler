@@ -18,18 +18,16 @@ import { mount } from 'enzyme';
 
 import { merge } from 'min-dash';
 
-import EndpointConfigForm from '../EndpointConfigForm';
+import DeploymentConfigForm from '../DeploymentConfigForm';
 
-import { AUTH_TYPES } from '../../shared/ZeebeAuthTypes';
+import { AUTH_TYPES, TARGET_TYPES } from '../../../../remote/ZeebeAPI';
 
-import * as TARGET_TYPES from '../../shared/ZeebeTargetTypes';
-
-describe('<EndpointConfigForm>', function() {
+describe('<DeploymentConfigForm>', function() {
 
   it('should render', function() {
 
     // when
-    const wrapper = createEndpointConfigForm();
+    const wrapper = createDeploymentConfigForm();
 
     // then
     expect(wrapper.exists()).to.be.true;
@@ -39,7 +37,7 @@ describe('<EndpointConfigForm>', function() {
   it('should render no header by default', function() {
 
     // when
-    const wrapper = createEndpointConfigForm();
+    const wrapper = createDeploymentConfigForm();
 
     // then
     expect(wrapper.find('.section__header').exists()).to.be.false;
@@ -52,7 +50,7 @@ describe('<EndpointConfigForm>', function() {
     const renderHeader = 'Custom Header';
 
     // when
-    const wrapper = createEndpointConfigForm({
+    const wrapper = createDeploymentConfigForm({
       renderHeader
     });
 
@@ -64,7 +62,7 @@ describe('<EndpointConfigForm>', function() {
   it('should render default submit button', function() {
 
     // when
-    const wrapper = createEndpointConfigForm();
+    const wrapper = createDeploymentConfigForm();
 
     // then
     expect(wrapper.find('button[type="submit"]').text()).to.eql('Submit');
@@ -77,7 +75,7 @@ describe('<EndpointConfigForm>', function() {
     const renderSubmit = 'Custom Submit';
 
     // when
-    const wrapper = createEndpointConfigForm({
+    const wrapper = createDeploymentConfigForm({
       renderSubmit
     });
 
@@ -93,7 +91,7 @@ describe('<EndpointConfigForm>', function() {
       it('should render', function() {
 
         // when
-        const wrapper = createEndpointConfigForm();
+        const wrapper = createDeploymentConfigForm();
 
         // then
         expect(wrapper.find('label[htmlFor="endpoint.targetType"]').exists()).to.be.true;
@@ -110,7 +108,7 @@ describe('<EndpointConfigForm>', function() {
       it('should render', function() {
 
         // when
-        const wrapper = createEndpointConfigForm({
+        const wrapper = createDeploymentConfigForm({
           initialFieldValues: {
             endpoint: {
               targetType: TARGET_TYPES.SELF_HOSTED,
@@ -135,7 +133,7 @@ describe('<EndpointConfigForm>', function() {
       it('should render', function() {
 
         // when
-        const wrapper = createEndpointConfigForm({
+        const wrapper = createDeploymentConfigForm({
           initialFieldValues: {
             endpoint: {
               targetType: TARGET_TYPES.SELF_HOSTED,
@@ -163,7 +161,7 @@ describe('<EndpointConfigForm>', function() {
       it('should render', function() {
 
         // when
-        const wrapper = createEndpointConfigForm({
+        const wrapper = createDeploymentConfigForm({
           initialFieldValues: {
             endpoint: {
               targetType: TARGET_TYPES.SELF_HOSTED,
@@ -195,7 +193,7 @@ describe('<EndpointConfigForm>', function() {
       it('should render', function() {
 
         // when
-        const wrapper = createEndpointConfigForm({
+        const wrapper = createDeploymentConfigForm({
           initialFieldValues: {
             endpoint: {
               targetType: TARGET_TYPES.CAMUNDA_CLOUD
@@ -220,7 +218,7 @@ describe('<EndpointConfigForm>', function() {
       it('should render', function() {
 
         // when
-        const wrapper = createEndpointConfigForm({
+        const wrapper = createDeploymentConfigForm({
           initialFieldValues: {
             endpoint: {
               rememberCredentials: true
@@ -245,7 +243,7 @@ describe('<EndpointConfigForm>', function() {
       // given
       const onSubmitSpy = sinon.spy();
 
-      const wrapper = createEndpointConfigForm({
+      const wrapper = createDeploymentConfigForm({
         onSubmit: onSubmitSpy
       });
 
@@ -296,7 +294,7 @@ describe('<EndpointConfigForm>', function() {
         return Promise.resolve();
       });
 
-      const wrapper = createEndpointConfigForm({
+      const wrapper = createDeploymentConfigForm({
         onSubmit: onSubmitSpy
       });
 
@@ -316,13 +314,13 @@ describe('<EndpointConfigForm>', function() {
 
   describe('validation', function() {
 
-    it('should validate on mount', async function() {
+    it('should validate form and fields on mount', async function() {
 
       // given
       const validateFieldSpy = sinon.spy(),
             validateFormSpy = sinon.spy();
 
-      createEndpointConfigForm({
+      createDeploymentConfigForm({
         validateField: validateFieldSpy,
         validateForm: validateFormSpy
       });
@@ -330,9 +328,9 @@ describe('<EndpointConfigForm>', function() {
       // then
       expect(validateFieldSpy.callCount).to.eql(3);
 
-      expect(validateFieldSpy).to.have.been.calledWith('camundaCloudClusterUrl', undefined);
-      expect(validateFieldSpy).to.have.been.calledWith('camundaCloudClientId', undefined);
-      expect(validateFieldSpy).to.have.been.calledWith('camundaCloudClientSecret', undefined);
+      expect(validateFieldSpy).to.have.been.calledWith('endpoint.camundaCloudClusterUrl', undefined);
+      expect(validateFieldSpy).to.have.been.calledWith('endpoint.camundaCloudClientId', undefined);
+      expect(validateFieldSpy).to.have.been.calledWith('endpoint.camundaCloudClientSecret', undefined);
 
       expect(validateFormSpy).to.have.been.calledOnce;
 
@@ -346,12 +344,86 @@ describe('<EndpointConfigForm>', function() {
     });
 
 
+    it('should validate from on submit', async function() {
+
+      // given
+      const validateFieldSpy = sinon.spy(),
+            validateFormSpy = sinon.spy();
+
+      const wrapper = createDeploymentConfigForm({
+        validateField: validateFieldSpy,
+        validateForm: validateFormSpy
+      });
+
+      // then
+      expect(validateFormSpy).to.have.been.calledWith({
+        deployment: {},
+        endpoint: {
+          authType: AUTH_TYPES.NONE,
+          targetType: TARGET_TYPES.CAMUNDA_CLOUD
+        }
+      });
+
+      // when
+      validateFieldSpy.resetHistory();
+      validateFormSpy.resetHistory();
+
+      await act(async () => {
+        wrapper.find('form').simulate('submit');
+      });
+
+      wrapper.update();
+
+      // then
+      expect(validateFieldSpy.callCount).to.eql(3);
+      expect(validateFormSpy.callCount).to.eql(1);
+    });
+
+
+    it('should validate from on blur', async function() {
+
+      // given
+      const validateFieldSpy = sinon.spy(),
+            validateFormSpy = sinon.spy();
+
+      const wrapper = createDeploymentConfigForm({
+        validateField: validateFieldSpy,
+        validateForm: validateFormSpy
+      });
+
+      // then
+      expect(validateFormSpy).to.have.been.calledWith({
+        deployment: {},
+        endpoint: {
+          authType: AUTH_TYPES.NONE,
+          targetType: TARGET_TYPES.CAMUNDA_CLOUD
+        }
+      });
+
+      // when
+      validateFieldSpy.resetHistory();
+      validateFormSpy.resetHistory();
+
+      await act(async () => {
+        wrapper.find('input[name="endpoint.camundaCloudClientId"]').simulate('blur', {
+          target: { name: 'endpoint.camundaCloudClientId', value: 'foo' }
+        });
+      });
+
+      wrapper.update();
+
+      // then
+      expect(validateFieldSpy.callCount).to.eql(3);
+      expect(validateFormSpy.callCount).to.eql(1);
+    });
+
+
     it('should validate field value on change', async function() {
 
       // given
       const validateFieldSpy = sinon.spy();
 
-      const wrapper = createEndpointConfigForm({
+      const wrapper = createDeploymentConfigForm({
         validateField: validateFieldSpy
       });
 
@@ -365,14 +437,14 @@ describe('<EndpointConfigForm>', function() {
       wrapper.update();
 
       // then
-      expect(validateFieldSpy).to.have.been.calledWith('camundaCloudClientId', 'foo');
+      expect(validateFieldSpy).to.have.been.calledWith('endpoint.camundaCloudClientId', 'foo');
     });
 
 
     it('should add field error (getFieldError)', async function() {
 
       // given
-      const wrapper = createEndpointConfigForm({
+      const wrapper = createDeploymentConfigForm({
         getFieldError: (meta, fieldName) => {
           return fieldName === 'endpoint.camundaCloudClientId' ? 'Error' : undefined;
         }
@@ -386,8 +458,8 @@ describe('<EndpointConfigForm>', function() {
     it('should add field error (meta.error and meta.touched)', async function() {
 
       // given
-      const wrapper = createEndpointConfigForm({
-        validateField: (name, value) => name === 'camundaCloudClientId' && value === 'foo' ? 'Error' : undefined
+      const wrapper = createDeploymentConfigForm({
+        validateField: (name, value) => name === 'endpoint.camundaCloudClientId' && value === 'foo' ? 'Error' : undefined
       });
 
       // when
@@ -415,7 +487,7 @@ describe('<EndpointConfigForm>', function() {
 
       const getFieldError = (meta, fieldName) => fieldName === 'endpoint.camundaCloudClientId' ? error : undefined;
 
-      const wrapper = createEndpointConfigForm({
+      const wrapper = createDeploymentConfigForm({
         getFieldError,
         initialFieldValues: {
           endpoint: {
@@ -443,7 +515,7 @@ describe('<EndpointConfigForm>', function() {
     it('should remove field error (meta.error and meta.touched)', async function() {
 
       // given
-      const wrapper = createEndpointConfigForm({
+      const wrapper = createDeploymentConfigForm({
         validateField: (name, value) => name === 'camundaCloudClientId' && value === 'foo' ? 'Error' : undefined
       });
 
@@ -488,7 +560,7 @@ const DEFAULT_INITIAL_FIELD_VALUES = {
   }
 };
 
-function createEndpointConfigForm(props = {}) {
+function createDeploymentConfigForm(props = {}) {
   let {
     getFieldError = (meta, fieldName) => {},
     initialFieldValues = {},
@@ -501,7 +573,7 @@ function createEndpointConfigForm(props = {}) {
 
   initialFieldValues = merge({}, DEFAULT_INITIAL_FIELD_VALUES, initialFieldValues);
 
-  return mount(<EndpointConfigForm
+  return mount(<DeploymentConfigForm
     getFieldError={ getFieldError }
     initialFieldValues={ initialFieldValues }
     onSubmit={ onSubmit }

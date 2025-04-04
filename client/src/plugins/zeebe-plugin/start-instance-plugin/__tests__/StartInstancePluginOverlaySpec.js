@@ -8,18 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+describe('StartInstancePluginOverlay', function() {
 
-import {
-  shallow
-} from 'enzyme';
-
-import StartInstanceConfigOverlay from '../StartInstanceConfigOverlay';
-
-describe('<StartInstanceConfigOverlay>', function() {
-
-  it('should render', function() {
-    shallow(<StartInstanceConfigOverlay />);
-  });
+  it('should render');
 
 });

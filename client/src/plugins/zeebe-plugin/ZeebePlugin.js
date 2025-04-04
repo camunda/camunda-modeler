@@ -8,16 +8,16 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent } from 'react';
+import React from 'react';
 
 import DeploymentPlugin from './deployment-plugin';
 import StartInstancePlugin from './start-instance-plugin';
 
-export default class ZeebePlugin extends PureComponent {
-  render() {
-    return <React.Fragment>
-      <DeploymentPlugin { ...this.props } />
-      <StartInstancePlugin { ...this.props } />
-    </React.Fragment>;
-  }
+export default function ZeebePlugin(props) {
+  return (
+    <React.Fragment>
+      <DeploymentPlugin { ...props } />
+      <StartInstancePlugin { ...props } />
+    </React.Fragment>
+  );
 }

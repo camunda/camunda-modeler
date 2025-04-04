@@ -23,15 +23,34 @@ import {
   ToggleSwitch
 } from '../../../shared/ui';
 
-import * as CONSTANTS from './DeploymentPluginConstants';
+import { AUTH_TYPES, TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
-import { AUTH_TYPES } from '../shared/ZeebeAuthTypes';
+import * as css from './DeploymentConfigForm.less';
 
-import * as TARGET_TYPES from '../shared/ZeebeTargetTypes';
+const LABELS = {
+  AUTH_TYPE_BASIC_AUTH: 'Basic',
+  AUTH_TYPE_NONE: 'None',
+  AUTH_TYPE_OAUTH: 'OAuth',
+  BASIC_AUTH_PASSWORD: 'Password',
+  BASIC_AUTH_USERNAME: 'Username',
+  CAMUNDA_CLOUD: 'Camunda 8 SaaS',
+  CLIENT_ID: 'Client ID',
+  CLIENT_SECRET: 'Client secret',
+  CLUSTER_URL: 'Cluster URL',
+  CONTACT_POINT: 'Cluster endpoint',
+  OAUTH_AUDIENCE: 'OAuth audience',
+  OAUTH_SCOPE: 'OAuth scope',
+  OAUTH_URL: 'OAuth token URL',
+  REMEMBER_CREDENTIALS: 'Remember credentials',
+  SELF_HOSTED: 'Camunda 8 Self-Managed',
+  TENANT_ID: 'Tenant ID'
+};
 
-import * as css from './EndpointConfigForm.less';
+const HINTS = {
+  CONTACT_POINT: 'http://localhost:26500'
+};
 
-export default function EndpointConfigForm(props) {
+export default function DeploymentConfigForm(props) {
   const {
     getFieldError: _getFieldError,
     initialFieldValues,
@@ -57,7 +76,7 @@ export default function EndpointConfigForm(props) {
       {
         props => {
           return (
-            <Form className={ css.EndpointConfigForm }>
+            <Form className={ css.DeploymentConfigForm }>
               <Section>
                 {
                   renderHeader && (
@@ -76,8 +95,8 @@ export default function EndpointConfigForm(props) {
                         className="radio-vertical"
                         values={
                           [
-                            { value: TARGET_TYPES.CAMUNDA_CLOUD, label: CONSTANTS.CAMUNDA_CLOUD_TEXT },
-                            { value: TARGET_TYPES.SELF_HOSTED, label: CONSTANTS.SELF_HOSTED_TEXT }
+                            { value: TARGET_TYPES.CAMUNDA_CLOUD, label: LABELS.CAMUNDA_CLOUD },
+                            { value: TARGET_TYPES.SELF_HOSTED, label: LABELS.SELF_HOSTED }
                           ]
                         }
                       />
@@ -87,10 +106,10 @@ export default function EndpointConfigForm(props) {
                             <Field
                               name="endpoint.contactPoint"
                               component={ TextInput }
-                              label={ CONSTANTS.CONTACT_POINT }
-                              validate={ value => validateField('contactPoint', value) }
+                              label={ LABELS.CONTACT_POINT }
+                              validate={ value => validateField('endpoint.contactPoint', value) }
                               fieldError={ getFieldError }
-                              hint={ CONSTANTS.CONTACT_POINT_HINT }
+                              hint={ HINTS.CONTACT_POINT }
                               autoFocus
                             />
                             {
@@ -100,7 +119,7 @@ export default function EndpointConfigForm(props) {
                                   <Field
                                     name="deployment.tenantId"
                                     component={ TextInput }
-                                    label={ CONSTANTS.TENANT_ID }
+                                    label={ LABELS.TENANT_ID }
                                     hint="Optional"
                                   />
                                 )
@@ -112,9 +131,9 @@ export default function EndpointConfigForm(props) {
                               className="radio-horizontal"
                               values={
                                 [
-                                  { value: AUTH_TYPES.NONE, label: CONSTANTS.NONE },
-                                  { value: AUTH_TYPES.BASIC, label: CONSTANTS.BASIC_AUTH_TEXT },
-                                  { value: AUTH_TYPES.OAUTH, label: CONSTANTS.OAUTH_TEXT }
+                                  { value: AUTH_TYPES.NONE, label: LABELS.AUTH_TYPE_NONE },
+                                  { value: AUTH_TYPES.BASIC, label: LABELS.AUTH_TYPE_BASIC_AUTH },
+                                  { value: AUTH_TYPES.OAUTH, label: LABELS.AUTH_TYPE_OAUTH }
                                 ]
                               }
                             />
@@ -129,16 +148,16 @@ export default function EndpointConfigForm(props) {
                               <Field
                                 name="endpoint.basicAuthUsername"
                                 component={ TextInput }
-                                label={ CONSTANTS.BASIC_AUTH_USERNAME }
+                                label={ LABELS.BASIC_AUTH_USERNAME }
                                 fieldError={ getFieldError }
-                                validate={ value => validateField('basicAuthUsername', value) }
+                                validate={ value => validateField('endpoint.basicAuthUsername', value) }
                               />
                               <Field
                                 name="endpoint.basicAuthPassword"
                                 component={ TextInput }
-                                label={ CONSTANTS.BASIC_AUTH_PASSWORD }
+                                label={ LABELS.BASIC_AUTH_PASSWORD }
                                 fieldError={ getFieldError }
-                                validate={ value => validateField('basicAuthPassword', value) }
+                                validate={ value => validateField('endpoint.basicAuthPassword', value) }
                                 type="password"
                               />
                             </React.Fragment>
@@ -152,38 +171,36 @@ export default function EndpointConfigForm(props) {
                               <Field
                                 name="endpoint.clientId"
                                 component={ TextInput }
-                                label={ CONSTANTS.CLIENT_ID }
+                                label={ LABELS.CLIENT_ID }
                                 fieldError={ getFieldError }
-                                validate={ value => validateField('clientId', value) }
+                                validate={ value => validateField('endpoint.clientId', value) }
                               />
                               <Field
                                 name="endpoint.clientSecret"
                                 component={ TextInput }
-                                label={ CONSTANTS.CLIENT_SECRET }
+                                label={ LABELS.CLIENT_SECRET }
                                 fieldError={ getFieldError }
-                                validate={ value => validateField('clientSecret', value) }
+                                validate={ value => validateField('endpoint.clientSecret', value) }
                                 type="password"
                               />
                               <Field
                                 name="endpoint.oauthURL"
                                 component={ TextInput }
-                                label={ CONSTANTS.OAUTH_URL }
+                                label={ LABELS.OAUTH_URL }
                                 fieldError={ getFieldError }
-                                validate={ value => validateField('oauthURL', value) }
+                                validate={ value => validateField('endpoint.oauthURL', value) }
                               />
                               <Field
                                 name="endpoint.audience"
                                 component={ TextInput }
-                                label={ CONSTANTS.AUDIENCE }
+                                label={ LABELS.OAUTH_AUDIENCE }
                                 fieldError={ getFieldError }
-                                validate={ value => validateField('audience', value) }
+                                validate={ value => validateField('endpoint.audience', value) }
                               />
                               <Field
                                 name="endpoint.scope"
                                 component={ TextInput }
-                                label={ CONSTANTS.SCOPE }
-                                fieldError={ getFieldError }
-                                validate={ value => validateField('scope', value) }
+                                label={ LABELS.OAUTH_SCOPE }
                               />
                             </React.Fragment>
                           )
@@ -194,23 +211,23 @@ export default function EndpointConfigForm(props) {
                             <Field
                               name="endpoint.camundaCloudClusterUrl"
                               component={ TextInput }
-                              label={ CONSTANTS.CLUSTER_URL }
+                              label={ LABELS.CLUSTER_URL }
                               fieldError={ getFieldError }
-                              validate={ value => validateField('camundaCloudClusterUrl', value) }
+                              validate={ value => validateField('endpoint.camundaCloudClusterUrl', value) }
                             />
                             <Field
                               name="endpoint.camundaCloudClientId"
                               component={ TextInput }
-                              label={ CONSTANTS.CLIENT_ID }
+                              label={ LABELS.CLIENT_ID }
                               fieldError={ getFieldError }
-                              validate={ value => validateField('camundaCloudClientId', value) }
+                              validate={ value => validateField('endpoint.camundaCloudClientId', value) }
                             />
                             <Field
                               name="endpoint.camundaCloudClientSecret"
                               component={ TextInput }
-                              label={ CONSTANTS.CLIENT_SECRET }
+                              label={ LABELS.CLIENT_SECRET }
                               fieldError={ getFieldError }
-                              validate={ value => validateField('camundaCloudClientSecret', value) }
+                              validate={ value => validateField('endpoint.camundaCloudClientSecret', value) }
                               type="password"
                             />
                           </React.Fragment>
@@ -219,7 +236,7 @@ export default function EndpointConfigForm(props) {
                       <Field
                         name={ 'endpoint.rememberCredentials' }
                         component={ ToggleSwitch }
-                        switcherLabel={ CONSTANTS.REMEMBER_CREDENTIALS }
+                        switcherLabel={ LABELS.REMEMBER_CREDENTIALS }
                       />
                     </div>
                   </fieldset>

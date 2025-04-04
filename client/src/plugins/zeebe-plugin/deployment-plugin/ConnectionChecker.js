@@ -8,184 +8,100 @@
  * except in compliance with the MIT License.
  */
 
-import pDefer from 'p-defer';
+import EventEmitter from 'events';
 
 const DELAYS = {
-  SHORT: 1000,
-  LONG: 5000
+  LONG: 5000, // 5s interval if no config change
+  SHORT: 1000 // 1s delay if config change
 };
 
-export default class ConnectionChecker {
+export default class ConnectionChecker extends EventEmitter {
+  constructor(zeebeAPI) {
+    super();
 
-  constructor(validator) {
-    this.validator = validator;
+    this._zeebeAPI = zeebeAPI;
+
+    this._checkInterval = null;
+    this._checkTimeout = null;
+    this._config = null;
+    this._lastResult = null;
   }
 
-  subscribe(hooks) {
-    this.hooks = hooks;
+  updateConfig(config, startChecking = true) {
+    this._config = config;
+
+    this._cancelCheck();
+
+    this._checkTimeout = setTimeout(() => {
+      this._check();
+
+      if (startChecking) {
+        this.startChecking();
+      }
+    }, DELAYS.SHORT);
   }
 
-  unsubscribe() {
-
-    if (this.checkTimer) {
-      clearTimeout(this.checkTimer);
-
-      this.checkTimer = null;
-    }
-
-    this.endpoint = null;
-
-    this.lastCheck = null;
-
-    this.hooks = null;
+  getLastResult() {
+    return this._lastResult;
   }
 
-  check(endpoint) {
-    this.setEndpoint(endpoint);
+  _cancelCheck() {
+    clearInterval(this._checkInterval);
+    clearTimeout(this._checkTimeout);
 
-    const {
-      lastCheck
-    } = this;
-
-    // return cached result if endpoint did not change
-    // we'll periodically re-check in background anyway
-    if (lastCheck && shallowEquals(endpoint, lastCheck.endpoint)) {
-      return Promise.resolve(lastCheck.result);
-    }
-
-    const deferred = this.scheduleCheck();
-
-    return deferred.promise;
+    this._checkInterval = null;
+    this._checkTimeout = null;
   }
 
-  setEndpoint(endpoint) {
-    this.endpoint = endpoint;
-  }
+  async _check() {
+    if (!this._config) {
+      const result = {
+        success: false,
+        error: new Error('No configuration provided')
+      };
 
-  checkCompleted(endpoint, result) {
+      this._lastResult = result;
 
-    const {
-      endpoint: currentEndpoint,
-      deferred,
-      hooks
-    } = this;
+      this.emit('connectionCheck', result);
 
-    if (!shallowEquals(endpoint, currentEndpoint)) {
       return;
     }
 
-    const {
-      endpointErrors
-    } = result;
+    try {
+      const { endpoint } = this._config;
 
-    this.lastCheck = {
-      endpoint,
-      result
-    };
+      console.log('Checking connection to', endpoint);
 
-    this.deferred = null;
+      const result = await this._zeebeAPI.checkConnection(endpoint);
 
-    deferred.resolve(result);
+      console.log('Connection check result', result);
 
-    hooks && hooks.onComplete && hooks.onComplete(result);
+      this._lastResult = result;
 
-    if (!hasKeys(endpointErrors)) {
-      this.scheduleCheck();
+      this.emit('connectionCheck', result);
+    } catch (error) {
+      const result = {
+        success: false,
+        error
+      };
+
+      this._lastResult = result;
+
+      this.emit('connectionCheck', result);
     }
   }
 
-  checkStart() {
-
-    const {
-      hooks
-    } = this;
-
-    hooks && hooks.onStart && hooks.onStart();
-  }
-
-  scheduleCheck() {
-
-    const {
-      endpoint,
-      lastCheck,
-      checkTimer,
-      validator
-    } = this;
-
-    const deferred = this.deferred = this.deferred || pDefer();
-
-    // stop scheduled check
-    if (checkTimer) {
-      clearTimeout(checkTimer);
+  startChecking() {
+    if (this._checkInterval) {
+      return;
     }
 
-    const endpointErrors = validator.validateEndpoint(endpoint);
-
-    if (hasKeys(endpointErrors)) {
-      this.checkCompleted(endpoint, {
-        endpointErrors
-      });
-    } else {
-
-      const delay = this.getCheckDelay(endpoint, lastCheck);
-
-      this.checkTimer = setTimeout(() => {
-        this.triggerCheck();
-      }, delay);
-    }
-
-    return deferred;
+    this._checkInterval = setInterval(() => {
+      this._check();
+    }, DELAYS.LONG);
   }
 
-  triggerCheck() {
-    const {
-      endpoint,
-      validator
-    } = this;
-
-    this.checkStart();
-
-    validator.validateConnection(endpoint).then(connectionResult => {
-
-      this.checkCompleted(endpoint, {
-        connectionResult
-      });
-
-    }).catch(error => {
-      console.error('connection check failed', error);
-    });
+  stopChecking() {
+    this._cancelCheck();
   }
-
-  getCheckDelay(endpoint, lastCheck) {
-
-    if (!lastCheck) {
-      return DELAYS.SHORT;
-    }
-
-    const {
-      endpoint: lastEndpoint
-    } = lastCheck;
-
-    const endpointChanged = !shallowEquals(endpoint, lastEndpoint);
-
-    if (endpointChanged) {
-      return DELAYS.SHORT;
-    }
-
-    return DELAYS.LONG;
-  }
-}
-
-// helpers /////////////////
-
-function hasKeys(obj) {
-  return obj && Object.keys(obj).length > 0;
-}
-
-function shallowEquals(a, b) {
-  return hash(a) === hash(b);
-}
-
-function hash(el) {
-  return JSON.stringify(el);
 }
