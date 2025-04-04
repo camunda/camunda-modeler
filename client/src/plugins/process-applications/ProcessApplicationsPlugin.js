@@ -12,6 +12,8 @@ import React, { useEffect, useState } from 'react';
 
 import ProcessApplications from './ProcessApplications';
 import ProcessApplicationsStatusBar from './ProcessApplicationsStatusBar';
+import ProcessApplicationsDeploymentPlugin from './ProcessApplicationsDeploymentPlugin';
+import ProcessApplicationsStartInstancePlugin from './ProcessApplicationsStartInstancePlugin';
 import { ResourcesProviderModule } from './ResourcesProvider';
 
 const processApplications = new ProcessApplications();
@@ -20,8 +22,10 @@ const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/deskt
 
 export default function ProcessApplicationsPlugin(props) {
   const {
-    _getFromApp: getFromApp,
-    _getGlobal: getGlobal,
+    _getFromApp,
+    _getGlobal,
+    displayNotification,
+    log,
     subscribe,
     triggerAction
   } = props;
@@ -44,7 +48,7 @@ export default function ProcessApplicationsPlugin(props) {
     });
 
     subscribe('create-process-application', async () => {
-      const dialog = getGlobal('dialog');
+      const dialog = _getGlobal('dialog');
 
       const [ directoryPath ] = await dialog.showOpenFilesDialog({
         properties: [ 'openDirectory' ],
@@ -57,11 +61,11 @@ export default function ProcessApplicationsPlugin(props) {
 
       const file = createProcessApplicationFile();
 
-      const fileSystem = getGlobal('fileSystem');
+      const fileSystem = _getGlobal('fileSystem');
 
       await fileSystem.writeFile(`${directoryPath}/${file.name}`, file);
 
-      getGlobal('backend').send('file-context:file-opened', `${directoryPath}/${file.name}`, undefined);
+      _getGlobal('backend').send('file-context:file-opened', `${directoryPath}/${file.name}`, undefined);
 
       triggerAction('display-notification', {
         type: 'success',
@@ -70,9 +74,7 @@ export default function ProcessApplicationsPlugin(props) {
       });
     });
 
-    getGlobal('backend').on('file-context:changed', (_, items) => {
-      console.log('file-context:changed', items);
-
+    _getGlobal('backend').on('file-context:changed', (_, items) => {
       processApplications.emit('items-changed', items);
 
       setItems(items);
@@ -168,14 +170,32 @@ export default function ProcessApplicationsPlugin(props) {
     }
   }, [ items, tabs ]);
 
-  return <ProcessApplicationsStatusBar
-    activeTab={ activeTab }
-    processApplication={ processApplication }
-    processApplicationItems={ processApplicationItems }
-    onOpen={ (path) => triggerAction('open-diagram', { path }) }
-    onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }
-    tabsProvider={ getFromApp('props').tabsProvider }
-  />;
+  return <>
+    <ProcessApplicationsStatusBar
+      activeTab={ activeTab }
+      processApplication={ processApplication }
+      processApplicationItems={ processApplicationItems }
+      onOpen={ (path) => triggerAction('open-diagram', { path }) }
+      onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }
+      tabsProvider={ _getFromApp('props').tabsProvider }
+    />
+    <ProcessApplicationsDeploymentPlugin
+      _getGlobal={ _getGlobal }
+      activeTab={ activeTab }
+      displayNotification={ displayNotification }
+      log={ log }
+      processApplication={ processApplication }
+      processApplicationItems={ processApplicationItems }
+      triggerAction={ triggerAction } />
+    <ProcessApplicationsStartInstancePlugin
+      _getGlobal={ _getGlobal }
+      activeTab={ activeTab }
+      displayNotification={ displayNotification }
+      log={ log }
+      processApplication={ processApplication }
+      processApplicationItems={ processApplicationItems }
+      triggerAction={ triggerAction } />
+  </>;
 }
 
 function createProcessApplicationFile(contents = {}) {
