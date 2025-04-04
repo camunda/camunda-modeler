@@ -22,12 +22,13 @@ describe('<ToggleSwitch>', function() {
   });
 
 
-  it('should enable option', function() {
+  it('should be checked', function() {
 
     // given
     const wrapper = createToggleSwitch({
       field:
         {
+          name: 'foo',
           value: true
         }
     });
@@ -35,8 +36,25 @@ describe('<ToggleSwitch>', function() {
     const input = wrapper.find('input');
 
     // then
-    expect(input.prop('value')).to.be.true;
-    expect(input.prop('defaultChecked')).to.be.true;
+    expect(input.prop('checked')).to.be.true;
+  });
+
+
+  it('should not be checked', function() {
+
+    // given
+    const wrapper = createToggleSwitch({
+      field:
+        {
+          name: 'foo',
+          value: false
+        }
+    });
+
+    const input = wrapper.find('input');
+
+    // then
+    expect(input.prop('checked')).to.be.false;
   });
 
 });
@@ -44,10 +62,17 @@ describe('<ToggleSwitch>', function() {
 
 // helpers ///////////////////
 
-function createToggleSwitch(options = {}) {
+const DEFAULT_FIELD = {
+  name: 'foo',
+  value: true
+};
+
+function createToggleSwitch(props = {}) {
+  const {
+    field = DEFAULT_FIELD
+  } = props;
 
   return shallow(<ToggleSwitch
-    field={ options.field || {} }
+    field={ field }
   />);
-
 }

@@ -590,6 +590,13 @@ export class SystemClipboard extends Mock {
   }
 }
 
+export class Actions extends Mock {
+  deregisterAction() {}
+  hasAction() {}
+  registerAction() {}
+  triggerAction() {}
+}
+
 function without(arr, toRemove) {
   return arr.filter(item => item !== toRemove);
 }

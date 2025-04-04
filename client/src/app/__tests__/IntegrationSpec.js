@@ -15,6 +15,7 @@ import React from 'react';
 import { App } from '../App';
 
 import {
+  Actions,
   Backend,
   Cache,
   Config,
@@ -155,6 +156,7 @@ function createApp(options = {}) {
   const cache = options.cache || new Cache();
 
   let globals = {
+    actions: new Actions(),
     backend: new Backend(),
     config: new Config(),
     dialog: new Dialog(),
