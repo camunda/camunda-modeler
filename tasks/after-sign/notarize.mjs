@@ -8,9 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-const { notarize } = require('@electron/notarize');
+import { notarize } from '@electron/notarize';
 
-module.exports = async function(context) {
+export default async function(context) {
   const {
     electronPlatformName,
     appOutDir,
