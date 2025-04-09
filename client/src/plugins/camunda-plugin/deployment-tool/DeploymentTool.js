@@ -254,7 +254,7 @@ export default class DeploymentTool extends PureComponent {
 
     const content = <button
       onClick={ () => triggerAction('open-log') }>
-      See the log for further details.
+      See the log for further details
     </button>;
 
     displayNotification({
