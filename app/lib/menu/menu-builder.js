@@ -76,7 +76,7 @@ class MenuBuilder {
         .appendExportAs()
         .appendCloseTab()
         .appendSeparator()
-        .appendSettings()
+        .appendSettings(this)
         .appendSeparator()
         .appendQuit()
         .get()
@@ -352,16 +352,28 @@ class MenuBuilder {
     return this;
   }
 
-  appendSettings() {
-    this.menu.append(new MenuItem({
+  // `that` can be an instance of MacMenuBuilder,
+  // which puts Settings in the main app menu.
+  appendSettings(that) {
+    const item = that.getSettingsMenuItem();
+
+    if (!item) {
+      return this;
+    }
+
+    this.menu.append(item);
+
+    return this;
+  }
+
+  getSettingsMenuItem() {
+    return new MenuItem({
       label: 'Settings',
       accelerator: 'CommandOrControl+,',
       click: function() {
         app.emit('menu:action', 'settings-open');
       }
-    }));
-
-    return this;
+    });
   }
 
   appendQuit() {
