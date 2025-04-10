@@ -12,5 +12,6 @@ module.exports = [
   require('./bpmnProcessor'),
   require('./dmnProcessor'),
   require('./formProcessor'),
-  require('./processApplicationProcessor')
+  require('./processApplicationProcessor'),
+  require('./rpaProcessor')
 ];
