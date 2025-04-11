@@ -92,6 +92,7 @@ export default class PluginsRoot extends PureComponent {
             subscribe={ subscribe }
             log={ this.log }
             displayNotification={ this.displayNotification }
+            settings={ app.settings }
             _getFromApp={ getFromApp }
             _getGlobal={ app.getGlobal }
           />

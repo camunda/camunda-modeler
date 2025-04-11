@@ -15,6 +15,7 @@ import debug from 'debug';
 import {
   assign,
   debounce,
+  find,
   forEach,
   groupBy,
   isString,
@@ -29,6 +30,10 @@ import EventEmitter from 'events';
 import defaultPlugins from '../plugins';
 
 import executeOnce from './util/executeOnce';
+
+import { ENGINES, ENGINE_PROFILES } from '../util/Engines';
+
+import { getAnnotatedVersion, toSemverMinor } from './tabs/EngineProfile';
 
 import { WithCache } from './cached';
 
@@ -71,6 +76,8 @@ import * as css from './App.less';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
+
+import { Settings } from './Settings';
 
 const log = debug('App');
 
@@ -124,6 +131,69 @@ export class App extends PureComponent {
     this.recentTabs = new RecentTabs({
       setState: value => this.setState({ recentTabs: value }),
       config: this.getGlobal('config')
+    });
+
+    this.settings = new Settings({
+      config: this.getGlobal('config'),
+    });
+
+    const {
+      tabsProvider
+    } = this.props;
+
+    tabsProvider.linkSettings(this.settings);
+
+    // TODO(@jarekdanielak): There is probably a better place to register those settigns.
+    const getEngineOptions = (engine) => {
+      return map(find(ENGINE_PROFILES, i => i.executionPlatform === engine).executionPlatformVersions, (version) => {
+        return {
+          label: getAnnotatedVersion(toSemverMinor(version), engine),
+          value: version
+        };
+      });
+    };
+
+    this.settings.register({
+      id: 'app',
+      title: 'Global Settings',
+      properties: {
+        'app.newContextPad': {
+          type: 'boolean',
+          default: false,
+          flag: 'enable-new-context-pad',
+          label: 'Enable new context pad',
+          restartRequired: true,
+          documentationUrl: 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags/#enable-new-context-pad',
+        },
+        'app.disablePlugins': {
+          type: 'boolean',
+          default: false,
+          flag: 'disable-plugins',
+          label: 'Disable plugins',
+          restartRequired: true,
+        },
+        'app.disableConnectorTemplates': {
+          type: 'boolean',
+          default: false,
+          flag: 'disable-connector-templates',
+          label: 'Disable connector templates',
+          restartRequired: true,
+        },
+        'app.defaultC8Version': {
+          type: 'select',
+          options: getEngineOptions(ENGINES.CLOUD),
+          default: '8.6.0',
+          flag: 'c8-engine-version',
+          label: 'Default Camunda 8 version',
+        },
+        'app.defaultC7Version': {
+          type: 'select',
+          options: getEngineOptions(ENGINES.PLATFORM),
+          default: '7.23.0',
+          flag: 'c7-engine-version',
+          label: 'Default Camunda 7 version',
+        }
+      }
     });
 
     this.tabRef = React.createRef();
@@ -460,14 +530,18 @@ export class App extends PureComponent {
   /**
    * Reload modeler.
    *
+   * @param {boolean} restart if true, performs a hard app restart instead of a reload
+   *
    * @return {Promise<boolean>} resolved to true if modeler is reloaded
    */
-  reloadModeler = async () => {
+  reloadModeler = async (restart) => {
     const dialog = this.getGlobal('dialog');
     const hasUnsavedTabs = this.hasUnsavedTabs();
 
+    const reloadFn = restart === true ? this.restart : this.reload;
+
     if (!hasUnsavedTabs) {
-      this.reload();
+      reloadFn();
       return;
     }
 
@@ -475,16 +549,15 @@ export class App extends PureComponent {
 
     if (button === 'save') {
       await this.saveAllTabs();
-      this.reload();
+      reloadFn();
 
     } else if (button === 'reload') {
-      this.reload();
+      reloadFn();
       return true;
     } else {
       return false;
     }
   };
-
 
   hasUnsavedTabs = () => {
     const { tabs } = this.state;
@@ -495,6 +568,10 @@ export class App extends PureComponent {
 
   reload = async (options) => {
     this.getGlobal('backend').send('app:reload', options);
+  };
+
+  restart = async () => {
+    this.getGlobal('backend').send('app:restart');
   };
 
   isEmptyTab = (tab) => {
@@ -1926,7 +2003,11 @@ export class App extends PureComponent {
     }
 
     if (action === 'reload-modeler') {
-      return this.reloadModeler(options);
+      return this.reloadModeler();
+    }
+
+    if (action === 'restart-modeler') {
+      return this.reloadModeler(true);
     }
 
     if (action === 'log') {
@@ -1970,6 +2051,10 @@ export class App extends PureComponent {
     if (action === 'toggle-panel') {
       const { panel } = this.state.layout;
       return panel.open ? this.closePanel() : this.openPanel(panel.tab);
+    }
+
+    if (action === 'settings-open') {
+      return this.emit('app.settings-open');
     }
 
     const tab = this.tabRef.current;
@@ -2187,6 +2272,7 @@ export class App extends PureComponent {
                       setConfig={ this.setConfig }
                       getPlugins={ this.getPlugins }
                       ref={ this.tabRef }
+                      settings={ this.settings }
                     />
                   }
                 </TabContainer>

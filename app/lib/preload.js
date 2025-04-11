@@ -24,6 +24,7 @@ const allowedEvents = [
   ...handledInPreload,
   'activeTab:change',
   'app:reload',
+  'app:restart',
   'app:quit-aborted',
   'app:quit-allowed',
   'client:error',

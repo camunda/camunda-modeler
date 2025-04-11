@@ -39,6 +39,12 @@ class MacMenuBuilder extends MenuBuilder {
       {
         type: 'separator'
       }, {
+        label: 'Settings',
+        accelerator: 'Command+,',
+        click: () => app.emit('menu:action', 'settings-open')
+      }, {
+        type: 'separator'
+      }, {
         label: 'Services',
         role: 'services',
         submenu: []
@@ -137,6 +143,13 @@ class MacMenuBuilder extends MenuBuilder {
     this.appendSeparator();
 
     return this;
+  }
+
+  /**
+   * Override base MenuBuilder function to prevent Settings duplicate in File menu.
+   */
+  getSettingsMenuItem() {
+    return null;
   }
 
   build() {
