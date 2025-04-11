@@ -7,7 +7,7 @@
   --notification-font-color: var(--color-blue-205-100-35);
 
   --notification-font-size: 14px;
-  --notification-code-font-size: 13px;
+  --notification-code-font-size: 12px;
 }
 
 :local(.Notification) {
@@ -93,9 +93,10 @@
     user-select: text;
     background-color: var(--notification-light-background-color);
     border-radius: 3px;
-    padding: 0.5px 0;
+    padding: 1px;
     word-break: break-all;
     font-size: var(--notification-code-font-size);
-    margin-left: 4px;
+    display: inline-flex;
+    align-items: center;
   }
 }
