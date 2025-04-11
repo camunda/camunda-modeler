@@ -8,10 +8,12 @@
  * except in compliance with the MIT License.
  */
 
-module.exports = async function(context) {
+import notarize from './after-sign/notarize.mjs';
+
+export default async function(context) {
 
   const handlers = [
-    require('./after-sign/notarize')
+    notarize
   ];
 
   for (const handler of handlers) {
