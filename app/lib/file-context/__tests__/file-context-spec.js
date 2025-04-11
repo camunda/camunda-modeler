@@ -205,13 +205,14 @@ describe('FileContext', function() {
       // then
       expectRootsLength(fileContext, 1);
 
-      expectItemsLength(fileContext, 5);
+      expectItemsLength(fileContext, 6);
 
       expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/.process-application')))).to.exist;
       expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn')))).to.exist;
       expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/bar/bar.bpmn')))).to.exist;
       expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.dmn')))).to.exist;
       expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.form')))).to.exist;
+      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.rpa')))).to.exist;
     });
 
 
@@ -227,14 +228,14 @@ describe('FileContext', function() {
 
       // then
       expectRootsLength(fileContext, 1);
-      expectItemsLength(fileContext, 5);
+      expectItemsLength(fileContext, 6);
 
       // when
       fileContext.removeRoot(directoryPath);
 
       // then
       expectRootsLength(fileContext, 0);
-      expectItemsLength(fileContext, 5);
+      expectItemsLength(fileContext, 6);
     });
 
 
@@ -460,6 +461,26 @@ describe('FileContext', function() {
       ]);
     });
 
+
+    it('should NOT throw for empty RPA script', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './tmp/broken-files/empty.rpa');
+
+      // when
+      const item = await fileContext.addFile(filePath);
+
+      // then
+      expect(item).to.exist;
+      expect(item.metadata).to.eql({
+        type: 'rpa',
+        scripts: [],
+        linkedIds: []
+      });
+
+      expectNoMessages(item);
+    });
+
   });
 
 
@@ -614,6 +635,37 @@ describe('FileContext', function() {
 
       expect(item.metadata).to.eql({
         'type': 'processApplication'
+      });
+    });
+
+
+    it('rpa file', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.rpa'),
+            uri = toFileUrl(filePath);
+
+      // when
+      await waitForEvent(() => {
+        fileContext.addFile(filePath);
+      });
+
+      // then
+      expectItemsLength(fileContext, 1);
+
+      const item = getItem(fileContext, uri);
+
+      expect(item).to.exist;
+
+      expect(item.metadata).to.eql({
+        'scripts': [
+          {
+            'id': 'RPAScript',
+            'name': 'NamedScript'
+          }
+        ],
+        'linkedIds': [],
+        'type': 'rpa'
       });
     });
 
