@@ -10,6 +10,8 @@
 
 const DefaultProvider = require('./DefaultProvider');
 
+const { reduce } = require('min-dash');
+
 /**
  * Settings config provider. Reads and writes config to `settings.json`.
  */
@@ -20,23 +22,33 @@ class SettingsProvider extends DefaultProvider {
   }
 
   /**
-   * Get configuration value by key.
+   * Get values from `settings.json`.
    *
    * @returns {*}
    */
   get() {
-    const json = this._readFile();
+    const json = this._json = this._readFile();
 
     return json;
   }
 
   /**
-   * Set a configuration value.
+   * Save values to `settings.json`.
    *
-   * @param {*} value
+   * @param {*} values
    */
-  set(_, value) {
-    this._json = value;
+  set(_, values) {
+    const changedValues = reduce(values, (acc, value, key) => {
+      if (this._json[ key ] !== value) {
+        acc[ key ] = value;
+      }
+
+      return acc;
+    }, {});
+
+    if (!Object.keys(changedValues).length) return;
+
+    this._json = { ...this._json, ...changedValues };
 
     this._writeFile();
   }
