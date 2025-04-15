@@ -1,15 +1,14 @@
 :local(.DeploymentPluginOverlay) {
+  .section__header {
+    display: flex;
+    align-items: center;
 
-  .target_radio {
-    .form-check-inline {
-      display: grid;
-      grid-gap: 5px;
-      grid-auto-columns: auto;
-      grid-auto-flow: row;
+    svg {
+      margin-right: 6px;
     }
   }
 
-  input[type="radio"] + label {
-    margin: 0;
+  .loading {
+    min-height: 200px;
   }
 }

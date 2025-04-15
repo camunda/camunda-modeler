@@ -10,448 +10,737 @@
 
 /* global sinon */
 
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import { waitFor } from '@testing-library/react';
 
 import { mount } from 'enzyme';
 
+import EventEmitter from 'events';
+
 import DeploymentPluginOverlay from '../DeploymentPluginOverlay';
 
-import { AUTH_TYPES } from '../../shared/ZeebeAuthTypes';
+import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
 
-import {
-  SELF_HOSTED,
-  CAMUNDA_CLOUD
-} from '../../shared/ZeebeTargetTypes';
+import { CONNECTION_CHECK_ERROR_REASONS } from '../ConnectionCheckErrors';
 
-describe('<DeploymentPluginModal> (Zeebe)', function() {
-
-  var anchor;
+describe('DeploymentPluginOverlay', function() {
 
   beforeEach(function() {
-    anchor = document.createElement('button');
+    document.body.innerHTML = '';
   });
 
-  it('should render', function() {
-    createDeploymentPluginModal({ anchor });
-  });
-
-
-  it('should check connection initially', function(done) {
-
-    // given
-    const spy = sinon.spy();
-    const validator = {
-      createConnectionChecker: () => createConnectionChecker({ check: spy })
-    };
-    createDeploymentPluginModal({ anchor, validator });
-
-    // then
-    setTimeout(() => {
-      expect(spy).to.have.been.called;
-      done();
-    }, 500);
+  afterEach(function() {
+    document.body.innerHTML = '';
   });
 
 
-  it('should deploy', function(done) {
-
-    // given
-    const { wrapper } = createDeploymentPluginModal({ anchor, onDeploy });
+  it('should render (loading)', function() {
 
     // when
-    const form = wrapper.find('form');
-    form.simulate('submit');
+    createDeploymentPluginOverlay();
 
     // then
-    function onDeploy() {
-      done();
-    }
+    expect(document.querySelector('.loading')).to.exist;
   });
 
 
-  it('should check connection with updated cluster values on input change', function(done) {
+  it('should render (config)', async function() {
 
-    // given
-    const spy = sinon.stub();
-    const validator = {
-      createConnectionChecker: () => createConnectionChecker({ check: spy })
-    };
+    // when
+    const config = createMockConfig();
 
-    const { wrapper } = createDeploymentPluginModal({
-      anchor,
-      validator,
-      config: {
-        endpoint: {
-          targetType: CAMUNDA_CLOUD,
-          camundaCloudClusterUrl: '7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
-        }
-      }
+    const deployment = new MockDeployment({
+      getConfigForFile: () => Promise.resolve(config)
     });
 
-    // assume
-    expect(spy).to.have.been.calledOnce;
-    expect(spy.getCall(0).args[0].camundaCloudClusterUrl).to.equal('7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443');
-
-    // when
-    const input = wrapper.find('input[id="endpoint.camundaCloudClusterUrl"]');
-    input.instance().value = 'a-b-c.foo-1.zeebe.camunda.io:443';
-    input.simulate('change');
+    createDeploymentPluginOverlay({ deployment });
 
     // then
-    expect(spy).to.have.been.calledTwice;
-    expect(spy.getCall(1).args[0].camundaCloudClusterUrl).to.equal('a-b-c.foo-1.zeebe.camunda.io:443');
+    await waitFor(() => {
+      expect(document.querySelector('.loading')).not.to.exist;
+    });
 
-    done();
+    expect(document.querySelector('form')).to.exist;
   });
 
 
-  describe('tenantId', function() {
+  describe('connection checking', function() {
 
-    it('should not show for self-managed without OAuth', function() {
+    it('should start checking on mount', async function() {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
-        anchor,
-        config: {
-          endpoint: {
-            targetType: SELF_HOSTED,
-            authType: AUTH_TYPES.NONE,
-            contactPoint: 'https://google.com'
-          },
-          deployment: {
-            tenantId: 'tenant-1'
-          }
+      const connectionChecker = new MockConnectionChecker();
+
+      // when
+      createDeploymentPluginOverlay({
+        connectionChecker,
+        deployment: new MockDeployment({
+          getConfigForFile: () => Promise.resolve(createMockConfig())
+        })
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      expect(connectionChecker.on).to.have.been.calledOnce;
+      expect(connectionChecker.on).to.have.been.calledWith('connectionCheck', sinon.match.func);
+
+      expect(document.querySelector('.invalid-feedback')).not.to.exist;
+
+      connectionChecker.emit('connectionCheck', {
+        success: false,
+        reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CLIENT_ID
+      });
+
+      // then
+      await waitFor(() => {
+        expect(document.querySelector('.invalid-feedback')).to.exist;
+      });
+
+      expect(document.querySelector('.invalid-feedback').textContent).to.equal('Invalid Client ID.');
+    });
+
+
+    it('should stop checking on unmount', async function() {
+
+      // given
+      const connectionChecker = new MockConnectionChecker();
+
+      const wrapper = createDeploymentPluginOverlay({
+        connectionChecker,
+        deployment: new MockDeployment({
+          getConfigForFile: () => Promise.resolve(createMockConfig())
+        })
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      expect(document.querySelector('.invalid-feedback')).not.to.exist;
+
+      // when
+      wrapper.unmount();
+
+      connectionChecker.emit('connectionCheck', {
+        success: false,
+        reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CLIENT_ID
+      });
+
+      // then
+      expect(connectionChecker.off).to.have.been.calledOnce;
+      expect(connectionChecker.off).to.have.been.calledWith('connectionCheck', sinon.match.func);
+      expect(connectionChecker.stopChecking).to.have.been.calledOnce;
+    });
+
+  });
+
+
+  describe('form validation', function() {
+
+    it('should validate form (valid)', async function() {
+
+      // given
+      const connectionChecker = new MockConnectionChecker();
+
+      const config = createMockConfig();
+
+      const deployment = new MockDeployment({
+        getConfigForFile: () => Promise.resolve(config)
+      });
+
+      const deploymentConfigValidator = new MockConfigValidator({
+        validateConfig: () => ({})
+      });
+
+      const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
+
+      createDeploymentPluginOverlay({
+        connectionChecker,
+        deployment,
+        DeploymentConfigForm: Form,
+        deploymentConfigValidator
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      expect(connectionChecker.updateConfig).to.have.been.calledOnce;
+
+      connectionChecker.updateConfig.resetHistory();
+
+      // when
+      getFormProps().validateForm({
+        ...config,
+        endpoint: {
+          ...config.endpoint,
+          camundaCloudClientId: 'foo'
         }
+      });
+
+      // expect
+      expect(connectionChecker.updateConfig).to.have.been.calledOnce;
+      expect(connectionChecker.updateConfig).to.have.been.calledWith({
+        ...config,
+        endpoint: {
+          ...config.endpoint,
+          camundaCloudClientId: 'foo'
+        }
+      });
+    });
+
+
+    it('should validate form (invalid)', async function() {
+
+      // given
+      const connectionChecker = new MockConnectionChecker();
+
+      const config = createMockConfig();
+
+      const deployment = new MockDeployment({
+        getConfigForFile: () => Promise.resolve(config)
+      });
+
+      const deploymentConfigValidator = new MockConfigValidator({
+        validateConfig: () => ({
+          'endpoint.camundaCloudClientId': 'Invalid Client ID.'
+        })
+      });
+
+      const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
+
+      createDeploymentPluginOverlay({
+        connectionChecker,
+        deployment,
+        DeploymentConfigForm: Form,
+        deploymentConfigValidator,
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      expect(connectionChecker.updateConfig).to.have.been.calledOnce;
+
+      connectionChecker.updateConfig.resetHistory();
+
+      // when
+      getFormProps().validateForm({
+        ...config,
+        endpoint: {
+          ...config.endpoint,
+          camundaCloudClientId: ''
+        }
+      });
+
+      // expect
+      expect(connectionChecker.updateConfig).to.have.been.calledOnce;
+      expect(connectionChecker.updateConfig).to.have.been.calledWith(null);
+    });
+
+  });
+
+
+  describe('form submission', function() {
+
+    it('should submit form (success)', async function() {
+
+      // given
+      const config = createMockConfig();
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+        getConfigForFile: () => Promise.resolve(config)
+      });
+
+      const displayNotificationSpy = sinon.spy();
+
+      const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
+
+      createDeploymentPluginOverlay({
+        deployment,
+        DeploymentConfigForm: Form,
+        displayNotification: displayNotificationSpy
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
       });
 
       // when
-      const tenantIdInput = wrapper.find('input[name="deployment.tenantId"]');
+      getFormProps().onSubmit(config);
 
-      // then
-      expect(tenantIdInput.exists()).to.be.false;
+      // expect
+      await waitFor(() => {
+        expect(deployment.deploy).to.have.been.calledOnce;
+      });
+
+      expect(deployment.deploy).to.have.been.calledWith([
+        {
+          path: 'foo.bpmn',
+          type: 'bpmn'
+        }
+      ], config);
+
+      expect(displayNotificationSpy).to.have.been.calledOnce;
+      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+        title: 'Process definition deployed',
+        type: 'success'
+      }));
     });
 
 
-    it('should show for self-managed with OAuth', function() {
+    it('should submit form (no success)', async function() {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
-        anchor,
-        config: {
-          endpoint: {
-            targetType: SELF_HOSTED,
-            authType: AUTH_TYPES.OAUTH,
-            contactPoint: 'https://google.com'
-          },
-          deployment: {
-            tenantId: 'tenant-1'
+      const config = createMockConfig();
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult({
+          success: false,
+          response: {
+            details: 'foo'
           }
-        }
+        }))),
+        getConfigForFile: () => Promise.resolve(config)
+      });
+
+      const displayNotificationSpy = sinon.spy();
+
+      const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
+
+      const logSpy = sinon.spy();
+
+      createDeploymentPluginOverlay({
+        deployment,
+        DeploymentConfigForm: Form,
+        displayNotification: displayNotificationSpy,
+        log: logSpy
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
       });
 
       // when
-      const tenantIdInput = wrapper.find('input[name="deployment.tenantId"]');
+      getFormProps().onSubmit(config);
 
-      // then
-      expect(tenantIdInput.exists()).to.be.true;
-      expect(tenantIdInput.instance().value).to.eql('tenant-1');
-    });
-
-
-    it('should not pass on deploy without OAuth', function(done) {
-
-      // given
-      const { wrapper } = createDeploymentPluginModal({
-        anchor,
-        onDeploy,
-        config: {
-          endpoint: {
-            targetType: SELF_HOSTED,
-            authType: AUTH_TYPES.NONE,
-            contactPoint: 'https://google.com',
-          },
-          deployment: {
-            tenantId: 'tenant-1'
-          }
-        }
+      // expect
+      await waitFor(() => {
+        expect(deployment.deploy).to.have.been.calledOnce;
       });
 
-      // when deploy
-      wrapper.find('form').simulate('submit');
+      expect(deployment.deploy).to.have.been.calledWith([
+        {
+          path: 'foo.bpmn',
+          type: 'bpmn'
+        }
+      ], config);
 
-      // then
-      function onDeploy(values) {
-        const { deployment } = values;
+      expect(displayNotificationSpy).to.have.been.calledOnce;
+      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+        title: 'Deployment failed',
+        type: 'error'
+      }));
 
-        expect(deployment.tenantId).not.to.exist;
-
-        done();
-      }
+      expect(logSpy).to.have.been.calledOnce;
+      expect(logSpy).to.have.been.calledWith(sinon.match({
+        category: 'deploy-error',
+        message: 'foo',
+        silent: true
+      }));
     });
 
+  });
 
-    it('should pass on deploy with OAuth', function(done) {
 
-      // given
-      const { wrapper } = createDeploymentPluginModal({
-        anchor,
-        onDeploy,
-        config: {
-          endpoint: {
-            targetType: SELF_HOSTED,
-            authType: AUTH_TYPES.OAUTH,
-            contactPoint: 'https://google.com'
-          },
-          deployment: {
-            tenantId: 'tenant-1'
-          }
-        }
+  describe('customization', function() {
+
+    it('should render custom header', async function() {
+
+      // when
+      const config = createMockConfig();
+
+      const deployment = new MockDeployment({
+        getConfigForFile: () => Promise.resolve(config)
       });
 
-      // when deploy
-      wrapper.find('form').simulate('submit');
+      createDeploymentPluginOverlay({
+        deployment,
+        renderHeader: <div id="custom-header" />
+      });
 
       // then
-      function onDeploy(values) {
-        const { deployment } = values;
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
 
-        expect(deployment.tenantId).to.eql('tenant-1');
-
-        done();
-      }
+      expect(document.querySelector('#custom-header')).to.exist;
     });
 
 
-    it('should not show for SaaS', function() {
+    it('should render custom submit', async function() {
+
+      // when
+      const config = createMockConfig();
+
+      const deployment = new MockDeployment({
+        getConfigForFile: () => Promise.resolve(config)
+      });
+
+      createDeploymentPluginOverlay({
+        deployment,
+        renderSubmit: <div id="custom-submit" />
+      });
+
+      // then
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      expect(document.querySelector('#custom-submit')).to.exist;
+    });
+
+
+    it('should deploy custom resources', async function() {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
-        anchor,
-        config: {
-          endpoint: {
-            targetType: CAMUNDA_CLOUD,
-            camundaCloudClusterUrl: '7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
-          }
+      const config = createMockConfig();
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+        getConfigForFile: () => Promise.resolve(config)
+      });
+
+      const displayNotificationSpy = sinon.spy();
+
+      const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
+
+      const resourceConfigs = [
+        {
+          path: 'bar.bpmn',
+          type: 'bpmn'
         }
+      ];
+
+      createDeploymentPluginOverlay({
+        deployment,
+        DeploymentConfigForm: Form,
+        displayNotification: displayNotificationSpy,
+        getResourceConfigs: () => resourceConfigs
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
       });
 
       // when
-      const tenantIdInput = wrapper.find('input[name="deployment.tenantId"]');
+      getFormProps().onSubmit(config);
 
-      // then
-      expect(tenantIdInput.exists()).to.be.false;
-    });
-
-  });
-
-
-  describe('basic auth', function() {
-
-    it('should pass config on deploy', function(done) {
-
-      // given
-      const { wrapper } = createDeploymentPluginModal({
-        anchor,
-        onDeploy,
-        config: {
-          endpoint: {
-            targetType: SELF_HOSTED,
-            authType: AUTH_TYPES.BASIC,
-            basicAuthUsername: 'username',
-            basicAuthPassword: 'password'
-          }
-        }
+      // expect
+      await waitFor(() => {
+        expect(deployment.deploy).to.have.been.calledOnce;
       });
 
-      // when deploy
-      wrapper.find('form').simulate('submit');
+      expect(deployment.deploy).to.have.been.calledWith([
+        {
+          path: 'bar.bpmn',
+          type: 'bpmn'
+        }
+      ], config);
 
-      // then
-      function onDeploy(values) {
-
-        const { endpoint } = values;
-
-        expect(endpoint.basicAuthUsername).to.eql('username');
-        expect(endpoint.basicAuthPassword).to.eql('password');
-
-        done();
-      }
+      expect(displayNotificationSpy).to.have.been.calledOnce;
+      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+        title: 'Process definition deployed',
+        type: 'success'
+      }));
     });
 
-  });
 
-
-  describe('oAuth', function() {
-
-    it('should pass config on deploy', function(done) {
+    it('should display custom success notification', async function() {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
-        anchor,
-        onDeploy,
-        config: {
-          endpoint: {
-            targetType: SELF_HOSTED,
-            authType: AUTH_TYPES.OAUTH,
-            contactPoint: 'https://google.com',
-            audience: 'audience'
-          }
-        }
+      const config = createMockConfig();
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+        getConfigForFile: () => Promise.resolve(config)
       });
 
-      // when deploy
-      wrapper.find('form').simulate('submit');
+      const displayNotificationSpy = sinon.spy();
 
-      // then
-      function onDeploy(values) {
+      const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
 
-        const { endpoint } = values;
+      createDeploymentPluginOverlay({
+        deployment,
+        DeploymentConfigForm: Form,
+        displayNotification: displayNotificationSpy,
+        getSuccessNotification: () => ({
+          title: 'Custom success notification',
+          type: 'success'
+        })
+      });
 
-        expect(endpoint.scope).not.to.exists;
-        expect(endpoint.audience).to.eql('audience');
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
 
-        done();
-      }
+      // when
+      getFormProps().onSubmit(config);
+
+      // expect
+      await waitFor(() => {
+        expect(deployment.deploy).to.have.been.calledOnce;
+      });
+
+      expect(deployment.deploy).to.have.been.calledWith([
+        {
+          path: 'foo.bpmn',
+          type: 'bpmn'
+        }
+      ], config);
+
+      expect(displayNotificationSpy).to.have.been.calledOnce;
+      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+        title: 'Custom success notification',
+        type: 'success'
+      }));
     });
 
 
-    it('should pass <scope> on deploy', function(done) {
+    it('should display custom error notification', async function() {
 
       // given
-      const { wrapper } = createDeploymentPluginModal({
-        anchor,
-        onDeploy,
-        config: {
-          endpoint: {
-            targetType: SELF_HOSTED,
-            authType: AUTH_TYPES.OAUTH,
-            contactPoint: 'https://google.com',
-            audience: 'audience',
-            scope: 'scope'
+      const config = createMockConfig();
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult({
+          success: false,
+          response: {
+            details: 'foo'
           }
-        }
+        }))),
+        getConfigForFile: () => Promise.resolve(config)
       });
 
-      // when deploy
-      wrapper.find('form').simulate('submit');
+      const displayNotificationSpy = sinon.spy();
 
-      // then
-      function onDeploy(values) {
+      const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
 
-        const { endpoint } = values;
+      createDeploymentPluginOverlay({
+        deployment,
+        DeploymentConfigForm: Form,
+        displayNotification: displayNotificationSpy,
+        getErrorNotification: () => ({
+          title: 'Custom error notification',
+          type: 'error'
+        })
+      });
 
-        expect(endpoint.scope).to.eql('scope');
-        expect(endpoint.audience).to.eql('audience');
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
 
-        done();
-      }
+      // when
+      getFormProps().onSubmit(config);
+
+      // expect
+      await waitFor(() => {
+        expect(deployment.deploy).to.have.been.calledOnce;
+      });
+
+      expect(deployment.deploy).to.have.been.calledWith([
+        {
+          path: 'foo.bpmn',
+          type: 'bpmn'
+        }
+      ], config);
+
+      expect(displayNotificationSpy).to.have.been.calledOnce;
+      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+        title: 'Custom error notification',
+        type: 'error'
+      }));
     });
 
   });
 
-
-  it('should extract clusterId and clusterRegion', function(done) {
-
-    // given
-    const { wrapper } = createDeploymentPluginModal({
-      anchor,
-      onDeploy,
-      config: {
-        endpoint: {
-          targetType: CAMUNDA_CLOUD,
-          camundaCloudClusterUrl: '7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
-        }
-      } });
-
-    // when
-    wrapper.find('form').simulate('submit');
-
-    // then
-    function onDeploy(values) {
-      const { endpoint } = values;
-
-      expect(endpoint.camundaCloudClusterId).to.equal('7edda473-891c-4978-aa27-2e727d8560ff');
-      expect(endpoint.camundaCloudClusterRegion).to.equal('ber-5');
-      done();
-    }
-  });
-
-
-  it('should extract clusterId with https', function(done) {
-
-    // given
-    const { wrapper } = createDeploymentPluginModal({
-      anchor,
-      onDeploy,
-      config: {
-        endpoint: {
-          targetType: CAMUNDA_CLOUD,
-          camundaCloudClusterUrl: 'https://7edda473-891c-4978-aa27-2e727d8560ff.ber-5.zeebe.camunda.io:443'
-        }
-      } });
-
-    // when
-    const form = wrapper.find('form');
-    form.simulate('submit');
-
-    // then
-    function onDeploy(values) {
-      const { endpoint } = values;
-
-      expect(endpoint.camundaCloudClusterId).to.equal('7edda473-891c-4978-aa27-2e727d8560ff');
-      done();
-    }
-  });
 });
 
-
-const createDeploymentPluginModal = ({ ...props } = {}) => {
-
-  const config = createConfig(props.config);
-  const validator = new Validator(props.validator);
-
-  const wrapper = mount(<DeploymentPluginOverlay
-    validator={ validator }
-    onDeploy={ noop }
-    onClose={ noop }
-    { ...props }
-    config={ config }
-  />);
-
-  const instance = wrapper.instance();
-
-  return { wrapper, instance };
-};
-
-function Validator({ ...overrides } = {}) {
-  this.createConnectionChecker = createConnectionChecker;
-
-  Object.assign(this, overrides);
+class Mock {
+  constructor(overrides = {}) {
+    Object.assign(this, overrides);
+  }
 }
 
-function createConfig({ endpoint = {}, deployment = {} } = {}) {
+class MockConnectionChecker extends Mock {
+  constructor(overrides = {}) {
+    super(overrides);
+
+    this.eventEmitter = new EventEmitter();
+  }
+
+  on = sinon.spy((...args) => {
+    return this.eventEmitter.on(...args);
+  });
+
+  off = sinon.spy((...args) => {
+    return this.eventEmitter.off(...args);
+  });
+
+  emit = sinon.spy((...args) => {
+    return this.eventEmitter.emit(...args);
+  });
+
+  updateConfig = sinon.spy();
+
+  startChecking = sinon.spy();
+
+  stopChecking = sinon.spy();
+}
+
+class MockDeployment extends Mock {
+  deploy() {}
+
+  getConfigForFile() {}
+
+  setConfigForFile() {}
+}
+
+class MockConfigValidator extends Mock {
+  static validateConfigValue() {}
+
+  static validateConfig() {
+    return {};
+  }
+}
+
+function createMockDeploymentConfigForm() {
+  const _props = {};
+
+  const Form = function MockForm(props) {
+    const {
+      getFieldError,
+      initialFieldValues,
+      onSubmit = () => {},
+      validateForm = () => {},
+      validateField = (name, value) => MockConfigValidator.validateConfigValue(name, value)
+    } = props;
+
+    useEffect(() => {
+      _props.getFieldError = getFieldError;
+      _props.initialFieldValues = initialFieldValues;
+      _props.onSubmit = onSubmit;
+      _props.validateForm = validateForm;
+      _props.validateField = validateField;
+    }, []);
+
+    return (
+      <form onSubmit={ onSubmit }>
+        <button type="submit">Submit</button>
+      </form>
+    );
+  };
+
   return {
-    deployment: {
-      name: 'name',
-      ...deployment
-    },
-    endpoint: {
-      targetType: SELF_HOSTED,
-      authType: AUTH_TYPES.NONE,
-      contactPoint: 'https://google.com',
-      ...endpoint
-    }
+    Form,
+    getProps: () => _props
   };
 }
 
-function noop() {}
-
-function createConnectionChecker({ ...overrides } = {}) {
+function createMockDeploymentResult(overrides = {}) {
   return {
-    subscribe: noop,
-    check() {
-      return { connectionResult: { success: true } };
+    success: true,
+    response: {
+      deployments: [
+        {
+          process: {
+            bpmnProcessId: 'foo'
+          }
+        }
+      ]
     },
     ...overrides
   };
+}
+
+class MockAnchor extends Mock {
+  getBoundingClientRect() {
+    return {
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      width: 0,
+      height: 0
+    };
+  }
+}
+
+const DEFAULT_ACTIVE_TAB = {
+  type: 'cloud-bpmn',
+  file: {
+    path: 'foo.bpmn'
+  }
+};
+
+function createMockEndpoint(overrides = {}) {
+  return {
+    targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+    id: 'foo',
+    camundaCloudClientId: 'bar',
+    camundaCloudClientSecret: 'baz',
+    camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443',
+    ...overrides
+  };
+}
+
+function createMockConfig(overrides = {}) {
+  return {
+    deployment: {},
+    endpoint: createMockEndpoint(),
+    ...overrides
+  };
+}
+
+function createDeploymentPluginOverlay(props = {}) {
+  const {
+    activeTab = DEFAULT_ACTIVE_TAB,
+    anchor = new MockAnchor(),
+    connectionChecker = new MockConnectionChecker(),
+    deployment = new MockDeployment(),
+    deploymentConfigValidator = MockConfigValidator,
+    displayNotification = () => {},
+    DeploymentConfigForm,
+    getErrorNotification,
+    getResourceConfigs,
+    getSuccessNotification,
+    log = () => {},
+    onClose = () => {},
+    renderHeader = 'Deploy',
+    renderSubmit = 'Deploy',
+    triggerAction = () => {},
+  } = props;
+
+  return mount(
+    <DeploymentPluginOverlay
+      activeTab={ activeTab }
+      anchor={ anchor }
+      connectionChecker={ connectionChecker }
+      deployment={ deployment }
+      deploymentConfigValidator={ deploymentConfigValidator }
+      displayNotification={ displayNotification }
+      DeploymentConfigForm={ DeploymentConfigForm }
+      getErrorNotification={ getErrorNotification }
+      getResourceConfigs={ getResourceConfigs }
+      getSuccessNotification={ getSuccessNotification }
+      log={ log }
+      onClose={ onClose }
+      renderHeader={ renderHeader }
+      renderSubmit={ renderSubmit }
+      triggerAction={ triggerAction } />
+  );
 }

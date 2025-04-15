@@ -1,0 +1,21 @@
+:local(.ProcessApplicationsDeploymentNotification) {
+  div:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  ul.dashed {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  ul.dashed > li:before {
+    content: "–";
+    position: absolute;
+    margin-left: -1em;
+    font-weight: 500;
+  }
+
+  li:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}
