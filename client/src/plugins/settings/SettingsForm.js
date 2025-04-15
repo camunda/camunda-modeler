@@ -12,12 +12,15 @@ import React, { useEffect, useMemo } from 'react';
 
 import { Field, Form, useFormikContext } from 'formik';
 
-import { map, forEach } from 'min-dash';
+import { map, forEach, sortBy } from 'min-dash';
 
 import { Section, TextInput, CheckBox, Select } from '../../shared/ui';
 
 import Flags from '../../util/Flags';
 
+/**
+ * Formik form wrapper for the settings form.
+ */
 export function SettingsForm(props) {
 
   const { schema, values } = props;
@@ -34,9 +37,15 @@ export function SettingsForm(props) {
     });
   }, [ values ]);
 
+  const orderedSchema = useMemo(() => {
+    if (!schema) return {};
+
+    return sortSchemaByOrder(schema);
+  }, [ schema, values ]);
+
   return (<Form>
     {
-      map(schema, (value, key) =>
+      map(orderedSchema, (value, key) =>
         <SettingsSection key={ key } { ...value } />)
     }
   </Form>);
@@ -111,4 +120,27 @@ function SettingsField(props) {
       </div>
     }
   </>;
+}
+
+
+// helpers
+
+/**
+ * Returns a schema sorted by `order` property.
+ *
+ * @param {Object} schema
+ * @returns {Object} sorted schema
+ */
+function sortSchemaByOrder(schema) {
+
+  const sortedArray = sortBy(schema, ({ order }) => {
+    return order ?? 9999;
+  });
+
+  const sortedObj = sortedArray.reduce((acc, obj) => {
+    acc[obj.id] = { ...obj };
+    return acc;
+  }, {});
+
+  return sortedObj;
 }

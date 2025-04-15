@@ -15,9 +15,11 @@ import { forEach, isArray } from 'min-dash';
  *
  * @typedef {Object} SettingsGroup
  *
- * @property {string} id - unique identifier for the settings group. Can be reused to add more settings to an existing group.
+ * @property {string} id - unique identifier for the settings group
  * @property {string} title - title of the section on the settings page
- * @property {Object.<string, SettingsProperty>} properties - property key must be prefixed with the group id e.g `bpmn.enabled`
+ * @property {number} [order] - index of the section on the settings page
+ * @property {Object.<string, SettingsProperty>} properties - property key must be prefixed with
+ * the group `id` e.g `bpmn.enabled`
  */
 
 /**
@@ -31,7 +33,7 @@ import { forEach, isArray } from 'min-dash';
  * @property {Array<{label: string, value: string}>} [options] - options for select type
  * @property {string} [flag] - indicates that the setting can be overridden by a flag
  * @property {string} [description] - description on the settings page
- * @property {boolean} [restartRequired] - restart required to apply the setting
+ * @property {boolean} [restartRequired] - is restart required to apply the setting
  * @property {string} [documentationUrl] - link to an external documentation
  */
 
@@ -84,6 +86,7 @@ export class Settings {
 
     /**
      * Dictionary of setting keys and their listeners.
+     * Listeners are called when the setting value changes.
      *
      * @type { Object.<string, Array<function>> }
      */
@@ -101,7 +104,7 @@ export class Settings {
    * The keys of the `properties` object must be prefixed with the `id` of the group.
    * e.g. if the `id` is `bpmn`, the keys must be `bpmn.enabled`, `bpmn.autoSave`, etc.
    *
-   * Refere to {@link SettingsGroup} and {@link SettingsProperty} types for more details.
+   * @see Refere to {@link SettingsGroup} and {@link SettingsProperty} types for more details.
    *
    * @param { SettingsGroup } settings
   */
@@ -109,6 +112,7 @@ export class Settings {
     const {
       id,
       title,
+      order,
       properties
     } = settings;
 
@@ -126,6 +130,10 @@ export class Settings {
 
     } else {
       this._settings[id] = { id, title, properties };
+
+      if (Number.isInteger(order)) {
+        this._settings[id].order = order;
+      }
     }
 
     Object.entries(properties).forEach(([ key, { default: value } ]) => {
