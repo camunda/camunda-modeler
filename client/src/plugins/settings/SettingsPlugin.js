@@ -22,12 +22,23 @@ import { Modal } from '../../shared/ui';
 
 import { SettingsForm } from './SettingsForm';
 
+import useDefaultAppSettings from './useDefaultAppSettings';
+
 import * as css from './SettingsPlugin.less';
 
+/**
+ * Provides UI for the settings API.
+ *
+ * @param {Object} props
+ * @param {import('../../app/Settings').Settings} props.settings
+ *
+ * @returns {JSX.Element}
+ *
+ */
 export default function SettingsPlugin(props) {
 
   const {
-    settings: settingsProvider,
+    settings,
     subscribe,
     triggerAction
   } = props;
@@ -37,6 +48,8 @@ export default function SettingsPlugin(props) {
 
   const [ schema, setSchema ] = useState();
   const [ values, setValues ] = useState({});
+
+  useDefaultAppSettings(settings);
 
   useEffect(() => {
     subscribe('app.settings-open', () => {
@@ -48,13 +61,13 @@ export default function SettingsPlugin(props) {
     if (!open) return;
 
     // Schema is settings metadata e.g. type, default value, etc.
-    setSchema(settingsProvider.getSchema());
+    setSchema(settings.getSchema());
   }, [ open ]);
 
   useEffect(() => {
     if (!schema) return;
 
-    const values = settingsProvider.get();
+    const values = settings.get();
 
     // Setting can specify a flag
     // which will override the setting value if set
@@ -87,7 +100,7 @@ export default function SettingsPlugin(props) {
 
     setShowRestartWarning(restart);
 
-    settingsProvider.set(changedValues);
+    settings.set(changedValues);
     setValues({ ...values, ...changedValues });
   };
 

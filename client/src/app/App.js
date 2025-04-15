@@ -15,7 +15,6 @@ import debug from 'debug';
 import {
   assign,
   debounce,
-  find,
   forEach,
   groupBy,
   isString,
@@ -30,10 +29,6 @@ import EventEmitter from 'events';
 import defaultPlugins from '../plugins';
 
 import executeOnce from './util/executeOnce';
-
-import { ENGINES, ENGINE_PROFILES } from '../util/Engines';
-
-import { getAnnotatedVersion, toSemverMinor } from './tabs/EngineProfile';
 
 import { WithCache } from './cached';
 
@@ -142,59 +137,6 @@ export class App extends PureComponent {
     } = this.props;
 
     tabsProvider.linkSettings(this.settings);
-
-    // TODO(@jarekdanielak): There is probably a better place to register those settigns.
-    const getEngineOptions = (engine) => {
-      return map(find(ENGINE_PROFILES, i => i.executionPlatform === engine).executionPlatformVersions, (version) => {
-        return {
-          label: getAnnotatedVersion(toSemverMinor(version), engine),
-          value: version
-        };
-      });
-    };
-
-    this.settings.register({
-      id: 'app',
-      title: 'Global Settings',
-      properties: {
-        'app.newContextPad': {
-          type: 'boolean',
-          default: false,
-          flag: 'enable-new-context-pad',
-          label: 'Enable new context pad',
-          restartRequired: true,
-          documentationUrl: 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags/#enable-new-context-pad',
-        },
-        'app.disablePlugins': {
-          type: 'boolean',
-          default: false,
-          flag: 'disable-plugins',
-          label: 'Disable plugins',
-          restartRequired: true,
-        },
-        'app.disableConnectorTemplates': {
-          type: 'boolean',
-          default: false,
-          flag: 'disable-connector-templates',
-          label: 'Disable connector templates',
-          restartRequired: true,
-        },
-        'app.defaultC8Version': {
-          type: 'select',
-          options: getEngineOptions(ENGINES.CLOUD),
-          default: '8.6.0',
-          flag: 'c8-engine-version',
-          label: 'Default Camunda 8 version',
-        },
-        'app.defaultC7Version': {
-          type: 'select',
-          options: getEngineOptions(ENGINES.PLATFORM),
-          default: '7.23.0',
-          flag: 'c7-engine-version',
-          label: 'Default Camunda 7 version',
-        }
-      }
-    });
 
     this.tabRef = React.createRef();
 
