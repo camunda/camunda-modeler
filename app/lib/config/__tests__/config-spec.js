@@ -385,6 +385,94 @@ describe('Config', function() {
       expect(osInfo.release).to.be.eql(os.release());
     });
   });
+
+
+  describe('<settings>', function() {
+
+    let file;
+
+    beforeEach(function() {
+      file = fs.readFileSync(getAbsolutePath('fixtures/ok/settings/settings.json'), { encoding: 'utf8' });
+    });
+
+    afterEach(function() {
+      fs.writeFileSync(getAbsolutePath('fixtures/ok/settings/settings.json'), file, { encoding: 'utf8' });
+    });
+
+
+    it('should get', function() {
+
+      // given
+      const config = new Config({
+        userPath: getAbsolutePath('fixtures/ok/settings')
+      });
+
+      // when
+      const settings = config.get('settings');
+
+      // then
+      expect(settings).to.be.deep.eql({
+        'test.setting': 'value'
+      });
+    });
+
+    it('should get empty object if file does not exist', function() {
+
+      // given
+      const config = new Config({
+        userPath: getAbsolutePath('fixtures')
+      });
+
+      // when
+      const settings = config.get('settings');
+
+      // then
+      expect(settings).to.be.deep.eql({ });
+    });
+
+
+    it('should get empty object if file is broken', function() {
+
+      // given
+      const config = new Config({
+        userPath: getAbsolutePath('fixtures/broken/settings')
+      });
+
+      // when
+      const settings = config.get('settings');
+
+      // then
+      expect(settings).to.be.deep.eql({ });
+    });
+
+    it('should set', function() {
+
+      // given
+      const config = new Config({
+        userPath: getAbsolutePath('fixtures/ok/settings')
+      });
+
+      // assume
+      let settings = config.get('settings');
+      expect(settings).to.be.deep.eql({
+        'test.setting': 'value'
+      });
+
+      // when
+      const values = {
+        'test.setting': 'newValue'
+      };
+      config.set('settings', values);
+
+      // then
+      settings = config.get('settings');
+
+      expect(settings).to.be.deep.eql({
+        'test.setting': 'newValue'
+      });
+    });
+
+  });
 });
 
 
