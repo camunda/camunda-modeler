@@ -303,12 +303,16 @@ export function getAnnotatedVersion(version, platform) {
   return version;
 }
 
-export function getDefaultVersion(engine) {
+export function getDefaultVersion(engine, settingsVersion) {
   const flagVersion = getFlagVersion(engine);
 
   const versions = getVersions(engine);
   if (isKnownVersion(versions, flagVersion)) {
     return flagVersion;
+  }
+
+  if (isKnownVersion(versions, settingsVersion)) {
+    return settingsVersion;
   }
 
   return getLatestStable(engine);

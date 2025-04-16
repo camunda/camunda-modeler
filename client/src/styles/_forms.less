@@ -204,6 +204,16 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill-rule='evenodd' points='5.743 14.314 1 9.57 2.897 7.673 5.743 10.519 13.103 3.16 15 5.057'/%3E%3C/svg%3E%0A");
       box-sizing: content-box;
     }
+
+    .custom-control-input:disabled + label {
+      color: gray;
+    }
+
+    .custom-control-description:not(:empty) {
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: var(--color-grey-225-10-35);
+    }
   }
 
   .custom-radio {
@@ -485,5 +495,24 @@
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);
     transform: translateX(16px);
+  }
+}
+
+.custom-select {
+  min-height: 60px;
+}
+
+.documentation-icon {
+  margin-left: 8px;
+  margin-right: 8px;
+
+  svg {
+    color: var(--color-blue-205-100-50);
+    position: relative;
+    top: 2px;
+  }
+
+  &:hover svg {
+    color: var(--color-blue-205-100-45);
   }
 }

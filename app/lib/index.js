@@ -411,6 +411,11 @@ renderer.on('app:reload', async function() {
   app.mainWindow.reload();
 });
 
+renderer.on('app:restart', function() {
+  app.relaunch();
+  app.exit(0);
+});
+
 app.on('web-contents-created', (event, webContents) => {
 
   // open new window externally
@@ -726,10 +731,14 @@ function bootstrap() {
 
   let paths;
 
-  // (8) plugins
-  const pluginsDisabled = flags.get('disable-plugins');
+  const settingsProvider = new Config({ userPath });
+  const settings = settingsProvider.get('settings');
 
-  if (pluginsDisabled) {
+  // (8) plugins
+  const pluginsDisabledFlag = flags.get('disable-plugins');
+  const pluginsDisabledSetting = settings && settings['app.disablePlugins'];
+
+  if (pluginsDisabledFlag === true || (pluginsDisabledFlag === undefined && pluginsDisabledSetting)) {
     paths = [];
 
     log.info('plug-ins disabled via feature toggle');
@@ -752,7 +761,10 @@ function bootstrap() {
   const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
   // (10) connector templates
-  if (!flags.get('disable-connector-templates', false)) {
+  const connectorsDisabledFlag = flags.get('disable-connector-templates');
+  const connectorsDisabledSetting = settings && settings['app.disableConnectorTemplates'];
+
+  if (connectorsDisabledFlag !== true && !connectorsDisabledSetting) {
     registerConnectorTemplateUpdater(renderer, userPath);
   }
 
