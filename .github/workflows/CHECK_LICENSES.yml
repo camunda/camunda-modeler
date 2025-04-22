@@ -28,9 +28,9 @@ jobs:
         secrets: |
           secret/data/products/desktop-modeler/ci/fossa FOSSA_API_KEY;
     - name: Setup fossa-cli
-      uses: camunda/infra-global-github-actions/fossa/setup@3a7a7982319f4127aa91965494d1775a8befd444
+      uses: camunda/infra-global-github-actions/fossa/setup@59eadf0fcbc5a89523854d8db00bdac2dd0e1f13
     - name: Analyze project
-      uses: camunda/infra-global-github-actions/fossa/analyze@3a7a7982319f4127aa91965494d1775a8befd444
+      uses: camunda/infra-global-github-actions/fossa/analyze@59eadf0fcbc5a89523854d8db00bdac2dd0e1f13
       with:
         api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
         branch: ${{ github.ref_name }}
