@@ -411,10 +411,11 @@ describe('Config', function() {
       const settings = config.get('settings');
 
       // then
-      expect(settings).to.be.deep.eql({
+      expect(settings).to.eql({
         'test.setting': 'value'
       });
     });
+
 
     it('should get empty object if file does not exist', function() {
 
@@ -427,7 +428,7 @@ describe('Config', function() {
       const settings = config.get('settings');
 
       // then
-      expect(settings).to.be.deep.eql({ });
+      expect(settings).to.eql({ });
     });
 
 
@@ -442,8 +443,9 @@ describe('Config', function() {
       const settings = config.get('settings');
 
       // then
-      expect(settings).to.be.deep.eql({ });
+      expect(settings).to.eql({ });
     });
+
 
     it('should set', function() {
 
@@ -454,7 +456,7 @@ describe('Config', function() {
 
       // assume
       let settings = config.get('settings');
-      expect(settings).to.be.deep.eql({
+      expect(settings).to.eql({
         'test.setting': 'value'
       });
 
@@ -467,7 +469,7 @@ describe('Config', function() {
       // then
       settings = config.get('settings');
 
-      expect(settings).to.be.deep.eql({
+      expect(settings).to.eql({
         'test.setting': 'newValue'
       });
     });
