@@ -62,6 +62,8 @@ class MenuBuilder {
   }
 
   build() {
+    const MenuBuilder = this.constructor;
+
     this.appendFileMenu(
       new MenuBuilder(this.options)
         .appendNewFile()
@@ -76,7 +78,7 @@ class MenuBuilder {
         .appendExportAs()
         .appendCloseTab()
         .appendSeparator()
-        .appendSettings(this)
+        .appendSettings()
         .appendSeparator()
         .appendQuit()
         .get()
