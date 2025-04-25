@@ -6,6 +6,37 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.35.0
+
+* `DEPS`: update to `bpmn-js@18.6.1` 
+* `DEPS`: update to `camunda-bpmn-js@5.8.0`
+* `DEPS`: update to `camunda-linting@3.37.0`
+* `DEPS`: update to `@camunda/rpa-integration@1.0.0`
+
+### General
+
+* `FEAT`: support Camunda 7.24 ([#4984](https://github.com/camunda/camunda-modeler/issues/4984))
+* `FEAT`: add application settings ([#2913](https://github.com/camunda/camunda-modeler/issues/2913))
+
+### BPMN
+
+* `FEAT`: allow text annotations for message flows ([bpmn-io/bpmn-js#2292](https://github.com/bpmn-io/bpmn-js/pull/2292)
+* `FEAT`: render element template icons on sub-processes and call activities ([bpmn-io/element-template-icon-renderer#22](https://github.com/bpmn-io/element-template-icon-renderer/pull/22))
+* `FEAT`: `keywords` of element templates can be searched ([#4853](https://github.com/camunda/camunda-modeler/issues/4853))
+* `FEAT`: prioritize `search` over `description` when matching popup menu entries ([bpmn-io/diagram-js#963](https://github.com/bpmn-io/diagram-js/pull/963))
+* `FEAT`: sort `search` terms across all keys ([bpmn-io/diagram-js#963](https://github.com/bpmn-io/diagram-js/pull/963))
+* `FIX`: always select first search entry ([#4948](https://github.com/camunda/camunda-modeler/issues/4948))
+* `FIX`: show correct error message for form tags ([#4872](https://github.com/camunda/camunda-modeler/issues/4872))
+* `FIX`: copy error, escalation, message and signal references when copying elements ([#4863](https://github.com/camunda/camunda-modeler/issues/4863), [#4567](https://github.com/camunda/camunda-modeler/issues/4567))
+
+### RPA
+
+* `FEAT`: allow commenting via keyboard shortcut ([camunda/rpa-frontend#6](https://github.com/camunda/rpa-frontend/issues/6))
+* `FEAT`: support RPA scripts in file context ([#4893](https://github.com/camunda/camunda-modeler/issues/4893))
+* `FEAT`: add `.rpa` file association ([#4963](https://github.com/camunda/camunda-modeler/issues/4963))
+  * If you're on Windows or Linux you need to [rewire the file association](https://docs.camunda.io/docs/components/modeler/desktop-modeler/install-the-modeler/) manually. On macOS the file association is done automatically.
+  * After the update you need to restart Finder (macOS) or Explorer (Windows) to see the new file association.
+
 ## 5.34.0
 
 * `DEPS`: update to `bpmn-js-properties-panel@5.35.0`
