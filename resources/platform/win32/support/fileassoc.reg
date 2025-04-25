@@ -14,6 +14,9 @@ Windows Registry Editor Version 5.00
 [HKEY_CURRENT_USER\Software\Classes\.form]
 @="CamundaModeler.FORM"
 
+[HKEY_CURRENT_USER\Software\Classes\.rpa]
+@="CamundaModeler.RPA"
+
 [HKEY_CURRENT_USER\Software\Classes\CamundaModeler.BPMN]
 @="BPMN file"
 
@@ -73,3 +76,19 @@ Windows Registry Editor Version 5.00
 
 [HKEY_CURRENT_USER\Software\Classes\CamundaModeler.FORM\shell\open\command]
 @="__CWD__ \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\CamundaModeler.RPA]
+@="RPA file"
+
+[HKEY_CURRENT_USER\Software\Classes\CamundaModeler.RPA\DefaultIcon]
+@="__CWD__,0"
+
+[HKEY_CURRENT_USER\Software\Classes\CamundaModeler.RPA\shell]
+@="open"
+
+[HKEY_CURRENT_USER\Software\Classes\CamundaModeler.RPA\shell\open]
+@="Open with Camunda Modeler"
+
+[HKEY_CURRENT_USER\Software\Classes\CamundaModeler.RPA\shell\open\command]
+@="__CWD__ \"%1\""
+

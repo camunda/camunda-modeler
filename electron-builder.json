@@ -72,6 +72,13 @@
       "description": "FORM file",
       "role": "Editor",
       "mimeType": "application/camunda-form"
+    },
+    {
+      "ext": "rpa",
+      "name": "CamundaModeler.RPA",
+      "description": "RPA file",
+      "role": "Editor",
+      "mimeType": "application/rpa"
     }
   ],
   "npmArgs": "--workspaces=false"

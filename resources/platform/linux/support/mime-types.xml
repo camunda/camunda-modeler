@@ -37,4 +37,12 @@
     <sub-class-of type="application/json"/>
     <generic-icon name="application-json"/>
   </mime-type>
+  <mime-type type="application/rpa">
+    <comment>RPA script</comment>
+    <acronym>RPA</acronym>
+    <expanded-acronym>Robotic Process Automation</expanded-acronym>
+    <glob pattern="*.rpa"/>
+    <sub-class-of type="application/json"/>
+    <generic-icon name="application-json"/>
+  </mime-type>
 </mime-info>
