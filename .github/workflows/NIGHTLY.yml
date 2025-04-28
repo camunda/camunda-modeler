@@ -2,6 +2,11 @@ name: NIGHTLY
 on:
   schedule:
     - cron: '0 18 * * *'
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build_nightly:
     name: Build nightly
