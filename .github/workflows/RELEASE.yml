@@ -3,6 +3,11 @@ on:
   push:
     tags:
       - 'v*'
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   pre_release:
     name: Prepare release
