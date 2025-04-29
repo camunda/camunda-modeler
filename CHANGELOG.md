@@ -9,7 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 ## 5.35.0
 
 * `DEPS`: update to `bpmn-js@18.6.1` 
-* `DEPS`: update to `camunda-bpmn-js@5.8.0`
+* `DEPS`: update to `camunda-bpmn-js@5.9.0`
 * `DEPS`: update to `camunda-linting@3.37.0`
 * `DEPS`: update to `@camunda/rpa-integration@1.0.0`
 
