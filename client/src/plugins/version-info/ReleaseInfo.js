@@ -44,17 +44,18 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
+          <h4>Application settings</h4>
+          Select your default execution platform version directly within the app. Configure selected application properties which were previously available only as flags.
+        </li>
+        <li>
+          <h4>Enhanced RPA integration</h4>
+          You can now use keyboard shortcuts to add comments, manage RPA scripts within process applications, and directly open &quot;.rpa&quot; files.
+          <br />
+          If you&apos;re on Windows or Linux you need to <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/install-the-modeler/#wire-file-associations">update the file associations</a>.
+        </li>
+        <li>
           <h4>Support for upcoming Camunda features</h4>
-          Camunda 8.7 and 7.23 are now fully supported.
-          Also, you can now configure <a href="https://docs.camunda.io/docs/next/components/modeler/bpmn/ad-hoc-subprocesses/?utm_source=modeler&utm_medium=referral#completion">completion attributes</a> of ad-hoc subprocesses.
-        </li>
-        <li>
-          <h4>Support for process applications</h4>
-          We now support <a href="https://docs.camunda.io/docs/8.7/components/modeler/desktop-modeler/process-applications/?utm_source=modeler&utm_medium=referral">process applications</a> and resource linking. You can use process applications to easily group processes, decisions, and forms in a project, and link them.
-        </li>
-        <li>
-          <h4>RPA editor</h4>
-          Edit, test and deploy <a href="https://docs.camunda.io/docs/8.7/components/rpa/overview/?utm_source=modeler&utm_medium=referral">Robotic Process Automation (RPA)</a> scripts with the new RPA editor.
+          Camunda 7.24 is now supported.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
