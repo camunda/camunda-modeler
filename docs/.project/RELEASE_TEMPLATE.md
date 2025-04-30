@@ -49,6 +49,7 @@ _To be done after code freeze to prepare and test the release._
 * [ ] merge to main: `git checkout main && git merge develop`
 * [ ] create release candidate (`npm run release:rc -- [preminor|premajor|prepatch]`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/main/releases/RELEASE_SCHEMA.md)
   * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
+  * [ ] (optional) to create further release candidates after the first one use `npm run release:rc -- prerelease`
 * [ ] execute [integration test](https://github.com/camunda/camunda-modeler/blob/main/docs/.project/INTEGRATION_TEST.md) on [released artifacts](https://github.com/camunda/camunda-modeler/releases)
   * [ ] Works on Linux
   * [ ] Works on Mac
