@@ -41,7 +41,7 @@ export default class ProcessApplications {
 
         const item = this._items.find(item => item.file.path === file.path);
 
-        if (!item) {
+        if (!item || hasErrorMessage(item)) {
           return;
         }
 
@@ -66,7 +66,7 @@ export default class ProcessApplications {
 
       const item = this._items.find(item => item.file.path === file.path);
 
-      if (!item) {
+      if (!item || hasErrorMessage(item)) {
         this.close();
 
         return;
@@ -180,4 +180,8 @@ export default class ProcessApplications {
   findItem(path) {
     return this._items.find(item => item.file.path === path);
   }
+}
+
+function hasErrorMessage(item) {
+  return item.file.messages?.some(({ error }) => error);
 }

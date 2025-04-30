@@ -138,7 +138,7 @@ export default function ProcessApplicationsPlugin(props) {
 
       const item = processApplications.findItem(tab.file.path);
 
-      if (!item) {
+      if (!item || hasErrorMessage(item)) {
         return {
           ...tabGroups,
           [ tab.id ]: null
@@ -184,4 +184,8 @@ function createProcessApplicationFile(contents = {}) {
     contents: JSON.stringify(contents, null, 2),
     path: null
   };
+}
+
+function hasErrorMessage(item) {
+  return item.file.messages?.some(({ error }) => error);
 }

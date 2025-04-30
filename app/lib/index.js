@@ -243,13 +243,25 @@ renderer.on('file-context:remove-root', function(options, done) {
 renderer.on('file-context:file-opened', function(filePath, options, done) {
   const fileUrl = toFileUrl(filePath);
 
+  fileContext.once('indexer:updated', (item) => {
+    if (item.file.messages?.some(({ error }) => error)) {
+      return;
+    }
+
+    const { file } = item;
+
+    if (file.path !== filePath) {
+      return;
+    }
+
+    const processApplicationFile = findProcessApplicationFile(filePath);
+
+    if (processApplicationFile) {
+      fileContext.addRoot(path.dirname(processApplicationFile));
+    }
+  });
+
   fileContext.fileOpened(fileUrl, options);
-
-  const processApplicationFile = findProcessApplicationFile(filePath);
-
-  if (processApplicationFile) {
-    fileContext.addRoot(path.dirname(processApplicationFile));
-  }
 
   done(null);
 });
