@@ -75,9 +75,9 @@ Section.Header = function Header(props) {
 Section.Actions = function Actions(props) {
   const { className } = props;
   return (
-    <span className={ classNames('section__actions', {
+    <div className={ classNames('section__actions', {
       [ className ]: className
-    }) }>{ props.children }</span>
+    }) }>{ props.children }</div>
   );
 };
 

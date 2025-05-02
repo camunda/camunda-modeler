@@ -78,22 +78,22 @@ export default function DeploymentConfigForm(props) {
         props => {
           return (
             <Form className={ css.DeploymentConfigForm }>
-              <Section>
+              <Section className="form-section">
                 {
                   renderHeader && (
-                    <Section.Header className="form-header">
+                    <Section.Header className="form-section-header">
                       { renderHeader }
                     </Section.Header>
                   )
                 }
                 {
                   renderDescription && (
-                    <Section.Body className="form-description">
+                    <Section.Body className="form-body-description">
                       { renderDescription }
                     </Section.Body>
                   )
                 }
-                <Section.Body className="form-body">
+                <Section.Body className="form-body-content">
                   <fieldset className="fieldset">
                     <div className="fields">
                       <Field
