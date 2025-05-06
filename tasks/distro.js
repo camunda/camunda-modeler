@@ -99,9 +99,16 @@ const signingOptions = [
   `-c.forceCodeSigning=${false}`
 ];
 
-const certificateFingerprint = process.env.WIN_CSC_FINGERPRINT;
-if (certificateFingerprint) {
-  signingOptions.push(`-c.win.certificateSha1=${certificateFingerprint}`);
+const windowsSigningOptions = {
+  certificateProfileName: process.env.AZURE_CERT_PROFILE_NAME,
+  endpoint: process.env.AZURE_ENDPOINT,
+  codeSigningAccountName: process.env.AZURE_CODE_SIGNING_NAME,
+  publisherName: process.env.AZURE_PUBLISHER_NAME
+};
+for (const [ key, value ] of Object.entries(windowsSigningOptions)) {
+  if (value) {
+    signingOptions.push(`-c.win.azureSignOptions.${key}=${value}`);
+  }
 }
 
 if (publish && (argv.ia32 || argv.x64 || argv.arm64)) {
