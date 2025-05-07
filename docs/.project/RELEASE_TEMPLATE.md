@@ -66,7 +66,6 @@ _To be done once the release is built._
 * [ ] communicate release with closed support-related issues to [#ask-support](https://camunda.slack.com/archives/CHAC0L80M) (automated)
 * [ ] make sure Windows artifacts are signed
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
-* [ ] communicate the release to [support](https://app.slack.com/client/T0PM0P1SA/CHAC0L80M) (changelog link, closed support issues; [example message](https://camunda.slack.com/archives/CHAC0L80M/p1733480373630349))
 * [ ] close [current milestone](https://github.com/camunda/camunda-modeler/milestones)
 
 _To be done as a post-release activity._
