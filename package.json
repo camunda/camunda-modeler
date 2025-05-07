@@ -66,7 +66,7 @@
     "license-webpack-plugin": "^4.0.2",
     "mocha": "^10.8.2",
     "mri": "^1.1.4",
-    "nodemailer": "^6.9.15",
+    "nodemailer": "^7.0.0",
     "npm-run-all2": "^7.0.0",
     "nyc": "^17.1.0",
     "proxyquire": "^2.1.3",
