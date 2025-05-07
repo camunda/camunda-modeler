@@ -37,6 +37,24 @@ jobs:
         LINKED_DEPENDENCIES: "${{ github.event.inputs.linkedDependencies }}"
       run: npm run link-dependencies
 
+    - name: Import Secrets (Windows)
+      id: windowsSecrets
+      uses: hashicorp/vault-action@v3.0.0
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/rpa/ci/azure             CERT_PROFILE_NAME  | AZURE_CERT_PROFILE_NAME ;
+          secret/data/products/rpa/ci/azure             CLIENT_ID          | AZURE_CLIENT_ID ;
+          secret/data/products/rpa/ci/azure             CLIENT_SECRET      | AZURE_CLIENT_SECRET ;
+          secret/data/products/rpa/ci/azure             CODE_SIGNING_NAME  | AZURE_CODE_SIGNING_NAME ;
+          secret/data/products/rpa/ci/azure             SIGNING_ENDPOINT   | AZURE_ENDPOINT ;
+          secret/data/products/rpa/ci/azure             TENANT_ID          | AZURE_TENANT_ID ;
+          secret/data/products/desktop-modeler/ci/azure PUBLISHER_NAME     | AZURE_PUBLISHER_NAME ;
+
     - name: Build distro (Linux)
       if: ${{ runner.OS == 'Linux' }}
       env:
@@ -72,4 +90,11 @@ jobs:
         AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_ON_DEMAND_SECRET_ACCESS_KEY }}"
         AWS_REGION: "${{ secrets.AWS_ON_DEMAND_REGION }}"
         AWS_BUCKET: "${{ secrets.AWS_ON_DEMAND_BUCKET }}"
+        AZURE_CERT_PROFILE_NAME: "${{ steps.windowsSecrets.outputs.AZURE_CERT_PROFILE_NAME }}"
+        AZURE_CLIENT_ID: "${{ steps.windowsSecrets.outputs.AZURE_CLIENT_ID }}"
+        AZURE_CLIENT_SECRET: "${{ steps.windowsSecrets.outputs.AZURE_CLIENT_SECRET }}"
+        AZURE_CODE_SIGNING_NAME: "${{ steps.windowsSecrets.outputs.AZURE_CODE_SIGNING_NAME }}"
+        AZURE_ENDPOINT: "${{ steps.windowsSecrets.outputs.AZURE_ENDPOINT }}"
+        AZURE_PUBLISHER_NAME: "${{ steps.windowsSecrets.outputs.AZURE_PUBLISHER_NAME }}"
+        AZURE_TENANT_ID: "${{ steps.windowsSecrets.outputs.AZURE_TENANT_ID }}"
       run: npm run build -- --win --publish --on-demand
