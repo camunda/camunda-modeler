@@ -8,6 +8,10 @@
  * except in compliance with the MIT License.
  */
 
+/**
+ * @typedef {import('@camunda8/sdk/dist/zeebe/lib/deployResource').Resource} Resource
+ */
+
 'use strict';
 
 const path = require('path');
@@ -45,15 +49,6 @@ const RESOURCE_TYPES = {
 };
 
 /**
- * @typedef {Object} ZeebeClientParameters
- * @property {Endpoint} endpoint
- */
-
-/**
- * @typedef {SelfHostedNoAuthEndpoint|SelfHostedBasicAuthEndpoint|SelfHostedOAuthEndpoint|CamundaCloudEndpoint} Endpoint
- */
-
-/**
  * @typedef {Object} SelfHostedNoAuthEndpoint
  * @property {'selfHosted'} type
  * @property {string} url
@@ -79,33 +74,40 @@ const RESOURCE_TYPES = {
 /**
  * @typedef {Object} CamundaCloudEndpoint
  * @property {'camundaCloud'} type
- * @property {string} clusterId
+ * @property {string} url
  * @property {string} clientId
  * @property {string} clientSecret
- * @property {string} [clusterRegion] if not provided, zeebe-node will assume 'bru-2'
  */
 
 /**
- * @typedef {Object} TopologyResponse
- * @property {'brokers'} type
- * @property {number} clusterSize
- * @property {number} partitionsCount
- * @property {number} replicationFactor
- * @property {string} gatewayVersion
+ * @typedef {SelfHostedNoAuthEndpoint|SelfHostedBasicAuthEndpoint|SelfHostedOAuthEndpoint|CamundaCloudEndpoint} Endpoint
  */
 
 /**
- * @typedef { typeof import('@camunda8/sdk').Camunda8 } Camunda8Constructor
- * @typedef { import('@camunda8/sdk/dist/zeebe').ZeebeGrpcClient } ZeebeGrpcClient
+ * @typedef {Object} DeploymentConfig
+ * @property {Endpoint} endpoint
+ */
+
+/**
+ * @typedef {Object} StartInstanceConfig
+ * @property {Endpoint} endpoint
+ * @property {string} processId
+ */
+
+/**
+ * @typedef {typeof import('@camunda8/sdk').Camunda8} Camunda8Constructor
+ * @typedef {import('@camunda8/sdk/dist/zeebe').ZeebeGrpcClient} ZeebeGrpcClient
  */
 
 class ZeebeAPI {
 
   /**
-   * @param { any } fs
-   * @param { Camunda8Constructor } Camunda8
-   * @param { any } flags
-   * @param { any } [log]
+   * @param { {
+   *   readFile: (path: string, options: { encoding: boolean }) => { contents: string },
+   * } } fs
+   * @param {Camunda8Constructor} Camunda8
+   * @param {any} flags
+   * @param {any} [log]
    */
   constructor(fs, Camunda8, flags, log = createLog('app:zeebe-api')) {
     this._fs = fs;
@@ -124,23 +126,19 @@ class ZeebeAPI {
   }
 
   /**
-   * @public
-   * Check connection with given broker/cluster.
+   * Check connection with given endpoint.
    *
-   * @param {ZeebeClientParameters} parameters
+   * @param {{ endpoint: Endpoint }} config
    *
-   * @return {{ success: boolean, reason?: string }}
+   * @returns {Promise<{ success: boolean, reason?: string }>}
    */
-  async checkConnection(parameters) {
-
-    const {
-      endpoint
-    } = parameters;
+  async checkConnection(config) {
+    const { endpoint } = config;
 
     const client = await this._getZeebeClient(endpoint);
 
     this._log.debug('check connection', {
-      parameters: filterEndpointParameters(parameters)
+      parameters: filterEndpointParameters(config)
     });
 
     try {
@@ -148,7 +146,7 @@ class ZeebeAPI {
       return { success: true };
     } catch (err) {
       this._log.error('connection check failed', {
-        parameters: filterEndpointParameters(parameters)
+        parameters: filterEndpointParameters(config)
       }, err);
 
       return {
@@ -159,47 +157,48 @@ class ZeebeAPI {
   }
 
   /**
-   * @public
-   * Deploy Process.
+   * Deploy resources with given configuration.
    *
-   * @param {ZeebeClientParameters & { name: string, filePath: string }} parameters
+   * @param {DeploymentConfig} config
    *
-   * @return {Promise<{ success: boolean, response: object }>}
+   * @returns {Promise<{ success: boolean, response: object }>}
    */
-  async deploy(parameters) {
-
+  async deploy(config) {
     const {
       endpoint,
-      filePath,
-      name,
-      resourceType = 'bpmn'
-    } = parameters;
-
-    const {
-      contents
-    } = this._fs.readFile(filePath, { encoding: false });
+      resourceConfigs,
+      tenantId
+    } = config;
 
     this._log.debug('deploy', {
-      parameters: filterEndpointParameters(parameters)
+      parameters: filterEndpointParameters(config)
     });
 
     const client = await this._getZeebeClient(endpoint);
 
     try {
-      const resourceName = this._prepareDeploymentName(name, filePath, resourceType);
 
-      const resource = getResource(parameters, contents, resourceName);
+      /** @type {Array<Resource>} */
+      const resources = this._getResources(resourceConfigs, tenantId);
 
-      this._log.debug('deploying resource', resource);
+      let response;
 
-      const response = await client.deployResource(resource);
+      if (resources.length > 1) {
+        this._log.debug('deploying resources', resources);
+
+        response = await client.deployResources(resources, tenantId);
+      } else {
+        this._log.debug('deploying resource', resources[0]);
+
+        response = await client.deployResource(resources[0]);
+      }
 
       return {
         success: true,
         response: response
       };
     } catch (err) {
-      this._log.error('deploy failed', filterEndpointParameters(parameters), err);
+      this._log.error('deploy failed', filterEndpointParameters(config), err);
 
       return {
         success: false,
@@ -209,24 +208,22 @@ class ZeebeAPI {
   }
 
   /**
-   * @public
-   * Run process instance.
+   * Start instance of process with given process ID and configuration.
    *
-   * @param {ZeebeClientParameters & { endpoint: object, processId: string, variables: object }} parameters
+   * @param {StartInstanceConfig} config
    *
-   * @return {{ success: boolean, response: object }}
+   * @returns {{ success: boolean, response: object }}
    */
-  async run(parameters) {
-
+  async startInstance(config) {
     const {
       endpoint,
       variables,
       processId,
       tenantId
-    } = parameters;
+    } = config;
 
-    this._log.debug('run', {
-      parameters: filterEndpointParameters(parameters)
+    this._log.debug('start instance', {
+      parameters: filterEndpointParameters(config)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -244,8 +241,8 @@ class ZeebeAPI {
         response: response
       };
     } catch (err) {
-      this._log.error('run failed', {
-        parameters: filterEndpointParameters(parameters)
+      this._log.error('start instance failed', {
+        parameters: filterEndpointParameters(config)
       }, err);
 
       return {
@@ -256,21 +253,19 @@ class ZeebeAPI {
   }
 
   /**
-   * @public
    * Get gateway version of given broker/cluster endpoint.
    *
-   * @param {ZeebeClientParameters} parameters
+   * @param {{ endpoint: Endpoint }} config
    *
-   * @return {{ success: boolean, response?: object, response?.gatewayVersion: string }}
+   * @returns {{ success: boolean, response?: object, response?.gatewayVersion: string }}
    */
-  async getGatewayVersion(parameters) {
-
+  async getGatewayVersion(config) {
     const {
       endpoint
-    } = parameters;
+    } = config;
 
     this._log.debug('fetch gateway version', {
-      parameters: filterEndpointParameters(parameters)
+      parameters: filterEndpointParameters(config)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -286,12 +281,12 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('fetch gateway version failed', {
-        parameters: filterEndpointParameters(parameters)
+        parameters: filterEndpointParameters(config)
       }, err);
 
       return {
         success: false,
-        reason: getErrorReason(err, endpoint)
+        reason: getErrorReason(err, config.endpoint)
       };
     }
   }
@@ -335,7 +330,7 @@ class ZeebeAPI {
   /**
    * @param {any} endpoint
    *
-   * @return { Promise<ZeebeGrpcClient> }
+   * @returns { Promise<ZeebeGrpcClient> }
    */
   async _createZeebeClient(endpoint) {
     const {
@@ -498,37 +493,44 @@ class ZeebeAPI {
   }
 
   /**
-   * With zeebe-node 0.23.0, the deployment name should end with
-   * file type appropriate suffix.
+   * Get resources based on the provided configs and tenantId.
    *
-   * If name is empty, we'll return the file name with suffix added. If name is not empty
-   * but does not end with .bpmn, we'll add the suffix.
+   * @param {resourceConfigs: Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }} files
+   * @param {string} [tenantId]
    *
-   * @param {string} name
-   * @param {string} filePath
-   * @param {'bpmn'|'dmn'|'form'} [fileType='bpmn']
-   *
-   * @return {`${string}.${'bpmn'|'dmn'|'form'}`}
+   * @returns {Array<Resource>}
    */
-  _prepareDeploymentName(name, filePath, fileType = 'bpmn') {
+  _getResources(resourceConfigs, tenantId) {
+    return resourceConfigs.map(resourceConfig => {
+      const { contents } = this._fs.readFile(resourceConfig.path, { encoding: false });
 
-    const extension = `.${ fileType }`;
+      const extension = `.${ resourceConfig.type }`;
 
-    try {
-      if (!name || name.length === 0) {
-        return `${ path.basename(filePath, path.extname(filePath)) }${ extension }`;
+      const name = `${ path.basename(resourceConfig.path, path.extname(resourceConfig.path)) }${ extension }`;
+
+      const resource = {
+        name
+      };
+
+      if (resourceConfig.type === RESOURCE_TYPES.BPMN) {
+        resource.process = contents;
+      } else if (resourceConfig.type === RESOURCE_TYPES.DMN) {
+        resource.decision = contents;
+      } else if (resourceConfig.type === RESOURCE_TYPES.FORM) {
+        resource.form = contents;
+      } else {
+
+        // fall back to form
+        // cf.https://github.com/camunda/camunda-8-js-sdk/blob/e38ea13c2f8285816ade0ff1e4b4e62fbee4a4ba/src/zeebe/lib/deployResource.ts#L54
+        resource.form = contents;
       }
 
-      if (!name.endsWith(extension)) {
-        return `${ name }${ extension }`;
+      if (resourceConfigs.length === 1 && tenantId && tenantId.length) {
+        resource.tenantId = tenantId;
       }
 
-    } catch (err) {
-
-      this._log.error('prepare deployment name failed', err);
-    }
-
-    return name;
+      return resource;
+    });
   }
 }
 
@@ -540,7 +542,7 @@ module.exports = ZeebeAPI;
 /**
  * @param {string} message
  *
- * @return {number|undefined}
+ * @returns {number|undefined}
  */
 function getErrorCode(message) {
 
@@ -623,7 +625,7 @@ function asSerializedError(error) {
  *
  * @param {any} parameters
  *
- * @return {any} filtered parameters
+ * @returns {any} filtered parameters
  */
 function filterEndpointParameters(parameters) {
   return filterRecursive(parameters, [
@@ -638,7 +640,7 @@ function filterEndpointParameters(parameters) {
  *
  * @param {any} options
  *
- * @return {any} filtered options
+ * @returns {any} filtered options
  */
 function filterCamunda8Options(options) {
   return filterRecursive(options, [
@@ -674,37 +676,6 @@ function filterRecursive(obj, keys) {
       return value;
     })
   );
-}
-
-function getResource(parameters, contents, resourceName) {
-  const {
-    resourceType = 'bpmn',
-    tenantId
-  } = parameters;
-
-  const resource = {
-    name: resourceName
-  };
-
-  if (resourceType === RESOURCE_TYPES.BPMN) {
-    resource.process = contents;
-  } else if (resourceType === RESOURCE_TYPES.DMN) {
-    resource.decision = contents;
-  } else if (resourceType === RESOURCE_TYPES.FORM) {
-    resource.form = contents;
-  } else {
-
-    // Fallback for unknown resource, cf.
-    // https://github.com/camunda-community-hub/zeebe-client-node-js/blob/7969ce1808c96a87519cb1a3f279287f30637c4b/src/zb/ZBClient.ts#L873-L886
-
-    resource.form = contents;
-  }
-
-  if (tenantId) {
-    resource.tenantId = tenantId;
-  }
-
-  return resource;
 }
 
 function removeProtocol(url) {

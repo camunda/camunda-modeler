@@ -904,7 +904,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM', 'RPA' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'Form', 'RPA' ]);
 
     });
 
@@ -921,7 +921,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'FORM', 'RPA' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'Form', 'RPA' ]);
 
     });
 
@@ -938,7 +938,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM', 'RPA' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'Form', 'RPA' ]);
 
     });
 
@@ -955,7 +955,7 @@ describe('TabsProvider', function() {
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'FORM' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'Form' ]);
 
     });
 

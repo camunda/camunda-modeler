@@ -419,7 +419,7 @@ export default class TabsProvider {
         }
       },
       'cloud-form': {
-        name: 'FORM',
+        name: 'Form',
         encoding: ENCODING_UTF8,
         exports: {},
         extensions: [ 'form' ],
@@ -464,7 +464,7 @@ export default class TabsProvider {
         }
       },
       form: {
-        name: 'FORM',
+        name: 'Form',
         encoding: ENCODING_UTF8,
         exports: {},
         extensions: [ 'form' ],
