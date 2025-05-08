@@ -294,14 +294,16 @@ export default class DeploymentPluginOverlay extends React.PureComponent {
                               />
                               {
                                 form.values.endpoint.targetType === SELF_HOSTED &&
-                                  form.values.endpoint.authType === AUTH_TYPES.OAUTH && (
-                                  <Field
-                                    name="deployment.tenantId"
-                                    component={ TextInput }
-                                    label={ TENANT_ID }
-                                    hint="Optional"
-                                  />
-                                )
+                                  (form.values.endpoint.authType === AUTH_TYPES.BASIC
+                                    || form.values.endpoint.authType === AUTH_TYPES.OAUTH)
+                                    && (
+                                      <Field
+                                        name="deployment.tenantId"
+                                        component={ TextInput }
+                                        label={ TENANT_ID }
+                                        hint="Optional"
+                                      />
+                                    )
                               }
                               <Field
                                 name="endpoint.authType"

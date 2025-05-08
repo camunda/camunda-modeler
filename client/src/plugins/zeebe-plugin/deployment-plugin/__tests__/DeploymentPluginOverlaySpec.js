@@ -107,7 +107,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
 
   describe('tenantId', function() {
 
-    it('should not show for self-managed without OAuth', function() {
+    it('should not show for self-managed with None', function() {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -129,6 +129,32 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
 
       // then
       expect(tenantIdInput.exists()).to.be.false;
+    });
+
+
+    it('should show for self-managed with Basic', function() {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        config: {
+          endpoint: {
+            targetType: SELF_HOSTED,
+            authType: AUTH_TYPES.BASIC,
+            contactPoint: 'https://google.com'
+          },
+          deployment: {
+            tenantId: 'tenant-1'
+          }
+        }
+      });
+
+      // when
+      const tenantIdInput = wrapper.find('input[name="deployment.tenantId"]');
+
+      // then
+      expect(tenantIdInput.exists()).to.be.true;
+      expect(tenantIdInput.instance().value).to.eql('tenant-1');
     });
 
 
@@ -158,7 +184,7 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
     });
 
 
-    it('should not pass on deploy without OAuth', function(done) {
+    it('should not pass on deploy with None', function(done) {
 
       // given
       const { wrapper } = createDeploymentPluginModal({
@@ -184,6 +210,38 @@ describe('<DeploymentPluginModal> (Zeebe)', function() {
         const { deployment } = values;
 
         expect(deployment.tenantId).not.to.exist;
+
+        done();
+      }
+    });
+
+
+    it('should pass on deploy with Basic', function(done) {
+
+      // given
+      const { wrapper } = createDeploymentPluginModal({
+        anchor,
+        onDeploy,
+        config: {
+          endpoint: {
+            targetType: SELF_HOSTED,
+            authType: AUTH_TYPES.BASIC,
+            contactPoint: 'https://google.com'
+          },
+          deployment: {
+            tenantId: 'tenant-1'
+          }
+        }
+      });
+
+      // when deploy
+      wrapper.find('form').simulate('submit');
+
+      // then
+      function onDeploy(values) {
+        const { deployment } = values;
+
+        expect(deployment.tenantId).to.eql('tenant-1');
 
         done();
       }
