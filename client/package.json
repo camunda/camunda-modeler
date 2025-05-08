@@ -103,7 +103,7 @@
     "license-webpack-plugin": "^2.1.1",
     "mocha": "^10.8.2",
     "mocha-test-container-support": "0.2.0",
-    "npm-run-all2": "^7.0.0",
+    "npm-run-all2": "^8.0.0",
     "puppeteer": "^24.4.0",
     "react-svg-loader": "^3.0.3",
     "react-test-renderer": "^16.14.0",
