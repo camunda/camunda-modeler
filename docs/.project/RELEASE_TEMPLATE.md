@@ -75,7 +75,7 @@ _To be done as a post-release activity._
   * [ ] [camunda-docs-manual](https://github.com/camunda/camunda-docs-manual)
   * [ ] [camunda-docs](https://github.com/camunda/camunda-docs)
 * [ ] provide content to the [release presentation and notice](https://confluence.camunda.com/x/Uq-gBQ#ReleasePresentationProcess-OrganisingtheReleasePresentation)
-* [ ] trigger [downloads page](https://camunda.com/download/modeler/) update via [marketing request form](https://confluence.camunda.com/x/rTGSBg)
+* [ ] trigger downloads pages ([modeler](https://camunda.com/download/modeler/) & [self-managed](https://camunda.com/download/self-managed/)) update via [marketing request form](https://confluence.camunda.com/x/rTGSBg)
 * [ ] add new version to [update server releases](https://github.com/camunda/camunda-modeler-update-server/blob/main/releases.json)
 * [ ] (optional) update [supported environments page](https://docs.camunda.io/docs/reference/supported-environments/)
 
