@@ -70,7 +70,7 @@ _To be done once the release is built._
 
 _To be done as a post-release activity._
 
-* [ ] update Camunda Modeler screenshots (and potentially text content) in the docs by running [screenshots workflow](https://github.com/camunda/camunda-docs-modeler-screenshots/actions/workflows/CREATE_SCREENSHOTS.yml). Download artifacts and create PRs for:
+* [ ] update Camunda Modeler screenshots (and potentially text content) in the docs by running [screenshots workflow](https://github.com/camunda/camunda-docs-modeler-screenshots/actions/workflows/CREATE_SCREENSHOTS.yml). Download artifacts and create PRs (to be merged on release day) for:
   * [ ] [camunda-docs-static](https://github.com/camunda/camunda-docs-static)
   * [ ] [camunda-docs-manual](https://github.com/camunda/camunda-docs-manual)
   * [ ] [camunda-docs](https://github.com/camunda/camunda-docs)
