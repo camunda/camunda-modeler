@@ -54,6 +54,24 @@ jobs:
           secret/data/products/desktop-modeler/ci/sentry SENTRY_PROJECT;
           secret/data/common/jenkins/downloads-camunda-cloud_google_sa_key DOWNLOAD_CENTER_GCLOUD_KEY_BYTES | GCP_CREDENTIALS_NAME;
 
+    - name: Import Secrets (Windows)
+      id: windowsSecrets
+      uses: hashicorp/vault-action@v3.0.0
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/rpa/ci/azure             CERT_PROFILE_NAME  | AZURE_CERT_PROFILE_NAME ;
+          secret/data/products/rpa/ci/azure             CLIENT_ID          | AZURE_CLIENT_ID ;
+          secret/data/products/rpa/ci/azure             CLIENT_SECRET      | AZURE_CLIENT_SECRET ;
+          secret/data/products/rpa/ci/azure             CODE_SIGNING_NAME  | AZURE_CODE_SIGNING_NAME ;
+          secret/data/products/rpa/ci/azure             SIGNING_ENDPOINT   | AZURE_ENDPOINT ;
+          secret/data/products/rpa/ci/azure             TENANT_ID          | AZURE_TENANT_ID ;
+          secret/data/products/desktop-modeler/ci/azure PUBLISHER_NAME     | AZURE_PUBLISHER_NAME ;
+
     - name: Build nightly (Linux)
       if: ${{ runner.os == 'Linux' }}
       env:
@@ -90,6 +108,13 @@ jobs:
     - name: Build nightly (Windows)
       if: ${{ runner.os == 'Windows' }}
       env:
+        AZURE_CERT_PROFILE_NAME: "${{ steps.windowsSecrets.outputs.AZURE_CERT_PROFILE_NAME }}"
+        AZURE_CLIENT_ID: "${{ steps.windowsSecrets.outputs.AZURE_CLIENT_ID }}"
+        AZURE_CLIENT_SECRET: "${{ steps.windowsSecrets.outputs.AZURE_CLIENT_SECRET }}"
+        AZURE_CODE_SIGNING_NAME: "${{ steps.windowsSecrets.outputs.AZURE_CODE_SIGNING_NAME }}"
+        AZURE_ENDPOINT: "${{ steps.windowsSecrets.outputs.AZURE_ENDPOINT }}"
+        AZURE_PUBLISHER_NAME: "${{ steps.windowsSecrets.outputs.AZURE_PUBLISHER_NAME }}"
+        AZURE_TENANT_ID: "${{ steps.windowsSecrets.outputs.AZURE_TENANT_ID }}"
         MIXPANEL_TOKEN: "${{ secrets.MIXPANEL_PROJECT_TOKEN }}"
         MIXPANEL_STAGE: "int"
         NIGHTLY: 1
