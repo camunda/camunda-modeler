@@ -289,7 +289,7 @@ export class ElementTemplatesListItem extends React.PureComponent {
         <div className="element-templates-list__item-header">
           {
             icon.contents && (
-              <img className="element-templates-list__item-icon" src={ icon.contents } />
+              <img className="element-templates-list__item-icon" src={ icon.contents } alt="" />
             )
           }
           <span className="element-templates-list__item-name">{ name }</span>
