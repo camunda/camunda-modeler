@@ -4,6 +4,7 @@ project:
   id: camunda/camunda-modeler
   labels:
   - camunda-modeler
+  - modeler
   policy: Camunda8 Distribution
   url: https://github.com/camunda/camunda-modeler
 
