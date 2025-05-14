@@ -6,6 +6,12 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `DEPS`: update to `camunda-linting@3.37.1`
+
+### BPMN
+
+* `FIX`: allow intermediate throw events without outgoing sequence flows in ad-hoc-subprocess ([#4985](https://github.com/camunda/camunda-modeler/issues/4985))
+
 ## 5.35.0
 
 * `DEPS`: update to `bpmn-js@18.6.1` 
