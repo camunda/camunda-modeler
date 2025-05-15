@@ -22,9 +22,7 @@ const OFFSET = { right: 0 };
 
 export function VersionInfoOverlay(props) {
   return (
-    <Overlay
-      id="version-info-overlay" anchor={ props.anchor } onClose={ props.onClose } offset={ OFFSET }
-    >
+    <Overlay id="version-info-overlay" anchor={ props.anchor } onClose={ props.onClose } offset={ OFFSET }>
       <WhatsNewSection version={ props.version } />
 
       <LearnMoreSection />
@@ -35,7 +33,7 @@ export function VersionInfoOverlay(props) {
 function WhatsNewSection(props) {
 
   return (
-    <Section maxHeight="500px">
+    <Section>
       <Section.Header>
         What&apos;s new in Modeler { props.version }
       </Section.Header>

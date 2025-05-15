@@ -1,15 +1,6 @@
 :local(.Section) {
-  --section-max-height: initial;
-
   display: flex;
   flex-direction: column;
-  max-height: var(--section-max-height);
-  flex: inherit;
-
-  .section__body {
-    padding: 12px 12px 0 12px;
-    margin-bottom: 12px;
-  }
 
   .section__body:not(:first-child) {
     padding-top: 1px;
@@ -24,8 +15,9 @@
   }
 
   .section__body {
+    padding: 12px 12px 0 12px;
+    margin-bottom: 12px;
     font-size: inherit;
-    overflow-y: auto;
 
     p, ul, ol {
       margin: 0 0 15px 0;

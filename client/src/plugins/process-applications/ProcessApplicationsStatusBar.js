@@ -66,21 +66,17 @@ export default function ProcessApplicationsStatusBar(props) {
             Process application
           </Section.Header>
           <Section.Body>
-            <ul className="files process-application-file" role="menu">
-              <li role="menuitem" className="file" key={ processApplication.file.path } title={ processApplication.file.path }>
-                <button type="button" onClick={ () => onRevealInFileExplorer(processApplication.file.path) }>
-                  <ProcessApplicationIcon className="file-icon" width="16" height="16" /><span className="file-name">{ processApplication.file.name }</span>
-                </button>
-              </li>
-            </ul>
+            <button type="button" onClick={ () => onRevealInFileExplorer(processApplication.file.path) }>
+              <ProcessApplicationIcon className="file-icon" width="16" height="16" /><span className="file-name">{ processApplication.file.name }</span>
+            </button>
           </Section.Body>
         </Section>
-        <Section>
+        <Section className="section--overflow-scroll">
           <Section.Header>
             Files
           </Section.Header>
-          <Section.Body>
-            <ul className="files process-application-files" role="menu">
+          <Section.Body className="process-application-files">
+            <ul className="files">
               {
                 sortByType(processApplicationItems.filter(item => item.metadata?.type !== 'processApplication')).map(item => {
                   const { file } = item;

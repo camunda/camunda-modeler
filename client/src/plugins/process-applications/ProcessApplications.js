@@ -93,7 +93,7 @@ export default class ProcessApplications {
 
       this._processApplication = {
         file,
-        ...JSON.parse(contents)
+        ...JSON.parse(contents.length ? contents : '{}')
       };
 
       this._processApplicationItems = this._items.filter(item => this.isProcessApplicationItem(item));
