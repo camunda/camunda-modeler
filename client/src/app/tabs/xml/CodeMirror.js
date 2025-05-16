@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import mitt from 'mitt';
+import EventEmitter from 'events';
 
 import { basicSetup } from 'codemirror';
 
@@ -41,7 +41,7 @@ import { xml } from '@codemirror/lang-xml';
  */
 export default function create() {
 
-  const emitter = mitt();
+  const eventEmitter = new EventEmitter();
 
   const language = new Compartment().of(xml());
   const tabSize = new Compartment().of(EditorState.tabSize.of(2));
@@ -69,7 +69,7 @@ export default function create() {
 
     const updateListener = EditorView.updateListener.of(update => {
       if (update.docChanged) {
-        emitter.emit('change', {
+        eventEmitter.emit('change', {
           value: update.view.state.doc.toString()
         });
       }
@@ -92,8 +92,8 @@ export default function create() {
     return this.state.doc.toString();
   };
 
-  instance.on = emitter.on;
-  instance.off = emitter.off;
+  instance.on = eventEmitter.on.bind(eventEmitter);
+  instance.off = eventEmitter.off.bind(eventEmitter);
 
   instance.attachTo = function(container) {
     container.appendChild(instance.dom);
