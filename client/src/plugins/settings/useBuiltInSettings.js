@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 
 import { find, map } from 'min-dash';
 
-import { ENGINES, ENGINE_PROFILES } from '../../util/Engines';
+import { ENGINES, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 
 import { getAnnotatedVersion, toSemverMinor } from '../../app/tabs/EngineProfile';
 
@@ -27,7 +27,7 @@ export default function useBuiltInSettings(settings) {
   }, []);
 }
 
-const schema = {
+export const schema = {
   id: 'app',
   title: 'Global Settings',
   order: 0,
@@ -66,14 +66,14 @@ const schema = {
     'app.defaultC8Version': {
       type: 'select',
       options: getEngineOptions(ENGINES.CLOUD),
-      default: '8.6.0',
+      default: getLatestStable(ENGINES.CLOUD),
       flag: 'c8-engine-version',
       label: 'Default Camunda 8 version',
     },
     'app.defaultC7Version': {
       type: 'select',
       options: getEngineOptions(ENGINES.PLATFORM),
-      default: '7.23.0',
+      default: getLatestStable(ENGINES.PLATFORM),
       flag: 'c7-engine-version',
       label: 'Default Camunda 7 version',
     }
