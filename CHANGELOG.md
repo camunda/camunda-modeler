@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: show link to decision in Operate ([#4926](https://github.com/camunda/camunda-modeler/pull/4926))
 * `DEPS`: update to `camunda-linting@3.37.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.6.0`
+* `DEPS`: update to `electron@36`
 
 ### BPMN
 
