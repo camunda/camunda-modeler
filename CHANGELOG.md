@@ -13,7 +13,6 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: add process application deployment ([#4667](https://github.com/camunda/camunda-modeler/issues/4667))
-* `FEAT`: show link to decision in Operate ([#4926](https://github.com/camunda/camunda-modeler/pull/4926))
 * `FIX`: trim whitespace in properties panel entries ([#2385](https://github.com/camunda/camunda-modeler/issues/2385), [#4818](https://github.com/camunda/camunda-modeler/issues/4818))
 * `FIX`: show literal values in FEEL suggestions ([#4743](https://github.com/camunda/camunda-modeler/issues/4743))
 
@@ -24,6 +23,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correctly reuse `bpmn:Message` properties when changing templates ([bpmn-io/bpmn-js-element-templates#154](https://github.com/bpmn-io/bpmn-js-element-templates/pull/154))
 * `FIX`: add empty alt attribute for icons ([#4720](https://github.com/camunda/camunda-modeler/issues/4720))
 * `FIX`: center task markers ([#4806](https://github.com/camunda/camunda-modeler/issues/4806))
+
+### DMN
+
+* `FEAT`: show link to decision in Operate ([#4926](https://github.com/camunda/camunda-modeler/pull/4926))
 
 ## 5.35.0
 
