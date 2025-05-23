@@ -6,16 +6,24 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FEAT`: add process application deployment ([#4667](https://github.com/camunda/camunda-modeler/issues/4667))
-* `FEAT`: show link to decision in Operate ([#4926](https://github.com/camunda/camunda-modeler/pull/4926))
 * `DEPS`: update to `camunda-linting@3.37.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.6.0`
 * `DEPS`: update to `electron@36`
+
+### General
+
+* `FEAT`: add process application deployment ([#4667](https://github.com/camunda/camunda-modeler/issues/4667))
+* `FEAT`: show link to decision in Operate ([#4926](https://github.com/camunda/camunda-modeler/pull/4926))
+* `FIX`: trim whitespace in properties panel entries ([#2385](https://github.com/camunda/camunda-modeler/issues/2385), [#4818](https://github.com/camunda/camunda-modeler/issues/4818))
+* `FIX`: show literal values in FEEL suggestions ([#4743](https://github.com/camunda/camunda-modeler/issues/4743))
 
 ### BPMN
 
 * `FEAT`: support `zeebe:userTask` binding property in element templates ([#4582](https://github.com/camunda/camunda-modeler/issues/4582))
 * `FIX`: allow intermediate throw events without outgoing sequence flows in ad-hoc-subprocess ([#4985](https://github.com/camunda/camunda-modeler/issues/4985))
+* `FIX`: correctly reuse `bpmn:Message` properties when changing templates ([bpmn-io/bpmn-js-element-templates#154](https://github.com/bpmn-io/bpmn-js-element-templates/pull/154))
+* `FIX`: add empty alt attribute for icons ([#4720](https://github.com/camunda/camunda-modeler/issues/4720))
+* `FIX`: center task markers ([#4806](https://github.com/camunda/camunda-modeler/issues/4806))
 
 ## 5.35.0
 
