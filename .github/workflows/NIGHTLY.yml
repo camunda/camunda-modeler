@@ -55,6 +55,7 @@ jobs:
           secret/data/common/jenkins/downloads-camunda-cloud_google_sa_key DOWNLOAD_CENTER_GCLOUD_KEY_BYTES | GCP_CREDENTIALS_NAME;
 
     - name: Import Secrets (Windows)
+      if: ${{ runner.os == 'Windows' }}
       id: windowsSecrets
       uses: hashicorp/vault-action@v3.0.0
       with:

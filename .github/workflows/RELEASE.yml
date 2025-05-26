@@ -68,6 +68,7 @@ jobs:
           secret/data/products/desktop-modeler/ci/sentry SENTRY_PROJECT;
 
     - name: Import Secrets (Windows)
+      if: ${{ runner.os == 'Windows' }}
       id: windowsSecrets
       uses: hashicorp/vault-action@v3.0.0
       with:
