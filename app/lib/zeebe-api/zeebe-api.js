@@ -120,9 +120,9 @@ class ZeebeAPI {
     this._log = log;
 
     /**
-     * @type { ZeebeGrpcClient }
+     * @type { Camunda8Client }
      */
-    this._zeebeClient = null;
+    this._camunda8Client = null;
   }
 
   /**
@@ -135,7 +135,9 @@ class ZeebeAPI {
   async checkConnection(config) {
     const { endpoint } = config;
 
-    const client = await this._getZeebeClient(endpoint);
+    const camunda8Client = await this._getCamunda8Client(endpoint);
+
+    const client = camunda8Client.getZeebeGrpcApiClient();
 
     this._log.debug('check connection', {
       parameters: filterEndpointParameters(config)
@@ -174,7 +176,9 @@ class ZeebeAPI {
       parameters: filterEndpointParameters(config)
     });
 
-    const client = await this._getZeebeClient(endpoint);
+    const camunda8Client = await this._getCamunda8Client(endpoint);
+
+    const client = camunda8Client.getZeebeGrpcApiClient();
 
     try {
 
@@ -219,22 +223,37 @@ class ZeebeAPI {
       endpoint,
       variables,
       processId,
-      tenantId
+      tenantId,
+      startInstructions = [],
+      withResult = false
     } = config;
 
     this._log.debug('start instance', {
       parameters: filterEndpointParameters(config)
     });
 
-    const client = await this._getZeebeClient(endpoint);
+    const camunda8Client = await this._getCamunda8Client(endpoint);
+
+    const client = camunda8Client.getZeebeGrpcApiClient();
 
     try {
+      let response;
 
-      const response = await client.createProcessInstance({
-        bpmnProcessId: processId,
-        variables,
-        tenantId
-      });
+      if (withResult) {
+        response = await client.createProcessInstanceWithResult({
+          bpmnProcessId: processId,
+          variables,
+          tenantId,
+          startInstructions
+        });
+      } else {
+        response = await client.createProcessInstance({
+          bpmnProcessId: processId,
+          variables,
+          tenantId,
+          startInstructions
+        });
+      }
 
       return {
         success: true,
@@ -268,7 +287,9 @@ class ZeebeAPI {
       parameters: filterEndpointParameters(config)
     });
 
-    const client = await this._getZeebeClient(endpoint);
+    const camunda8Client = await this._getCamunda8Client(endpoint);
+
+    const client = camunda8Client.getZeebeGrpcApiClient();
 
     try {
       const topologyResponse = await client.topology();
@@ -291,39 +312,39 @@ class ZeebeAPI {
     }
   }
 
-  _getCachedZeebeClient(endpoint) {
+  _getCachedCamunda8Client(endpoint) {
     const cachedEndpoint = this._cachedEndpoint;
 
     if (isHashEqual(endpoint, cachedEndpoint)) {
-      return this._zeebeClient;
+      return this._camunda8Client;
     }
   }
 
-  async _getZeebeClient(endpoint) {
+  async _getCamunda8Client(endpoint) {
 
-    // (1) use existing Zeebe Client for endpoint
-    const cachedZeebeClient = this._getCachedZeebeClient(endpoint);
+    // (1) use existing Camunda 8 Client for endpoint
+    const cachedCamunda8Client = this._getCachedCamunda8Client(endpoint);
 
-    if (cachedZeebeClient) {
-      return cachedZeebeClient;
+    if (cachedCamunda8Client) {
+      return cachedCamunda8Client;
     }
 
     // (2) cleanup old client instance
-    this._shutdownZeebeClientInstance();
+    this._shutdownCamunda8ClientInstance();
 
-    // (3) create new Zeebe Client for endpoint configuration
-    this._zeebeClient = await this._createZeebeClient(endpoint);
+    // (3) create new Camunda 8 Client for endpoint configuration
+    this._camunda8Client = await this._createCamunda8Client(endpoint);
     this._cachedEndpoint = endpoint;
 
-    return this._zeebeClient;
+    return this._camunda8Client;
   }
 
-  _shutdownZeebeClientInstance() {
+  _shutdownCamunda8ClientInstance() {
 
-    if (this._zeebeClient) {
-      this._log.debug('shutdown zeebe client');
+    if (this._camunda8Client) {
+      this._log.debug('shutdown Camunda 8 client');
 
-      this._zeebeClient.close();
+      this._camunda8Client.getZeebeGrpcApiClient().close();
     }
   }
 
@@ -332,7 +353,7 @@ class ZeebeAPI {
    *
    * @returns { Promise<ZeebeGrpcClient> }
    */
-  async _createZeebeClient(endpoint) {
+  async _createCamunda8Client(endpoint) {
     const {
       type,
       authType = AUTH_TYPES.NONE,
@@ -402,9 +423,38 @@ class ZeebeAPI {
       options: filterCamunda8Options(options)
     });
 
-    const camundaClient = new this._Camunda8(options);
+    function getClusterId(clusterURL) {
+      const matches = clusterURL.match(/([a-z\d]+-){2,}[a-z\d]+/g);
 
-    return camundaClient.getZeebeGrpcApiClient();
+      return matches ? matches[0] : null;
+    }
+
+    function getClusterRegion(clusterURL) {
+      const matches = clusterURL.match(/(?<=\.)[a-z]+-[\d]+/g);
+
+      return matches ? matches[0] : null;
+    }
+
+    function getOperateUrl(url) {
+
+      const clusterId = getClusterId(url),
+            clusterRegion = getClusterRegion(url);
+
+      if (!clusterId || !clusterRegion) {
+        return null;
+      }
+
+      return new URL(`https://${ clusterRegion }.operate.camunda.io/${ clusterId }`);
+    }
+
+    const camundaClient = new this._Camunda8({
+      ...options,
+      CAMUNDA_OPERATE_BASE_URL: getOperateUrl(url),
+      CAMUNDA_AUTH_STRATEGY:'OAUTH',
+      CAMUNDA_OAUTH_URL: 'https://login.cloud.camunda.io/oauth/token'
+    });
+
+    return camundaClient;
   }
 
   async _withTLSConfig(url, options) {
@@ -531,6 +581,37 @@ class ZeebeAPI {
 
       return resource;
     });
+  }
+
+  async getProcessInstance(config) {
+    const { endpoint, processInstanceKey } = config;
+
+    const camunda8Client = await this._getCamunda8Client(endpoint);
+
+    const client = camunda8Client.getOperateApiClient();
+
+    try {
+      const getProcessInstanceRespoonse = await client.getProcessInstance(processInstanceKey);
+
+      const { key } = getProcessInstanceRespoonse;
+
+      const getVariablesForProcessResponse = await client.getJSONVariablesforProcess(key);
+
+      return {
+        success: true,
+        response: {
+          processInstance: getProcessInstanceRespoonse,
+          variables: getVariablesForProcessResponse
+        }
+      };
+    } catch (err) {
+      this._log.error('get process instance failed', err);
+
+      return {
+        success: false,
+        response: asSerializedError(err)
+      };
+    }
   }
 }
 

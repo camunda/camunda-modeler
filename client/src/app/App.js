@@ -1853,6 +1853,8 @@ export class App extends PureComponent {
     }
 
     if (action === 'save') {
+      console.log('save', activeTab);
+
       return this.saveTab(activeTab);
     }
 
@@ -2203,6 +2205,8 @@ export class App extends PureComponent {
                       getPlugins={ this.getPlugins }
                       ref={ this.tabRef }
                       settings={ this.getGlobal('settings') }
+                      backend={ this.getGlobal('backend') }
+                      config={ this.getGlobal('config') }
                     />
                   }
                 </TabContainer>

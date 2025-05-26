@@ -74,6 +74,8 @@ export default function DeploymentPluginOverlay(props) {
 
     if (deploymentResponse.success) {
       displayNotification(getSuccessNotification(activeTab, config, deploymentResponse));
+
+      console.log('Deployment successful', deploymentResponse);
     } else {
       displayNotification(getErrorNotification(triggerAction));
 
