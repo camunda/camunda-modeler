@@ -344,6 +344,16 @@ renderer.on('zeebe:getGatewayVersion', async function(options, done) {
   }
 });
 
+renderer.on('zeebe:getProcessInstance', async function(options, done) {
+  try {
+    const processInstance = await zeebeAPI.getProcessInstance(options);
+
+    done(null, processInstance);
+  } catch (err) {
+    done(err);
+  }
+});
+
 // config //////////
 
 renderer.on('config:get', function(key, ...args) {
