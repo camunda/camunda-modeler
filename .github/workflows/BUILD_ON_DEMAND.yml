@@ -38,6 +38,7 @@ jobs:
       run: npm run link-dependencies
 
     - name: Import Secrets (Windows)
+      if: ${{ runner.os == 'Windows' }}
       id: windowsSecrets
       uses: hashicorp/vault-action@v3.0.0
       with:
