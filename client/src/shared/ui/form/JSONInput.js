@@ -29,6 +29,8 @@ import {
   redoDepth
 } from '@codemirror/commands';
 
+import { vscodeLight } from '@uiw/codemirror-theme-vscode';
+
 import FormFeedback from './FormFeedback';
 import DocumentationIcon from './DocumentationIcon';
 
@@ -117,6 +119,7 @@ function create() {
           'tabindex': 0
         }),
         EditorView.lineWrapping,
+        vscodeLight,
         ...extensions
       ]
     });
