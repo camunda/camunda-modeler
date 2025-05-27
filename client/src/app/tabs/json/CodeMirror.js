@@ -16,6 +16,8 @@ import { EditorView } from '@codemirror/view';
 
 import { EditorState, Compartment } from '@codemirror/state';
 
+import { vscodeLight } from '@uiw/codemirror-theme-vscode';
+
 import { json } from '@codemirror/lang-json';
 
 import {
@@ -60,6 +62,12 @@ export default function create() {
           'tabindex': 0
         }),
         EditorView.lineWrapping,
+        vscodeLight,
+        EditorView.theme({
+          '.cm-content': {
+            fontFamily: 'Consolas, "Courier New", monospace'
+          }
+        }),
         ...extensions
       ]
     });
