@@ -11,7 +11,7 @@
 import React from 'react';
 
 import {
-  TextInput,
+  JSONInput,
   Section
 } from '../../../shared/ui';
 
@@ -30,7 +30,9 @@ export default function StartInstanceConfigForm(props) {
     renderHeader = null,
     renderSubmit = 'Submit',
     validateForm,
-    validateField
+    validateField,
+    VariablesComponent = JSONInput,
+    variablesComponentProps = {}
   } = props;
 
   const getFieldError = (meta, fieldName) => {
@@ -69,14 +71,13 @@ export default function StartInstanceConfigForm(props) {
                     <div className="fields">
                       <Field
                         name="variables"
-                        component={ TextInput }
-                        multiline={ true }
+                        component={ VariablesComponent }
                         label="Variables (optional)"
                         description={ <span>Must be a proper <a href="https://www.w3schools.com/js/js_json_intro.asp">JSON string</a> representing <a href="https://docs.camunda.io/docs/components/concepts/variables/?utm_source=modeler&utm_medium=referral">Zeebe variables</a>.</span> }
                         hint="A JSON string representing the variables the process instance is started with."
                         validate={ value => validateField('variables', value) }
                         fieldError={ getFieldError }
-                        spellCheck={ false }
+                        { ...variablesComponentProps }
                       />
                     </div>
                   </fieldset>
