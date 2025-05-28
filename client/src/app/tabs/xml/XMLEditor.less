@@ -66,6 +66,8 @@
     }
 
     .cm-panel.cm-search {
+      background-color: var(--color-grey-225-10-95);
+
       label {
         font-size: var(--xml-editor-font-size-small);
         font-family: var(--font-family);
@@ -76,9 +78,37 @@
         vertical-align: middle;
       }
 
-      [name=close] {
-        font-size: 24px;
-        padding: 0px 8px;
+      .cm-textfield {
+        border-radius: 3px;
+        border: solid 1px var(--color-grey-225-10-75);
+        font-size: var(--xml-editor-font-size-small);
+        padding-left: 8px;
+        color: var(--color-grey-225-10-15);
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
+          border: solid 1px var(--color-blue-205-100-50);
+        }
+      }
+
+      .cm-button {
+        color: var(--color-grey-225-10-15);
+        border: solid 1px var(--color-grey-225-10-75);
+        background-color: var(--color-grey-225-10-95);
+
+        &:hover {
+          background-color: var(--color-grey-225-10-90);
+        }
+
+        &:active {
+          background-color: var(--color-grey-225-10-75);
+        }
+      }
+
+      button[name=close] {
+        font-size: 22px;
+        padding: 1px 4px;
       }
     }
   }
