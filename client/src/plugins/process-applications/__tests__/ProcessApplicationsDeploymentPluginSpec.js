@@ -16,7 +16,7 @@ import { waitFor } from '@testing-library/react';
 
 import { mount } from 'enzyme';
 
-import ProcessApplicationsDeploymentPlugin from '../ProcessApplicationsDeploymentPlugin';
+import ProcessApplicationsDeploymentPlugin, { canDeployItem } from '../ProcessApplicationsDeploymentPlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 
@@ -118,6 +118,65 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     });
   });
 
+
+  describe('#canDeployItem', function() {
+
+    it('should allow supported file types', function() {
+
+      // given
+      const items = [
+        {
+          file: { path: 'diagram.bpmn' },
+          metadata: { type: 'bpmn' }
+        },
+        {
+          file: { path: 'decision.dmn' },
+          metadata: { type: 'dmn' }
+        },
+        {
+          file: { path: 'user.form' },
+          metadata: { type: 'form' }
+        },
+        {
+          file: { path: 'script.rpa' },
+          metadata: { type: 'rpa' }
+        },
+        {
+          file: {
+            name: '.process-application',
+            uri: 'file:///C:/process-application/.process-application',
+            path: 'C://process-application/.process-application',
+            dirname: 'C://process-application',
+            contents: '{}'
+          },
+          metadata: {
+            type: 'processApplication'
+          }
+        },
+        {
+          file: {
+            name: 'unknown.file'
+          },
+          metadata: {
+            type: 'foo'
+          }
+        }
+      ];
+
+      // when
+      const canDeploy = items.map(canDeployItem);
+
+      // then
+      expect(canDeploy).to.eql([
+        true, // bpmn
+        true, // dmn
+        true, // form
+        true, // rpa
+        false, // processApplication
+        false // foo
+      ]);
+    });
+  });
 });
 
 const DEFAULT_PROCESS_APPLICATION = {
