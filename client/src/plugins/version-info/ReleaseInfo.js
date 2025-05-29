@@ -44,18 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Application settings</h4>
-          Select your default execution platform version directly within the app. Configure selected application properties which were previously available only as flags.
+          <h4>Process application deployment</h4>
+          Deploy all process application resources in a single action.
         </li>
         <li>
-          <h4>Enhanced RPA integration</h4>
-          You can now use keyboard shortcuts to add comments, manage RPA scripts within process applications, and directly open &quot;.rpa&quot; files.
-          <br />
-          If you&apos;re on Windows or Linux you need to <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/install-the-modeler/#wire-file-associations">update the file associations</a>.
+          <h4>Deployed decision link to Operate</h4>
+          View deployed decisions in Operate with a single click.
         </li>
         <li>
-          <h4>Support for upcoming Camunda features</h4>
-          Camunda 7.24 is now supported.
+          <h4>Enhanced FEEL suggestions</h4>
+          Autocomplete literal values like <code>true</code> and <code>false</code> in FEEL expressions.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
