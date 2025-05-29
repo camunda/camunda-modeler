@@ -49,11 +49,11 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Deployed decision link to Operate</h4>
-          Go to Operate to view deployed decision with a single click.
+          View deployed decisions in Operate with a single click.
         </li>
         <li>
           <h4>Enhanced FEEL suggestions</h4>
-          Quickly type literal values like <code>true</code> and <code>false</code> in FEEL expressions.
+          Autocomplete literal values like <code>true</code> and <code>false</code> in FEEL expressions.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
