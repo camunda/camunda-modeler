@@ -145,7 +145,7 @@ function canDeployTab(tab) {
   return tab && [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form', 'rpa' ].includes(tab.type);
 }
 
-function canDeployItem(item) {
+export function canDeployItem(item) {
   const { metadata } = item;
 
   if (!metadata) {
@@ -157,6 +157,7 @@ function canDeployItem(item) {
   return [
     'bpmn',
     'dmn',
-    'form'
+    'form',
+    'rpa'
   ].includes(type);
 }
