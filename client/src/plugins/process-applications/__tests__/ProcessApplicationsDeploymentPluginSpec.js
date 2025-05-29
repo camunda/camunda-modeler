@@ -84,6 +84,39 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
   });
 
 
+  it('should render correct number of deployed items', async function() {
+
+    // given
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const wrapper = createProcessApplicationsDeploymentPlugin({
+      processApplication: DEFAULT_PROCESS_APPLICATION,
+      triggerAction
+    });
+
+    // when
+    wrapper.find('.btn').simulate('click');
+
+    let overlay;
+    await waitFor(() => {
+      overlay = document.querySelector('[role="dialog"]');
+
+      expect(overlay).to.exist;
+    });
+
+    // then
+    await waitFor(() => {
+      const description = overlay.querySelector('[role="dialog"] .form-description');
+
+      expect(description.textContent).to.include('4 items can be deployed');
+    });
+  });
+
+
   it('should not render overlay when clicking status bar item (overlay rendered)', async function() {
 
     // given
@@ -124,44 +157,7 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     it('should allow supported file types', function() {
 
       // given
-      const items = [
-        {
-          file: { path: 'diagram.bpmn' },
-          metadata: { type: 'bpmn' }
-        },
-        {
-          file: { path: 'decision.dmn' },
-          metadata: { type: 'dmn' }
-        },
-        {
-          file: { path: 'user.form' },
-          metadata: { type: 'form' }
-        },
-        {
-          file: { path: 'script.rpa' },
-          metadata: { type: 'rpa' }
-        },
-        {
-          file: {
-            name: '.process-application',
-            uri: 'file:///C:/process-application/.process-application',
-            path: 'C://process-application/.process-application',
-            dirname: 'C://process-application',
-            contents: '{}'
-          },
-          metadata: {
-            type: 'processApplication'
-          }
-        },
-        {
-          file: {
-            name: 'unknown.file'
-          },
-          metadata: {
-            type: 'foo'
-          }
-        }
-      ];
+      const items = DEFAULT_ITEMS;
 
       // when
       const canDeploy = items.map(canDeployItem);
@@ -189,6 +185,45 @@ const DEFAULT_ACTIVE_TAB = {
   type: 'cloud-bpmn'
 };
 
+const DEFAULT_ITEMS = [
+  {
+    file: { path: 'diagram.bpmn' },
+    metadata: { type: 'bpmn' }
+  },
+  {
+    file: { path: 'decision.dmn' },
+    metadata: { type: 'dmn' }
+  },
+  {
+    file: { path: 'user.form' },
+    metadata: { type: 'form' }
+  },
+  {
+    file: { path: 'script.rpa' },
+    metadata: { type: 'rpa' }
+  },
+  {
+    file: {
+      name: '.process-application',
+      uri: 'file:///C:/process-application/.process-application',
+      path: 'C://process-application/.process-application',
+      dirname: 'C://process-application',
+      contents: '{}'
+    },
+    metadata: {
+      type: 'processApplication'
+    }
+  },
+  {
+    file: {
+      name: 'unknown.file'
+    },
+    metadata: {
+      type: 'foo'
+    }
+  }
+];
+
 function createProcessApplicationsDeploymentPlugin(props = {}) {
   const {
     _getGlobal = () => {},
@@ -196,7 +231,7 @@ function createProcessApplicationsDeploymentPlugin(props = {}) {
     displayNotification = () => {},
     log = () => {},
     processApplication = null,
-    processApplicationItems = [],
+    processApplicationItems = DEFAULT_ITEMS,
     triggerAction = () => {}
   } = props;
 
