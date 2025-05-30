@@ -130,7 +130,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
         log={ log }
         onClose={ () => setOverlayOpen(false) }
         displayNotification={ displayNotification }
-        renderDescription={ `${ processApplicationItems.length } files will be deployed` }
+        renderDescription={ `${ resourceConfigs.length } ${ resourceConfigs.length === 1 ? 'file' : 'files' } will be deployed` }
         renderHeader={ <>
           <ProcessApplicationIcon width="16" height="16" />Deploy process application
         </> }

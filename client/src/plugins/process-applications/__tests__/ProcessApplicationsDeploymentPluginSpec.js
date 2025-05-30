@@ -19,6 +19,7 @@ import { mount } from 'enzyme';
 import ProcessApplicationsDeploymentPlugin, { canDeployItem } from '../ProcessApplicationsDeploymentPlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
+import { DEFAULT_ENDPOINT } from '../../zeebe-plugin/deployment-plugin/Deployment';
 
 describe('ProcessApplicationsDeploymentPlugin', function() {
 
@@ -84,6 +85,85 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
   });
 
 
+  it('should render number of deployed files (singular)', async function() {
+
+    // given
+    const config = new Config();
+
+    const _getGlobal = (name) => {
+      if (name === 'config') {
+        return config;
+      }
+    };
+
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const wrapper = createProcessApplicationsDeploymentPlugin({
+      _getGlobal,
+      processApplication: DEFAULT_PROCESS_APPLICATION,
+      processApplicationItems: DEFAULT_ITEMS.filter((item) => [ 'bpmn', 'processApplication' ].includes(item.metadata.type)),
+      triggerAction
+    });
+
+    // when
+    wrapper.find('.btn').simulate('click');
+
+    await waitFor(() => {
+      const overlay = document.querySelector('[role="dialog"]');
+
+      expect(overlay).to.exist;
+    });
+
+    // then
+    const description = document.querySelector('[role="dialog"] .form-description');
+
+    expect(description.textContent).to.include('1 file will be deployed');
+  });
+
+
+  it('should render number of deployed files (plural)', async function() {
+
+    // given
+    const config = new Config();
+
+    const _getGlobal = (name) => {
+      if (name === 'config') {
+        return config;
+      }
+    };
+
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const wrapper = createProcessApplicationsDeploymentPlugin({
+      _getGlobal,
+      processApplication: DEFAULT_PROCESS_APPLICATION,
+      triggerAction
+    });
+
+    // when
+    wrapper.find('.btn').simulate('click');
+
+    await waitFor(() => {
+      const overlay = document.querySelector('[role="dialog"]');
+
+      expect(overlay).to.exist;
+    });
+
+    // then
+    const description = document.querySelector('[role="dialog"] .form-description');
+
+    expect(description.textContent).to.include('4 files will be deployed');
+  });
+
+
   it('should not render overlay when clicking status bar item (overlay rendered)', async function() {
 
     // given
@@ -124,44 +204,7 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     it('should allow supported file types', function() {
 
       // given
-      const items = [
-        {
-          file: { path: 'diagram.bpmn' },
-          metadata: { type: 'bpmn' }
-        },
-        {
-          file: { path: 'decision.dmn' },
-          metadata: { type: 'dmn' }
-        },
-        {
-          file: { path: 'user.form' },
-          metadata: { type: 'form' }
-        },
-        {
-          file: { path: 'script.rpa' },
-          metadata: { type: 'rpa' }
-        },
-        {
-          file: {
-            name: '.process-application',
-            uri: 'file:///C:/process-application/.process-application',
-            path: 'C://process-application/.process-application',
-            dirname: 'C://process-application',
-            contents: '{}'
-          },
-          metadata: {
-            type: 'processApplication'
-          }
-        },
-        {
-          file: {
-            name: 'unknown.file'
-          },
-          metadata: {
-            type: 'foo'
-          }
-        }
-      ];
+      const items = DEFAULT_ITEMS;
 
       // when
       const canDeploy = items.map(canDeployItem);
@@ -189,6 +232,45 @@ const DEFAULT_ACTIVE_TAB = {
   type: 'cloud-bpmn'
 };
 
+const DEFAULT_ITEMS = [
+  {
+    file: { path: 'diagram.bpmn' },
+    metadata: { type: 'bpmn' }
+  },
+  {
+    file: { path: 'decision.dmn' },
+    metadata: { type: 'dmn' }
+  },
+  {
+    file: { path: 'user.form' },
+    metadata: { type: 'form' }
+  },
+  {
+    file: { path: 'script.rpa' },
+    metadata: { type: 'rpa' }
+  },
+  {
+    file: {
+      name: '.process-application',
+      uri: 'file:///C:/process-application/.process-application',
+      path: 'C://process-application/.process-application',
+      dirname: 'C://process-application',
+      contents: '{}'
+    },
+    metadata: {
+      type: 'processApplication'
+    }
+  },
+  {
+    file: {
+      name: 'unknown.file'
+    },
+    metadata: {
+      type: 'foo'
+    }
+  }
+];
+
 function createProcessApplicationsDeploymentPlugin(props = {}) {
   const {
     _getGlobal = () => {},
@@ -196,7 +278,7 @@ function createProcessApplicationsDeploymentPlugin(props = {}) {
     displayNotification = () => {},
     log = () => {},
     processApplication = null,
-    processApplicationItems = [],
+    processApplicationItems = DEFAULT_ITEMS,
     triggerAction = () => {}
   } = props;
 
@@ -211,4 +293,30 @@ function createProcessApplicationsDeploymentPlugin(props = {}) {
       processApplicationItems={ processApplicationItems }
       triggerAction={ triggerAction } />
   </SlotFillRoot>);
+}
+
+class Mock {
+  constructor(overrides = {}) {
+    Object.assign(this, overrides);
+  }
+}
+
+class Config extends Mock {
+  get(key) {
+    if (key === 'zeebeEndpoints') {
+      return [
+        {
+          ...DEFAULT_ENDPOINT,
+          id: 'foo'
+        }
+      ];
+    }
+  }
+
+  getForFile() {
+    return {
+      deployment: {},
+      endpointId: 'foo'
+    };
+  }
 }
