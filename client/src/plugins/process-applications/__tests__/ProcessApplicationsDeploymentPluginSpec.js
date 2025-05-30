@@ -19,6 +19,7 @@ import { mount } from 'enzyme';
 import ProcessApplicationsDeploymentPlugin, { canDeployItem } from '../ProcessApplicationsDeploymentPlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
+import { DEFAULT_ENDPOINT } from '../../zeebe-plugin/deployment-plugin/Deployment';
 
 describe('ProcessApplicationsDeploymentPlugin', function() {
 
@@ -84,9 +85,17 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
   });
 
 
-  it('should render correct number of deployed items', async function() {
+  it('should render number of deployed files (singular)', async function() {
 
     // given
+    const config = new Config();
+
+    const _getGlobal = (name) => {
+      if (name === 'config') {
+        return config;
+      }
+    };
+
     const triggerAction = sinon.spy(function(action) {
       if (action === 'save-tab') {
         return Promise.resolve(true);
@@ -94,6 +103,47 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     });
 
     const wrapper = createProcessApplicationsDeploymentPlugin({
+      _getGlobal,
+      processApplication: DEFAULT_PROCESS_APPLICATION,
+      processApplicationItems: DEFAULT_ITEMS.filter((item) => [ 'bpmn', 'processApplication' ].includes(item.metadata.type)),
+      triggerAction
+    });
+
+    // when
+    wrapper.find('.btn').simulate('click');
+
+    await waitFor(() => {
+      const overlay = document.querySelector('[role="dialog"]');
+
+      expect(overlay).to.exist;
+    });
+
+    // then
+    const description = document.querySelector('[role="dialog"] .form-description');
+
+    expect(description.textContent).to.include('1 file will be deployed');
+  });
+
+
+  it('should render number of deployed files (plural)', async function() {
+
+    // given
+    const config = new Config();
+
+    const _getGlobal = (name) => {
+      if (name === 'config') {
+        return config;
+      }
+    };
+
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const wrapper = createProcessApplicationsDeploymentPlugin({
+      _getGlobal,
       processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
@@ -101,19 +151,16 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     // when
     wrapper.find('.btn').simulate('click');
 
-    let overlay;
     await waitFor(() => {
-      overlay = document.querySelector('[role="dialog"]');
+      const overlay = document.querySelector('[role="dialog"]');
 
       expect(overlay).to.exist;
     });
 
     // then
-    await waitFor(() => {
-      const description = overlay.querySelector('[role="dialog"] .form-description');
+    const description = document.querySelector('[role="dialog"] .form-description');
 
-      expect(description.textContent).to.include('4 items can be deployed');
-    });
+    expect(description.textContent).to.include('4 files will be deployed');
   });
 
 
@@ -246,4 +293,30 @@ function createProcessApplicationsDeploymentPlugin(props = {}) {
       processApplicationItems={ processApplicationItems }
       triggerAction={ triggerAction } />
   </SlotFillRoot>);
+}
+
+class Mock {
+  constructor(overrides = {}) {
+    Object.assign(this, overrides);
+  }
+}
+
+class Config extends Mock {
+  get(key) {
+    if (key === 'zeebeEndpoints') {
+      return [
+        {
+          ...DEFAULT_ENDPOINT,
+          id: 'foo'
+        }
+      ];
+    }
+  }
+
+  getForFile() {
+    return {
+      deployment: {},
+      endpointId: 'foo'
+    };
+  }
 }
