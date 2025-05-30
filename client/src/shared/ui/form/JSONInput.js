@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import React, { useEffect, useRef } from 'react';
+
 import EventEmitter from 'events';
 
 import { basicSetup } from 'codemirror';
@@ -18,6 +20,8 @@ import { EditorState, Compartment } from '@codemirror/state';
 
 import { json } from '@codemirror/lang-json';
 
+import classNames from 'classnames';
+
 import {
   undo,
   redo,
@@ -25,27 +29,83 @@ import {
   redoDepth
 } from '@codemirror/commands';
 
+import { vscodeLight } from '@uiw/codemirror-theme-vscode';
+
+import FormFeedback from './FormFeedback';
+import DocumentationIcon from './DocumentationIcon';
+
 import {
-  findNext,
-  findPrevious,
-  openSearchPanel,
-  replaceNext,
-  search
-} from '@codemirror/search';
+  fieldError as defaultFieldError
+} from './Util';
+
+export default function JSONInput(props) {
+  const {
+    label,
+    field,
+    form,
+    fieldError,
+    documentationUrl
+  } = props;
+
+  const {
+    name: fieldName,
+    value: fieldValue
+  } = field;
+
+  const meta = form.getFieldMeta(fieldName);
+
+  const error = (fieldError || defaultFieldError)(meta, fieldName);
+
+  const ref = useRef();
+
+  useEffect(() => {
+    const instance = create();
+
+    instance.attachTo(ref.current);
+
+    instance.setValue(fieldValue || '');
+
+    instance.on('change', ({ value }) => {
+      form.setFieldValue(fieldName, value);
+    });
+
+    return () => {
+      instance.detach();
+    };
+  }, []);
+
+  return (
+    <React.Fragment>
+      <div className="form-group">
+        <label htmlFor={ fieldName }>
+          { label }
+          <DocumentationIcon url={ documentationUrl } />
+        </label>
+        <div
+          ref={ ref }
+          className={ classNames('custom-control-codemirror', {
+            'is-invalid': !!error
+          }) }></div>
+        <FormFeedback
+          error={ error }
+        />
+      </div>
+    </React.Fragment>
+  );
+}
 
 /**
-  * Create a code mirror instance with an editor API.
+  * Create a code mirror instance.
   *
   * @param  {Object} options
   * @return {EditorView}
   */
-export default function create() {
+function create() {
 
   const eventEmitter = new EventEmitter();
 
   let language = new Compartment().of(json());
   let tabSize = new Compartment().of(EditorState.tabSize.of(2));
-  const searchExtension = new Compartment().of(search({ top: true }));
 
   function createState(doc, extensions = []) {
     return EditorState.create({
@@ -54,12 +114,12 @@ export default function create() {
         basicSetup,
         language,
         tabSize,
-        searchExtension,
         EditorView.contentAttributes.of({
           'aria-label': 'JSON editor',
           'tabindex': 0
         }),
         EditorView.lineWrapping,
+        vscodeLight,
         ...extensions
       ]
     });
@@ -105,10 +165,6 @@ export default function create() {
     }
   };
 
-  instance.importXML = function(xml) {
-    this.setValue(xml);
-  };
-
   Object.defineProperty(instance, '_stackIdx', {
     get() {
       return undoDepth(this.state);
@@ -121,24 +177,8 @@ export default function create() {
       return undo(this);
     }
 
-    if (command === 'undo') {
+    if (command === 'redo') {
       return redo(this);
-    }
-
-    if (command === 'find') {
-      openSearchPanel(this);
-    }
-
-    if (command === 'findNext') {
-      findNext(this);
-    }
-
-    if (command === 'findPrev') {
-      findPrevious(this);
-    }
-
-    if (command === 'replace') {
-      replaceNext(this);
     }
   };
 

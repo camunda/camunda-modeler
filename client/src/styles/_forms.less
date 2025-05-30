@@ -265,6 +265,23 @@
     }
   }
 
+  .custom-control-codemirror {
+    .cm-editor {
+      border-radius: 3px;
+      border: solid 1px var(--color-grey-225-10-75);
+
+      &.cm-focused {
+        border: solid 1px var(--color-blue-205-100-50);
+        outline: none;
+        box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
+
+        :focus-visible {
+          outline-style: none;
+        }
+      }
+    }
+  }
+
   // feedback / tooltip
   .invalid-feedback {
     color: var(--color-red-360-100-45);
