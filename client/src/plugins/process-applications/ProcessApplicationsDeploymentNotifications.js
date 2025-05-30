@@ -39,7 +39,7 @@ export function getSuccessNotification(tab, config, deploymentResult, resourceCo
     content: (
       <div className={ css.ProcessApplicationsDeploymentNotification }>
         <div>
-          <code>{ tab.file.name }</code> and { resourceConfigs.length } additional files deployed.
+          <code>{ tab.file.name }</code> and { resourceConfigs.length - 1} additional files deployed.
         </div>
         {
           urls.length
