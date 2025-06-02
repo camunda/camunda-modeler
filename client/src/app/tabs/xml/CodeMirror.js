@@ -121,7 +121,7 @@ export default function create() {
       return undo(this);
     }
 
-    if (command === 'undo') {
+    if (command === 'redo') {
       return redo(this);
     }
 
