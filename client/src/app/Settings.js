@@ -176,7 +176,7 @@ export default class Settings {
    * If a setting is controlled by a flag and the flag is set,
    * the value of the flag is returned.
    *
-   * @param { string|undefined } key
+   * @param { string } [key]
    * @returns { Object.<string, string|boolean>|string|boolean }
    */
   get(key) {
@@ -188,8 +188,13 @@ export default class Settings {
   }
 
   _get(key) {
+    const schema = this.getSchema(key);
 
-    const { flag } = this.getSchema(key);
+    if (!schema) {
+      throw new Error(`Setting with key ${key} is not registered`);
+    }
+
+    const { flag } = schema;
 
     if (flag && Flags.get(flag) !== undefined) {
       return Flags.get(flag);
@@ -201,12 +206,12 @@ export default class Settings {
   /**
    * Get the metadata for the specified setting or all settings if no key is provided.
    *
-   * @param { string|undefined } key
+   * @param { string } [key]
    * @returns { SettingsGroup }
    */
   getSchema(key) {
     const prefix = key ? key.split('.')[0] : null;
-    return key ? this._settings[prefix].properties[key] : this._settings;
+    return key ? this._settings[prefix]?.properties[key] : this._settings;
   }
 
   /**

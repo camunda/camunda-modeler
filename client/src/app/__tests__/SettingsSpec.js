@@ -225,6 +225,22 @@ describe('Settings', function() {
       // then
       expect(value).to.equal('foo');
     });
+
+
+    it('should throw when key does not exist', function() {
+
+      // given
+      const key = 'test.invalid';
+
+      // when
+      settings.register(settingsMock);
+
+      // then
+      const get = () => settings.get(key);
+
+      // expect error to contain the invalid key
+      expect(get).to.throw(key);
+    });
   });
 
 
