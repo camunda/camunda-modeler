@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { forEach } from 'min-dash';
+import { forEach, reduce } from 'min-dash';
 
 import { mapValues } from 'lodash';
 
@@ -111,6 +111,8 @@ export default class Settings {
    * @see Refere to {@link SettingsGroup} and {@link SettingsProperty} types for more details.
    *
    * @param { SettingsGroup } settings
+   *
+   * @returns { Object.<string, string|boolean> } Dictionary of setting keys and their values.
   */
   register(settings) {
     const {
@@ -139,7 +141,14 @@ export default class Settings {
 
       // Set the default value if provided
       this._defaults[key] = property.default;
+
+      // Notify listeners if they subscribed before the setting was registered
+      this._notify(key);
     });
+
+    return reduce(properties, (acc, _, key) => {
+      return { ...acc, [key]: this.get(key) };
+    }, {});
   }
 
   _validate(settings) {
@@ -238,7 +247,7 @@ export default class Settings {
    */
   _notify(key) {
     forEach(this._listeners[key], listener => {
-      listener({ value: this._values[key] });
+      listener({ value: this._get(key) });
     });
   }
 
