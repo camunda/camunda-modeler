@@ -32,12 +32,12 @@ jobs:
         secrets: |
           secret/data/products/desktop-modeler/ci/fossa FOSSA_API_KEY;
     - name: Setup fossa-cli
-      uses: camunda/infra-global-github-actions/fossa/setup@dde1f0c4420e4f59711e0ea1364db6bc895a0f6f
+      uses: camunda/infra-global-github-actions/fossa/setup@4a964d63a105aac18a6b1c2fb03144cf8136151f
     - name: Get context info
       id: info
-      uses: camunda/infra-global-github-actions/fossa/info@dde1f0c4420e4f59711e0ea1364db6bc895a0f6f
+      uses: camunda/infra-global-github-actions/fossa/info@4a964d63a105aac18a6b1c2fb03144cf8136151f
     - name: Analyze project
-      uses: camunda/infra-global-github-actions/fossa/analyze@dde1f0c4420e4f59711e0ea1364db6bc895a0f6f
+      uses: camunda/infra-global-github-actions/fossa/analyze@4a964d63a105aac18a6b1c2fb03144cf8136151f
       with:
         api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
         branch: ${{  steps.info.outputs.head-ref }}
@@ -47,9 +47,15 @@ jobs:
     # It does not fail for pre-existing issues already present in the base branch.
     - name: Check Pull Request for new License Issues
       if: steps.info.outputs.is-pull-request == 'true'
-      uses: camunda/infra-global-github-actions/fossa/pr-check@dde1f0c4420e4f59711e0ea1364db6bc895a0f6f
+      uses: camunda/infra-global-github-actions/fossa/pr-check@4a964d63a105aac18a6b1c2fb03144cf8136151f
       with:
         api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
         base-ref: ${{ steps.info.outputs.base-ref }}
-        base-revision: ${{ steps.info.outputs.base-revision }}
+        # Use the most recent base commit with a FOSSA scan for comparison.
+        # If none is found, fall back to the original base commit — this will cause the check to fail.
+        base-revision: >-
+          ${{
+            steps.info.outputs.base-revision-most-recent-with-scanning-results || 
+            steps.info.outputs.base-revision
+          }}
         revision: ${{ steps.info.outputs.head-revision }}
