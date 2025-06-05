@@ -8,7 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 5.36.0
 
-* `DEPS`: update to `@bpmn-io/properties-panel@3.27.3`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.27.4`
 * `DEPS`: update to `bpmn-js@18.6.2`
 * `DEPS`: update to `bpmn-js-element-templates@2.6.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.36.1`
