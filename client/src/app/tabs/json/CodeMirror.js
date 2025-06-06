@@ -8,13 +8,15 @@
  * except in compliance with the MIT License.
  */
 
-import mitt from 'mitt';
+import EventEmitter from 'events';
 
 import { basicSetup } from 'codemirror';
 
 import { EditorView } from '@codemirror/view';
 
 import { EditorState, Compartment } from '@codemirror/state';
+
+import { vscodeLight } from '@uiw/codemirror-theme-vscode';
 
 import { json } from '@codemirror/lang-json';
 
@@ -41,7 +43,7 @@ import {
   */
 export default function create() {
 
-  const emitter = mitt();
+  const eventEmitter = new EventEmitter();
 
   let language = new Compartment().of(json());
   let tabSize = new Compartment().of(EditorState.tabSize.of(2));
@@ -60,6 +62,12 @@ export default function create() {
           'tabindex': 0
         }),
         EditorView.lineWrapping,
+        vscodeLight,
+        EditorView.theme({
+          '.cm-content': {
+            fontFamily: 'Consolas, "Courier New", monospace'
+          }
+        }),
         ...extensions
       ]
     });
@@ -69,7 +77,7 @@ export default function create() {
 
     const updateListener = EditorView.updateListener.of(update => {
       if (update.docChanged) {
-        emitter.emit('change', {
+        eventEmitter.emit('change', {
           value: update.view.state.doc.toString()
         });
       }
@@ -92,8 +100,8 @@ export default function create() {
     return this.state.doc.toString();
   };
 
-  instance.on = emitter.on;
-  instance.off = emitter.off;
+  instance.on = eventEmitter.on.bind(eventEmitter);
+  instance.off = eventEmitter.off.bind(eventEmitter);
 
   instance.attachTo = function(container) {
     container.appendChild(instance.dom);
@@ -121,7 +129,7 @@ export default function create() {
       return undo(this);
     }
 
-    if (command === 'undo') {
+    if (command === 'redo') {
       return redo(this);
     }
 

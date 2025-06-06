@@ -20,6 +20,8 @@ import { merge } from 'min-dash';
 
 import StartInstanceConfigForm from '../StartInstanceConfigForm';
 
+import { TextInput } from '../../../../shared/ui';
+
 describe('<StartInstanceConfigForm>', function() {
 
   it('should render', function() {
@@ -402,7 +404,11 @@ function createStartInstanceConfigForm(props = {}) {
     renderHeader = null,
     renderSubmit = 'Submit',
     validateField = () => {},
-    validateForm = () => {}
+    validateForm = () => {},
+    VariablesComponent = TextInput,
+    variablesComponentProps = {
+      multiline: true
+    }
   } = props;
 
   initialFieldValues = merge({}, DEFAULT_INITIAL_FIELD_VALUES, initialFieldValues);
@@ -414,5 +420,7 @@ function createStartInstanceConfigForm(props = {}) {
     renderHeader={ renderHeader }
     renderSubmit={ renderSubmit }
     validateField={ validateField }
-    validateForm={ validateForm } />);
+    validateForm={ validateForm }
+    VariablesComponent={ VariablesComponent }
+    variablesComponentProps={ variablesComponentProps } />);
 }

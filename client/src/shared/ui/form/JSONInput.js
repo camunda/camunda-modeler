@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import React, { useEffect, useRef } from 'react';
+
 import EventEmitter from 'events';
 
 import { basicSetup } from 'codemirror';
@@ -16,7 +18,9 @@ import { EditorView } from '@codemirror/view';
 
 import { EditorState, Compartment } from '@codemirror/state';
 
-import { vscodeLight } from '@uiw/codemirror-theme-vscode';
+import { json } from '@codemirror/lang-json';
+
+import classNames from 'classnames';
 
 import {
   undo,
@@ -25,29 +29,83 @@ import {
   redoDepth
 } from '@codemirror/commands';
 
-import {
-  findNext,
-  findPrevious,
-  openSearchPanel,
-  replaceNext,
-  search
-} from '@codemirror/search';
+import { vscodeLight } from '@uiw/codemirror-theme-vscode';
 
-import { xml } from '@codemirror/lang-xml';
+import FormFeedback from './FormFeedback';
+import DocumentationIcon from './DocumentationIcon';
+
+import {
+  fieldError as defaultFieldError
+} from './Util';
+
+export default function JSONInput(props) {
+  const {
+    label,
+    field,
+    form,
+    fieldError,
+    documentationUrl
+  } = props;
+
+  const {
+    name: fieldName,
+    value: fieldValue
+  } = field;
+
+  const meta = form.getFieldMeta(fieldName);
+
+  const error = (fieldError || defaultFieldError)(meta, fieldName);
+
+  const ref = useRef();
+
+  useEffect(() => {
+    const instance = create();
+
+    instance.attachTo(ref.current);
+
+    instance.setValue(fieldValue || '');
+
+    instance.on('change', ({ value }) => {
+      form.setFieldValue(fieldName, value);
+    });
+
+    return () => {
+      instance.detach();
+    };
+  }, []);
+
+  return (
+    <React.Fragment>
+      <div className="form-group">
+        <label htmlFor={ fieldName }>
+          { label }
+          <DocumentationIcon url={ documentationUrl } />
+        </label>
+        <div
+          ref={ ref }
+          className={ classNames('custom-control-codemirror', {
+            'is-invalid': !!error
+          }) }></div>
+        <FormFeedback
+          error={ error }
+        />
+      </div>
+    </React.Fragment>
+  );
+}
 
 /**
- * Create a code mirror instance with an editor API.
- *
- * @param  {Object} options
- * @return {EditorView}
- */
-export default function create() {
+  * Create a code mirror instance.
+  *
+  * @param  {Object} options
+  * @return {EditorView}
+  */
+function create() {
 
   const eventEmitter = new EventEmitter();
 
-  const language = new Compartment().of(xml());
-  const tabSize = new Compartment().of(EditorState.tabSize.of(2));
-  const searchExtension = new Compartment().of(search({ top: true }));
+  let language = new Compartment().of(json());
+  let tabSize = new Compartment().of(EditorState.tabSize.of(2));
 
   function createState(doc, extensions = []) {
     return EditorState.create({
@@ -56,14 +114,16 @@ export default function create() {
         basicSetup,
         language,
         tabSize,
-        searchExtension,
         EditorView.contentAttributes.of({
-          'aria-label': 'XML editor',
+          'aria-label': 'JSON editor',
           'tabindex': 0
         }),
         EditorView.lineWrapping,
         vscodeLight,
         EditorView.theme({
+          '&': {
+            fontSize: '13px'
+          },
           '.cm-content': {
             fontFamily: 'Consolas, "Courier New", monospace'
           }
@@ -113,10 +173,6 @@ export default function create() {
     }
   };
 
-  instance.importXML = function(xml) {
-    this.setValue(xml);
-  };
-
   Object.defineProperty(instance, '_stackIdx', {
     get() {
       return undoDepth(this.state);
@@ -131,22 +187,6 @@ export default function create() {
 
     if (command === 'redo') {
       return redo(this);
-    }
-
-    if (command === 'find') {
-      openSearchPanel(this);
-    }
-
-    if (command === 'findNext') {
-      findNext(this);
-    }
-
-    if (command === 'findPrev') {
-      findPrevious(this);
-    }
-
-    if (command === 'replace') {
-      replaceNext(this);
     }
   };
 
