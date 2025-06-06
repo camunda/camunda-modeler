@@ -357,6 +357,118 @@ describe('DeploymentPluginOverlay', function() {
   });
 
 
+  describe('user journey statistics', function() {
+
+    it('should emit event (success)', async function() {
+
+      // given
+      const config = createMockConfig();
+
+      const mockDeploymentResult = createMockDeploymentResult();
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
+        on: sinon.spy(),
+        getConfigForFile: () => Promise.resolve(config)
+      });
+
+      const triggerActionSpy = sinon.spy();
+
+      createDeploymentPluginOverlay({
+        deployment,
+        triggerAction: triggerActionSpy
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      expect(deployment.on).to.have.been.calledOnce;
+      expect(deployment.on).to.have.been.calledWith('deployed', sinon.match.func);
+
+      // when
+      deployment.on.getCall(0).args[1]({
+        deploymentResult: mockDeploymentResult,
+        endpoint: config.endpoint,
+        gatewayVersion: '7.0.0'
+      });
+
+      // then
+      expect(triggerActionSpy).to.have.been.calledOnce;
+      expect(triggerActionSpy).to.have.been.calledWith('emit-event', sinon.match({
+        type: 'deployment.done',
+        payload: {
+          deployment: mockDeploymentResult.response,
+          context: 'deploymentTool',
+          targetType: 'camundaCloud',
+          deployedTo: {
+            executionPlatformVersion: '7.0.0',
+            executionPlatform: 'Camunda Cloud'
+          }
+        }
+      }));
+    });
+
+
+    it('should emit event (error)', async function() {
+
+      // given
+      const config = createMockConfig();
+
+      const mockDeploymentResult = createMockDeploymentResult({
+        success: false,
+        response: createMockDeploymentErrorResponse()
+      });
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
+        on: sinon.spy(),
+        getConfigForFile: () => Promise.resolve(config)
+      });
+
+      const triggerActionSpy = sinon.spy();
+
+      createDeploymentPluginOverlay({
+        deployment,
+        triggerAction: triggerActionSpy
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.loading')).not.to.exist;
+      });
+
+      expect(deployment.on).to.have.been.calledOnce;
+      expect(deployment.on).to.have.been.calledWith('deployed', sinon.match.func);
+
+      // when
+      deployment.on.getCall(0).args[1]({
+        deploymentResult: mockDeploymentResult,
+        endpoint: config.endpoint,
+        gatewayVersion: '7.0.0'
+      });
+
+      // then
+      expect(triggerActionSpy).to.have.been.calledOnce;
+      expect(triggerActionSpy).to.have.been.calledWith('emit-event', sinon.match({
+        type: 'deployment.error',
+        payload: {
+          error: {
+            ...mockDeploymentResult.response,
+            code: 'INVALID_ARGUMENT'
+          },
+          context: 'deploymentTool',
+          targetType: 'camundaCloud',
+          deployedTo: {
+            executionPlatformVersion: '7.0.0',
+            executionPlatform: 'Camunda Cloud'
+          }
+        }
+      }));
+    });
+
+  });
+
+
   describe('customization', function() {
 
     it('should render custom header', async function() {
@@ -607,6 +719,10 @@ class MockDeployment extends Mock {
 
   getConfigForFile() {}
 
+  off() {}
+
+  on() {}
+
   setConfigForFile() {}
 }
 
@@ -703,6 +819,14 @@ function createMockConfig(overrides = {}) {
     deployment: {},
     endpoint: createMockEndpoint(),
     ...overrides
+  };
+}
+
+function createMockDeploymentErrorResponse() {
+  return {
+    message: "3 INVALID_ARGUMENT: Command 'CREATE' rejected with code 'INVALID_ARGUMENT': ...",
+    code: 3,
+    details: "Command 'CREATE' rejected with code 'INVALID_ARGUMENT': ..."
   };
 }
 

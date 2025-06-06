@@ -9,6 +9,7 @@
  */
 
 import {
+  getGRPCErrorCode,
   getOperateUrl,
   getDeploymentUrls,
   getProcessId,
@@ -188,6 +189,43 @@ describe('util', function() {
 
       // then
       expect(processId).to.eql('Process_1');
+    });
+
+  });
+
+
+  describe('getGRPCErrorCode', function() {
+
+    it('should return code from error response', function() {
+
+      // given
+      const errorResponse = {
+        code: 3,
+        message: 'foo',
+        details: 'bar'
+      };
+
+      // when
+      const code = getGRPCErrorCode(errorResponse);
+
+      // then
+      expect(code).to.eql('INVALID_ARGUMENT');
+    });
+
+
+    it('should return default code', function() {
+
+      // given
+      const errorResponse = {
+        message: 'foo',
+        details: 'bar'
+      };
+
+      // when
+      const code = getGRPCErrorCode(errorResponse);
+
+      // then
+      expect(code).to.eql('UNKNOWN');
     });
 
   });
