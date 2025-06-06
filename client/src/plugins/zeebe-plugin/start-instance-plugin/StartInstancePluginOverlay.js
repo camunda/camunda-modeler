@@ -32,9 +32,12 @@ import {
 import Loader from '../../../app/primitives/Loader';
 
 import {
+  getGRPCErrorCode,
   getProcessId,
   getResourceType
 } from '../shared/util';
+
+import { ENGINES } from '../../../util/Engines';
 
 import * as css from './StartInstancePluginOverlay.less';
 
@@ -200,6 +203,45 @@ export default function StartInstancePluginOverlay(props) {
       connectionChecker.stopChecking();
     };
   }, [ connectionChecker, deployment, setConnectionCheckResult, setDeploymentConfig, setStartInstanceConfig, startInstance ]);
+
+  useEffect(() => {
+    const onDeployed = ({ deploymentResult, endpoint, gatewayVersion }) => {
+      if (deploymentResult.success) {
+        triggerAction('emit-event', {
+          type: 'deployment.done',
+          payload: {
+            deployment: deploymentResult.response,
+            context: 'startInstanceTool',
+            targetType: endpoint.targetType,
+            deployedTo: {
+              executionPlatformVersion: gatewayVersion,
+              executionPlatform: ENGINES.CLOUD
+            }
+          }
+        });
+      } else {
+        triggerAction('emit-event', {
+          type: 'deployment.error',
+          payload: {
+            error: {
+              ...deploymentResult.response,
+              code: getGRPCErrorCode(deploymentResult.response)
+            },
+            context: 'startInstanceTool',
+            targetType: endpoint.targetType,
+            deployedTo: {
+              executionPlatformVersion: gatewayVersion,
+              executionPlatform: ENGINES.CLOUD
+            }
+          }
+        });
+      }
+    };
+
+    deployment.on('deployed', onDeployed);
+
+    return () => deployment.off('deployed', onDeployed);
+  }, [ deployment, triggerAction ]);
 
   return (
     <Overlay className={ css.StartInstancePluginOverlay } onClose={ onClose } anchor={ anchor }>
