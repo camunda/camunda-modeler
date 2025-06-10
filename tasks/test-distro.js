@@ -36,6 +36,7 @@ function currentPlatform() {
 }
 
 const nightly = process.env.NIGHTLY;
+const dev = process.env.NODE_ENV !== 'production';
 
 const {
   win,
@@ -103,6 +104,8 @@ if (nightly) {
   version = 'nightly';
 } else if (onDemand) {
   version = process.env.BUILD_NAME;
+} else if (dev) {
+  version = `${version}-dev`;
 }
 
 // execute tests
