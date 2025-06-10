@@ -446,7 +446,7 @@ describe('<DeploymentConfigForm>', function() {
 
       // given
       const wrapper = createDeploymentConfigForm({
-        getFieldError: (meta, fieldName) => {
+        getFieldError: (fieldName) => {
           return fieldName === 'endpoint.camundaCloudClientId' ? 'Error' : undefined;
         }
       });
