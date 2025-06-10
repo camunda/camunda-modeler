@@ -36,7 +36,7 @@ export default function StartInstanceConfigForm(props) {
   } = props;
 
   const getFieldError = (meta, fieldName) => {
-    return _getFieldError(meta, fieldName) || (meta.touched && meta.error);
+    return _getFieldError(fieldName) || (meta.touched && meta.error);
   };
 
   return (

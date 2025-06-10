@@ -285,7 +285,7 @@ describe('<StartInstanceConfigForm>', function() {
 
       // given
       const wrapper = createStartInstanceConfigForm({
-        getFieldError: (meta, fieldName) => {
+        getFieldError: (fieldName) => {
           return fieldName === 'variables' ? 'Error' : undefined;
         }
       });
