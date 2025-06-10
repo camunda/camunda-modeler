@@ -198,6 +198,12 @@ export default function StartInstancePluginOverlay(props) {
 
       setDeploymentConfig(deploymentConfig);
 
+      const configValidationErrors = deploymentConfigValidator.validateConfig(deploymentConfig);
+
+      if (Object.keys(configValidationErrors).length > 0) {
+        setShowDeploymentConfigForm(true);
+      }
+
       connectionChecker.updateConfig(deploymentConfig);
 
       const startInstanceConfig = await startInstance.getConfigForFile(file);

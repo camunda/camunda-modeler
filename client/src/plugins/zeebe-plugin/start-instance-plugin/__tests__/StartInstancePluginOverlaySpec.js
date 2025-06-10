@@ -45,7 +45,46 @@ describe('StartInstancePluginOverlay', function() {
   });
 
 
-  it('should render start instance config (no connection check result)', async function() {
+  it('should render deployment config (deployment config invalid)', async function() {
+
+    // when
+    const deploymentConfig = createMockDeploymentConfig({
+      endpoint: createMockEndpoint({
+        camundaCloudClientId: '',
+        camundaCloudClientSecret: ''
+      })
+    });
+
+    const deployment = new MockDeployment({
+      getConfigForFile: () => Promise.resolve(deploymentConfig)
+    });
+
+    const startInstanceConfig = createMockStartInstanceConfig();
+
+    const startInstance = new MockStartInstance({
+      getConfigForFile: () => Promise.resolve(startInstanceConfig)
+    });
+
+    createStartInstancePluginOverlay({
+      deployment,
+      deploymentConfigValidator: new MockConfigValidator({
+        validateConfig: () => ({
+          'endpoint.camundaCloudClientId': 'foo',
+          'endpoint.camundaCloudClientSecret': 'bar'
+        }),
+      }),
+      DeploymentConfigForm: createMockDeploymentConfigForm().Form,
+      startInstance
+    });
+
+    // then
+    await waitFor(() => {
+      expect(document.querySelector('form#deployment')).to.exist;
+    });
+  });
+
+
+  it('should render start instance config (deployment config valid, no connection check result)', async function() {
 
     // when
     const deploymentConfig = createMockDeploymentConfig();
@@ -73,7 +112,7 @@ describe('StartInstancePluginOverlay', function() {
   });
 
 
-  it('should render deployment config (connection check result, no success)', async function() {
+  it('should render deployment config (deployment config valid, connection check result, no success)', async function() {
 
     // when
     const connectionChecker = new MockConnectionChecker();
