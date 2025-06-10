@@ -66,11 +66,11 @@ export default function DeploymentPluginOverlay(props) {
   };
 
   const onSubmit = async (values) => {
-    const config = values;
+    setConfig(values);
 
     const resourceConfigs = getResourceConfigs(activeTab);
 
-    const deploymentResponse = await deployment.deploy(resourceConfigs, config);
+    const deploymentResponse = await deployment.deploy(resourceConfigs, values);
 
     if (deploymentResponse.success) {
       displayNotification(getSuccessNotification(activeTab, config, deploymentResponse));
@@ -89,6 +89,8 @@ export default function DeploymentPluginOverlay(props) {
 
   const validateForm = async (values) => {
     const config = values;
+
+    setConfig(config);
 
     const configValidationErrors = deploymentConfigValidator.validateConfig(values);
 

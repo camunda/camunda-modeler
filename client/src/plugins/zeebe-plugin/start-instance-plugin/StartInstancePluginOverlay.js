@@ -93,8 +93,14 @@ export default function StartInstancePluginOverlay(props) {
     return null;
   };
 
-  const onSubmit = async (values) => {
-    const startInstanceConfig = values;
+  const onDeploymentSubmit = async (values) => {
+    setDeploymentConfig(values);
+
+    setShowDeploymentConfigForm(false);
+  };
+
+  const onStartInstanceSubmit = async (values) => {
+    setStartInstanceConfig(values);
 
     const resourceConfigs = getResourceConfigs(activeTab);
 
@@ -129,7 +135,7 @@ export default function StartInstancePluginOverlay(props) {
 
       const startInstanceResult = await startInstance.startInstance(processId, {
         ...deploymentConfig,
-        ...startInstanceConfig
+        ...values
       });
 
       if (startInstanceResult.success) {
@@ -151,7 +157,9 @@ export default function StartInstancePluginOverlay(props) {
   const validateDeploymentConfigForm = async (values) => {
     const config = values;
 
-    const configValidationErrors = deploymentConfigValidator.validateConfig(values);
+    setDeploymentConfig(config);
+
+    const configValidationErrors = deploymentConfigValidator.validateConfig(config);
 
     if (Object.keys(configValidationErrors).length > 0) {
       connectionChecker.updateConfig(null);
@@ -169,7 +177,9 @@ export default function StartInstancePluginOverlay(props) {
   const validateStartInstanceConfigForm = async (values) => {
     const config = values;
 
-    const configValidationErrors = startInstanceConfigValidator.validateConfig(values);
+    setStartInstanceConfig(config);
+
+    const configValidationErrors = startInstanceConfigValidator.validateConfig(config);
 
     if (!Object.keys(configValidationErrors).length) {
       const file = getConfigFile(activeTab);
@@ -252,7 +262,7 @@ export default function StartInstancePluginOverlay(props) {
               <DeploymentConfigForm
                 getFieldError={ getDeploymentFieldError }
                 initialFieldValues={ deploymentConfig }
-                onSubmit={ () => setShowDeploymentConfigForm(false) }
+                onSubmit={ onDeploymentSubmit }
                 renderDescription={ renderDeploymentDescription }
                 renderHeader={ renderDeploymentHeader }
                 renderSubmit={ renderDeploymentSubmit }
@@ -263,7 +273,7 @@ export default function StartInstancePluginOverlay(props) {
               <StartInstanceConfigForm
                 getFieldError={ getStartInstanceFieldError }
                 initialFieldValues={ startInstanceConfig }
-                onSubmit={ onSubmit }
+                onSubmit={ onStartInstanceSubmit }
                 renderDescription={ renderStartInstanceDescription }
                 renderHeader={ renderStartInstanceHeader }
                 renderSubmit={ renderStartInstanceSubmit }
