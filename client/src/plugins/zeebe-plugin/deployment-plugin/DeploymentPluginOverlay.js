@@ -61,8 +61,8 @@ export default function DeploymentPluginOverlay(props) {
   /** @type {ConnectionCheckResult} */
   const [ connectionCheckResult, setConnectionCheckResult ] = useState(null);
 
-  const getFieldError = (meta, fieldName) => {
-    return getConnectionCheckError(fieldName, connectionCheckResult) || meta.error;
+  const getFieldError = (fieldName) => {
+    return getConnectionCheckError(fieldName, connectionCheckResult);
   };
 
   const onSubmit = async (values) => {

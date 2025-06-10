@@ -85,12 +85,12 @@ export default function StartInstancePluginOverlay(props) {
     }
   }, [ connectionCheckResult ]);
 
-  const getDeploymentFieldError = (meta, fieldName) => {
-    return getConnectionCheckError(fieldName, connectionCheckResult) || meta.error;
+  const getDeploymentFieldError = (fieldName) => {
+    return getConnectionCheckError(fieldName, connectionCheckResult);
   };
 
-  const getStartInstanceFieldError = (meta, fieldName) => {
-    return meta.error;
+  const getStartInstanceFieldError = (fieldName) => {
+    return null;
   };
 
   const onSubmit = async (values) => {
