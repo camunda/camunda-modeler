@@ -19,6 +19,7 @@ const getVersion = require('../app/util/get-version');
 const pkg = require('../app/package');
 
 const nightly = process.env.NIGHTLY;
+const dev = process.env.NODE_ENV !== 'production';
 
 const {
   publish,
@@ -39,7 +40,7 @@ if (onDemand) {
 
 const version = getVersion();
 
-if (version !== pkg.version) {
+if (version !== pkg.version && !dev) {
 
   const lernaPublishArgs = [
     'version',
@@ -74,6 +75,8 @@ if (nightly) {
   replaceVersion = s => s.replace('${version}', 'nightly');
 } else if (onDemand) {
   replaceVersion = s => s.replace('${version}', buildName);
+} else if (dev) {
+  replaceVersion = s => s.replace('${version}', version);
 }
 
 const artifactOptions = [

@@ -31,7 +31,7 @@ var pkg = require('../package.json');
  */
 module.exports = function getVersion() {
   var appVersion = pkg.version;
-  var increment = IS_NIGHTLY || IS_DEV;
+  var increment = IS_NIGHTLY;
 
   if (increment) {
     appVersion = semver.inc(appVersion, 'minor');
