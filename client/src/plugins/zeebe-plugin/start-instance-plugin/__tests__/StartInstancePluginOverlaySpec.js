@@ -45,7 +45,46 @@ describe('StartInstancePluginOverlay', function() {
   });
 
 
-  it('should render start instance config (no connection check result)', async function() {
+  it('should render deployment config (deployment config invalid)', async function() {
+
+    // when
+    const deploymentConfig = createMockDeploymentConfig({
+      endpoint: createMockEndpoint({
+        camundaCloudClientId: '',
+        camundaCloudClientSecret: ''
+      })
+    });
+
+    const deployment = new MockDeployment({
+      getConfigForFile: () => Promise.resolve(deploymentConfig)
+    });
+
+    const startInstanceConfig = createMockStartInstanceConfig();
+
+    const startInstance = new MockStartInstance({
+      getConfigForFile: () => Promise.resolve(startInstanceConfig)
+    });
+
+    createStartInstancePluginOverlay({
+      deployment,
+      deploymentConfigValidator: new MockConfigValidator({
+        validateConfig: () => ({
+          'endpoint.camundaCloudClientId': 'foo',
+          'endpoint.camundaCloudClientSecret': 'bar'
+        }),
+      }),
+      DeploymentConfigForm: createMockDeploymentConfigForm().Form,
+      startInstance
+    });
+
+    // then
+    await waitFor(() => {
+      expect(document.querySelector('form#deployment')).to.exist;
+    });
+  });
+
+
+  it('should render start instance config (deployment config valid, no connection check result)', async function() {
 
     // when
     const deploymentConfig = createMockDeploymentConfig();
@@ -73,7 +112,7 @@ describe('StartInstancePluginOverlay', function() {
   });
 
 
-  it('should render deployment config (connection check result, no success)', async function() {
+  it('should render deployment config (deployment config valid, connection check result, no success)', async function() {
 
     // when
     const connectionChecker = new MockConnectionChecker();
@@ -333,114 +372,301 @@ describe('StartInstancePluginOverlay', function() {
 
   describe('form submission', function() {
 
-    it('should submit form (success)', async function() {
+    describe('start instance config', function() {
 
-      // given
-      const deploymentConfig = createMockDeploymentConfig();
+      it('should submit form (success)', async function() {
 
-      const deployment = new MockDeployment({
-        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-        getConfigForFile: () => Promise.resolve(deploymentConfig)
+        // given
+        const deploymentConfig = createMockDeploymentConfig();
+
+        const deployment = new MockDeployment({
+          deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+          getConfigForFile: () => Promise.resolve(deploymentConfig)
+        });
+
+        const displayNotificationSpy = sinon.spy();
+
+        const startInstanceConfig = createMockStartInstanceConfig();
+
+        const startInstance = new MockStartInstance({
+          getConfigForFile: () => Promise.resolve(startInstanceConfig),
+          startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult()))
+        });
+
+        const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
+
+        createStartInstancePluginOverlay({
+          deployment,
+          displayNotification: displayNotificationSpy,
+          startInstance,
+          StartInstanceConfigForm: Form
+        });
+
+        await waitFor(() => {
+          expect(document.querySelector('.loading')).not.to.exist;
+        });
+
+        // when
+        getFormProps().onSubmit(startInstanceConfig);
+
+        // expect
+        await waitFor(() => {
+          expect(startInstance.startInstance).to.have.been.calledOnce;
+        });
+
+        expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+          ...deploymentConfig,
+          ...startInstanceConfig
+        });
+
+        expect(displayNotificationSpy).to.have.been.calledOnce;
+        expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+          title: 'Process instance started',
+          type: 'success'
+        }));
       });
 
-      const displayNotificationSpy = sinon.spy();
 
-      const startInstanceConfig = createMockStartInstanceConfig();
+      it('should submit form (no success)', async function() {
 
-      const startInstance = new MockStartInstance({
-        getConfigForFile: () => Promise.resolve(startInstanceConfig),
-        startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult()))
+        // given
+        const deploymentConfig = createMockDeploymentConfig();
+
+        const deployment = new MockDeployment({
+          deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+          getConfigForFile: () => Promise.resolve(deploymentConfig)
+        });
+
+        const displayNotificationSpy = sinon.spy();
+
+        const startInstanceConfig = createMockStartInstanceConfig();
+
+        const startInstance = new MockStartInstance({
+          getConfigForFile: () => Promise.resolve(startInstanceConfig),
+          startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult({
+            success: false,
+            response: {
+              details: 'foo'
+            }
+          })))
+        });
+
+        const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
+
+        createStartInstancePluginOverlay({
+          deployment,
+          displayNotification: displayNotificationSpy,
+          startInstance,
+          StartInstanceConfigForm: Form
+        });
+
+        await waitFor(() => {
+          expect(document.querySelector('.loading')).not.to.exist;
+        });
+
+        // when
+        getFormProps().onSubmit(startInstanceConfig);
+
+        // expect
+        await waitFor(() => {
+          expect(startInstance.startInstance).to.have.been.calledOnce;
+        });
+
+        expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+          ...deploymentConfig,
+          ...startInstanceConfig
+        });
+
+        expect(displayNotificationSpy).to.have.been.calledOnce;
+        expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+          title: 'Process instance not started',
+          type: 'error'
+        }));
       });
 
-      const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
-
-      createStartInstancePluginOverlay({
-        deployment,
-        displayNotification: displayNotificationSpy,
-        startInstance,
-        StartInstanceConfigForm: Form
-      });
-
-      await waitFor(() => {
-        expect(document.querySelector('.loading')).not.to.exist;
-      });
-
-      // when
-      getFormProps().onSubmit(startInstanceConfig);
-
-      // expect
-      await waitFor(() => {
-        expect(startInstance.startInstance).to.have.been.calledOnce;
-      });
-
-      expect(startInstance.startInstance).to.have.been.calledWith('foo', {
-        ...deploymentConfig,
-        ...startInstanceConfig
-      });
-
-      expect(displayNotificationSpy).to.have.been.calledOnce;
-      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
-        title: 'Process instance started',
-        type: 'success'
-      }));
     });
 
 
-    it('should submit form (no success)', async function() {
+    describe('deployment and start instance config', function() {
 
-      // given
-      const deploymentConfig = createMockDeploymentConfig();
+      it('should submit form (success)', async function() {
 
-      const deployment = new MockDeployment({
-        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-        getConfigForFile: () => Promise.resolve(deploymentConfig)
-      });
+        // given
+        const deploymentConfig = createMockDeploymentConfig({
+          endpoint: createMockEndpoint({
+            camundaCloudClientId: '',
+            camundaCloudClientSecret: ''
+          })
+        });
 
-      const displayNotificationSpy = sinon.spy();
+        const deployment = new MockDeployment({
+          deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+          getConfigForFile: () => Promise.resolve(deploymentConfig)
+        });
 
-      const startInstanceConfig = createMockStartInstanceConfig();
+        const { Form: DeploymentForm, getProps: getDeploymentFormProps } = createMockDeploymentConfigForm();
 
-      const startInstance = new MockStartInstance({
-        getConfigForFile: () => Promise.resolve(startInstanceConfig),
-        startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult({
-          success: false,
-          response: {
-            details: 'foo'
+        const displayNotificationSpy = sinon.spy();
+
+        const startInstanceConfig = createMockStartInstanceConfig();
+
+        const startInstance = new MockStartInstance({
+          getConfigForFile: () => Promise.resolve(startInstanceConfig),
+          startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult()))
+        });
+
+        const { Form: StartInstanceForm, getProps: getStartInstanceFormProps } = createMockStartInstanceConfigForm();
+
+        createStartInstancePluginOverlay({
+          deployment,
+          DeploymentConfigForm: DeploymentForm,
+          deploymentConfigValidator: new MockConfigValidator({
+            validateConfig: sinon.stub()
+              .onFirstCall().returns({
+                'camundaCloud.clientId': 'foo',
+                'camundaCloud.clientSecret': 'bar'
+              })
+              .onSecondCall().returns({}),
+          }),
+          displayNotification: displayNotificationSpy,
+          startInstance,
+          StartInstanceConfigForm: StartInstanceForm
+        });
+
+        await waitFor(() => {
+          expect(document.querySelector('form#deployment')).to.exist;
+        });
+
+        // when
+        const newDeploymentConfig = createMockDeploymentConfig();
+
+        getDeploymentFormProps().onSubmit(newDeploymentConfig);
+
+        // then
+        await waitFor(() => {
+          expect(document.querySelector('form#start-instance')).to.exist;
+        });
+
+        // when
+        getStartInstanceFormProps().onSubmit(startInstanceConfig);
+
+        // then
+        await waitFor(() => {
+          expect(deployment.deploy).to.have.been.calledOnce;
+          expect(startInstance.startInstance).to.have.been.calledOnce;
+        });
+
+        expect(deployment.deploy).to.have.been.calledWith([
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
           }
-        })))
+        ], newDeploymentConfig);
+
+        expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+          ...newDeploymentConfig,
+          ...startInstanceConfig
+        });
+
+        expect(displayNotificationSpy).to.have.been.calledOnce;
+        expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+          title: 'Process instance started',
+          type: 'success'
+        }));
       });
 
-      const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
 
-      createStartInstancePluginOverlay({
-        deployment,
-        displayNotification: displayNotificationSpy,
-        startInstance,
-        StartInstanceConfigForm: Form
+      it('should submit form (no success)', async function() {
+
+        // given
+        const deploymentConfig = createMockDeploymentConfig({
+          endpoint: createMockEndpoint({
+            camundaCloudClientId: '',
+            camundaCloudClientSecret: ''
+          })
+        });
+
+        const deployment = new MockDeployment({
+          deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+          getConfigForFile: () => Promise.resolve(deploymentConfig)
+        });
+
+        const { Form: DeploymentForm, getProps: getDeploymentFormProps } = createMockDeploymentConfigForm();
+
+        const displayNotificationSpy = sinon.spy();
+
+        const startInstanceConfig = createMockStartInstanceConfig();
+
+        const startInstance = new MockStartInstance({
+          getConfigForFile: () => Promise.resolve(startInstanceConfig),
+          startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult({
+            success: false,
+            response: {
+              details: 'foo'
+            }
+          })))
+        });
+
+        const { Form: StartInstanceForm, getProps: getStartInstanceFormProps } = createMockStartInstanceConfigForm();
+
+        createStartInstancePluginOverlay({
+          deployment,
+          DeploymentConfigForm: DeploymentForm,
+          deploymentConfigValidator: new MockConfigValidator({
+            validateConfig: sinon.stub()
+              .onFirstCall().returns({
+                'camundaCloud.clientId': 'foo',
+                'camundaCloud.clientSecret': 'bar'
+              })
+              .onSecondCall().returns({}),
+          }),
+          displayNotification: displayNotificationSpy,
+          startInstance,
+          StartInstanceConfigForm: StartInstanceForm
+        });
+
+        await waitFor(() => {
+          expect(document.querySelector('form#deployment')).to.exist;
+        });
+
+        // when
+        const newDeploymentConfig = createMockDeploymentConfig();
+
+        getDeploymentFormProps().onSubmit(newDeploymentConfig);
+
+        // then
+        await waitFor(() => {
+          expect(document.querySelector('form#start-instance')).to.exist;
+        });
+
+        // when
+        getStartInstanceFormProps().onSubmit(startInstanceConfig);
+
+        // then
+        await waitFor(() => {
+          expect(deployment.deploy).to.have.been.calledOnce;
+          expect(startInstance.startInstance).to.have.been.calledOnce;
+        });
+
+        expect(deployment.deploy).to.have.been.calledWith([
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ], newDeploymentConfig);
+
+        expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+          ...newDeploymentConfig,
+          ...startInstanceConfig
+        });
+
+        expect(displayNotificationSpy).to.have.been.calledOnce;
+        expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
+          title: 'Process instance not started',
+          type: 'error'
+        }));
       });
 
-      await waitFor(() => {
-        expect(document.querySelector('.loading')).not.to.exist;
-      });
-
-      // when
-      getFormProps().onSubmit(startInstanceConfig);
-
-      // expect
-      await waitFor(() => {
-        expect(startInstance.startInstance).to.have.been.calledOnce;
-      });
-
-      expect(startInstance.startInstance).to.have.been.calledWith('foo', {
-        ...deploymentConfig,
-        ...startInstanceConfig
-      });
-
-      expect(displayNotificationSpy).to.have.been.calledOnce;
-      expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
-        title: 'Process instance not started',
-        type: 'error'
-      }));
     });
 
   });
