@@ -252,7 +252,7 @@ export default class Settings {
    */
   _notify(key) {
     forEach(this._listeners[key], listener => {
-      listener({ value: this._values[key] });
+      listener({ value: this._get(key) });
     });
   }
 
