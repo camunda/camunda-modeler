@@ -6,6 +6,12 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `DEPS`: update to `@bpmn-io/properties-panel@3.29.1`
+
+### General
+
+* `FIX`: fix debounce problem in the properties panel ([#5085](https://github.com/camunda/camunda-modeler/issues/5085))
+
 ## 5.36.0
 
 * `DEPS`: update to `@bpmn-io/properties-panel@3.27.4`
