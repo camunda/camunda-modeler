@@ -52,6 +52,23 @@ describe('Settings', function() {
     });
   });
 
+  describe('register', function() {
+
+    it('should register and return values', function() {
+
+      // when
+      const values = settings.register(settingsMock);
+
+      // then
+      expect(values).to.deep.equal({
+        'test.enabled': true,
+        'test.name': 'test',
+        'test.flag': false
+      });
+    });
+  });
+
+
   describe('schema', function() {
 
     it('should return the registered schema for all settings', function() {
@@ -208,6 +225,22 @@ describe('Settings', function() {
       // then
       expect(value).to.equal('foo');
     });
+
+
+    it('should throw when key does not exist', function() {
+
+      // given
+      const key = 'test.invalid';
+
+      // when
+      settings.register(settingsMock);
+
+      // then
+      const get = () => settings.get(key);
+
+      // expect error to contain the invalid key
+      expect(get).to.throw(key);
+    });
   });
 
 
@@ -226,6 +259,20 @@ describe('Settings', function() {
 
       // then
       expect(listener).to.have.been.calledWith({ value: 'foo' });
+    });
+
+
+    it('should call the listener when the setting is registered', function() {
+
+      // given
+      const listener = sinon.spy();
+      settings.subscribe('test.name', listener);
+
+      // when
+      settings.register(settingsMock);
+
+      // then
+      expect(listener).to.have.been.calledWith({ value: 'test' });
     });
 
   });
