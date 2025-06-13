@@ -261,5 +261,19 @@ describe('Settings', function() {
       expect(listener).to.have.been.calledWith({ value: 'foo' });
     });
 
+
+    it('should call the listener when the setting is registered', function() {
+
+      // given
+      const listener = sinon.spy();
+      settings.subscribe('test.name', listener);
+
+      // when
+      settings.register(settingsMock);
+
+      // then
+      expect(listener).to.have.been.calledWith({ value: 'test' });
+    });
+
   });
 });
