@@ -103,6 +103,13 @@ app.metadata = {
 };
 app.plugins = plugins;
 
+// Electron 36 issue - https://github.com/electron/electron/issues/46538
+if (process.platform === 'linux' && !app.commandLine.hasSwitch('gtk-version')) {
+  app.commandLine.appendSwitch('gtk-version', '3');
+}
+
+// dialogs
+
 Platform.create(platform, app, config);
 
 // only allow single instance if not disabled via `--no-single-instance` flag
@@ -159,7 +166,6 @@ renderer.on('external:open-url', function(options) {
   browserOpen(url);
 });
 
-// dialogs //////////
 
 renderer.on('dialog:open-files', async function(options, done) {
   const {
