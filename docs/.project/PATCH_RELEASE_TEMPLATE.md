@@ -24,7 +24,6 @@ _To be done to prepare and build the release._
 * [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/master/CHANGELOG.md)
 * [ ] create release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/main/releases/RELEASE_SCHEMA.md)
   * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
-* [ ] make sure Windows artifacts are signed
 * [ ] prepare a list of what was changed or needs to be tested
 * [ ] execute integration test, verifying fixed things are actually fixed
 * [ ] (optional) trigger QA for testing
