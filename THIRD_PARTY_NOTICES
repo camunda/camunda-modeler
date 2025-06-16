@@ -212,7 +212,7 @@ This project incorporates components from the projects listed below. The origina
 205.  drag-tabs@2.3.1 (git+ssh://git@github.com/bpmn-io/drag-tabs.git)
 206.  min-dom@4.1.0 (https://github.com/bpmn-io/min-dom)
 207.  mitt@3.0.1 (developit/mitt)
-208.  @bpmn-io/properties-panel@3.28.1 (git+https://github.com/bpmn-io/properties-panel.git)
+208.  @bpmn-io/properties-panel@3.29.1 (git+https://github.com/bpmn-io/properties-panel.git)
 209.  preact-hooks@0.1.0
 210.  preact@10.19.3 (preactjs/preact)
 211.  preact-compat@4.0.0
@@ -13610,7 +13610,7 @@ SOFTWARE.
 END OF mitt@3.0.1 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/properties-panel@3.28.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/properties-panel@3.29.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -13634,7 +13634,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/properties-panel@3.28.1 NOTICES AND INFORMATION
+END OF @bpmn-io/properties-panel@3.29.1 NOTICES AND INFORMATION
 
 
 %% preact-hooks@0.1.0 NOTICES AND INFORMATION BEGIN HERE
