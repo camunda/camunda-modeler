@@ -6,11 +6,16 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.36.1
+
 * `DEPS`: update to `@bpmn-io/properties-panel@3.29.1`
 
 ### General
 
 * `FIX`: fix debounce problem in the properties panel ([#5085](https://github.com/camunda/camunda-modeler/issues/5085))
+* `FIX`: configure deployment immediately if cannot deploy & run ([#5048](https://github.com/camunda/camunda-modeler/issues/5048))
+* `FIX`: run instance without remembering credentials ([#5083](https://github.com/camunda/camunda-modeler/issues/5083))
+* `FIX`: show validation error for deployment on touch ([#5081](https://github.com/camunda/camunda-modeler/issues/5081))
 
 ## 5.36.0
 
