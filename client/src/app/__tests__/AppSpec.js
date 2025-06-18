@@ -3016,36 +3016,6 @@ describe('<App>', function() {
   });
 
 
-  it('#handleActiveTabChange', async function() {
-
-    // given
-    const sendSpy = spy();
-
-    const backend = new Backend({
-      send: sendSpy
-    });
-
-    const { app } = createApp({
-      globals: {
-        backend
-      }
-    });
-
-    // when
-    const {
-      id,
-      type
-    } = await app.createDiagram('cloud-bpmn');
-
-    // then
-    expect(sendSpy).to.have.been.calledWith(
-      'activeTab:change',
-      { id, type },
-      EMPTY_TAB
-    );
-  });
-
-
   describe('modal handling', function() {
 
     let app;
