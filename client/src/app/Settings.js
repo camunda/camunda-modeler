@@ -22,7 +22,7 @@ import { Flags } from '../util';
  * @property {string} id - unique identifier for the settings group
  * @property {string} title - title of the section on the settings page
  * @property {number} [order] - index of the section on the settings page
- * @property {Object.<string, SettingsProperty>} properties - property key must be prefixed with
+ * @property {Record<string, SettingsProperty>} properties - property key must be prefixed with
  * the group `id` e.g `bpmn.enabled`
  */
 
@@ -69,14 +69,14 @@ export default class Settings {
      * Dictionary of all the provided settings metadata.
      * Key is the `id` of the settings group.
      *
-     * @type { Object.<string, SettingsGroup> }
+     * @type { Record<string, SettingsGroup> }
      */
     this._settings = {};
 
     /**
      * Dictionary of setting keys and their default values, if provided.
      *
-     * @type { Object.<string, string|boolean> }
+     * @type { Record<string, string|boolean> }
      */
     this._defaults = {};
 
@@ -84,7 +84,7 @@ export default class Settings {
      * Dictionary of all the settings keys and their values.
      * This is stored in the `settings.json` file.
      *
-     * @type { Object.<string, string|boolean>}
+     * @type { Record<string, string|boolean>}
      */
     this._values = {};
 
@@ -92,7 +92,7 @@ export default class Settings {
      * Dictionary of setting keys and their listeners.
      * Listeners are called when the setting value changes.
      *
-     * @type { Object.<string, Array<function>> }
+     * @type { Record<string, Array<function>> }
      */
     this._listeners = {};
 
@@ -112,7 +112,7 @@ export default class Settings {
    *
    * @param { SettingsGroup } settings
    *
-   * @returns { Object.<string, string|boolean> } Dictionary of setting keys and their values.
+   * @returns { Record<string, string|boolean> } Dictionary of setting keys and their values.
   */
   register(settings) {
     const {
@@ -177,7 +177,7 @@ export default class Settings {
    * the value of the flag is returned.
    *
    * @param { string } [key]
-   * @returns { Object.<string, string|boolean>|string|boolean }
+   * @returns { Record<string, string|boolean>|string|boolean }
    */
   get(key) {
     if (key) {
@@ -219,7 +219,7 @@ export default class Settings {
    *
    * Calls the listeners for each setting that has changed. Saves the file.
    *
-   * @param {Object.<string, string|boolean} settings - Dictionary of setting keys and their values.
+   * @param {Record<string, string|boolean} settings - Dictionary of setting keys and their values.
    */
   set(settings) {
 
