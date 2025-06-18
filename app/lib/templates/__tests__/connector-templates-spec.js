@@ -117,7 +117,7 @@ describe('updateConnectorTemplates', function() {
       await updateConnectorTemplates(renderer, userPath);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success', true, []);
+      expect(sendSpy).to.have.been.calledWith('client:templates-update-success', true, []);
 
       expectConnectorTemplates(userPath, [
         { $schema: 'https://foo.com', id: '1' }, // new, added
@@ -143,7 +143,7 @@ describe('updateConnectorTemplates', function() {
       await updateConnectorTemplates(renderer, userPath);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success', true, []);
+      expect(sendSpy).to.have.been.calledWith('client:templates-update-success', true, []);
 
       expectConnectorTemplates(userPath, [
         { $schema: 'https://foo.com', id: '1' },
@@ -172,7 +172,7 @@ describe('updateConnectorTemplates', function() {
       await updateConnectorTemplates(renderer, userPath);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success', false, []);
+      expect(sendSpy).to.have.been.calledWith('client:templates-update-success', false, []);
 
       expectConnectorTemplates(userPath, [
         { $schema: 'https://foo.com', id: '1' },
@@ -197,7 +197,7 @@ describe('updateConnectorTemplates', function() {
       await updateConnectorTemplates(renderer, userPath);
 
       // then
-      expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success');
+      expect(sendSpy).to.have.been.calledWith('client:templates-update-success');
 
       expectConnectorTemplates(userPath, [
         { $schema: 'https://foo.com', id: '1' },
@@ -233,7 +233,7 @@ describe('updateConnectorTemplates', function() {
         await updateConnectorTemplates(renderer, userPath);
 
         // then
-        expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-error');
+        expect(sendSpy).to.have.been.calledWith('client:templates-update-error');
 
         expectNoConnectorTemplates(userPath);
       });
@@ -297,7 +297,7 @@ describe('updateConnectorTemplates', function() {
         await updateConnectorTemplates(renderer, userPath);
 
         // then
-        expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success', true, [
+        expect(sendSpy).to.have.been.calledWith('client:templates-update-success', true, [
           'Unable to fetch template Foo'
         ]);
 
@@ -372,7 +372,7 @@ describe('updateConnectorTemplates', function() {
         await updateConnectorTemplates(renderer, userPath);
 
         // then
-        expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success', true, [
+        expect(sendSpy).to.have.been.calledWith('client:templates-update-success', true, [
           'Unable to fetch template Foo'
         ]);
 
@@ -447,7 +447,7 @@ describe('updateConnectorTemplates', function() {
         await updateConnectorTemplates(renderer, userPath);
 
         // then
-        expect(sendSpy).to.have.been.calledWith('client:connector-templates-update-success', true, [
+        expect(sendSpy).to.have.been.calledWith('client:templates-update-success', true, [
           'Unable to fetch template Foo'
         ]);
 

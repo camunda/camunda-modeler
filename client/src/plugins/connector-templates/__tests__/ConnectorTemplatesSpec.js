@@ -41,7 +41,7 @@ describe('<ConnectorTemplates>', function() {
     });
 
     // when
-    backend.receive('client:connector-templates-update-success', null, true);
+    backend.receive('client:templates-update-success', null, true);
 
     // then
     expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'success', title: 'Camunda Connector templates updated' });
@@ -66,7 +66,7 @@ describe('<ConnectorTemplates>', function() {
     });
 
     // when
-    backend.receive('client:connector-templates-update-success', null, false);
+    backend.receive('client:templates-update-success', null, false);
 
     // then
     expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'success', title: 'Camunda Connector templates up to date' });
@@ -91,7 +91,7 @@ describe('<ConnectorTemplates>', function() {
     });
 
     // when
-    backend.receive('client:connector-templates-update-success', null, true, [ 'foo', 'bar' ]);
+    backend.receive('client:templates-update-success', null, true, [ 'foo', 'bar' ]);
 
     // then
     expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'warning', title: 'Camunda Connector templates updated with warnings' });
@@ -115,7 +115,7 @@ describe('<ConnectorTemplates>', function() {
     });
 
     // when
-    backend.receive('client:connector-templates-update-error', null, 'error');
+    backend.receive('client:templates-update-error', null, 'error');
 
     // then
     expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'error', title: 'Error updating Camunda Connector templates' });
