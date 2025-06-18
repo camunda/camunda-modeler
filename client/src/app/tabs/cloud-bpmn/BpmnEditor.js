@@ -109,11 +109,33 @@ export class BpmnEditor extends CachedComponent {
           'modeler:executionPlatform': executionPlatform,
           'modeler:executionPlatformVersion': executionPlatformVersion
         });
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
       },
       getCached: () => this.getCached(),
-      setCached: (state) => {
-        this.handleEngineProfileChangeDebounced(state);
-        this.setCached(state);
+      setCached: ({ engineProfile }) => {
+        this.handleEngineProfileChangeDebounced({ engineProfile });
+
+        this.setCached({ engineProfile });
+
+        const {
+          executionPlatform,
+          executionPlatformVersion
+        } = engineProfile;
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
       }
     });
 
@@ -251,7 +273,10 @@ export class BpmnEditor extends CachedComponent {
 
   handleEngineProfileChange = ({ engineProfile }) => {
     const { executionPlatformVersion: version } = engineProfile;
-    if (!version) return;
+
+    if (!version) {
+      return;
+    }
 
     const elementTemplates = this.getModeler().get('elementTemplates');
 
@@ -271,6 +296,8 @@ export class BpmnEditor extends CachedComponent {
     const templatesLoader = modeler.get('elementTemplatesLoader');
 
     let templates = await getConfig('bpmn.elementTemplates');
+
+    console.log('Loading BPMN element templates', getCloudTemplates(templates));
 
     templatesLoader.setTemplates(getCloudTemplates(templates));
   }
@@ -879,6 +906,10 @@ export class BpmnEditor extends CachedComponent {
           camundaDesktopModeler: version
         }
       }
+    });
+
+    modeler.on('elementTemplates.errors', (event) => {
+      console.warn('Element templates errors', event.errors);
     });
 
     const commandStack = modeler.get('commandStack');

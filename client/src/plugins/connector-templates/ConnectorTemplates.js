@@ -33,7 +33,22 @@ export default class ConnectorTemplates extends PureComponent {
       this.setState({ activeTab });
     });
 
-    getGlobal('backend').on('client:connector-templates-update-success', (_, hasNew, warnings = []) => {
+    subscribe('tab.engineProfileChanged', ({ executionPlatform, executionPlatformVersion }) => {
+
+      console.log('Tab engine profile changed', executionPlatform, executionPlatformVersion);
+
+      if (!executionPlatform || !executionPlatformVersion) {
+        console.log('No execution platform or version provided, skipping connector templates update');
+        return;
+      }
+
+      getGlobal('backend').send('client:templates-update', {
+        executionPlatform,
+        executionPlatformVersion
+      });
+    });
+
+    getGlobal('backend').on('client:templates-update-success', (_, hasNew, warnings = []) => {
       const { activeTab } = this.state;
 
       if (activeTab && activeTab.type === 'cloud-bpmn') {
@@ -57,14 +72,16 @@ export default class ConnectorTemplates extends PureComponent {
         return;
       }
 
-      displayNotification({
-        type: 'success',
-        title: hasNew ? 'Camunda Connector templates updated' : 'Camunda Connector templates up to date',
-        content: <a href={ DOCUMENTATION_URL }>Learn more</a>
-      });
+      if (hasNew) {
+        displayNotification({
+          type: 'success',
+          title: 'Camunda Connector templates updated',
+          content: <a href={ DOCUMENTATION_URL }>Learn more</a>
+        });
+      }
     });
 
-    getGlobal('backend').on('client:connector-templates-update-error', (_, message) => {
+    getGlobal('backend').on('client:templates-update-error', (_, message) => {
       displayNotification({
         type: 'error',
         title: 'Error updating Camunda Connector templates',
