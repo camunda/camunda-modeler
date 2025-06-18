@@ -9,6 +9,9 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: make Camunda 8 start instance variables input a code editor ([#4976](https://github.com/camunda/camunda-modeler/issues/4976))
+* `FEAT`: return registered settings values ([#5069](https://github.com/camunda/camunda-modeler/pull/5069))
+* `FEAT`: allow to subscribe prior to settings registration ([#5069](https://github.com/camunda/camunda-modeler/pull/5069))
+* `FIX`: handle missing setting registration on `settings.get` ([#5069](https://github.com/camunda/camunda-modeler/pull/5069))
 
 ## 5.36.1
 
