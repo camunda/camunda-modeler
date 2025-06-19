@@ -16,8 +16,6 @@
  * } } Endpoint
  */
 
-const crypto = require('crypto');
-
 const { EventEmitter } = require('node:events');
 
 const log = require('../log')('app:template-updater');
@@ -34,10 +32,6 @@ const DEFAULT_ENDPOINTS = [
   {
     url: 'https://marketplace.cloud.camunda.io/api/v1/ootb-connectors',
     fileName: CONNECTOR_TEMPLATES_FILE_NAME
-  },
-  {
-    url: 'http://localhost:3000/foobar-templates',
-    fileName: urlToFileName('http://localhost:3000/foobar-templates')
   }
 ];
 
@@ -115,34 +109,4 @@ module.exports.TemplatesUpdater = class TemplatesUpdater extends EventEmitter {
       });
     }
   }
-
-  addEndpoint(url, fileName) {
-    if (!fileName) {
-      fileName = urlToFileName(url);
-    }
-
-    if (!this._endpoints.some(endpoint => endpoint.url === url)) {
-      this._endpoints.push({
-        url,
-        fileName,
-        lastUpdate: {}
-      });
-    }
-
-    this._executionPlatformVersions.forEach(executionPlatformVersion => {
-      this.update(executionPlatformVersion);
-    });
-  }
-
-  removeEndpoint(url) {
-    this._endpoints = this._endpoints.filter(endpoint => endpoint.url !== url);
-  }
 };
-
-function urlToFileName(url, length = 32) {
-  let hash = crypto.createHash('sha256').update(url, 'utf8').digest('hex');
-
-  hash = hash.slice(0, length); // 32 hex chars = 128 bits
-
-  return `.${ hash }.json`;
-}

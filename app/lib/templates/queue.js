@@ -53,10 +53,10 @@ module.exports = class Queue extends EventEmitter {
           if (this._pending === 0) {
             log.info('Queue is empty');
 
-            this.emit('queue:empty', { ...prevResult, error });
+            this.emit('queue:empty', prevResult);
           }
 
-          return { ...prevResult, error };
+          return prevResult;
         })
         .then((result) => {
           this._pending--;
