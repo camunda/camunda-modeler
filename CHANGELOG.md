@@ -6,12 +6,24 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.37.0
+
+* `DEPS`: update to `@bpmn-io/form-js@1.15.3`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.30.0`
+* `DEPS`: update to `@camunda/rpa-integration@1.0.2`
+* `DEPS`: update to `bpmn-js-properties-panel@5.37.0`
+* `DEPS`: update to `bpmn-moddle@9.0.2`
+
 ### General
 
 * `FEAT`: make Camunda 8 start instance variables input a code editor ([#4976](https://github.com/camunda/camunda-modeler/issues/4976))
 * `FEAT`: return registered settings values ([#5069](https://github.com/camunda/camunda-modeler/pull/5069))
 * `FEAT`: allow to subscribe prior to settings registration ([#5069](https://github.com/camunda/camunda-modeler/pull/5069))
 * `FIX`: handle missing setting registration on `settings.get` ([#5069](https://github.com/camunda/camunda-modeler/pull/5069))
+
+### BPMN
+
+* `FEAT`: support `creating` and `canceling` task listeners ([#5000](https://github.com/camunda/camunda-modeler/issues/5000))
 
 ## 5.36.1
 
