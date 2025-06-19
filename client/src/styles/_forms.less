@@ -280,6 +280,20 @@
         }
       }
     }
+
+    &.is-invalid .cm-editor {
+      border: solid 1px var(--color-red-360-100-45);
+
+      &.cm-focused {
+        border: solid 1px var(--color-red-360-100-45);
+        outline: none;
+        box-shadow: 0 0 0 1px var(--color-red-360-100-92), 0 0 0 1px var(--color-grey-225-10-75) inset;
+
+        :focus-visible {
+          outline-style: none;
+        }
+      }
+    }
   }
 
   // feedback / tooltip
