@@ -44,16 +44,12 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Process application deployment</h4>
-          Deploy all process application resources in a single action.
+          <h4>Start instance improved</h4>
+          Edit process variables directly in a dedicated code editor when starting an instance.
         </li>
         <li>
-          <h4>Deployed decision link to Operate</h4>
-          View deployed decisions in Operate with a single click.
-        </li>
-        <li>
-          <h4>Enhanced FEEL suggestions</h4>
-          Autocomplete literal values like <code>true</code> and <code>false</code> in FEEL expressions.
+          <h4>Support for new task listener types</h4>
+          The task listener now supports <code>creating</code>, and <code>canceling</code> events.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
