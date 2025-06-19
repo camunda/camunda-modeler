@@ -10,6 +10,8 @@
 
 import React, { useEffect, useRef } from 'react';
 
+import { useFormikContext } from 'formik';
+
 import EventEmitter from 'events';
 
 import { basicSetup } from 'codemirror';
@@ -74,6 +76,12 @@ export default function JSONInput(props) {
     };
   }, []);
 
+  const { setFieldTouched } = useFormikContext();
+
+  const onBlur = () => {
+    setFieldTouched(fieldName, true);
+  };
+
   return (
     <React.Fragment>
       <div className="form-group">
@@ -82,6 +90,7 @@ export default function JSONInput(props) {
           <DocumentationIcon url={ documentationUrl } />
         </label>
         <div
+          onBlur={ onBlur }
           ref={ ref }
           className={ classNames('custom-control-codemirror', {
             'is-invalid': !!error

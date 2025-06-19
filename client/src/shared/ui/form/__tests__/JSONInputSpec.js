@@ -12,7 +12,9 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
+
+import { Formik } from 'formik';
 
 import { JSONInput } from '..';
 
@@ -83,9 +85,13 @@ function createJSONInput(options = {}) {
     }
   };
 
-  return shallow(<JSONInput
-    { ...props }
-    field={ field || {} }
-    form={ form }
-  />);
+  return mount(
+    <Formik>
+      <JSONInput
+        { ...props }
+        field={ field || {} }
+        form={ form }
+      />
+    </Formik>
+  );
 }
