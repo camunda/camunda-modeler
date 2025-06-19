@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: update to `@bpmn-io/form-js@1.15.3`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.30.0`
+* `DEPS`: update to `@camunda/linting@3.38.0`
 * `DEPS`: update to `@camunda/rpa-integration@1.0.2`
 * `DEPS`: update to `bpmn-js-properties-panel@5.37.0`
 * `DEPS`: update to `bpmn-moddle@9.0.2`
@@ -24,6 +25,8 @@ ___Note:__ Yet to be released changes appear here._
 ### BPMN
 
 * `FEAT`: support `creating` and `canceling` task listeners ([#5000](https://github.com/camunda/camunda-modeler/issues/5000))
+* `FEAT`: show lint error if more than one blank start event in subprocess ([bpmn-io/bpmnlint#187](https://github.com/bpmn-io/bpmnlint/pull/187))
+* `CHORE`: update documentation link for C7 HTTL lint error ([camunda/bpmnlint-plugin-camunda-compat#202](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/202))
 
 ## 5.36.1
 
