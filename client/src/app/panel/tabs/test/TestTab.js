@@ -8,92 +8,52 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { is } from 'bpmn-js/lib/util/ModelUtil';
-
-import Test from './Test';
+import TaskTesting from 'task-testing';
 
 import { Fill } from '../../../slot-fill';
 
-import * as css from './TestTab.less';
-
 import TestStatusBarItem from './TestStatusBarItem';
-import classNames from 'classnames';
+
+import ZeebeAPI from '../../../../remote/ZeebeAPI';
+
+import {
+  bootstrapDeployment,
+  bootstrapStartInstance,
+  getProcessId
+} from '../../../../plugins/zeebe-plugin/shared/util';
 
 export default function TestTab(props) {
   const {
-    injector,
-    layout = {},
+    layout,
     onAction,
     backend,
     config,
-    file
+    file,
+    injector
   } = props;
 
-  const [ input, setInput ] = React.useState('');
-  const [ loading, setLoading ] = React.useState(false);
-  const [ selectedElement, setSelectedElement ] = React.useState(null);
-  const [ test, setTest ] = React.useState(null);
-  const [ testResults, setTestResults ] = React.useState({});
+  const [ zeebeClient, setZeebeClient ] = useState(null);
+  const [ deployment, setDeployment ] = useState(null);
 
   useEffect(() => {
-    const _test = new Test(backend, config, injector, file);
+    if (zeebeClient) {
+      return;
+    }
 
-    setTest(_test);
+    const zeebeAPI = new ZeebeAPI(backend);
+    setZeebeClient(zeebeAPI);
 
-    _test.getInput().then((input) => {
-      setInput(input);
-    });
+    const { deployment } = bootstrapDeployment(backend, config);
+    setDeployment(deployment);
   }, []);
 
-  useEffect(() => {
-    injector.get('eventBus').on('selection.changed', ({ newSelection }) => {
-      if (newSelection.length === 1 && is(newSelection[0], 'bpmn:Task')) {
-        setSelectedElement(newSelection[0]);
-      } else {
-        setSelectedElement(null);
-      }
-    });
-  }, []);
+  const handleSave = () => {
+    onAction('save');
+  };
 
-  useEffect(() => {
-    const callback = ({ element }) => {
-      if (testResults[element.id]) {
-        setTestResults({
-          ...testResults,
-          [ element.id ]: null
-        });
-      }
-    };
-
-    injector.get('eventBus').on('element.changed', callback);
-
-    return () => {
-      injector.get('eventBus').off('element.changed', callback);
-    };
-  }, [ testResults ]);
-
-  useEffect(() => {
-
-    // get input for selected element from local storage
-    if (selectedElement) {
-      const storedInput = localStorage.getItem(`test-input-${selectedElement.id}`);
-      if (storedInput) {
-        setInput(storedInput);
-      }
-    }
-  }, [ selectedElement ]);
-
-  useEffect(() => {
-
-    // set input for selected element in local storage
-    if (selectedElement && input) {
-      localStorage.setItem(`test-input-${selectedElement.id}`, input);
-    }
-  }, [ input ]);
-
-  const onToggle = () => {
+  const handleToggle = () => {
     const { panel = {} } = layout;
 
     if (!panel.open || panel.tab !== 'test') {
@@ -103,45 +63,48 @@ export default function TestTab(props) {
     }
   };
 
-  const onTest = async () => {
-    if (!test) {
-      return;
-    }
+  const deploy = async () => {
 
-    setLoading(true);
+    const deploymentConfig = await deployment.getConfigForFile(file);
 
-    onAction('save');
+    // TODO: Validate deploymentConfig
+    const deploymentResponse = await deployment.deploy({
+      path: file.path,
+      type: 'bpmn',
+    }, deploymentConfig);
 
-    setTestResults({
-      ...testResults,
-      [ selectedElement.id ]: null
-    });
-
-    const results = await test.run(selectedElement.id, input, (getProcessInstanceResult) => {
-      if (getProcessInstanceResult.success) {
-        setTestResults({
-          ...testResults,
-          [ selectedElement.id ]: getProcessInstanceResult
-        });
-      } else {
-        setTestResults({
-          ...testResults,
-          [ selectedElement.id ]: getProcessInstanceResult
-        });
-      }
-    });
-
-    console.log('test results', results);
-
-    setTestResults({
-      ...testResults,
-      [ selectedElement.id ]: results
-    });
-
-    setLoading(false);
+    return deploymentResponse;
   };
 
-  console.log('test results', testResults);
+  const startInstance = async (deploymentResponse, variables, elementId) => {
+
+    const processId = getProcessId(deploymentResponse, file.name);
+
+    const { startInstance } = bootstrapStartInstance(backend, config);
+
+    const deploymentConfig = await deployment.getConfigForFile(file);
+
+    const startInstanceResult = await startInstance.startInstance(processId, {
+      ...deploymentConfig,
+      variables,
+      startInstructions: [
+        {
+          elementId
+        }
+      ],
+      withResult: false // withResult does not support start instructions
+    });
+
+    return startInstanceResult;
+  };
+
+  const getInstance = async (processInstanceKey) => {
+
+    const deploymentConfig = await deployment.getConfigForFile(file);
+
+    const getProcessInstanceResult = await zeebeClient.getProcessInstance(deploymentConfig.endpoint, processInstanceKey);
+    return getProcessInstanceResult;
+  };
 
   return <>
     <Fill slot="bottom-panel"
@@ -149,64 +112,17 @@ export default function TestTab(props) {
       label="Test"
       layout={ layout }
       priority={ 10 }>
-      <div className={ css.TestTab }>
-        {
-          !selectedElement && <div className="placeholder">Select a task to test.</div>
-        }
-        {
-          selectedElement !== null && (
-            <>
-              {/* <div className="header">
-                <h5>Test { getBusinessObject(selectedElement).name }</h5>
-              </div> */}
-              <div className="input-output">
-                <div className="input">
-                  <div className="input-header">
-                    <h5>Input</h5>
-                    <button className={
-                      classNames('btn', {
-                        'btn-primary': !testResults[selectedElement.id],
-                        'btn-secondary': testResults[selectedElement.id]
-                      })
-                    } onClick={ onTest } disabled={ loading }>{ loading ? 'Running...' : testResults[selectedElement.id] ? 'Run' : 'Run' }</button>
-                  </div>
-                  <div className="input-content">
-                    <textarea spellCheck="false" rows="10" onChange={ (e) => setInput(e.target.value) } value={ input }></textarea>
-                  </div>
-                </div>
-                <div className="output">
-                  <div className="output-header">
-                    <h5>Output</h5>
-                    <button className="btn btn-secondary">Save as example output data</button>
-                  </div>
-                  <div className="output-content">
-                    {
-                      testResults[selectedElement.id] && (
-                        <>
-                          {
-                            testResults[selectedElement.id].type === 'instanceStarted' && <span>Instance started...</span>
-                          }
-                          {
-                            testResults[selectedElement.id].type === 'instanceNotFound' && <span>Waiting for Operate 😴...</span>
-                          }
-                          {
-                            testResults[selectedElement.id].type === 'instanceFound' && (
-                              <pre>{ JSON.stringify(testResults[selectedElement.id].response.response.variables, null, 2) }</pre>
-                            )
-                          }
-                        </>
-                      )
-                    }
-                  </div>
-                </div>
-              </div>
-            </>
-          )
-        }
+      <div>
+        <TaskTesting
+          deploy={ deploy }
+          startInstance={ startInstance }
+          getInstance={ getInstance }
+          saveFile={ handleSave }
+          injector={ injector } />
       </div>
     </Fill>
     <TestStatusBarItem
       layout={ layout }
-      onToggle={ onToggle } />
+      onToggle={ handleToggle } />
   </>;
 }
