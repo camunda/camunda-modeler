@@ -354,6 +354,16 @@ renderer.on('zeebe:getProcessInstance', async function(options, done) {
   }
 });
 
+renderer.on('zeebe:getCamunda8Client', async function(options, done) {
+  try {
+    const client = await zeebeAPI._getCamunda8Client(options);
+
+    done(null, client);
+  } catch (err) {
+    done(err);
+  }
+});
+
 // config //////////
 
 renderer.on('config:get', function(key, ...args) {

@@ -60,7 +60,8 @@ const allowedEvents = [
   'zeebe:deploy',
   'zeebe:getGatewayVersion',
   'zeebe:startInstance',
-  'zeebe:getProcessInstance'
+  'zeebe:getProcessInstance',
+  'zeebe:getCamunda8Client'
 ];
 
 let executed = false;
