@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/camunda/camunda-modeler/actions/workflows/CI.yml/badge.svg)](https://github.com/camunda/camunda-modeler/actions/workflows/CI.yml)
 
-An integrated modeling solution for BPMN, DMN, and Forms based on [bpmn.io](http://bpmn.io).
+A desktop application for modeling BPMN diagrams, DMN decisions, and Forms, powered by [bpmn.io](https://bpmn.io/). Use it alongside your favorite IDE to implement solutions with [Camunda](https://camunda.com/).
 
 ![Camunda Modeler](resources/screenshot.png)
 
