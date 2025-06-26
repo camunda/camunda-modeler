@@ -157,7 +157,7 @@ export function getEndpointForTargetType(endpoint) {
 }
 
 function getTenantId(tenantId, endpoint) {
-  if (endpoint.authType !== AUTH_TYPES.OAUTH) {
+  if (endpoint.authType === AUTH_TYPES.NONE) {
     return undefined;
   }
 

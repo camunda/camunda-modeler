@@ -283,6 +283,66 @@ describe('<DeploymentConfigForm>', function() {
     });
 
 
+    it('should submit (self-managed, basic auth, with tenant)', async function() {
+
+      // given
+      const onSubmitSpy = sinon.spy();
+
+      const wrapper = createDeploymentConfigForm({
+        onSubmit: onSubmitSpy,
+        initialFieldValues: {
+          deployment: {},
+          endpoint: {
+            targetType: TARGET_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.BASIC
+          }
+        }
+      });
+
+      // when
+      await act(async () => {
+        wrapper.find('input[name="endpoint.contactPoint"]').simulate('change', {
+          target: { name: 'endpoint.contactPoint', value: 'http://localhost:26500' }
+        });
+
+        wrapper.find('input[name="endpoint.basicAuthUsername"]').simulate('change', {
+          target: { name: 'endpoint.basicAuthUsername', value: 'username' }
+        });
+
+        wrapper.find('input[name="endpoint.basicAuthPassword"]').simulate('change', {
+          target: { name: 'endpoint.basicAuthPassword', value: 'password' }
+        });
+
+        wrapper.find('input[name="deployment.tenantId"]').simulate('change', {
+          target: { name: 'deployment.tenantId', value: 'my-tenant' }
+        });
+      });
+
+      wrapper.update();
+
+      await act(async () => {
+        wrapper.find('form').simulate('submit');
+      });
+
+      wrapper.update();
+
+      // then
+      expect(onSubmitSpy).to.have.been.calledOnce;
+      expect(onSubmitSpy).to.have.been.calledWith(merge({}, DEFAULT_INITIAL_FIELD_VALUES, {
+        deployment: {
+          tenantId: 'my-tenant'
+        },
+        endpoint: {
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.BASIC,
+          contactPoint: 'http://localhost:26500',
+          basicAuthUsername: 'username',
+          basicAuthPassword: 'password'
+        }
+      }));
+    });
+
+
     it('should be disabled when submitting', async function() {
 
       // given
