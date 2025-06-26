@@ -85,7 +85,8 @@ export default [
   {
     languageOptions: {
       globals: {
-        require: 'readonly'
+        require: 'readonly',
+        sinon: 'readonly'
       }
     },
     files: files.tests
