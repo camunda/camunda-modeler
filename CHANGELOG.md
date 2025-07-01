@@ -6,9 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: use FEEL parserDialect `camunda` for DMN and BPMN ([#4809](https://github.com/camunda/camunda-modeler/issues/4809))
+* `FEAT`: Input entries of a decision table use the unary-tests expression language dialect ([bpmn-io/dmn-js#947](https://github.com/bpmn-io/dmn-js/pull/947))
 * `FEAT`: allow to pass tenant ID with no authentication ([#5106](https://github.com/camunda/camunda-modeler/issues/5106))
 * `FIX`: use uniform GTK symbols on Linux ([#5095](https://github.com/camunda/camunda-modeler/issues/5095))
 * `DEPS`: update to `electron@37`
+* `DEPS`: update to `dmn-js@17.3.0`
+* `DEPS`: update to `camunda-dmn-js@3.4.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.38.0`
+* `DEPS`: update to `@camunda/linting@3.39.0`
 
 ## 5.37.0
 
