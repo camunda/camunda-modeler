@@ -121,8 +121,7 @@ export default function DeploymentConfigForm(props) {
                               autoFocus
                             />
                             {
-                              props.values.endpoint.targetType === TARGET_TYPES.SELF_HOSTED &&
-                              [ AUTH_TYPES.BASIC, AUTH_TYPES.OAUTH ].includes(props.values.endpoint.authType)
+                              props.values.endpoint.targetType === TARGET_TYPES.SELF_HOSTED
                                 && (
                                   <Field
                                     name="deployment.tenantId"
