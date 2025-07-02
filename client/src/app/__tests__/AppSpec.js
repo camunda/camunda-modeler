@@ -8,20 +8,15 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Component } from 'react';
+import React, { createRef, Component } from 'react';
 
-import {
-  shallow,
-  mount
-} from 'enzyme';
+import { render, screen, waitFor } from '@testing-library/react';
 
 import {
   App,
   EMPTY_TAB,
   getOpenFileErrorDialog
 } from '../App';
-
-import Panel from '../panel/Panel';
 
 import Flags, { DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
 
@@ -46,6 +41,7 @@ import {
 } from 'min-dash';
 
 /* global sinon */
+
 const { spy } = sinon;
 
 const noop = () => {};
@@ -80,9 +76,7 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const {
-          app
-        } = createApp({
+        const app = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -101,14 +95,12 @@ describe('<App>', function() {
       });
 
 
-      it('on tab change', function() {
+      it('on tab change', async function() {
 
         // given
         const updateMenuSpy = spy();
 
-        const {
-          app
-        } = createApp({
+        const app = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -117,7 +109,9 @@ describe('<App>', function() {
 
         // then
         // 1 - tab render
-        expect(updateMenuSpy).to.have.been.calledOnce;
+        await waitFor(() => {
+          expect(updateMenuSpy).to.have.been.calledOnce;
+        });
       });
 
 
@@ -126,9 +120,7 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const {
-          app
-        } = createApp({
+        const app = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -140,13 +132,16 @@ describe('<App>', function() {
         // when
         await app.triggerAction('close-all-tabs');
 
-        // then
-        // 1 - initial tab rendered
-        // 2 - empty tab rendered
-        // 3 - tab closed
-        // 4 - second tab closed
-        expect(updateMenuSpy).to.have.callCount(4);
+        await waitFor(() => {
+          expect(screen.queryByText('1.bpmn')).not.to.exist;
+        });
 
+        await waitFor(() => {
+          expect(screen.queryByText('2.bpmn')).not.to.exist;
+        });
+
+        // then
+        expect(updateMenuSpy).to.have.callCount(4);
         expect(app.state.tabState).to.eql({});
       });
 
@@ -161,11 +156,9 @@ describe('<App>', function() {
         const updateMenuSpy = spy();
 
         // when
-        const {
-          app
-        } = createApp({
+        const app = createApp({
           onMenuUpdate: updateMenuSpy
-        }, mount);
+        });
 
         // when
         await app.showTab(EMPTY_TAB);
@@ -186,11 +179,9 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const {
-          app
-        } = createApp({
+        const app = createApp({
           onMenuUpdate: updateMenuSpy
-        }, mount);
+        });
 
         // when
         await app.openFiles([
@@ -211,11 +202,9 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const {
-          app
-        } = createApp({
+        const app = createApp({
           onMenuUpdate: updateMenuSpy
-        }, mount);
+        });
 
         // when
         await app.openFiles([
@@ -240,11 +229,9 @@ describe('<App>', function() {
       // given
       const updateMenuSpy = spy();
 
-      const {
-        app
-      } = createApp({
+      const app = createApp({
         onMenuUpdate: updateMenuSpy
-      }, mount);
+      });
 
       // when
       await app.openFiles([
@@ -263,11 +250,9 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const {
-          app
-        } = createApp({
+        const app = createApp({
           onMenuUpdate: updateMenuSpy
-        }, mount);
+        });
 
         // when
         await app.openFiles([
@@ -284,11 +269,9 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const {
-          app
-        } = createApp({
+        const app = createApp({
           onMenuUpdate: updateMenuSpy
-        }, mount);
+        });
 
         // when
         await app.openFiles([
@@ -311,9 +294,7 @@ describe('<App>', function() {
     it('should render empty tab', function() {
 
       // when
-      const {
-        app
-      } = createApp();
+      const app = createApp();
 
       // then
       const {
@@ -333,9 +314,7 @@ describe('<App>', function() {
     it('should create + open as tabs', async function() {
 
       // given
-      const {
-        app
-      } = createApp();
+      const app = createApp();
 
       // when
       await app.createDiagram('bpmn');
@@ -376,7 +355,7 @@ describe('<App>', function() {
         send: sendSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           backend
         }
@@ -403,7 +382,7 @@ describe('<App>', function() {
         send: sendSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           backend
         }
@@ -426,7 +405,7 @@ describe('<App>', function() {
         send: sendSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           backend
         }
@@ -453,7 +432,7 @@ describe('<App>', function() {
         send: sendSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           backend
         }
@@ -480,7 +459,7 @@ describe('<App>', function() {
 
       const fileSystem = new FileSystem();
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           backend,
           fileSystem
@@ -512,9 +491,7 @@ describe('<App>', function() {
     it('should create tabs', async function() {
 
       // given
-      const {
-        app
-      } = createApp();
+      const app = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -542,7 +519,7 @@ describe('<App>', function() {
 
       dialog.setShowOpenFileErrorDialogResponse({ button: 'cancel' });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -562,9 +539,7 @@ describe('<App>', function() {
     it('should keep existing tabs (by path)', async function() {
 
       // given
-      const {
-        app
-      } = createApp();
+      const app = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -597,7 +572,7 @@ describe('<App>', function() {
 
       dialog.setShowEmptyFileDialogResponse({ button: 'create' });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -626,28 +601,23 @@ describe('<App>', function() {
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
 
-
       it('should open active file tab', async function() {
 
         // given
-        const { app } = createApp();
+        const app = createApp();
 
         // when
         await app.openFiles([ file1, file2 ], file1);
 
-        // then
-        const {
-          activeTab
-        } = app.state;
-
-        expect(activeTab).to.eql(app.findOpenTab(file1));
+        const activeTab = app.findOpenTab(file1);
+        expect(app.state.activeTab).to.eql(activeTab);
       });
 
 
       it('should not open tab', async function() {
 
         // given
-        const { app } = createApp();
+        const app = createApp();
 
         // when
         await app.openFiles([ file1, file2 ], false);
@@ -674,7 +644,7 @@ describe('<App>', function() {
 
       dialog.setShowEmptyFileDialogResponse({ button: 'create' });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -709,7 +679,7 @@ describe('<App>', function() {
 
       const showSpy = spy(dialog, 'showEmptyFileDialog');
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -735,7 +705,7 @@ describe('<App>', function() {
 
       dialog.setShowOpenFileErrorDialogResponse({ button: 'cancel' });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -766,9 +736,7 @@ describe('<App>', function() {
     it('should close active', async function() {
 
       // given
-      const {
-        app
-      } = createApp();
+      const app = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -781,24 +749,17 @@ describe('<App>', function() {
       await app.closeTab(tab);
 
       // then
-      const {
-        tabs,
-        activeTab
-      } = app.state;
+      await waitFor(() => {
+        expect(app.state.tabs).not.to.contain(tab);
+      });
 
-      expect(tabs).not.to.contain(tab);
-
-      // existing tab is focussed
-      expect(activeTab).to.eql(app.findOpenTab(file1));
+      expect(app.state.activeTab).to.eql(app.findOpenTab(file1));
     });
-
 
     it('should close all', async function() {
 
       // given
-      const {
-        app
-      } = createApp();
+      const app = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -809,15 +770,12 @@ describe('<App>', function() {
       await app.closeTabs(t => true);
 
       // then
-      const {
-        tabs,
-        activeTab
-      } = app.state;
-
-      expect(tabs).to.be.empty;
+      await waitFor(() => {
+        expect(app.state.tabs).to.be.empty;
+      });
 
       // existing tab is focussed
-      expect(activeTab).to.equal(EMPTY_TAB);
+      expect(app.state.activeTab).to.equal(EMPTY_TAB);
     });
 
 
@@ -826,9 +784,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const {
-        app
-      } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -839,9 +795,8 @@ describe('<App>', function() {
 
       const tab = await app.createDiagram();
 
-      app.setState({
-        ...app.setDirty(tab)
-      });
+      // when
+      app.state.dirtyTabs = { ...app.setDirty(tab).dirtyTabs };
 
       dialog.setShowCloseFileDialogResponse({ button: 'discard' });
 
@@ -849,12 +804,6 @@ describe('<App>', function() {
       await app.closeTab(tab);
 
       // then
-      const {
-        tabs
-      } = app.state;
-
-      expect(tabs).not.to.contain(tab);
-
       expect(showCloseFileDialogSpy).to.have.been.calledWith({
         name: tab.file.name
       });
@@ -868,9 +817,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const {
-        app
-      } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -881,9 +828,7 @@ describe('<App>', function() {
 
       const tab = await app.createDiagram();
 
-      app.setState({
-        ...app.setDirty(tab)
-      });
+      app.state.dirtyTabs = { ...app.setDirty(tab).dirtyTabs };
 
       dialog.setShowCloseFileDialogResponse({ button: 'discard' });
 
@@ -904,9 +849,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const {
-        app
-      } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -918,14 +861,10 @@ describe('<App>', function() {
       const tab = await app.createDiagram();
       const tab2 = await app.createDiagram();
 
-
-      app.setState({
-        ...app.setDirty(tab)
-      });
-
-      app.setState({
-        ...app.setDirty(tab2)
-      });
+      app.state.dirtyTabs = {
+        ...app.setDirty(tab).dirtyTabs,
+        ...app.setDirty(tab2).dirtyTabs
+      };
 
       dialog.setShowCloseFileDialogResponse({ button: 'cancel' });
 
@@ -948,9 +887,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const {
-        app
-      } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -958,9 +895,7 @@ describe('<App>', function() {
 
       const tab = await app.createDiagram();
 
-      app.setState({
-        ...app.setDirty(tab)
-      });
+      app.state.dirtyTabs = { ...app.setDirty(tab).dirtyTabs, };
 
       dialog.setShowCloseFileDialogResponse({ button: 'save' });
       dialog.setShowSaveFileDialogResponse(false);
@@ -983,9 +918,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const {
-        app
-      } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -993,9 +926,7 @@ describe('<App>', function() {
 
       const tab = await app.createDiagram();
 
-      app.setState({
-        ...app.setDirty(tab)
-      });
+      app.state.dirtyTabs = { ...app.setDirty(tab).dirtyTabs, };
 
       dialog.setShowCloseFileDialogResponse({ button: 'cancel' });
 
@@ -1017,9 +948,7 @@ describe('<App>', function() {
       // given
       const eventSpy = sinon.spy();
 
-      const {
-        app
-      } = createApp();
+      const app = createApp();
 
       const tab = await app.createDiagram('bpmn');
 
@@ -1029,7 +958,9 @@ describe('<App>', function() {
       await app.closeTab(tab);
 
       // then
-      expect(eventSpy).to.have.been.calledOnce;
+      await waitFor(() => {
+        expect(eventSpy).to.have.been.calledOnce;
+      });
     });
 
 
@@ -1038,9 +969,7 @@ describe('<App>', function() {
       // given
       const eventSpy = sinon.spy();
 
-      const {
-        app
-      } = createApp();
+      const app = createApp();
 
       const tab = await app.createDiagram('bpmn');
 
@@ -1063,8 +992,7 @@ describe('<App>', function() {
         fileSystem,
         showSaveFileDialogSpy,
         showSaveFileErrorDialogSpy,
-        writeFileSpy,
-        rendered;
+        writeFileSpy;
 
     beforeEach(function() {
 
@@ -1077,14 +1005,12 @@ describe('<App>', function() {
 
       writeFileSpy = spy(fileSystem, 'writeFile');
 
-      rendered = createApp({
+      app = createApp({
         globals: {
           dialog,
           fileSystem
         }
-      }, mount);
-
-      app = rendered.app;
+      });
     });
 
     afterEach(sinon.restore);
@@ -1368,14 +1294,12 @@ describe('<App>', function() {
 
       writeFileSpy = spy(fileSystem, 'writeFile');
 
-      const rendered = createApp({
+      app = createApp({
         globals: {
           dialog,
           fileSystem
         }
-      }, mount);
-
-      app = rendered.app;
+      });
     });
 
 
@@ -1517,9 +1441,7 @@ describe('<App>', function() {
         events.push([ 'tab-shown', tab ]);
       });
 
-      const {
-        app
-      } = createApp({
+      const app = createApp({
         onTabChanged,
         onTabShown
       });
@@ -1548,12 +1470,10 @@ describe('<App>', function() {
         events.push([ 'tab-shown', tab ]);
       });
 
-      const {
-        app
-      } = createApp({
+      const app = createApp({
         onTabChanged,
         onTabShown
-      }, mount);
+      });
 
       // when
       const tab = await app.createDiagram('bpmn');
@@ -1571,9 +1491,7 @@ describe('<App>', function() {
       // given
       const eventSpy = sinon.spy();
 
-      const {
-        app
-      } = createApp();
+      const app = createApp();
 
       app.on('app.tabsChanged', eventSpy);
 
@@ -1592,9 +1510,8 @@ describe('<App>', function() {
     let app, openedTabs;
 
     beforeEach(async function() {
-      const rendered = createApp();
 
-      app = rendered.app;
+      app = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -1667,9 +1584,7 @@ describe('<App>', function() {
       let app, openedTabs;
 
       beforeEach(async function() {
-        const rendered = createApp();
-
-        app = rendered.app;
+        app = createApp();
 
         const file1 = createFile('1.bpmn');
         const file2 = createFile('2.bpmn');
@@ -1705,7 +1620,9 @@ describe('<App>', function() {
         app.moveTab(openedTabs[2], 1);
 
         // then
-        expect(app.state.tabs).to.eql(expectedTabs);
+        await waitFor(() => {
+          expect(app.state.tabs).to.eql(expectedTabs);
+        });
 
         // we don't implicitly activate tab on move
         // this happens on drag start instead
@@ -1767,29 +1684,26 @@ describe('<App>', function() {
         expect(activeTab.file).not.to.equal(newTab);
       });
 
-
       it('after all closed', async function() {
 
         // given
-        await app.closeTabs((t) => true);
+        await app.triggerAction('close-all-tabs');
 
         // when
         await app.triggerAction('reopen-last-tab');
         await app.triggerAction('reopen-last-tab');
 
         // then
-        const {
-          activeTab,
-          tabs
-        } = app.state;
-
         const expectedOpen = [
           app.findOpenTab(openedTabs[2].file),
           app.findOpenTab(openedTabs[1].file)
         ];
 
-        expect(tabs).to.eql(expectedOpen);
-        expect(activeTab).to.eql(expectedOpen[1]);
+        await waitFor(() => {
+          expect(app.state.tabs).to.eql(expectedOpen);
+        });
+
+        expect(app.state.activeTab).to.eql(expectedOpen[1]);
       });
 
     });
@@ -1802,12 +1716,16 @@ describe('<App>', function() {
         // when
         await app.triggerAction('close-all-tabs');
 
+        await waitFor(() => {
+          expect(app.state.tabs).to.be.empty;
+        });
+
         // then
         const navigationHistory = app.navigationHistory;
 
+        expect(app.navigationHistory.get()).not.to.exist;
         expect(navigationHistory.elements).to.be.empty;
         expect(navigationHistory.idx).to.eql(-1);
-        expect(navigationHistory.get()).not.to.exist;
       });
 
     });
@@ -1821,9 +1739,7 @@ describe('<App>', function() {
 
     beforeEach(async function() {
 
-      const rendered = createApp();
-
-      app = rendered.app;
+      app = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -1856,11 +1772,9 @@ describe('<App>', function() {
       await app.closeTab(savedTab2);
 
       // when
-      const {
-        recentTabs
-      } = app.state;
-
-      expect(recentTabs).to.eql([ savedTab1, savedTab2 ]);
+      await waitFor(() => {
+        expect(app.state.recentTabs).to.eql([ savedTab1, savedTab2 ]);
+      });
     });
 
 
@@ -1929,21 +1843,19 @@ describe('<App>', function() {
       await app.closeTab(savedTab1);
       await app.closeTab(savedTab2);
 
-      let {
-        recentTabs
-      } = app.state;
-
       // assume
-      expect(recentTabs).to.eql([ savedTab1, savedTab2 ]);
+      await waitFor(() => {
+        expect(app.state.recentTabs).to.eql([ savedTab1, savedTab2 ]);
+      });
 
       // when
       await app.triggerAction('reopen-file', savedTab1);
       await app.closeTab(app.state.activeTab);
 
       // then
-      recentTabs = app.state.recentTabs;
-
-      expect(recentTabs.map(tab => tab.file)).to.eql([ savedTab2.file, savedTab1.file ]);
+      await waitFor(() => {
+        expect(app.state.recentTabs.map(tab => tab.file)).to.eql([ savedTab2.file, savedTab1.file ]);
+      });
     });
 
   });
@@ -1956,9 +1868,7 @@ describe('<App>', function() {
       // given
       const errorSpy = spy();
 
-      const {
-        app
-      } = createApp({ onError: errorSpy }, mount);
+      const app = createApp({ onError: errorSpy });
 
       const tab = await app.createDiagram();
 
@@ -1998,9 +1908,7 @@ describe('<App>', function() {
           deferred.resolve(error);
         }
 
-        const {
-          app
-        } = createApp({ onError }, mount);
+        const app = createApp({ onError });
 
         await app.createDiagram();
 
@@ -2032,9 +1940,7 @@ describe('<App>', function() {
       // given
       const warningSpy = spy();
 
-      const {
-        app
-      } = createApp({ onWarning: warningSpy }, mount);
+      const app = createApp({ onWarning: warningSpy });
 
       const tab = await app.createDiagram();
 
@@ -2058,12 +1964,12 @@ describe('<App>', function() {
 
     describe('should notify #onWorkspaceChanged', function() {
 
-      it('on layout change', function() {
+      it('on layout change', async function() {
 
         // given
         const changedSpy = spy(() => {});
 
-        const { app } = createApp({
+        const app = createApp({
           onWorkspaceChanged: changedSpy
         });
 
@@ -2071,16 +1977,18 @@ describe('<App>', function() {
         app.setLayout({});
 
         // then
-        expect(changedSpy).to.have.been.calledOnce;
+        await waitFor(() => {
+          expect(changedSpy).to.have.been.calledOnce;
+        });
       });
 
 
-      it('on activeTab / tabs change', function() {
+      it('on activeTab / tabs change', async function() {
 
         // given
         const changedSpy = spy(() => {});
 
-        const { app } = createApp({
+        const app = createApp({
           onWorkspaceChanged: changedSpy
         });
 
@@ -2088,7 +1996,9 @@ describe('<App>', function() {
         app.createDiagram('bpmn');
 
         // then
-        expect(changedSpy).to.have.been.calledTwice;
+        await waitFor(() => {
+          expect(changedSpy).to.have.been.called;
+        });
       });
 
 
@@ -2097,7 +2007,7 @@ describe('<App>', function() {
         // given
         const changedSpy = spy(() => {});
 
-        const { app } = createApp({
+        const app = createApp({
           onWorkspaceChanged: changedSpy
         });
 
@@ -2105,7 +2015,9 @@ describe('<App>', function() {
         await app.quit();
 
         // then
-        expect(changedSpy).to.have.been.calledOnce;
+        await waitFor(() => {
+          expect(changedSpy).to.have.been.calledOnce;
+        });
       });
 
     });
@@ -2115,13 +2027,10 @@ describe('<App>', function() {
 
   describe('panel', function() {
 
-    it('should render', function() {
+    it('should render', async function() {
 
       // given
-      const {
-        app,
-        tree
-      } = createApp();
+      const app = createApp();
 
       // when
       app.setLayout({
@@ -2132,14 +2041,15 @@ describe('<App>', function() {
       });
 
       // then
-      expect(tree.find(Panel).exists()).to.be.true;
+      await screen.findByText('Output');
+      await screen.findByText('Problems');
     });
 
 
-    it('should open', function() {
+    it('should open', async function() {
 
       // given
-      const { app } = createApp();
+      const app = createApp();
 
       app.setLayout({});
 
@@ -2147,53 +2057,7 @@ describe('<App>', function() {
       app.openPanel('log');
 
       // then
-      expect(app.state.layout).to.eql({
-        panel: {
-          open: true,
-          tab: 'log'
-        }
-      });
-    });
-
-
-    it('should close', function() {
-
-      // given
-      const { app } = createApp();
-
-      app.setLayout({
-        panel: {
-          open: true,
-          tab: 'log'
-        }
-      });
-
-      // when
-      app.closePanel();
-
-      // then
-      expect(app.state.layout).to.eql({
-        panel: {
-          open: false,
-          tab: 'log'
-        }
-      });
-    });
-
-
-    describe('#triggerAction', function() {
-
-      it('should open', function() {
-
-        // given
-        const { app } = createApp();
-
-        app.setLayout({});
-
-        // when
-        app.triggerAction('open-panel', { tab: 'log' });
-
-        // then
+      await waitFor(() => {
         expect(app.state.layout).to.eql({
           panel: {
             open: true,
@@ -2201,12 +2065,66 @@ describe('<App>', function() {
           }
         });
       });
+    });
 
 
-      it('should close', function() {
+    it('should close', async function() {
+
+      // given
+      const app = createApp();
+
+      await waitFor(() => {
+        app.setLayout({
+          panel: {
+            open: true,
+            tab: 'log'
+          }
+        });
+      });
+
+      // when
+      app.closePanel();
+
+      // then
+      await waitFor(() => {
+        expect(app.state.layout).to.eql({
+          panel: {
+            open: false,
+            tab: 'log'
+          }
+        });
+      });
+    });
+
+
+    describe('#triggerAction', function() {
+
+      it('should open', async function() {
 
         // given
-        const { app } = createApp();
+        const app = createApp();
+
+        app.setLayout({});
+
+        // when
+        app.triggerAction('open-panel', { tab: 'log' });
+
+        // then
+        await waitFor(() => {
+          expect(app.state.layout).to.eql({
+            panel: {
+              open: true,
+              tab: 'log'
+            }
+          });
+        });
+      });
+
+
+      it('should close', async function() {
+
+        // given
+        const app = createApp();
 
         app.setLayout({
           panel: {
@@ -2215,15 +2133,26 @@ describe('<App>', function() {
           }
         });
 
+        await waitFor(() => {
+          expect(app.state.layout).to.eql({
+            panel: {
+              open: true,
+              tab: 'log'
+            }
+          });
+        });
+
         // when
         app.triggerAction('close-panel');
 
         // then
-        expect(app.state.layout).to.eql({
-          panel: {
-            open: false,
-            tab: 'log'
-          }
+        await waitFor(() => {
+          expect(app.state.layout).to.eql({
+            panel: {
+              open: false,
+              tab: 'log'
+            }
+          });
         });
       });
 
@@ -2234,10 +2163,10 @@ describe('<App>', function() {
 
       describe('#triggerAction', function() {
 
-        it('should open', function() {
+        it('should open', async function() {
 
           // given
-          const { app } = createApp();
+          const app = createApp();
 
           app.setLayout({});
 
@@ -2245,11 +2174,13 @@ describe('<App>', function() {
           app.triggerAction('open-log');
 
           // then
-          expect(app.state.layout).to.eql({
-            panel: {
-              open: true,
-              tab: 'log'
-            }
+          await waitFor(() => {
+            expect(app.state.layout).to.eql({
+              panel: {
+                open: true,
+                tab: 'log'
+              }
+            });
           });
         });
 
@@ -2262,57 +2193,65 @@ describe('<App>', function() {
 
       describe('#triggerAction', function() {
 
-        it('should open', function() {
+        it('should open', async function() {
 
           // given
-          const { app } = createApp();
+          const app = createApp();
 
-          app.setLayout({
-            panel: {
-              open: false,
-            }
+          await waitFor(() => {
+            app.setLayout({
+              panel: {
+                open: false,
+              }
+            });
           });
 
           // when
           app.triggerAction('toggle-panel');
 
           // then
-          expect(app.state.layout).to.eql({
-            panel: {
-              open: true,
-              tab: 'log'
-            }
+          await waitFor(() => {
+            expect(app.state.layout).to.eql({
+              panel: {
+                open: true,
+                tab: 'log'
+              }
+            });
           });
         });
 
 
-        it('should close', function() {
+        it('should close', async function() {
 
           // given
-          const { app } = createApp();
+          const app = createApp();
 
-          app.setLayout({
-            panel: {
-              open: true,
-            }
+          await waitFor(() => {
+            app.setLayout({
+              panel: {
+                open: true,
+              }
+            });
           });
 
           // when
           app.triggerAction('toggle-panel');
 
           // then
-          expect(app.state.layout).to.eql({
-            panel: {
-              open: false
-            }
+          await waitFor(() => {
+            expect(app.state.layout).to.eql({
+              panel: {
+                open: false
+              }
+            });
           });
         });
 
 
-        it('should preserve state when reopened after being closed', function() {
+        it('should preserve state when reopened after being closed', async function() {
 
           // given
-          const { app } = createApp();
+          const app = createApp();
 
           app.setLayout({
             panel: {
@@ -2331,11 +2270,13 @@ describe('<App>', function() {
 
 
           // then
-          expect(app.state.layout).to.eql({
-            panel: {
-              open: true,
-              tab: 'variable-outline'
-            }
+          await waitFor(() => {
+            expect(app.state.layout).to.eql({
+              panel: {
+                open: true,
+                tab: 'variable-outline'
+              }
+            });
           });
         });
 
@@ -2351,48 +2292,47 @@ describe('<App>', function() {
     it('should display notification', async function() {
 
       // given
-      const {
-        app,
-        tree
-      } = createApp();
+      const app = createApp();
 
-      const notificationProps = { title: 'test' };
+      const notificationProps = { title: 'test-notification' };
 
       // when
       await app.triggerAction('display-notification', notificationProps);
 
       // then
-      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(1);
+      await waitFor(() => {
+        expect(screen.getByText('test-notification')).to.exist;
+      });
     });
 
 
     it('should close notification', async function() {
 
       // given
-      const {
-        app,
-        tree
-      } = createApp();
+      const app = createApp();
 
-      const notificationProps = { title: 'test' };
+      const notificationProps = { title: 'test-notification' };
 
       const { close } = await app.triggerAction('display-notification', notificationProps);
+
+      await waitFor(() => {
+        expect(screen.getByText('test-notification')).to.exist;
+      });
 
       // when
       close();
 
       // then
-      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+      await waitFor(() => {
+        expect(screen.queryByText('test-notification')).to.not.exist;
+      });
     });
 
 
     it('should update notification', async function() {
 
       // given
-      const {
-        app,
-        tree
-      } = createApp();
+      const app = createApp();
 
       const newTitle = 'new Title';
 
@@ -2400,98 +2340,105 @@ describe('<App>', function() {
 
       const { update } = await app.triggerAction('display-notification', notificationProps);
 
+      await waitFor(() => {
+        expect(screen.getByText('test')).to.exist;
+      });
+
       // when
       update({ title: newTitle });
 
       // then
-      const notifications = tree.find('Notifications').first().prop('notifications');
+      await waitFor(() => {
+        expect(screen.getByText(newTitle)).to.exist;
+      });
 
-      expect(notifications).to.have.lengthOf(1);
-      expect(notifications[0]).to.have.property('title', newTitle);
+      expect(screen.queryByText('test')).to.not.exist;
     });
 
 
     it('should NOT display notification without title', async function() {
 
       // given
-      const {
-        app,
-        tree
-      } = createApp();
+      const app = createApp();
 
-      const notificationProps = {};
+      const notificationProps = { content: 'test-notification' };
 
       // when
       await app.triggerAction('display-notification', notificationProps);
 
       // then
-      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+      await waitFor(() => {
+        expect(screen.queryByText('test-notification')).to.not.exist;
+      });
     });
 
 
     it('should NOT display notification of unknown type', async function() {
 
       // given
-      const {
-        app,
-        tree
-      } = createApp();
+      const app = createApp();
 
-      const notificationProps = { type: 'unknown' };
+      const notificationProps = { type: 'unknown', title: 'test-notification' };
 
       // when
       await app.triggerAction('display-notification', notificationProps);
 
       // then
-      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+      await waitFor(() => {
+        expect(screen.queryByText('test-notification')).to.not.exist;
+      });
     });
 
 
     it('should close all notifications when tab changes', async function() {
 
       // given
-      const {
-        app,
-        tree
-      } = createApp();
+      const app = createApp();
 
       const file = createFile('1.bpmn');
 
-      const notificationProps = { type: 'unknown' };
-
       // open several notifications
-      await app.triggerAction('display-notification', notificationProps);
-      await app.triggerAction('display-notification', notificationProps);
-      await app.triggerAction('display-notification', notificationProps);
+      await app.triggerAction('display-notification', { title: 'test-notification-1' });
+      await screen.findByText('test-notification-1');
+
+      await app.triggerAction('display-notification', { title: 'test-notification-2' });
+      await screen.findByText('test-notification-2');
+
+      await app.triggerAction('display-notification', { title: 'test-notification-3' });
+      await screen.findByText('test-notification-3');
 
       // when
       app.openFiles([ file ]);
 
       // then
-      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+      await waitFor(() => {
+        expect(screen.queryByText('test-notification')).to.not.exist;
+      });
     });
 
 
     it('should close all notifications when sheet changes', async function() {
 
       // given
-      const {
-        app,
-        tree
-      } = createApp();
-
-      const notificationProps = { type: 'unknown' };
+      const app = createApp();
 
       // open several notifications
-      await app.triggerAction('display-notification', notificationProps);
-      await app.triggerAction('display-notification', notificationProps);
-      await app.triggerAction('display-notification', notificationProps);
+      await app.triggerAction('display-notification', { title: 'test-notification-1' });
+      await screen.findByText('test-notification-1');
+
+      await app.triggerAction('display-notification', { title: 'test-notification-2' });
+      await screen.findByText('test-notification-2');
+
+      await app.triggerAction('display-notification', { title: 'test-notification-3' });
+      await screen.findByText('test-notification-3');
 
       // when
       await app.triggerAction('emit-event', { type: 'tab.activeSheetChanged' });
 
       // then
-      expect(tree.find('Notifications').first().prop('notifications')).to.have.lengthOf(0);
+      await waitFor(() => {
+        expect(screen.queryByText('test-notification')).to.not.exist;
+      });
     });
 
   });
@@ -2526,7 +2473,7 @@ describe('<App>', function() {
       const tabsProvider = new TabsProvider(resolveTabSpy);
 
       // when
-      createApp({ tabsProvider }, mount);
+      createApp({ tabsProvider });
 
       // then
       expect(resolveTabSpy).to.have.been.calledOnce;
@@ -2575,12 +2522,12 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog,
           fileSystem
         }
-      }, mount);
+      });
 
       const openedTabs = await app.openFiles([ file1, file2 ]);
 
@@ -2597,7 +2544,9 @@ describe('<App>', function() {
       expect(showSpy).to.have.been.called;
       expect(readFileSpy).to.have.been.called;
 
-      expect(updatedTab).to.eql(app.findOpenTab(file1));
+      await waitFor(() => {
+        expect(updatedTab).to.eql(app.findOpenTab(file1));
+      });
 
       expect(updatedTab.file.contents).to.eql(NEW_FILE_CONTENTS);
 
@@ -2617,7 +2566,7 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog,
           fileSystem
@@ -2653,7 +2602,7 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog,
           fileSystem
@@ -2680,7 +2629,7 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog,
           fileSystem
@@ -2703,7 +2652,10 @@ describe('<App>', function() {
       // then
       expect(showSpy).to.have.been.called;
       expect(readFileSpy).to.not.have.been.called;
-      expect(updatedTab).to.eql(app.findOpenTab(file1));
+
+      await waitFor(() => {
+        expect(updatedTab).to.eql(app.findOpenTab(file1));
+      });
 
       expect(updatedTab.file.contents).to.equal(oldTabContents);
       expect(updatedTab.file.lastModified).to.equal(lastModified);
@@ -2715,7 +2667,7 @@ describe('<App>', function() {
     it('should execute only once', async function() {
 
       // given
-      const { app } = createApp();
+      const app = createApp();
 
       const openedTabs = await app.openFiles([ file1 ]);
 
@@ -2744,11 +2696,9 @@ describe('<App>', function() {
 
     beforeEach(async function() {
 
-      const rendered = createApp({
+      app = createApp({
         onError: errorSpy
       });
-
-      app = rendered.app;
 
       await app.createDiagram('bpmn');
 
@@ -2841,6 +2791,10 @@ describe('<App>', function() {
       // when
       const updatedTab = await app.updateTab(tab, newAttrs);
 
+      await waitFor(() => {
+        expect(screen.getByText('foo.bpmn')).to.exist;
+      });
+
       const {
         activeTab,
         tabs
@@ -2890,7 +2844,9 @@ describe('<App>', function() {
       await app.updateTab(tab, newAttrs);
 
       // then
-      expect(eventSpy).to.have.been.calledOnce;
+      await waitFor(() => {
+        expect(eventSpy).to.have.been.calledOnce;
+      });
     });
 
   });
@@ -2916,7 +2872,7 @@ describe('<App>', function() {
 
       const showOpenFilesDialogSpy = spy(dialog, 'showOpenFilesDialog');
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog,
           fileSystem
@@ -2943,7 +2899,7 @@ describe('<App>', function() {
 
       const showOpenFilesDialogSpy = spy(dialog, 'showOpenFilesDialog');
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -2971,7 +2927,7 @@ describe('<App>', function() {
       show: showSpy
     });
 
-    const { app } = createApp({
+    const app = createApp({
       globals: {
         dialog
       }
@@ -2998,7 +2954,7 @@ describe('<App>', function() {
       send: sendSpy
     });
 
-    const { app } = createApp({
+    const app = createApp({
       globals: {
         backend
       }
@@ -3025,7 +2981,7 @@ describe('<App>', function() {
       send: sendSpy
     });
 
-    const { app } = createApp({
+    const app = createApp({
       globals: {
         backend
       }
@@ -3045,42 +3001,43 @@ describe('<App>', function() {
     );
   });
 
-
+  // TODO(@jarekdanielak): Can probably just findByRole one dialog,
+  // when migration is done.
   describe('modal handling', function() {
 
     let app;
 
     beforeEach(function() {
-      const rendered = createApp();
-
-      app = rendered.app;
+      app = createApp();
+      app.closeModal();
     });
 
-
-    it('should open modal', function() {
-
-      // given
-      const fakeModalName = 'modal';
+    it('should open modal', async function() {
 
       // when
-      app.openModal(fakeModalName);
+      app.openModal('KEYBOARD_SHORTCUTS');
 
       // then
-      expect(app.state.currentModal).to.eql(fakeModalName);
+      const dialogs = await screen.findAllByRole('dialog');
+      expect(dialogs).to.have.length.greaterThan(0);
     });
 
 
-    it('should close modal', function() {
+    it('should close modal', async function() {
 
       // given
-      const fakeModalName = 'modal';
-      app.setState({ currentModal: fakeModalName });
+      app.openModal('KEYBOARD_SHORTCUTS');
+
+      // assume
+      const dialogs = await screen.findAllByRole('dialog');
+      expect(dialogs).to.have.length.greaterThan(0);
 
       // when
       app.closeModal();
 
       // then
-      expect(app.state.currentModal).to.eql(null);
+      const newDialogs = await screen.findAllByRole('dialog');
+      expect(newDialogs).to.have.length(dialogs.length - 1);
     });
 
 
@@ -3115,7 +3072,7 @@ describe('<App>', function() {
         get: getConfigSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           config
         }
@@ -3148,7 +3105,7 @@ describe('<App>', function() {
         set: setConfigSpy
       });
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           config
         }
@@ -3169,7 +3126,7 @@ describe('<App>', function() {
     it('should load plugins', function() {
 
       // given
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           plugins: {
             get(type) {
@@ -3202,10 +3159,7 @@ describe('<App>', function() {
     it('should trigger tab resize when layout changes', async function() {
 
       // given
-      const {
-        app,
-        tree
-      } = createApp({}, mount);
+      const app = createApp();
 
       const resizeTabStub = sinon.stub(app, 'resizeTab').resolves();
 
@@ -3218,10 +3172,9 @@ describe('<App>', function() {
       });
 
       // then
-      expect(resizeTabStub).to.be.calledOnce;
-
-      // clean
-      tree.unmount();
+      await waitFor(() => {
+        expect(resizeTabStub).to.have.been.calledOnce;
+      });
     });
 
   });
@@ -3234,11 +3187,11 @@ describe('<App>', function() {
     beforeEach(async function() {
       dialog = new Dialog();
 
-      ({ app } = createApp({
+      (app = createApp({
         globals: {
           dialog
         }
-      }, mount));
+      }));
     });
 
 
@@ -3303,9 +3256,7 @@ describe('<App>', function() {
         .onSecondCall().rejects(directoryReadError)
         .onThirdCall().resolves({ contents: '' });
 
-      const {
-        app
-      } = createApp({
+      const app = createApp({
         globals: {
           fileSystem
         }
@@ -3328,7 +3279,7 @@ describe('<App>', function() {
 
     beforeEach(async function() {
 
-      ({ app } = createApp(mount));
+      (app = createApp());
     });
 
     it('should emit event with tab', function() {
@@ -3428,7 +3379,7 @@ describe('<App>', function() {
 
       const showFileExplorerDialogSpy = sinon.spy(dialog, 'showFileExplorerDialog');
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           dialog
         }
@@ -3451,7 +3402,7 @@ describe('<App>', function() {
     it('should lint tab (no errors)', async function() {
 
       // given
-      const { app } = createApp();
+      const app = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
@@ -3467,7 +3418,10 @@ describe('<App>', function() {
       // then
       const lintingState = app.getLintingState(currentTab);
 
-      expect(lintingState).to.exist;
+      await waitFor(() => {
+        expect(lintingState).to.exist;
+      });
+
       expect(lintingState).to.be.empty;
     });
 
@@ -3475,7 +3429,7 @@ describe('<App>', function() {
     it('should lint tab (errors)', async function() {
 
       // given
-      const { app } = createApp();
+      const app = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
@@ -3489,10 +3443,9 @@ describe('<App>', function() {
       await app.lintTab(currentTab);
 
       // then
-      const lintingState = app.getLintingState(currentTab);
-
-      expect(lintingState).to.exist;
-      expect(lintingState).to.have.length(1);
+      await waitFor(() => {
+        expect(app.getLintingState(currentTab)).to.have.length(1);
+      });
     });
 
 
@@ -3507,7 +3460,7 @@ describe('<App>', function() {
         type: 'default'
       });
 
-      const { app } = createApp();
+      const app = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
@@ -3522,17 +3475,16 @@ describe('<App>', function() {
       await app.lintTab(currentTab, 'linting-errors');
 
       // then
-      const lintingState = app.getLintingState(currentTab);
-
-      expect(lintingState).to.exist;
-      expect(lintingState).to.have.length(1);
+      await waitFor(() => {
+        expect(app.getLintingState(currentTab)).to.have.length(1);
+      });
     });
 
 
     it('should not lint tab (no linter)', async function() {
 
       // given
-      const { app } = createApp();
+      const app = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.dmn')
@@ -3544,16 +3496,18 @@ describe('<App>', function() {
       await app.lintTab(currentTab);
 
       // then
-      const lintingState = app.getLintingState(currentTab);
+      await waitFor(() => {
+        const lintingState = app.getLintingState(currentTab);
 
-      expect(lintingState).to.be.empty;
+        expect(lintingState).to.be.empty;
+      });
     });
 
 
     it('should lint tab through #triggerAction', async function() {
 
       // given
-      const { app } = createApp();
+      const app = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
@@ -3577,7 +3531,7 @@ describe('<App>', function() {
     it('should lint tab after save', async function() {
 
       // given
-      const { app } = createApp();
+      const app = createApp();
 
       await app.openFiles([
         createFile('1.form', {
@@ -3602,7 +3556,7 @@ describe('<App>', function() {
 
       const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
 
-      const { app } = createApp({
+      const app = createApp({
         globals: {
           plugins: {
             get(type) {
@@ -3633,7 +3587,7 @@ describe('<App>', function() {
     it('should return empty linting state', async function() {
 
       // given
-      const { app } = createApp();
+      const app = createApp();
 
       // then
       const lintingState = app.getLintingState(EMPTY_TAB);
@@ -3653,7 +3607,7 @@ describe('<App>', function() {
         // given
         const dialog = new Dialog();
 
-        const { app } = createApp({
+        const app = createApp({
           globals: {
             dialog
           }
@@ -3681,7 +3635,7 @@ describe('<App>', function() {
         // given
         const dialog = new Dialog();
 
-        const { app } = createApp({
+        const app = createApp({
           globals: {
             dialog
           }
@@ -3708,7 +3662,7 @@ describe('<App>', function() {
         // given
         const dialog = new Dialog();
 
-        const { app } = createApp({
+        const app = createApp({
           globals: {
             dialog
           }
@@ -3734,7 +3688,7 @@ describe('<App>', function() {
         // given
         const dialog = new Dialog();
 
-        const { app } = createApp({
+        const app = createApp({
           globals: {
             dialog
           }
@@ -3761,26 +3715,20 @@ describe('<App>', function() {
 
 
 // helpers //////////
-class MockTab {
-  triggerAction() {}
-}
 
-function createApp(options = {}, mountFn = shallow) {
-
-  if (typeof options === 'function') {
-    mountFn = options;
-    options = {};
-  }
-
-  let app;
+/**
+ * Render the App with options and get a ref to its instance.
+ *
+ * @param {Object} options
+ * @returns {App}
+ */
+function createApp(options = {}) {
 
   const flags = options.flags || {
     [ DISABLE_REMOTE_INTERACTION ]: true
   };
 
   Flags.init(flags);
-
-  const cache = options.cache || new Cache();
 
   const defaultGlobals = {
     backend: new Backend(),
@@ -3799,26 +3747,21 @@ function createApp(options = {}, mountFn = shallow) {
     ...(options.globals || {})
   };
 
+  const cache = options.cache || new Cache();
   const tabsProvider = options.tabsProvider || new TabsProvider();
-
-  const defaultOnTabChanged = mountFn === shallow && function(newTab) {
-    app.handleTabShown(newTab)();
-  };
-
-  const onTabChanged = options.onTabChanged || defaultOnTabChanged;
-
+  const onTabChanged = options.onTabChanged || noop;
   const onWorkspaceChanged = options.onWorkspaceChanged;
-  const onTabShown = options.onTabShown || function() {
-    tree.update();
-  };
-
+  const onTabShown = options.onTabShown || noop;
   const onMenuUpdate = options.onMenuUpdate || noop;
   const onReady = options.onReady || noop;
   const onError = options.onError || noop;
   const onWarning = options.onWarning || noop;
 
-  const tree = mountFn(
+  const appRef = createRef();
+
+  render(
     <App
+      ref={ appRef }
       cache={ cache }
       globals={ globals }
       tabsProvider={ tabsProvider }
@@ -3832,20 +3775,7 @@ function createApp(options = {}, mountFn = shallow) {
     />
   );
 
-  app = tree.instance();
-
-  // shallow renderer always returns null on current ref
-  if (mountFn === shallow) {
-    app.tabRef = {
-      current: new MockTab()
-    };
-  }
-
-  return {
-    tree,
-    app
-  };
-
+  return appRef.current;
 }
 
 
