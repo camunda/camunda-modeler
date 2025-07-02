@@ -127,8 +127,8 @@ export default class Plugins {
     };
 
     // Carbon React exports for the client plugins
-    vendor.carbon = CarbonReactExports;
-    vendor.carbonicons = CarbonIconsReactExports;
+    vendor.carbonReact = CarbonReactExports;
+    vendor.carbonIconsReact = CarbonIconsReactExports;
   }
 
   /**
