@@ -32,6 +32,9 @@ import { Fill } from '../app/slot-fill';
 
 import React, * as ReactExports from 'react';
 
+import * as CarbonReactExports from '@carbon/react';
+import * as CarbonIconsReactExports from '@carbon/icons-react';
+
 import * as PropertiesPanel from '@bpmn-io/properties-panel';
 import * as Preact from '@bpmn-io/properties-panel/preact';
 import PreactCompat, * as PreactCompatExports from '@bpmn-io/properties-panel/preact/compat';
@@ -122,6 +125,10 @@ export default class Plugins {
       bpmn: BpmnJsPropertiesPanel,
       dmn: DmnJsPropertiesPanel
     };
+
+    // Carbon React exports for the client plugins
+    vendor.carbonReact = CarbonReactExports;
+    vendor.carbonIconsReact = CarbonIconsReactExports;
   }
 
   /**

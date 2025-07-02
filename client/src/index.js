@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import './styles/carbon.scss';
 import './styles/style.less';
 
 import {

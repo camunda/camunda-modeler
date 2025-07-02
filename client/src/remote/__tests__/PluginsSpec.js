@@ -279,6 +279,38 @@ describe('plugins', function() {
         expect(global.vendor.propertiesPanel.dmn).to.have.property('useService');
       }
     );
+
+
+    it('should expose Carbon React exports via window#vendor.carbonReact', function() {
+
+      // given
+      const global = {};
+
+      const plugins = new Plugins();
+
+      // when
+      plugins.bindHelpers(global);
+
+      // then
+      expect(global.vendor.carbonReact).to.exist;
+      expect(global.vendor.carbonReact).to.have.property('Button');
+    });
+
+
+    it('should expose Carbon Icons React exports via window#vendor.carbonIconsReact', function() {
+
+      // given
+      const global = {};
+
+      const plugins = new Plugins();
+
+      // when
+      plugins.bindHelpers(global);
+
+      // then
+      expect(global.vendor.carbonIconsReact).to.exist;
+      expect(global.vendor.carbonIconsReact).to.have.property('Add');
+    });
   });
 
 });
