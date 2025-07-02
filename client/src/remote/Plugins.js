@@ -91,10 +91,6 @@ export default class Plugins {
       createTab
     };
 
-    // Carbon React exports for the client plugins
-    global.carbon = CarbonReactExports;
-    global.carbonicons = CarbonIconsReactExports;
-
     // deprecated helpers
     global.getModelerDirectory = () => {
       throw new Error('not implemented in Camunda Modeler >= 3.0.0');
@@ -129,6 +125,10 @@ export default class Plugins {
       bpmn: BpmnJsPropertiesPanel,
       dmn: DmnJsPropertiesPanel
     };
+
+    // Carbon React exports for the client plugins
+    vendor.carbon = CarbonReactExports;
+    vendor.carbonicons = CarbonIconsReactExports;
   }
 
   /**
