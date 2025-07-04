@@ -8,9 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, Component } from 'camunda-modeler-plugin-helpers/react';
+import React, { Fragment, Component } from 'camunda-modeler-plugin-helpers/vendor/react.js';
 
-import { Fill } from 'camunda-modeler-plugin-helpers/components';
+import Fill from 'camunda-modeler-plugin-helpers/components/Fill.js';
 
 const PLUGIN_NAME = 'test-client';
 
