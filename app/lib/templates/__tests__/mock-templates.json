@@ -1,0 +1,39 @@
+[
+  {
+    "$schema": "https://foo.com",
+    "id": "foo",
+    "version": 3,
+    "engines": {
+      "camunda": "^8.8"
+    }
+  },
+  {
+    "$schema": "https://foo.com",
+    "id": "foo",
+    "version": 2,
+    "engines": {
+      "camunda": "^8.7"
+    }
+  },
+  {
+    "$schema": "https://foo.com",
+    "id": "foo",
+    "version": 1,
+    "engines": {
+      "camunda": "^8.6"
+    }
+  },
+  {
+    "$schema": "https://foo.com",
+    "id": "bar",
+    "version": 2,
+    "engines": {
+      "camunda": "^8.8"
+    }
+  },
+  {
+    "$schema": "https://foo.com",
+    "id": "bar",
+    "version": 1
+  }
+]

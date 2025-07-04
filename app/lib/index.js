@@ -36,10 +36,8 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
-const {
-  getConnectorTemplatesPath,
-  registerConnectorTemplateUpdater
-} = require('./connector-templates');
+const { getTemplatesPath } = require('./templates/util');
+const { TemplatesUpdater, CONNECTOR_TEMPLATES_FILE_NAME } = require('./templates/templates-updater');
 
 const FileContext = require('./file-context/file-context');
 const { toFileUrl } = require('./file-context/util');
@@ -694,9 +692,10 @@ function bootstrap() {
   // (3) config
   const ignoredPaths = [];
 
-  const connectorTemplatesDisabled = areConnectorTemplatesDisabled(flags, userPath);
+  const connectorTemplatesDisabled = isConnectorTemplatesDisabled(flags, userPath);
+
   if (connectorTemplatesDisabled) {
-    ignoredPaths.push(getConnectorTemplatesPath(userPath));
+    ignoredPaths.push(getTemplatesPath(userPath, CONNECTOR_TEMPLATES_FILE_NAME));
   }
 
   const config = new Config({
@@ -759,7 +758,7 @@ function bootstrap() {
 
   // (10) connector templates
   if (!connectorTemplatesDisabled) {
-    registerConnectorTemplateUpdater(renderer, userPath);
+    new TemplatesUpdater(renderer, userPath);
   }
 
   // (11) file context
@@ -820,7 +819,7 @@ function setUserPath(path = DEFAULT_USER_PATH) {
   app.setPath('userData', path);
 }
 
-function areConnectorTemplatesDisabled(flags, userPath) {
+function isConnectorTemplatesDisabled(flags, userPath) {
 
   // TODO(@barmac): use bootstrapped config or extract settings to a separate module
   const settings = new Config({ userPath }).get('settings');
