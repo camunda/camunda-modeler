@@ -25,6 +25,7 @@ var platform = os.platform();
 var windows = /^win/.test(platform);
 
 var { DefinePlugin } = require('webpack');
+var MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 var absoluteBasePath = path.resolve(__dirname);
 var resourcePath = path.resolve(__dirname + '/resources');
@@ -113,7 +114,8 @@ module.exports = function(karma) {
             NODE_ENV: JSON.stringify('test'),
             WINDOWS: JSON.stringify(windows)
           }
-        })
+        }),
+        new MonacoWebpackPlugin()
       ],
       resolve: {
         mainFields: [

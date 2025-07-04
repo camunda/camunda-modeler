@@ -36,6 +36,8 @@ const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 
 const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+
 const resourcePath = path.resolve(__dirname + '/resources');
 
 
@@ -128,6 +130,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [ copyPattern ]
     }),
+    new MonacoWebpackPlugin(),
     ...sentryIntegration(),
     ...extractDependencies()
   ],
