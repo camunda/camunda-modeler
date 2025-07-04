@@ -6,6 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: use uniform GTK symbols on Linux ([#5095](https://github.com/camunda/camunda-modeler/issues/5095))
+* `DEPS`: update to `electron@37`
+
 ## 5.37.0
 
 * `DEPS`: update to `@bpmn-io/form-js@1.15.3`
