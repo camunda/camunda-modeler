@@ -138,7 +138,8 @@ module.exports = function(karma) {
           'sourcemapped-stacktrace': 'test/mocks/sourcemapped-stacktrace',
           './editor/FormEditor': 'test/mocks/form-js',
           '@camunda/linting': 'test/mocks/linting',
-          '@camunda/linting/modeler': 'test/mocks/linting/modeler'
+          '@camunda/linting/modeler': 'test/mocks/linting/modeler',
+          'mixpanel-browser': 'test/mocks/mixpanel-browser'
         }
       },
       devtool: 'eval-cheap-module-source-map'
