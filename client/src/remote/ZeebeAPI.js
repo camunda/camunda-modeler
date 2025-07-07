@@ -51,7 +51,7 @@ export default class ZeebeAPI {
     return this._backend.send('zeebe:deploy', {
       endpoint,
       resourceConfigs,
-      tenantId: getTenantId(tenantId, endpoint)
+      tenantId
     });
   }
 
@@ -68,7 +68,7 @@ export default class ZeebeAPI {
     return this._backend.send('zeebe:startInstance', {
       endpoint,
       processId,
-      tenantId: getTenantId(tenantId, endpoint),
+      tenantId,
       variables
     });
   }
@@ -154,14 +154,6 @@ export function getEndpointForTargetType(endpoint) {
     };
   }
 
-}
-
-function getTenantId(tenantId, endpoint) {
-  if (endpoint.authType === AUTH_TYPES.NONE) {
-    return undefined;
-  }
-
-  return tenantId;
 }
 
 /**
