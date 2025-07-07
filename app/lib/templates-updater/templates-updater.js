@@ -36,15 +36,18 @@ const DEFAULT_ENDPOINTS = [
 ];
 
 module.exports.TemplatesUpdater = class TemplatesUpdater extends EventEmitter {
-  constructor(renderer, userPath) {
+  constructor(renderer, config, userPath) {
     super();
 
     this._renderer = renderer;
+    this._config = config;
     this._userPath = userPath;
 
     this._queue = new ThrottledQueue();
 
-    this._queue.on('queue:empty', ({ hasNew, warnings }) => {
+    this._queue.on('queue:empty', (result = {}) => {
+      const { hasNew = false, warnings = [] } = result;
+
       log.info('Templates update', hasNew, warnings);
 
       renderer.send('client:templates-update-success', hasNew, warnings);
@@ -75,7 +78,7 @@ module.exports.TemplatesUpdater = class TemplatesUpdater extends EventEmitter {
       const key = `${endpoint.url}::${executionPlatformVersion}`;
 
       this._queue.add(key, async (prevResult = {}) => {
-        const { hasNew, warnings } = await updateTemplates(endpoint, executionPlatformVersion, this._userPath);
+        const { hasNew, warnings } = await updateTemplates(endpoint, executionPlatformVersion, this._config, this._userPath);
 
         const {
           hasNew: prevHasNew = false,

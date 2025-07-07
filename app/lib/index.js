@@ -36,8 +36,8 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
-const { getTemplatesPath } = require('./templates/util');
-const { TemplatesUpdater, CONNECTOR_TEMPLATES_FILE_NAME } = require('./templates/templates-updater');
+const { getTemplatesPath } = require('./templates-updater/util');
+const { TemplatesUpdater, CONNECTOR_TEMPLATES_FILE_NAME } = require('./templates-updater/templates-updater');
 
 const FileContext = require('./file-context/file-context');
 const { toFileUrl } = require('./file-context/util');
@@ -758,7 +758,7 @@ function bootstrap() {
 
   // (10) connector templates
   if (!connectorTemplatesDisabled) {
-    new TemplatesUpdater(renderer, userPath);
+    new TemplatesUpdater(renderer, config, userPath);
   }
 
   // (11) file context

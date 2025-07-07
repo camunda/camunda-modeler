@@ -29,14 +29,24 @@ describe('TemplatesUpdater', function() {
 
   let mockAgent;
 
-  let marketPlaceMockPool, fooMockPool;
+  let marketPlaceMockPool, fooMockPool, log;
 
-  beforeEach(function() {
-    mockAgent = new MockAgent();
+  beforeEach(async function() {
+    await fs.promises.rm(path.resolve(__dirname, 'tmp'), { recursive: true, force: true });
+
+    mockAgent = new MockAgent().compose((dispatch) => {
+      return (dispatchOptions, handler) => {
+        log.push(dispatchOptions);
+
+        return dispatch(dispatchOptions, handler);
+      };
+    });
 
     setGlobalDispatcher(mockAgent);
 
     mockAgent.disableNetConnect();
+
+    log = [];
   });
 
   afterEach(async function() {
@@ -48,7 +58,7 @@ describe('TemplatesUpdater', function() {
   });
 
 
-  let renderer, templatesUpdater;
+  let renderer, config, templatesUpdater;
 
   beforeEach(function() {
     renderer = {
@@ -56,7 +66,12 @@ describe('TemplatesUpdater', function() {
       send: sinon.spy()
     };
 
-    templatesUpdater = new TemplatesUpdater(renderer, userPath);
+    config = {
+      get: sinon.stub().returns({}),
+      set: sinon.stub().resolves()
+    };
+
+    templatesUpdater = new TemplatesUpdater(renderer, config, userPath);
   });
 
 
@@ -125,12 +140,20 @@ describe('TemplatesUpdater', function() {
     });
 
 
-    it('should update templates (existing)', async function() {
+    it('should update templates (existing, ref unchanged)', async function() {
 
       // given
       await createUserData(userPath, [
         mockTemplates.find(template => template.id === 'foo' && template.version === 1)
       ]);
+
+      config.get.returns({
+        cachedRefs: {
+          foo: {
+            1: 'https://foo.com/ootb-connectors?id=foo&version=1'
+          }
+        }
+      });
 
       // when
       await templatesUpdater.update('8.8');
@@ -139,6 +162,53 @@ describe('TemplatesUpdater', function() {
       expect(renderer.send).to.have.been.calledWith('client:templates-update-success');
 
       expectConnectorTemplates(userPath, mockTemplates);
+
+      // expect that we don't fetch the template again
+      expect(log.find(entry => entry.path === '/ootb-connectors?id=foo&version=1')).not.to.exist;
+
+      expect(config.set).to.have.been.calledWithMatch('templatesUpdater', {
+        cachedRefs: {
+          foo: {
+            1: 'https://foo.com/ootb-connectors?id=foo&version=1'
+          }
+        }
+      });
+    });
+
+
+    it('should update templates (existing, ref changed)', async function() {
+
+      // given
+      await createUserData(userPath, [
+        mockTemplates.find(template => template.id === 'foo' && template.version === 1)
+      ]);
+
+      config.get.returns({
+        cachedRefs: {
+          foo: {
+            1: 'foo'
+          }
+        }
+      });
+
+      // when
+      await templatesUpdater.update('8.8');
+
+      // then
+      expect(renderer.send).to.have.been.calledWith('client:templates-update-success');
+
+      expectConnectorTemplates(userPath, mockTemplates);
+
+      // expect that we don't fetch the template again
+      expect(log.find(entry => entry.path === '/ootb-connectors?id=foo&version=1')).to.exist;
+
+      expect(config.set).to.have.been.calledWithMatch('templatesUpdater', {
+        cachedRefs: {
+          foo: {
+            1: 'https://foo.com/ootb-connectors?id=foo&version=1'
+          }
+        }
+      });
     });
 
 

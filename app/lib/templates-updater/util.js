@@ -26,6 +26,12 @@
  * @typedef { {
  *   [id: string]: TemplatesMetadata
  * } } TemplatesByIdMetadata
+ *
+ * @typedef { {
+ *   [ id: string ]: {
+ *     [ version: string ]: string;
+ *   }
+ * } } CachedRefs
  */
 
 const fs = require('fs');
@@ -41,7 +47,7 @@ function getTemplatesPath(userPath, fileName) {
 
 module.exports.getTemplatesPath = getTemplatesPath;
 
-async function updateTemplates(endpoint, executionPlatformVersion, userPath) {
+async function updateTemplates(endpoint, executionPlatformVersion, config, userPath) {
   const {
     url,
     fileName
@@ -71,7 +77,7 @@ async function updateTemplates(endpoint, executionPlatformVersion, userPath) {
     const {
       updatedTemplates,
       warnings
-    } = await fetchAndUpdateTemplates(templates, executionPlatformVersion, url);
+    } = await fetchAndUpdateTemplates(templates, executionPlatformVersion, config, url);
 
     fs.mkdirSync(path.dirname(templatesPath), { recursive: true });
 
@@ -96,11 +102,12 @@ module.exports.updateTemplates = updateTemplates;
  *
  * @param {Template[]} connectorTemplates
  * @param {string} executionPlatformVersion
+ * @param {Object} config
  * @param {string} url
  *
  * @returns {Promise<{ updatedTemplates: Template[], warnings: string[] }>}
  */
-async function fetchAndUpdateTemplates(connectorTemplates, executionPlatformVersion, url) {
+async function fetchAndUpdateTemplates(connectorTemplates, executionPlatformVersion, config, url) {
   log.info('Fetching and updating templates');
 
   const updatedTemplates = [ ...connectorTemplates ],
@@ -121,7 +128,7 @@ async function fetchAndUpdateTemplates(connectorTemplates, executionPlatformVers
 
   const stats = {
     fetched: 0,
-    alreadyFetched: 0,
+    cached: 0,
     incompatible: 0,
     error: 0
   };
@@ -131,10 +138,10 @@ async function fetchAndUpdateTemplates(connectorTemplates, executionPlatformVers
 
     for (const templateMetadata of templatesMetadata) {
 
-      if (connectorTemplates.some(t => t.id === id && t.version === templateMetadata.version)) {
-        log.info(`Skipping template ${ id } version ${ templateMetadata.version } as it was already fetched`);
+      if (isCachedRef(id, templateMetadata, config)) {
+        log.info(`Skipping template ${ id } version ${ templateMetadata.version } as it was already fetched from ${ templateMetadata.ref }`);
 
-        stats.alreadyFetched++;
+        stats.cached++;
 
         continue;
       }
@@ -166,9 +173,17 @@ async function fetchAndUpdateTemplates(connectorTemplates, executionPlatformVers
       try {
         const templateJson = JSON.parse(templateText);
 
-        updatedTemplates.push(templateJson);
+        const existingIndex = updatedTemplates.findIndex(t => t.id === templateJson.id && t.version === templateJson.version);
+
+        if (existingIndex !== -1) {
+          updatedTemplates[existingIndex] = templateJson;
+        } else {
+          updatedTemplates.push(templateJson);
+        }
 
         stats.fetched++;
+
+        cacheRef(id, templateMetadata, config);
 
         log.info(`Fetched template ${ id } version ${ templateMetadata.version } from ${ ref }`);
       } catch (error) {
@@ -181,7 +196,7 @@ async function fetchAndUpdateTemplates(connectorTemplates, executionPlatformVers
     }
   }
 
-  log.info(`Fetched ${ stats.fetched } templates from ${ url }, warnings: ${ warnings.length }, already fetched: ${ stats.alreadyFetched }, incompatible: ${ stats.incompatible }, error: ${ stats.error }`);
+  log.info(`Fetched ${ stats.fetched } templates from ${ url }, cached: ${ stats.cached }, incompatible: ${ stats.incompatible }, warnings: ${ warnings.length }, error: ${ stats.error }`);
 
   return { updatedTemplates, warnings };
 }
@@ -207,3 +222,51 @@ function isTemplateCompatible(templateMetadata, executionPlatformVersion) {
 }
 
 module.exports.isTemplateCompatible = isTemplateCompatible;
+
+const CONFIG_PATH = [ 'templatesUpdater', 'cachedRefs' ];
+
+/**
+ * Check if the reference of a template is cached.
+ *
+ * @param {string} id
+ * @param {TemplateMetadata} templateMetadata
+ * @param {Object} config
+ *
+ * @return {boolean}
+ */
+function isCachedRef(id, templateMetadata, config) {
+  const { ref, version } = templateMetadata;
+
+  /** @type {CachedRefs} */
+  const cachedRefs = config.get(CONFIG_PATH[ 0 ], {})[ CONFIG_PATH[ 1 ] ] || {};
+
+  const cachedRef = cachedRefs?.[ id ]?.[ version ];
+
+  return cachedRef === ref;
+}
+
+module.exports.isCachedRef = isCachedRef;
+
+/**
+ * Cache the reference of a template.
+ *
+ * @param {string} id
+ * @param {TemplateMetadata} templateMetadata
+ * @param {Object} config
+ */
+function cacheRef(id, templateMetadata, config) {
+  const { ref, version } = templateMetadata;
+
+  /** @type {CachedRefs} */
+  const cachedRefs = config.get(CONFIG_PATH[ 0 ], {})[ CONFIG_PATH[ 1 ] ] || {};
+
+  if (!cachedRefs[ id ]) {
+    cachedRefs[ id ] = {};
+  }
+
+  cachedRefs[ id ][ version ] = ref;
+
+  config.set(CONFIG_PATH[ 0 ], { [ CONFIG_PATH[ 1 ] ]: cachedRefs });
+}
+
+module.exports.cacheRef = cacheRef;
