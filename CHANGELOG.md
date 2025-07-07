@@ -6,6 +6,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: allow to pass tenant ID with no authentication ([#5106](https://github.com/camunda/camunda-modeler/issues/5106))
 * `FIX`: use uniform GTK symbols on Linux ([#5095](https://github.com/camunda/camunda-modeler/issues/5095))
 * `DEPS`: update to `electron@37`
 
