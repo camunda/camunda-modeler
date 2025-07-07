@@ -976,6 +976,53 @@ describe('<BpmnEditor>', function() {
 
   describe('layout', function() {
 
+    it('should react to new layout', async function() {
+
+      // given
+      const { instance, rerender } = await renderEditor(diagramXML);
+
+      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+      // when
+      rerender(diagramXML, {
+        layout: {
+          propertiesPanel: {
+            open: false
+          }
+        }
+      });
+
+      // then
+      expect(setLayoutSpy).to.have.been.calledOnce;
+      expect(setLayoutSpy).to.have.been.calledWith({
+        open: false
+      });
+
+    });
+
+
+    it('should not react to new layout if no changes', async function() {
+
+      // given
+      const { instance, rerender } = await renderEditor(diagramXML);
+
+      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+      // when
+      rerender(diagramXML, {
+        layout: {
+          propertiesPanel: {
+            open: true
+          }
+        }
+      });
+
+      // then
+      expect(setLayoutSpy).to.have.not.been.called;
+
+    });
+
+
     it('should open properties panel (no layout)', async function() {
 
       // given
