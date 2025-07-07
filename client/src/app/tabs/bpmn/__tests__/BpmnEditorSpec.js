@@ -1031,10 +1031,6 @@ describe('<BpmnEditor>', function() {
       fireEvent.mouseDown(toggle);
       fireEvent.mouseUp(toggle);
 
-      await waitFor(() => {
-        expect(onLayoutChanged).to.have.been.calledOnce;
-      });
-
       // then
       expect(onLayoutChanged).to.have.been.calledOnce;
 
