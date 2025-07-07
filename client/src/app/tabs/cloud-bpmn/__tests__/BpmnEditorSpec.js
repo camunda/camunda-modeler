@@ -10,7 +10,7 @@
 
 /* global sinon */
 
-import { screen, waitFor, fireEvent } from '@testing-library/react';
+import { waitFor, fireEvent } from '@testing-library/react';
 
 import { find } from 'min-dash';
 
