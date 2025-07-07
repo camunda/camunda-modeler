@@ -118,17 +118,17 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // given
       const additionalModule = {
         __init__: [ 'foo' ],
-        foo: [ 'type', sinon.stub() ]
+        foo: [ 'type', noop ]
       };
 
       const additionalModulePlatform = {
         __init__: [ 'platfoo' ],
-        platfoo: [ 'type', sinon.stub() ]
+        platfoo: [ 'type', noop ]
       };
 
       const additionalModuleCloud = {
         __init__: [ 'cloudfoo' ],
-        cloudfoo: [ 'type', sinon.stub() ]
+        cloudfoo: [ 'type', noop ]
       };
 
       const moddleExtension = {
@@ -213,9 +213,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     circularModdleExtension.name = circularModdleExtension;
 
     const settings = {
-      get: sinon.stub(),
-      register: sinon.stub(),
-      subscribe: sinon.stub()
+      get: noop,
+      register: noop,
+      subscribe: noop
     };
 
     const props = {
@@ -231,7 +231,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         return [];
       },
       onError: onErrorSpy,
-      onAction: sinon.stub(),
+      onAction: noop,
       settings
     };
 
@@ -2068,3 +2068,5 @@ async function renderEditor(xml, options = {}) {
 function getEvent(events, eventName) {
   return find(events, e => e.type === eventName);
 }
+
+function noop() {}
