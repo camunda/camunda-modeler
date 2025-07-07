@@ -302,6 +302,20 @@ describe('<DeploymentConfigValidator>', function() {
       });
 
 
+      it('Camunda 8 self-managed (no auth with tenant ID)', function() {
+        expectNoValidationErrors({
+          deployment: {
+            tenantId: 'test-tenant'
+          },
+          endpoint: {
+            targetType: TARGET_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.NONE,
+            contactPoint: 'http://localhost:26500'
+          }
+        });
+      });
+
+
       it('Camunda 8 self-managed (basic auth)', function() {
         expectNoValidationErrors({
           deployment: {},

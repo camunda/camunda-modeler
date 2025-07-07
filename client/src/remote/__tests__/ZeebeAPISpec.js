@@ -810,7 +810,7 @@ describe('<ZeebeAPI>', function() {
     });
 
 
-    it('should deploy (self-managed, no auth, tenant ignored)', function() {
+    it('should deploy (self-managed, no auth, tenant passed)', function() {
 
       // given
       const backend = new MockBackend({
@@ -850,7 +850,7 @@ describe('<ZeebeAPI>', function() {
           url: endpoint.contactPoint
         },
         resourceConfigs,
-        tenantId: undefined
+        tenantId: 'my-tenant'
       });
     });
 
