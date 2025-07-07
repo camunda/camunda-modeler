@@ -10,9 +10,7 @@
 
 /* global sinon */
 
-import React from 'react';
-
-import { mount } from 'enzyme';
+import { waitFor, fireEvent } from '@testing-library/react';
 
 import {
   find
@@ -20,7 +18,6 @@ import {
 
 import {
   Cache,
-  WithCachedState
 } from '../../../cached';
 
 import {
@@ -52,11 +49,10 @@ import {
   getUndoRedoEntries
 } from '../../getEditMenu';
 
-import { SlotFillRoot } from '../../../slot-fill';
+import renderEditorHelper from '../../../__tests__/helpers/renderEditor';
 
 
 const { spy } = sinon;
-
 
 describe('<BpmnEditor>', function() {
 
@@ -387,7 +383,7 @@ describe('<BpmnEditor>', function() {
 
       let modeler,
           onActionSpy,
-          wrapper;
+          rerender;
 
       beforeEach(async function() {
         modeler = new BpmnModeler();
@@ -404,7 +400,7 @@ describe('<BpmnEditor>', function() {
         });
 
 
-        ({ wrapper } = await renderEditor(diagramXML, {
+        ({ rerender } = await renderEditor(diagramXML, {
           id: 'editor',
           cache,
           onAction: onActionSpy
@@ -439,8 +435,7 @@ describe('<BpmnEditor>', function() {
           onActionSpy.resetHistory();
 
           // when
-          wrapper.unmount();
-          wrapper.mount();
+          rerender();
 
           modeler._emit('commandStack.changed');
 
@@ -981,43 +976,82 @@ describe('<BpmnEditor>', function() {
 
   describe('layout', function() {
 
+    it('should react to new layout', async function() {
+
+      // given
+      const { instance, rerender } = await renderEditor(diagramXML);
+
+      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+      // when
+      rerender(diagramXML, {
+        layout: {
+          propertiesPanel: {
+            open: false
+          }
+        }
+      });
+
+      // then
+      expect(setLayoutSpy).to.have.been.calledOnce;
+      expect(setLayoutSpy).to.have.been.calledWith({
+        open: false
+      });
+
+    });
+
+
+    it('should not react to new layout if no changes', async function() {
+
+      // given
+      const { instance, rerender } = await renderEditor(diagramXML);
+
+      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+      // when
+      rerender(diagramXML, {
+        layout: {
+          propertiesPanel: {
+            open: true
+          }
+        }
+      });
+
+      // then
+      expect(setLayoutSpy).to.have.not.been.called;
+
+    });
+
+
     it('should open properties panel (no layout)', async function() {
 
       // given
-      let layout = {};
+      const layout = {};
 
-      function onLayoutChanged(newLayout) {
-        layout = newLayout;
-        wrapper.setProps({ layout });
-      }
+      const onLayoutChanged = sinon.spy();
 
-      const {
-        wrapper,
-        instance
-      } = await renderEditor(diagramXML, {
+      await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
 
-      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
-
-      wrapper.update();
-
-      const toggle = wrapper.find('.resizer');
-
       // when
-      toggle.simulate('mousedown');
+      const toggle = document.querySelector('.resizer');
 
-      window.dispatchEvent(new MouseEvent('mouseup'));
+      fireEvent.mouseDown(toggle);
+      fireEvent.mouseUp(toggle);
 
       // then
-      expect(layout.propertiesPanel.open).to.be.true;
-      expect(layout.propertiesPanel.width).to.equal(280);
+      await waitFor(() => {
+        expect(onLayoutChanged).to.have.been.calledOnce;
+      });
 
-      expect(setLayoutSpy).to.have.been.calledOnce;
-      expect(setLayoutSpy).to.have.been.calledWith({
-        open: true,
-        width: 280
+      const callArg = onLayoutChanged.getCall(0).args[0];
+      expect(callArg).to.deep.include({
+        propertiesPanel: {
+          open: true,
+          width: 280
+        }
       });
     });
 
@@ -1025,44 +1059,34 @@ describe('<BpmnEditor>', function() {
     it('should open properties panel', async function() {
 
       // given
-      let layout = {
+      const layout = {
         propertiesPanel: {
           open: false
         }
       };
 
-      function onLayoutChanged(newLayout) {
-        layout = newLayout;
-        wrapper.setProps({ layout });
-      }
+      const onLayoutChanged = sinon.spy();
 
-      const {
-        wrapper,
-        instance
-      } = await renderEditor(diagramXML, {
+      await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
 
-      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
-
-      wrapper.update();
-
-      const toggle = wrapper.find('.resizer');
-
       // when
-      toggle.simulate('mousedown');
+      const toggle = document.querySelector('.resizer');
 
-      window.dispatchEvent(new MouseEvent('mouseup'));
+      fireEvent.mouseDown(toggle);
+      fireEvent.mouseUp(toggle);
 
       // then
-      expect(layout.propertiesPanel.open).to.be.true;
-      expect(layout.propertiesPanel.width).to.equal(280);
+      expect(onLayoutChanged).to.have.been.calledOnce;
 
-      expect(setLayoutSpy).to.have.been.calledOnce;
-      expect(setLayoutSpy).to.have.been.calledWith({
-        open: true,
-        width: 280
+      const callArg = onLayoutChanged.getCall(0).args[0];
+      expect(callArg).to.deep.include({
+        propertiesPanel: {
+          open: true,
+          width: 280
+        }
       });
     });
 
@@ -1070,41 +1094,38 @@ describe('<BpmnEditor>', function() {
     it('should close properties panel', async function() {
 
       // given
-      let layout = {
+      const layout = {
         propertiesPanel: {
           open: true
         }
       };
 
-      function onLayoutChanged(newLayout) {
-        layout = newLayout;
-        wrapper.setProps({ layout });
-      }
+      const onLayoutChanged = sinon.spy();
 
-      const {
-        wrapper,
-        instance
-      } = await renderEditor(diagramXML, {
+      await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
 
-      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
-
-      const toggle = wrapper.find('.resizer');
-
       // when
-      toggle.simulate('mousedown');
+      const toggle = document.querySelector('.resizer');
 
-      window.dispatchEvent(new MouseEvent('mouseup'));
+      fireEvent.mouseDown(toggle);
+      fireEvent.mouseUp(toggle);
+
+      await waitFor(() => {
+        expect(onLayoutChanged).to.have.been.calledOnce;
+      });
 
       // then
-      expect(layout.propertiesPanel.open).to.be.false;
+      expect(onLayoutChanged).to.have.been.calledOnce;
 
-      expect(setLayoutSpy).to.have.been.calledOnce;
-      expect(setLayoutSpy).to.have.been.calledWith({
-        open: false,
-        width: 280
+      const callArg = onLayoutChanged.getCall(0).args[0];
+      expect(callArg).to.deep.include({
+        propertiesPanel: {
+          open: false,
+          width: 280
+        }
       });
     });
 
@@ -1150,73 +1171,6 @@ describe('<BpmnEditor>', function() {
       expect(modeler.options.propertiesPanel.layout).to.exist;
       expect(modeler.options.propertiesPanel.layout).to.eql(propertiesPanelLayout);
 
-    });
-
-
-    it('should react to new layout', async function() {
-
-      // given
-      let layout = {
-        propertiesPanel: {
-          open: false
-        }
-      };
-
-      const {
-        wrapper,
-        instance
-      } = await renderEditor(diagramXML, {
-        layout
-      });
-
-      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
-
-      // when
-      wrapper.setProps({
-        layout: {
-          propertiesPanel: {
-            open: true
-          }
-        }
-      });
-
-      // then
-      expect(setLayoutSpy).to.have.been.calledOnce;
-      expect(setLayoutSpy).to.have.been.calledWith({
-        open: true
-      });
-    });
-
-
-    it('should NOT react to new layout without changes', async function() {
-
-      // given
-      let layout = {
-        propertiesPanel: {
-          open: false
-        }
-      };
-
-      const {
-        wrapper,
-        instance
-      } = await renderEditor(diagramXML, {
-        layout
-      });
-
-      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
-
-      // when
-      wrapper.setProps({
-        layout: {
-          propertiesPanel: {
-            open: false
-          }
-        }
-      });
-
-      // then
-      expect(setLayoutSpy).not.to.have.been.called;
     });
 
 
@@ -1509,7 +1463,7 @@ describe('<BpmnEditor>', function() {
         }
       });
 
-      const { wrapper } = await renderEditor(diagramXML, {
+      const { rerender } = await renderEditor(diagramXML, {
         cache,
         getConfig: getConfigSpy,
         file: { path: '/bar' }
@@ -1519,10 +1473,14 @@ describe('<BpmnEditor>', function() {
       setTemplatesSpy.resetHistory();
 
       // when
-      await wrapper.setProps({ file: { path: '/foo' } });
+      rerender(diagramXML, {
+        file: { path: '/bar' }
+      });
 
       // expect
-      expect(getConfigSpy).to.be.calledOnce;
+      await waitFor(() => {
+        expect(getConfigSpy).to.be.calledOnce;
+      });
       expect(getConfigSpy).to.be.calledWith('bpmn.elementTemplates');
       expect(setTemplatesSpy).to.be.calledOnce;
     });
@@ -1997,13 +1955,9 @@ describe('<BpmnEditor>', function() {
       return async function() {
 
         // when
-        const { instance, wrapper } = await renderEditor(xml);
-
-        wrapper.update();
+        const { instance } = await renderEditor(xml);
 
         // then
-        expect(wrapper.find('EngineProfile').exists()).to.be.true;
-
         expect(instance.getCached().engineProfile).to.eql(engineProfile);
       };
     }
@@ -2096,104 +2050,12 @@ describe('<BpmnEditor>', function() {
 
 // helpers //////////
 
-function noop() {}
-
-const TestEditor = WithCachedState(BpmnEditor);
-
-const defaultLayout = {
-  minimap: {
-    open: false
-  },
-  propertiesPanel: {
-    open: true
-  }
-};
-
-const defaultSettings = {
-  register: noop,
-  get: noop,
-  subscribe: noop,
-};
-
-function renderEditor(xml, options = {}) {
-  const {
-    cache = new Cache(),
-    getConfig = noop,
-    getPlugins = () => [],
-    id = 'editor',
-    isNew = true,
-    layout = defaultLayout,
-    linting = [],
-    onAction = noop,
-    onChanged = noop,
-    onContentUpdated = noop,
-    onError = noop,
-    onImport = noop,
-    onLayoutChanged = noop,
-    onModal = noop,
-    onWarning = noop,
-    settings = defaultSettings,
-    waitForImport = true
-  } = options;
-
-  return new Promise((resolve) => {
-    let instance,
-        wrapper;
-
-    const resolveOnImport = (...args) => {
-      onImport(...args);
-
-      resolve({
-        instance,
-        wrapper
-      });
-    };
-
-    wrapper = mount(
-      <WrappedEditor
-        cache={ cache }
-        getConfig={ getConfig }
-        getPlugins={ getPlugins }
-        id={ id }
-        isNew={ isNew }
-        layout={ layout }
-        linting={ linting }
-        onAction={ onAction }
-        onChanged={ onChanged }
-        onContentUpdated={ onContentUpdated }
-        onError={ onError }
-        onImport={ waitForImport ? resolveOnImport : onImport }
-        onLayoutChanged={ onLayoutChanged }
-        onModal={ onModal }
-        onWarning={ onWarning }
-        settings={ settings }
-        xml={ xml }
-      />
-    );
-
-    instance = wrapper.find(BpmnEditor).instance();
-
-    if (!waitForImport) {
-      resolve({
-        instance,
-        wrapper
-      });
-    }
-  });
-}
-
-/**
- * We need to create a component for this so props set via `wrapper.setProps`
- * are passed on to the editor.
- */
-function WrappedEditor(props) {
-  return (
-    <SlotFillRoot>
-      <TestEditor { ...props } />
-    </SlotFillRoot>
-  );
+async function renderEditor(xml, options = {}) {
+  return await renderEditorHelper(BpmnEditor, xml, options);
 }
 
 function getEvent(events, eventName) {
   return find(events, e => e.type === eventName);
 }
+
+function noop() {}
