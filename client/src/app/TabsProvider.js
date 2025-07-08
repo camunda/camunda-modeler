@@ -71,6 +71,7 @@ import { getDefaultVersion } from './tabs/EngineProfile';
 
 import { getCloudTemplates } from '../util/elementTemplates';
 import { CloudElementTemplatesLinterPlugin } from 'bpmn-js-element-templates';
+import { RPALinter } from '@camunda/rpa-integration';
 
 const BPMN_HELP_MENU = [
   {
@@ -531,7 +532,7 @@ export default class TabsProvider {
           } ];
         },
         getLinter() {
-          return null;
+          return new RPALinter();
         }
       }
     };
