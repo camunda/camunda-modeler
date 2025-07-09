@@ -47,6 +47,8 @@ function getTemplatesPath(userPath, fileName) {
 
 module.exports.getTemplatesPath = getTemplatesPath;
 
+const CONFIG_KEY = 'templateUpdater';
+
 async function updateTemplates(endpoint, executionPlatformVersion, config, userPath) {
   const {
     url,
@@ -74,7 +76,7 @@ async function updateTemplates(endpoint, executionPlatformVersion, config, userP
       }
     }
 
-    const { cachedRefs = {} } = config.get('templatesUpdater', {});
+    const { cachedRefs = {} } = config.get(CONFIG_KEY, {});
 
     const {
       updatedTemplates,
@@ -82,8 +84,8 @@ async function updateTemplates(endpoint, executionPlatformVersion, config, userP
       warnings
     } = await fetchAndUpdateTemplates(templates, executionPlatformVersion, cachedRefs, url);
 
-    config.set('templatesUpdater', {
-      ...config.get('templatesUpdater', {}),
+    config.set(CONFIG_KEY, {
+      ...config.get(CONFIG_KEY, {}),
       cachedRefs: updatedCachedRefs
     });
 

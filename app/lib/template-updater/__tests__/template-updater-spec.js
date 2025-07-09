@@ -17,7 +17,7 @@ const { Agent, MockAgent, setGlobalDispatcher } = require('undici');
 
 const { isString } = require('min-dash');
 
-const { TemplatesUpdater } = require('../templates-updater');
+const { TemplateUpdater } = require('../template-updater');
 
 const { isTemplateCompatible } = require('../util');
 
@@ -25,7 +25,7 @@ const userPath = path.resolve(__dirname, 'tmp');
 
 const mockTemplates = require('./mock-templates.json');
 
-describe('TemplatesUpdater', function() {
+describe('TemplateUpdater', function() {
 
   let mockAgent;
 
@@ -58,7 +58,7 @@ describe('TemplatesUpdater', function() {
   });
 
 
-  let config, templatesUpdater;
+  let config, templateUpdater;
 
   beforeEach(function() {
     config = {
@@ -66,7 +66,7 @@ describe('TemplatesUpdater', function() {
       set: sinon.stub().resolves()
     };
 
-    templatesUpdater = new TemplatesUpdater(config, userPath);
+    templateUpdater = new TemplateUpdater(config, userPath);
   });
 
 
@@ -109,10 +109,10 @@ describe('TemplatesUpdater', function() {
       // given
       const doneSpy = sinon.spy();
 
-      templatesUpdater.on('update:done', doneSpy);
+      templateUpdater.on('update:done', doneSpy);
 
       // when
-      await templatesUpdater.update('Camunda Cloud', '8.8');
+      await templateUpdater.update('Camunda Cloud', '8.8');
 
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
@@ -126,10 +126,10 @@ describe('TemplatesUpdater', function() {
       // given
       const doneSpy = sinon.spy();
 
-      templatesUpdater.on('update:done', doneSpy);
+      templateUpdater.on('update:done', doneSpy);
 
       // when
-      await templatesUpdater.update('Camunda Cloud', '8.6');
+      await templateUpdater.update('Camunda Cloud', '8.6');
 
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
@@ -143,7 +143,7 @@ describe('TemplatesUpdater', function() {
       // given
       const doneSpy = sinon.spy();
 
-      templatesUpdater.on('update:done', doneSpy);
+      templateUpdater.on('update:done', doneSpy);
 
       await createUserData(userPath, [
         mockTemplates.find(template => template.id === 'foo' && template.version === 1)
@@ -158,7 +158,7 @@ describe('TemplatesUpdater', function() {
       });
 
       // when
-      await templatesUpdater.update('Camunda Cloud', '8.8');
+      await templateUpdater.update('Camunda Cloud', '8.8');
 
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
@@ -168,7 +168,7 @@ describe('TemplatesUpdater', function() {
       // expect that we don't fetch the template again
       expect(log.find(entry => entry.path === '/ootb-connectors?id=foo&version=1')).not.to.exist;
 
-      expect(config.set).to.have.been.calledWithMatch('templatesUpdater', {
+      expect(config.set).to.have.been.calledWithMatch('templateUpdater', {
         cachedRefs: {
           foo: {
             1: 'https://foo.com/ootb-connectors?id=foo&version=1'
@@ -183,7 +183,7 @@ describe('TemplatesUpdater', function() {
       // given
       const doneSpy = sinon.spy();
 
-      templatesUpdater.on('update:done', doneSpy);
+      templateUpdater.on('update:done', doneSpy);
 
       await createUserData(userPath, [
         mockTemplates.find(template => template.id === 'foo' && template.version === 1)
@@ -198,7 +198,7 @@ describe('TemplatesUpdater', function() {
       });
 
       // when
-      await templatesUpdater.update('Camunda Cloud', '8.8');
+      await templateUpdater.update('Camunda Cloud', '8.8');
 
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
@@ -208,7 +208,7 @@ describe('TemplatesUpdater', function() {
       // expect that we don't fetch the template again
       expect(log.find(entry => entry.path === '/ootb-connectors?id=foo&version=1')).to.exist;
 
-      expect(config.set).to.have.been.calledWithMatch('templatesUpdater', {
+      expect(config.set).to.have.been.calledWithMatch('templateUpdater', {
         cachedRefs: {
           foo: {
             1: 'https://foo.com/ootb-connectors?id=foo&version=1'
@@ -223,12 +223,12 @@ describe('TemplatesUpdater', function() {
       // given
       const doneSpy = sinon.spy();
 
-      templatesUpdater.on('update:done', doneSpy);
+      templateUpdater.on('update:done', doneSpy);
 
       await createUserData(userPath, '[{]');
 
       // when
-      await templatesUpdater.update('Camunda Cloud', '8.8');
+      await templateUpdater.update('Camunda Cloud', '8.8');
 
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
@@ -255,10 +255,10 @@ describe('TemplatesUpdater', function() {
         // given
         const doneSpy = sinon.spy();
 
-        templatesUpdater.on('update:done', doneSpy);
+        templateUpdater.on('update:done', doneSpy);
 
         // when
-        const { hasNew, warnings } = await templatesUpdater.update('Camunda Cloud', '8.8');
+        const { hasNew, warnings } = await templateUpdater.update('Camunda Cloud', '8.8');
 
         // then
         expect(hasNew).to.be.false;
@@ -322,10 +322,10 @@ describe('TemplatesUpdater', function() {
         // given
         const doneSpy = sinon.spy();
 
-        templatesUpdater.on('update:done', doneSpy);
+        templateUpdater.on('update:done', doneSpy);
 
         // when
-        const { hasNew, warnings } = await templatesUpdater.update('Camunda Cloud', '8.8');
+        const { hasNew, warnings } = await templateUpdater.update('Camunda Cloud', '8.8');
 
         // then
         expect(hasNew).to.be.true;
@@ -389,10 +389,10 @@ describe('TemplatesUpdater', function() {
         // given
         const doneSpy = sinon.spy();
 
-        templatesUpdater.on('update:done', doneSpy);
+        templateUpdater.on('update:done', doneSpy);
 
         // when
-        const { hasNew, warnings } = await templatesUpdater.update('Camunda Cloud', '8.8');
+        const { hasNew, warnings } = await templateUpdater.update('Camunda Cloud', '8.8');
 
         // then
         expect(hasNew).to.be.true;

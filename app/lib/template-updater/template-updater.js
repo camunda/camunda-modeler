@@ -22,7 +22,7 @@ const Queue = require('../util/queue');
 
 const { updateTemplates } = require('./util');
 
-const log = require('../log')('app:templates-updater');
+const log = require('../log')('app:template-updater');
 
 const OOTB_CONNECTORS_ENDPOINT = {
   executionPlatform: 'Camunda Cloud',
@@ -36,7 +36,7 @@ const DEFAULT_ENDPOINTS = [
   OOTB_CONNECTORS_ENDPOINT
 ];
 
-module.exports.TemplatesUpdater = class TemplatesUpdater extends EventEmitter {
+module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
   constructor(config, userPath, endpoints = DEFAULT_ENDPOINTS) {
     super();
 

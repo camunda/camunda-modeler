@@ -36,8 +36,8 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
-const { getTemplatesPath } = require('./templates-updater/util');
-const { TemplatesUpdater, OOTB_CONNECTORS_ENDPOINT } = require('./templates-updater/templates-updater');
+const { getTemplatesPath } = require('./template-updater/util');
+const { TemplateUpdater, OOTB_CONNECTORS_ENDPOINT } = require('./template-updater/template-updater');
 
 const FileContext = require('./file-context/file-context');
 const { toFileUrl } = require('./file-context/util');
@@ -754,15 +754,15 @@ function bootstrap() {
   // (9) zeebe API
   const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
-  // (10) templates updater
-  const templatesUpdater = new TemplatesUpdater(config, userPath, isConnectorTemplatesDisabled(flags, userPath) ? [] : [ OOTB_CONNECTORS_ENDPOINT ]);
+  // (10) template updater
+  const templateUpdater = new TemplateUpdater(config, userPath, isConnectorTemplatesDisabled(flags, userPath) ? [] : [ OOTB_CONNECTORS_ENDPOINT ]);
 
-  templatesUpdater.on('update:done', (hasNew, warnings) => {
+  templateUpdater.on('update:done', (hasNew, warnings) => {
     renderer.send('client:templates-update-done', hasNew, warnings);
   });
 
   renderer.on('client:templates-update', ({ executionPlatform, executionPlatformVersion }) => {
-    templatesUpdater.update(executionPlatform, executionPlatformVersion);
+    templateUpdater.update(executionPlatform, executionPlatformVersion);
   });
 
   // (11) file context
