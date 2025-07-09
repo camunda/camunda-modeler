@@ -1,457 +1,43 @@
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./client/TestClient.js":
-/*!******************************!*\
-  !*** ./client/TestClient.js ***!
-  \******************************/
+/***/ "../node_modules/camunda-modeler-plugin-helpers/components/Fill.js":
+/*!*************************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/components/Fill.js ***!
+  \*************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ TestClient)
-/* harmony export */ });
-/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "../node_modules/camunda-modeler-plugin-helpers/react.js");
-/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/components */ "../node_modules/camunda-modeler-plugin-helpers/components.js");
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-
-
-const PLUGIN_NAME = 'test-client';
-class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__.Component {
-  constructor(props) {
-    super(props);
-    const {
-      subscribe,
-      settings
-    } = props;
-    subscribe('tab.saved', event => {
-      const {
-        tab
-      } = event;
-      const {
-        saveCounter
-      } = this.state;
-      console.log('[TestClient]', 'Tab saved', tab);
-      this.setState({
-        saveCounter: saveCounter + 1
-      });
-    });
-    subscribe('app.activeTabChanged', ({
-      activeTab
-    }) => {
-      this.setState({
-        tabType: activeTab.type
-      });
-    });
-    const pluginSettings = {
-      id: 'testClientPlugin',
-      title: 'Test Client Plugin',
-      properties: {
-        'testClientPlugin.heartbeat': {
-          type: 'boolean',
-          default: true,
-          label: 'Will My Heart Go On?',
-          description: 'Enable the heart icon in the status bar.'
-        },
-        'testClientPlugin.iconColor': {
-          type: 'text',
-          default: '#10ad73',
-          label: 'Icon color',
-          description: 'Color of the lovely heart icon.'
-        }
-      }
-    };
-    settings.register(pluginSettings);
-    settings.subscribe('testClientPlugin.iconColor', ({
-      value
-    }) => {
-      this.setState({
-        color: value
-      });
-    });
-    settings.subscribe('testClientPlugin.heartbeat', ({
-      value
-    }) => {
-      this.setState({
-        heartbeat: value
-      });
-    });
-    this.state = {
-      saveCounter: 0,
-      tabType: null,
-      color: settings.get('testClientPlugin.iconColor'),
-      heartbeat: settings.get('testClientPlugin.heartbeat')
-    };
-  }
-  async componentDidMount() {
-    const {
-      config
-    } = this.props;
-    const saveCounter = await config.getForPlugin(PLUGIN_NAME, 'saveCounter', 0);
-    console.log('[TestClient]', 'last session save counter:', saveCounter);
-
-    // cleanup for next session
-    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', 0);
-  }
-  async componentDidUpdate() {
-    const {
-      config
-    } = this.props;
-    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', this.state.saveCounter);
-  }
-  render() {
-    const {
-      saveCounter,
-      tabType,
-      color,
-      heartbeat
-    } = this.state;
-
-    /**
-     * Starting with Camunda Modeler v4.12 the `toolbar`
-     * slot is a no-op.
-     *
-     * Move your features to the `status-bar__file` and
-     * `status-bar__app` slots instead.
-     */
-
-    return /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
-      slot: "toolbar"
-    }, "Saved: ", saveCounter), /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
-      slot: "status-bar__file"
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-      className: "btn",
-      title: "Just an icon (test-client plug-in contributed)",
-      style: {
-        color: '#10ad73'
-      }
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TestIcon, {
-      color: color,
-      heartbeat: heartbeat
-    }))), /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
-      slot: "status-bar__app",
-      group: "0_first"
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "btn",
-      style: {
-        background: '#10ad73',
-        color: '#FEFEFE'
-      }
-    }, "Saved: ", saveCounter)), tabType === 'cloud-bpmn' && /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
-      slot: "bottom-panel",
-      label: "Cloud Plugin",
-      id: "cloudPlugin"
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Hello World")));
-  }
-}
-function TestIcon({
-  color,
-  heartbeat
-}) {
-  if (!heartbeat) return null;
-  return /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
-    xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 16 16",
-    width: "16",
-    height: "16"
-  }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
-    fill: color,
-    fillRule: "evenodd",
-    d: "M7.655 14.916L8 14.25l.345.666a.752.752 0 01-.69 0zm0 0L8 14.25l.345.666.002-.001.006-.003.018-.01a7.643 7.643 0 00.31-.17 22.08 22.08 0 003.433-2.414C13.956 10.731 16 8.35 16 5.5 16 2.836 13.914 1 11.75 1 10.203 1 8.847 1.802 8 3.02 7.153 1.802 5.797 1 4.25 1 2.086 1 0 2.836 0 5.5c0 2.85 2.045 5.231 3.885 6.818a22.075 22.075 0 003.744 2.584l.018.01.006.003h.002z"
-  }));
-}
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _helper_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../helper.js */ \"../node_modules/camunda-modeler-plugin-helpers/helper.js\");\n/* harmony import */ var _helper_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_helper_js__WEBPACK_IMPORTED_MODULE_0__);\n\n\n/**\n * Fill component. Set `slot` to \"toolbar\" to include in the top toolbar.\n * Use `group` and `priority=0` to place for correct ordering. The higher\n * the priority, the earlier the Fill is displayed within the group.\n *\n * @type {import('react').ComponentType<{ slot: string, group?: string, priority?: Number }>}\n *\n * @example\n *\n * import Fill from 'camunda-modeler-plugin-helpers/components/Fill.js';\n *\n * function CustomFill(props) {\n *   return (\n *     <Fill group=\"4_export\" slot=\"toolbar\" priority={100}>\n *       <button type=\"button\" onClick={ props.openExportTool }>\n *         Open Export Tool\n *       </button>\n *     </Fill>\n *   );\n * }\n */\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_helper_js__WEBPACK_IMPORTED_MODULE_0__.returnOrThrow)(() => window.components?.Fill, '5.0'));\n\n//# sourceURL=webpack://test-client/../node_modules/camunda-modeler-plugin-helpers/components/Fill.js?");
 
 /***/ }),
 
-/***/ "../node_modules/camunda-modeler-plugin-helpers/components.js":
-/*!********************************************************************!*\
-  !*** ../node_modules/camunda-modeler-plugin-helpers/components.js ***!
-  \********************************************************************/
+/***/ "../node_modules/camunda-modeler-plugin-helpers/components/Modal.js":
+/*!**************************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/components/Modal.js ***!
+  \**************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   CachedComponent: () => (/* binding */ CachedComponent),
-/* harmony export */   Fill: () => (/* binding */ Fill),
-/* harmony export */   Modal: () => (/* binding */ Modal),
-/* harmony export */   NotCompatible: () => (/* binding */ NotCompatible),
-/* harmony export */   Overlay: () => (/* binding */ Overlay),
-/* harmony export */   Section: () => (/* binding */ Section),
-/* harmony export */   TextInput: () => (/* binding */ TextInput),
-/* harmony export */   ToggleSwitch: () => (/* binding */ ToggleSwitch),
-/* harmony export */   WithCache: () => (/* binding */ WithCache),
-/* harmony export */   WithCachedState: () => (/* binding */ WithCachedState),
-/* harmony export */   createTab: () => (/* binding */ createTab)
-/* harmony export */ });
-if (!window.components) {
-  throw notCompatible('3.4');
-}
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _helper_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../helper.js */ \"../node_modules/camunda-modeler-plugin-helpers/helper.js\");\n/* harmony import */ var _helper_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_helper_js__WEBPACK_IMPORTED_MODULE_0__);\n\n\n/**\n * Modal component.\n *\n * @type {import('react').ComponentType<{ onClose: Function }>}\n *\n * @example\n *\n * import Modal from 'camunda-modeler-plugin-helpers/components/Modal.js';\n *\n * function CustomModal(props) {\n *   return (\n *    <Modal onClose={ props.onClose }>\n *      <Modal.Title>\n *        Custom Modal\n *      </Modal.Title>\n *      <Modal.Body>\n *        Hello world!\n *      </Modal.Body>\n *      <Modal.Footer>\n *        <button type=\"button\" onClick={ props.onClose }>\n *          Close\n *        </button>\n *      </Modal.Footer>\n *    </Modal>\n *   );\n * }\n */\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_helper_js__WEBPACK_IMPORTED_MODULE_0__.returnOrThrow)(() => window.components?.Modal, '5.0'));\n\n//# sourceURL=webpack://test-client/../node_modules/camunda-modeler-plugin-helpers/components/Modal.js?");
 
-function notCompatible(requiredVersion) {
-  return new Error('Not compatible with Camunda Modeler < v' + requiredVersion);
-}
+/***/ }),
 
-const NotCompatible = function(requiredVersion) {
-  return function NotCompatibleComponent() {
-    throw notCompatible(requiredVersion);
-  };
-};
+/***/ "../node_modules/camunda-modeler-plugin-helpers/helper.js":
+/*!****************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/helper.js ***!
+  \****************************************************************/
+/***/ ((module) => {
 
-/**
- * Fill component. Set `slot` to "toolbar" to include in the top toolbar.
- * Use `group` and `priority=0` to place for correct ordering. The higher
- * the priority, the earlier the Fill is displayed within the group.
- *
- * @type {import('react').ComponentType<{ slot: string, group?: string, priority?: Number }>}
- *
- * @example
- *
- * import { Fill } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomFill(props) {
- *   return (
- *     <Fill group="4_export" slot="toolbar" priority={100}>
- *       <button type="button" onClick={ props.openExportTool }>
- *         Open Export Tool
- *       </button>
- *     </Fill>
- *   );
- * }
- */
-const Fill = window.components.Fill;
-
-/**
- * Modal component.
- *
- * @type {import('react').ComponentType<{ onClose: Function }>}
- *
- * @example
- *
- * import { Modal } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomModal(props) {
- *   return (
- *    <Modal onClose={ props.onClose }>
- *      <Modal.Title>
- *        Custom Modal
- *      </Modal.Title>
- *      <Modal.Body>
- *        Hello world!
- *      </Modal.Body>
- *      <Modal.Footer>
- *        <button type="button" onClick={ props.onClose }>
- *          Close
- *        </button>
- *      </Modal.Footer>
- *    </Modal>
- *   );
- * }
- */
-const Modal = window.components.Modal;
-
-/**
- * Overlay component.
- *
- * @type {import('react').ComponentType<{ 
- *  onClose: Function, 
- *  anchor: Node, 
- *  offset?: { top?: number, bottom?: number, left?: number, right?: number }, 
- *  maxWidth?: number | string,
- *  maxHeight?: number | string,
- *  minWidth?: number | string,
- *  minHeight?: number | string
- * }>}
- *
- * @example
- * 
- * import { Overlay } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomOverlay(props) {
- *   return (
- *    <Overlay onClose={ props.onClose } anchor={ props.btn_ref } offset={ props.anchor }>
- *      <Overlay.Title>
- *        Custom Modal
- *      </Overlay.Title>
- *      <Overlay.Body>
- *        Hello world!
- *      </Overlay.Body>
- *      <Overlay.Footer>
- *        <button type="button" onClick={ props.onClose }>
- *          Close
- *        </button>
- *      </Overlay.Footer>
- *    </Overlay>
- *   );
- * }
- */
- const Overlay = window.components.Overlay || NotCompatible('5.0');
-
- /**
- * Section component.
- *
- * @type {import('react').ComponentType<{ maxHeight: Number | String, relativePos: Boolean } }>}
- *
- * @example
- * 
- * import { Section } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomSection(props) {
- *   return (
- *    <Section maxHeight="240px">
- *     <Section.Header>
- *       Custom section
- *     </Section.Header>
- *     <Section.Body>
- *       Hello world!
- *     </Section.Body>
- *     <Section.Actions>
- *      <button type="button" onClick={ props.onClose }>
- *        Close
- *      </button>
- *     </Section.Actions>
- *    </Section>
- *   );
- * }
- */
-const Section = window.components.Section || NotCompatible('5.0');
-
- /**
- * ToggleSwitch component.
- *
- * @type {import('react').ComponentType<{ id: string, name: string, label?: string, switcherLabel?: string, description?: string }>}
- *
- * @example
- * 
- * import { ToggleSwitch } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomToggle(props) {
- *   return (
- *    <Formik initialValues={ initialValues } onSubmit={ this.onSubmit }>
- *      {() => (
- *        <Form>
- *          <Field
- *            component={ ToggleSwitch }
- *            switcherLabel="Switcher label"
- *            id={ id }
- *            name={ name }
- *            description="Toggle description"
- *          />
- *        </Form>
- *       )}
- *    </Formik>
- *   );
- * }
- */
-const ToggleSwitch = window.components.ToggleSwitch || NotCompatible('5.0');
-
- /**
- * TextInput component.
- *
- * @type {import('react').ComponentType<{ hint: string, name: string, label: string, fieldError: string, multiline: boolean, description: string }>}
- *
- * @example
- * 
- * import { TextInput } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomInput(props) {
- *   return (
- *    <Formik initialValues={ initialValues } onSubmit={ this.onSubmit }>
- *      {() => (
- *        <Form>
- *          <Field
- *            component={ TextInput }
- *            label="My input"
- *            id={ id }
- *            multiline={ false }
- *            name={ name }
- *            description="Custom description"
- *          />
- *        </Form>
- *       )}
- *    </Formik>
- *   );
- * }
- */
-const TextInput = window.components.TextInput || NotCompatible('5.29');
-
- /**
- * CachedComponent class.
- *
- * @type {import('react').ComponentClass}
- *
- * @example
- * 
- * import { CachedComponent } from 'camunda-modeler-plugin-helpers/components';
- * 
- * class ComponentWithCachedState extends CachedComponent {
- *  constructor(props) {
- *   super(props);
- *  }
- * 
- *  getCachedState() {
- *    return this.getCached()
- *  }
- * 
- *  setCachedState(values) {
- *    this.setCached(values)
- *  }
- * }
- * 
- */
-const CachedComponent = window.components.CachedComponent || NotCompatible('5.29');
-
-/**
- * A higher order component that passes cache to a wrapped component.
- * Forwards refs, too.
- * 
- * @type {Function}
- * @param {Component} Comp
- */
-const WithCache = window.components.WithCache || NotCompatible('5.29');
-
-/**
- * A higher order component that lazily
- * initiates the given wrapped component
- * via the `Comp#createCachedState` method.
- *
- * Passes props as well as destructured
- * wrapped component state to `Comp`.
- *
- * The resulting component must be called
- * with the `id` and `cache` prop.
- *
- * Forwards refs, too.
- *
- * @type {Function}
- * @param {Component} Comp
- */
-const WithCachedState = window.components.WithCachedState || NotCompatible('5.29');
-
-/**
- * A helper function to create Tab components
- * to be used with the TabProvider.
- *
- * @type {Function}
- * @param {string} tabName - The name of the tab.
- * @param {object} providers - The providers object.
- * @param {string} providers.type - The type of the provider.
- * @param {React.Component} providers.editor - The editor component.
- * @param {string} providers.defaultName - The default name of the provider.
- * @returns {React.Component} The created EditorTab component.
- */
-const createTab = window.components.createTab || NotCompatible('5.29');
+eval("function returnOrThrow(getter, minimalModelerVersion) {\n  let result;\n  try {\n    result = getter();\n  } catch (error) {}\n\n  if (!result) {\n    throw new Error(`Not compatible with Camunda Modeler < ${minimalModelerVersion}`);\n  }\n\n  return result;\n}\n\nmodule.exports = {\n  returnOrThrow\n};\n\n\n//# sourceURL=webpack://test-client/../node_modules/camunda-modeler-plugin-helpers/helper.js?");
 
 /***/ }),
 
@@ -462,398 +48,70 @@ const createTab = window.components.createTab || NotCompatible('5.29');
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getModelerDirectory: () => (/* binding */ getModelerDirectory),
-/* harmony export */   getPluginsDirectory: () => (/* binding */ getPluginsDirectory),
-/* harmony export */   registerBpmnJSModdleExtension: () => (/* binding */ registerBpmnJSModdleExtension),
-/* harmony export */   registerBpmnJSPlugin: () => (/* binding */ registerBpmnJSPlugin),
-/* harmony export */   registerClientExtension: () => (/* binding */ registerClientExtension),
-/* harmony export */   registerClientPlugin: () => (/* binding */ registerClientPlugin),
-/* harmony export */   registerCloudBpmnJSModdleExtension: () => (/* binding */ registerCloudBpmnJSModdleExtension),
-/* harmony export */   registerCloudBpmnJSPlugin: () => (/* binding */ registerCloudBpmnJSPlugin),
-/* harmony export */   registerCloudDmnJSModdleExtension: () => (/* binding */ registerCloudDmnJSModdleExtension),
-/* harmony export */   registerCloudDmnJSPlugin: () => (/* binding */ registerCloudDmnJSPlugin),
-/* harmony export */   registerDmnJSModdleExtension: () => (/* binding */ registerDmnJSModdleExtension),
-/* harmony export */   registerDmnJSPlugin: () => (/* binding */ registerDmnJSPlugin),
-/* harmony export */   registerPlatformBpmnJSModdleExtension: () => (/* binding */ registerPlatformBpmnJSModdleExtension),
-/* harmony export */   registerPlatformBpmnJSPlugin: () => (/* binding */ registerPlatformBpmnJSPlugin),
-/* harmony export */   registerPlatformDmnJSModdleExtension: () => (/* binding */ registerPlatformDmnJSModdleExtension),
-/* harmony export */   registerPlatformDmnJSPlugin: () => (/* binding */ registerPlatformDmnJSPlugin)
-/* harmony export */ });
-/**
- * Validate and register a client plugin.
- *
- * @param {Object} plugin
- * @param {String} type
- */
-function registerClientPlugin(plugin, type) {
-  var plugins = window.plugins || [];
-  window.plugins = plugins;
-
-  if (!plugin) {
-    throw new Error('plugin not specified');
-  }
-
-  if (!type) {
-    throw new Error('type not specified');
-  }
-
-  plugins.push({
-    plugin: plugin,
-    type: type
-  });
-}
-
-/**
- * Validate and register a client plugin.
- *
- * @param {import('react').ComponentType} extension
- *
- * @example
- *
- * import MyExtensionComponent from './MyExtensionComponent';
- *
- * registerClientExtension(MyExtensionComponent);
- */
-function registerClientExtension(component) {
-  registerClientPlugin(component, 'client');
-}
-
-/**
- * Validate and register a bpmn-js plugin.
- *
- * @param {Object} module
- *
- * @example
- *
- * import {
- *   registerBpmnJSPlugin
- * } from 'camunda-modeler-plugin-helpers';
- *
- * const BpmnJSModule = {
- *   __init__: [ 'myService' ],
- *   myService: [ 'type', ... ]
- * };
- *
- * registerBpmnJSPlugin(BpmnJSModule);
- */
-function registerBpmnJSPlugin(module) {
-  registerClientPlugin(module, 'bpmn.modeler.additionalModules');
-}
-
-/**
- * Validate and register a platform specific bpmn-js plugin.
- *
- * @param {Object} module
- *
- * @example
- *
- * import {
- *   registerPlatformBpmnJSPlugin
- * } from 'camunda-modeler-plugin-helpers';
- *
- * const BpmnJSModule = {
- *   __init__: [ 'myService' ],
- *   myService: [ 'type', ... ]
- * };
- *
- * registerPlatformBpmnJSPlugin(BpmnJSModule);
- */
-function registerPlatformBpmnJSPlugin(module) {
-  registerClientPlugin(module, 'bpmn.platform.modeler.additionalModules');
-}
-
-/**
- * Validate and register a cloud specific bpmn-js plugin.
- *
- * @param {Object} module
- *
- * @example
- *
- * import {
- *   registerCloudBpmnJSPlugin
- * } from 'camunda-modeler-plugin-helpers';
- *
- * const BpmnJSModule = {
- *   __init__: [ 'myService' ],
- *   myService: [ 'type', ... ]
- * };
- *
- * registerCloudBpmnJSPlugin(BpmnJSModule);
- */
-function registerCloudBpmnJSPlugin(module) {
-  registerClientPlugin(module, 'bpmn.cloud.modeler.additionalModules');
-}
-
-/**
- * Validate and register a bpmn-moddle extension plugin.
- *
- * @param {Object} descriptor
- *
- * @example
- * import {
- *   registerBpmnJSModdleExtension
- * } from 'camunda-modeler-plugin-helpers';
- *
- * var moddleDescriptor = {
- *   name: 'my descriptor',
- *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',
- *   prefix: 'mydesc',
- *
- *   ...
- * };
- *
- * registerBpmnJSModdleExtension(moddleDescriptor);
- */
-function registerBpmnJSModdleExtension(descriptor) {
-  registerClientPlugin(descriptor, 'bpmn.modeler.moddleExtension');
-}
-
-/**
- * Validate and register a platform specific bpmn-moddle extension plugin.
- *
- * @param {Object} descriptor
- *
- * @example
- * import {
- *   registerPlatformBpmnJSModdleExtension
- * } from 'camunda-modeler-plugin-helpers';
- *
- * var moddleDescriptor = {
- *   name: 'my descriptor',
- *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',
- *   prefix: 'mydesc',
- *
- *   ...
- * };
- *
- * registerPlatformBpmnJSModdleExtension(moddleDescriptor);
- */
-function registerPlatformBpmnJSModdleExtension(descriptor) {
-  registerClientPlugin(descriptor, 'bpmn.platform.modeler.moddleExtension');
-}
-
-/**
- * Validate and register a cloud specific bpmn-moddle extension plugin.
- *
- * @param {Object} descriptor
- *
- * @example
- * import {
- *   registerCloudBpmnJSModdleExtension
- * } from 'camunda-modeler-plugin-helpers';
- *
- * var moddleDescriptor = {
- *   name: 'my descriptor',
- *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',
- *   prefix: 'mydesc',
- *
- *   ...
- * };
- *
- * registerCloudBpmnJSModdleExtension(moddleDescriptor);
- */
-function registerCloudBpmnJSModdleExtension(descriptor) {
-  registerClientPlugin(descriptor, 'bpmn.cloud.modeler.moddleExtension');
-}
-
-/**
- * Validate and register a dmn-moddle extension plugin.
- *
- * @param {Object} descriptor
- *
- * @example
- * import {
- *   registerDmnJSModdleExtension
- * } from 'camunda-modeler-plugin-helpers';
- *
- * var moddleDescriptor = {
- *   name: 'my descriptor',
- *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',
- *   prefix: 'mydesc',
- *
- *   ...
- * };
- *
- * registerDmnJSModdleExtension(moddleDescriptor);
- */
-function registerDmnJSModdleExtension(descriptor) {
-  registerClientPlugin(descriptor, 'dmn.modeler.moddleExtension');
-}
-
-/**
- * Validate and register a cloud specific dmn-moddle extension plugin.
- *
- * @param {Object} descriptor
- *
- * @example
- * import {
- *   registerCloudDmnJSModdleExtension
- * } from 'camunda-modeler-plugin-helpers';
- *
- * var moddleDescriptor = {
- *   name: 'my descriptor',
- *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',
- *   prefix: 'mydesc',
- *
- *   ...
- * };
- *
- * registerCloudDmnJSModdleExtension(moddleDescriptor);
- */
-function registerCloudDmnJSModdleExtension(descriptor) {
-  registerClientPlugin(descriptor, 'dmn.cloud.modeler.moddleExtension');
-}
-
-/**
- * Validate and register a platform specific dmn-moddle extension plugin.
- *
- * @param {Object} descriptor
- *
- * @example
- * import {
- *   registerPlatformDmnJSModdleExtension
- * } from 'camunda-modeler-plugin-helpers';
- *
- * var moddleDescriptor = {
- *   name: 'my descriptor',
- *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',
- *   prefix: 'mydesc',
- *
- *   ...
- * };
- *
- * registerPlatformDmnJSModdleExtension(moddleDescriptor);
- */
-function registerPlatformDmnJSModdleExtension(descriptor) {
-  registerClientPlugin(descriptor, 'dmn.platform.modeler.moddleExtension');
-}
-
-/**
- * Validate and register a dmn-js plugin.
- *
- * @param {Object} module
- *
- * @example
- *
- * import {
- *   registerDmnJSPlugin
- * } from 'camunda-modeler-plugin-helpers';
- *
- * const DmnJSModule = {
- *   __init__: [ 'myService' ],
- *   myService: [ 'type', ... ]
- * };
- *
- * registerDmnJSPlugin(DmnJSModule, [ 'drd', 'literalExpression' ]);
- * registerDmnJSPlugin(DmnJSModule, 'drd')
- */
-function registerDmnJSPlugin(module, components) {
-
-  if (!Array.isArray(components)) {
-    components = [ components ]
-  }
-
-  components.forEach(c => registerClientPlugin(module, `dmn.modeler.${c}.additionalModules`));
-}
-
-/**
- * Validate and register a cloud specific dmn-js plugin.
- *
- * @param {Object} module
- *
- * @example
- *
- * import {
- *   registerCloudDmnJSPlugin
- * } from 'camunda-modeler-plugin-helpers';
- *
- * const DmnJSModule = {
- *   __init__: [ 'myService' ],
- *   myService: [ 'type', ... ]
- * };
- *
- * registerCloudDmnJSPlugin(DmnJSModule, [ 'drd', 'literalExpression' ]);
- * registerCloudDmnJSPlugin(DmnJSModule, 'drd')
- */
-function registerCloudDmnJSPlugin(module, components) {
-
-  if (!Array.isArray(components)) {
-    components = [ components ]
-  }
-
-  components.forEach(c => registerClientPlugin(module, `dmn.cloud.modeler.${c}.additionalModules`));
-}
-
-/**
- * Validate and register a platform specific dmn-js plugin.
- *
- * @param {Object} module
- *
- * @example
- *
- * import {
- *   registerPlatformDmnJSPlugin
- * } from 'camunda-modeler-plugin-helpers';
- *
- * const DmnJSModule = {
- *   __init__: [ 'myService' ],
- *   myService: [ 'type', ... ]
- * };
- *
- * registerPlatformDmnJSPlugin(DmnJSModule, [ 'drd', 'literalExpression' ]);
- * registerPlatformDmnJSPlugin(DmnJSModule, 'drd')
- */
-function registerPlatformDmnJSPlugin(module, components) {
-
-  if (!Array.isArray(components)) {
-    components = [ components ]
-  }
-
-  components.forEach(c => registerClientPlugin(module, `dmn.platform.modeler.${c}.additionalModules`));
-}
-
-/**
- * Return the modeler directory, as a string.
- *
- * @deprecated Will be removed in future Camunda Modeler versions without replacement.
- *
- * @return {String}
- */
-function getModelerDirectory() {
-  return window.getModelerDirectory();
-}
-
-/**
- * Return the modeler plugin directory, as a string.
- *
- * @deprecated Will be removed in future Camunda Modeler versions without replacement.
- *
- * @return {String}
- */
-function getPluginsDirectory() {
-  return window.getPluginsDirectory();
-}
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   getModelerDirectory: () => (/* binding */ getModelerDirectory),\n/* harmony export */   getPluginsDirectory: () => (/* binding */ getPluginsDirectory),\n/* harmony export */   registerBpmnJSModdleExtension: () => (/* binding */ registerBpmnJSModdleExtension),\n/* harmony export */   registerBpmnJSPlugin: () => (/* binding */ registerBpmnJSPlugin),\n/* harmony export */   registerClientExtension: () => (/* binding */ registerClientExtension),\n/* harmony export */   registerClientPlugin: () => (/* binding */ registerClientPlugin),\n/* harmony export */   registerCloudBpmnJSModdleExtension: () => (/* binding */ registerCloudBpmnJSModdleExtension),\n/* harmony export */   registerCloudBpmnJSPlugin: () => (/* binding */ registerCloudBpmnJSPlugin),\n/* harmony export */   registerCloudDmnJSModdleExtension: () => (/* binding */ registerCloudDmnJSModdleExtension),\n/* harmony export */   registerCloudDmnJSPlugin: () => (/* binding */ registerCloudDmnJSPlugin),\n/* harmony export */   registerDmnJSModdleExtension: () => (/* binding */ registerDmnJSModdleExtension),\n/* harmony export */   registerDmnJSPlugin: () => (/* binding */ registerDmnJSPlugin),\n/* harmony export */   registerPlatformBpmnJSModdleExtension: () => (/* binding */ registerPlatformBpmnJSModdleExtension),\n/* harmony export */   registerPlatformBpmnJSPlugin: () => (/* binding */ registerPlatformBpmnJSPlugin),\n/* harmony export */   registerPlatformDmnJSModdleExtension: () => (/* binding */ registerPlatformDmnJSModdleExtension),\n/* harmony export */   registerPlatformDmnJSPlugin: () => (/* binding */ registerPlatformDmnJSPlugin)\n/* harmony export */ });\n/**\n * Validate and register a client plugin.\n *\n * @param {Object} plugin\n * @param {String} type\n */\nfunction registerClientPlugin(plugin, type) {\n  var plugins = window.plugins || [];\n  window.plugins = plugins;\n\n  if (!plugin) {\n    throw new Error('plugin not specified');\n  }\n\n  if (!type) {\n    throw new Error('type not specified');\n  }\n\n  plugins.push({\n    plugin: plugin,\n    type: type\n  });\n}\n\n/**\n * Validate and register a client plugin.\n *\n * @param {import('react').ComponentType} extension\n *\n * @example\n *\n * import MyExtensionComponent from './MyExtensionComponent';\n *\n * registerClientExtension(MyExtensionComponent);\n */\nfunction registerClientExtension(component) {\n  registerClientPlugin(component, 'client');\n}\n\n/**\n * Validate and register a bpmn-js plugin.\n *\n * @param {Object} module\n *\n * @example\n *\n * import {\n *   registerBpmnJSPlugin\n * } from 'camunda-modeler-plugin-helpers';\n *\n * const BpmnJSModule = {\n *   __init__: [ 'myService' ],\n *   myService: [ 'type', ... ]\n * };\n *\n * registerBpmnJSPlugin(BpmnJSModule);\n */\nfunction registerBpmnJSPlugin(module) {\n  registerClientPlugin(module, 'bpmn.modeler.additionalModules');\n}\n\n/**\n * Validate and register a platform specific bpmn-js plugin.\n *\n * @param {Object} module\n *\n * @example\n *\n * import {\n *   registerPlatformBpmnJSPlugin\n * } from 'camunda-modeler-plugin-helpers';\n *\n * const BpmnJSModule = {\n *   __init__: [ 'myService' ],\n *   myService: [ 'type', ... ]\n * };\n *\n * registerPlatformBpmnJSPlugin(BpmnJSModule);\n */\nfunction registerPlatformBpmnJSPlugin(module) {\n  registerClientPlugin(module, 'bpmn.platform.modeler.additionalModules');\n}\n\n/**\n * Validate and register a cloud specific bpmn-js plugin.\n *\n * @param {Object} module\n *\n * @example\n *\n * import {\n *   registerCloudBpmnJSPlugin\n * } from 'camunda-modeler-plugin-helpers';\n *\n * const BpmnJSModule = {\n *   __init__: [ 'myService' ],\n *   myService: [ 'type', ... ]\n * };\n *\n * registerCloudBpmnJSPlugin(BpmnJSModule);\n */\nfunction registerCloudBpmnJSPlugin(module) {\n  registerClientPlugin(module, 'bpmn.cloud.modeler.additionalModules');\n}\n\n/**\n * Validate and register a bpmn-moddle extension plugin.\n *\n * @param {Object} descriptor\n *\n * @example\n * import {\n *   registerBpmnJSModdleExtension\n * } from 'camunda-modeler-plugin-helpers';\n *\n * var moddleDescriptor = {\n *   name: 'my descriptor',\n *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',\n *   prefix: 'mydesc',\n *\n *   ...\n * };\n *\n * registerBpmnJSModdleExtension(moddleDescriptor);\n */\nfunction registerBpmnJSModdleExtension(descriptor) {\n  registerClientPlugin(descriptor, 'bpmn.modeler.moddleExtension');\n}\n\n/**\n * Validate and register a platform specific bpmn-moddle extension plugin.\n *\n * @param {Object} descriptor\n *\n * @example\n * import {\n *   registerPlatformBpmnJSModdleExtension\n * } from 'camunda-modeler-plugin-helpers';\n *\n * var moddleDescriptor = {\n *   name: 'my descriptor',\n *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',\n *   prefix: 'mydesc',\n *\n *   ...\n * };\n *\n * registerPlatformBpmnJSModdleExtension(moddleDescriptor);\n */\nfunction registerPlatformBpmnJSModdleExtension(descriptor) {\n  registerClientPlugin(descriptor, 'bpmn.platform.modeler.moddleExtension');\n}\n\n/**\n * Validate and register a cloud specific bpmn-moddle extension plugin.\n *\n * @param {Object} descriptor\n *\n * @example\n * import {\n *   registerCloudBpmnJSModdleExtension\n * } from 'camunda-modeler-plugin-helpers';\n *\n * var moddleDescriptor = {\n *   name: 'my descriptor',\n *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',\n *   prefix: 'mydesc',\n *\n *   ...\n * };\n *\n * registerCloudBpmnJSModdleExtension(moddleDescriptor);\n */\nfunction registerCloudBpmnJSModdleExtension(descriptor) {\n  registerClientPlugin(descriptor, 'bpmn.cloud.modeler.moddleExtension');\n}\n\n/**\n * Validate and register a dmn-moddle extension plugin.\n *\n * @param {Object} descriptor\n *\n * @example\n * import {\n *   registerDmnJSModdleExtension\n * } from 'camunda-modeler-plugin-helpers';\n *\n * var moddleDescriptor = {\n *   name: 'my descriptor',\n *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',\n *   prefix: 'mydesc',\n *\n *   ...\n * };\n *\n * registerDmnJSModdleExtension(moddleDescriptor);\n */\nfunction registerDmnJSModdleExtension(descriptor) {\n  registerClientPlugin(descriptor, 'dmn.modeler.moddleExtension');\n}\n\n/**\n * Validate and register a cloud specific dmn-moddle extension plugin.\n *\n * @param {Object} descriptor\n *\n * @example\n * import {\n *   registerCloudDmnJSModdleExtension\n * } from 'camunda-modeler-plugin-helpers';\n *\n * var moddleDescriptor = {\n *   name: 'my descriptor',\n *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',\n *   prefix: 'mydesc',\n *\n *   ...\n * };\n *\n * registerCloudDmnJSModdleExtension(moddleDescriptor);\n */\nfunction registerCloudDmnJSModdleExtension(descriptor) {\n  registerClientPlugin(descriptor, 'dmn.cloud.modeler.moddleExtension');\n}\n\n/**\n * Validate and register a platform specific dmn-moddle extension plugin.\n *\n * @param {Object} descriptor\n *\n * @example\n * import {\n *   registerPlatformDmnJSModdleExtension\n * } from 'camunda-modeler-plugin-helpers';\n *\n * var moddleDescriptor = {\n *   name: 'my descriptor',\n *   uri: 'http://example.my.company.localhost/schema/my-descriptor/1.0',\n *   prefix: 'mydesc',\n *\n *   ...\n * };\n *\n * registerPlatformDmnJSModdleExtension(moddleDescriptor);\n */\nfunction registerPlatformDmnJSModdleExtension(descriptor) {\n  registerClientPlugin(descriptor, 'dmn.platform.modeler.moddleExtension');\n}\n\n/**\n * Validate and register a dmn-js plugin.\n *\n * @param {Object} module\n *\n * @example\n *\n * import {\n *   registerDmnJSPlugin\n * } from 'camunda-modeler-plugin-helpers';\n *\n * const DmnJSModule = {\n *   __init__: [ 'myService' ],\n *   myService: [ 'type', ... ]\n * };\n *\n * registerDmnJSPlugin(DmnJSModule, [ 'drd', 'literalExpression' ]);\n * registerDmnJSPlugin(DmnJSModule, 'drd')\n */\nfunction registerDmnJSPlugin(module, components) {\n\n  if (!Array.isArray(components)) {\n    components = [ components ]\n  }\n\n  components.forEach(c => registerClientPlugin(module, `dmn.modeler.${c}.additionalModules`));\n}\n\n/**\n * Validate and register a cloud specific dmn-js plugin.\n *\n * @param {Object} module\n *\n * @example\n *\n * import {\n *   registerCloudDmnJSPlugin\n * } from 'camunda-modeler-plugin-helpers';\n *\n * const DmnJSModule = {\n *   __init__: [ 'myService' ],\n *   myService: [ 'type', ... ]\n * };\n *\n * registerCloudDmnJSPlugin(DmnJSModule, [ 'drd', 'literalExpression' ]);\n * registerCloudDmnJSPlugin(DmnJSModule, 'drd')\n */\nfunction registerCloudDmnJSPlugin(module, components) {\n\n  if (!Array.isArray(components)) {\n    components = [ components ]\n  }\n\n  components.forEach(c => registerClientPlugin(module, `dmn.cloud.modeler.${c}.additionalModules`));\n}\n\n/**\n * Validate and register a platform specific dmn-js plugin.\n *\n * @param {Object} module\n *\n * @example\n *\n * import {\n *   registerPlatformDmnJSPlugin\n * } from 'camunda-modeler-plugin-helpers';\n *\n * const DmnJSModule = {\n *   __init__: [ 'myService' ],\n *   myService: [ 'type', ... ]\n * };\n *\n * registerPlatformDmnJSPlugin(DmnJSModule, [ 'drd', 'literalExpression' ]);\n * registerPlatformDmnJSPlugin(DmnJSModule, 'drd')\n */\nfunction registerPlatformDmnJSPlugin(module, components) {\n\n  if (!Array.isArray(components)) {\n    components = [ components ]\n  }\n\n  components.forEach(c => registerClientPlugin(module, `dmn.platform.modeler.${c}.additionalModules`));\n}\n\n/**\n * Return the modeler directory, as a string.\n *\n * @deprecated Will be removed in future Camunda Modeler versions without replacement.\n *\n * @return {String}\n */\nfunction getModelerDirectory() {\n  return window.getModelerDirectory();\n}\n\n/**\n * Return the modeler plugin directory, as a string.\n *\n * @deprecated Will be removed in future Camunda Modeler versions without replacement.\n *\n * @return {String}\n */\nfunction getPluginsDirectory() {\n  return window.getPluginsDirectory();\n}\n\n//# sourceURL=webpack://test-client/../node_modules/camunda-modeler-plugin-helpers/index.js?");
 
 /***/ }),
 
-/***/ "../node_modules/camunda-modeler-plugin-helpers/react.js":
-/*!***************************************************************!*\
-  !*** ../node_modules/camunda-modeler-plugin-helpers/react.js ***!
-  \***************************************************************/
-/***/ ((module) => {
+/***/ "../node_modules/camunda-modeler-plugin-helpers/vendor/@carbon/icons-react.js":
+/*!************************************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/vendor/@carbon/icons-react.js ***!
+  \************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-if (!window.react) {
-  throw new Error('Not compatible with Camunda Modeler < 3.4');
-}
+eval("const { returnOrThrow } = __webpack_require__(/*! ../../helper.js */ \"../node_modules/camunda-modeler-plugin-helpers/helper.js\");\n\n/**\n * Use this to access Carbon icons globally in UI extensions.\n *\n * @type {import('@carbon/icons-react')}\n */\nmodule.exports = returnOrThrow(() => window.vendor?.carbonIconsReact, '5.38');\n\n\n//# sourceURL=webpack://test-client/../node_modules/camunda-modeler-plugin-helpers/vendor/@carbon/icons-react.js?");
 
-/**
- * React object used by Camunda Modeler. Use it to create UI extension.
- *
- * @type {import('react')}
- */
-module.exports = window.react;
+/***/ }),
+
+/***/ "../node_modules/camunda-modeler-plugin-helpers/vendor/@carbon/react.js":
+/*!******************************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/vendor/@carbon/react.js ***!
+  \******************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+eval("const { returnOrThrow } = __webpack_require__(/*! ../../helper.js */ \"../node_modules/camunda-modeler-plugin-helpers/helper.js\");\n\n/**\n * Use this to access Carbon icons globally in UI extensions.\n *\n * @type {import('@carbon/react')}\n */\nmodule.exports = returnOrThrow(() => window.vendor?.carbonReact, '5.38');\n\n\n//# sourceURL=webpack://test-client/../node_modules/camunda-modeler-plugin-helpers/vendor/@carbon/react.js?");
+
+/***/ }),
+
+/***/ "../node_modules/camunda-modeler-plugin-helpers/vendor/react.js":
+/*!**********************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/vendor/react.js ***!
+  \**********************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+eval("const { returnOrThrow } = __webpack_require__(/*! ../helper.js */ \"../node_modules/camunda-modeler-plugin-helpers/helper.js\");\n\n/**\n * React object used by Camunda Modeler. Use it to create UI extension.\n *\n * @type {import('react')}\n */\nmodule.exports = returnOrThrow(() => window.react, '3.4');\n\n\n//# sourceURL=webpack://test-client/../node_modules/camunda-modeler-plugin-helpers/vendor/react.js?");
+
+/***/ }),
+
+/***/ "./client/CarbonModal.js":
+/*!*******************************!*\
+  !*** ./client/CarbonModal.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ CarbonModal)\n/* harmony export */ });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"../node_modules/camunda-modeler-plugin-helpers/vendor/react.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var camunda_modeler_plugin_helpers_components_Modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/components/Modal */ \"../node_modules/camunda-modeler-plugin-helpers/components/Modal.js\");\n/* harmony import */ var _carbon_react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @carbon/react */ \"../node_modules/camunda-modeler-plugin-helpers/vendor/@carbon/react.js\");\n/* harmony import */ var _carbon_react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_carbon_react__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var _carbon_icons_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @carbon/icons-react */ \"../node_modules/camunda-modeler-plugin-helpers/vendor/@carbon/icons-react.js\");\n/* harmony import */ var _carbon_icons_react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_carbon_icons_react__WEBPACK_IMPORTED_MODULE_3__);\n/**\n * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH\n * under one or more contributor license agreements. See the NOTICE file\n * distributed with this work for additional information regarding copyright\n * ownership.\n *\n * Camunda licenses this file to you under the MIT; you may not use this file\n * except in compliance with the MIT License.\n */\n\n\n\n\n\nfunction CarbonModal({\n  onClose\n}) {\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Modal__WEBPACK_IMPORTED_MODULE_1__[\"default\"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Modal__WEBPACK_IMPORTED_MODULE_1__[\"default\"].Title, null, \"Test @react/carbon integration\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Modal__WEBPACK_IMPORTED_MODULE_1__[\"default\"].Body, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_carbon_react__WEBPACK_IMPORTED_MODULE_2__.Theme, {\n    theme: \"g90\"\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"bx--margin-bottom-05\",\n    style: {\n      margin: '10px',\n      padding: '10px'\n    }\n  }, \"If it has black background, it works.\")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_carbon_react__WEBPACK_IMPORTED_MODULE_2__.TextInput, {\n    className: \"input-test-class\",\n    defaultwidth: 300,\n    helperText: \"Helper text\",\n    id: \"text-input-1\",\n    invalidText: \"Error message goes here\",\n    labelText: \"Label text\",\n    placeholder: \"Placeholder text\",\n    size: \"md\",\n    type: \"text\"\n  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_carbon_react__WEBPACK_IMPORTED_MODULE_2__.IconButton, {\n    label: \"Add\"\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_carbon_icons_react__WEBPACK_IMPORTED_MODULE_3__.Add, null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Modal__WEBPACK_IMPORTED_MODULE_1__[\"default\"].Footer, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_carbon_react__WEBPACK_IMPORTED_MODULE_2__.Button, {\n    onClick: onClose\n  }, \"OK\")));\n}\n\n//# sourceURL=webpack://test-client/./client/CarbonModal.js?");
+
+/***/ }),
+
+/***/ "./client/TestClient.js":
+/*!******************************!*\
+  !*** ./client/TestClient.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ TestClient)\n/* harmony export */ });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"../node_modules/camunda-modeler-plugin-helpers/vendor/react.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var camunda_modeler_plugin_helpers_components_Fill__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/components/Fill */ \"../node_modules/camunda-modeler-plugin-helpers/components/Fill.js\");\n/* harmony import */ var _CarbonModal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CarbonModal */ \"./client/CarbonModal.js\");\n/**\n * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH\n * under one or more contributor license agreements. See the NOTICE file\n * distributed with this work for additional information regarding copyright\n * ownership.\n *\n * Camunda licenses this file to you under the MIT; you may not use this file\n * except in compliance with the MIT License.\n */\n\n\n\n\nconst PLUGIN_NAME = 'test-client';\nclass TestClient extends react__WEBPACK_IMPORTED_MODULE_0__.Component {\n  constructor(props) {\n    super(props);\n    const {\n      subscribe,\n      settings\n    } = props;\n    subscribe('tab.saved', event => {\n      const {\n        tab\n      } = event;\n      const {\n        saveCounter\n      } = this.state;\n      console.log('[TestClient]', 'Tab saved', tab);\n      this.setState({\n        saveCounter: saveCounter + 1\n      });\n    });\n    subscribe('app.activeTabChanged', ({\n      activeTab\n    }) => {\n      this.setState({\n        tabType: activeTab.type\n      });\n    });\n    const pluginSettings = {\n      id: 'testClientPlugin',\n      title: 'Test Client Plugin',\n      properties: {\n        'testClientPlugin.heartbeat': {\n          type: 'boolean',\n          default: true,\n          label: 'Will My Heart Go On?',\n          description: 'Enable the heart icon in the status bar.'\n        },\n        'testClientPlugin.iconColor': {\n          type: 'text',\n          default: '#10ad73',\n          label: 'Icon color',\n          description: 'Color of the lovely heart icon.'\n        }\n      }\n    };\n    settings.register(pluginSettings);\n    settings.subscribe('testClientPlugin.iconColor', ({\n      value\n    }) => {\n      this.setState({\n        color: value\n      });\n    });\n    settings.subscribe('testClientPlugin.heartbeat', ({\n      value\n    }) => {\n      this.setState({\n        heartbeat: value\n      });\n    });\n    this.state = {\n      saveCounter: 0,\n      tabType: null,\n      showModal: false,\n      color: settings.get('testClientPlugin.iconColor'),\n      heartbeat: settings.get('testClientPlugin.heartbeat')\n    };\n  }\n  async componentDidMount() {\n    const {\n      config\n    } = this.props;\n    const saveCounter = await config.getForPlugin(PLUGIN_NAME, 'saveCounter', 0);\n    console.log('[TestClient]', 'last session save counter:', saveCounter);\n\n    // cleanup for next session\n    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', 0);\n  }\n  async componentDidUpdate() {\n    const {\n      config\n    } = this.props;\n    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', this.state.saveCounter);\n  }\n  render() {\n    const {\n      saveCounter,\n      tabType,\n      color,\n      heartbeat,\n      showModal\n    } = this.state;\n\n    /**\n     * Starting with Camunda Modeler v4.12 the `toolbar`\n     * slot is a no-op.\n     *\n     * Move your features to the `status-bar__file` and\n     * `status-bar__app` slots instead.\n     */\n\n    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Fill__WEBPACK_IMPORTED_MODULE_1__[\"default\"], {\n      slot: \"toolbar\"\n    }, \"Saved: \", saveCounter), heartbeat && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Fill__WEBPACK_IMPORTED_MODULE_1__[\"default\"], {\n      slot: \"status-bar__file\"\n    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"button\", {\n      type: \"button\",\n      onClick: () => this.setState({\n        showModal: true\n      }),\n      className: \"btn\",\n      title: \"Just an icon (test-client plug-in contributed)\",\n      style: {\n        color: '#10ad73'\n      }\n    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TestIcon, {\n      color: color\n    }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Fill__WEBPACK_IMPORTED_MODULE_1__[\"default\"], {\n      slot: \"status-bar__app\",\n      group: \"0_first\"\n    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n      className: \"btn\",\n      style: {\n        background: '#10ad73',\n        color: '#FEFEFE'\n      }\n    }, \"Saved: \", saveCounter)), tabType === 'cloud-bpmn' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Fill__WEBPACK_IMPORTED_MODULE_1__[\"default\"], {\n      slot: \"bottom-panel\",\n      label: \"Cloud Plugin\",\n      id: \"cloudPlugin\"\n    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"h1\", null, \"Hello World\")), showModal && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_CarbonModal__WEBPACK_IMPORTED_MODULE_2__[\"default\"], {\n      onClose: () => this.setState({\n        showModal: false\n      })\n    }));\n  }\n}\nfunction TestIcon({\n  color\n}) {\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"svg\", {\n    xmlns: \"http://www.w3.org/2000/svg\",\n    viewBox: \"0 0 16 16\",\n    width: \"16\",\n    height: \"16\"\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"path\", {\n    fill: color,\n    fillRule: \"evenodd\",\n    d: \"M7.655 14.916L8 14.25l.345.666a.752.752 0 01-.69 0zm0 0L8 14.25l.345.666.002-.001.006-.003.018-.01a7.643 7.643 0 00.31-.17 22.08 22.08 0 003.433-2.414C13.956 10.731 16 8.35 16 5.5 16 2.836 13.914 1 11.75 1 10.203 1 8.847 1.802 8 3.02 7.153 1.802 5.797 1 4.25 1 2.086 1 0 2.836 0 5.5c0 2.85 2.045 5.231 3.885 6.818a22.075 22.075 0 003.744 2.584l.018.01.006.003h.002z\"\n  }));\n}\n\n//# sourceURL=webpack://test-client/./client/TestClient.js?");
+
+/***/ }),
+
+/***/ "./client/index.js":
+/*!*************************!*\
+  !*** ./client/index.js ***!
+  \*************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ \"../node_modules/camunda-modeler-plugin-helpers/index.js\");\n/* harmony import */ var _TestClient__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TestClient */ \"./client/TestClient.js\");\n/**\n * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH\n * under one or more contributor license agreements. See the NOTICE file\n * distributed with this work for additional information regarding copyright\n * ownership.\n *\n * Camunda licenses this file to you under the MIT; you may not use this file\n * except in compliance with the MIT License.\n */\n\n\n\n(0,camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__.registerClientExtension)(_TestClient__WEBPACK_IMPORTED_MODULE_1__[\"default\"]);\n\n//# sourceURL=webpack://test-client/./client/index.js?");
 
 /***/ })
 
@@ -925,31 +183,11 @@ module.exports = window.react;
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
-(() => {
-"use strict";
-/*!*************************!*\
-  !*** ./client/index.js ***!
-  \*************************/
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "../node_modules/camunda-modeler-plugin-helpers/index.js");
-/* harmony import */ var _TestClient__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TestClient */ "./client/TestClient.js");
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-
-
-(0,camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__.registerClientExtension)(_TestClient__WEBPACK_IMPORTED_MODULE_1__["default"]);
-})();
-
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = __webpack_require__("./client/index.js");
+/******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=client.js.map
