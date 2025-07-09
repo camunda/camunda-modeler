@@ -24,24 +24,25 @@ const { updateTemplates } = require('./util');
 
 const log = require('../log')('app:templates-updater');
 
-const CONNECTOR_TEMPLATES_FILE_NAME = '.camunda-connector-templates.json';
+const OOTB_CONNECTORS_ENDPOINT = {
+  executionPlatform: 'Camunda Cloud',
+  fileName: '.camunda-connector-templates.json',
+  url: 'https://marketplace.cloud.camunda.io/api/v1/ootb-connectors'
+};
 
-module.exports.CONNECTOR_TEMPLATES_FILE_NAME = CONNECTOR_TEMPLATES_FILE_NAME;
+module.exports.OOTB_CONNECTORS_ENDPOINT = OOTB_CONNECTORS_ENDPOINT;
 
 const DEFAULT_ENDPOINTS = [
-  {
-    executionPlatform: 'Camunda Cloud',
-    fileName: CONNECTOR_TEMPLATES_FILE_NAME,
-    url: 'https://marketplace.cloud.camunda.io/api/v1/ootb-connectors'
-  }
+  OOTB_CONNECTORS_ENDPOINT
 ];
 
 module.exports.TemplatesUpdater = class TemplatesUpdater extends EventEmitter {
-  constructor(config, userPath) {
+  constructor(config, userPath, endpoints = DEFAULT_ENDPOINTS) {
     super();
 
     this._config = config;
     this._userPath = userPath;
+    this._endpoints = endpoints;
 
     this._queue = new Queue(this);
 
@@ -55,13 +56,6 @@ module.exports.TemplatesUpdater = class TemplatesUpdater extends EventEmitter {
       this.emit('update:done', results.hasNew, results.warnings);
 
       this._results = [];
-    });
-
-    this._endpoints = DEFAULT_ENDPOINTS.map(endpoint => {
-      return {
-        ...endpoint,
-        lastUpdate: {}
-      };
     });
   }
 
