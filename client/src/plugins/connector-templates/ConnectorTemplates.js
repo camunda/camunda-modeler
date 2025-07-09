@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 
 const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/';
 
@@ -25,6 +25,7 @@ export default class ConnectorTemplates extends PureComponent {
     const {
       _getGlobal: getGlobal,
       displayNotification,
+      log,
       subscribe,
       triggerAction
     } = this.props;
@@ -33,47 +34,52 @@ export default class ConnectorTemplates extends PureComponent {
       this.setState({ activeTab });
     });
 
-    getGlobal('backend').on('client:connector-templates-update-success', (_, hasNew, warnings = []) => {
+    subscribe('tab.engineProfileChanged', ({ executionPlatform, executionPlatformVersion }) => {
+      if (!executionPlatform || !executionPlatformVersion) {
+        return;
+      }
+
+      getGlobal('backend').send('client:templates-update', {
+        executionPlatform,
+        executionPlatformVersion
+      });
+    });
+
+    getGlobal('backend').on('client:templates-update-done', (_, hasNew, warnings = []) => {
       const { activeTab } = this.state;
 
-      if (activeTab && activeTab.type === 'cloud-bpmn') {
+      if (activeTab && activeTab.type === 'cloud-bpmn' && hasNew) {
         triggerAction('elementTemplates.reload');
       }
 
       if (warnings.length) {
+        warnings.forEach((warning) => {
+          log({
+            category: 'templates-update-error',
+            message: warning,
+            silent: true
+          });
+        });
+
         displayNotification({
           type: 'warning',
-          title: 'Camunda Connector templates updated with warnings',
-          content: warnings.map((warning, index) => (
-            <Fragment key={ index }>
-              { warning }
-              { index === warnings.length - 1 ? null : <br /> }
-              <br />
-              <a href={ DOCUMENTATION_URL }>Learn more</a>
-            </Fragment>
-          ))
+          title: 'Camunda Connector templates updated with errors',
+          content: <button
+            onClick={ () => triggerAction('open-log') }>
+            See the log for further details
+          </button>
         });
 
         return;
       }
 
-      displayNotification({
-        type: 'success',
-        title: hasNew ? 'Camunda Connector templates updated' : 'Camunda Connector templates up to date',
-        content: <a href={ DOCUMENTATION_URL }>Learn more</a>
-      });
-    });
-
-    getGlobal('backend').on('client:connector-templates-update-error', (_, message) => {
-      displayNotification({
-        type: 'error',
-        title: 'Error updating Camunda Connector templates',
-        content: <Fragment>
-          <span>{ message }</span>
-          <br />
-          <a href={ DOCUMENTATION_URL }>Learn more</a>
-        </Fragment>
-      });
+      if (hasNew) {
+        displayNotification({
+          type: 'success',
+          title: 'Camunda Connector templates updated',
+          content: <a href={ DOCUMENTATION_URL }>Learn more</a>
+        });
+      }
     });
   }
 
