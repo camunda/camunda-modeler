@@ -1,6 +1,59 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "../node_modules/bpmnlint-utils/dist/index.esm.js":
+/*!********************************************************!*\
+  !*** ../node_modules/bpmnlint-utils/dist/index.esm.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   is: () => (/* binding */ is),
+/* harmony export */   isAny: () => (/* binding */ isAny)
+/* harmony export */ });
+/**
+ * Checks whether node is of specific bpmn type.
+ *
+ * @param {ModdleElement} node
+ * @param {String} type
+ *
+ * @return {Boolean}
+ */
+function is(node, type) {
+
+  if (type.indexOf(':') === -1) {
+    type = 'bpmn:' + type;
+  }
+
+  return (
+    (typeof node.$instanceOf === 'function')
+      ? node.$instanceOf(type)
+      : node.$type === type
+  );
+}
+
+/**
+ * Checks whether node has any of the specified types.
+ *
+ * @param {ModdleElement} node
+ * @param {Array<String>} types
+ *
+ * @return {Boolean}
+ */
+function isAny(node, types) {
+  return types.some(function(type) {
+    return is(node, type);
+  });
+}
+
+
+//# sourceMappingURL=index.esm.js.map
+
+
+/***/ }),
+
 /***/ "./.bpmnlintrc":
 /*!*********************!*\
   !*** ./.bpmnlintrc ***!
@@ -10,9 +63,9 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "config": () => (/* binding */ config),
+/* harmony export */   config: () => (/* binding */ config),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
-/* harmony export */   "resolver": () => (/* binding */ resolver)
+/* harmony export */   resolver: () => (/* binding */ resolver)
 /* harmony export */ });
 /* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/no-manual-task */ "./bpmnlint-plugin-custom/rules/no-manual-task.js");
 /* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0__);
@@ -83,31 +136,148 @@ cache['bpmnlint-plugin-custom/awesome-send-task'] = (bpmnlint_plugin_custom_rule
 
 /***/ }),
 
-/***/ "../node_modules/camunda-modeler-plugin-helpers/index.js":
-/*!***************************************************************!*\
-  !*** ../node_modules/camunda-modeler-plugin-helpers/index.js ***!
-  \***************************************************************/
+/***/ "./bpmnlint-plugin-custom/rules/awesome-send-task.js":
+/*!***********************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/awesome-send-task.js ***!
+  \***********************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+const {
+  is
+} = __webpack_require__(/*! bpmnlint-utils */ "../node_modules/bpmnlint-utils/dist/index.esm.js");
+
+
+/**
+ * Rule that reports send tasks are awesome.
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:SendTask')) {
+      reporter.report(node.id, 'This is awesome 😍', {
+        name: node.name
+      });
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/no-manual-task.js":
+/*!********************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/no-manual-task.js ***!
+  \********************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+const {
+  is
+} = __webpack_require__(/*! bpmnlint-utils */ "../node_modules/bpmnlint-utils/dist/index.esm.js");
+
+
+/**
+ * Rule that reports manual tasks being used.
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:ManualTask')) {
+      reporter.report(node.id, 'Element has disallowed type bpmn:ManualTask', {
+        name: node.name
+      });
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/rule-error.js":
+/*!****************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/rule-error.js ***!
+  \****************************************************/
+/***/ ((module) => {
+
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+/**
+ * Rule that just blows up.
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    throw new Error('I blow up');
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/camunda-modeler-plugin-helpers/index.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/camunda-modeler-plugin-helpers/index.js ***!
+  \**************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getModelerDirectory": () => (/* binding */ getModelerDirectory),
-/* harmony export */   "getPluginsDirectory": () => (/* binding */ getPluginsDirectory),
-/* harmony export */   "registerBpmnJSModdleExtension": () => (/* binding */ registerBpmnJSModdleExtension),
-/* harmony export */   "registerBpmnJSPlugin": () => (/* binding */ registerBpmnJSPlugin),
-/* harmony export */   "registerClientExtension": () => (/* binding */ registerClientExtension),
-/* harmony export */   "registerClientPlugin": () => (/* binding */ registerClientPlugin),
-/* harmony export */   "registerCloudBpmnJSModdleExtension": () => (/* binding */ registerCloudBpmnJSModdleExtension),
-/* harmony export */   "registerCloudBpmnJSPlugin": () => (/* binding */ registerCloudBpmnJSPlugin),
-/* harmony export */   "registerCloudDmnJSModdleExtension": () => (/* binding */ registerCloudDmnJSModdleExtension),
-/* harmony export */   "registerCloudDmnJSPlugin": () => (/* binding */ registerCloudDmnJSPlugin),
-/* harmony export */   "registerDmnJSModdleExtension": () => (/* binding */ registerDmnJSModdleExtension),
-/* harmony export */   "registerDmnJSPlugin": () => (/* binding */ registerDmnJSPlugin),
-/* harmony export */   "registerPlatformBpmnJSModdleExtension": () => (/* binding */ registerPlatformBpmnJSModdleExtension),
-/* harmony export */   "registerPlatformBpmnJSPlugin": () => (/* binding */ registerPlatformBpmnJSPlugin),
-/* harmony export */   "registerPlatformDmnJSModdleExtension": () => (/* binding */ registerPlatformDmnJSModdleExtension),
-/* harmony export */   "registerPlatformDmnJSPlugin": () => (/* binding */ registerPlatformDmnJSPlugin)
+/* harmony export */   getModelerDirectory: () => (/* binding */ getModelerDirectory),
+/* harmony export */   getPluginsDirectory: () => (/* binding */ getPluginsDirectory),
+/* harmony export */   registerBpmnJSModdleExtension: () => (/* binding */ registerBpmnJSModdleExtension),
+/* harmony export */   registerBpmnJSPlugin: () => (/* binding */ registerBpmnJSPlugin),
+/* harmony export */   registerClientExtension: () => (/* binding */ registerClientExtension),
+/* harmony export */   registerClientPlugin: () => (/* binding */ registerClientPlugin),
+/* harmony export */   registerCloudBpmnJSModdleExtension: () => (/* binding */ registerCloudBpmnJSModdleExtension),
+/* harmony export */   registerCloudBpmnJSPlugin: () => (/* binding */ registerCloudBpmnJSPlugin),
+/* harmony export */   registerCloudDmnJSModdleExtension: () => (/* binding */ registerCloudDmnJSModdleExtension),
+/* harmony export */   registerCloudDmnJSPlugin: () => (/* binding */ registerCloudDmnJSPlugin),
+/* harmony export */   registerDmnJSModdleExtension: () => (/* binding */ registerDmnJSModdleExtension),
+/* harmony export */   registerDmnJSPlugin: () => (/* binding */ registerDmnJSPlugin),
+/* harmony export */   registerPlatformBpmnJSModdleExtension: () => (/* binding */ registerPlatformBpmnJSModdleExtension),
+/* harmony export */   registerPlatformBpmnJSPlugin: () => (/* binding */ registerPlatformBpmnJSPlugin),
+/* harmony export */   registerPlatformDmnJSModdleExtension: () => (/* binding */ registerPlatformDmnJSModdleExtension),
+/* harmony export */   registerPlatformDmnJSPlugin: () => (/* binding */ registerPlatformDmnJSPlugin)
 /* harmony export */ });
 /**
  * Validate and register a client plugin.
@@ -464,176 +634,6 @@ function getPluginsDirectory() {
   return window.getPluginsDirectory();
 }
 
-/***/ }),
-
-/***/ "./bpmnlint-plugin-custom/rules/awesome-send-task.js":
-/*!***********************************************************!*\
-  !*** ./bpmnlint-plugin-custom/rules/awesome-send-task.js ***!
-  \***********************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-const {
-  is
-} = __webpack_require__(/*! bpmnlint-utils */ "../node_modules/bpmnlint-utils/dist/index.esm.js");
-
-
-/**
- * Rule that reports send tasks are awesome.
- */
-module.exports = function() {
-
-  function check(node, reporter) {
-    if (is(node, 'bpmn:SendTask')) {
-      reporter.report(node.id, 'This is awesome 😍', {
-        name: node.name
-      });
-    }
-  }
-
-  return {
-    check: check
-  };
-};
-
-
-/***/ }),
-
-/***/ "./bpmnlint-plugin-custom/rules/no-manual-task.js":
-/*!********************************************************!*\
-  !*** ./bpmnlint-plugin-custom/rules/no-manual-task.js ***!
-  \********************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-const {
-  is
-} = __webpack_require__(/*! bpmnlint-utils */ "../node_modules/bpmnlint-utils/dist/index.esm.js");
-
-
-/**
- * Rule that reports manual tasks being used.
- */
-module.exports = function() {
-
-  function check(node, reporter) {
-    if (is(node, 'bpmn:ManualTask')) {
-      reporter.report(node.id, 'Element has disallowed type bpmn:ManualTask', {
-        name: node.name
-      });
-    }
-  }
-
-  return {
-    check: check
-  };
-};
-
-
-/***/ }),
-
-/***/ "./bpmnlint-plugin-custom/rules/rule-error.js":
-/*!****************************************************!*\
-  !*** ./bpmnlint-plugin-custom/rules/rule-error.js ***!
-  \****************************************************/
-/***/ ((module) => {
-
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-/**
- * Rule that just blows up.
- */
-module.exports = function() {
-
-  function check(node, reporter) {
-    throw new Error('I blow up');
-  }
-
-  return {
-    check: check
-  };
-};
-
-
-/***/ }),
-
-/***/ "../node_modules/bpmnlint-utils/dist/index.esm.js":
-/*!********************************************************!*\
-  !*** ../node_modules/bpmnlint-utils/dist/index.esm.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "is": () => (/* binding */ is),
-/* harmony export */   "isAny": () => (/* binding */ isAny)
-/* harmony export */ });
-/**
- * Checks whether node is of specific bpmn type.
- *
- * @param {ModdleElement} node
- * @param {String} type
- *
- * @return {Boolean}
- */
-function is(node, type) {
-
-  if (type.indexOf(':') === -1) {
-    type = 'bpmn:' + type;
-  }
-
-  return (
-    (typeof node.$instanceOf === 'function')
-      ? node.$instanceOf(type)
-      : node.$type === type
-  );
-}
-
-/**
- * Checks whether node has any of the specified types.
- *
- * @param {ModdleElement} node
- * @param {Array<String>} types
- *
- * @return {Boolean}
- */
-function isAny(node, types) {
-  return types.some(function(type) {
-    return is(node, type);
-  });
-}
-
-
-//# sourceMappingURL=index.esm.js.map
-
-
 /***/ })
 
 /******/ 	});
@@ -705,14 +705,14 @@ function isAny(node, types) {
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 (() => {
 "use strict";
 /*!*************************!*\
   !*** ./client/index.js ***!
   \*************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "../node_modules/camunda-modeler-plugin-helpers/index.js");
+/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "./node_modules/camunda-modeler-plugin-helpers/index.js");
 /* harmony import */ var _bpmnlintrc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../.bpmnlintrc */ "./.bpmnlintrc");
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
