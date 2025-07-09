@@ -37,7 +37,7 @@ const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
 const { getTemplatesPath } = require('./templates-updater/util');
-const { TemplatesUpdater, CONNECTOR_TEMPLATES_FILE_NAME } = require('./templates-updater/templates-updater');
+const { TemplatesUpdater, OOTB_CONNECTORS_ENDPOINT } = require('./templates-updater/templates-updater');
 
 const FileContext = require('./file-context/file-context');
 const { toFileUrl } = require('./file-context/util');
@@ -692,10 +692,8 @@ function bootstrap() {
   // (3) config
   const ignoredPaths = [];
 
-  const connectorTemplatesDisabled = isConnectorTemplatesDisabled(flags, userPath);
-
-  if (connectorTemplatesDisabled) {
-    ignoredPaths.push(getTemplatesPath(userPath, CONNECTOR_TEMPLATES_FILE_NAME));
+  if (isConnectorTemplatesDisabled(flags, userPath)) {
+    ignoredPaths.push(getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName));
   }
 
   const config = new Config({
@@ -756,18 +754,16 @@ function bootstrap() {
   // (9) zeebe API
   const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
-  // (10) connector templates
-  if (!connectorTemplatesDisabled) {
-    const templatesUpdater = new TemplatesUpdater(config, userPath);
+  // (10) templates updater
+  const templatesUpdater = new TemplatesUpdater(config, userPath, isConnectorTemplatesDisabled(flags, userPath) ? [] : [ OOTB_CONNECTORS_ENDPOINT ]);
 
-    templatesUpdater.on('update:done', (hasNew, warnings) => {
-      renderer.send('client:templates-update-done', hasNew, warnings);
-    });
+  templatesUpdater.on('update:done', (hasNew, warnings) => {
+    renderer.send('client:templates-update-done', hasNew, warnings);
+  });
 
-    renderer.on('client:templates-update', ({ executionPlatform, executionPlatformVersion }) => {
-      templatesUpdater.update(executionPlatform, executionPlatformVersion);
-    });
-  }
+  renderer.on('client:templates-update', ({ executionPlatform, executionPlatformVersion }) => {
+    templatesUpdater.update(executionPlatform, executionPlatformVersion);
+  });
 
   // (11) file context
   const fileContextLog = Log('app:file-context');
