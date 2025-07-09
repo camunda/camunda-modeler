@@ -12,9 +12,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ TestClient)
 /* harmony export */ });
-/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "../node_modules/camunda-modeler-plugin-helpers/react.js");
-/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/components */ "../node_modules/camunda-modeler-plugin-helpers/components.js");
+/* harmony import */ var camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/vendor/react.js */ "../node_modules/camunda-modeler-plugin-helpers/vendor/react.js");
+/* harmony import */ var camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var camunda_modeler_plugin_helpers_components_Fill_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/components/Fill.js */ "../node_modules/camunda-modeler-plugin-helpers/components/Fill.js");
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
  * under one or more contributor license agreements. See the NOTICE file
@@ -28,7 +28,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const PLUGIN_NAME = 'test-client';
-class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__.Component {
+class TestClient extends camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0__.Component {
   constructor(props) {
     super(props);
     const {
@@ -126,33 +126,33 @@ class TestClient extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_
      * `status-bar__app` slots instead.
      */
 
-    return /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
+    return /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Fill_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
       slot: "toolbar"
-    }, "Saved: ", saveCounter), /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
+    }, "Saved: ", saveCounter), /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Fill_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
       slot: "status-bar__file"
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    }, /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
       className: "btn",
       title: "Just an icon (test-client plug-in contributed)",
       style: {
         color: '#10ad73'
       }
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(TestIcon, {
+    }, /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement(TestIcon, {
       color: color,
       heartbeat: heartbeat
-    }))), /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
+    }))), /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Fill_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
       slot: "status-bar__app",
       group: "0_first"
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    }, /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "btn",
       style: {
         background: '#10ad73',
         color: '#FEFEFE'
       }
-    }, "Saved: ", saveCounter)), tabType === 'cloud-bpmn' && /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components__WEBPACK_IMPORTED_MODULE_1__.Fill, {
+    }, "Saved: ", saveCounter)), tabType === 'cloud-bpmn' && /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement(camunda_modeler_plugin_helpers_components_Fill_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
       slot: "bottom-panel",
       label: "Cloud Plugin",
       id: "cloudPlugin"
-    }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Hello World")));
+    }, /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Hello World")));
   }
 }
 function TestIcon({
@@ -160,12 +160,12 @@ function TestIcon({
   heartbeat
 }) {
   if (!heartbeat) return null;
-  return /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+  return /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 16 16",
     width: "16",
     height: "16"
-  }, /*#__PURE__*/camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+  }, /*#__PURE__*/camunda_modeler_plugin_helpers_vendor_react_js__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
     fill: color,
     fillRule: "evenodd",
     d: "M7.655 14.916L8 14.25l.345.666a.752.752 0 01-.69 0zm0 0L8 14.25l.345.666.002-.001.006-.003.018-.01a7.643 7.643 0 00.31-.17 22.08 22.08 0 003.433-2.414C13.956 10.731 16 8.35 16 5.5 16 2.836 13.914 1 11.75 1 10.203 1 8.847 1.802 8 3.02 7.153 1.802 5.797 1 4.25 1 2.086 1 0 2.836 0 5.5c0 2.85 2.045 5.231 3.885 6.818a22.075 22.075 0 003.744 2.584l.018.01.006.003h.002z"
@@ -174,40 +174,20 @@ function TestIcon({
 
 /***/ }),
 
-/***/ "../node_modules/camunda-modeler-plugin-helpers/components.js":
-/*!********************************************************************!*\
-  !*** ../node_modules/camunda-modeler-plugin-helpers/components.js ***!
-  \********************************************************************/
+/***/ "../node_modules/camunda-modeler-plugin-helpers/components/Fill.js":
+/*!*************************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/components/Fill.js ***!
+  \*************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   CachedComponent: () => (/* binding */ CachedComponent),
-/* harmony export */   Fill: () => (/* binding */ Fill),
-/* harmony export */   Modal: () => (/* binding */ Modal),
-/* harmony export */   NotCompatible: () => (/* binding */ NotCompatible),
-/* harmony export */   Overlay: () => (/* binding */ Overlay),
-/* harmony export */   Section: () => (/* binding */ Section),
-/* harmony export */   TextInput: () => (/* binding */ TextInput),
-/* harmony export */   ToggleSwitch: () => (/* binding */ ToggleSwitch),
-/* harmony export */   WithCache: () => (/* binding */ WithCache),
-/* harmony export */   WithCachedState: () => (/* binding */ WithCachedState),
-/* harmony export */   createTab: () => (/* binding */ createTab)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-if (!window.components) {
-  throw notCompatible('3.4');
-}
+/* harmony import */ var _helper_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../helper.js */ "../node_modules/camunda-modeler-plugin-helpers/helper.js");
+/* harmony import */ var _helper_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_helper_js__WEBPACK_IMPORTED_MODULE_0__);
 
-function notCompatible(requiredVersion) {
-  return new Error('Not compatible with Camunda Modeler < v' + requiredVersion);
-}
-
-const NotCompatible = function(requiredVersion) {
-  return function NotCompatibleComponent() {
-    throw notCompatible(requiredVersion);
-  };
-};
 
 /**
  * Fill component. Set `slot` to "toolbar" to include in the top toolbar.
@@ -218,7 +198,7 @@ const NotCompatible = function(requiredVersion) {
  *
  * @example
  *
- * import { Fill } from 'camunda-modeler-plugin-helpers/components';
+ * import Fill from 'camunda-modeler-plugin-helpers/components/Fill.js';
  *
  * function CustomFill(props) {
  *   return (
@@ -230,228 +210,33 @@ const NotCompatible = function(requiredVersion) {
  *   );
  * }
  */
-const Fill = window.components.Fill;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_helper_js__WEBPACK_IMPORTED_MODULE_0__.returnOrThrow)(() => window.components?.Fill, '5.0'));
 
-/**
- * Modal component.
- *
- * @type {import('react').ComponentType<{ onClose: Function }>}
- *
- * @example
- *
- * import { Modal } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomModal(props) {
- *   return (
- *    <Modal onClose={ props.onClose }>
- *      <Modal.Title>
- *        Custom Modal
- *      </Modal.Title>
- *      <Modal.Body>
- *        Hello world!
- *      </Modal.Body>
- *      <Modal.Footer>
- *        <button type="button" onClick={ props.onClose }>
- *          Close
- *        </button>
- *      </Modal.Footer>
- *    </Modal>
- *   );
- * }
- */
-const Modal = window.components.Modal;
+/***/ }),
 
-/**
- * Overlay component.
- *
- * @type {import('react').ComponentType<{ 
- *  onClose: Function, 
- *  anchor: Node, 
- *  offset?: { top?: number, bottom?: number, left?: number, right?: number }, 
- *  maxWidth?: number | string,
- *  maxHeight?: number | string,
- *  minWidth?: number | string,
- *  minHeight?: number | string
- * }>}
- *
- * @example
- * 
- * import { Overlay } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomOverlay(props) {
- *   return (
- *    <Overlay onClose={ props.onClose } anchor={ props.btn_ref } offset={ props.anchor }>
- *      <Overlay.Title>
- *        Custom Modal
- *      </Overlay.Title>
- *      <Overlay.Body>
- *        Hello world!
- *      </Overlay.Body>
- *      <Overlay.Footer>
- *        <button type="button" onClick={ props.onClose }>
- *          Close
- *        </button>
- *      </Overlay.Footer>
- *    </Overlay>
- *   );
- * }
- */
- const Overlay = window.components.Overlay || NotCompatible('5.0');
+/***/ "../node_modules/camunda-modeler-plugin-helpers/helper.js":
+/*!****************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/helper.js ***!
+  \****************************************************************/
+/***/ ((module) => {
 
- /**
- * Section component.
- *
- * @type {import('react').ComponentType<{ maxHeight: Number | String, relativePos: Boolean } }>}
- *
- * @example
- * 
- * import { Section } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomSection(props) {
- *   return (
- *    <Section maxHeight="240px">
- *     <Section.Header>
- *       Custom section
- *     </Section.Header>
- *     <Section.Body>
- *       Hello world!
- *     </Section.Body>
- *     <Section.Actions>
- *      <button type="button" onClick={ props.onClose }>
- *        Close
- *      </button>
- *     </Section.Actions>
- *    </Section>
- *   );
- * }
- */
-const Section = window.components.Section || NotCompatible('5.0');
+function returnOrThrow(getter, minimalModelerVersion) {
+  let result;
+  try {
+    result = getter();
+  } catch (error) {}
 
- /**
- * ToggleSwitch component.
- *
- * @type {import('react').ComponentType<{ id: string, name: string, label?: string, switcherLabel?: string, description?: string }>}
- *
- * @example
- * 
- * import { ToggleSwitch } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomToggle(props) {
- *   return (
- *    <Formik initialValues={ initialValues } onSubmit={ this.onSubmit }>
- *      {() => (
- *        <Form>
- *          <Field
- *            component={ ToggleSwitch }
- *            switcherLabel="Switcher label"
- *            id={ id }
- *            name={ name }
- *            description="Toggle description"
- *          />
- *        </Form>
- *       )}
- *    </Formik>
- *   );
- * }
- */
-const ToggleSwitch = window.components.ToggleSwitch || NotCompatible('5.0');
+  if (!result) {
+    throw new Error(`Not compatible with Camunda Modeler < ${minimalModelerVersion}`);
+  }
 
- /**
- * TextInput component.
- *
- * @type {import('react').ComponentType<{ hint: string, name: string, label: string, fieldError: string, multiline: boolean, description: string }>}
- *
- * @example
- * 
- * import { TextInput } from 'camunda-modeler-plugin-helpers/components';
- *
- * function CustomInput(props) {
- *   return (
- *    <Formik initialValues={ initialValues } onSubmit={ this.onSubmit }>
- *      {() => (
- *        <Form>
- *          <Field
- *            component={ TextInput }
- *            label="My input"
- *            id={ id }
- *            multiline={ false }
- *            name={ name }
- *            description="Custom description"
- *          />
- *        </Form>
- *       )}
- *    </Formik>
- *   );
- * }
- */
-const TextInput = window.components.TextInput || NotCompatible('5.29');
+  return result;
+}
 
- /**
- * CachedComponent class.
- *
- * @type {import('react').ComponentClass}
- *
- * @example
- * 
- * import { CachedComponent } from 'camunda-modeler-plugin-helpers/components';
- * 
- * class ComponentWithCachedState extends CachedComponent {
- *  constructor(props) {
- *   super(props);
- *  }
- * 
- *  getCachedState() {
- *    return this.getCached()
- *  }
- * 
- *  setCachedState(values) {
- *    this.setCached(values)
- *  }
- * }
- * 
- */
-const CachedComponent = window.components.CachedComponent || NotCompatible('5.29');
+module.exports = {
+  returnOrThrow
+};
 
-/**
- * A higher order component that passes cache to a wrapped component.
- * Forwards refs, too.
- * 
- * @type {Function}
- * @param {Component} Comp
- */
-const WithCache = window.components.WithCache || NotCompatible('5.29');
-
-/**
- * A higher order component that lazily
- * initiates the given wrapped component
- * via the `Comp#createCachedState` method.
- *
- * Passes props as well as destructured
- * wrapped component state to `Comp`.
- *
- * The resulting component must be called
- * with the `id` and `cache` prop.
- *
- * Forwards refs, too.
- *
- * @type {Function}
- * @param {Component} Comp
- */
-const WithCachedState = window.components.WithCachedState || NotCompatible('5.29');
-
-/**
- * A helper function to create Tab components
- * to be used with the TabProvider.
- *
- * @type {Function}
- * @param {string} tabName - The name of the tab.
- * @param {object} providers - The providers object.
- * @param {string} providers.type - The type of the provider.
- * @param {React.Component} providers.editor - The editor component.
- * @param {string} providers.defaultName - The default name of the provider.
- * @returns {React.Component} The created EditorTab component.
- */
-const createTab = window.components.createTab || NotCompatible('5.29');
 
 /***/ }),
 
@@ -838,22 +623,21 @@ function getPluginsDirectory() {
 
 /***/ }),
 
-/***/ "../node_modules/camunda-modeler-plugin-helpers/react.js":
-/*!***************************************************************!*\
-  !*** ../node_modules/camunda-modeler-plugin-helpers/react.js ***!
-  \***************************************************************/
-/***/ ((module) => {
+/***/ "../node_modules/camunda-modeler-plugin-helpers/vendor/react.js":
+/*!**********************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/vendor/react.js ***!
+  \**********************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-if (!window.react) {
-  throw new Error('Not compatible with Camunda Modeler < 3.4');
-}
+const { returnOrThrow } = __webpack_require__(/*! ../helper.js */ "../node_modules/camunda-modeler-plugin-helpers/helper.js");
 
 /**
  * React object used by Camunda Modeler. Use it to create UI extension.
  *
  * @type {import('react')}
  */
-module.exports = window.react;
+module.exports = returnOrThrow(() => window.react, '3.4');
+
 
 /***/ })
 
