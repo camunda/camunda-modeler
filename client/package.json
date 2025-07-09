@@ -109,8 +109,6 @@
     "puppeteer": "^24.4.0",
     "react-svg-loader": "^3.0.3",
     "react-test-renderer": "^16.14.0",
-    "sass": "^1.83.4",
-    "sass-loader": "^16.0.4",
     "sinon": "^17.0.1",
     "sinon-chai": "^3.7.0",
     "style-loader": "^4.0.0",
