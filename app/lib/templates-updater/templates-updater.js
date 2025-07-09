@@ -18,7 +18,7 @@
 
 const { EventEmitter } = require('node:events');
 
-const ThrottledQueue = require('./throttled-queue');
+const Queue = require('p-queue');
 
 const { updateTemplates } = require('./util');
 
@@ -43,20 +43,23 @@ module.exports.TemplatesUpdater = class TemplatesUpdater extends EventEmitter {
     this._config = config;
     this._userPath = userPath;
 
-    this._queue = new ThrottledQueue();
+    this._queue = new Queue({ concurrency: 1 });
 
-    this._queue.on('queue:empty', (result = {}) => {
-      const { hasNew = false, warnings = [] } = result;
+    this._results = [];
 
-      log.info('Templates update', hasNew, warnings);
+    this._queue.onIdle(() => {
+      const results = this._results.reduce((results, { hasNew, warnings }) => {
+        return {
+          hasNew: results.hasNew || hasNew,
+          warnings: [ ...results.warnings, ...warnings ]
+        };
+      }, { hasNew: false, warnings: [] });
 
-      renderer.send('client:templates-update-success', hasNew, warnings);
-    });
+      log.info('Templates update success', results.hasNew, results.warnings);
 
-    this._queue.on('queue:error', (error) => {
-      log.error('Templates update error', error);
+      renderer.send('client:templates-update-success', results.hasNew, results.warnings);
 
-      renderer.send('client:templates-update-error', error);
+      this._results = [];
     });
 
     this._endpoints = DEFAULT_ENDPOINTS.map(endpoint => {
@@ -74,24 +77,18 @@ module.exports.TemplatesUpdater = class TemplatesUpdater extends EventEmitter {
   }
 
   update(executionPlatformVersion) {
-    for (const endpoint of this._endpoints) {
-      const key = `${endpoint.url}::${executionPlatformVersion}`;
+    let lastPromise = Promise.resolve();
 
-      this._queue.add(key, async (prevResult = {}) => {
+    for (const endpoint of this._endpoints) {
+      lastPromise = this._queue.add(async () => {
         const { hasNew, warnings } = await updateTemplates(endpoint, executionPlatformVersion, this._config, this._userPath);
 
-        const {
-          hasNew: prevHasNew = false,
-          warnings: prevWarnings = []
-        } = prevResult;
+        this._results.push({ hasNew, warnings });
 
-        return {
-          hasNew: hasNew || prevHasNew,
-          warnings: [ ...prevWarnings, ...warnings ]
-        };
+        return this._results;
       });
     }
 
-    return this._queue._last;
+    return lastPromise;
   }
 };

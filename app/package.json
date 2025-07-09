@@ -22,6 +22,7 @@
     "ids": "^1.0.0",
     "min-dash": "^4.1.1",
     "mri": "^1.1.6",
+    "p-queue": "^5.0.0",
     "parents": "^1.0.1",
     "saxen": "^10.0.0",
     "zeebe-bpmn-moddle": "^1.7.0"
