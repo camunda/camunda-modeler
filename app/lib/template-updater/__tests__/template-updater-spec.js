@@ -17,7 +17,7 @@ const { Agent, MockAgent, setGlobalDispatcher } = require('undici');
 
 const { isString } = require('min-dash');
 
-const { TemplatesUpdater } = require('../templates-updater');
+const { TemplateUpdater } = require('../templates-updater');
 
 const { isTemplateCompatible } = require('../util');
 
@@ -25,7 +25,7 @@ const userPath = path.resolve(__dirname, 'tmp');
 
 const mockTemplates = require('./mock-templates.json');
 
-describe('TemplatesUpdater', function() {
+describe('TemplateUpdater', function() {
 
   let mockAgent;
 
@@ -58,7 +58,7 @@ describe('TemplatesUpdater', function() {
   });
 
 
-  let renderer, config, templatesUpdater;
+  let renderer, config, templateUpdater;
 
   beforeEach(function() {
     renderer = {
@@ -71,7 +71,7 @@ describe('TemplatesUpdater', function() {
       set: sinon.stub().resolves()
     };
 
-    templatesUpdater = new TemplatesUpdater(renderer, config, userPath);
+    templateUpdater = new TemplateUpdater(renderer, config, userPath);
   });
 
 
@@ -119,7 +119,7 @@ describe('TemplatesUpdater', function() {
     it('should update templates (no existing)', async function() {
 
       // when
-      await templatesUpdater.update('8.8');
+      await templateUpdater.update('8.8');
 
       // then
       expect(renderer.send).to.have.been.calledWith('client:templates-update-success');
@@ -131,7 +131,7 @@ describe('TemplatesUpdater', function() {
     it('should update templates (no existing, compatible only)', async function() {
 
       // when
-      await templatesUpdater.update('8.6');
+      await templateUpdater.update('8.6');
 
       // then
       expect(renderer.send).to.have.been.calledWith('client:templates-update-success');
@@ -156,7 +156,7 @@ describe('TemplatesUpdater', function() {
       });
 
       // when
-      await templatesUpdater.update('8.8');
+      await templateUpdater.update('8.8');
 
       // then
       expect(renderer.send).to.have.been.calledWith('client:templates-update-success');
@@ -166,7 +166,7 @@ describe('TemplatesUpdater', function() {
       // expect that we don't fetch the template again
       expect(log.find(entry => entry.path === '/ootb-connectors?id=foo&version=1')).not.to.exist;
 
-      expect(config.set).to.have.been.calledWithMatch('templatesUpdater', {
+      expect(config.set).to.have.been.calledWithMatch('templateUpdater', {
         cachedRefs: {
           foo: {
             1: 'https://foo.com/ootb-connectors?id=foo&version=1'
@@ -192,7 +192,7 @@ describe('TemplatesUpdater', function() {
       });
 
       // when
-      await templatesUpdater.update('8.8');
+      await templateUpdater.update('8.8');
 
       // then
       expect(renderer.send).to.have.been.calledWith('client:templates-update-success');
@@ -202,7 +202,7 @@ describe('TemplatesUpdater', function() {
       // expect that we don't fetch the template again
       expect(log.find(entry => entry.path === '/ootb-connectors?id=foo&version=1')).to.exist;
 
-      expect(config.set).to.have.been.calledWithMatch('templatesUpdater', {
+      expect(config.set).to.have.been.calledWithMatch('templateUpdater', {
         cachedRefs: {
           foo: {
             1: 'https://foo.com/ootb-connectors?id=foo&version=1'
@@ -218,7 +218,7 @@ describe('TemplatesUpdater', function() {
       await createUserData(userPath, '[{]');
 
       // when
-      await templatesUpdater.update('8.8');
+      await templateUpdater.update('8.8');
 
       // then
       expect(renderer.send).to.have.been.calledWith('client:templates-update-success');
@@ -243,7 +243,7 @@ describe('TemplatesUpdater', function() {
       it('should not update connector templates', async function() {
 
         // when
-        const { hasNew, warnings } = await templatesUpdater.update('8.8');
+        const { hasNew, warnings } = await templateUpdater.update('8.8');
 
         // then
         expect(hasNew).to.be.false;
@@ -306,7 +306,7 @@ describe('TemplatesUpdater', function() {
       it('should update connector templates with warnings', async function() {
 
         // when
-        const { hasNew, warnings } = await templatesUpdater.update('8.8');
+        const { hasNew, warnings } = await templateUpdater.update('8.8');
 
         // then
         expect(hasNew).to.be.true;
@@ -369,7 +369,7 @@ describe('TemplatesUpdater', function() {
       it('should update connector templates with warnings', async function() {
 
         // when
-        const { hasNew, warnings } = await templatesUpdater.update('8.8');
+        const { hasNew, warnings } = await templateUpdater.update('8.8');
 
         // then
         expect(hasNew).to.be.true;
