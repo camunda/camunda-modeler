@@ -109,11 +109,20 @@ export class BpmnEditor extends CachedComponent {
           'modeler:executionPlatform': executionPlatform,
           'modeler:executionPlatformVersion': executionPlatformVersion
         });
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
       },
       getCached: () => this.getCached(),
-      setCached: (state) => {
-        this.handleEngineProfileChangeDebounced(state);
-        this.setCached(state);
+      setCached: ({ engineProfile }) => {
+        this.handleEngineProfileChangeDebounced({ engineProfile });
+
+        this.setCached({ engineProfile });
       }
     });
 
@@ -251,7 +260,10 @@ export class BpmnEditor extends CachedComponent {
 
   handleEngineProfileChange = ({ engineProfile }) => {
     const { executionPlatformVersion: version } = engineProfile;
-    if (!version) return;
+
+    if (!version) {
+      return;
+    }
 
     const elementTemplates = this.getModeler().get('elementTemplates');
 
@@ -383,6 +395,18 @@ export class BpmnEditor extends CachedComponent {
         lastXML: xml,
         stackIdx
       });
+
+      if (engineProfile) {
+        const { executionPlatform, executionPlatformVersion } = engineProfile;
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
+      }
     }
 
     if (!error) {
@@ -879,6 +903,10 @@ export class BpmnEditor extends CachedComponent {
           camundaDesktopModeler: version
         }
       }
+    });
+
+    modeler.on('elementTemplates.errors', (event) => {
+      console.warn('Element templates errors', event.errors);
     });
 
     const commandStack = modeler.get('commandStack');

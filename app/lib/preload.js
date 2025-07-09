@@ -29,6 +29,7 @@ const allowedEvents = [
   'app:quit-allowed',
   'client:error',
   'client:ready',
+  'client:templates-update',
   'config:get',
   'config:set',
   'context-menu:open',

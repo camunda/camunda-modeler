@@ -397,8 +397,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       it('should lint on import', async function() {
 
         // then
-        expect(onActionSpy).to.have.been.calledOnce;
-        expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
+        const matchingCalls = onActionSpy.getCalls().filter(call => call.calledWithMatch('lint-tab'));
+
+        expect(matchingCalls).to.have.lengthOf(1);
       });
 
 
@@ -2007,6 +2008,55 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(instance.getCached().engineProfile).to.eql({
         executionPlatform: 'Camunda Cloud',
         executionPlatformVersion: '7.15.0'
+      });
+    });
+
+
+    it('should emit tab.engineProfileChanged event on import', async function() {
+
+      // given
+      const onActionSpy = sinon.spy();
+
+      // when
+      await renderEditor(engineProfileXML, {
+        onAction: onActionSpy
+      });
+
+      // then
+      expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
+        type: 'tab.engineProfileChanged',
+        payload: {
+          executionPlatform: 'Camunda Cloud',
+          executionPlatformVersion: '1.1.0'
+        }
+      });
+    });
+
+
+    it('should emit tab.engineProfileChanged event on set engine profile', async function() {
+
+      // given
+      const onActionSpy = sinon.spy();
+
+      const { instance } = await renderEditor(engineProfileXML, {
+        onAction: onActionSpy
+      });
+
+      onActionSpy.resetHistory();
+
+      // when
+      instance.engineProfile.set({
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '1.2.0'
+      });
+
+      // then
+      expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
+        type: 'tab.engineProfileChanged',
+        payload: {
+          executionPlatform: 'Camunda Cloud',
+          executionPlatformVersion: '1.2.0'
+        }
       });
     });
 
