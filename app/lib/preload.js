@@ -22,7 +22,6 @@ const handledInPreload = [
 
 const allowedEvents = [
   ...handledInPreload,
-  'activeTab:change',
   'app:reload',
   'app:restart',
   'app:quit-aborted',
