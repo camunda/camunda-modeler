@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, Component } from 'camunda-modeler-plugin-helpers/vendor/react';
+import React, { Fragment, Component } from 'react';
 
 import Fill from 'camunda-modeler-plugin-helpers/components/Fill';
 

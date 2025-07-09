@@ -20,8 +20,6 @@ module.exports = {
     filename: 'client.js'
   },
   plugins: [
-    new CamundaModelerWebpackPlugin({
-      type: 'react'
-    })
+    new CamundaModelerWebpackPlugin()
   ]
 };

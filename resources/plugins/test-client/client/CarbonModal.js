@@ -8,13 +8,13 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'camunda-modeler-plugin-helpers/vendor/react';
+import React from 'react';
 
 import Modal from 'camunda-modeler-plugin-helpers/components/Modal';
 
-import { Button, Theme, IconButton, TextInput } from 'camunda-modeler-plugin-helpers/vendor/@carbon/react';
+import { Button, Theme, IconButton, TextInput } from '@carbon/react';
 
-import { Add } from 'camunda-modeler-plugin-helpers/vendor/@carbon/icons-react';
+import { Add } from '@carbon/icons-react';
 
 
 export default function CarbonModal({ onClose }) {
