@@ -160,7 +160,7 @@ export default class DeploymentConfigValidator {
  * ```javascript
  * validateClusterUrl('https://cluster-name.region-1.zeebe.camunda.io:443'); // null
  * validateClusterUrl('grpcs://cluster-name.region-1.zeebe.camunda.io:443'); // null
- * validateClusterUrl('grpc://cluster-name.region-1.zeebe.camunda.io:80'); // null
+ * validateClusterUrl('grpc://cluster-name.region-1.zeebe.camunda.io:443'); // null
  * validateClusterUrl('http://cluster-name.region-1.zeebe.camunda.io:443'); // error
  * validateClusterUrl('ftp://cluster-name.region-1.zeebe.camunda.io:443'); // error
  * ```
@@ -170,7 +170,7 @@ export default class DeploymentConfigValidator {
  * @returns {boolean}
  */
 function validateClusterUrl(url, validationErrorMessage) {
-  if (!/^(https:\/\/|grpcs?:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:(443|80)|)\/?/.test(url)) {
+  if (!/^(https:\/\/|grpcs?:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url)) {
     return validationErrorMessage;
   }
 

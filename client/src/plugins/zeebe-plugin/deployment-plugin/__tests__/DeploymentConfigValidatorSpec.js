@@ -145,7 +145,7 @@ describe('<DeploymentConfigValidator>', function() {
           'https://cluster-name.region-1.zeebe.camunda.io',
           'grpcs://cluster-name.region-1.zeebe.camunda.io:443',
           'grpcs://cluster-name.region-1.zeebe.camunda.io',
-          'grpc://cluster-name.region-1.zeebe.camunda.io:80',
+          'grpc://cluster-name.region-1.zeebe.camunda.io:443',
           'grpc://cluster-name.region-1.zeebe.camunda.io',
         ].map(value => DeploymentConfigValidator.validateConfigValue('endpoint.camundaCloudClusterUrl', value));
 
@@ -314,7 +314,7 @@ describe('<DeploymentConfigValidator>', function() {
             targetType: TARGET_TYPES.CAMUNDA_CLOUD,
             camundaCloudClientId: 'foo',
             camundaCloudClientSecret: 'bar',
-            camundaCloudClusterUrl: 'grpc://cluster-name.region-1.zeebe.camunda.io:80'
+            camundaCloudClusterUrl: 'grpc://cluster-name.region-1.zeebe.camunda.io:443'
           }
         });
       });
