@@ -143,6 +143,10 @@ describe('<DeploymentConfigValidator>', function() {
           'https://cluster-name.region-1.zeebe.camunda.io:443',
           'https://another-cluster-name.region-1.zeebe.camunda.io:443',
           'https://cluster-name.region-1.zeebe.camunda.io',
+          'grpcs://cluster-name.region-1.zeebe.camunda.io:443',
+          'grpcs://cluster-name.region-1.zeebe.camunda.io',
+          'grpc://cluster-name.region-1.zeebe.camunda.io:80',
+          'grpc://cluster-name.region-1.zeebe.camunda.io',
         ].map(value => DeploymentConfigValidator.validateConfigValue('endpoint.camundaCloudClusterUrl', value));
 
         // then
@@ -285,6 +289,32 @@ describe('<DeploymentConfigValidator>', function() {
             camundaCloudClientId: 'foo',
             camundaCloudClientSecret: 'bar',
             camundaCloudClusterUrl: 'https://cluster-name.region-1.zeebe.camunda.io:443'
+          }
+        });
+      });
+
+
+      it('Camunda 8 SaaS (grpcs)', function() {
+        expectNoValidationErrors({
+          deployment: {},
+          endpoint: {
+            targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+            camundaCloudClientId: 'foo',
+            camundaCloudClientSecret: 'bar',
+            camundaCloudClusterUrl: 'grpcs://cluster-name.region-1.zeebe.camunda.io:443'
+          }
+        });
+      });
+
+
+      it('Camunda 8 SaaS (grpc)', function() {
+        expectNoValidationErrors({
+          deployment: {},
+          endpoint: {
+            targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+            camundaCloudClientId: 'foo',
+            camundaCloudClientSecret: 'bar',
+            camundaCloudClusterUrl: 'grpc://cluster-name.region-1.zeebe.camunda.io:80'
           }
         });
       });

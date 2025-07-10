@@ -153,14 +153,16 @@ export default class DeploymentConfigValidator {
 }
 
 /**
- * Validate cluster URL. Valid Camunda 8 SaaS URL must start with "https://" and end with ".zeebe.camunda.io".
+ * Validate cluster URL. Valid Camunda 8 SaaS URL must start with "https://", "grpc://", or "grpcs://" and end with ".zeebe.camunda.io".
  *
  * @example
  *
  * ```javascript
- * validateClusterUrl('https://cluster-name.region-1.zeebe.camunda.io:443'); // true
- * validateClusterUrl('http://cluster-name.region-1.zeebe.camunda.io:443'); // false
- * validateClusterUrl('ftp://cluster-name.region-1.zeebe.camunda.io:443'); // false
+ * validateClusterUrl('https://cluster-name.region-1.zeebe.camunda.io:443'); // null
+ * validateClusterUrl('grpcs://cluster-name.region-1.zeebe.camunda.io:443'); // null
+ * validateClusterUrl('grpc://cluster-name.region-1.zeebe.camunda.io:80'); // null
+ * validateClusterUrl('http://cluster-name.region-1.zeebe.camunda.io:443'); // error
+ * validateClusterUrl('ftp://cluster-name.region-1.zeebe.camunda.io:443'); // error
  * ```
  *
  * @param {string} url
@@ -168,7 +170,7 @@ export default class DeploymentConfigValidator {
  * @returns {boolean}
  */
 function validateClusterUrl(url, validationErrorMessage) {
-  if (!/^(https:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url)) {
+  if (!/^(https:\/\/|grpcs?:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:(443|80)|)\/?/.test(url)) {
     return validationErrorMessage;
   }
 
