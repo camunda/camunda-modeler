@@ -37,10 +37,9 @@ const DEFAULT_ENDPOINTS = [
 ];
 
 module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
-  constructor(config, userPath, endpoints = DEFAULT_ENDPOINTS) {
+  constructor(userPath, endpoints = DEFAULT_ENDPOINTS) {
     super();
 
-    this._config = config;
     this._userPath = userPath;
     this._endpoints = endpoints;
 
@@ -78,7 +77,7 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
 
     for (const endpoint of endpoints) {
       promise = this._queue.add(async () => {
-        const { hasNew, warnings } = await updateTemplates(endpoint, executionPlatformVersion, this._config, this._userPath);
+        const { hasNew, warnings } = await updateTemplates(endpoint, executionPlatformVersion, this._userPath);
 
         this._results.push({ hasNew, warnings });
 

@@ -755,7 +755,7 @@ function bootstrap() {
   const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
   // (10) template updater
-  const templateUpdater = new TemplateUpdater(config, userPath, isConnectorTemplatesDisabled(flags, userPath) ? [] : [ OOTB_CONNECTORS_ENDPOINT ]);
+  const templateUpdater = new TemplateUpdater(userPath, isConnectorTemplatesDisabled(flags, userPath) ? [] : [ OOTB_CONNECTORS_ENDPOINT ]);
 
   templateUpdater.on('update:done', (hasNew, warnings) => {
     renderer.send('client:templates-update-done', hasNew, warnings);
