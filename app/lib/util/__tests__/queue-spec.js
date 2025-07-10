@@ -14,14 +14,10 @@ const Queue = require('../queue');
 
 describe('queue', function() {
 
-  let eventBus, queue;
+  let queue;
 
   beforeEach(function() {
-    eventBus = {
-      emit: sinon.spy()
-    };
-
-    queue = new Queue(eventBus);
+    queue = new Queue();
   });
 
   let clock;
@@ -37,19 +33,28 @@ describe('queue', function() {
 
   it('should handle promise', async function() {
 
+    // given
+    const emptySpy = sinon.spy();
+
+    queue.on('queue:empty', emptySpy);
+
     // when
     const result = await queue.add(() => Promise.resolve('foo'));
 
     // then
     expect(result).to.equal('foo');
 
-    expect(eventBus.emit).to.have.been.calledWith('workqueue:empty');
+    expect(emptySpy).to.have.been.calledOnce;
   });
 
 
   it('should handle multiple promises sequentially', async function() {
 
     // given
+    const emptySpy = sinon.spy();
+
+    queue.on('queue:empty', emptySpy);
+
     const results = [];
 
     // when
@@ -84,7 +89,7 @@ describe('queue', function() {
     // then
     expect(results).to.deep.equal([ 'foo', 'bar', 'baz' ]);
 
-    expect(eventBus.emit).to.have.been.calledWith('workqueue:empty');
+    expect(emptySpy).to.have.been.calledOnce;
   });
 
 });

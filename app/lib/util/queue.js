@@ -8,13 +8,15 @@
  * except in compliance with the MIT License.
  */
 
-class Queue {
+const { EventEmitter } = require('node:events');
+
+class Queue extends EventEmitter {
 
   /**
    * @param { import('node:events').EventEmitter } eventBus
    */
-  constructor(eventBus) {
-    this.eventBus = eventBus;
+  constructor() {
+    super();
 
     this.queue = Promise.resolve();
 
@@ -37,7 +39,7 @@ class Queue {
         this.pending--;
 
         if (this.pending === 0) {
-          this.eventBus.emit('workqueue:empty');
+          this.emit('queue:empty');
         }
       });
 
