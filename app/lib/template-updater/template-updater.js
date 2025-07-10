@@ -44,11 +44,11 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
     this._userPath = userPath;
     this._endpoints = endpoints;
 
-    this._queue = new Queue(this);
+    this._queue = new Queue();
 
     this._results = [];
 
-    this.on('workqueue:empty', () => {
+    this._queue.on('queue:empty', () => {
       const results = combineResults(this._results);
 
       log.info('Templates update success', results.hasNew, results.warnings);
