@@ -19,8 +19,6 @@ const { isString } = require('min-dash');
 
 const { TemplateUpdater } = require('../template-updater');
 
-const { isTemplateCompatible } = require('../util');
-
 const userPath = path.resolve(__dirname, 'tmp');
 
 const mockTemplates = require('./mock-templates.json');
@@ -58,19 +56,14 @@ describe('TemplateUpdater', function() {
   });
 
 
-  let config, templateUpdater;
+  let templateUpdater;
 
   beforeEach(function() {
-    config = {
-      get: sinon.stub().returns({}),
-      set: sinon.stub().resolves()
-    };
-
-    templateUpdater = new TemplateUpdater(config, userPath);
+    templateUpdater = new TemplateUpdater(userPath);
   });
 
 
-  describe('updating', function() {
+  describe('updating and caching', function() {
 
     beforeEach(function() {
       marketPlaceMockPool = mockAgent.get('https://marketplace.cloud.camunda.io');
@@ -117,7 +110,13 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      expectConnectorTemplates(userPath, mockTemplates);
+      await expectConnectorTemplates(userPath, [
+        { ...mockTemplates[0], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=3' } },
+        { ...mockTemplates[1], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=2' } },
+        { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
+        { ...mockTemplates[3], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=2' } },
+        { ...mockTemplates[4], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=1' } }
+      ]);
     });
 
 
@@ -134,7 +133,10 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      expectConnectorTemplates(userPath, mockTemplates.filter(template => isTemplateCompatible(template, '8.6')));
+      await expectConnectorTemplates(userPath, [
+        { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
+        { ...mockTemplates[4], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=1' } }
+      ]);
     });
 
 
@@ -146,16 +148,8 @@ describe('TemplateUpdater', function() {
       templateUpdater.on('update:done', doneSpy);
 
       await createUserData(userPath, [
-        mockTemplates.find(template => template.id === 'foo' && template.version === 1)
+        { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
       ]);
-
-      config.get.returns({
-        cachedRefs: {
-          foo: {
-            1: 'https://foo.com/ootb-connectors?id=foo&version=1'
-          }
-        }
-      });
 
       // when
       await templateUpdater.update('Camunda Cloud', '8.8');
@@ -163,18 +157,16 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      expectConnectorTemplates(userPath, mockTemplates);
+      await expectConnectorTemplates(userPath, [
+        { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
+        { ...mockTemplates[0], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=3' } },
+        { ...mockTemplates[1], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=2' } },
+        { ...mockTemplates[3], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=2' } },
+        { ...mockTemplates[4], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=1' } }
+      ]);
 
       // expect that we don't fetch the template again
       expect(log.find(entry => entry.path === '/ootb-connectors?id=foo&version=1')).not.to.exist;
-
-      expect(config.set).to.have.been.calledWithMatch('templateUpdater', {
-        cachedRefs: {
-          foo: {
-            1: 'https://foo.com/ootb-connectors?id=foo&version=1'
-          }
-        }
-      });
     });
 
 
@@ -186,16 +178,8 @@ describe('TemplateUpdater', function() {
       templateUpdater.on('update:done', doneSpy);
 
       await createUserData(userPath, [
-        mockTemplates.find(template => template.id === 'foo' && template.version === 1)
+        { ...mockTemplates[2], metadata: { upstreamRef: 'foo' } },
       ]);
-
-      config.get.returns({
-        cachedRefs: {
-          foo: {
-            1: 'foo'
-          }
-        }
-      });
 
       // when
       await templateUpdater.update('Camunda Cloud', '8.8');
@@ -203,18 +187,16 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      expectConnectorTemplates(userPath, mockTemplates);
+      await expectConnectorTemplates(userPath, [
+        { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
+        { ...mockTemplates[0], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=3' } },
+        { ...mockTemplates[1], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=2' } },
+        { ...mockTemplates[3], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=2' } },
+        { ...mockTemplates[4], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=1' } }
+      ]);
 
-      // expect that we don't fetch the template again
+      // expect that we fetch the template again
       expect(log.find(entry => entry.path === '/ootb-connectors?id=foo&version=1')).to.exist;
-
-      expect(config.set).to.have.been.calledWithMatch('templateUpdater', {
-        cachedRefs: {
-          foo: {
-            1: 'https://foo.com/ootb-connectors?id=foo&version=1'
-          }
-        }
-      });
     });
 
 
@@ -233,7 +215,13 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      expectConnectorTemplates(userPath, mockTemplates);
+      await expectConnectorTemplates(userPath, [
+        { ...mockTemplates[0], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=3' } },
+        { ...mockTemplates[1], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=2' } },
+        { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
+        { ...mockTemplates[3], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=2' } },
+        { ...mockTemplates[4], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=1' } }
+      ]);
     });
 
   });

@@ -106,45 +106,45 @@ describe('util', function() {
     it('should return true if cached ref matches', function() {
 
       // given
-      const id = 'foo';
+      const template = {
+        id: 'foo',
+        version: 1,
+        metadata: {
+          upstreamRef: 'foo.com'
+        }
+      };
 
       const templateMetadata = {
         ref: 'foo.com',
         version: 1
       };
 
-      const cachedRefs = {
-        foo: {
-          1: templateMetadata.ref
-        }
-      };
-
       // when
-      const result = isCachedRef(id, templateMetadata, cachedRefs);
+      const result = isCachedRef(template, templateMetadata);
 
       // then
       expect(result).to.be.true;
     });
 
 
-    it('should return false if cached ref matches', function() {
+    it('should return false if cached ref does not match', function() {
 
       // given
-      const id = 'foo';
+      const template = {
+        id: 'foo',
+        version: 1,
+        metadata: {
+          upstreamRef: 'bar.com'
+        }
+      };
 
       const templateMetadata = {
         ref: 'foo.com',
         version: 1
       };
 
-      const cachedRefs = {
-        bar: {
-          1: templateMetadata.ref
-        }
-      };
-
       // when
-      const result = isCachedRef(id, templateMetadata, cachedRefs);
+      const result = isCachedRef(template, templateMetadata);
 
       // then
       expect(result).to.be.false;
@@ -158,24 +158,27 @@ describe('util', function() {
     it('should cache ref', function() {
 
       // given
-      const id = 'foo';
+      const template = {
+        id: 'foo',
+        version: 1
+      };
 
       const templateMetadata = {
         ref: 'foo.com',
         version: 1
       };
 
-      const cachedRefs = {
-        foo: {
-          1: templateMetadata.ref
-        }
-      };
-
       // when
-      cacheRef(id, templateMetadata, cachedRefs);
+      cacheRef(template, templateMetadata);
 
       // then
-      expect(cachedRefs).to.deep.equal({ foo: { 1: 'foo.com' } });
+      expect(template).to.deep.equal({
+        id: 'foo',
+        version: 1,
+        metadata: {
+          upstreamRef: 'foo.com'
+        }
+      });
     });
 
   });
