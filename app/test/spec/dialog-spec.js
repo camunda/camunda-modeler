@@ -337,7 +337,7 @@ describe('Dialog', function() {
       it('should set defaultPath when opening files', async function() {
 
         // given
-        const fooPath = path.join(USER_PATH, 'foo', 'foo.file'),
+        const fooPath = path.join(__dirname, 'fixtures', 'foo', 'bar.txt'),
               defaultPath = path.dirname(fooPath);
 
         const filePaths = [ fooPath ];
@@ -447,7 +447,7 @@ describe('Dialog', function() {
       it('should set defaultPath when saving file', async function() {
 
         // given
-        const fooPath = path.join(USER_PATH, 'foo', 'foo.file'),
+        const fooPath = path.join(__dirname, 'fixtures', 'foo', 'bar.txt'),
               defaultPath = path.dirname(fooPath);
 
         electronDialog.setResponse({ filePath: fooPath });
@@ -511,6 +511,78 @@ describe('Dialog', function() {
       expect(dialogArgs.title).to.equal('File Open Error');
       expect(dialogArgs.message).to.equal('Unable to open "foo.txt"');
       expect(dialogArgs.detail).not.to.exist;
+    });
+
+  });
+
+
+  describe('setDefaultPath', function() {
+
+    it('should set defaultPath (array, file)', function() {
+
+      // given
+      const filePaths = [
+        path.join(__dirname, 'fixtures/foo/bar.txt'),
+        path.join(__dirname, 'fixtures/foo/baz.txt')
+      ];
+
+      // when
+      dialog.setDefaultPath(filePaths);
+
+      // then
+      expect(config.get('defaultPath')).to.equal(path.join(__dirname, 'fixtures/foo'));
+    });
+
+
+    it('should set defaultPath (string, file)', function() {
+
+      // given
+      const filePath = path.join(__dirname, 'fixtures/foo/bar.txt');
+
+      // when
+      dialog.setDefaultPath(filePath);
+
+      // then
+      expect(config.get('defaultPath')).to.equal(path.join(__dirname, 'fixtures/foo'));
+    });
+
+
+    it('should set defaultPath (array, directory)', function() {
+
+      // given
+      const dirPath = path.join(__dirname, 'fixtures/foo');
+
+      // when
+      dialog.setDefaultPath([ dirPath ]);
+
+      // then
+      expect(config.get('defaultPath')).to.equal(dirPath);
+    });
+
+
+    it('should use directory path if file path does not exist', function() {
+
+      // given
+      const filePath = path.join(__dirname, 'fixtures/foo/foo.txt');
+
+      // when
+      dialog.setDefaultPath(filePath);
+
+      // then
+      expect(config.get('defaultPath')).to.equal(path.dirname(filePath));
+    });
+
+
+    it('should not set defaultPath if file and directory path do not exist', function() {
+
+      // given
+      const filePath = path.join(__dirname, 'fixtures/bar/foo.txt');
+
+      // when
+      dialog.setDefaultPath(filePath);
+
+      // then
+      expect(config.get('defaultPath')).not.to.exist;
     });
 
   });

@@ -10,12 +10,14 @@
 
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 
 const ensureOptions = require('./util/ensure-opts');
 
 const { assign } = require('min-dash');
 
+const log = require('./log')('app:dialog');
 
 /**
  * Dialogs.
@@ -167,24 +169,67 @@ class Dialog {
     });
   }
 
-  setDefaultPath(filePaths) {
-    let defaultPath;
+  /**
+   * Set the default path for file dialogs. The provided path may be a file path
+   * or a directory path, therefore the following rules apply:
+   *
+   *  1. If it is a file path, the directory of the file will be used as the
+   *     default path.
+   *  2. If it is a file path, but the file does not exist (e.g. when saving a
+   *     new file), the directory path of the file will be used as the default
+   *     path.
+   *  3. If it is a directory path, that directory will be used as the default
+   *     path.
+   *
+   * @param {string|Array<string>} fileOrDirectoryPaths - Path(s) to a file or
+   * directory. If an array is provided, only the first path is used.
+   */
+  setDefaultPath(fileOrDirectoryPaths) {
+    let fileOrDirectoryPath = fileOrDirectoryPaths;
 
-    if (Array.isArray(filePaths)) {
-      defaultPath = filePaths[0];
-    } else {
-      defaultPath = filePaths;
+    if (Array.isArray(fileOrDirectoryPaths)) {
+      fileOrDirectoryPath = fileOrDirectoryPaths[0];
     }
 
-    if (this.defaultPath && this.defaultPath === defaultPath) {
-      return this.defaultPath;
+    if (this.defaultPath && this.defaultPath === fileOrDirectoryPath) {
+      return;
     }
 
-    const dirname = path.dirname(defaultPath);
+    let defaultPath = null;
 
-    this.config.set('defaultPath', dirname);
+    try {
+      const filePathExists = fs.existsSync(fileOrDirectoryPath);
 
-    this.defaultPath = dirname;
+      if (filePathExists) {
+        const stats = fs.statSync(fileOrDirectoryPath);
+
+        if (stats.isFile()) {
+          defaultPath = path.dirname(fileOrDirectoryPath);
+        } else if (stats.isDirectory()) {
+          defaultPath = fileOrDirectoryPath;
+        }
+      } else {
+        const dirPathExists = fs.existsSync(path.dirname(fileOrDirectoryPath));
+
+        if (dirPathExists) {
+          defaultPath = path.dirname(fileOrDirectoryPath);
+        }
+      }
+    } catch (err) {
+      log.error('Error setting default path', err);
+
+      return;
+    }
+
+    if (!defaultPath) {
+      log.warn('Error setting default path, neither file nor directory exists', fileOrDirectoryPath);
+
+      return;
+    }
+
+    this.config.set('defaultPath', defaultPath);
+
+    this.defaultPath = defaultPath;
   }
 
   setActiveWindow(browserWindow) {
