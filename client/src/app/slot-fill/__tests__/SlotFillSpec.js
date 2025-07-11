@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 
 import sinon from 'sinon';
 
@@ -22,41 +22,6 @@ import {
 
 import FillContext from '../FillContext';
 import SlotContext from '../SlotContext';
-
-class RenderChildren extends Component {
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      renderChildren: true
-    };
-  }
-
-  render() {
-    return this.state.renderChildren && this.props.children;
-  }
-}
-
-class RenderButtons extends Component {
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      renderButton: true
-    };
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <button id="foo">Foo</button>
-        {
-          this.state.renderButton && <button id="bar">Bar</button>
-        }
-      </React.Fragment>
-    );
-  }
-}
 
 
 describe('slot-fill', function() {
