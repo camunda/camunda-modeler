@@ -8,10 +8,13 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState } from 'react';
 
 import sinon from 'sinon';
+
+import { act, render } from '@testing-library/react';
+
+import { userEvent } from '@testing-library/user-event';
 
 import {
   SlotFillRoot,
@@ -22,67 +25,13 @@ import {
 import FillContext from '../FillContext';
 import SlotContext from '../SlotContext';
 
-import TestContainer from 'mocha-test-container-support';
-
-import {
-  findRenderedComponentWithType,
-  findRenderedDOMComponentWithClass,
-  scryRenderedDOMComponentsWithClass as findComponentsWithClass
-} from 'react-dom/test-utils';
-
-import {
-  query as domQuery
-} from 'min-dom';
-
-class RenderChildren extends Component {
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      renderChildren: true
-    };
-  }
-
-  render() {
-    return this.state.renderChildren && this.props.children;
-  }
-}
-
-class RenderButtons extends Component {
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      renderButton: true
-    };
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <button id="foo">Foo</button>
-        {
-          this.state.renderButton && <button id="bar">Bar</button>
-        }
-      </React.Fragment>
-    );
-  }
-}
-
 
 describe('slot-fill', function() {
-
-  var container;
-
-  beforeEach(function() {
-    container = TestContainer.get(this);
-  });
-
 
   describe('<SlotFillRoot>', function() {
 
     it('should have access to fill context', function() {
-      ReactDOM.render(
+      render(
         <SlotFillRoot>
           <FillContext.Consumer>
             {
@@ -93,14 +42,13 @@ describe('slot-fill', function() {
               }
             }
           </FillContext.Consumer>
-        </SlotFillRoot>,
-        container
+        </SlotFillRoot>
       );
     });
 
 
     it('should have access to slot context', function() {
-      ReactDOM.render(
+      render(
         <SlotFillRoot>
           <SlotContext.Consumer>
             {
@@ -110,8 +58,7 @@ describe('slot-fill', function() {
               }
             }
           </SlotContext.Consumer>
-        </SlotFillRoot>,
-        container
+        </SlotFillRoot>
       );
     });
 
@@ -120,72 +67,86 @@ describe('slot-fill', function() {
 
   describe('<Fill>', function() {
 
-    /* eslint-disable react/no-render-return-value */
-
     it('should register fill', function() {
-      var slotFillRoot = ReactDOM.render(
+      const { getByTestId } = render(
         <SlotFillRoot>
-          <Fill />
-        </SlotFillRoot>,
-        container
+          <Fill slot="test">
+            <div data-testid="test-fill">Test Fill</div>
+          </Fill>
+          <Slot name="test" />
+        </SlotFillRoot>
       );
 
-      expect(slotFillRoot.state.fills).to.have.lengthOf(1);
+      expect(getByTestId('test-fill')).to.exist;
     });
 
 
     it('should unregister fill', function() {
-      var slotFillRoot = ReactDOM.render(
+      const TestComponent = ({ shouldRenderFill }) => (
         <SlotFillRoot>
-          <RenderChildren>
-            <Fill />
-          </RenderChildren>
-        </SlotFillRoot>,
-        container
+          {shouldRenderFill && (
+            <Fill slot="test">
+              <div data-testid="test-fill">Test Fill</div>
+            </Fill>
+          )}
+          <Slot name="test" />
+        </SlotFillRoot>
       );
 
-      var renderChildren = findRenderedComponentWithType(slotFillRoot, RenderChildren);
+      const {
+        rerender,
+        getByTestId,
+        queryByTestId
+      } = render(<TestComponent shouldRenderFill={ true } />);
 
-      // SlotFillRoot will be last one to update
-      // (RenderChildren -> SlotFillRoot)
-      slotFillRoot.componentDidUpdate = function() {
+      // fill should be present initially
+      expect(getByTestId('test-fill')).to.exist;
 
-        // then
-        expect(slotFillRoot.state.fills).to.have.lengthOf(0);
-      };
+      // rerender without the fill
+      rerender(<TestComponent shouldRenderFill={ false } />);
 
-      // when
-      renderChildren.setState({ renderChildren: false });
+      // fill should be gone
+      expect(queryByTestId('test-fill')).to.not.exist;
     });
 
 
-    it('should update fill', function() {
-      var slotFillRoot = ReactDOM.render(
-        <SlotFillRoot>
-          <Fill slot="foo">
-            <RenderButtons />
-          </Fill>
-          <Slot name="foo" />
-        </SlotFillRoot>,
-        container
-      );
+    it('should update fill', async function() {
+      const TestComponent = () => {
+        const [ showBar, setShowBar ] = useState(true);
 
-      expect(domQuery('#foo', container)).to.exist;
-      expect(domQuery('#bar', container)).to.exist;
-
-      var renderButtons = findRenderedComponentWithType(slotFillRoot, RenderButtons);
-
-      // RenderButtons will be last one to update
-      // (RenderButtons -> SlotFillRoot -> RenderButtons)
-      renderButtons.componentDidUpdate = function() {
-
-        // then
-        expect(domQuery('#foo', container)).to.exist;
-        expect(domQuery('#bar', container)).not.to.exist;
+        return (
+          <SlotFillRoot>
+            <Fill slot="foo">
+              <div>
+                <button data-testid="foo">Foo</button>
+                { showBar && <button data-testid="bar">Bar</button> }
+                <button
+                  onClick={ () => setShowBar(false) }
+                  data-testid="toggle"
+                >
+                  Toggle
+                </button>
+              </div>
+            </Fill>
+            <Slot name="foo" />
+          </SlotFillRoot>
+        );
       };
 
+      const {
+        queryByTestId
+      } = render(<TestComponent />);
+
+      // assume
+      expect(queryByTestId('foo')).to.exist;
+      expect(queryByTestId('bar')).to.exist;
+
       // when
-      renderButtons.setState({ renderButton: false });
+      await act(() => userEvent.click(queryByTestId('toggle')));
+
+      // then
+      expect(queryByTestId('foo')).to.exist;
+      expect(queryByTestId('bar')).not.to.exist;
     });
 
   });
@@ -193,24 +154,23 @@ describe('slot-fill', function() {
 
   describe('<Slot>', function() {
 
-    it('should render fills', function() {
+    it('should render fills', async function() {
 
       // when
-      var slotFillRoot = ReactDOM.render(
+      const { getByTestId } = render(
         <SlotFillRoot>
           <Fill slot="foo">
-            <div className="fill" />
+            <div data-testid="fill" />
           </Fill>
-          <div className="slot">
+          <div data-testid="slot-parent">
             <Slot name="foo" />
           </div>
-        </SlotFillRoot>,
-        container
+        </SlotFillRoot>
       );
 
       // then
-      var fill = findRenderedDOMComponentWithClass(slotFillRoot, 'fill'),
-          slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+      const fill = getByTestId('fill');
+      const slot = getByTestId('slot-parent');
 
       expect(slot.contains(fill)).to.be.true;
     });
@@ -222,16 +182,15 @@ describe('slot-fill', function() {
       const CustomComponent = sinon.spy(() => null);
 
       // when
-      ReactDOM.render(
+      render(
         <SlotFillRoot>
           <Fill slot="foo" customProp="foo">
-            <div className="fill" />
+            <div data-testid="fill" />
           </Fill>
-          <div className="slot">
+          <div data-testid="slot-parent">
             <Slot name="foo" Component={ CustomComponent } />
           </div>
-        </SlotFillRoot>,
-        container
+        </SlotFillRoot>
       );
 
       // then
@@ -246,24 +205,23 @@ describe('slot-fill', function() {
         // given
         var unorderedFills = [ '1_a', '2_b', '3_a', 'foo', '2_a' ].map(id => (
           <Fill slot="foo" group={ id } key={ id }>
-            <div className="fill" id={ id } />
+            <div data-testid="fill" id={ id } />
           </Fill>
         ));
 
         // when
-        var slotFillRoot = ReactDOM.render(
+        const { getByTestId, getAllByTestId } = render(
           <SlotFillRoot>
             { unorderedFills }
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
-          </SlotFillRoot>,
-          container
+          </SlotFillRoot>
         );
 
         // then
-        var fills = findComponentsWithClass(slotFillRoot, 'fill'),
-            slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.every(fill => slot.contains(fill))).to.be.true;
         expect(fills.map(fill => fill.id)).to.eql([
@@ -280,27 +238,29 @@ describe('slot-fill', function() {
       it('should display fills ordered by priority inside same group', function() {
 
         // when
-        var slotFillRoot = ReactDOM.render(
+        const {
+          getAllByTestId,
+          getByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" group="1_a" priority={ -1 }>
-              <div className="fill" id="low_priority" />
+              <div data-testid="fill" id="low_priority" />
             </Fill>
             <Fill slot="foo" group="1_a">
-              <div className="fill" id="no_priority" />
+              <div data-testid="fill" id="no_priority" />
             </Fill>
             <Fill slot="foo" group="1_a" priority={ 100 }>
-              <div className="fill" id="high_priority" />
+              <div data-testid="fill" id="high_priority" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
-          </SlotFillRoot>,
-          container
+          </SlotFillRoot>
         );
 
         // then
-        var fills = findComponentsWithClass(slotFillRoot, 'fill'),
-            slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.every(fill => slot.contains(fill))).to.be.true;
         expect(fills.map(fill => fill.id)).to.eql([
@@ -319,22 +279,26 @@ describe('slot-fill', function() {
       it('should replace', function() {
 
         // when
-        const slotFillRoot = ReactDOM.render(
+        const {
+          getByTestId,
+          getAllByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" name="foo-fill">
-              <div className="fill" id="foo" />
+              <div data-testid="fill" id="foo" />
             </Fill>
             <Fill slot="foo" name="bar-fill" replaces="foo-fill">
-              <div className="fill" id="bar" />
+              <div data-testid="fill" id="bar" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
-          </SlotFillRoot>, container);
+          </SlotFillRoot>
+        );
 
         // then
-        const fills = findComponentsWithClass(slotFillRoot, 'fill'),
-              slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.length).to.eql(1);
         expect(fills.map(fill => fill.id)).to.eql([ 'bar' ]);
@@ -345,19 +309,23 @@ describe('slot-fill', function() {
       it('should not replace', function() {
 
         // when
-        const slotFillRoot = ReactDOM.render(
+        const {
+          getByTestId,
+          getAllByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" name="bar-fill" replaces="foo-fill">
-              <div className="fill" id="bar" />
+              <div data-testid="fill" id="bar" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
-          </SlotFillRoot>, container);
+          </SlotFillRoot>
+        );
 
         // then
-        const fills = findComponentsWithClass(slotFillRoot, 'fill'),
-              slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.length).to.eql(1);
         expect(fills.map(fill => fill.id)).to.eql([ 'bar' ]);
@@ -368,25 +336,29 @@ describe('slot-fill', function() {
       it('should replace replacement', function() {
 
         // when
-        const slotFillRoot = ReactDOM.render(
+        const {
+          getByTestId,
+          getAllByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" name="foo-fill">
-              <div className="fill" id="foo" />
+              <div data-testid="fill" id="foo" />
             </Fill>
             <Fill slot="foo" name="bar-fill" replaces="foo-fill">
-              <div className="fill" id="bar" />
+              <div data-testid="fill" id="bar" />
             </Fill>
             <Fill slot="foo" name="baz-fill" replaces="bar-fill">
-              <div className="fill" id="baz" />
+              <div data-testid="fill" id="baz" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
-          </SlotFillRoot>, container);
+          </SlotFillRoot>
+        );
 
         // then
-        const fills = findComponentsWithClass(slotFillRoot, 'fill'),
-              slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.length).to.eql(1);
         expect(fills.map(fill => fill.id)).to.eql([ 'baz' ]);
@@ -397,25 +369,29 @@ describe('slot-fill', function() {
       it('should not replace replacement', function() {
 
         // when
-        const slotFillRoot = ReactDOM.render(
+        const {
+          getByTestId,
+          getAllByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" name="foo-fill">
-              <div className="fill" id="foo" />
+              <div data-testid="fill" id="foo" />
             </Fill>
             <Fill slot="foo" name="bar-fill" replaces="foo-fill">
-              <div className="fill" id="bar" />
+              <div data-testid="fill" id="bar" />
             </Fill>
             <Fill slot="foo" name="baz-fill" replaces="foo-fill">
-              <div className="fill" id="baz" />
+              <div data-testid="fill" id="baz" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
-          </SlotFillRoot>, container);
+          </SlotFillRoot>
+        );
 
         // then
-        const fills = findComponentsWithClass(slotFillRoot, 'fill'),
-              slot = findRenderedDOMComponentWithClass(slotFillRoot, 'slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.length).to.eql(2);
         expect(fills.map(fill => fill.id)).to.eql([ 'bar', 'baz' ]);

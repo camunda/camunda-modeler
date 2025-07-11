@@ -8,9 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import {
   Fill,
@@ -19,17 +19,17 @@ import {
 
 describe('<Fill>', function() {
 
-  let fill;
-
-  afterEach(function() { return fill.unmount(); });
-
   describe('render', function() {
 
     it('should render', function() {
 
-      fill = mount(<Fill />);
+      // given
+      const fillRef = createRef();
 
-      expect(fill.instance()).to.exist;
+      // when
+      render(<Fill ref={ fillRef } />);
+
+      expect(fillRef.current).to.exist;
     });
   });
 
