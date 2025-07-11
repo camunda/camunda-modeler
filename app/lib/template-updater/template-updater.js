@@ -30,13 +30,8 @@ const OOTB_CONNECTORS_ENDPOINT = {
 
 module.exports.OOTB_CONNECTORS_ENDPOINT = OOTB_CONNECTORS_ENDPOINT;
 
-/** @type {Endpoint[]} */
-const DEFAULT_ENDPOINTS = [
-  OOTB_CONNECTORS_ENDPOINT
-];
-
 module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
-  constructor(userPath, endpoints = DEFAULT_ENDPOINTS) {
+  constructor(userPath, endpoints) {
     super();
 
     this._userPath = userPath;
