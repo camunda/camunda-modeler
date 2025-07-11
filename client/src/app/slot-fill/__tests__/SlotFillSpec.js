@@ -114,7 +114,12 @@ describe('slot-fill', function() {
               <div>
                 <button id="foo">Foo</button>
                 {showBar && <button id="bar">Bar</button>}
-                <button onClick={() => setShowBar(false)} data-testid="toggle">Toggle</button>
+                <button 
+                  onClick={() => setShowBar(false)} 
+                  data-testid="toggle"
+                >
+                  Toggle
+                </button>
               </div>
             </Fill>
             <Slot name="foo" />
