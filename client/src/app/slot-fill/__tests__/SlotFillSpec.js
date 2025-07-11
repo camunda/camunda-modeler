@@ -107,7 +107,7 @@ describe('slot-fill', function() {
 
     it('should update fill', function() {
       const TestComponent = () => {
-        const [showBar, setShowBar] = React.useState(true);
+        const [showBar, setShowBar] = useState(true);
         return (
           <SlotFillRoot>
             <Fill slot="foo">
