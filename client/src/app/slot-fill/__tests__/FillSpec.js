@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 
 import {
   Fill,
@@ -19,17 +19,13 @@ import {
 
 describe('<Fill>', function() {
 
-  let fill;
-
-  afterEach(function() { return fill.unmount(); });
-
   describe('render', function() {
 
     it('should render', function() {
 
-      fill = mount(<Fill />);
+      const { container } = render(<Fill />);
 
-      expect(fill.instance()).to.exist;
+      expect(container.firstChild).to.exist;
     });
   });
 
