@@ -17,7 +17,7 @@ const { Agent, MockAgent, setGlobalDispatcher } = require('undici');
 
 const { isString } = require('min-dash');
 
-const { TemplateUpdater } = require('../template-updater');
+const { TemplateUpdater, OOTB_CONNECTORS_ENDPOINT } = require('../template-updater');
 
 const userPath = path.resolve(__dirname, 'tmp');
 
@@ -59,7 +59,7 @@ describe('TemplateUpdater', function() {
   let templateUpdater;
 
   beforeEach(function() {
-    templateUpdater = new TemplateUpdater(userPath);
+    templateUpdater = new TemplateUpdater(userPath, [ OOTB_CONNECTORS_ENDPOINT ]);
   });
 
 
