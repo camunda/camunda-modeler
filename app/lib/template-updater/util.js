@@ -224,13 +224,9 @@ module.exports.isTemplateCompatible = isTemplateCompatible;
  * @return {boolean}
  */
 function isCachedRef(template, templateMetadata) {
-  const { metadata = {} } = template;
-
-  const { upstreamRef } = metadata;
-
   const { ref } = templateMetadata;
 
-  return upstreamRef && upstreamRef === ref;
+  return template.metadata?.upstreamRef === ref;
 }
 
 module.exports.isCachedRef = isCachedRef;

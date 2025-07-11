@@ -150,6 +150,27 @@ describe('util', function() {
       expect(result).to.be.false;
     });
 
+
+    it('should return false if no cached ref', function() {
+
+      // given
+      const template = {
+        id: 'foo',
+        version: 1
+      };
+
+      const templateMetadata = {
+        ref: 'foo.com',
+        version: 1
+      };
+
+      // when
+      const result = isCachedRef(template, templateMetadata);
+
+      // then
+      expect(result).to.be.false;
+    });
+
   });
 
 
