@@ -34,6 +34,10 @@ describe('queue', function() {
   it('should handle promise', async function() {
 
     // given
+    const nextSpy = sinon.spy();
+
+    queue.on('queue:completed', nextSpy);
+
     const emptySpy = sinon.spy();
 
     queue.on('queue:empty', emptySpy);
@@ -44,6 +48,9 @@ describe('queue', function() {
     // then
     expect(result).to.equal('foo');
 
+    expect(nextSpy).to.have.been.calledOnce;
+    expect(nextSpy).to.have.been.calledWith('foo');
+
     expect(emptySpy).to.have.been.calledOnce;
   });
 
@@ -51,35 +58,25 @@ describe('queue', function() {
   it('should handle multiple promises sequentially', async function() {
 
     // given
+    const nextSpy = sinon.spy();
+
+    queue.on('queue:completed', nextSpy);
+
     const emptySpy = sinon.spy();
 
     queue.on('queue:empty', emptySpy);
 
-    const results = [];
-
     // when
     queue.add(() => new Promise(resolve => {
-      setTimeout(() => {
-        results.push('foo');
-
-        resolve();
-      }, 100);
+      setTimeout(() => resolve('foo'), 100);
     }));
 
     queue.add(() => new Promise(resolve => {
-      setTimeout(() => {
-        results.push('bar');
-
-        resolve();
-      }, 50);
+      setTimeout(() => resolve('bar'), 50);
     }));
 
     const promise = queue.add(() => new Promise(resolve => {
-      setTimeout(() => {
-        results.push('baz');
-
-        resolve();
-      }, 150);
+      setTimeout(() => resolve('baz'), 150);
     }));
 
     await clock.tickAsync(1000);
@@ -87,7 +84,10 @@ describe('queue', function() {
     await promise;
 
     // then
-    expect(results).to.deep.equal([ 'foo', 'bar', 'baz' ]);
+    expect(nextSpy).to.have.been.calledThrice;
+    expect(nextSpy.getCall(0)).to.have.been.calledWith('foo');
+    expect(nextSpy.getCall(1)).to.have.been.calledWith('bar');
+    expect(nextSpy.getCall(2)).to.have.been.calledWith('baz');
 
     expect(emptySpy).to.have.been.calledOnce;
   });

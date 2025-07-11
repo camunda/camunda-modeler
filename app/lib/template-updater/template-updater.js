@@ -9,11 +9,8 @@
  */
 
 /**
- * @typedef { {
- *   url: string;
- *   fileName: string;
- *   lastUpdate: { [version: string]: number }
- * } } Endpoint
+ * @typedef {import('./types').Endpoint} Endpoint
+ * @typedef {import('./types').TemplateUpdateResult} TemplateUpdateResult
  */
 
 const { EventEmitter } = require('node:events');
@@ -24,6 +21,7 @@ const { updateTemplates } = require('./util');
 
 const log = require('../log')('app:template-updater');
 
+/** @type {Endpoint} */
 const OOTB_CONNECTORS_ENDPOINT = {
   executionPlatform: 'Camunda Cloud',
   fileName: '.camunda-connector-templates.json',
@@ -32,6 +30,7 @@ const OOTB_CONNECTORS_ENDPOINT = {
 
 module.exports.OOTB_CONNECTORS_ENDPOINT = OOTB_CONNECTORS_ENDPOINT;
 
+/** @type {Endpoint[]} */
 const DEFAULT_ENDPOINTS = [
   OOTB_CONNECTORS_ENDPOINT
 ];
@@ -45,12 +44,19 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
 
     this._queue = new Queue();
 
+    /** @type {TemplateUpdateResult[]} */
     this._results = [];
+
+    this._queue.on('queue:completed', (/** @type {TemplateUpdateResult} */ result) => {
+      log.info('Templates update queue completed', result);
+
+      this._results.push(result);
+    });
 
     this._queue.on('queue:empty', () => {
       const results = combineResults(this._results);
 
-      log.info('Templates update success', results.hasNew, results.warnings);
+      log.info('Templates update queue empty', results.hasNew, results.warnings);
 
       this.emit('update:done', results.hasNew, results.warnings);
 
@@ -64,31 +70,30 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
    * @param {string} executionPlatform
    * @param {string} executionPlatformVersion
    *
-   * @returns {Promise<any[]>}
+   * @returns {Promise<TemplateUpdateResult>}
    */
-  update(executionPlatform, executionPlatformVersion) {
+  async update(executionPlatform, executionPlatformVersion) {
     const endpoints = this._endpoints.filter(endpoint => {
       return endpoint.executionPlatform === executionPlatform;
     });
 
-    let promise = Promise.resolve();
+    const promises = endpoints.map(endpoint => this._queue.add(
+      () => updateTemplates(endpoint, executionPlatformVersion, this._userPath)
+    ));
 
-    let results = [];
+    const results = await Promise.all(promises);
 
-    for (const endpoint of endpoints) {
-      promise = this._queue.add(async () => {
-        const { hasNew, warnings } = await updateTemplates(endpoint, executionPlatformVersion, this._userPath);
-
-        this._results.push({ hasNew, warnings });
-
-        results.push({ hasNew, warnings });
-      });
-    }
-
-    return promise.then(() => combineResults(results));
+    return combineResults(results);
   }
 };
 
+/**
+ * Combine template update results.
+ *
+ * @param {TemplateUpdateResult[]} results
+ *
+ * @returns {TemplateUpdateResult}
+ */
 function combineResults(results) {
   return results.reduce((combined, { hasNew, warnings }) => {
     return {
