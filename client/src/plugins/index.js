@@ -20,7 +20,7 @@ import UpdateChecks from './update-checks';
 import UserJourneyStatistics from './user-journey-statistics';
 import VersionInfo from './version-info';
 import ZeebePlugin from './zeebe-plugin';
-import ConnectorTemplates from './connector-templates';
+import TemplateUpdater from './template-updater';
 import Settings from './settings';
 
 export default [
@@ -36,6 +36,6 @@ export default [
   VersionInfo,
   ZeebePlugin,
   UserJourneyStatistics,
-  ConnectorTemplates,
+  TemplateUpdater,
   Settings
 ];

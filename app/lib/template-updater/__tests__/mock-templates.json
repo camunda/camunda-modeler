@@ -1,0 +1,34 @@
+[
+  {
+    "id": "foo",
+    "version": 3,
+    "engines": {
+      "camunda": "^8.8"
+    }
+  },
+  {
+    "id": "foo",
+    "version": 2,
+    "engines": {
+      "camunda": "^8.7"
+    }
+  },
+  {
+    "id": "foo",
+    "version": 1,
+    "engines": {
+      "camunda": "^8.6"
+    }
+  },
+  {
+    "id": "bar",
+    "version": 2,
+    "engines": {
+      "camunda": "^8.8"
+    }
+  },
+  {
+    "id": "bar",
+    "version": 1
+  }
+]

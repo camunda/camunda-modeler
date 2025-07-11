@@ -22,13 +22,13 @@ const handledInPreload = [
 
 const allowedEvents = [
   ...handledInPreload,
-  'activeTab:change',
   'app:reload',
   'app:restart',
   'app:quit-aborted',
   'app:quit-allowed',
   'client:error',
   'client:ready',
+  'client:templates-update',
   'config:get',
   'config:set',
   'context-menu:open',
