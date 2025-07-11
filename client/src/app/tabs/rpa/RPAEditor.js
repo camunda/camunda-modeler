@@ -88,8 +88,17 @@ export class RPAEditor extends CachedComponent {
     editor.eventBus[method]('config.changed', this.saveConfig);
 
     editor.eventBus[method]('model.changed', this.handleChanged);
+
+    editor.eventBus[method]('notification.show', this.handleNotification);
   }
 
+  handleNotification = (notification) => {
+    this.props.onAction('display-notification', {
+      type: 'warning',
+      duration: 0,
+      ...notification
+    });
+  };
 
   saveConfig = (config) => {
     this.props.setConfig('rpa', { workerConfig: config });
@@ -99,7 +108,6 @@ export class RPAEditor extends CachedComponent {
   };
 
   handleLinting = async () => {
-    console.warn('handle linting');
     const {
       editor,
     } = this.getCached();
@@ -218,7 +226,6 @@ export class RPAEditor extends CachedComponent {
       loading: false
     });
 
-    this.handleListeners(editor);
     return editor;
   }
 
