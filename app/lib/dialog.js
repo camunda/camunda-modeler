@@ -10,12 +10,14 @@
 
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 
 const ensureOptions = require('./util/ensure-opts');
 
 const { assign } = require('min-dash');
 
+const log = require('./log')('app:dialog');
 
 /**
  * Dialogs.
@@ -167,24 +169,46 @@ class Dialog {
     });
   }
 
+  /**
+   * Set the default path for file dialogs.
+   *
+   * @param {string|Array<string>} filePaths - The file path(s) to set as default. If an array is provided, the first element will be used.
+   */
   setDefaultPath(filePaths) {
-    let defaultPath;
+    let filePath = filePaths;
 
     if (Array.isArray(filePaths)) {
-      defaultPath = filePaths[0];
-    } else {
-      defaultPath = filePaths;
+      filePath = filePaths[0];
     }
 
-    if (this.defaultPath && this.defaultPath === defaultPath) {
-      return this.defaultPath;
+    if (this.defaultPath && this.defaultPath === filePath) {
+      return;
     }
 
-    const dirname = path.dirname(defaultPath);
+    let dirPath = filePath;
 
-    this.config.set('defaultPath', dirname);
+    try {
+      const stats = fs.statSync(filePath);
 
-    this.defaultPath = dirname;
+      if (stats.isFile()) {
+        dirPath = path.dirname(filePath);
+      }
+    } catch (err) {
+
+      // If the path doesn't exist, make an educated guess
+      if (
+        filePath.endsWith(path.sep) ||
+        !path.basename(filePath).includes('.')
+      ) {
+        dirPath = filePath; // Treat as directory
+      } else {
+        dirPath = path.dirname(filePath); // Treat as file
+      }
+    }
+
+    this.config.set('defaultPath', dirPath);
+
+    this.defaultPath = dirPath;
   }
 
   setActiveWindow(browserWindow) {
