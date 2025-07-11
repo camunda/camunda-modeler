@@ -12,7 +12,9 @@ import React, { useState } from 'react';
 
 import sinon from 'sinon';
 
-import { render, screen } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
+
+import { userEvent } from '@testing-library/user-event';
 
 import {
   SlotFillRoot,
@@ -25,7 +27,6 @@ import SlotContext from '../SlotContext';
 
 
 describe('slot-fill', function() {
-
 
   describe('<SlotFillRoot>', function() {
 
@@ -67,7 +68,7 @@ describe('slot-fill', function() {
   describe('<Fill>', function() {
 
     it('should register fill', function() {
-      render(
+      const { getByTestId } = render(
         <SlotFillRoot>
           <Fill slot="test">
             <div data-testid="test-fill">Test Fill</div>
@@ -76,7 +77,7 @@ describe('slot-fill', function() {
         </SlotFillRoot>
       );
 
-      expect(screen.getByTestId('test-fill')).to.exist;
+      expect(getByTestId('test-fill')).to.exist;
     });
 
 
@@ -92,30 +93,35 @@ describe('slot-fill', function() {
         </SlotFillRoot>
       );
 
-      const { rerender } = render(<TestComponent shouldRenderFill={true} />);
+      const {
+        rerender,
+        getByTestId,
+        queryByTestId
+      } = render(<TestComponent shouldRenderFill={ true } />);
 
-      // Fill should be present initially
-      expect(screen.getByTestId('test-fill')).to.exist;
+      // fill should be present initially
+      expect(getByTestId('test-fill')).to.exist;
 
-      // Rerender without the fill
-      rerender(<TestComponent shouldRenderFill={false} />);
+      // rerender without the fill
+      rerender(<TestComponent shouldRenderFill={ false } />);
 
-      // Fill should be gone
-      expect(screen.queryByTestId('test-fill')).to.not.exist;
+      // fill should be gone
+      expect(queryByTestId('test-fill')).to.not.exist;
     });
 
 
-    it('should update fill', function() {
+    it('should update fill', async function() {
       const TestComponent = () => {
-        const [showBar, setShowBar] = useState(true);
+        const [ showBar, setShowBar ] = useState(true);
+
         return (
           <SlotFillRoot>
             <Fill slot="foo">
               <div>
-                <button id="foo">Foo</button>
-                {showBar && <button id="bar">Bar</button>}
-                <button 
-                  onClick={() => setShowBar(false)} 
+                <button data-testid="foo">Foo</button>
+                { showBar && <button data-testid="bar">Bar</button> }
+                <button
+                  onClick={ () => setShowBar(false) }
                   data-testid="toggle"
                 >
                   Toggle
@@ -127,13 +133,20 @@ describe('slot-fill', function() {
         );
       };
 
-      const { container } = render(<TestComponent />);
+      const {
+        queryByTestId
+      } = render(<TestComponent />);
 
-      expect(container.querySelector('#foo')).to.exist;
-      expect(container.querySelector('#bar')).to.exist;
+      // assume
+      expect(queryByTestId('foo')).to.exist;
+      expect(queryByTestId('bar')).to.exist;
 
-      // Note: Full interaction testing would require @testing-library/user-event
-      // For now, we verify the structure is correct
+      // when
+      await act(() => userEvent.click(queryByTestId('toggle')));
+
+      // then
+      expect(queryByTestId('foo')).to.exist;
+      expect(queryByTestId('bar')).not.to.exist;
     });
 
   });
@@ -141,23 +154,23 @@ describe('slot-fill', function() {
 
   describe('<Slot>', function() {
 
-    it('should render fills', function() {
+    it('should render fills', async function() {
 
       // when
-      const { container } = render(
+      const { getByTestId } = render(
         <SlotFillRoot>
           <Fill slot="foo">
-            <div className="fill" />
+            <div data-testid="fill" />
           </Fill>
-          <div className="slot">
+          <div data-testid="slot-parent">
             <Slot name="foo" />
           </div>
         </SlotFillRoot>
       );
 
       // then
-      const fill = container.querySelector('.fill');
-      const slot = container.querySelector('.slot');
+      const fill = getByTestId('fill');
+      const slot = getByTestId('slot-parent');
 
       expect(slot.contains(fill)).to.be.true;
     });
@@ -172,9 +185,9 @@ describe('slot-fill', function() {
       render(
         <SlotFillRoot>
           <Fill slot="foo" customProp="foo">
-            <div className="fill" />
+            <div data-testid="fill" />
           </Fill>
-          <div className="slot">
+          <div data-testid="slot-parent">
             <Slot name="foo" Component={ CustomComponent } />
           </div>
         </SlotFillRoot>
@@ -192,23 +205,23 @@ describe('slot-fill', function() {
         // given
         var unorderedFills = [ '1_a', '2_b', '3_a', 'foo', '2_a' ].map(id => (
           <Fill slot="foo" group={ id } key={ id }>
-            <div className="fill" id={ id } />
+            <div data-testid="fill" id={ id } />
           </Fill>
         ));
 
         // when
-        const { container } = render(
+        const { getByTestId, getAllByTestId } = render(
           <SlotFillRoot>
             { unorderedFills }
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
           </SlotFillRoot>
         );
 
         // then
-        const fills = Array.from(container.querySelectorAll('.fill'));
-        const slot = container.querySelector('.slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.every(fill => slot.contains(fill))).to.be.true;
         expect(fills.map(fill => fill.id)).to.eql([
@@ -225,26 +238,29 @@ describe('slot-fill', function() {
       it('should display fills ordered by priority inside same group', function() {
 
         // when
-        const { container } = render(
+        const {
+          getAllByTestId,
+          getByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" group="1_a" priority={ -1 }>
-              <div className="fill" id="low_priority" />
+              <div data-testid="fill" id="low_priority" />
             </Fill>
             <Fill slot="foo" group="1_a">
-              <div className="fill" id="no_priority" />
+              <div data-testid="fill" id="no_priority" />
             </Fill>
             <Fill slot="foo" group="1_a" priority={ 100 }>
-              <div className="fill" id="high_priority" />
+              <div data-testid="fill" id="high_priority" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
           </SlotFillRoot>
         );
 
         // then
-        const fills = Array.from(container.querySelectorAll('.fill'));
-        const slot = container.querySelector('.slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.every(fill => slot.contains(fill))).to.be.true;
         expect(fills.map(fill => fill.id)).to.eql([
@@ -263,23 +279,26 @@ describe('slot-fill', function() {
       it('should replace', function() {
 
         // when
-        const { container } = render(
+        const {
+          getByTestId,
+          getAllByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" name="foo-fill">
-              <div className="fill" id="foo" />
+              <div data-testid="fill" id="foo" />
             </Fill>
             <Fill slot="foo" name="bar-fill" replaces="foo-fill">
-              <div className="fill" id="bar" />
+              <div data-testid="fill" id="bar" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
           </SlotFillRoot>
         );
 
         // then
-        const fills = Array.from(container.querySelectorAll('.fill'));
-        const slot = container.querySelector('.slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.length).to.eql(1);
         expect(fills.map(fill => fill.id)).to.eql([ 'bar' ]);
@@ -290,20 +309,23 @@ describe('slot-fill', function() {
       it('should not replace', function() {
 
         // when
-        const { container } = render(
+        const {
+          getByTestId,
+          getAllByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" name="bar-fill" replaces="foo-fill">
-              <div className="fill" id="bar" />
+              <div data-testid="fill" id="bar" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
           </SlotFillRoot>
         );
 
         // then
-        const fills = Array.from(container.querySelectorAll('.fill'));
-        const slot = container.querySelector('.slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.length).to.eql(1);
         expect(fills.map(fill => fill.id)).to.eql([ 'bar' ]);
@@ -314,26 +336,29 @@ describe('slot-fill', function() {
       it('should replace replacement', function() {
 
         // when
-        const { container } = render(
+        const {
+          getByTestId,
+          getAllByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" name="foo-fill">
-              <div className="fill" id="foo" />
+              <div data-testid="fill" id="foo" />
             </Fill>
             <Fill slot="foo" name="bar-fill" replaces="foo-fill">
-              <div className="fill" id="bar" />
+              <div data-testid="fill" id="bar" />
             </Fill>
             <Fill slot="foo" name="baz-fill" replaces="bar-fill">
-              <div className="fill" id="baz" />
+              <div data-testid="fill" id="baz" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
           </SlotFillRoot>
         );
 
         // then
-        const fills = Array.from(container.querySelectorAll('.fill'));
-        const slot = container.querySelector('.slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.length).to.eql(1);
         expect(fills.map(fill => fill.id)).to.eql([ 'baz' ]);
@@ -344,26 +369,29 @@ describe('slot-fill', function() {
       it('should not replace replacement', function() {
 
         // when
-        const { container } = render(
+        const {
+          getByTestId,
+          getAllByTestId
+        } = render(
           <SlotFillRoot>
             <Fill slot="foo" name="foo-fill">
-              <div className="fill" id="foo" />
+              <div data-testid="fill" id="foo" />
             </Fill>
             <Fill slot="foo" name="bar-fill" replaces="foo-fill">
-              <div className="fill" id="bar" />
+              <div data-testid="fill" id="bar" />
             </Fill>
             <Fill slot="foo" name="baz-fill" replaces="foo-fill">
-              <div className="fill" id="baz" />
+              <div data-testid="fill" id="baz" />
             </Fill>
-            <div className="slot">
+            <div data-testid="slot-parent">
               <Slot name="foo" />
             </div>
           </SlotFillRoot>
         );
 
         // then
-        const fills = Array.from(container.querySelectorAll('.fill'));
-        const slot = container.querySelector('.slot');
+        const fills = getAllByTestId('fill');
+        const slot = getByTestId('slot-parent');
 
         expect(fills.length).to.eql(2);
         expect(fills.map(fill => fill.id)).to.eql([ 'bar', 'baz' ]);
