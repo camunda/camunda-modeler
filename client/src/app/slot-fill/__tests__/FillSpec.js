@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
 import { render } from '@testing-library/react';
 
@@ -23,9 +23,13 @@ describe('<Fill>', function() {
 
     it('should render', function() {
 
-      const { container } = render(<Fill />);
+      // given
+      const fillRef = createRef();
 
-      expect(container.firstChild).to.exist;
+      // when
+      render(<Fill ref={ fillRef } />);
+
+      expect(fillRef.current).to.exist;
     });
   });
 
