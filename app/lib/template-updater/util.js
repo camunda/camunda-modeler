@@ -92,16 +92,16 @@ module.exports.updateTemplates = updateTemplates;
  * Fetch templates compatible with the execution platform version from URL. Skip
  * templates that cannot be fetched or parsed without errors.
  *
- * @param {Template[]} connectorTemplates
+ * @param {Template[]} templates
  * @param {string} executionPlatformVersion
  * @param {string} url
  *
  * @returns {Promise<{ updatedTemplates: Template[], warnings: string[] }>}
  */
-async function fetchAndUpdateTemplates(connectorTemplates, executionPlatformVersion, url) {
+async function fetchAndUpdateTemplates(templates, executionPlatformVersion, url) {
   log.info('Fetching and updating templates');
 
-  let updatedTemplates = [ ...connectorTemplates ],
+  let updatedTemplates = [ ...templates ],
       warnings = [];
 
   let response = await fetch(url);
