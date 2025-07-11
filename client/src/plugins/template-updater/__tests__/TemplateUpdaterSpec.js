@@ -14,14 +14,14 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import ConnectorTemplates from '..';
+import TemplateUpdater from '..';
 
 import { Backend } from '../../../app/__tests__/mocks';
 
-describe('<ConnectorTemplates>', function() {
+describe('<TemplateUpdater>', function() {
 
   it('should render', function() {
-    createConnectorTemplates();
+    createTemplateUpdater();
   });
 
 
@@ -34,7 +34,7 @@ describe('<ConnectorTemplates>', function() {
 
     let callback;
 
-    await createConnectorTemplates({
+    await createTemplateUpdater({
       _getGlobal: () => backend,
       subscribe: (event, c) => {
         if (event === 'tab.engineProfileChanged') {
@@ -66,7 +66,7 @@ describe('<ConnectorTemplates>', function() {
 
     let callback;
 
-    await createConnectorTemplates({
+    await createTemplateUpdater({
       _getGlobal: () => backend,
       subscribe: (event, c) => {
         if (event === 'tab.engineProfileChanged') {
@@ -94,7 +94,7 @@ describe('<ConnectorTemplates>', function() {
 
     const triggerActionSpy = sinon.spy();
 
-    await createConnectorTemplates({
+    await createTemplateUpdater({
       _getGlobal: () => backend,
       displayNotification: displayNotificationSpy,
       triggerAction: triggerActionSpy
@@ -119,7 +119,7 @@ describe('<ConnectorTemplates>', function() {
 
     const triggerActionSpy = sinon.spy();
 
-    await createConnectorTemplates({
+    await createTemplateUpdater({
       _getGlobal: () => backend,
       displayNotification: displayNotificationSpy,
       triggerAction: triggerActionSpy
@@ -146,7 +146,7 @@ describe('<ConnectorTemplates>', function() {
 
     const triggerActionSpy = sinon.spy();
 
-    await createConnectorTemplates({
+    await createTemplateUpdater({
       _getGlobal: () => backend,
       displayNotification: displayNotificationSpy,
       log: logSpy,
@@ -166,8 +166,8 @@ describe('<ConnectorTemplates>', function() {
 
 });
 
-async function createConnectorTemplates(props = {}) {
-  const wrapper = shallow(<ConnectorTemplates { ...{
+async function createTemplateUpdater(props = {}) {
+  const wrapper = shallow(<TemplateUpdater { ...{
     _getGlobal: () => {},
     displayNotification: () => {},
     log: () => {},

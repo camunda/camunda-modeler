@@ -110,7 +110,7 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      await expectConnectorTemplates(userPath, [
+      await expectTemplates(userPath, [
         { ...mockTemplates[0], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=3' } },
         { ...mockTemplates[1], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=2' } },
         { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
@@ -133,7 +133,7 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      await expectConnectorTemplates(userPath, [
+      await expectTemplates(userPath, [
         { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
         { ...mockTemplates[4], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=bar&version=1' } }
       ]);
@@ -157,7 +157,7 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      await expectConnectorTemplates(userPath, [
+      await expectTemplates(userPath, [
         { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
         { ...mockTemplates[0], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=3' } },
         { ...mockTemplates[1], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=2' } },
@@ -187,7 +187,7 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      await expectConnectorTemplates(userPath, [
+      await expectTemplates(userPath, [
         { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
         { ...mockTemplates[0], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=3' } },
         { ...mockTemplates[1], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=2' } },
@@ -215,7 +215,7 @@ describe('TemplateUpdater', function() {
       // then
       expect(doneSpy).to.have.been.calledWith(true, []);
 
-      await expectConnectorTemplates(userPath, [
+      await expectTemplates(userPath, [
         { ...mockTemplates[0], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=3' } },
         { ...mockTemplates[1], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=2' } },
         { ...mockTemplates[2], metadata: { upstreamRef: 'https://foo.com/ootb-connectors?id=foo&version=1' } },
@@ -260,7 +260,7 @@ describe('TemplateUpdater', function() {
           ]
         );
 
-        expectNoConnectorTemplates(userPath);
+        expectNoTemplates(userPath);
       });
 
     });
@@ -327,7 +327,7 @@ describe('TemplateUpdater', function() {
           ]
         );
 
-        expectConnectorTemplates(userPath, mockTemplates.filter(template => template.id !== 'foo' || template.version !== 1));
+        expectTemplates(userPath, mockTemplates.filter(template => template.id !== 'foo' || template.version !== 1));
       });
 
     });
@@ -394,7 +394,7 @@ describe('TemplateUpdater', function() {
           ]
         );
 
-        expectConnectorTemplates(userPath, mockTemplates.filter(template => template.id !== 'foo' || template.version !== 1));
+        expectTemplates(userPath, mockTemplates.filter(template => template.id !== 'foo' || template.version !== 1));
       });
 
     });
@@ -403,42 +403,42 @@ describe('TemplateUpdater', function() {
 
 });
 
-async function createUserData(userPath, connectorTemplates = []) {
-  const connectorTemplatesDirectoryPath = getConnectorTemplatesDirectoryPath(userPath);
+async function createUserData(userPath, templates = []) {
+  const templatesDirectoryPath = getTemplatesDirectoryPath(userPath);
 
-  await fs.promises.mkdir(connectorTemplatesDirectoryPath, { recursive: true });
+  await fs.promises.mkdir(templatesDirectoryPath, { recursive: true });
 
-  const connectorTemplatesFilePath = getConnectorTemplatesFilePath(userPath);
+  const templatesFilePath = getTemplatesFilePath(userPath);
 
-  const stringifiedConnectorTemplates = isString(connectorTemplates) ? connectorTemplates : JSON.stringify(connectorTemplates, null, 2);
+  const stringifiedTemplates = isString(templates) ? templates : JSON.stringify(templates, null, 2);
 
-  await fs.promises.writeFile(connectorTemplatesFilePath, stringifiedConnectorTemplates);
+  await fs.promises.writeFile(templatesFilePath, stringifiedTemplates);
 }
 
-function getConnectorTemplatesDirectoryPath(userPath) {
+function getTemplatesDirectoryPath(userPath) {
   return path.join(userPath, 'resources/element-templates');
 }
 
-function getConnectorTemplatesFilePath(userPath) {
-  return path.join(getConnectorTemplatesDirectoryPath(userPath), '.camunda-connector-templates.json');
+function getTemplatesFilePath(userPath) {
+  return path.join(getTemplatesDirectoryPath(userPath), '.camunda-connector-templates.json');
 }
 
-async function expectConnectorTemplates(userPath, expectedConnectorTemplates) {
-  const connectorTemplatesFilePath = getConnectorTemplatesFilePath(userPath);
+async function expectTemplates(userPath, expectedTemplates) {
+  const templatesFilePath = getTemplatesFilePath(userPath);
 
-  expect(fs.existsSync(connectorTemplatesFilePath)).to.be.true;
+  expect(fs.existsSync(templatesFilePath)).to.be.true;
 
-  const connectorTemplates = JSON.parse(await fs.promises.readFile(connectorTemplatesFilePath, 'utf8'));
+  const templates = JSON.parse(await fs.promises.readFile(templatesFilePath, 'utf8'));
 
-  expect(connectorTemplates).to.have.length(expectedConnectorTemplates.length);
+  expect(templates).to.have.length(expectedTemplates.length);
 
-  expectedConnectorTemplates.forEach((expectedConnectorTemplate, index) => {
-    expect(connectorTemplates[index]).to.eql(expectedConnectorTemplate);
+  expectedTemplates.forEach((expectedConnectorTemplate, index) => {
+    expect(templates[index]).to.eql(expectedConnectorTemplate);
   });
 }
 
-async function expectNoConnectorTemplates(userPath) {
-  const connectorTemplatesFilePath = getConnectorTemplatesFilePath(userPath);
+async function expectNoTemplates(userPath) {
+  const templatesFilePath = getTemplatesFilePath(userPath);
 
-  expect(fs.existsSync(connectorTemplatesFilePath)).to.be.false;
+  expect(fs.existsSync(templatesFilePath)).to.be.false;
 }
