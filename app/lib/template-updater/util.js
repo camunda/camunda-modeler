@@ -9,29 +9,11 @@
  */
 
 /**
- * @typedef { {
- *   id: string;
- *   version?: number;
- *   engines: { [key: string]: string };
- * } } Template
- *
- * @typedef { {
- *   version: number;
- *   ref: string;
- *   engine?: { [key: string]: string }
- * } } TemplateMetadata
- *
- * @typedef {TemplateMetadata[]} TemplatesMetadata
- *
- * @typedef { {
- *   [id: string]: TemplatesMetadata
- * } } TemplatesByIdMetadata
- *
- * @typedef { {
- *   [ id: string ]: {
- *     [ version: string ]: string;
- *   }
- * } } CachedRefs
+ * @typedef {import('./types').Endpoint} Endpoint
+ * @typedef {import('./types').Template} Template
+ * @typedef {import('./types').TemplateMetadata} TemplateMetadata
+ * @typedef {import('./types').TemplatesByIdMetadata} TemplatesByIdMetadata
+ * @typedef {import('./types').TemplateUpdateResult} TemplateUpdateResult
  */
 
 const fs = require('fs');
@@ -47,6 +29,15 @@ function getTemplatesPath(userPath, fileName) {
 
 module.exports.getTemplatesPath = getTemplatesPath;
 
+/**
+ * Update templates for a specific execution platform and version.
+ *
+ * @param {Endpoint} endpoint
+ * @param {string} executionPlatformVersion
+ * @param {string} userPath
+ *
+ * @returns {Promise<TemplateUpdateResult>}
+ */
 async function updateTemplates(endpoint, executionPlatformVersion, userPath) {
   const {
     url,
@@ -60,6 +51,7 @@ async function updateTemplates(endpoint, executionPlatformVersion, userPath) {
 
     const hasTemplates = fs.existsSync(templatesPath);
 
+    /** @type {Template[]} */
     let templates = [];
 
     if (hasTemplates) {
