@@ -10,9 +10,7 @@
 
 import React from 'react';
 
-import {
-  shallow
-} from 'enzyme';
+import { render, screen } from '@testing-library/react';
 
 import EmptyTab from '../EmptyTab';
 import TabsProvider from '../TabsProvider';
@@ -20,7 +18,6 @@ import TabsProvider from '../TabsProvider';
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../util/Flags';
 
 /* global sinon */
-
 
 describe('<EmptyTab>', function() {
 
@@ -30,13 +27,13 @@ describe('<EmptyTab>', function() {
 
       // given
       const onAction = sinon.spy();
-      const {
-        tree
-      } = createEmptyTab({ onAction });
-      const buttons = tree.find('button');
+
+      createEmptyTab({ onAction });
+
+      const buttons = screen.getAllByRole('button');
 
       // when
-      buttons.forEach(wrapper => wrapper.simulate('click'));
+      buttons.forEach(btn => btn.click());
 
       // then
       expect(onAction).to.have.callCount(7);
@@ -54,7 +51,6 @@ describe('<EmptyTab>', function() {
   });
 
 
-
   describe('disabling dmn', function() {
 
     afterEach(sinon.restore);
@@ -65,29 +61,20 @@ describe('<EmptyTab>', function() {
       sinon.stub(Flags, 'get').withArgs(DISABLE_DMN).returns(true);
 
       // when
-      const {
-        tree
-      } = createEmptyTab();
+      createEmptyTab();
 
       // then
-      expect(tree.findWhere(
-        wrapper => wrapper.text().startsWith('DMN diagram')).first().exists()).to.be.false;
+      expect(screen.queryAllByText('DMN diagram')).to.be.empty;
     });
 
 
     it('should display dmn diagram without flag', function() {
 
       // given
-      const {
-        tree
-      } = createEmptyTab();
+      createEmptyTab();
 
       // then
-      expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('DMN diagram')
-        )
-      ).to.have.length(2);
+      expect(screen.queryAllByText('DMN diagram')).to.have.length(2);
     });
   });
 
@@ -102,32 +89,20 @@ describe('<EmptyTab>', function() {
       sinon.stub(Flags, 'get').withArgs(DISABLE_FORM).returns(true);
 
       // when
-      const {
-        tree
-      } = createEmptyTab();
+      createEmptyTab();
 
       // then
-      expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Form')
-        ).first().exists()
-      ).to.be.false;
+      expect(screen.queryAllByText('Form')).to.be.empty;
     });
 
 
     it('should display form without flag', function() {
 
       // given
-      const {
-        tree
-      } = createEmptyTab();
+      createEmptyTab();
 
       // then
-      expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Form')
-        )
-      ).to.have.length(2);
+      expect(screen.queryAllByText('Form')).to.have.length(2);
     });
 
   });
@@ -140,18 +115,12 @@ describe('<EmptyTab>', function() {
     it('should display platform without flag', function() {
 
       // when
-      const {
-        tree
-      } = createEmptyTab();
+      const { container } = createEmptyTab();
 
       // then
-      expect(tree.find('.welcome-header')).to.have.length(1);
-      expect(tree.find('.welcome-card')).to.have.length(3);
-      expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda 7')
-        ).exists()
-      ).to.be.true;
+      expect(container.querySelectorAll('.welcome-header')).to.have.length(1);
+      expect(container.querySelectorAll('.welcome-card')).to.have.length(3);
+      expect(screen.queryAllByText('Camunda 7')).not.to.be.empty;
     });
 
 
@@ -161,18 +130,12 @@ describe('<EmptyTab>', function() {
       sinon.stub(Flags, 'get').withArgs(DISABLE_PLATFORM).returns(true);
 
       // given
-      const {
-        tree
-      } = createEmptyTab();
+      const { container } = createEmptyTab();
 
       // then
-      expect(tree.find('.welcome-header')).to.have.length(0);
-      expect(tree.find('.welcome-card')).to.have.length(2);
-      expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda 7')
-        ).exists()
-      ).to.be.false;
+      expect(container.querySelectorAll('.welcome-header')).to.have.length(0);
+      expect(container.querySelectorAll('.welcome-card')).to.have.length(2);
+      expect(screen.queryAllByText('Camunda 7')).to.be.empty;
     });
 
   });
@@ -185,18 +148,12 @@ describe('<EmptyTab>', function() {
     it('should display zeebe without flag', function() {
 
       // when
-      const {
-        tree
-      } = createEmptyTab();
+      const { container } = createEmptyTab();
 
       // then
-      expect(tree.find('.welcome-header')).to.have.length(1);
-      expect(tree.find('.welcome-card')).to.have.length(3);
-      expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda 8')
-        ).exists()
-      ).to.be.true;
+      expect(container.querySelectorAll('.welcome-header')).to.have.length(1);
+      expect(container.querySelectorAll('.welcome-card')).to.have.length(3);
+      expect(screen.queryAllByText('Camunda 8')).not.to.be.empty;
     });
 
 
@@ -206,51 +163,26 @@ describe('<EmptyTab>', function() {
       sinon.stub(Flags, 'get').withArgs(DISABLE_ZEEBE).returns(true);
 
       // given
-      const {
-        tree
-      } = createEmptyTab();
+      const { container } = createEmptyTab();
 
       // then
-      expect(tree.find('.welcome-header')).to.have.length(0);
-      expect(tree.find('.welcome-card')).to.have.length(2);
-      expect(
-        tree.findWhere(
-          wrapper => wrapper.text().startsWith('Camunda 8')
-        ).exists()
-      ).to.be.false;
+      expect(container.querySelectorAll('.welcome-header')).to.have.length(0);
+      expect(container.querySelectorAll('.welcome-card')).to.have.length(2);
+      expect(screen.queryAllByText('Camunda 8')).to.be.empty;
     });
 
   });
 
-});
 
+  function createEmptyTab(options = {}) {
+    const tabsProvider = new TabsProvider();
 
-// helpers /////////////////////////////////////
-
-function noop() {}
-
-function createEmptyTab(options = {}, mountFn = shallow) {
-
-  const tabsProvider = new TabsProvider();
-
-  if (typeof options === 'function') {
-    mountFn = options;
-    options = {};
+    return render(
+      <EmptyTab
+        onAction={ options.onAction || sinon.fake() }
+        onShown={ options.onShown || sinon.fake() }
+        tabsProvider={ tabsProvider }
+      />
+    );
   }
-
-  const tree = mountFn(
-    <EmptyTab
-      onAction={ options.onAction || noop }
-      onShown={ options.onShown || noop }
-      tabsProvider={ tabsProvider }
-    />
-  );
-
-  const instance = tree.instance();
-
-  return {
-    tree,
-    instance
-  };
-
-}
+});
