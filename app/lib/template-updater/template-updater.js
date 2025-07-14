@@ -37,18 +37,23 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
     this._userPath = userPath;
     this._endpoints = endpoints;
 
+    /**
+     * @type {Queue<TemplateUpdateResult>}
+     */
     this._queue = new Queue();
 
-    /** @type {TemplateUpdateResult[]} */
+    /**
+     * @type {TemplateUpdateResult[]}
+     */
     this._results = [];
 
-    this._queue.on('queue:completed', (/** @type {TemplateUpdateResult} */ result) => {
+    this._queue.onCompleted(result => {
       log.info('Templates update queue completed', result);
 
       this._results.push(result);
     });
 
-    this._queue.on('queue:empty', () => {
+    this._queue.onEmpty(() => {
       const results = combineResults(this._results);
 
       log.info('Templates update queue empty', results.hasNew, results.warnings);
