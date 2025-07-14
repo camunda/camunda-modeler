@@ -11,26 +11,9 @@
 const { EventEmitter } = require('node:events');
 
 /**
- * Emitted when a queued function has completed.
- *
- * @event Queue#queue:completed
- * @type {any}
- * @property {any} result - The result value returned by the resolved promise.
- */
-
-/**
- * Emitted when the queue becomes empty (all pending functions have completed).
- *
- * @event Queue#queue:empty
- */
-
-/**
  * A queue that serializes promise-returning functions and emits events on progress.
  *
- * @extends EventEmitter
- *
- * @fires Queue#queue:completed
- * @fires Queue#queue:empty
+ * @template T
  */
 class Queue extends EventEmitter {
   constructor() {
@@ -42,22 +25,21 @@ class Queue extends EventEmitter {
   }
 
   /**
-   * Add a function that returns a promise to the queue.
+   * Adds a particular task to the queue.
    *
-   * @param {() => Promise<any>} fn
+   * Returns a promise to the result.
    *
-   * @returns {Promise<any>}
+   * @param {() => Promise<T> | T} taskFn
    *
-   * @fires Queue#queue:completed
-   * @fires Queue#queue:empty
+   * @returns {Promise<T>}
    */
-  add(fn) {
+  add(taskFn) {
     this.pending++;
 
     const queue = this.queue = this.queue
-      .then(() => fn())
+      .then(() => taskFn())
       .then((result) => {
-        this.emit('queue:completed', result);
+        this.emit('completed', result);
 
         return result;
       })
@@ -65,11 +47,25 @@ class Queue extends EventEmitter {
         this.pending--;
 
         if (this.pending === 0) {
-          this.emit('queue:empty');
+          this.emit('empty');
         }
       });
 
     return queue;
+  }
+
+  /**
+   * @param { (taskResult: T) => void } callbackFn
+   */
+  onCompleted(callbackFn) {
+    this.on('completed', callbackFn);
+  }
+
+  /**
+   * @param { () => void } callbackFn
+   */
+  onEmpty(callbackFn) {
+    this.on('empty', callbackFn);
   }
 }
 

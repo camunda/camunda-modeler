@@ -15,6 +15,9 @@ const Queue = require('../queue');
 
 describe('util - queue', function() {
 
+  /**
+   * @type { Queue<string> }
+   */
   let queue;
 
   beforeEach(function() {
@@ -35,13 +38,11 @@ describe('util - queue', function() {
   it('should handle promise', async function() {
 
     // given
-    const nextSpy = sinon.spy();
-
-    queue.on('queue:completed', nextSpy);
-
+    const nextSpy = /** @type { (result: string) => void } */ (sinon.spy());
     const emptySpy = sinon.spy();
 
-    queue.on('queue:empty', emptySpy);
+    queue.onCompleted(nextSpy);
+    queue.onEmpty(emptySpy);
 
     // when
     const result = await queue.add(() => Promise.resolve('foo'));
@@ -56,16 +57,36 @@ describe('util - queue', function() {
   });
 
 
+  it('should handle plain value', async function() {
+
+    // given
+    const nextSpy = /** @type { (result: string) => } */ (sinon.spy());
+    const emptySpy = sinon.spy();
+
+    queue.onCompleted(nextSpy);
+    queue.onEmpty(emptySpy);
+
+    // when
+    const result = await queue.add(() => 'foo');
+
+    // then
+    expect(result).to.equal('foo');
+
+    expect(nextSpy).to.have.been.calledOnce;
+    expect(nextSpy).to.have.been.calledWith('foo');
+
+    expect(emptySpy).to.have.been.calledOnce;
+  });
+
+
   it('should handle multiple promises sequentially', async function() {
 
     // given
-    const nextSpy = sinon.spy();
-
-    queue.on('queue:completed', nextSpy);
-
+    const nextSpy = /** @type { (result: string) => } */ (sinon.spy());
     const emptySpy = sinon.spy();
 
-    queue.on('queue:empty', emptySpy);
+    queue.onCompleted(nextSpy);
+    queue.onEmpty(emptySpy);
 
     // when
     queue.add(() => new Promise(resolve => {
