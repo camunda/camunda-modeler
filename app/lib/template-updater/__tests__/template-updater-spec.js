@@ -23,7 +23,8 @@ const userPath = path.resolve(__dirname, 'tmp');
 
 const mockTemplates = require('./mock-templates.json');
 
-describe('TemplateUpdater', function() {
+
+describe('template-updater - TemplateUpdater', function() {
 
   let mockAgent;
 

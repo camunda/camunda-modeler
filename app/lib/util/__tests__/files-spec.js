@@ -17,7 +17,7 @@ const {
 } = require('../files');
 
 
-describe('files', function() {
+describe('util - files', function() {
 
   describe('#globJSON', function() {
 
