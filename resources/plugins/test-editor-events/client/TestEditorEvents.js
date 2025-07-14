@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { PureComponent } from 'camunda-modeler-plugin-helpers/react';
+import { PureComponent } from 'react';
 
 import BpmnModelerExtension from './bpmn-modeler-extension';
 import DmnModelerExtension from './dmn-modeler-extension';

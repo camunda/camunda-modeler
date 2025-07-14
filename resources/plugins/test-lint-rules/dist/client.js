@@ -54,209 +54,10 @@ function isAny(node, types) {
 
 /***/ }),
 
-/***/ "./.bpmnlintrc":
-/*!*********************!*\
-  !*** ./.bpmnlintrc ***!
-  \*********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   config: () => (/* binding */ config),
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
-/* harmony export */   resolver: () => (/* binding */ resolver)
-/* harmony export */ });
-/* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/no-manual-task */ "./bpmnlint-plugin-custom/rules/no-manual-task.js");
-/* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/rule-error */ "./bpmnlint-plugin-custom/rules/rule-error.js");
-/* harmony import */ var bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var bpmnlint_plugin_custom_rules_awesome_send_task__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/awesome-send-task */ "./bpmnlint-plugin-custom/rules/awesome-send-task.js");
-/* harmony import */ var bpmnlint_plugin_custom_rules_awesome_send_task__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_awesome_send_task__WEBPACK_IMPORTED_MODULE_2__);
-
-const cache = {};
-
-/**
- * A resolver that caches rules and configuration as part of the bundle,
- * making them accessible in the browser.
- *
- * @param {Object} cache
- */
-function Resolver() {}
-
-Resolver.prototype.resolveRule = function(pkg, ruleName) {
-
-  const rule = cache[pkg + '/' + ruleName];
-
-  if (!rule) {
-    throw new Error('cannot resolve rule <' + pkg + '/' + ruleName + '>: not bundled');
-  }
-
-  return rule;
-};
-
-Resolver.prototype.resolveConfig = function(pkg, configName) {
-  throw new Error(
-    'cannot resolve config <' + configName + '> in <' + pkg +'>: not bundled'
-  );
-};
-
-const resolver = new Resolver();
-
-const rules = {
-  "custom/no-manual-task": "warn",
-  "custom/rule-error": "error",
-  "custom/awesome-send-task": "info"
-};
-
-const config = {
-  rules: rules
-};
-
-const bundle = {
-  resolver: resolver,
-  config: config
-};
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bundle);
-
-
-
-cache['bpmnlint-plugin-custom/no-manual-task'] = (bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0___default());
-
-
-
-cache['bpmnlint-plugin-custom/rule-error'] = (bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1___default());
-
-
-
-cache['bpmnlint-plugin-custom/awesome-send-task'] = (bpmnlint_plugin_custom_rules_awesome_send_task__WEBPACK_IMPORTED_MODULE_2___default());
-
-/***/ }),
-
-/***/ "./bpmnlint-plugin-custom/rules/awesome-send-task.js":
-/*!***********************************************************!*\
-  !*** ./bpmnlint-plugin-custom/rules/awesome-send-task.js ***!
-  \***********************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-const {
-  is
-} = __webpack_require__(/*! bpmnlint-utils */ "../node_modules/bpmnlint-utils/dist/index.esm.js");
-
-
-/**
- * Rule that reports send tasks are awesome.
- */
-module.exports = function() {
-
-  function check(node, reporter) {
-    if (is(node, 'bpmn:SendTask')) {
-      reporter.report(node.id, 'This is awesome 😍', {
-        name: node.name
-      });
-    }
-  }
-
-  return {
-    check: check
-  };
-};
-
-
-/***/ }),
-
-/***/ "./bpmnlint-plugin-custom/rules/no-manual-task.js":
-/*!********************************************************!*\
-  !*** ./bpmnlint-plugin-custom/rules/no-manual-task.js ***!
-  \********************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-const {
-  is
-} = __webpack_require__(/*! bpmnlint-utils */ "../node_modules/bpmnlint-utils/dist/index.esm.js");
-
-
-/**
- * Rule that reports manual tasks being used.
- */
-module.exports = function() {
-
-  function check(node, reporter) {
-    if (is(node, 'bpmn:ManualTask')) {
-      reporter.report(node.id, 'Element has disallowed type bpmn:ManualTask', {
-        name: node.name
-      });
-    }
-  }
-
-  return {
-    check: check
-  };
-};
-
-
-/***/ }),
-
-/***/ "./bpmnlint-plugin-custom/rules/rule-error.js":
-/*!****************************************************!*\
-  !*** ./bpmnlint-plugin-custom/rules/rule-error.js ***!
-  \****************************************************/
-/***/ ((module) => {
-
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-/**
- * Rule that just blows up.
- */
-module.exports = function() {
-
-  function check(node, reporter) {
-    throw new Error('I blow up');
-  }
-
-  return {
-    check: check
-  };
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/camunda-modeler-plugin-helpers/index.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/camunda-modeler-plugin-helpers/index.js ***!
-  \**************************************************************/
+/***/ "../node_modules/camunda-modeler-plugin-helpers/index.js":
+/*!***************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/index.js ***!
+  \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -634,6 +435,205 @@ function getPluginsDirectory() {
   return window.getPluginsDirectory();
 }
 
+/***/ }),
+
+/***/ "./.bpmnlintrc":
+/*!*********************!*\
+  !*** ./.bpmnlintrc ***!
+  \*********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   config: () => (/* binding */ config),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   resolver: () => (/* binding */ resolver)
+/* harmony export */ });
+/* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/no-manual-task */ "./bpmnlint-plugin-custom/rules/no-manual-task.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/rule-error */ "./bpmnlint-plugin-custom/rules/rule-error.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_awesome_send_task__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/awesome-send-task */ "./bpmnlint-plugin-custom/rules/awesome-send-task.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_awesome_send_task__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_awesome_send_task__WEBPACK_IMPORTED_MODULE_2__);
+
+const cache = {};
+
+/**
+ * A resolver that caches rules and configuration as part of the bundle,
+ * making them accessible in the browser.
+ *
+ * @param {Object} cache
+ */
+function Resolver() {}
+
+Resolver.prototype.resolveRule = function(pkg, ruleName) {
+
+  const rule = cache[pkg + '/' + ruleName];
+
+  if (!rule) {
+    throw new Error('cannot resolve rule <' + pkg + '/' + ruleName + '>: not bundled');
+  }
+
+  return rule;
+};
+
+Resolver.prototype.resolveConfig = function(pkg, configName) {
+  throw new Error(
+    'cannot resolve config <' + configName + '> in <' + pkg +'>: not bundled'
+  );
+};
+
+const resolver = new Resolver();
+
+const rules = {
+  "custom/no-manual-task": "warn",
+  "custom/rule-error": "error",
+  "custom/awesome-send-task": "info"
+};
+
+const config = {
+  rules: rules
+};
+
+const bundle = {
+  resolver: resolver,
+  config: config
+};
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bundle);
+
+
+
+cache['bpmnlint-plugin-custom/no-manual-task'] = (bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_0___default());
+
+
+
+cache['bpmnlint-plugin-custom/rule-error'] = (bpmnlint_plugin_custom_rules_rule_error__WEBPACK_IMPORTED_MODULE_1___default());
+
+
+
+cache['bpmnlint-plugin-custom/awesome-send-task'] = (bpmnlint_plugin_custom_rules_awesome_send_task__WEBPACK_IMPORTED_MODULE_2___default());
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/awesome-send-task.js":
+/*!***********************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/awesome-send-task.js ***!
+  \***********************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+const {
+  is
+} = __webpack_require__(/*! bpmnlint-utils */ "../node_modules/bpmnlint-utils/dist/index.esm.js");
+
+
+/**
+ * Rule that reports send tasks are awesome.
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:SendTask')) {
+      reporter.report(node.id, 'This is awesome 😍', {
+        name: node.name
+      });
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/no-manual-task.js":
+/*!********************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/no-manual-task.js ***!
+  \********************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+const {
+  is
+} = __webpack_require__(/*! bpmnlint-utils */ "../node_modules/bpmnlint-utils/dist/index.esm.js");
+
+
+/**
+ * Rule that reports manual tasks being used.
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:ManualTask')) {
+      reporter.report(node.id, 'Element has disallowed type bpmn:ManualTask', {
+        name: node.name
+      });
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/rule-error.js":
+/*!****************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/rule-error.js ***!
+  \****************************************************/
+/***/ ((module) => {
+
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+/**
+ * Rule that just blows up.
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    throw new Error('I blow up');
+  }
+
+  return {
+    check: check
+  };
+};
+
+
 /***/ })
 
 /******/ 	});
@@ -712,7 +712,7 @@ var __webpack_exports__ = {};
   !*** ./client/index.js ***!
   \*************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "./node_modules/camunda-modeler-plugin-helpers/index.js");
+/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "../node_modules/camunda-modeler-plugin-helpers/index.js");
 /* harmony import */ var _bpmnlintrc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../.bpmnlintrc */ "./.bpmnlintrc");
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
