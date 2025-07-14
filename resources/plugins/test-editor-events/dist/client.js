@@ -1,314 +1,36 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./client/TestEditorEvents.js":
-/*!************************************!*\
-  !*** ./client/TestEditorEvents.js ***!
-  \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "../node_modules/camunda-modeler-plugin-helpers/helper.js":
+/*!****************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/helper.js ***!
+  \****************************************************************/
+/***/ ((module) => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ TestEditorEvents)
-/* harmony export */ });
-/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "./node_modules/camunda-modeler-plugin-helpers/react.js");
-/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _bpmn_modeler_extension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bpmn-modeler-extension */ "./client/bpmn-modeler-extension/index.js");
-/* harmony import */ var _dmn_modeler_extension__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dmn-modeler-extension */ "./client/dmn-modeler-extension/index.js");
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
+function returnOrThrow(getter, minimalModelerVersion) {
+  let result;
+  try {
+    result = getter();
+  } catch (error) {}
 
-
-
-
-
-
-
-/**
- * An extension that shows how to hook into
- * editor events to accomplish the following:
- *
- * - hook into <bpmn.modeler.configure> to provide a bpmn.modeler extension
- * - hook into <bpmn.modeler.created> to register for bpmn.modeler events
- * - hook into <tab.saved> to perform a post-safe action
- *
- */
-class TestEditorEvents extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__.PureComponent {
-
-  constructor(props) {
-
-    super(props);
-
-    const {
-      subscribe
-    } = props;
-
-    subscribe('bpmn.modeler.configure', (event) => {
-
-      const {
-        tab,
-        middlewares
-      } = event;
-
-      log('Creating editor for tab', tab);
-
-      middlewares.push(addModule(_bpmn_modeler_extension__WEBPACK_IMPORTED_MODULE_1__["default"]));
-    });
-
-
-    subscribe('dmn.modeler.configure', (event) => {
-
-      const {
-        tab,
-        middlewares
-      } = event;
-
-      log('Creating editor for tab', tab);
-
-      middlewares.push(addDmnModule(_dmn_modeler_extension__WEBPACK_IMPORTED_MODULE_2__["default"]));
-    });
-
-    const onModelerCreated = event => {
-      const {
-        tab,
-        modeler,
-      } = event;
-
-      log('Modeler created for tab', tab);
-
-      modeler.on('saveXML.start', (event) => {
-
-        const {
-          definitions
-        } = event;
-
-        log('Saving XML with definitions', definitions, tab);
-      });
-    };
-
-    subscribe('bpmn.modeler.created', onModelerCreated);
-    subscribe('dmn.modeler.created', onModelerCreated);
-
-    subscribe('tab.saved', (event) => {
-      const {
-        tab
-      } = event;
-
-      log('Tab saved', tab);
-    });
-
+  if (!result) {
+    throw new Error(`Not compatible with Camunda Modeler < ${minimalModelerVersion}`);
   }
 
-  render() {
-    return null;
-  }
+  return result;
 }
 
-
-// helpers //////////////
-
-function log(...args) {
-  console.log('[TestEditorEvents]', ...args);
-}
-
-/**
- * Returns a bpmn.modeler.configure middleware
- * that adds the specific module.
- *
- * @param {didi.Module} extensionModule
- *
- * @return {Function}
- */
-function addModule(extensionModule) {
-
-  return (config) => {
-
-    const additionalModules = config.additionalModules || [];
-
-    return {
-      ...config,
-      additionalModules: [
-        ...additionalModules,
-        extensionModule
-      ]
-    };
-  };
-}
-
-function addDmnModule(extensionModule) {
-
-  return (config) => {
-    const newConfig = { ...config };
-
-    for (const viewer of [ 'drd', 'decisionTable', 'literalExpression', 'boxedExpression' ]) {
-      newConfig[viewer] = newConfig[viewer] || {};
-
-      const additionalModules = (newConfig[viewer] && newConfig[viewer].additionalModules) || [];
-
-      newConfig[viewer].additionalModules = [
-        ...additionalModules,
-        extensionModule
-      ];
-    }
-
-    return newConfig;
-  };
-}
+module.exports = {
+  returnOrThrow
+};
 
 
 /***/ }),
 
-/***/ "./client/bpmn-modeler-extension/TestEditorEventsLogger.js":
-/*!*****************************************************************!*\
-  !*** ./client/bpmn-modeler-extension/TestEditorEventsLogger.js ***!
-  \*****************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ EditorEventsLogger)
-/* harmony export */ });
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-function EditorEventsLogger(eventBus) {
-
-  eventBus.on('shape.added', function(event) {
-    console.log('[EditorEventsLogger]', 'shape got added', event);
-  });
-
-}
-
-EditorEventsLogger.$inject = [ 'eventBus' ];
-
-
-/***/ }),
-
-/***/ "./client/bpmn-modeler-extension/index.js":
-/*!************************************************!*\
-  !*** ./client/bpmn-modeler-extension/index.js ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TestEditorEventsLogger */ "./client/bpmn-modeler-extension/TestEditorEventsLogger.js");
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  __init__: [ 'testEditorEventsLogger' ],
-  testEditorEventsLogger: [ 'type', _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__["default"] ]
-});
-
-/***/ }),
-
-/***/ "./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js":
-/*!*******************************************************************!*\
-  !*** ./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ EditorEventsLogger)
-/* harmony export */ });
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-function EditorEventsLogger(eventBus) {
-
-  eventBus.on('shape.added', function(event) {
-    console.log('[EditorEventsLogger]', 'shape got added', event);
-  });
-
-  eventBus.on('col.add', function(event) {
-    console.log('[EditorEventsLogger]', 'col got added', event);
-  });
-
-  eventBus.on('row.add', function(event) {
-    console.log('[EditorEventsLogger]', 'row got added', event);
-  });
-
-}
-
-EditorEventsLogger.$inject = [ 'eventBus' ];
-
-
-/***/ }),
-
-/***/ "./client/dmn-modeler-extension/index.js":
-/*!***********************************************!*\
-  !*** ./client/dmn-modeler-extension/index.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DmnTestEditorEventsLogger */ "./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js");
-/**
- * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
- * under one or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information regarding copyright
- * ownership.
- *
- * Camunda licenses this file to you under the MIT; you may not use this file
- * except in compliance with the MIT License.
- */
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  __init__: [ 'testEditorEventsLogger' ],
-  testEditorEventsLogger: [ 'type', _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__["default"] ]
-});
-
-
-/***/ }),
-
-/***/ "./node_modules/camunda-modeler-plugin-helpers/index.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/camunda-modeler-plugin-helpers/index.js ***!
-  \**************************************************************/
+/***/ "../node_modules/camunda-modeler-plugin-helpers/index.js":
+/*!***************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/index.js ***!
+  \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -688,22 +410,273 @@ function getPluginsDirectory() {
 
 /***/ }),
 
-/***/ "./node_modules/camunda-modeler-plugin-helpers/react.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/camunda-modeler-plugin-helpers/react.js ***!
-  \**************************************************************/
-/***/ ((module) => {
+/***/ "../node_modules/camunda-modeler-plugin-helpers/vendor/react.js":
+/*!**********************************************************************!*\
+  !*** ../node_modules/camunda-modeler-plugin-helpers/vendor/react.js ***!
+  \**********************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-if (!window.react) {
-  throw new Error('Not compatible with Camunda Modeler < 3.4');
-}
+const { returnOrThrow } = __webpack_require__(/*! ../helper.js */ "../node_modules/camunda-modeler-plugin-helpers/helper.js");
 
 /**
  * React object used by Camunda Modeler. Use it to create UI extension.
  *
  * @type {import('react')}
  */
-module.exports = window.react;
+module.exports = returnOrThrow(() => window.react, '3.4');
+
+
+/***/ }),
+
+/***/ "./client/TestEditorEvents.js":
+/*!************************************!*\
+  !*** ./client/TestEditorEvents.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ TestEditorEvents)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/camunda-modeler-plugin-helpers/vendor/react.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _bpmn_modeler_extension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bpmn-modeler-extension */ "./client/bpmn-modeler-extension/index.js");
+/* harmony import */ var _dmn_modeler_extension__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dmn-modeler-extension */ "./client/dmn-modeler-extension/index.js");
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+
+
+
+
+/**
+ * An extension that shows how to hook into
+ * editor events to accomplish the following:
+ *
+ * - hook into <bpmn.modeler.configure> to provide a bpmn.modeler extension
+ * - hook into <bpmn.modeler.created> to register for bpmn.modeler events
+ * - hook into <tab.saved> to perform a post-safe action
+ *
+ */
+class TestEditorEvents extends react__WEBPACK_IMPORTED_MODULE_0__.PureComponent {
+  constructor(props) {
+    super(props);
+    const {
+      subscribe
+    } = props;
+    subscribe('bpmn.modeler.configure', event => {
+      const {
+        tab,
+        middlewares
+      } = event;
+      log('Creating editor for tab', tab);
+      middlewares.push(addModule(_bpmn_modeler_extension__WEBPACK_IMPORTED_MODULE_1__["default"]));
+    });
+    subscribe('dmn.modeler.configure', event => {
+      const {
+        tab,
+        middlewares
+      } = event;
+      log('Creating editor for tab', tab);
+      middlewares.push(addDmnModule(_dmn_modeler_extension__WEBPACK_IMPORTED_MODULE_2__["default"]));
+    });
+    const onModelerCreated = event => {
+      const {
+        tab,
+        modeler
+      } = event;
+      log('Modeler created for tab', tab);
+      modeler.on('saveXML.start', event => {
+        const {
+          definitions
+        } = event;
+        log('Saving XML with definitions', definitions, tab);
+      });
+    };
+    subscribe('bpmn.modeler.created', onModelerCreated);
+    subscribe('dmn.modeler.created', onModelerCreated);
+    subscribe('tab.saved', event => {
+      const {
+        tab
+      } = event;
+      log('Tab saved', tab);
+    });
+  }
+  render() {
+    return null;
+  }
+}
+
+// helpers //////////////
+
+function log(...args) {
+  console.log('[TestEditorEvents]', ...args);
+}
+
+/**
+ * Returns a bpmn.modeler.configure middleware
+ * that adds the specific module.
+ *
+ * @param {didi.Module} extensionModule
+ *
+ * @return {Function}
+ */
+function addModule(extensionModule) {
+  return config => {
+    const additionalModules = config.additionalModules || [];
+    return {
+      ...config,
+      additionalModules: [...additionalModules, extensionModule]
+    };
+  };
+}
+function addDmnModule(extensionModule) {
+  return config => {
+    const newConfig = {
+      ...config
+    };
+    for (const viewer of ['drd', 'decisionTable', 'literalExpression', 'boxedExpression']) {
+      newConfig[viewer] = newConfig[viewer] || {};
+      const additionalModules = newConfig[viewer] && newConfig[viewer].additionalModules || [];
+      newConfig[viewer].additionalModules = [...additionalModules, extensionModule];
+    }
+    return newConfig;
+  };
+}
+
+/***/ }),
+
+/***/ "./client/bpmn-modeler-extension/TestEditorEventsLogger.js":
+/*!*****************************************************************!*\
+  !*** ./client/bpmn-modeler-extension/TestEditorEventsLogger.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ EditorEventsLogger)
+/* harmony export */ });
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+function EditorEventsLogger(eventBus) {
+  eventBus.on('shape.added', function (event) {
+    console.log('[EditorEventsLogger]', 'shape got added', event);
+  });
+}
+EditorEventsLogger.$inject = ['eventBus'];
+
+/***/ }),
+
+/***/ "./client/bpmn-modeler-extension/index.js":
+/*!************************************************!*\
+  !*** ./client/bpmn-modeler-extension/index.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TestEditorEventsLogger */ "./client/bpmn-modeler-extension/TestEditorEventsLogger.js");
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  __init__: ['testEditorEventsLogger'],
+  testEditorEventsLogger: ['type', _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__["default"]]
+});
+
+/***/ }),
+
+/***/ "./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js":
+/*!*******************************************************************!*\
+  !*** ./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ EditorEventsLogger)
+/* harmony export */ });
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+function EditorEventsLogger(eventBus) {
+  eventBus.on('shape.added', function (event) {
+    console.log('[EditorEventsLogger]', 'shape got added', event);
+  });
+  eventBus.on('col.add', function (event) {
+    console.log('[EditorEventsLogger]', 'col got added', event);
+  });
+  eventBus.on('row.add', function (event) {
+    console.log('[EditorEventsLogger]', 'row got added', event);
+  });
+}
+EditorEventsLogger.$inject = ['eventBus'];
+
+/***/ }),
+
+/***/ "./client/dmn-modeler-extension/index.js":
+/*!***********************************************!*\
+  !*** ./client/dmn-modeler-extension/index.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DmnTestEditorEventsLogger */ "./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js");
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  __init__: ['testEditorEventsLogger'],
+  testEditorEventsLogger: ['type', _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__["default"]]
+});
 
 /***/ })
 
@@ -783,7 +756,7 @@ var __webpack_exports__ = {};
   !*** ./client/index.js ***!
   \*************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "./node_modules/camunda-modeler-plugin-helpers/index.js");
+/* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "../node_modules/camunda-modeler-plugin-helpers/index.js");
 /* harmony import */ var _TestEditorEvents__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TestEditorEvents */ "./client/TestEditorEvents.js");
 /**
  * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
@@ -797,10 +770,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
 (0,camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__.registerClientExtension)(_TestEditorEvents__WEBPACK_IMPORTED_MODULE_1__["default"]);
-
 })();
 
 /******/ })()
