@@ -12,7 +12,8 @@ const sinon = require('sinon');
 
 const Queue = require('../queue');
 
-describe('queue', function() {
+
+describe('util - queue', function() {
 
   let queue;
 

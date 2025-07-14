@@ -15,7 +15,7 @@ const os = require('os');
 const errorTracking = require('../error-tracking');
 
 
-describe('error-tracking', function() {
+describe('util - error-tracking', function() {
 
   beforeEach(function() {
     process.env.SENTRY_DSN = 'SOME_SENTRY_DSN';
