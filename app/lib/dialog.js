@@ -10,7 +10,6 @@
 
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 
 const ensureOptions = require('./util/ensure-opts');
@@ -101,7 +100,7 @@ class Dialog {
       } = response;
 
       if (filePath) {
-        this.setDefaultPath(filePath);
+        this.setDefaultPath(path.dirname(filePath));
       }
 
       return filePath;
@@ -111,7 +110,7 @@ class Dialog {
   showOpenDialog(options) {
     const {
       filters,
-      properties,
+      properties = [ 'openFile', 'multiSelections' ],
       title
     } = options;
 
@@ -124,7 +123,7 @@ class Dialog {
     return this.electronDialog.showOpenDialog(this.browserWindow, {
       defaultPath,
       filters,
-      properties: properties || [ 'openFile', 'multiSelections' ],
+      properties,
       title: title || 'Open File'
     }).then(response => {
 
@@ -132,8 +131,12 @@ class Dialog {
         filePaths
       } = response;
 
-      if (filePaths && filePaths[0]) {
-        this.setDefaultPath(filePaths);
+      const defaultPath = filePaths && filePaths[0];
+
+      if (defaultPath) {
+        this.setDefaultPath(
+          properties.includes('openFile') ? path.dirname(defaultPath) : defaultPath
+        );
       }
 
       return filePaths || [];
@@ -174,62 +177,11 @@ class Dialog {
   }
 
   /**
-   * Set the default path for file dialogs. The provided path may be a file path
-   * or a directory path, therefore the following rules apply:
+   * Set the default path for file dialogs.
    *
-   *  1. If it is a file path, the directory of the file will be used as the
-   *     default path.
-   *  2. If it is a file path, but the file does not exist (e.g. when saving a
-   *     new file), the directory path of the file will be used as the default
-   *     path.
-   *  3. If it is a directory path, that directory will be used as the default
-   *     path.
-   *
-   * @param {string|Array<string>} fileOrDirectoryPaths - Path(s) to a file or
-   * directory. If an array is provided, only the first path is used.
+   * @param {string} defaultPath - path to be used for open / save dialogs
    */
-  setDefaultPath(fileOrDirectoryPaths) {
-    let fileOrDirectoryPath = fileOrDirectoryPaths;
-
-    if (Array.isArray(fileOrDirectoryPaths)) {
-      fileOrDirectoryPath = fileOrDirectoryPaths[0];
-    }
-
-    if (this.defaultPath && this.defaultPath === fileOrDirectoryPath) {
-      return;
-    }
-
-    let defaultPath = null;
-
-    try {
-      const filePathExists = fs.existsSync(fileOrDirectoryPath);
-
-      if (filePathExists) {
-        const stats = fs.statSync(fileOrDirectoryPath);
-
-        if (stats.isFile()) {
-          defaultPath = path.dirname(fileOrDirectoryPath);
-        } else if (stats.isDirectory()) {
-          defaultPath = fileOrDirectoryPath;
-        }
-      } else {
-        const dirPathExists = fs.existsSync(path.dirname(fileOrDirectoryPath));
-
-        if (dirPathExists) {
-          defaultPath = path.dirname(fileOrDirectoryPath);
-        }
-      }
-    } catch (err) {
-      log.error('Error setting default path', err);
-
-      return;
-    }
-
-    if (!defaultPath) {
-      log.warn('Error setting default path, neither file nor directory exists', fileOrDirectoryPath);
-
-      return;
-    }
+  setDefaultPath(defaultPath) {
 
     log.debug('set', { defaultPath });
 
