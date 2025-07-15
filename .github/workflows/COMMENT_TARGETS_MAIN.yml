@@ -1,0 +1,26 @@
+name: COMMENT_TARGESTS_MAIN
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - main
+permissions:
+  pull-requests: write
+jobs:
+  comment:
+    name: Comment on targeting main branch
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Create comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.number }}
+          BODY: |
+            This Pull Request targets `main` branch, consider if this was right.
+
+            Consider targeting `develop` instead.
+        run: gh issue comment "$NUMBER" --body "$BODY"
