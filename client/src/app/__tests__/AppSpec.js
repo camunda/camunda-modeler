@@ -3032,7 +3032,7 @@ describe('<App>', function() {
       const {
         app,
         queryByRole,
-        findByRole
+        queryAllByRole
       } = createApp();
 
       // assume
@@ -3042,7 +3042,7 @@ describe('<App>', function() {
       app.openModal('KEYBOARD_SHORTCUTS');
 
       // then
-      await findByRole('dialog');
+      expect(queryAllByRole('dialog')).have.length.greaterThan(0);
     });
 
 
@@ -3051,13 +3051,14 @@ describe('<App>', function() {
       // given
       const {
         app,
-        queryByRole
+        queryByRole,
+        queryAllByRole
       } = createApp();
 
       app.openModal('KEYBOARD_SHORTCUTS');
 
       // assume
-      expect(queryByRole('dialog')).to.exist;
+      expect(queryAllByRole('dialog')).have.length.greaterThan(0);
 
       // when
       app.closeModal();
