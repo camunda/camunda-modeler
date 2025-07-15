@@ -12,7 +12,7 @@ import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
-import { groupBy, omit } from 'min-dash';
+import { groupBy, isNumber, omit } from 'min-dash';
 
 import * as css from './Tabbed.less';
 
@@ -46,14 +46,6 @@ const MIDDLE_MOUSE_BUTTON = 1;
  */
 const SMALL_TAB_WIDTH = 90;
 const SMALLER_TAB_WIDTH = 45;
-
-const COLORS = [
-  'rgb(30, 136, 229)',
-  'rgb(251, 140, 0)',
-  'rgb(67, 160, 71)',
-  'rgb(229, 57, 53)',
-  'rgb(142, 36, 170)'
-];
 
 export default class TabLinks extends PureComponent {
   constructor(props) {
@@ -110,10 +102,10 @@ export default class TabLinks extends PureComponent {
 
     const tabsByGroup = omit(groupBy(tabs, tab => tabGroups[ tab.id ]), '_');
 
-    const colors = {};
+    const tabGroupIndexes = {};
 
     Object.keys(tabsByGroup).forEach((key, index) => {
-      colors[ key ] = COLORS[ index % COLORS.length ];
+      tabGroupIndexes[ key ] = index % 5; // cycle through 5 colors
     });
 
     return (
@@ -126,7 +118,7 @@ export default class TabLinks extends PureComponent {
               const dirty = isDirty(tab);
               const active = tab === activeTab;
 
-              const color = tabGroups[ tab.id ] && colors[ tabGroups[ tab.id ] ];
+              const tabGroupIndex = tabGroups[ tab.id ] && tabGroupIndexes[ tabGroups[ tab.id ] ];
 
               return (
                 <Tab
@@ -138,7 +130,8 @@ export default class TabLinks extends PureComponent {
                   onClose={ onClose }
                   onContextMenu={ onContextMenu }
                   onSelect={ onSelect }
-                  color={ color }
+                  isTabGroup={ isNumber(tabGroupIndex) }
+                  tabGroupIndex={ tabGroupIndex }
                 />
               );
             })
@@ -175,7 +168,8 @@ function Tab(props) {
     onContextMenu,
     onSelect,
     tab,
-    color
+    isTabGroup,
+    tabGroupIndex
   } = props;
 
   const tabRef = React.useRef(0);
@@ -199,15 +193,6 @@ function Tab(props) {
     return () => resizeObserver.disconnect();
   }, [ tabNode ]);
 
-  let style = {};
-
-  if (color) {
-    style = {
-      ...style,
-      '--tab-line-group-background-color': color
-    };
-  }
-
   return (
     <div
       tabIndex="0"
@@ -219,9 +204,9 @@ function Tab(props) {
         'tab--dirty': dirty,
         'tab--small': small,
         'tab--smaller': smaller,
-        'tab--group': !!color
+        'tab--group': isTabGroup,
+        [ `tab--group-${ tabGroupIndex + 1 }` ]: isTabGroup
       }) }
-      style={ style }
       onClick={ (event) => onSelect(tab, event) }
       onAuxClick={ (event) => {
         if (event.button === MIDDLE_MOUSE_BUTTON) {

@@ -29,6 +29,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
   const {
     _getGlobal,
     activeTab,
+    tabGroup,
     displayNotification,
     log,
     processApplication,
@@ -119,6 +120,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     ) }
     { overlayOpen && (
       <DeploymentPluginOverlay
+        className= {}
         activeTab={ activeTab }
         anchor={ anchorRef.current }
         connectionChecker={ connectionChecker }

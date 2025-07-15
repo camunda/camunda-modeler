@@ -31,6 +31,7 @@ export default function ProcessApplicationsPlugin(props) {
   } = props;
 
   const [ activeTab, setActiveTab ] = useState(null);
+  const [ tabGroup, setTabGroup ] = useState(null);
   const [ tabs, setTabs ] = useState([]);
   const [ items, setItems ] = useState([]);
   const [ processApplication, setProcessApplication ] = useState(null);
@@ -45,6 +46,16 @@ export default function ProcessApplicationsPlugin(props) {
 
     subscribe('app.tabsChanged', (event) => {
       setTabs(event.tabs);
+    });
+
+    subscribe('tabGroupChanged', (event) => {
+      const { id, group } = event;
+
+      if (activeTab?.id === id) {
+        setTabGroup(group);
+      } else {
+        setTabGroup(null);
+      }
     });
 
     subscribe('create-process-application', async () => {
@@ -182,6 +193,7 @@ export default function ProcessApplicationsPlugin(props) {
     <ProcessApplicationsDeploymentPlugin
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
+      tabGroup={ tabGroup }
       displayNotification={ displayNotification }
       log={ log }
       processApplication={ processApplication }

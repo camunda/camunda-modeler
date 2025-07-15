@@ -175,6 +175,11 @@ export class App extends PureComponent {
         }
       };
     });
+
+    this.emit('app.tabGroupChanged', {
+      id,
+      group
+    });
   }
 
   createDiagram = async (type = 'bpmn') => {
