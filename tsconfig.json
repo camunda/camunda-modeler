@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "ES2018"
+    ],
+    "strict": true,
+    "checkJS": true
+  }
+}
