@@ -1,0 +1,15 @@
+name: TARGET_DEVELOP
+on:
+  pull_request:
+    types:
+      - opened
+jobs:
+  targets-main:
+    name: Throw Error if PR targets main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Throw Error if PR targets main
+        if: github.event.pull_request.base.ref == 'main'
+        run: |
+          echo "This PR targets the main branch. Please target the develop branch instead."
+          exit 1
