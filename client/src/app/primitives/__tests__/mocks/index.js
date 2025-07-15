@@ -31,7 +31,16 @@ export const defaultTabs = [
 ];
 
 export const defaultTabGroups = {
-  tab1: 'group1',
-  tab2: 'group1',
-  tab3: 'group2'
+  tab1: {
+    group: 'group1',
+    className: 'tab-group-1'
+  },
+  tab2: {
+    group: 'group1',
+    className: 'tab-group-1'
+  },
+  tab3: {
+    group: 'group2',
+    className: 'tab-group-2'
+  }
 };
