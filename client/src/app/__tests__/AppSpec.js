@@ -10,7 +10,7 @@
 
 import React, { createRef, Component } from 'react';
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import {
   App,
@@ -76,7 +76,7 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const app = createApp({
+        const { app } = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -100,7 +100,7 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const app = createApp({
+        const { app } = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -120,7 +120,7 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const app = createApp({
+        const { app, queryByText } = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -133,11 +133,11 @@ describe('<App>', function() {
         await app.triggerAction('close-all-tabs');
 
         await waitFor(() => {
-          expect(screen.queryByText('1.bpmn')).not.to.exist;
+          expect(queryByText('1.bpmn')).not.to.exist;
         });
 
         await waitFor(() => {
-          expect(screen.queryByText('2.bpmn')).not.to.exist;
+          expect(queryByText('2.bpmn')).not.to.exist;
         });
 
         // then
@@ -156,7 +156,7 @@ describe('<App>', function() {
         const updateMenuSpy = spy();
 
         // when
-        const app = createApp({
+        const { app } = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -179,7 +179,7 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const app = createApp({
+        const { app } = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -202,7 +202,7 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const app = createApp({
+        const { app } = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -229,7 +229,7 @@ describe('<App>', function() {
       // given
       const updateMenuSpy = spy();
 
-      const app = createApp({
+      const { app } = createApp({
         onMenuUpdate: updateMenuSpy
       });
 
@@ -250,7 +250,7 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const app = createApp({
+        const { app } = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -269,7 +269,7 @@ describe('<App>', function() {
         // given
         const updateMenuSpy = spy();
 
-        const app = createApp({
+        const { app } = createApp({
           onMenuUpdate: updateMenuSpy
         });
 
@@ -294,7 +294,7 @@ describe('<App>', function() {
     it('should render empty tab', function() {
 
       // when
-      const app = createApp();
+      const { app } = createApp();
 
       // then
       const {
@@ -314,7 +314,7 @@ describe('<App>', function() {
     it('should create + open as tabs', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       // when
       await app.createDiagram('bpmn');
@@ -355,7 +355,7 @@ describe('<App>', function() {
         send: sendSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           backend
         }
@@ -382,7 +382,7 @@ describe('<App>', function() {
         send: sendSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           backend
         }
@@ -405,7 +405,7 @@ describe('<App>', function() {
         send: sendSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           backend
         }
@@ -432,7 +432,7 @@ describe('<App>', function() {
         send: sendSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           backend
         }
@@ -459,7 +459,7 @@ describe('<App>', function() {
 
       const fileSystem = new FileSystem();
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           backend,
           fileSystem
@@ -491,7 +491,7 @@ describe('<App>', function() {
     it('should create tabs', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -519,7 +519,7 @@ describe('<App>', function() {
 
       dialog.setShowOpenFileErrorDialogResponse({ button: 'cancel' });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -539,7 +539,7 @@ describe('<App>', function() {
     it('should keep existing tabs (by path)', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -572,7 +572,7 @@ describe('<App>', function() {
 
       dialog.setShowEmptyFileDialogResponse({ button: 'create' });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -604,7 +604,7 @@ describe('<App>', function() {
       it('should open active file tab', async function() {
 
         // given
-        const app = createApp();
+        const { app } = createApp();
 
         // when
         await app.openFiles([ file1, file2 ], file1);
@@ -617,7 +617,7 @@ describe('<App>', function() {
       it('should not open tab', async function() {
 
         // given
-        const app = createApp();
+        const { app } = createApp();
 
         // when
         await app.openFiles([ file1, file2 ], false);
@@ -644,7 +644,7 @@ describe('<App>', function() {
 
       dialog.setShowEmptyFileDialogResponse({ button: 'create' });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -679,7 +679,7 @@ describe('<App>', function() {
 
       const showSpy = spy(dialog, 'showEmptyFileDialog');
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -705,7 +705,7 @@ describe('<App>', function() {
 
       dialog.setShowOpenFileErrorDialogResponse({ button: 'cancel' });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -736,7 +736,7 @@ describe('<App>', function() {
     it('should close active', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -759,7 +759,7 @@ describe('<App>', function() {
     it('should close all', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -784,7 +784,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -817,7 +817,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -849,7 +849,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -887,7 +887,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -918,7 +918,7 @@ describe('<App>', function() {
       // given
       const dialog = new Dialog();
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -948,7 +948,7 @@ describe('<App>', function() {
       // given
       const eventSpy = sinon.spy();
 
-      const app = createApp();
+      const { app } = createApp();
 
       const tab = await app.createDiagram('bpmn');
 
@@ -969,7 +969,7 @@ describe('<App>', function() {
       // given
       const eventSpy = sinon.spy();
 
-      const app = createApp();
+      const { app } = createApp();
 
       const tab = await app.createDiagram('bpmn');
 
@@ -1005,12 +1005,12 @@ describe('<App>', function() {
 
       writeFileSpy = spy(fileSystem, 'writeFile');
 
-      app = createApp({
+      app = (createApp({
         globals: {
           dialog,
           fileSystem
         }
-      });
+      })).app;
     });
 
     afterEach(sinon.restore);
@@ -1299,7 +1299,7 @@ describe('<App>', function() {
           dialog,
           fileSystem
         }
-      });
+      }).app;
     });
 
 
@@ -1441,7 +1441,7 @@ describe('<App>', function() {
         events.push([ 'tab-shown', tab ]);
       });
 
-      const app = createApp({
+      const { app } = createApp({
         onTabChanged,
         onTabShown
       });
@@ -1470,7 +1470,7 @@ describe('<App>', function() {
         events.push([ 'tab-shown', tab ]);
       });
 
-      const app = createApp({
+      const { app } = createApp({
         onTabChanged,
         onTabShown
       });
@@ -1491,7 +1491,7 @@ describe('<App>', function() {
       // given
       const eventSpy = sinon.spy();
 
-      const app = createApp();
+      const { app } = createApp();
 
       app.on('app.tabsChanged', eventSpy);
 
@@ -1511,7 +1511,7 @@ describe('<App>', function() {
 
     beforeEach(async function() {
 
-      app = createApp();
+      app = createApp().app;
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -1584,7 +1584,7 @@ describe('<App>', function() {
       let app, openedTabs;
 
       beforeEach(async function() {
-        app = createApp();
+        app = createApp().app;
 
         const file1 = createFile('1.bpmn');
         const file2 = createFile('2.bpmn');
@@ -1739,7 +1739,7 @@ describe('<App>', function() {
 
     beforeEach(async function() {
 
-      app = createApp();
+      app = createApp().app;
 
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
@@ -1868,7 +1868,7 @@ describe('<App>', function() {
       // given
       const errorSpy = spy();
 
-      const app = createApp({ onError: errorSpy });
+      const { app } = createApp({ onError: errorSpy });
 
       const tab = await app.createDiagram();
 
@@ -1908,7 +1908,7 @@ describe('<App>', function() {
           deferred.resolve(error);
         }
 
-        const app = createApp({ onError });
+        const { app } = createApp({ onError });
 
         await app.createDiagram();
 
@@ -1940,7 +1940,7 @@ describe('<App>', function() {
       // given
       const warningSpy = spy();
 
-      const app = createApp({ onWarning: warningSpy });
+      const { app } = createApp({ onWarning: warningSpy });
 
       const tab = await app.createDiagram();
 
@@ -1969,7 +1969,7 @@ describe('<App>', function() {
         // given
         const changedSpy = spy(() => {});
 
-        const app = createApp({
+        const { app } = createApp({
           onWorkspaceChanged: changedSpy
         });
 
@@ -1988,7 +1988,7 @@ describe('<App>', function() {
         // given
         const changedSpy = spy(() => {});
 
-        const app = createApp({
+        const { app } = createApp({
           onWorkspaceChanged: changedSpy
         });
 
@@ -2007,7 +2007,7 @@ describe('<App>', function() {
         // given
         const changedSpy = spy(() => {});
 
-        const app = createApp({
+        const { app } = createApp({
           onWorkspaceChanged: changedSpy
         });
 
@@ -2030,7 +2030,7 @@ describe('<App>', function() {
     it('should render', async function() {
 
       // given
-      const app = createApp();
+      const { app, findByText } = createApp();
 
       // when
       app.setLayout({
@@ -2041,15 +2041,15 @@ describe('<App>', function() {
       });
 
       // then
-      await screen.findByText('Output');
-      await screen.findByText('Problems');
+      await findByText('Output');
+      await findByText('Problems');
     });
 
 
     it('should open', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       app.setLayout({});
 
@@ -2071,7 +2071,7 @@ describe('<App>', function() {
     it('should close', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       await waitFor(() => {
         app.setLayout({
@@ -2102,7 +2102,7 @@ describe('<App>', function() {
       it('should open', async function() {
 
         // given
-        const app = createApp();
+        const { app } = createApp();
 
         app.setLayout({});
 
@@ -2124,7 +2124,7 @@ describe('<App>', function() {
       it('should close', async function() {
 
         // given
-        const app = createApp();
+        const { app } = createApp();
 
         app.setLayout({
           panel: {
@@ -2166,7 +2166,7 @@ describe('<App>', function() {
         it('should open', async function() {
 
           // given
-          const app = createApp();
+          const { app } = createApp();
 
           app.setLayout({});
 
@@ -2196,7 +2196,7 @@ describe('<App>', function() {
         it('should open', async function() {
 
           // given
-          const app = createApp();
+          const { app } = createApp();
 
           await waitFor(() => {
             app.setLayout({
@@ -2224,7 +2224,7 @@ describe('<App>', function() {
         it('should close', async function() {
 
           // given
-          const app = createApp();
+          const { app } = createApp();
 
           await waitFor(() => {
             app.setLayout({
@@ -2251,7 +2251,7 @@ describe('<App>', function() {
         it('should preserve state when reopened after being closed', async function() {
 
           // given
-          const app = createApp();
+          const { app } = createApp();
 
           app.setLayout({
             panel: {
@@ -2292,7 +2292,7 @@ describe('<App>', function() {
     it('should display notification', async function() {
 
       // given
-      const app = createApp();
+      const { app, getByText } = createApp();
 
       const notificationProps = { title: 'test-notification' };
 
@@ -2301,7 +2301,7 @@ describe('<App>', function() {
 
       // then
       await waitFor(() => {
-        expect(screen.getByText('test-notification')).to.exist;
+        expect(getByText('test-notification')).to.exist;
       });
     });
 
@@ -2309,14 +2309,18 @@ describe('<App>', function() {
     it('should close notification', async function() {
 
       // given
-      const app = createApp();
+      const {
+        app,
+        getByText,
+        queryByText
+      } = createApp();
 
       const notificationProps = { title: 'test-notification' };
 
       const { close } = await app.triggerAction('display-notification', notificationProps);
 
       await waitFor(() => {
-        expect(screen.getByText('test-notification')).to.exist;
+        expect(getByText('test-notification')).to.exist;
       });
 
       // when
@@ -2324,7 +2328,7 @@ describe('<App>', function() {
 
       // then
       await waitFor(() => {
-        expect(screen.queryByText('test-notification')).to.not.exist;
+        expect(queryByText('test-notification')).to.not.exist;
       });
     });
 
@@ -2332,7 +2336,11 @@ describe('<App>', function() {
     it('should update notification', async function() {
 
       // given
-      const app = createApp();
+      const {
+        app,
+        getByText,
+        queryByText
+      } = createApp();
 
       const newTitle = 'new Title';
 
@@ -2341,7 +2349,7 @@ describe('<App>', function() {
       const { update } = await app.triggerAction('display-notification', notificationProps);
 
       await waitFor(() => {
-        expect(screen.getByText('test')).to.exist;
+        expect(getByText('test')).to.exist;
       });
 
       // when
@@ -2349,17 +2357,17 @@ describe('<App>', function() {
 
       // then
       await waitFor(() => {
-        expect(screen.getByText(newTitle)).to.exist;
+        expect(getByText(newTitle)).to.exist;
       });
 
-      expect(screen.queryByText('test')).to.not.exist;
+      expect(queryByText('test')).to.not.exist;
     });
 
 
     it('should NOT display notification without title', async function() {
 
       // given
-      const app = createApp();
+      const { app, queryByText } = createApp();
 
       const notificationProps = { content: 'test-notification' };
 
@@ -2368,7 +2376,7 @@ describe('<App>', function() {
 
       // then
       await waitFor(() => {
-        expect(screen.queryByText('test-notification')).to.not.exist;
+        expect(queryByText('test-notification')).to.not.exist;
       });
     });
 
@@ -2376,7 +2384,7 @@ describe('<App>', function() {
     it('should NOT display notification of unknown type', async function() {
 
       // given
-      const app = createApp();
+      const { app, queryByText } = createApp();
 
       const notificationProps = { type: 'unknown', title: 'test-notification' };
 
@@ -2385,7 +2393,7 @@ describe('<App>', function() {
 
       // then
       await waitFor(() => {
-        expect(screen.queryByText('test-notification')).to.not.exist;
+        expect(queryByText('test-notification')).to.not.exist;
       });
     });
 
@@ -2393,26 +2401,30 @@ describe('<App>', function() {
     it('should close all notifications when tab changes', async function() {
 
       // given
-      const app = createApp();
+      const {
+        app,
+        findByText,
+        queryByText
+      } = createApp();
 
       const file = createFile('1.bpmn');
 
       // open several notifications
       await app.triggerAction('display-notification', { title: 'test-notification-1' });
-      await screen.findByText('test-notification-1');
+      await findByText('test-notification-1');
 
       await app.triggerAction('display-notification', { title: 'test-notification-2' });
-      await screen.findByText('test-notification-2');
+      await findByText('test-notification-2');
 
       await app.triggerAction('display-notification', { title: 'test-notification-3' });
-      await screen.findByText('test-notification-3');
+      await findByText('test-notification-3');
 
       // when
       app.openFiles([ file ]);
 
       // then
       await waitFor(() => {
-        expect(screen.queryByText('test-notification')).to.not.exist;
+        expect(queryByText('test-notification')).to.not.exist;
       });
     });
 
@@ -2420,24 +2432,28 @@ describe('<App>', function() {
     it('should close all notifications when sheet changes', async function() {
 
       // given
-      const app = createApp();
+      const {
+        app,
+        findByText,
+        queryByText
+      } = createApp();
 
       // open several notifications
       await app.triggerAction('display-notification', { title: 'test-notification-1' });
-      await screen.findByText('test-notification-1');
+      await findByText('test-notification-1');
 
       await app.triggerAction('display-notification', { title: 'test-notification-2' });
-      await screen.findByText('test-notification-2');
+      await findByText('test-notification-2');
 
       await app.triggerAction('display-notification', { title: 'test-notification-3' });
-      await screen.findByText('test-notification-3');
+      await findByText('test-notification-3');
 
       // when
       await app.triggerAction('emit-event', { type: 'tab.activeSheetChanged' });
 
       // then
       await waitFor(() => {
-        expect(screen.queryByText('test-notification')).to.not.exist;
+        expect(queryByText('test-notification')).to.not.exist;
       });
     });
 
@@ -2522,7 +2538,7 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog,
           fileSystem
@@ -2566,7 +2582,7 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog,
           fileSystem
@@ -2602,7 +2618,7 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog,
           fileSystem
@@ -2629,7 +2645,7 @@ describe('<App>', function() {
         show: showSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog,
           fileSystem
@@ -2667,7 +2683,7 @@ describe('<App>', function() {
     it('should execute only once', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const openedTabs = await app.openFiles([ file1 ]);
 
@@ -2692,13 +2708,17 @@ describe('<App>', function() {
     let app,
         errorSpy,
         tab,
-        tabs;
+        tabs,
+        queries;
 
     beforeEach(async function() {
 
-      app = createApp({
+      const render = createApp({
         onError: errorSpy
       });
+
+      app = render.app;
+      queries = render;
 
       await app.createDiagram('bpmn');
 
@@ -2788,11 +2808,13 @@ describe('<App>', function() {
         name: 'foo.bpmn'
       };
 
+      const { getByText } = queries;
+
       // when
       const updatedTab = await app.updateTab(tab, newAttrs);
 
       await waitFor(() => {
-        expect(screen.getByText('foo.bpmn')).to.exist;
+        expect(getByText('foo.bpmn')).to.exist;
       });
 
       const {
@@ -2872,7 +2894,7 @@ describe('<App>', function() {
 
       const showOpenFilesDialogSpy = spy(dialog, 'showOpenFilesDialog');
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog,
           fileSystem
@@ -2899,7 +2921,7 @@ describe('<App>', function() {
 
       const showOpenFilesDialogSpy = spy(dialog, 'showOpenFilesDialog');
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -2927,7 +2949,7 @@ describe('<App>', function() {
       show: showSpy
     });
 
-    const app = createApp({
+    const { app } = createApp({
       globals: {
         dialog
       }
@@ -2954,7 +2976,7 @@ describe('<App>', function() {
       send: sendSpy
     });
 
-    const app = createApp({
+    const { app } = createApp({
       globals: {
         backend
       }
@@ -2981,7 +3003,7 @@ describe('<App>', function() {
       send: sendSpy
     });
 
-    const app = createApp({
+    const { app } = createApp({
       globals: {
         backend
       }
@@ -3001,52 +3023,60 @@ describe('<App>', function() {
     );
   });
 
-  // TODO(@jarekdanielak): Can probably just findByRole one dialog,
-  // when migration is done.
+
   describe('modal handling', function() {
 
-    let app;
-
-    beforeEach(function() {
-      app = createApp();
-      app.closeModal();
-    });
-
     it('should open modal', async function() {
+
+      // given
+      const {
+        app,
+        queryByRole,
+        findByRole
+      } = createApp();
+
+      // assume
+      expect(queryByRole('dialog')).to.not.exist;
 
       // when
       app.openModal('KEYBOARD_SHORTCUTS');
 
       // then
-      const dialogs = await screen.findAllByRole('dialog');
-      expect(dialogs).to.have.length.greaterThan(0);
+      await findByRole('dialog');
     });
 
 
     it('should close modal', async function() {
 
       // given
+      const {
+        app,
+        queryByRole
+      } = createApp();
+
       app.openModal('KEYBOARD_SHORTCUTS');
 
       // assume
-      const dialogs = await screen.findAllByRole('dialog');
-      expect(dialogs).to.have.length.greaterThan(0);
+      expect(queryByRole('dialog')).to.exist;
 
       // when
       app.closeModal();
 
       // then
-      const newDialogs = await screen.findAllByRole('dialog');
-      expect(newDialogs).to.have.length(dialogs.length - 1);
+      expect(queryByRole('dialog')).to.not.exist;
+
     });
 
 
     it('should update menu when modal is closed', function() {
 
       // given
+      const {
+        app
+      } = createApp();
+
       const updateMenuSpy = sinon.spy(app, 'updateMenu');
-      const fakeModalName = 'modal';
-      app.setState({ currentModal: fakeModalName });
+      app.setState({ currentModal: 'fakeModalName' });
 
       // when
       app.closeModal();
@@ -3072,7 +3102,7 @@ describe('<App>', function() {
         get: getConfigSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           config
         }
@@ -3105,7 +3135,7 @@ describe('<App>', function() {
         set: setConfigSpy
       });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           config
         }
@@ -3126,7 +3156,7 @@ describe('<App>', function() {
     it('should load plugins', function() {
 
       // given
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           plugins: {
             get(type) {
@@ -3159,7 +3189,7 @@ describe('<App>', function() {
     it('should trigger tab resize when layout changes', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const resizeTabStub = sinon.stub(app, 'resizeTab').resolves();
 
@@ -3182,20 +3212,12 @@ describe('<App>', function() {
 
   describe('dirty state', function() {
 
-    let app, dialog;
-
-    beforeEach(async function() {
-      dialog = new Dialog();
-
-      (app = createApp({
-        globals: {
-          dialog
-        }
-      }));
-    });
-
-
     it('should NOT be dirty after creating a diagram', async function() {
+
+      // given
+      const { app } = createApp({
+        dialog: new Dialog()
+      });
 
       // when
       const tab = await app.createDiagram();
@@ -3208,6 +3230,10 @@ describe('<App>', function() {
     it('should NOT be dirty after opening an existing diagram', async function() {
 
       // given
+      const { app } = createApp({
+        dialog: new Dialog()
+      });
+
       const file = createFile('diagram_1.bpmn');
 
       // when
@@ -3221,6 +3247,11 @@ describe('<App>', function() {
     it('should NOT be dirty after saving a diagram', async function() {
 
       // given
+      const dialog = new Dialog();
+      const { app } = createApp({
+        dialog: dialog
+      });
+
       const tab = await app.createDiagram();
 
       dialog.setShowSaveFileDialogResponse('diagram_1.bpmn');
@@ -3256,7 +3287,7 @@ describe('<App>', function() {
         .onSecondCall().rejects(directoryReadError)
         .onThirdCall().resolves({ contents: '' });
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           fileSystem
         }
@@ -3275,16 +3306,11 @@ describe('<App>', function() {
 
   describe('#emitWithTab', function() {
 
-    let app;
-
-    beforeEach(async function() {
-
-      (app = createApp());
-    });
-
     it('should emit event with tab', function() {
 
       // given
+      const { app } = createApp();
+
       const {
         activeTab
       } = app.state;
@@ -3379,7 +3405,7 @@ describe('<App>', function() {
 
       const showFileExplorerDialogSpy = sinon.spy(dialog, 'showFileExplorerDialog');
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           dialog
         }
@@ -3402,7 +3428,7 @@ describe('<App>', function() {
     it('should lint tab (no errors)', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
@@ -3429,7 +3455,7 @@ describe('<App>', function() {
     it('should lint tab (errors)', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
@@ -3460,7 +3486,7 @@ describe('<App>', function() {
         type: 'default'
       });
 
-      const app = createApp();
+      const { app } = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
@@ -3484,7 +3510,7 @@ describe('<App>', function() {
     it('should not lint tab (no linter)', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.dmn')
@@ -3507,7 +3533,7 @@ describe('<App>', function() {
     it('should lint tab through #triggerAction', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       const openedTabs = await app.openFiles([
         createFile('1.form', {
@@ -3531,7 +3557,7 @@ describe('<App>', function() {
     it('should lint tab after save', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       await app.openFiles([
         createFile('1.form', {
@@ -3556,7 +3582,7 @@ describe('<App>', function() {
 
       const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
 
-      const app = createApp({
+      const { app } = createApp({
         globals: {
           plugins: {
             get(type) {
@@ -3587,7 +3613,7 @@ describe('<App>', function() {
     it('should return empty linting state', async function() {
 
       // given
-      const app = createApp();
+      const { app } = createApp();
 
       // then
       const lintingState = app.getLintingState(EMPTY_TAB);
@@ -3607,7 +3633,7 @@ describe('<App>', function() {
         // given
         const dialog = new Dialog();
 
-        const app = createApp({
+        const { app } = createApp({
           globals: {
             dialog
           }
@@ -3635,7 +3661,7 @@ describe('<App>', function() {
         // given
         const dialog = new Dialog();
 
-        const app = createApp({
+        const { app } = createApp({
           globals: {
             dialog
           }
@@ -3662,7 +3688,7 @@ describe('<App>', function() {
         // given
         const dialog = new Dialog();
 
-        const app = createApp({
+        const { app } = createApp({
           globals: {
             dialog
           }
@@ -3688,7 +3714,7 @@ describe('<App>', function() {
         // given
         const dialog = new Dialog();
 
-        const app = createApp({
+        const { app } = createApp({
           globals: {
             dialog
           }
@@ -3759,7 +3785,7 @@ function createApp(options = {}) {
 
   const appRef = createRef();
 
-  render(
+  const rendered = render(
     <App
       ref={ appRef }
       cache={ cache }
@@ -3775,7 +3801,10 @@ function createApp(options = {}) {
     />
   );
 
-  return appRef.current;
+  return {
+    app: appRef.current,
+    ...rendered
+  };
 }
 
 
