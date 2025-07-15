@@ -10,6 +10,11 @@
 
 const { format } = require('util');
 
+/**
+ * @param {string} namespace
+ *
+ * @return {Log}
+ */
 function createLog(namespace) {
   return new Log(namespace);
 }
