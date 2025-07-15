@@ -53,8 +53,7 @@ export default function ProcessApplicationsPlugin(props) {
       const [ directoryPath ] = await dialog.showOpenFilesDialog({
         properties: [
           'createDirectory', // Allow creating new directories from dialog on macOS
-          'openDirectory', // On Windows and Linux an open dialog can not be both a file selector and a directory selector, directory selector will be shown, cf. https://www.electronjs.org/docs/latest/api/dialog
-          'openFile'
+          'openDirectory' // On Windows and Linux an open dialog can not be both a file selector and a directory selector, directory selector will be shown, cf. https://www.electronjs.org/docs/latest/api/dialog
         ],
         title: 'Create Process Application'
       });
