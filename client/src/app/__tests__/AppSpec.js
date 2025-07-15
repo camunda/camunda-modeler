@@ -3035,6 +3035,8 @@ describe('<App>', function() {
         queryAllByRole
       } = createApp();
 
+      app.closeModal();
+
       // assume
       expect(queryByRole('dialog')).to.not.exist;
 
@@ -3054,6 +3056,8 @@ describe('<App>', function() {
         queryByRole,
         queryAllByRole
       } = createApp();
+
+      app.closeModal();
 
       app.openModal('KEYBOARD_SHORTCUTS');
 
