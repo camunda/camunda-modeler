@@ -231,6 +231,8 @@ class Dialog {
       return;
     }
 
+    log.debug('set', { defaultPath });
+
     this.config.set('defaultPath', defaultPath);
 
     this.defaultPath = defaultPath;
