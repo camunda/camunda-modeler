@@ -19,17 +19,21 @@ const { assign } = require('min-dash');
 const log = require('./log')('app:dialog');
 
 /**
- * Dialogs.
+ * @typedef { import('electron').Dialog } ElectronDialog
+ * @typedef { import('./config') } Config
+ */
+
+/**
+ * A dialog utility
  */
 class Dialog {
 
   /**
-   * Constructor.
-   *
-   * @param {Object} options - Options.
-   * @param {Object} options.electronDialog - Electron dialog.
-   * @param {Object} options.config - Config.
-   * @param {Object} options.userDesktopPath - User desktop path.
+   * @param { {
+   *   electronDialog: ElectronDialog,
+   *   config: Config,
+   *   userDesktopPath: string
+   * } } options
    */
   constructor(options) {
     ensureOptions([ 'electronDialog', 'config', 'userDesktopPath' ], options);
