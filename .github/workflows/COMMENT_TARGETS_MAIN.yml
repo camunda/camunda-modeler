@@ -1,4 +1,4 @@
-name: COMMENT_TARGESTS_MAIN
+name: COMMENT_TARGETS_MAIN
 on:
   pull_request:
     types:
