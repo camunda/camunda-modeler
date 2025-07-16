@@ -16,6 +16,7 @@ const ensureOptions = require('./util/ensure-opts');
 
 const { assign } = require('min-dash');
 
+const log = require('./log')('app:dialog');
 
 /**
  * Dialogs.
@@ -177,6 +178,8 @@ class Dialog {
    * @param {string} defaultPath - path to be used for open / save dialogs
    */
   setDefaultPath(defaultPath) {
+
+    log.debug('set', { defaultPath });
 
     this.config.set('defaultPath', defaultPath);
 
