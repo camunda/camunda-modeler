@@ -51,7 +51,10 @@ export default function ProcessApplicationsPlugin(props) {
       const dialog = _getGlobal('dialog');
 
       const [ directoryPath ] = await dialog.showOpenFilesDialog({
-        properties: [ 'openDirectory' ],
+        properties: [
+          'createDirectory', // Allow creating new directories from dialog on macOS
+          'openDirectory'
+        ],
         title: 'Create Process Application'
       });
 
