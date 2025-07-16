@@ -95,7 +95,7 @@ class Dialog {
       } = response;
 
       if (filePath) {
-        this.setDefaultPath(filePath);
+        this.setDefaultPath(path.dirname(filePath));
       }
 
       return filePath;
@@ -105,7 +105,7 @@ class Dialog {
   showOpenDialog(options) {
     const {
       filters,
-      properties,
+      properties = [ 'openFile', 'multiSelections' ],
       title
     } = options;
 
@@ -118,7 +118,7 @@ class Dialog {
     return this.electronDialog.showOpenDialog(this.browserWindow, {
       defaultPath,
       filters,
-      properties: properties || [ 'openFile', 'multiSelections' ],
+      properties,
       title: title || 'Open File'
     }).then(response => {
 
@@ -126,8 +126,12 @@ class Dialog {
         filePaths
       } = response;
 
-      if (filePaths && filePaths[0]) {
-        this.setDefaultPath(filePaths);
+      const defaultPath = filePaths && filePaths[0];
+
+      if (defaultPath) {
+        this.setDefaultPath(
+          properties.includes('openFile') ? path.dirname(defaultPath) : defaultPath
+        );
       }
 
       return filePaths || [];
@@ -167,24 +171,16 @@ class Dialog {
     });
   }
 
-  setDefaultPath(filePaths) {
-    let defaultPath;
+  /**
+   * Set the default path for file dialogs.
+   *
+   * @param {string} defaultPath - path to be used for open / save dialogs
+   */
+  setDefaultPath(defaultPath) {
 
-    if (Array.isArray(filePaths)) {
-      defaultPath = filePaths[0];
-    } else {
-      defaultPath = filePaths;
-    }
+    this.config.set('defaultPath', defaultPath);
 
-    if (this.defaultPath && this.defaultPath === defaultPath) {
-      return this.defaultPath;
-    }
-
-    const dirname = path.dirname(defaultPath);
-
-    this.config.set('defaultPath', dirname);
-
-    this.defaultPath = dirname;
+    this.defaultPath = defaultPath;
   }
 
   setActiveWindow(browserWindow) {
