@@ -351,6 +351,27 @@ describe('Dialog', function() {
         expect(config.get('defaultPath')).to.equal(defaultPath);
       });
 
+
+      it('should set defaultPath when opening directory', async function() {
+
+        // given
+        const fooPath = path.join(USER_PATH, 'foo', 'bar'),
+              defaultPath = fooPath;
+
+        const filePaths = [ fooPath ];
+
+        electronDialog.setResponse({ filePaths });
+
+        // when
+        await dialog.showOpenDialog({
+          ...options,
+          properties: [ 'openDirectory' ]
+        });
+
+        // then
+        expect(config.get('defaultPath')).to.equal(defaultPath);
+      });
+
     });
 
   });
@@ -511,6 +532,23 @@ describe('Dialog', function() {
       expect(dialogArgs.title).to.equal('File Open Error');
       expect(dialogArgs.message).to.equal('Unable to open "foo.txt"');
       expect(dialogArgs.detail).not.to.exist;
+    });
+
+  });
+
+
+  describe('setDefaultPath', function() {
+
+    it('should set defaultPath', function() {
+
+      // given
+      const defaultPath = '/foo/bar';
+
+      // when
+      dialog.setDefaultPath(defaultPath);
+
+      // then
+      expect(config.get('defaultPath')).to.equal(defaultPath);
     });
 
   });
