@@ -20,7 +20,5 @@ jobs:
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ github.event.number }}
           BODY: |
-            This Pull Request targets `main` branch, consider if this was right.
-
-            Consider targeting `develop` instead.
+            This pull request targets the `main` branch. Please target `main` for bug fixes only. Target `develop` for regular feature development.
         run: gh issue comment "$NUMBER" --body "$BODY"
