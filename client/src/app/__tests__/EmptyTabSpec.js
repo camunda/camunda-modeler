@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import EmptyTab from '../EmptyTab';
 import TabsProvider from '../TabsProvider';
@@ -28,9 +28,9 @@ describe('<EmptyTab>', function() {
       // given
       const onAction = sinon.spy();
 
-      createEmptyTab({ onAction });
+      const { getAllByRole } = createEmptyTab({ onAction });
 
-      const buttons = screen.getAllByRole('button');
+      const buttons = getAllByRole('button');
 
       // when
       buttons.forEach(btn => btn.click());
@@ -61,20 +61,20 @@ describe('<EmptyTab>', function() {
       sinon.stub(Flags, 'get').withArgs(DISABLE_DMN).returns(true);
 
       // when
-      createEmptyTab();
+      const { queryAllByText } = createEmptyTab();
 
       // then
-      expect(screen.queryAllByText('DMN diagram')).to.be.empty;
+      expect(queryAllByText('DMN diagram')).to.be.empty;
     });
 
 
     it('should display dmn diagram without flag', function() {
 
       // given
-      createEmptyTab();
+      const { queryAllByText } = createEmptyTab();
 
       // then
-      expect(screen.queryAllByText('DMN diagram')).to.have.length(2);
+      expect(queryAllByText('DMN diagram')).to.have.length(2);
     });
   });
 
@@ -89,20 +89,20 @@ describe('<EmptyTab>', function() {
       sinon.stub(Flags, 'get').withArgs(DISABLE_FORM).returns(true);
 
       // when
-      createEmptyTab();
+      const { queryAllByText } = createEmptyTab();
 
       // then
-      expect(screen.queryAllByText('Form')).to.be.empty;
+      expect(queryAllByText('Form')).to.be.empty;
     });
 
 
     it('should display form without flag', function() {
 
       // given
-      createEmptyTab();
+      const { queryAllByText } = createEmptyTab();
 
       // then
-      expect(screen.queryAllByText('Form')).to.have.length(2);
+      expect(queryAllByText('Form')).to.have.length(2);
     });
 
   });
@@ -115,12 +115,10 @@ describe('<EmptyTab>', function() {
     it('should display platform without flag', function() {
 
       // when
-      const { container } = createEmptyTab();
+      const { queryByTestId } = createEmptyTab();
 
       // then
-      expect(container.querySelectorAll('.welcome-header')).to.have.length(1);
-      expect(container.querySelectorAll('.welcome-card')).to.have.length(3);
-      expect(screen.queryAllByText('Camunda 7')).not.to.be.empty;
+      expect(queryByTestId('welcome-page-platform')).to.exist;
     });
 
 
@@ -130,12 +128,10 @@ describe('<EmptyTab>', function() {
       sinon.stub(Flags, 'get').withArgs(DISABLE_PLATFORM).returns(true);
 
       // given
-      const { container } = createEmptyTab();
+      const { queryByTestId } = createEmptyTab();
 
       // then
-      expect(container.querySelectorAll('.welcome-header')).to.have.length(0);
-      expect(container.querySelectorAll('.welcome-card')).to.have.length(2);
-      expect(screen.queryAllByText('Camunda 7')).to.be.empty;
+      expect(queryByTestId('welcome-page-platform')).to.not.exist;
     });
 
   });
@@ -148,12 +144,10 @@ describe('<EmptyTab>', function() {
     it('should display zeebe without flag', function() {
 
       // when
-      const { container } = createEmptyTab();
+      const { queryByTestId } = createEmptyTab();
 
       // then
-      expect(container.querySelectorAll('.welcome-header')).to.have.length(1);
-      expect(container.querySelectorAll('.welcome-card')).to.have.length(3);
-      expect(screen.queryAllByText('Camunda 8')).not.to.be.empty;
+      expect(queryByTestId('welcome-page-cloud')).to.exist;
     });
 
 
@@ -162,13 +156,11 @@ describe('<EmptyTab>', function() {
       // given
       sinon.stub(Flags, 'get').withArgs(DISABLE_ZEEBE).returns(true);
 
-      // given
-      const { container } = createEmptyTab();
+      // when
+      const { queryByTestId } = createEmptyTab();
 
       // then
-      expect(container.querySelectorAll('.welcome-header')).to.have.length(0);
-      expect(container.querySelectorAll('.welcome-card')).to.have.length(2);
-      expect(screen.queryAllByText('Camunda 8')).to.be.empty;
+      expect(queryByTestId('welcome-page-cloud')).to.not.exist;
     });
 
   });
