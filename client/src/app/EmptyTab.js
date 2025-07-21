@@ -66,7 +66,7 @@ export default class EmptyTab extends PureComponent {
     const createButtons = this.getCreateButtons('Camunda 8');
 
     return (
-      <div id="welcome-page-cloud" className="welcome-card relative">
+      <div id="welcome-page-cloud" className="welcome-card relative" data-testid="welcome-page-cloud">
         <div className="engine-info">
           <div className="engine-info-heading">
             <CloudIcon className="engine-icon cloud-icon" />
@@ -87,7 +87,7 @@ export default class EmptyTab extends PureComponent {
     const createButtons = this.getCreateButtons('Camunda 7');
 
     return (
-      <div id="welcome-page-platform" className="welcome-card">
+      <div id="welcome-page-platform" className="welcome-card" data-testid="welcome-page-platform">
         <div className="engine-info">
           <div className="engine-info-heading">
             <PlatformIcon className="engine-icon platform-icon" />
