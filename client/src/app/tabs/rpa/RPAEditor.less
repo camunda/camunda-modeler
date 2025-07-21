@@ -6,6 +6,10 @@
 
   flex-direction: column;
 
+  .properties-container {
+    height: 100%;
+  }
+
   .editor {
     flex: 1;
 
@@ -71,6 +75,55 @@
       .viewport-dom {
         border-color: var(--color-blue-205-100-50);
       }
+    }
+  }
+
+  .crpa-file-actions .crpa-file-actions-menu {
+    padding: 0;
+    z-index: 1001;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 16px 0 rgba(0, 0, 0, 0.16);
+    border-radius: 0;
+    background-color: var(--overlay-background-color);
+    color: var(--overlay-font-color);
+    overflow-y: auto;
+    line-height: var(--line-height-default);
+    font-size: var(--font-size-default);
+
+    button {
+      &:hover {
+        background-color: var(--overlay-dropdown-focus-hover-background-color);
+        outline: none;
+        box-shadow: none;
+        color: inherit;
+      }
+
+      &.delete {
+        color: var(--input-error-border-color);
+      }
+
+      background-color: inherit;
+      cursor: inherit;
+      font-family: inherit;
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-align: left;
+      font-weight: 400;
+      font-size: var(--overlay-dropdown-option-font-size);
+      line-height: 21px;
+      padding: 4px 12px;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .crpa-properties-panel-files {
+    li.selected, li:hover:not(.additional-files) {
+      background-color: var(--overlay-dropdown-focus-hover-background-color);
     }
   }
 }

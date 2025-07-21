@@ -19,6 +19,7 @@ import {
 import * as css from './RPAEditor.less';
 
 import {
+  debounce,
   isString
 } from 'min-dash';
 
@@ -29,6 +30,18 @@ import { Fill } from '../../slot-fill';
 import RunButton from './RunButton';
 import StatusButton from './StatusButton';
 import { Loader } from '../../primitives';
+
+import {
+  EngineProfile,
+  getEngineProfileFromForm
+} from '../EngineProfile';
+
+import EngineProfileHelper from '../EngineProfileHelper';
+import { ENGINES } from '../../../util/Engines';
+export const DEFAULT_ENGINE_PROFILE = {
+  executionPlatform: ENGINES.CLOUD
+};
+
 
 export class RPAEditor extends CachedComponent {
 
@@ -43,6 +56,29 @@ export class RPAEditor extends CachedComponent {
     this.propertiesPanelRef = React.createRef();
 
     this.handleLayoutChange = this.handleLayoutChange.bind(this);
+    this.handleLinting = debounce(this.handleLinting.bind(this), 500);
+
+    this.engineProfile = new EngineProfileHelper({
+      get: () => {
+        const { editor } = this.getCached();
+
+        const value = editor.getValue();
+
+        const schema = JSON.parse(value);
+
+        return getEngineProfileFromForm(schema, DEFAULT_ENGINE_PROFILE);
+      },
+      set: (engineProfile) => {
+        const { editor } = this.getCached();
+
+        editor.eventBus.fire('property.change', {
+          key: 'executionPlatformVersion',
+          value: engineProfile.executionPlatformVersion
+        });
+      },
+      getCached: () => this.getCached(),
+      setCached: (state) => this.setCached(state)
+    });
   }
 
 
@@ -52,8 +88,17 @@ export class RPAEditor extends CachedComponent {
     editor.eventBus[method]('config.changed', this.saveConfig);
 
     editor.eventBus[method]('model.changed', this.handleChanged);
+
+    editor.eventBus[method]('notification.show', this.handleNotification);
   }
 
+  handleNotification = (notification) => {
+    this.props.onAction('display-notification', {
+      type: 'warning',
+      duration: 0,
+      ...notification
+    });
+  };
 
   saveConfig = (config) => {
     this.props.setConfig('rpa', { workerConfig: config });
@@ -62,6 +107,17 @@ export class RPAEditor extends CachedComponent {
     });
   };
 
+  handleLinting = async () => {
+    const {
+      editor,
+    } = this.getCached();
+
+    const contents = editor.getValue();
+
+    const { onAction } = this.props;
+
+    onAction('lint-tab', { contents });
+  };
 
   async componentDidMount() {
 
@@ -92,12 +148,41 @@ export class RPAEditor extends CachedComponent {
       return;
     }
 
+    this.handleEngineProfile();
     this.handleChanged();
     this.handleListeners(currentEditor);
     this.setState({
       loading: false
     });
+    this.handleLinting();
     this.props.onImport();
+  }
+
+  handleEngineProfile() {
+    let engineProfile = null;
+    let error = null;
+
+    try {
+      engineProfile = this.engineProfile.get();
+    } catch (err) {
+      error = err;
+    }
+
+    const { engineProfile: cachedEngineProfile } = this.getCached();
+
+    if (engineProfile.executionPlatformVersion === cachedEngineProfile?.executionPlatformVersion) {
+      return;
+    }
+
+    if (error) {
+      this.setCached({
+        engineProfile: null,
+      });
+    } else {
+      this.setCached({
+        engineProfile,
+      });
+    }
   }
 
   async createEditor() {
@@ -141,7 +226,6 @@ export class RPAEditor extends CachedComponent {
       loading: false
     });
 
-    this.handleListeners(editor);
     return editor;
   }
 
@@ -294,6 +378,10 @@ export class RPAEditor extends CachedComponent {
     this.setState({
       ...newState
     });
+
+    this.handleEngineProfile();
+
+    this.handleLinting();
   };
 
   handleLayoutChange(newLayout) {
@@ -320,7 +408,7 @@ export class RPAEditor extends CachedComponent {
 
   render() {
 
-    const { editor } = this.getCached();
+    const { editor, engineProfile } = this.getCached();
 
     const loading = this.state.loading;
 
@@ -355,12 +443,11 @@ export class RPAEditor extends CachedComponent {
 
           <StatusButton getConfig={ this.props.getConfig } setConfig={ this.props.getConfig } editor={ editor } />
           <RunButton editor={ editor } layout={ this.props.layout } onAction={ this.props.onAction } />
+          { engineProfile && <EngineProfile
+            engineProfile={ engineProfile }
+            onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } /> }
         </>
         }
-
-        <Fill slot="status-bar__file" group="1_engine">
-          <div>Camunda 8</div>
-        </Fill>
       </>
     );
   }
@@ -372,6 +459,7 @@ export class RPAEditor extends CachedComponent {
     const editorContainer = document.createElement('div');
     editorContainer.classList.add('monaco-container');
     const propertiesContainer = document.createElement('div');
+    propertiesContainer.classList.add('properties-container');
 
     return {
       editorContainer,

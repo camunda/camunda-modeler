@@ -22,7 +22,7 @@ import { RPAEditor } from '../RPAEditor';
 
 import { RPACodeEditor as MockRPACodeEditor } from 'test/mocks/rpa';
 
-const RPA = '{"script": "Hello, World!"}';
+const RPA = '{"script": "Hello, World!", "executionPlatform": "Camunda Cloud",  "executionPlatformVersion": "8.8.0"}';
 const INVALID_RPA = 'invalid rpa';
 
 /* global sinon */
@@ -249,6 +249,119 @@ describe('<RPAEditor>', function() {
 
   });
 
+
+  describe('linting', function() {
+
+    describe('behavior', function() {
+
+      it('should lint on import', async function() {
+
+        // given
+        const onActionSpy = sinon.spy();
+
+        // when
+        await renderEditor(RPA, {
+          onAction: onActionSpy
+        });
+
+        // then
+        await waitFor(() => {
+          const calls = onActionSpy.getCalls()
+            .filter(call => call.args[0] === 'lint-tab');
+
+          expect(calls).to.have.lengthOf(1);
+        });
+
+      });
+
+
+      it('should lint on model.changed', async function() {
+
+        // given
+        const onActionSpy = sinon.spy();
+
+        const { instance } = await renderEditor(RPA, {
+          onAction: onActionSpy
+        });
+
+
+        await waitFor(() => {
+          const calls = onActionSpy.getCalls()
+            .filter(call => call.args[0] === 'lint-tab');
+
+          expect(calls).to.have.lengthOf(1);
+        });
+
+        // when
+        const { editor } = instance.getCached();
+
+        editor.eventBus.fire('model.changed');
+
+        await waitFor(() => {
+          const calls = onActionSpy.getCalls()
+            .filter(call => call.args[0] === 'lint-tab');
+
+          // then
+          expect(calls).to.have.lengthOf(2);
+        });
+      });
+
+
+      it('should unsubscribe on unmount', async function() {
+
+        // given
+        const onActionSpy = sinon.spy();
+
+        const {
+          instance,
+          component
+        } = await renderEditor(RPA, {
+          onAction: onActionSpy
+        });
+
+        const { editor } = instance.getCached();
+
+        // when
+        component.unmount();
+
+        editor.eventBus.fire('model.changed');
+
+        await waitFor(() => {
+          const calls = onActionSpy.getCalls()
+            .filter(call => call.args[0] === 'lint-tab');
+
+          // then
+          expect(calls).to.have.lengthOf(1);
+        });
+      });
+
+
+      it('should NOT break application with linting tab open', async function() {
+
+        // given
+        const props = {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'linting'
+            }
+          }
+        };
+
+        // when
+        try {
+          await renderEditor(RPA, props);
+        } catch (error) {
+
+          // then
+          expect(true, 'should not reach error block').to.be.false;
+        }
+      });
+
+    });
+
+  });
+
 });
 
 // helpers //////////
@@ -261,7 +374,8 @@ function renderEditor(xml, options = {}) {
   const {
     id,
     onChanged,
-    onImport
+    onImport,
+    ...props
   } = options;
 
   let cache = options.cache;
@@ -288,6 +402,7 @@ function renderEditor(xml, options = {}) {
       onChanged={ onChanged || noop }
       layout={ options.layout || {} }
       cache={ cache }
+      { ...props }
     />
   );
 
@@ -296,6 +411,7 @@ function renderEditor(xml, options = {}) {
   const instance = wrapper.instance();
 
   return {
+    component,
     instance,
     wrapper
   };
