@@ -15,6 +15,15 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-dmn-js@3.4.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.38.0`
 * `DEPS`: update to `@camunda/linting@3.39.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.16.0`
+* `DEPS`: update to `@camunda/form-playground@0.20.0`
+* `DEPS`: update to `@camunda/form-linting@0.23.0`
+
+### Forms
+
+* `FEAT`: support pattern validation custom message ([#1360](https://github.com/bpmn-io/form-js/issues/1360))
+* `FIX`: flush debounced fields on enter ([#35032](https://github.com/camunda/camunda/issues/35032))
+* `FIX`: properties panel toggle configurations work again ([5df5bf5](https://github.com/bpmn-io/form-js/commit/5df5bf58ea43045bb8693f6eb5411f5fcbfcf8b2))
 
 ## 5.37.0
 
