@@ -20,7 +20,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: update to `@bpmn-io/form-js@1.15.3`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.30.0`
-* `DEPS`: update to `@camunda/linting@3.38.0e`
+* `DEPS`: update to `@camunda/linting@3.38.0`
 * `DEPS`: update to `@camunda/rpa-integration@1.0.2`
 * `DEPS`: update to `bpmn-js-properties-panel@5.37.0`
 * `DEPS`: update to `bpmn-moddle@9.0.2`
