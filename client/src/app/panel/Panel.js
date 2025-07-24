@@ -93,11 +93,12 @@ export default function Panel({ children, layout = {}, onLayoutChanged, onUpdate
 
   return <TabContext.Provider value={ contextValue }>
     <div className={ css.Panel }>
-      <div className="panel__header">
+      <div className="panel__header" data-testid="panel__header">
         <div className="panel__links">
           {tabs.sort((a, b) => b.priority - a.priority).map(tab => (
             <button
               key={ tab.id }
+              data-testid={ `tab-${tab.id}` }
               className={ classnames('panel__link', { 'panel__link--active': tab === activeTab }) }
               onClick={ () => onLayoutChanged({
                 panel: {
@@ -117,7 +118,7 @@ export default function Panel({ children, layout = {}, onLayoutChanged, onUpdate
           </button>
         </div>
       </div>
-      <div tabIndex="0" className="panel__body" onFocus={ updateMenu }>
+      <div tabIndex="0" className="panel__body" onFocus={ updateMenu } data-testid="panel__body">
         <div className="panel__inner">
           {activeTab.body}
         </div>
