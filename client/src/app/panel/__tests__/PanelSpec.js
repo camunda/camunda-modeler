@@ -12,7 +12,9 @@
 
 import React, { Component } from 'react';
 
-import { mount } from 'enzyme';
+import { render, waitFor, act } from '@testing-library/react';
+
+import { userEvent } from '@testing-library/user-event';
 
 import { Fill, SlotFillRoot } from '../../slot-fill';
 
@@ -28,11 +30,11 @@ describe('<Panel>', function() {
   it('should render', function() {
 
     // when
-    const wrapper = renderPanel();
+    const { queryByTestId } = renderPanel();
 
     // then
-    expect(wrapper.find('.panel__header')).to.have.length(1);
-    expect(wrapper.find('.panel__body')).to.have.length(1);
+    expect(queryByTestId('panel__header')).to.exist;
+    expect(queryByTestId('panel__body')).to.exist;
   });
 
 
@@ -41,46 +43,51 @@ describe('<Panel>', function() {
     it('should render tab', function() {
 
       // when
-      const wrapper = renderPanel({
-        children: createTab({
-          children: <div className="foo" />
-        })
+      const tab = createTab({
+        children: <div data-testid="foo" />
       });
 
+      const { queryByTestId } = renderPanel({
+        children: tab
+      });
+
+      const tabTest = queryByTestId(`tab-${tab.key}`);
+
       // then
-      expect(wrapper.find('.panel__link')).to.have.length(1);
-      expect(wrapper.find('.panel__link--active')).to.have.length(1);
+      expect(tabTest).to.exist;
+      expect(tabTest.className).to.include('panel__link--active');
+      expect(tabTest.querySelector('.panel__link-label').textContent).to.equal('Foo');
 
-      expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Foo');
-      expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
-
-      expect(wrapper.find('.foo')).to.have.length(1);
+      expect(queryByTestId('foo')).to.exist;
     });
 
 
     it('should add Tab as Plugin', function() {
 
       // when
-      const wrapper = renderPanel({
+      const { queryByTestId } = renderPanel({
         children: <Fill slot="bottom-panel" label="Foo" id="foo">
-          <div className="foo" />
+          <div data-testid="foo" />
         </Fill>
       });
 
       // then
-      expect(wrapper.find('.panel__link')).to.have.length(1);
-      expect(wrapper.find('.panel__link--active')).to.have.length(1);
+      const tabTest = queryByTestId('tab-foo');
 
-      expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Foo');
-      expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+      expect(tabTest).to.exist;
+      expect(tabTest.className).to.include('panel__link--active');
 
-      expect(wrapper.find('.foo')).to.have.length(1);
+      expect(tabTest.querySelector('.panel__link-label').textContent).to.equal('Foo');
+
+      expect(queryByTestId('foo')).to.exist;
     });
 
 
     it('should update Tab on prop changes', async function() {
 
       // given
+
+      const customCompRef = React.createRef();
       class CustomComponent extends Component {
         constructor(props) {
           super(props);
@@ -96,138 +103,145 @@ describe('<Panel>', function() {
         }
       }
 
-      const wrapper = renderPanel({
-        children: <CustomComponent />
+      const { queryByTestId } = renderPanel({
+        children: <CustomComponent ref={ customCompRef } />
       });
 
       // assume
-      expect(wrapper.find('.panel__link')).to.have.length(1);
-      expect(wrapper.find('.panel__link--active')).to.have.length(1);
+      const tabTest = queryByTestId('tab-foo');
 
-      expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Foo');
-      expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+      expect(tabTest).to.exist;
+      expect(tabTest.className).to.include('panel__link--active');
+
+      expect(tabTest.querySelector('.panel__link-label').textContent).to.equal('Foo');
 
       // when
-      wrapper.find(CustomComponent).setState({ label: 'Bar' });
+      customCompRef.current.setState({ label: 'Bar' });
 
-      // then
-      return expectEventually(() => {
-        expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Bar');
-        expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+      await waitFor(() => {
+        expect(tabTest.querySelector('.panel__link-label').textContent).to.equal('Bar');
+        expect(tabTest.className).to.include('panel__link--active');
       });
     });
 
 
-    it('should render two tabs', function() {
+    it('should render two tabs', async function() {
 
       // when
-      const wrapper = renderPanel({
-        children: [
-          createTab({
-            id: 'foo',
-            label: 'Foo',
-            children: <div className="foo" />
-          }),
-          createTab({
-            id: 'bar',
-            label: 'Bar',
-            children: <div className="bar" />
-          })
-        ]
+      const tab1 = createTab({
+        id: 'foo',
+        label: 'Foo',
+        children: <div data-testid="foo" />
+      });
+
+      const tab2 = createTab({
+        id: 'bar',
+        label: 'Bar',
+        children: <div data-testid="bar" />
+      });
+
+      const { container, queryByTestId } = renderPanel({
+        children: [ tab1, tab2 ]
       });
 
       // then
-      expect(wrapper.find('.panel__link')).to.have.length(2);
-      expect(wrapper.find('.panel__link--active')).to.have.length(1);
+      expect(container.querySelectorAll('.panel__link')).to.have.length(2);
+      expect(container.querySelectorAll('.panel__link--active')).to.have.length(1);
 
-      expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Foo');
-      expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
-      expect(wrapper.find('.panel__link').at(1).find('.panel__link-label').text()).to.equal('Bar');
+      expect(queryByTestId(`tab-${tab1.key}`).querySelector('.panel__link-label').textContent).to.equal('Foo');
+      expect(queryByTestId(`tab-${tab1.key}`).className).to.include('panel__link--active');
 
-      expect(wrapper.find('.foo')).to.have.length(1);
-      expect(wrapper.find('.bar')).to.have.length(0);
+      expect(queryByTestId(`tab-${tab2.key}`).querySelector('.panel__link-label').textContent).to.equal('Bar');
+
+      expect(queryByTestId('foo')).to.exist;
+      expect(queryByTestId('bar')).to.not.exist;
+
     });
 
 
     it('should render two tabs with priority', function() {
 
       // when
-      const wrapper = renderPanel({
-        children: [
-          createTab({
-            id: 'foo',
-            label: 'Foo',
-            children: <div className="foo" />
-          }),
-          createTab({
-            id: 'bar',
-            label: 'Bar',
-            priority: 2,
-            children: <div className="bar" />
-          })
-        ]
+      const tab = createTab({
+        id: 'foo',
+        label: 'Foo',
+        children: <div data-testid="foo" />
+      });
+
+      const priorityTab = createTab({
+        id: 'bar',
+        label: 'Bar',
+        priority: 2,
+        children: <div data-testid="bar" />
+      });
+      const { container, queryByTestId } = renderPanel({
+        children: [ tab, priorityTab ]
       });
 
       // then
-      expect(wrapper.find('.panel__link')).to.have.length(2);
-      expect(wrapper.find('.panel__link--active')).to.have.length(1);
+      expect(container.querySelectorAll('.panel__link')).to.have.length(2);
+      expect(container.querySelectorAll('.panel__link--active')).to.have.length(1);
 
-      expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Bar');
-      expect(wrapper.find('.panel__link').at(1).find('.panel__link-label').text()).to.equal('Foo');
-      expect(wrapper.find('.panel__link').at(1).hasClass('panel__link--active')).to.be.true;
+      expect(container.querySelectorAll('.panel__link')[0].querySelector('.panel__link-label').textContent).to.equal('Bar');
+      expect(container.querySelectorAll('.panel__link')[1].querySelector('.panel__link-label').textContent).to.equal('Foo');
+      expect(queryByTestId(`tab-${tab.key}`).className).to.include('panel__link--active');
 
-      expect(wrapper.find('.foo')).to.have.length(1);
-      expect(wrapper.find('.bar')).to.have.length(0);
+      expect(queryByTestId('foo')).to.exist;
+      expect(queryByTestId('bar')).to.not.exist;
     });
 
 
     it('should render number', function() {
 
       // when
-      const wrapper = renderPanel({
-        children: createTab({
-          children: <div className="foo" />,
-          number: 123
-        })
+
+      const tab = createTab({
+        children: <div data-testid="foo" />,
+        number: 123
+      });
+      const { queryByTestId } = renderPanel({
+        children: tab
       });
 
+      const tabTest = queryByTestId(`tab-${tab.key}`);
+
       // then
-      expect(wrapper.find('.panel__link')).to.have.length(1);
-      expect(wrapper.find('.panel__link--active')).to.have.length(1);
+      expect(tabTest).to.exist;
+      expect(tabTest.className).to.include('panel__link--active');
 
-      expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Foo');
-      expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+      expect(tabTest.querySelector('.panel__link-label').textContent).to.equal('Foo');
 
-      expect(wrapper.find('.panel__link-number')).to.have.length(1);
-      expect(wrapper.find('.panel__link-number').text()).to.equal('123');
+      expect(tabTest.querySelector('.panel__link-number')).to.exist;
+      expect(tabTest.querySelector('.panel__link-number').textContent).to.equal('123');
 
-      expect(wrapper.find('.foo')).to.have.length(1);
+      expect(queryByTestId('foo')).to.exist;
     });
 
 
-    it('should change layout on click', function() {
+    it('should change layout on click', async function() {
 
       // given
       const onLayoutChangedSpy = spy();
 
-      const wrapper = renderPanel({
-        children: [
-          createTab({
-            id: 'foo',
-            label: 'Foo',
-            children: <div className="foo" />
-          }),
-          createTab({
-            id: 'bar',
-            label: 'Bar',
-            children: <div className="bar" />
-          })
-        ],
+      const tab1 = createTab({
+        id: 'foo',
+        label: 'Foo',
+        children: <div className="foo" />
+      });
+
+      const tab2 = createTab({
+        id: 'bar',
+        label: 'Bar',
+        children: <div className="bar" />
+      });
+
+      const { queryByTestId } = renderPanel({
+        children: [ tab1, tab2 ],
         onLayoutChanged: onLayoutChangedSpy,
       });
 
       // when
-      wrapper.find('.panel__link').at(1).simulate('click');
+      await act(() => userEvent.click(queryByTestId(`tab-${tab2.key}`)));
 
       // then
       expect(onLayoutChangedSpy).to.have.been.calledWith({
@@ -244,15 +258,17 @@ describe('<Panel>', function() {
       // given
       const onUpdateMenu = spy();
 
-      const wrapper = renderPanel({
-        children: createTab({
-          children: <div className="foo" />
-        }),
+      const tab = createTab({
+        children: <div className="foo" />
+      });
+
+      const { queryByTestId } = renderPanel({
+        children: tab,
         onUpdateMenu
       });
 
       // when
-      wrapper.find('.panel__body').simulate('focus');
+      await act(() => userEvent.click(queryByTestId('panel__body')));
 
       // then
       expect(onUpdateMenu).to.be.calledOnceWithExactly({
@@ -318,7 +334,7 @@ function renderPanel(options = {}) {
     onUpdateMenu = noop
   } = options;
 
-  return mount(
+  return render(
     <SlotFillRoot>
       <Panel
         layout={ layout }
@@ -328,31 +344,4 @@ function renderPanel(options = {}) {
       </Panel>
     </SlotFillRoot>
   );
-}
-
-async function expectEventually(expectStatement) {
-  const sleep = time => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, time);
-    });
-  };
-
-  for (let i = 0; i < 10; i++) {
-    try {
-      expectStatement();
-
-      // success
-      return;
-    } catch {
-
-      // do nothing
-    }
-
-    await sleep(50);
-  }
-
-  // let it fail correctly
-  expectStatement();
 }
