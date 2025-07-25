@@ -44,12 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Start instance improved</h4>
-          Edit process variables directly in a dedicated code editor when starting an instance.
+          <h4>Improvements in element templates</h4>
+          We extended the support for templating Script and Business Rule Task elements.
         </li>
         <li>
-          <h4>Support for new task listener types</h4>
-          The task listener now supports <code>creating</code>, and <code>canceling</code> events.
+          <h4>Better linting for IO mapping</h4>
+          Modeler now helps you get the IO mapping right for the Camunda version you are using.
+        </li>
+        <li>
+          <h4>Custom validation messages in Forms</h4>
+          Inputs validated with Regex patterns can now have custom validation messages.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
