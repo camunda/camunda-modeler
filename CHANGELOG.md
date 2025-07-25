@@ -6,24 +6,53 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.38.0
+
+### General
+
 * `FEAT`: use FEEL parserDialect `camunda` for DMN and BPMN ([#4809](https://github.com/camunda/camunda-modeler/issues/4809))
-* `FEAT`: Input entries of a decision table use the unary-tests expression language dialect ([bpmn-io/dmn-js#947](https://github.com/bpmn-io/dmn-js/pull/947))
 * `FEAT`: allow to pass tenant ID with no authentication ([#5106](https://github.com/camunda/camunda-modeler/issues/5106))
+* `FEAT`: support all Camunda FEEL builtins ([#3983](https://github.com/camunda/camunda-modeler/issues/3983))
 * `FIX`: use uniform GTK symbols on Linux ([#5095](https://github.com/camunda/camunda-modeler/issues/5095))
+* `FIX`: display tooltip on number fields ([#5102](https://github.com/camunda/camunda-modeler/issues/5102))
 * `DEPS`: update to `electron@37`
 * `DEPS`: update to `dmn-js@17.3.0`
+* `DEPS`: update to `camunda-bpmn-js@5.11.0`
 * `DEPS`: update to `camunda-dmn-js@3.4.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.38.0`
-* `DEPS`: update to `@camunda/linting@3.39.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.39.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.8.0`
+* `DEPS`: update to `@camunda/linting@3.40.0`
 * `DEPS`: update to `@bpmn-io/form-js@1.16.0`
 * `DEPS`: update to `@camunda/form-playground@0.20.0`
 * `DEPS`: update to `@camunda/form-linting@0.23.0`
+* `DEPS`: update to `@bpmn-io/dmn-migrate@0.6.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.31.0`
+
+### BPMN
+
+* `FEAT`: add linting for IO mapping ([#5137](https://github.com/camunda/camunda-modeler/issues/5137))
+* `FEAT`: support `bindingType` property ([bpmn-io/bpmn-js-element-templates#165](https://github.com/bpmn-io/bpmn-js-element-templates/pull/165))
+* `FEAT`: support properties of type `bpmn:Expression` ([bpmn-io/bpmn-js-element-templates#161](https://github.com/bpmn-io/bpmn-js-element-templates/pull/161))
+* `FEAT`: support `zeebe:script` in element templates ([#5026](https://github.com/camunda/camunda-modeler/issues/5026))
+* `FEAT`: support `zeebe:calledDecision` in element templates ([#5025](https://github.com/camunda/camunda-modeler/issues/5025))
+* `FEAT`: support `zeebe:formDefintion` in element templates ([#5073](https://github.com/camunda/camunda-modeler/issues/5073))
+* `FIX`: keep groups closed when template is first applied ([#5039](https://github.com/camunda/camunda-modeler/issues/5039))
+* `FIX`: correctly handle numeric conditions in element templates ([bpmn-io/bpmn-js-element-templates#69](https://github.com/bpmn-io/bpmn-js-element-templates/issues/69))
+* `FIX`: handle participants when removing empty `zeebe:VersionTag` ([#5115](https://github.com/camunda/camunda-modeler/issues/5115))
+
+### DMN
+
+* `FEAT`: input entries of a decision table use the unary-tests expression language dialect ([bpmn-io/dmn-js#947](https://github.com/bpmn-io/dmn-js/pull/947))
 
 ### Forms
 
 * `FEAT`: support pattern validation custom message ([#1360](https://github.com/bpmn-io/form-js/issues/1360))
 * `FIX`: flush debounced fields on enter ([#35032](https://github.com/camunda/camunda/issues/35032))
 * `FIX`: properties panel toggle configurations work again ([5df5bf5](https://github.com/bpmn-io/form-js/commit/5df5bf58ea43045bb8693f6eb5411f5fcbfcf8b2))
+
+### RPA
+
+* `FEAT`: add RPA multi-file and linting ([#5152](https://github.com/camunda/camunda-modeler/issues/5152))
 
 ## 5.37.0
 
