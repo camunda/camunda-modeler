@@ -134,7 +134,7 @@ function create() {
             fontSize: '13px'
           },
           '.cm-content': {
-            fontFamily: 'Consolas, "Courier New", monospace'
+            fontFamily: 'monospace'
           }
         }),
         ...extensions
