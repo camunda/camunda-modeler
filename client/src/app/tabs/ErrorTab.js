@@ -36,7 +36,7 @@ export default class ErrorTab extends PureComponent {
             This tab crashed due to an unexpected error.
           </p>
           <p>
-            <a href="https://github.com/camunda/camunda-modeler/issues/new?template=BUG_REPORT.md">
+            <a href="https://github.com/camunda/camunda-modeler/issues/new?template=BUG_REPORT.yml">
               Report bug
             </a>
           </p>
