@@ -1306,6 +1306,7 @@ describe('<DmnEditor>', function() {
       const onLayoutChanged = sinon.spy();
 
       const {
+        container,
         instance
       } = await renderEditor(diagramXML, {
         layout,
@@ -1319,7 +1320,7 @@ describe('<DmnEditor>', function() {
       instance.handleChanged();
 
       // when
-      const toggle = document.querySelector('#button-toggle-overview');
+      const toggle = container.querySelector('#button-toggle-overview');
       fireEvent.click(toggle);
 
       // then
@@ -1346,6 +1347,7 @@ describe('<DmnEditor>', function() {
       const onLayoutChanged = sinon.spy();
 
       const {
+        container,
         instance
       } = await renderEditor(diagramXML, {
         layout,
@@ -1359,7 +1361,7 @@ describe('<DmnEditor>', function() {
       instance.handleChanged();
 
       // when
-      const toggle = document.querySelector('#button-toggle-overview');
+      const toggle = container.querySelector('#button-toggle-overview');
       fireEvent.click(toggle);
 
       // then
@@ -1381,13 +1383,13 @@ describe('<DmnEditor>', function() {
 
       const onLayoutChanged = sinon.spy();
 
-      await renderEditor(diagramXML, {
+      const { container } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
 
       // when
-      const toggle = document.querySelector('.resizer');
+      const toggle = container.querySelector('.resizer');
 
       fireEvent.mouseDown(toggle);
       fireEvent.mouseUp(toggle);
@@ -1416,13 +1418,13 @@ describe('<DmnEditor>', function() {
 
       const onLayoutChanged = sinon.spy();
 
-      await renderEditor(diagramXML, {
+      const { container } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
 
       // when
-      const toggle = document.querySelector('.resizer');
+      const toggle = container.querySelector('.resizer');
 
       fireEvent.mouseDown(toggle);
       fireEvent.mouseUp(toggle);
@@ -1452,13 +1454,13 @@ describe('<DmnEditor>', function() {
 
       const onLayoutChanged = sinon.spy();
 
-      await renderEditor(diagramXML, {
+      const { container } = await renderEditor(diagramXML, {
         layout,
         onLayoutChanged
       });
 
       // when
-      const toggle = document.querySelector('.resizer');
+      const toggle = container.querySelector('.resizer');
 
       fireEvent.mouseDown(toggle);
       fireEvent.mouseUp(toggle);
