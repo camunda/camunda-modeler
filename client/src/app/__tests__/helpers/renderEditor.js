@@ -65,8 +65,8 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
   const TestEditor = WithCachedState(EditorComponent);
 
   const {
-    container,
     rerender,
+    ...renderResults
   } = render(
     <SlotFillRoot>
       <TestEditor ref={ ref } { ...props } />
@@ -81,8 +81,8 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
   }
 
   return {
+    ...renderResults,
     instance: ref.current,
-    container,
     rerender: (newXML, newOptions = {}) => {
       rerender(
         <SlotFillRoot>
