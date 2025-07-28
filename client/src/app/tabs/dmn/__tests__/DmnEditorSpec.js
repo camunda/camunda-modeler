@@ -1326,13 +1326,11 @@ describe('<DmnEditor>', function() {
       // then
       await waitFor(() => {
         expect(onLayoutChanged).to.have.been.calledOnce;
-      });
-
-      const callArg = onLayoutChanged.getCall(0).args[0];
-      expect(callArg).to.deep.include({
-        dmnOverview: {
-          open: true
-        }
+        expect(onLayoutChanged).to.have.been.calledWithExactly({
+          dmnOverview: {
+            open: true
+          }
+        });
       });
     });
 
@@ -1368,13 +1366,11 @@ describe('<DmnEditor>', function() {
       // then
       await waitFor(() => {
         expect(onLayoutChanged).to.have.been.calledOnce;
-      });
-
-      const callArg = onLayoutChanged.getCall(0).args[0];
-      expect(callArg).to.deep.include({
-        dmnOverview: {
-          open: false
-        }
+        expect(onLayoutChanged).to.have.been.calledWithExactly({
+          dmnOverview: {
+            open: false
+          }
+        });
       });
     });
 
@@ -1400,14 +1396,12 @@ describe('<DmnEditor>', function() {
       // then
       await waitFor(() => {
         expect(onLayoutChanged).to.have.been.calledOnce;
-      });
-
-      const callArg = onLayoutChanged.getCall(0).args[0];
-      expect(callArg).to.deep.include({
-        propertiesPanel: {
-          open: true,
-          width: 280
-        }
+        expect(onLayoutChanged).to.have.been.calledWithExactly({
+          propertiesPanel: {
+            open: true,
+            width: 280
+          }
+        });
       });
     });
 
@@ -1437,14 +1431,12 @@ describe('<DmnEditor>', function() {
       // then
       await waitFor(() => {
         expect(onLayoutChanged).to.have.been.calledOnce;
-      });
-
-      const callArg = onLayoutChanged.getCall(0).args[0];
-      expect(callArg).to.deep.include({
-        propertiesPanel: {
-          open: true,
-          width: 280
-        }
+        expect(onLayoutChanged).to.have.been.calledWithExactly({
+          propertiesPanel: {
+            open: true,
+            width: 280
+          }
+        });
       });
     });
 
@@ -1474,14 +1466,12 @@ describe('<DmnEditor>', function() {
       // then
       await waitFor(() => {
         expect(onLayoutChanged).to.have.been.calledOnce;
-      });
-
-      const callArg = onLayoutChanged.getCall(0).args[0];
-      expect(callArg).to.deep.include({
-        propertiesPanel: {
-          open: false,
-          width: 280
-        }
+        expect(onLayoutChanged).to.have.been.calledWithExactly({
+          propertiesPanel: {
+            open: false,
+            width: 280
+          }
+        });
       });
     });
 
