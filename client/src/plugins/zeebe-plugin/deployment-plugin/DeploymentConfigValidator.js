@@ -24,7 +24,7 @@ export const VALIDATION_ERROR_MESSAGES = {
   CONTACT_POINT_MUST_BE_URL: 'Cluster endpoint must be a valid URL.',
   CONTACT_POINT_MUST_NOT_BE_EMPTY: 'Cluster endpoint must not be empty.',
   CLUSTER_URL_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
-  CONTACT_POINT_MUST_START_WITH_PROTOCOL: 'Cluster endpoint must start with "http://" or "https://".',
+  CONTACT_POINT_MUST_START_WITH_PROTOCOL: 'Cluster endpoint must start with "http://", "grpc://", "https://", or "grpcs", .',
   MUST_PROVIDE_A_VALUE: 'Must provide a value.',
   OAUTH_URL_MUST_NOT_BE_EMPTY: 'OAuth URL must not be empty.'
 };
@@ -153,22 +153,25 @@ export default class DeploymentConfigValidator {
 }
 
 /**
- * Validate cluster URL. Valid Camunda 8 SaaS URL must start with "https://" and end with ".zeebe.camunda.io".
+ * Validate cluster URL. Valid Camunda 8 SaaS URL must start with "https://" or "grpcs://" and end with ".zeebe.camunda.io".
  *
  * @example
  *
  * ```javascript
- * validateClusterUrl('https://cluster-name.region-1.zeebe.camunda.io:443'); // true
- * validateClusterUrl('http://cluster-name.region-1.zeebe.camunda.io:443'); // false
- * validateClusterUrl('ftp://cluster-name.region-1.zeebe.camunda.io:443'); // false
+ * validateClusterUrl('https://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // null
+ * validateClusterUrl('http://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // validationErrorMessage
+ * validateClusterUrl('grpcs://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // null
+ * validateClusterUrl('grpc://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // validationErrorMessage
+ * validateClusterUrl('ftp://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // validationErrorMessage
  * ```
  *
- * @param {string} url
+ * @param {string} url Url to validate
+ * @param {string} validationErrorMessage returned if URL is invalid
  *
- * @returns {boolean}
+ * @returns {string|null}
  */
 function validateClusterUrl(url, validationErrorMessage) {
-  if (!/^(https:\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url)) {
+  if (!/^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url)) {
     return validationErrorMessage;
   }
 
@@ -183,8 +186,11 @@ function validateClusterUrl(url, validationErrorMessage) {
  * ```javascript
  * validateUrl('http://localhost:26500'); // null
  * validateUrl('https://localhost:26500'); // null
+ * validateUrl('grpc://localhost:26500'); // null
+ * validateUrl('grpcs://localhost:26500'); // null
  * validateUrl('https://camunda.io'); // null
  * validateUrl('https://zeebe.camunda.io'); // null
+ * validateUrl('grpcs://zeebe.camunda.io'); // null
  * validateUrl('ftp://camunda.io'); // CONTACT_POINT_MUST_START_WITH_PROTOCOL
  * validateUrl('www.camunda.io'); // CONTACT_POINT_MUST_START_WITH_PROTOCOL
  * validateUrl('localhost:26500'); // CONTACT_POINT_MUST_START_WITH_PROTOCOL
@@ -196,7 +202,7 @@ function validateClusterUrl(url, validationErrorMessage) {
  * @returns {string|null}
  */
 function validateUrl(value, validationErrorMessage) {
-  if (!/^https?:\/\//.test(value)) {
+  if (!/^(http|grpc)s?:\/\//.test(value)) {
     return VALIDATION_ERROR_MESSAGES.CONTACT_POINT_MUST_START_WITH_PROTOCOL;
   }
 

@@ -412,7 +412,7 @@ class ZeebeAPI {
 
     // (0) set `useTLS` according to the protocol
     const tlsOptions = {
-      CAMUNDA_SECURE_CONNECTION: options.CAMUNDA_SECURE_CONNECTION || /^https:\/\//.test(url)
+      CAMUNDA_SECURE_CONNECTION: options.CAMUNDA_SECURE_CONNECTION || /^(https|grpcs):\/\//.test(url)
     };
 
     // (1) use certificate from flag
