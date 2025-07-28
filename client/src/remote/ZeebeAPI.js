@@ -104,7 +104,7 @@ export function getEndpointForTargetType(endpoint) {
     targetType
   } = endpoint;
 
-  if (targetType === TARGET_TYPES.SELF_HOSTED && !isHttpOrHttps(contactPoint)) {
+  if (targetType === TARGET_TYPES.SELF_HOSTED && !isValidProtocol(contactPoint)) {
     contactPoint = `http://${ contactPoint }`;
   }
 
@@ -157,29 +157,29 @@ export function getEndpointForTargetType(endpoint) {
 }
 
 /**
- * Check if the URL is HTTP or HTTPS.
+ * Check if the URL is HTTP(S) or GRPC(S).
  *
  * @example
  *
  * ```javascript
- * let isHttpOrHttps = isHttpOrHttps('http://foo.com');
- * console.log(isHttpOrHttps); // true
+ * let isValidProtocol = isValidProtocol('http://foo.com');
+ * console.log(isValidProtocol); // true
  *
- * isHttpOrHttps = isHttpOrHttps('https://foo.com');
- * console.log(isHttpOrHttps); // true
+ * isValidProtocol = isValidProtocol('https://foo.com');
+ * console.log(isValidProtocol); // true
  *
- * isHttpOrHttps = isHttpOrHttps('ftp://foo.com');
- * console.log(isHttpOrHttps); // false
+ * isValidProtocol = isValidProtocol('ftp://foo.com');
+ * console.log(isValidProtocol); // false
  * ```
  *
  * @param {string} url
  *
  * @returns {boolean}
  */
-function isHttpOrHttps(url) {
+function isValidProtocol(url) {
   try {
     const parsedUrl = new URL(url);
-    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+    return [ 'http:', 'https:', 'grpc:', 'grpcs:' ].includes(parsedUrl.protocol);
   } catch (error) {
     return false;
   }
