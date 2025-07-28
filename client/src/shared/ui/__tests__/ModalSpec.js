@@ -13,43 +13,37 @@
 import React from 'react';
 
 import {
-  mount
-} from 'enzyme';
+  fireEvent,
+  render
+} from '@testing-library/react';
 
 import { Modal } from '..';
 
 
 describe('<Modal>', function() {
 
-  let wrapper;
-
-
-  afterEach(function() {
-    if (wrapper && wrapper.exists()) {
-      wrapper.unmount();
-    }
-  });
-
-
   it('should render', function() {
-    wrapper = mount(<Modal />);
+    render(<Modal />);
   });
 
 
-  it('should render children', function() {
-    const wrapper = mount((
+  it('should render children', async function() {
+
+    // when
+    const { findByTestId } = render((
       <Modal>
-        <Modal.Title><div>{ 'Foo' }</div></Modal.Title>
+        <Modal.Title><div data-testid="title">Foo</div></Modal.Title>
         <Modal.Body>
-          <div>
-            { 'Test' }
+          <div data-testid="body">
+            Test
           </div>
         </Modal.Body>
       </Modal>
     ));
 
-    expect(wrapper.contains(<div>{ 'Foo' }</div>)).to.be.true;
-    expect(wrapper.contains(<div>{ 'Test' }</div>)).to.be.true;
+    // then
+    expect(await findByTestId('title')).to.exist;
+    expect(await findByTestId('body')).to.exist;
   });
 
 
@@ -57,17 +51,21 @@ describe('<Modal>', function() {
 
     it('should render close icon if onClose existent', function() {
 
-      const wrapper = mount(<Modal onClose={ () => {} } />);
+      // when
+      render(<Modal onClose={ () => {} } />);
 
-      expect(wrapper.find('.close')).to.have.lengthOf(1);
+      // then
+      expect(document.body.querySelectorAll('.close')).to.have.lengthOf(1);
     });
 
 
     it('should not render close icon if onClose not set', function() {
 
-      const wrapper = mount(<Modal />);
+      // when
+      render(<Modal />);
 
-      expect(wrapper.find('.close')).to.have.lengthOf(0);
+      // then
+      expect(document.body.querySelectorAll('.close')).to.have.lengthOf(0);
     });
   });
 
@@ -84,27 +82,27 @@ describe('<Modal>', function() {
     it('should NOT invoke passed onClose prop for background click', function() {
 
       // given
-      wrapper = mount(<Modal onClose={ onCloseSpy } />);
+      const { container } = render(<Modal onClose={ onCloseSpy } />);
 
       // when
-      wrapper.first().simulate('click');
+      fireEvent.click(container);
 
       // then
       expect(onCloseSpy).to.not.be.called;
     });
 
 
-    it('should NOT invoke passed onClose prop for click on modal container', function() {
+    it('should NOT invoke passed onClose prop for click on modal container', async function() {
 
       // given
-      wrapper = mount(<Modal onClose={ onCloseSpy }>
+      const { findByTestId } = render(<Modal onClose={ onCloseSpy }>
         <Modal.Body>
-          <button id="button" />
+          <button data-testid="button">test</button>
         </Modal.Body>
       </Modal>);
 
       // when
-      wrapper.find('#button').simulate('click');
+      fireEvent.click(await findByTestId('button'));
 
       // then
       expect(onCloseSpy).to.not.be.called;
@@ -115,25 +113,16 @@ describe('<Modal>', function() {
 
   describe('focus handling', function() {
 
-    let wrapper;
-
-    afterEach(function() {
-      if (wrapper) {
-        wrapper.unmount();
-      }
-    });
-
-
-    it('should correctly handle autofocus', function() {
+    it('should correctly handle autofocus', async function() {
 
       // given
-      wrapper = mount(<Modal>
+      const { findByTestId } = render(<Modal>
         <Modal.Body>
-          <input id="input" autoFocus />
+          <input data-testid="input" autoFocus />
         </Modal.Body>
       </Modal>);
 
-      const input = wrapper.find('#input').getDOMNode();
+      const input = await findByTestId('input');
 
       // then
       expect(document.activeElement).to.eql(input);
@@ -146,7 +135,7 @@ describe('<Modal>', function() {
   describe('<Modal.Title>', function() {
 
     it('should render', function() {
-      wrapper = mount(<Modal.Title />);
+      render(<Modal.Title />);
     });
 
 
@@ -156,13 +145,12 @@ describe('<Modal>', function() {
       const onClickSpy = sinon.spy();
 
       // when
-      wrapper = mount(<Modal.Title className="foo" onClick={ onClickSpy } />);
-
-      wrapper.simulate('click');
+      const { container } = render(<Modal.Title className="foo" onClick={ onClickSpy } />);
+      fireEvent.click(container.firstChild);
 
       // then
-      expect(wrapper.getDOMNode().classList.contains('foo')).to.be.true;
       expect(onClickSpy).to.have.been.called;
+      expect(container.firstChild.classList.contains('foo')).to.be.true;
     });
 
   });
@@ -171,7 +159,7 @@ describe('<Modal>', function() {
   describe('<Modal.Body>', function() {
 
     it('should render', function() {
-      wrapper = mount(<Modal.Body />);
+      render(<Modal.Body />);
     });
 
 
@@ -181,12 +169,12 @@ describe('<Modal>', function() {
       const onClickSpy = sinon.spy();
 
       // when
-      wrapper = mount(<Modal.Body className="foo" onClick={ onClickSpy } />);
+      const { container } = render(<Modal.Body className="foo" onClick={ onClickSpy } />);
 
-      wrapper.simulate('click');
+      fireEvent.click(container.firstChild);
 
       // then
-      expect(wrapper.getDOMNode().classList.contains('foo')).to.be.true;
+      expect(container.firstChild.classList.contains('foo')).to.be.true;
       expect(onClickSpy).to.have.been.called;
     });
 
@@ -196,7 +184,7 @@ describe('<Modal>', function() {
   describe('<Modal.Footer>', function() {
 
     it('should render', function() {
-      wrapper = mount(<Modal.Footer />);
+      render(<Modal.Footer />);
     });
 
 
@@ -206,12 +194,12 @@ describe('<Modal>', function() {
       const onClickSpy = sinon.spy();
 
       // when
-      wrapper = mount(<Modal.Footer className="foo" onClick={ onClickSpy } />);
+      const { container } = render(<Modal.Footer className="foo" onClick={ onClickSpy } />);
 
-      wrapper.simulate('click');
+      fireEvent.click(container.firstChild);
 
       // then
-      expect(wrapper.getDOMNode().classList.contains('foo')).to.be.true;
+      expect(container.firstChild.classList.contains('foo')).to.be.true;
       expect(onClickSpy).to.have.been.called;
     });
 
