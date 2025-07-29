@@ -45,15 +45,20 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Improvements in element templates</h4>
-          We extended the support for templating Script and Business Rule Task elements.
+          {"We've extended support for templating script and business rule task elements."}
+        </li>
+        <li>
+          <h4>Camunda FEEL editor intelligence</h4>
+          Our FEEL editor now supports <a href="https://docs.camunda.io/docs/components/modeler/feel/language-guide/feel-variables/#escape-variable-names">escaping variable names with backticks</a>.
+          We also fixed a bug in our <code>get or else</code> builtin function.
         </li>
         <li>
           <h4>Better linting for IO mapping</h4>
-          Modeler now helps you get the IO mapping right for the Camunda version you are using.
+          {"The Modeler now helps ensure you have the right IO mappings for the Camunda version you're using."}
         </li>
         <li>
           <h4>Custom validation messages in Forms</h4>
-          Inputs validated with Regex patterns can now have custom validation messages.
+          You can now add custom error messages to form inputs validated with regex patterns.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
