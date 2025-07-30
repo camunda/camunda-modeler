@@ -4,6 +4,7 @@
       "ES2018"
     ],
     "strict": true,
-    "checkJS": true
+    "checkJs": true,
+    "jsx": "react-jsx"
   }
 }
