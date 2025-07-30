@@ -44,12 +44,21 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Start instance improved</h4>
-          Edit process variables directly in a dedicated code editor when starting an instance.
+          <h4>Improvements in element templates</h4>
+          You can now configure a script task as a FEEL expression, define the called decision of a business rule task, and configure a form linked to a user task.
         </li>
         <li>
-          <h4>Support for new task listener types</h4>
-          The task listener now supports <code>creating</code>, and <code>canceling</code> events.
+          <h4>Camunda FEEL editor intelligence</h4>
+          Our FEEL editor now supports <a href="https://docs.camunda.io/docs/components/modeler/feel/language-guide/feel-variables/#escape-variable-names">escaping variable names with backticks</a>.
+          {" We've improved support for the Camunda dialect, ensuring that all built-in functions are now fully recognized."}
+        </li>
+        <li>
+          <h4>Better linting for IO mapping</h4>
+          {"The Modeler now helps ensure you have the right IO mappings for the Camunda version you're using."}
+        </li>
+        <li>
+          <h4>Custom validation messages in Forms</h4>
+          You can now add custom error messages to form inputs validated with regex patterns.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
