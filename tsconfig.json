@@ -3,7 +3,43 @@
     "lib": [
       "ES2018"
     ],
+    "paths": {
+      "src/app/*": [ "./client/src/app/*" ],
+      "test/*": [ "./client/test/*" ]
+    },
+    "types": [
+      "mocha",
+      "karma-sinon-chai",
+      "node",
+      "webpack-env"
+    ],
+
+    "checkJs": true,
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowUmdGlobalAccess": true,
+    "resolveJsonModule": true,
+    "allowArbitraryExtensions": true,
     "strict": true,
-    "checkJS": true
-  }
+    // strict overwrites to reduce initial error overload
+    "noImplicitAny": false,
+    "useUnknownInCatchVariables": false,
+    "strictNullChecks": false,
+
+  },
+  "typeAcquisition": {
+    "enable": true
+  },
+  "include": [
+    "client",
+    "app",
+    "globals.d.ts"
+  ],
+  "exclude": [
+    "*/node_modules/**",
+    "*/build/**",
+    "*/public/**"
+  ]
 }
