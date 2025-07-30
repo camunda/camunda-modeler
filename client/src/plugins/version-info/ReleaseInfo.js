@@ -50,7 +50,7 @@ export function ReleaseInfo(props) {
         <li>
           <h4>Camunda FEEL editor intelligence</h4>
           Our FEEL editor now supports <a href="https://docs.camunda.io/docs/components/modeler/feel/language-guide/feel-variables/#escape-variable-names">escaping variable names with backticks</a>.
-          We also fixed a bug in our <code>get or else</code> builtin function.
+We have improved support for Camunda's built-in functions, ensuring that all built-in functions are now fully recognized and accepted.
         </li>
         <li>
           <h4>Better linting for IO mapping</h4>
