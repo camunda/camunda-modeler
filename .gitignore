@@ -9,3 +9,4 @@ coverage
 .nyc_output
 .linked-dependencies
 tmp
+tsconfig.json
