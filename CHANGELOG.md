@@ -15,7 +15,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support all Camunda FEEL builtins ([#3983](https://github.com/camunda/camunda-modeler/issues/3983))
 * `FIX`: use uniform GTK symbols on Linux ([#5095](https://github.com/camunda/camunda-modeler/issues/5095))
 * `FIX`: display tooltip on number fields ([#5102](https://github.com/camunda/camunda-modeler/issues/5102))
-* `FIX`: use `monospace` font in code editors ([#5140](https://github.com/camunda-modeler/issues/5140))
+* `FIX`: use `monospace` font in code editors ([#5140](https://github.com/camunda/camunda-modeler/issues/5140))
 * `DEPS`: update to `electron@37`
 * `DEPS`: update to `dmn-js@17.3.0`
 * `DEPS`: update to `camunda-bpmn-js@5.11.0`
