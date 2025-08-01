@@ -213,7 +213,12 @@ export class RPAEditor extends CachedComponent {
 
     // Prevent scrolling
     editor.editor.updateOptions({
-      scrollBeyondLastLine: false
+      scrollBeyondLastLine: false,
+      fontFamily: 'var(--font-family-monospace)'
+    });
+
+    document.fonts.ready.then(() => {
+      editor.editor.remeasureFonts();
     });
 
     this.setCached({

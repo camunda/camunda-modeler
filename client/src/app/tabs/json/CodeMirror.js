@@ -65,7 +65,7 @@ export default function create() {
         vscodeLight,
         EditorView.theme({
           '.cm-content': {
-            fontFamily: 'monospace'
+            fontFamily: 'var(--font-family-monospace)'
           }
         }),
         ...extensions

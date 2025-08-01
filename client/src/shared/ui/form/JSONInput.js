@@ -134,7 +134,7 @@ function create() {
             fontSize: '13px'
           },
           '.cm-content': {
-            fontFamily: 'monospace'
+            fontFamily: 'var(--font-family-monospace)'
           }
         }),
         ...extensions
