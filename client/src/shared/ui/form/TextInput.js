@@ -49,7 +49,8 @@ export default function TextInput(props) {
       return <textarea
         { ...field }
         value={ fieldValue || '' }
-        disabled={ form.isSubmitting }
+
+        // disabled={ form.isSubmitting }
         className={ classNames('form-control', {
           'is-invalid': !!error
         }) }

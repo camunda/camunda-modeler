@@ -20,6 +20,8 @@ const getSystemCertificates = require('./get-system-certificates');
 const createLog = require('../log');
 const { X509Certificate } = require('node:crypto');
 
+const { satisfies } = require('semver');
+
 const {
   pick,
   values
@@ -97,6 +99,7 @@ const RESOURCE_TYPES = {
 /**
  * @typedef {typeof import('@camunda8/sdk').Camunda8} Camunda8Constructor
  * @typedef {import('@camunda8/sdk/dist/zeebe').ZeebeGrpcClient} ZeebeGrpcClient
+ * @typedef {import('@camunda8/sdk/dist/zeebe').CamundaRestClient} CamundaRestClient
  */
 
 class ZeebeAPI {
@@ -128,25 +131,25 @@ class ZeebeAPI {
   /**
    * Check connection with given endpoint.
    *
-   * @param {{ endpoint: Endpoint }} config
+   * @param {{ endpoint: Endpoint }} endpointConfig
    *
    * @returns {Promise<{ success: boolean, reason?: string }>}
    */
-  async checkConnection(config) {
-    const { endpoint } = config;
+  async checkConnection(endpointConfig) {
+    const { endpoint } = endpointConfig;
 
     const client = await this._getZeebeClient(endpoint);
 
     this._log.debug('check connection', {
-      parameters: filterEndpointParameters(config)
+      config: redactEndpointConfig(endpointConfig)
     });
 
     try {
-      await client.topology();
+      await client.getTopology();
       return { success: true };
     } catch (err) {
       this._log.error('connection check failed', {
-        parameters: filterEndpointParameters(config)
+        config: redactEndpointConfig(endpointConfig)
       }, err);
 
       return {
@@ -159,46 +162,40 @@ class ZeebeAPI {
   /**
    * Deploy resources with given configuration.
    *
-   * @param {DeploymentConfig} config
+   * @param {DeploymentConfig} deployConfig
    *
    * @returns {Promise<{ success: boolean, response: object }>}
    */
-  async deploy(config) {
+  async deploy(deployConfig) {
     const {
       endpoint,
       resourceConfigs,
       tenantId
-    } = config;
+    } = deployConfig;
 
     this._log.debug('deploy', {
-      parameters: filterEndpointParameters(config)
+      config: redactEndpointConfig(deployConfig)
     });
 
     const client = await this._getZeebeClient(endpoint);
 
     try {
 
-      /** @type {Array<Resource>} */
-      const resources = this._getResources(resourceConfigs, tenantId);
 
-      let response;
+      const resources = this._getResources(resourceConfigs);
 
-      if (resources.length > 1) {
-        this._log.debug('deploying resources', resources);
 
-        response = await client.deployResources(resources, tenantId);
-      } else {
-        this._log.debug('deploying resource', resources[0]);
+      this._log.debug('deploying resources', resources);
 
-        response = await client.deployResource(resources[0]);
-      }
+      const response = await client.deployResources(resources, tenantId);
+
 
       return {
         success: true,
         response: response
       };
     } catch (err) {
-      this._log.error('deploy failed', filterEndpointParameters(config), err);
+      this._log.error('deploy failed', redactEndpointConfig(deployConfig), err);
 
       return {
         success: false,
@@ -210,20 +207,21 @@ class ZeebeAPI {
   /**
    * Start instance of process with given process ID and configuration.
    *
-   * @param {StartInstanceConfig} config
+   * @param {StartInstanceConfig} startInstanceConfig
    *
+   * <BOOKMARK B>
    * @returns {{ success: boolean, response: object }}
    */
-  async startInstance(config) {
+  async startInstance(startInstanceConfig) {
     const {
       endpoint,
       variables,
       processId,
       tenantId
-    } = config;
+    } = startInstanceConfig;
 
     this._log.debug('start instance', {
-      parameters: filterEndpointParameters(config)
+      config: redactEndpointConfig(startInstanceConfig)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -242,7 +240,7 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('start instance failed', {
-        parameters: filterEndpointParameters(config)
+        config: redactEndpointConfig(startInstanceConfig)
       }, err);
 
       return {
@@ -255,17 +253,17 @@ class ZeebeAPI {
   /**
    * Get gateway version of given broker/cluster endpoint.
    *
-   * @param {{ endpoint: Endpoint }} config
+   * @param {{ endpoint: Endpoint }} endpointConfig
    *
-   * @returns {{ success: boolean, response?: object, response?.gatewayVersion: string }}
+   * @returns {Promise<{ success: boolean, response?: object, response?.gatewayVersion: string }>}
    */
-  async getGatewayVersion(config) {
+  async getGatewayVersion(endpointConfig) {
     const {
       endpoint
-    } = config;
+    } = endpointConfig;
 
     this._log.debug('fetch gateway version', {
-      parameters: filterEndpointParameters(config)
+      config: redactEndpointConfig(endpointConfig)
     });
 
     const client = await this._getZeebeClient(endpoint);
@@ -281,12 +279,12 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('fetch gateway version failed', {
-        parameters: filterEndpointParameters(config)
+        config: redactEndpointConfig(endpointConfig)
       }, err);
 
       return {
         success: false,
-        reason: getErrorReason(err, config.endpoint)
+        reason: getErrorReason(err, endpointConfig.endpoint)
       };
     }
   }
@@ -299,6 +297,9 @@ class ZeebeAPI {
     }
   }
 
+  /**
+   * @param {Endpoint} endpoint
+   */
   async _getZeebeClient(endpoint) {
 
     // (1) use existing Zeebe Client for endpoint
@@ -309,7 +310,7 @@ class ZeebeAPI {
     }
 
     // (2) cleanup old client instance
-    this._shutdownZeebeClientInstance();
+    this._shutdownZeebeGrpcClientInstance();
 
     // (3) create new Zeebe Client for endpoint configuration
     this._zeebeClient = await this._createZeebeClient(endpoint);
@@ -318,19 +319,19 @@ class ZeebeAPI {
     return this._zeebeClient;
   }
 
-  _shutdownZeebeClientInstance() {
+  _shutdownZeebeGrpcClientInstance() {
 
     if (this._zeebeClient) {
-      this._log.debug('shutdown zeebe client');
+      this._log.debug('shutdown zeebe grpc client');
 
       this._zeebeClient.close();
     }
   }
 
   /**
-   * @param {any} endpoint
+   * @param {Endpoint} endpoint
    *
-   * @returns { Promise<ZeebeGrpcClient> }
+   * @returns { Promise<ZeebeGrpcClient|CamundaRestClient> }
    */
   async _createZeebeClient(endpoint) {
     const {
@@ -339,8 +340,10 @@ class ZeebeAPI {
       url
     } = endpoint;
 
-    let options = {
+    /** @type {import('@camunda8/sdk').CamundaSDKConfiguration} */
+    let clientConfig = {
       ZEEBE_GRPC_ADDRESS: endpoint.url ? removeProtocol(endpoint.url) : '',
+      ZEEBE_REST_ADDRESS: endpoint.url,
       zeebeGrpcSettings: { ZEEBE_GRPC_CLIENT_RETRY: false }
     };
 
@@ -351,16 +354,23 @@ class ZeebeAPI {
       return;
     }
 
+    if (authType === AUTH_TYPES.NONE) {
+      clientConfig = {
+        ...clientConfig,
+        CAMUNDA_OAUTH_DISABLED: true,
+        CAMUNDA_AUTH_STRATEGY: 'NONE'
+      };
+    }
     if (authType === AUTH_TYPES.BASIC) {
-      options = {
-        ...options,
-        CAMUNDA_AUTH_STRATEGY: 'BASIC',
-        CAMUNDA_BASIC_AUTH_USERNAME: endpoint.basicAuthUsername,
-        CAMUNDA_BASIC_AUTH_PASSWORD: endpoint.basicAuthPassword
+      clientConfig = {
+        ...clientConfig,
+        CAMUNDA_AUTH_COOKIE_URL:'http://localhost:8080/api/login',
+        CAMUNDA_AUTH_COOKIE_USERNAME: endpoint.basicAuthUsername,
+        CAMUNDA_AUTH_COOKIE_PASSWORD: endpoint.basicAuthPassword,
       };
     } else if (authType === AUTH_TYPES.OAUTH) {
-      options = {
-        ...options,
+      clientConfig = {
+        ...clientConfig,
         CAMUNDA_AUTH_STRATEGY: 'OAUTH',
         ZEEBE_CLIENT_ID: endpoint.clientId,
         ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
@@ -370,8 +380,8 @@ class ZeebeAPI {
         CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true
       };
     } else if (type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
-      options = {
-        ...options,
+      clientConfig = {
+        ...clientConfig,
         CAMUNDA_AUTH_STRATEGY: 'OAUTH',
         CAMUNDA_OAUTH_URL: 'https://login.cloud.camunda.io/oauth/token',
         CAMUNDA_ZEEBE_OAUTH_AUDIENCE: endpoint.audience,
@@ -384,35 +394,51 @@ class ZeebeAPI {
         CAMUNDA_CONSOLE_CLIENT_SECRET: endpoint.clientSecret
       };
     } else if (type === ENDPOINT_TYPES.SELF_HOSTED) {
-      options = {
-        ...options,
+      clientConfig = {
+        ...clientConfig,
         CAMUNDA_OAUTH_DISABLED: true,
       };
     }
 
-    options = await this._withTLSConfig(url, options);
+    clientConfig = await this._withTLSConfig(url, clientConfig);
 
     // do not override camunda cloud port (handled by the client)
     if (type !== ENDPOINT_TYPES.CAMUNDA_CLOUD) {
-      options = this._withPortConfig(url, options);
+      clientConfig = this._withPortConfig(url, clientConfig);
     }
 
-    this._log.debug('creating client', {
+    this._log.info('creating client', {
       url,
-      options: filterCamunda8Options(options)
+      clientConfig: redactCamunda8Config(clientConfig)
     });
 
-    const camundaClient = new this._Camunda8(options);
-
-    return camundaClient.getZeebeGrpcApiClient();
+    const camundaClient = new this._Camunda8(clientConfig);
+    const grpcClient = camundaClient.getZeebeGrpcApiClient();
+    grpcClient.getTopology = grpcClient.topology;
+    if (endpoint.url.startsWith('grpc'))
+    {
+      this._log.info('using grpc client');
+      return grpcClient;
+    }
+    const restClient = camundaClient.getCamundaRestClient();
+    const { gatewayVersion } = await restClient.getTopology();
+    this._log.info('cluster is using ', gatewayVersion);
+    const restDeploymentSupported = satisfies(gatewayVersion,'>=8.6');
+    if (restDeploymentSupported) {
+      this._log.info('using rest client');
+      return restClient;
+    }
+    this._log.info('fallback using grpc client');
+    return grpcClient;
   }
 
-  async _withTLSConfig(url, options) {
+  async _withTLSConfig(url, config) {
     const rootCerts = [];
 
     // (0) set `useTLS` according to the protocol
-    const tlsOptions = {
-      CAMUNDA_SECURE_CONNECTION: options.CAMUNDA_SECURE_CONNECTION || /^(https|grpcs):\/\//.test(url)
+    const tlsConfig = {
+      CAMUNDA_SECURE_CONNECTION: config.CAMUNDA_SECURE_CONNECTION || /^https:\/\//.test(url)
+
     };
 
     // (1) use certificate from flag
@@ -431,34 +457,34 @@ class ZeebeAPI {
     rootCerts.push(...systemCertificates);
 
     if (!rootCerts.length) {
-      return { ...options, ...tlsOptions };
+      return { ...config, ...tlsConfig };
     }
 
     const rootCertsBuffer = Buffer.from(rootCerts.join('\n'));
 
     return {
-      ...options,
-      ...tlsOptions,
+      ...config,
+      ...tlsConfig,
       CAMUNDA_CUSTOM_ROOT_CERT_STRING: rootCertsBuffer
     };
   }
 
-  _withPortConfig(url, options) {
+  _withPortConfig(url, config) {
 
     // do not override camunda cloud port (handled by zeebe-node)
-    if (options.camundaCloud) {
-      return options;
+    if (config.camundaCloud) {
+      return config;
     }
 
     const parsedUrl = new URL(url);
 
     // do not override port if already set in url
     if (parsedUrl.port) {
-      return options;
+      return config;
     }
 
     return {
-      ...options,
+      ...config,
       port: parsedUrl.protocol === 'https:' ? '443' : '80'
     };
   }
@@ -493,14 +519,13 @@ class ZeebeAPI {
   }
 
   /**
-   * Get resources based on the provided configs and tenantId.
+   * Get resources based on the provided configs.
    *
-   * @param {resourceConfigs: Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }} files
-   * @param {string} [tenantId]
+   * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }} resourceConfigs
    *
    * @returns {Array<Resource>}
    */
-  _getResources(resourceConfigs, tenantId) {
+  _getResources(resourceConfigs) {
     return resourceConfigs.map(resourceConfig => {
       const { contents } = this._fs.readFile(resourceConfig.path, { encoding: false });
 
@@ -523,10 +548,6 @@ class ZeebeAPI {
         // fall back to form
         // cf.https://github.com/camunda/camunda-8-js-sdk/blob/e38ea13c2f8285816ade0ff1e4b4e62fbee4a4ba/src/zeebe/lib/deployResource.ts#L54
         resource.form = contents;
-      }
-
-      if (resourceConfigs.length === 1 && tenantId && tenantId.length) {
-        resource.tenantId = tenantId;
       }
 
       return resource;
@@ -620,30 +641,32 @@ function asSerializedError(error) {
 }
 
 /**
- * Filter endpoint connection parameters, so they can safely logged
+ * Filter endpoint connection from config, so they can safely be logged
  * without leaking secrets.
  *
- * @param {any} parameters
+ * @template {Object} T
+ * @param {T} config
  *
- * @returns {any} filtered parameters
+ * @returns {T} filtered config
  */
-function filterEndpointParameters(parameters) {
-  return filterRecursive(parameters, [
+function redactEndpointConfig(config) {
+  return redactDeep(config, [
     'clientSecret:secret',
     'basicAuthPassword:secret'
   ]);
 }
 
 /**
- * Filter Camunda8 options, so they can safely logged
+ * Filter Camunda8 client config, so they can safely logged
  * without leaking secrets.
  *
- * @param {any} options
+ * @template {Object} T
+ * @param {T} config
  *
- * @returns {any} filtered options
+ * @returns {T} filtered config
  */
-function filterCamunda8Options(options) {
-  return filterRecursive(options, [
+function redactCamunda8Config(config) {
+  return redactDeep(config, [
     'ZEEBE_CLIENT_SECRET:secret',
     'CAMUNDA_CONSOLE_CLIENT_SECRET:secret',
     'CAMUNDA_BASIC_AUTH_PASSWORD:secret',
@@ -651,7 +674,15 @@ function filterCamunda8Options(options) {
   ]);
 }
 
-function filterRecursive(obj, keys) {
+/**
+ * Redact sensitive information from an object deeply.
+ *
+ * @template {Object} T
+ * @param {T} obj Object to redact
+ * @param {Array<string>} keys - Array of keys to redact, in the format 'key:type'. type can be 'secret' or 'blob'.
+ * @returns {T} Redacted object
+ */
+function redactDeep(obj, keys) {
 
   const overrides = keys.reduce((overrides, name) => {
     const [ key, type ] = name.split(':');

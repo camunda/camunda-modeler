@@ -37,7 +37,7 @@
   }
 
   // hide but remain accessible: https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
-  input[type=file].form-control {
+  input[type="file"].form-control {
     position: absolute !important;
     height: 1px;
     width: 1px;
@@ -46,7 +46,7 @@
   }
 
   // make sure outline doesn't cover the block
-  input[type=file].form-control + label {
+  input[type="file"].form-control + label {
     height: 20px;
     width: 20px;
     padding: 2px;
@@ -77,9 +77,9 @@
     }
   }
 
-  input[type=password].form-control::placeholder,
+  input[type="password"].form-control::placeholder,
   textarea.form-control::placeholder,
-  input[type=text].form-control::placeholder {
+  input[type="text"].form-control::placeholder {
     font-size: 13px;
     font-weight: normal;
     font-stretch: normal;
@@ -89,26 +89,28 @@
     color: var(--color-grey-225-10-55);
   }
 
-  input[type=password].form-control:focus,
-  input[type=text].form-control:focus,
+  input[type="password"].form-control:focus,
+  input[type="text"].form-control:focus,
   textarea.form-control:focus,
   select.form-control:focus {
     outline: none;
-    box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
+    box-shadow: 0 0 0 1px var(--color-blue-205-100-50),
+      0 0 0 1px var(--color-grey-225-10-75) inset;
     border: solid 1px var(--color-blue-205-100-50);
   }
 
-  input[type=password].form-control.is-invalid,
+  input[type="password"].form-control.is-invalid,
   textarea.form-control.is-invalid,
-  input[type=text].form-control.is-invalid {
+  input[type="text"].form-control.is-invalid {
     border: solid 1px var(--color-red-360-100-45);
   }
 
-  input[type=password].form-control.is-invalid:focus,
+  input[type="password"].form-control.is-invalid:focus,
   textarea.form-control.is-invalid:focus,
-  input[type=text].form-control.is-invalid:focus {
+  input[type="text"].form-control.is-invalid:focus {
     outline: none;
-    box-shadow: 0 0 0 1px var(--color-red-360-100-92), 0 0 0 1px var(--color-grey-225-10-75) inset;
+    box-shadow: 0 0 0 1px var(--color-red-360-100-92),
+      0 0 0 1px var(--color-grey-225-10-75) inset;
     border: solid 1px var(--color-red-360-100-45);
   }
 
@@ -131,9 +133,8 @@
   }
 
   .custom-control {
-
     label {
-      font-size: 13px;
+      font-size: 12px;
     }
 
     font-weight: normal;
@@ -152,18 +153,18 @@
     // the text
     .custom-control-input:checked + .custom-control-label,
     .custom-control-input:not(:checked) + .custom-control-label {
-        position: relative;
-        padding-left: 26px;
-        line-height: 20px;
-        display: inline-block;
+      position: relative;
+      padding-left: 26px;
+      line-height: 20px;
+      display: inline-block;
     }
 
     // radio control
     .custom-control-input:not(:checked) + .custom-control-label:after {
-        opacity: 0;
+      opacity: 0;
     }
     .custom-control-input:checked + .custom-control-label:after {
-        opacity: 1;
+      opacity: 1;
     }
 
     .custom-control-label:focus {
@@ -171,17 +172,17 @@
     }
 
     .custom-control-input:focus + .custom-control-label:before {
-      box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
+      box-shadow: 0 0 0 1px var(--color-blue-205-100-50),
+        0 0 0 1px var(--color-grey-225-10-75) inset;
       border: solid 1px var(--color-blue-205-100-50) !important;
     }
   }
 
   .custom-checkbox {
-
     // border of the radio
     .custom-control-input:checked + .custom-control-label:before,
     .custom-control-input:not(:checked) + .custom-control-label:before {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;
@@ -217,11 +218,10 @@
   }
 
   .custom-radio {
-
     // border of the radio
     .custom-control-input:checked + .custom-control-label:before,
     .custom-control-input:not(:checked) + .custom-control-label:before {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;
@@ -236,7 +236,7 @@
     // inside the radio
     .custom-control-input:checked + .custom-control-label:after,
     .custom-control-input:not(:checked) + .custom-control-label:after {
-      content: '';
+      content: "";
       width: 8px;
       height: 8px;
       background-color: var(--color-grey-225-10-15);
@@ -260,7 +260,8 @@
     }
 
     .custom-control-input:focus + .custom-control-label:before {
-      box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
+      box-shadow: 0 0 0 1px var(--color-blue-205-100-50),
+        0 0 0 1px var(--color-grey-225-10-75) inset;
       border: solid 1px var(--color-blue-205-100-50) !important;
     }
   }
@@ -273,7 +274,8 @@
       &.cm-focused {
         border: solid 1px var(--color-blue-205-100-50);
         outline: none;
-        box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
+        box-shadow: 0 0 0 1px var(--color-blue-205-100-50),
+          0 0 0 1px var(--color-grey-225-10-75) inset;
 
         :focus-visible {
           outline-style: none;
@@ -287,7 +289,8 @@
       &.cm-focused {
         border: solid 1px var(--color-red-360-100-45);
         outline: none;
-        box-shadow: 0 0 0 1px var(--color-red-360-100-92), 0 0 0 1px var(--color-grey-225-10-75) inset;
+        box-shadow: 0 0 0 1px var(--color-red-360-100-92),
+          0 0 0 1px var(--color-grey-225-10-75) inset;
 
         :focus-visible {
           outline-style: none;
@@ -332,7 +335,7 @@
     .invalid-tooltip:before,
     .invalid-tooltip:after {
       position: absolute;
-      content: ' ';
+      content: " ";
       pointer-events: none;
       color: transparent;
       border-style: solid;
@@ -402,7 +405,6 @@
       white-space: nowrap;
     }
 
-
     .default_file-icon {
       background-color: var(--overlay-font-color);
       border-radius: 100%;
@@ -432,8 +434,7 @@
       }
 
       &:hover,
-      &:focus
-       {
+      &:focus {
         background-color: var(--color-red-360-100-92);
         border-radius: 100%;
       }
@@ -456,12 +457,10 @@
 }
 
 .custom-control-toggle {
-
   > .description {
     margin: 6px 0 6px 38px;
     font-size: 13px;
     color: var(--color-grey-225-10-35);
-
   }
 
   .toggle-switch .field-wrapper > label {
@@ -481,7 +480,7 @@
     margin: 0;
   }
 
-  .toggle-switch .toggle-switch__switcher input[type='checkbox'] {
+  .toggle-switch .toggle-switch__switcher input[type="checkbox"] {
     opacity: 0;
     width: 0;
     height: 0;
@@ -512,17 +511,26 @@
     border-radius: 50%;
   }
 
-  .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider {
+  .toggle-switch
+    .toggle-switch__switcher
+    input[type="checkbox"]:checked
+    + .toggle-switch__slider {
     background-color: var(--toggle-switch-on-background-color);
-    box-shadow: 0 0 1px ;
+    box-shadow: 0 0 1px;
   }
 
-  .toggle-switch .toggle-switch__switcher input[type='checkbox']:disabled + .toggle-switch__slider {
+  .toggle-switch
+    .toggle-switch__switcher
+    input[type="checkbox"]:disabled
+    + .toggle-switch__slider {
     background-color: var(--toggle-switch-disabled-background-color);
-    box-shadow: none ;
+    box-shadow: none;
   }
 
-  .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider:before {
+  .toggle-switch
+    .toggle-switch__switcher
+    input[type="checkbox"]:checked
+    + .toggle-switch__slider:before {
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);
     transform: translateX(16px);

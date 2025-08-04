@@ -3,7 +3,38 @@
     "lib": [
       "ES2018"
     ],
-    "strict": true,
-    "checkJS": true
-  }
+    "checkJs": true,
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "skipLibCheck": true,
+
+    "types": [
+      "mocha",
+      "sinon",
+      "sinon-chai",
+      "karma-sinon-chai",
+      "node",
+      "webpack-env"
+
+    ],
+    "strict": false,
+    "esModuleInterop": true,
+    "allowUmdGlobalAccess": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "useUnknownInCatchVariables": false,
+    "allowArbitraryExtensions": true
+  },
+  "typeAcquisition": {
+    "enable": true
+  },
+  "include": [
+    "app",
+    "client",
+    "globals.d.ts"
+  ],
+  "exclude": [
+    "*/node_modules/**",
+    "*/build/**"
+  ]
 }

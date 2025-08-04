@@ -152,6 +152,7 @@ export default class Settings {
   }
 
   _validate(settings) {
+    console.log('Validating settings', settings);
     const { id, properties } = settings;
 
     if (!id) {
@@ -219,7 +220,7 @@ export default class Settings {
    *
    * Calls the listeners for each setting that has changed. Saves the file.
    *
-   * @param {Record<string, string|boolean} settings - Dictionary of setting keys and their values.
+   * @param {Record<string, string|boolean> } settings - Dictionary of setting keys and their values.
    */
   set(settings) {
 

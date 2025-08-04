@@ -140,7 +140,9 @@ export default function DeploymentConfigForm(props) {
                                 [
                                   { value: AUTH_TYPES.NONE, label: LABELS.AUTH_TYPE_NONE },
                                   { value: AUTH_TYPES.BASIC, label: LABELS.AUTH_TYPE_BASIC_AUTH },
+                                  { value: 'COOKIE' , label: 'Cookie' },
                                   { value: AUTH_TYPES.OAUTH, label: LABELS.AUTH_TYPE_OAUTH }
+
                                 ]
                               }
                             />
@@ -152,6 +154,36 @@ export default function DeploymentConfigForm(props) {
                           && props.values.endpoint.authType === AUTH_TYPES.BASIC
                           && (
                             <React.Fragment>
+                              <Field
+                                name="endpoint.basicAuthUsername"
+                                component={ TextInput }
+                                label={ LABELS.BASIC_AUTH_USERNAME }
+                                fieldError={ getFieldError }
+                                validate={ value => validateField('endpoint.basicAuthUsername', value) }
+                              />
+                              <Field
+                                name="endpoint.basicAuthPassword"
+                                component={ TextInput }
+                                label={ LABELS.BASIC_AUTH_PASSWORD }
+                                fieldError={ getFieldError }
+                                validate={ value => validateField('endpoint.basicAuthPassword', value) }
+                                type="password"
+                              />
+                            </React.Fragment>
+                          )
+                      }
+                      {
+                        props.values.endpoint.targetType === TARGET_TYPES.SELF_HOSTED
+                          && props.values.endpoint.authType === 'COOKIE'
+                          && (
+                            <React.Fragment>
+                              <Field
+                                name="endpoint.cookieURL"
+                                component={ TextInput }
+                                label={ 'Login URL' }
+                                fieldError={ getFieldError }
+                                validate={ value => validateField('endpoint.cookieURL', value) }
+                              />
                               <Field
                                 name="endpoint.basicAuthUsername"
                                 component={ TextInput }

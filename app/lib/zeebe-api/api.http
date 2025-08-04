@@ -1,0 +1,9 @@
+POST http://localhost:8080/api/login?username=demo&password=demo
+
+
+###
+GET http://localhost:8080/v2/topology
+
+
+###
+GET vscode://schemas/settings/user

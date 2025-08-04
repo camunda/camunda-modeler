@@ -52,24 +52,99 @@ export default class TestClient extends Component {
 
     const pluginSettings = {
       id: 'testClientPlugin',
-      title: 'Test Client Plugin',
+      title: 'Connections',
       properties: {
-        'testClientPlugin.heartbeat': {
-          type: 'boolean',
-          default: true,
-          label: 'Will My Heart Go On?',
-          description: 'Enable the heart icon in the status bar.'
-        },
+
+        // // radio button for camunda 7, camunda 8 (SM), and camunda 8 (SaaS)
+        // 'testClientPlugin.connectionType': {
+        //   type: 'radio',
+        //   style: 'vertical',
+
+        //   default: 'camunda8-sm',
+        //   label: 'Target',
+        //   options: [
+        //     { value: 'camunda8-sm', label: 'Camunda 8 SaaS' },
+        //     { value: 'camunda8-saas', label: 'Camunda 8 Self-Managed' },
+        //     { value: 'camunda7', label: 'Camunda 7' },
+        //   ],
+
+        //   // restartRequired: true,
+        //   documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/'
+        // },
+
         'testClientPlugin.iconColor': {
           type: 'text',
+          label: 'Icon Color',
           default: '#10ad73',
-          label: 'Icon color',
-          description: 'Color of the lovely heart icon.'
         },
+        'testClientPlugin.connections': {
+          type: 'array',
+          childProperties:{
+            name:{
+              type: 'text',
+              label: 'Name',
+              default: 'My Connection'
+
+            },
+            url: {
+              type: 'text',
+              label: 'URL',
+              default: 'https://api.camunda.io',
+              documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/'
+            },
+            target: {
+              type: 'select',
+              options: [
+                { value: 'camunda8-saas', label: 'Camunda 8 SaaS' },
+                { value: 'camunda8-sm', label: 'Camunda 8 SM' },
+                { value: 'camunda7', label: 'Camunda 7' },
+              ],
+              default: 'camunda8-sm',
+              label: 'Target',
+            },
+
+            auth: {
+              type: 'select',
+              options: [
+                { value: 'none', label: 'None' },
+                { value: 'basic', label: 'Basic' },
+                { value: 'cookie', label: 'Cookie' },
+                { value: 'oauth2', label: 'OAuth 2.0' },
+              ],
+              default: 'none',
+              label: 'Auth',
+              condition:{
+                property: 'target',
+                equals: 'camunda8-sm'
+              }
+            },
+            username: {
+              type: 'text',
+              label: 'Username',
+              condition:{
+                allMatch:[
+                  { property: 'auth', oneOf: [ 'basic', 'cookie' ] },
+                  { property: 'target', equals:  'camunda8-sm' }
+                ]
+
+
+              }
+            },
+            password: {
+              type: 'text',
+              label: 'Password',
+              condition:{
+                property: 'auth',
+                oneOf: [ 'basic', 'cookie' ]
+              }
+            }
+          }
+        }
       }
     };
 
     settings.register(pluginSettings);
+
 
     settings.subscribe('testClientPlugin.iconColor', ({ value }) => {
       this.setState({

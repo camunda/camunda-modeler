@@ -86,6 +86,7 @@ export default function SettingsPlugin(props) {
   }, [ schema ]);
 
   const handleSave = (data) => {
+    console.log('handleSave', data);
     const formikValues = flattenFormikValues(data);
 
     const changedValues = omitBy(formikValues, (value, key) => values[key] === value);

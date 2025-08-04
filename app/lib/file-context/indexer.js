@@ -38,8 +38,8 @@ module.exports = class Indexer {
   /**
    * @param { import('./types').Logger } logger
    * @param { import('node:events').EventEmitter } eventBus
-   * @param { import('./processor').default } processor
-   * @param { import('./workqueue').default } workqueue
+   * @param { import('./processor').Processor } processor
+   * @param { import('./workqueue').WorkQueue } workqueue
    */
   constructor(logger, eventBus, processor, workqueue) {
 

@@ -654,7 +654,6 @@ function bootstrapEPIPESuppression() {
 /**
  * Bootstrap and return application components.
  *
- * @return {Object}
  */
 function bootstrap() {
   const appPath = path.dirname(app.getPath('exe')),

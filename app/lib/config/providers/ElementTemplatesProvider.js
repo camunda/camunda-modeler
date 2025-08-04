@@ -18,6 +18,9 @@ const { globFiles, toPosixPath } = require('../../util/files');
 
 const log = require('../../log')('app:config:element-templates');
 
+/**
+ * @typedef {import('../../template-updater/types').Template} Template
+ */
 
 /**
  * Get element templates.
@@ -78,7 +81,7 @@ function suffixAll(paths, suffix) {
  * @return {Array<Template>}
  */
 function getTemplates(paths, ignoredPaths) {
-  return paths.reduce((templates, path) => {
+  return paths.reduce((/** @type {Array<Template>} */ templates, path) => {
     let files;
 
     // do not throw if file not accessible or no such file
@@ -105,7 +108,7 @@ function getTemplates(paths, ignoredPaths) {
  * @return {Array<Template>}
  */
 function getTemplatesForPaths(paths) {
-  return paths.reduce((templates, path) => {
+  return paths.reduce((/** @type {Array<Template>} */ templates, path) => {
     return [
       ...templates,
       ...getTemplatesForPath(path)

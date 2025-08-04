@@ -1,5 +1,5 @@
 .modal {
-  --input-width: calc(100% - 40px);
+  --input-width: calc(100%);
 
   position: absolute;
   top: 0;
@@ -9,14 +9,14 @@
   z-index: 10000;
 
   &:before {
-    content: '';
+    content: "";
     position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
     right: 0;
     background: var(--color-grey-225-10-15);
-    opacity: .2;
+    opacity: 0.2;
     z-index: 1001;
   }
 }
@@ -101,8 +101,9 @@
     grid-row-gap: 15px;
   }
 
-  input[type=password].form-control,
-  input[type=text].form-control,
+  input[type="password"].form-control,
+  input[type="text"].form-control,
+  input[type="radio"].form-control,
   textarea.form-control,
   select.form-control {
     width: var(--input-width);

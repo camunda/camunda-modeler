@@ -120,7 +120,6 @@ describe('BpmnModeler', function() {
  *
  * @param {Object} [options]
  *
- * @returns {Object}
  */
 async function createModeler(options = {}) {
   const modeler = new BpmnModeler({

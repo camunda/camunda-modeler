@@ -69,7 +69,7 @@ export default class Modal extends PureComponent {
 
     return ReactDOM.createPortal(
       <KeyboardInteractionTrap>
-        <div className="modal" tabIndex="-1" role="dialog">
+        <div className="modal" tabIndex={ -1 } role="dialog">
           <div className={ classNames('modal-dialog', className) } ref={ this.modalRef } role="document">
             <div className="modal-content">
               { children }
