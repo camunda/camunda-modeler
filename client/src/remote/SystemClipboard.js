@@ -26,4 +26,13 @@ export default class SystemClipboard {
     return this.backend.send('system-clipboard:write-text', options);
   }
 
+  /**
+   * Read text from system clipboard.
+   *
+   * @returns {Promise<string>} Clipboard text
+   */
+  readText() {
+    return this.backend.send('system-clipboard:read-text', {});
+  }
+
 }
