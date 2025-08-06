@@ -183,21 +183,18 @@ describe('<TabLinks>', function() {
       // then
       expect(tab1.exists()).to.be.true;
       expect(tab1.hasClass('tab--group')).to.be.true;
-      expect(tab1.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.exist;
+      expect(tab1.hasClass('tab-group-1')).to.be.true;
 
       expect(tab2.exists()).to.be.true;
       expect(tab2.hasClass('tab--group')).to.be.true;
-      expect(tab2.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.exist;
-      expect(tab2.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.equal(tab1.getDOMNode().style.getPropertyValue('--tab-line-group-background-color'));
+      expect(tab2.hasClass('tab-group-1')).to.be.true;
 
       expect(tab3.exists()).to.be.true;
       expect(tab3.hasClass('tab--group')).to.be.true;
-      expect(tab3.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.exist;
-      expect(tab3.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).not.to.equal(tab1.getDOMNode().style.getPropertyValue('--tab-line-group-background-color'));
+      expect(tab3.hasClass('tab-group-2')).to.be.true;
 
       expect(tab4.exists()).to.be.true;
       expect(tab4.hasClass('tab--group')).to.be.false;
-      expect(tab4.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.equal('');
     });
 
   });

@@ -34,6 +34,7 @@ export default function ProcessApplicationsStatusBar(props) {
     onRevealInFileExplorer,
     processApplication,
     processApplicationItems,
+    tabGroup,
     tabsProvider
   } = props;
 
@@ -60,7 +61,7 @@ export default function ProcessApplicationsStatusBar(props) {
       </button>
     </Fill>
     {
-      isOpen && <Overlay className={ css.ProcessApplicationsOverlay } id="process-application-overlay" anchor={ ref.current } onClose={ () => setIsOpen(false) }>
+      isOpen && <Overlay className={ classnames(css.ProcessApplicationsOverlay, tabGroup?.className) } id="process-application-overlay" anchor={ ref.current } onClose={ () => setIsOpen(false) }>
         <Section>
           <Section.Header>
             Process application

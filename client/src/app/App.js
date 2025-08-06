@@ -155,7 +155,7 @@ export class App extends PureComponent {
   }
 
   /**
-   * Set group for tab.
+   * Set group for tab. Also sets the className for the tab group to be used for styling.
    *
    * @param {string} id ID of the tab
    * @param {string} group Group name
@@ -168,12 +168,26 @@ export class App extends PureComponent {
     }
 
     this.setState(({ tabGroups }) => {
-      return {
-        tabGroups: {
-          ...tabGroups,
-          [ id ]: group
-        }
+      const newTabGroup = {
+        group
       };
+
+      const newTabGroups = {
+        ...tabGroups,
+        [id]: newTabGroup
+      };
+
+      for (const tabGroup of Object.values(newTabGroups)) {
+        tabGroup.className = getTabGroupClassName(tabGroup, newTabGroups);
+      }
+
+      return {
+        tabGroups: newTabGroups
+      };
+    }, () => {
+      this.emit('app.tabGroupsChanged', {
+        tabGroups: this.state.tabGroups
+      });
     });
   }
 
@@ -2557,4 +2571,22 @@ function getProcessor(type) {
   }
 
   return null;
+}
+
+function getTabGroupClassName(tabGroup, tabGroups) {
+  const index = Object.values(tabGroups).findIndex(({ group }) => group === tabGroup.group);
+
+  if (index === -1) {
+
+    // if the group is not found, we do not assign a color
+    return null;
+  }
+
+  if (index > 4) {
+
+    // if there are more than 5 groups, we do not assign a color
+    return null;
+  }
+
+  return `tab-group-${index}`;
 }
