@@ -31,7 +31,8 @@ export default function TestTab(props) {
     backend,
     config,
     file,
-    injector
+    injector,
+    engineProfile
   } = props;
 
   const [ zeebeClient, setZeebeClient ] = useState(null);
@@ -49,9 +50,12 @@ export default function TestTab(props) {
     setDeployment(deployment);
   }, []);
 
-  const handleSave = () => {
-    onAction('save');
-  };
+  const supportedByRuntime = useMemo(() => {
+    return engineProfile &&
+      engineProfile.executionPlatform === ENGINES.CLOUD &&
+      engineProfile.executionPlatformVersion > '8.6.0';
+  }, [ engineProfile ]);
+
 
   const handleToggle = () => {
     const { panel = {} } = layout;
@@ -111,9 +115,15 @@ export default function TestTab(props) {
       id="test"
       label="Test"
       layout={ layout }
-      priority={ 10 }>
-      <div>
-        <TaskTesting
+      priority={ 4 }>
+      {!supportedByRuntime && <div style={ { padding: 10 } }>
+        <p>
+          Task testing is not supported by the current engine version.
+          <br />
+          Please use Camunda Cloud 8.7.0 or later.
+        </p>
+      </div>}
+      {supportedByRuntime && <TaskTesting
           deploy={ deploy }
           startInstance={ startInstance }
           getInstance={ getInstance }
