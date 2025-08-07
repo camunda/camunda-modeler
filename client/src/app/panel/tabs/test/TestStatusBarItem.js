@@ -16,8 +16,6 @@ import { Fill } from '../../../slot-fill';
 
 import Icon from '../../../../../resources/icons/Chemistry.svg';
 
-import * as css from './TestStatusBarItem.less';
-
 
 export default function TestStatusBarItem(props) {
   const {
@@ -30,14 +28,13 @@ export default function TestStatusBarItem(props) {
   return <Fill slot="status-bar__file" group="9_aaa_test">
     <button
       className={ classnames(
-        css.TestStatusBarItem,
         'btn',
         {
           'btn--active': panel.open && panel.tab === 'test'
         }
       ) }
       onClick={ onToggle }
-      title="Toggle test view"
+      title="Toggle task testing"
     >
       <Icon width="16" height="16" viewBox="0 0 32 32" />
     </button>
