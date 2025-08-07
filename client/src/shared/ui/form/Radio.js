@@ -13,7 +13,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 export default function Radio(props) {
-
+  console.log(props);
   const {
     hint,
     label,
@@ -42,7 +42,7 @@ export default function Radio(props) {
         <div className="form-check-inline">
           {
             values.map((child) => {
-              const id = 'radio-element-' + toKebabCase(child.label);
+              const id = `radio-element-${fieldName}-${toKebabCase(child.label)}`;
               return (
                 <React.Fragment key={ child.label }>
                   <div className={
