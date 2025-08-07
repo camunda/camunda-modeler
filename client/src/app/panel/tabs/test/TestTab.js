@@ -8,7 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+
+import { debounce } from 'min-dash';
 
 import TaskTesting from 'task-testing';
 
@@ -17,6 +19,8 @@ import { Fill } from '../../../slot-fill';
 import TestStatusBarItem from './TestStatusBarItem';
 
 import ZeebeAPI from '../../../../remote/ZeebeAPI';
+
+import { ENGINES } from '../../../../util/Engines';
 
 import {
   bootstrapDeployment,
@@ -38,6 +42,10 @@ export default function TestTab(props) {
   const [ zeebeClient, setZeebeClient ] = useState(null);
   const [ deployment, setDeployment ] = useState(null);
 
+  const [ testingConfig, setTestingConfig ] = useState({});
+
+  const path = file.path || file.name;
+
   useEffect(() => {
     if (zeebeClient) {
       return;
@@ -48,6 +56,18 @@ export default function TestTab(props) {
 
     const { deployment } = bootstrapDeployment(backend, config);
     setDeployment(deployment);
+  }, []);
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      const res = await config.get('taskTesting');
+
+      console.log('Fetched task testing config', res);
+
+      setTestingConfig(res);
+    };
+
+    fetchConfig();
   }, []);
 
   const supportedByRuntime = useMemo(() => {
@@ -65,6 +85,21 @@ export default function TestTab(props) {
     } else if (panel.tab === 'test') {
       onAction('close-panel');
     }
+  };
+
+  const handleSaveConfig = (value) => {
+
+    const newConfig = {
+      ...testingConfig,
+      [path]: value
+    };
+
+    const save = debounce(() => {
+      config.set('taskTesting', newConfig);
+    }, 1000);
+
+    save();
+    setTestingConfig(newConfig);
   };
 
   const deploy = async () => {
@@ -124,12 +159,12 @@ export default function TestTab(props) {
         </p>
       </div>}
       {supportedByRuntime && <TaskTesting
-          deploy={ deploy }
-          startInstance={ startInstance }
-          getInstance={ getInstance }
-          saveFile={ handleSave }
-          injector={ injector } />
-      </div>
+        deploy={ deploy }
+        startInstance={ startInstance }
+        getInstance={ getInstance }
+        config={ testingConfig[path] ?? {} }
+        saveConfig={ handleSaveConfig }
+        injector={ injector } />}
     </Fill>
     <TestStatusBarItem
       layout={ layout }
