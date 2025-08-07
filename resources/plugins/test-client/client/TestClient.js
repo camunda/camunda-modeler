@@ -137,11 +137,82 @@ export default class TestClient extends Component {
               { property: 'radio', oneOf: [ 'first', 'third' ] }
             ]
           }
+        },
+        'testClientPlugin.connections': {
+          type: 'array',
+          label: 'Connections',
+          description: 'Connections to Camunda 7 or Camunda 8',
+          documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
+          formConfig: {
+            placeholder: 'No connections',
+            addLabel: 'Add Connection',
+          },
+          childProperties:{
+            name:{
+              type: 'text',
+              label: 'Name',
+              default: 'My Connection'
+
+            },
+            url: {
+              type: 'text',
+              label: 'URL',
+              default: 'https://api.camunda.io',
+              documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/'
+            },
+            target: {
+              type: 'radio',
+              options: [
+                { value: 'camunda8-saas', label: 'Camunda 8 SaaS' },
+                { value: 'camunda8-sm', label: 'Camunda 8 SM' },
+                { value: 'camunda7', label: 'Camunda 7' },
+              ],
+              default: 'camunda8-sm',
+              label: 'Target',
+            },
+
+            auth: {
+              type: 'radio',
+              options: [
+                { value: 'none', label: 'None' },
+                { value: 'basic', label: 'Basic' },
+                { value: 'cookie', label: 'Cookie' },
+                { value: 'oauth2', label: 'OAuth 2.0' },
+              ],
+              default: 'none',
+              label: 'Auth',
+              condition:{
+                property: 'target',
+                equals: 'camunda8-sm'
+              }
+            },
+            username: {
+              type: 'text',
+              label: 'Username',
+              condition:{
+                allMatch:[
+                  { property: 'auth', oneOf: [ 'basic', 'cookie' ] },
+                  { property: 'target', equals:  'camunda8-sm' }
+                ]
+
+
+              }
+            },
+            password: {
+              type: 'text',
+              label: 'Password',
+              condition:{
+                property: 'auth',
+                oneOf: [ 'basic', 'cookie' ]
+              }
+            }
+          }
         }
       }
     };
 
     settings.register(pluginSettings);
+
 
     settings.subscribe('testClientPlugin.iconColor', ({ value }) => {
       this.setState({

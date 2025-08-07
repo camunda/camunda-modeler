@@ -19,6 +19,7 @@ import {
 import {
   Radio,
   Section,
+  Select,
   TextInput,
   ToggleSwitch
 } from '../../../shared/ui';
@@ -59,9 +60,11 @@ export default function DeploymentConfigForm(props) {
     renderHeader = null,
     renderSubmit = 'Submit',
     validateForm,
-    validateField
+    validateField,
+    connections
   } = props;
 
+  console.log(connections);
   const getFieldError = (meta, fieldName) => {
     return _getFieldError(fieldName) || (meta.touched && meta.error);
   };
@@ -82,40 +85,31 @@ export default function DeploymentConfigForm(props) {
                 {
                   renderHeader && (
                     <Section.Header className="form-header">
-                      { renderHeader }
+                      Select Connection
                     </Section.Header>
                   )
                 }
-                {
-                  renderDescription && (
-                    <Section.Body className="form-description">
-                      { renderDescription }
-                    </Section.Body>
-                  )
-                }
-                <Section.Body className="form-body">
-                  <fieldset className="fieldset">
-                    <div className="fields">
 
-                      <Field
-                        name="deployment.tenantId"
-                        component={ TextInput }
-                        label={ LABELS.TENANT_ID }
-                        hint="Optional"
-                      />
 
-                    </div>
-                  </fieldset>
-                  <Section.Actions>
-                    <button
-                      type="submit"
-                      className="btn btn-primary"
-                      disabled={ props.isSubmitting }
-                    >
-                      { renderSubmit }
-                    </button>
-                  </Section.Actions>
+                <Section.Body className="form-description">
+                  TODO Text: Select a connection for the current opened file.
+                  <br></br>
+                  <a href="https://docs.camunda.org/manual/latest/user-guide/tasklist/#connecting-to-a-process-engine">Manage Connections</a>
+
+
+                  <div className="form-group" style={ { marginTop:'16px' } }>
+                    <select name="connection" className="form-control">
+                      {connections.map(connection => (
+                        <option key={ connection.id } value={ connection.id }>
+                          {connection.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                 </Section.Body>
+
+
               </Section>
             </Form>
           );

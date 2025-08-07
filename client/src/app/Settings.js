@@ -21,6 +21,7 @@ import { Flags } from '../util';
  *
  * @property {string} id - unique identifier for the settings group
  * @property {string} title - title of the section on the settings page
+ * @property {string} [description] - description of the section on the settings page
  * @property {number} [order] - index of the section on the settings page
  * @property {Record<string, SettingsProperty>} properties - property key must be prefixed with
  * the group `id` e.g `bpmn.enabled`
@@ -31,7 +32,7 @@ import { Flags } from '../util';
  *
  * @typedef {Object} SettingsProperty
  *
- * @property {'text' | 'password' | 'boolean' | 'select' | 'radio'} type - one of the supported types
+ * @property {'text'| 'password' | 'boolean' | 'select' | 'radio' | 'array'} type - one of the supported types
  * @property {string} label - label on the settings page
  * @property {string} [hint] - hint/placeholder for input based fields
  * @property {string|boolean} [default] - the default value
