@@ -21,6 +21,7 @@ import { Flags } from '../util';
  *
  * @property {string} id - unique identifier for the settings group
  * @property {string} title - title of the section on the settings page
+ * @property {string} [description] - description of the section on the settings page
  * @property {number} [order] - index of the section on the settings page
  * @property {Record<string, SettingsProperty>} properties - property key must be prefixed with
  * the group `id` e.g `bpmn.enabled`

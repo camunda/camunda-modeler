@@ -10,6 +10,7 @@
 
 /* global sinon */
 
+
 import Deployment, {
   CONFIG_KEYS,
   DEFAULT_CREDENTIALS,
@@ -18,6 +19,7 @@ import Deployment, {
 } from '../Deployment';
 
 import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
+
 
 describe('Deployment', function() {
 
