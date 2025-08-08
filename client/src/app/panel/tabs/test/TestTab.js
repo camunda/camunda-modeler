@@ -60,7 +60,7 @@ export default function TestTab(props) {
 
   useEffect(() => {
     const fetchConfig = async () => {
-      const res = await config.get('taskTesting');
+      const res = await config.get('taskTesting') ?? {};
 
       console.log('Fetched task testing config', res);
 
@@ -106,7 +106,6 @@ export default function TestTab(props) {
 
     const deploymentConfig = await deployment.getConfigForFile(file);
 
-    // TODO: Validate deploymentConfig
     const deploymentResponse = await deployment.deploy({
       path: file.path,
       type: 'bpmn',
@@ -123,16 +122,22 @@ export default function TestTab(props) {
 
     const deploymentConfig = await deployment.getConfigForFile(file);
 
-    const startInstanceResult = await startInstance.startInstance(processId, {
-      ...deploymentConfig,
-      variables,
-      startInstructions: [
-        {
-          elementId
-        }
-      ],
-      withResult: false // withResult does not support start instructions
-    });
+    let startInstanceResult;
+    try {
+      startInstanceResult = await startInstance.startInstance(processId, {
+        ...deploymentConfig,
+        variables,
+        startInstructions: [
+          {
+            elementId
+          }
+        ],
+        withResult: false // withResult does not support start instructions
+      });
+    } catch (error) {
+      console.error('Failed to start instance:', error);
+      throw error;
+    }
 
     return startInstanceResult;
   };
@@ -142,6 +147,8 @@ export default function TestTab(props) {
     const deploymentConfig = await deployment.getConfigForFile(file);
 
     const getProcessInstanceResult = await zeebeClient.getProcessInstance(deploymentConfig.endpoint, processInstanceKey);
+
+    console.log('Fetched process instance:', getProcessInstanceResult);
     return getProcessInstanceResult;
   };
 
