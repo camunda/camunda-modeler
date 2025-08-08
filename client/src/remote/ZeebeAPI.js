@@ -70,7 +70,7 @@ export default class ZeebeAPI {
     return this._backend.send('zeebe:startInstance', {
       endpoint,
       processId,
-      tenantId: getTenantId(tenantId, endpoint),
+      tenantId,
       variables,
       startInstructions,
       withResult
