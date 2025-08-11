@@ -88,6 +88,7 @@ export default class Deployment extends EventEmitter {
    * @returns {Promise<DeploymentResult>}
    */
   async deploy(resourceConfigs, config) {
+    debugger
     resourceConfigs = Array.isArray(resourceConfigs) ? resourceConfigs : [ resourceConfigs ];
 
     const {
@@ -258,7 +259,16 @@ export default class Deployment extends EventEmitter {
    * @returns {Promise<string>}
    */
   async getGatewayVersion(endpoint) {
-    const { response } = await this._zeebeAPI.getGatewayVersion(endpoint);
+    const getGatewayVersionResult = await this._zeebeAPI.getGatewayVersion(endpoint);
+
+    const {
+      response,
+      success
+    } = getGatewayVersionResult;
+
+    if (!success) {
+      return null;
+    }
 
     const { gatewayVersion } = response;
 

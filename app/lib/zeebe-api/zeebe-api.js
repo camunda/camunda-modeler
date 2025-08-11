@@ -344,6 +344,125 @@ class ZeebeAPI {
     }
   }
 
+  /**
+   * Search process instances. Requires Camunda REST client.
+   */
+  async searchProcessInstances(config) {
+    const {
+      endpoint,
+      filter
+    } = config;
+
+    this._log.debug('search process instances', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.searchProcessInstances({
+        filter
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search process instances failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
+  /**
+   * Search variables. Requires Camunda REST client.
+   */
+  async searchVariables(config) {
+    const {
+      endpoint,
+      filter
+    } = config;
+
+    this._log.debug('search variables', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.searchVariables({
+        filter
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search variables failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
+  /**
+   * Search incidents. Requires Camunda REST client.
+   */
+  async searchIncidents(config) {
+    const {
+      endpoint,
+      filter
+    } = config;
+
+    this._log.debug('search incidents', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.searchIncidents({
+        filter
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search incidents failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
 
   /**
    * Get resources based on the provided configs and tenantId.

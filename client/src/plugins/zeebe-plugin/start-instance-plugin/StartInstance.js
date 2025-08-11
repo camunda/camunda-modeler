@@ -44,10 +44,13 @@ export default class StartInstance extends EventEmitter {
    * * @returns {Promise<StartInstanceResult>}
    */
   async startInstance(processId, config) {
+    debugger
     const {
       deployment,
       endpoint,
-      variables = '{}'
+      variables = '{}',
+      startInstructions = [],
+      withResult
     } = config;
 
     const { tenantId } = deployment;
@@ -56,7 +59,9 @@ export default class StartInstance extends EventEmitter {
       endpoint,
       processId,
       tenantId,
-      variables: parseVariables(variables)
+      variables: parseVariables(variables),
+      startInstructions,
+      withResult
     });
 
     this.emit('instanceStarted', {
@@ -64,7 +69,8 @@ export default class StartInstance extends EventEmitter {
       endpoint,
       processId,
       tenantId,
-      variables: parseVariables(variables)
+      variables: parseVariables(variables),
+      withResult
     });
 
     return startInstanceResult;
