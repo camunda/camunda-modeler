@@ -39,7 +39,7 @@ export default function TestTab(props) {
     engineProfile
   } = props;
 
-  const [ zeebeClient, setZeebeClient ] = useState(null);
+  const [ zeebeApi, setZeebeApi ] = useState(null);
   const [ deployment, setDeployment ] = useState(null);
 
   const [ testingConfig, setTestingConfig ] = useState({});
@@ -47,12 +47,8 @@ export default function TestTab(props) {
   const path = file.path || file.name;
 
   useEffect(() => {
-    if (zeebeClient) {
-      return;
-    }
-
     const zeebeAPI = new ZeebeAPI(backend);
-    setZeebeClient(zeebeAPI);
+    setZeebeApi(zeebeAPI);
 
     const { deployment } = bootstrapDeployment(backend, config);
     setDeployment(deployment);
@@ -146,9 +142,10 @@ export default function TestTab(props) {
 
     const deploymentConfig = await deployment.getConfigForFile(file);
 
-    const getProcessInstanceResult = await zeebeClient.getProcessInstance(deploymentConfig.endpoint, processInstanceKey);
+    const getProcessInstanceResult = await zeebeApi.getProcessInstance(deploymentConfig.endpoint, processInstanceKey);
 
     console.log('Fetched process instance:', getProcessInstanceResult);
+
     return getProcessInstanceResult;
   };
 

@@ -93,14 +93,6 @@ export default class ZeebeAPI {
       processInstanceKey
     });
   }
-
-  getCamunda8Client(endpoint) {
-    endpoint = getEndpointForTargetType(endpoint);
-
-    return this._backend.send('zeebe:getCamunda8Client', {
-      endpoint
-    });
-  }
 }
 
 /**
