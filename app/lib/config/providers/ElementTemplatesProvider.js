@@ -18,6 +18,9 @@ const { globFiles, toPosixPath } = require('../../util/files');
 
 const log = require('../../log')('app:config:element-templates');
 
+/**
+ * @typedef {import('../../template-updater/types').Template} Template
+ */
 
 /**
  * Get element templates.
