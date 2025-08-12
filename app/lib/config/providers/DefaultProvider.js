@@ -69,7 +69,7 @@ class DefaultProvider {
   /**
    * Set a configuration value by key.
    *
-   * @param {string} keys
+   * @param {string} key
    * @param {*} value
    */
   set(key, value) {
