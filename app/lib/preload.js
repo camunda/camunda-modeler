@@ -105,7 +105,7 @@ function createBackend(ipcRenderer, platform) {
      * @param {string} event
      * @param {...any} args
      *
-     * @return {Promise<any>}
+     * @return {Promise<any>|string}
      */
   function send(event, ...args) {
     if (!allowedEvents.includes(event)) {

@@ -77,7 +77,7 @@ export async function getEngineProfile(contents, resourceType) {
  * @param {String} elementType
  * @param {String} diagramType
  *
- * @return {Array<Object>} a list of elements matching the type
+ * @return {Promise<Array<Object>>} a list of elements matching the type
  */
 export async function getAllElementsByType(xml, elementType, diagramType) {
   const definitions = await getBpmnDefinitions(xml, diagramType);

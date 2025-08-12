@@ -684,7 +684,7 @@ function createWaitForEvent(fileContext) {
 }
 
 function waitFor(fn) {
-  return new Promise((resolve) => {
+  return /** @type {Promise<void>} */(new Promise((resolve) => {
 
     // set up interval to check condition every 100ms and resolve once condition is met
     const interval = setInterval(() => {
@@ -694,7 +694,7 @@ function waitFor(fn) {
         resolve();
       }
     }, 100);
-  });
+  }));
 };
 
 function expectRootsLength(fileContext, length) {
