@@ -102,7 +102,7 @@
     "karma-webpack": "^5.0.1",
     "less": "^4.0.0",
     "less-loader": "^12.2.0",
-    "license-webpack-plugin": "^2.1.1",
+    "license-webpack-plugin": "^4.0.0",
     "mocha": "^10.8.2",
     "mocha-test-container-support": "0.2.0",
     "monaco-editor-webpack-plugin": "^7.1.0",
