@@ -6,6 +6,15 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.38.1
+
+* `DEPS`: update to `@camunda/linting@3.40.1`
+
+### General
+
+* `FIX`: revert inclusion of camunda builtin extensions due to performance issues ([camunda/bpmnlint-plugin-camunda-compat#215](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/215))
+* `FIX`: make `priority-definition` rule handle number value ([camunda/bpmnlint-plugin-camunda-compat#213](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/213))
+
 ## 5.38.0
 
 ### General
