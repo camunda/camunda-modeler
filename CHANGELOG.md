@@ -9,11 +9,13 @@ ___Note:__ Yet to be released changes appear here._
 ## 5.38.1
 
 * `DEPS`: update to `@camunda/linting@3.40.1`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.31.1`
 
 ### General
 
 * `FIX`: revert inclusion of camunda builtin extensions due to performance issues ([camunda/bpmnlint-plugin-camunda-compat#215](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/215))
 * `FIX`: make `priority-definition` rule handle number value ([camunda/bpmnlint-plugin-camunda-compat#213](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/213))
+* `FIX`: template select button is now always visible ([bpmn-io/properties-panel#436](https://github.com/bpmn-io/properties-panel/pull/436))
 
 ## 5.38.0
 
