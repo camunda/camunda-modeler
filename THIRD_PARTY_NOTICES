@@ -208,7 +208,7 @@ This project incorporates components from the projects listed below. The origina
 201.  @camunda/form-playground@0.22.0 (git+https://github.com/camunda/form-playground.git)
 202.  camunda-bpmn-js@5.11.0 (https://github.com/camunda/camunda-bpmn-js)
 203.  camunda-dmn-js@3.4.0 (https://github.com/camunda/camunda-dmn-js)
-204.  @camunda/linting@3.40.0 (https://github.com/camunda/linting)
+204.  @camunda/linting@3.40.1 (https://github.com/camunda/linting)
 205.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
 206.  min-dash@4.2.2 (git+https://github.com/bpmn-io/min-dash.git)
 207.  react@16.14.0 (git+https://github.com/facebook/react.git)
@@ -270,7 +270,7 @@ This project incorporates components from the projects listed below. The origina
 263.  window-or-global@1.0.1 (purposeindustries/window-or-global)
 264.  invariant@2.2.4 (https://github.com/zertosh/invariant)
 265.  @carbon/layout@11.30.2 (https://github.com/carbon-design-system/carbon.git)
-266.  @bpmn-io/properties-panel@3.31.0 (git+https://github.com/bpmn-io/properties-panel.git)
+266.  @bpmn-io/properties-panel@3.31.1 (git+https://github.com/bpmn-io/properties-panel.git)
 267.  preact-hooks@0.1.0
 268.  preact@10.19.3 (preactjs/preact)
 269.  preact-compat@4.0.0
@@ -278,7 +278,7 @@ This project incorporates components from the projects listed below. The origina
 271.  feelers@1.4.0
 272.  feelin@3.2.0 (https://github.com/nikku/feelin)
 273.  luxon@3.5.0 (https://github.com/moment/luxon)
-274.  lezer-feel@1.7.0 (https://github.com/nikku/lezer-feel.git)
+274.  lezer-feel@1.8.1 (https://github.com/nikku/lezer-feel.git)
 275.  @lezer/markdown@1.3.0 (https://github.com/lezer-parser/markdown.git)
 276.  @bpmn-io/feel-lint@1.4.0 (git+https://github.com/bpmn-io/feel-lint.git)
 277.  @bpmn-io/cm-theme@0.1.0-alpha.2
@@ -321,7 +321,7 @@ This project incorporates components from the projects listed below. The origina
 314.  sourcemapped-stacktrace@1.1.11 (http://github.com/novocaine/sourcemapped-stacktrace)
 315.  @bpmn-io/replace-ids@0.2.0 (git+https://github.com/bpmn-io/replace-ids.git)
 316.  bpmnlint@11.6.0 (https://github.com/bpmn-io/bpmnlint)
-317.  bpmnlint-plugin-camunda-compat@2.39.0 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
+317.  bpmnlint-plugin-camunda-compat@2.39.2 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 318.  bpmnlint-utils@1.1.1 (https://github.com/bpmn-io/bpmnlint-utils)
 319.  @bpmn-io/moddle-utils@0.2.1 (https://github.com/bpmn-io/moddle-utils)
 320.  @camunda/form-linting@0.23.0
@@ -13589,7 +13589,7 @@ THE SOFTWARE.
 END OF camunda-dmn-js@3.4.0 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@3.40.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@3.40.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -13613,7 +13613,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/linting@3.40.0 NOTICES AND INFORMATION
+END OF @camunda/linting@3.40.1 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.4.1 NOTICES AND INFORMATION BEGIN HERE
@@ -16251,7 +16251,7 @@ END OF invariant@2.2.4 NOTICES AND INFORMATION
 END OF @carbon/layout@11.30.2 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/properties-panel@3.31.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/properties-panel@3.31.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16275,7 +16275,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/properties-panel@3.31.0 NOTICES AND INFORMATION
+END OF @bpmn-io/properties-panel@3.31.1 NOTICES AND INFORMATION
 
 
 %% preact-hooks@0.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16454,7 +16454,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF luxon@3.5.0 NOTICES AND INFORMATION
 
 
-%% lezer-feel@1.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% lezer-feel@1.8.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -16479,7 +16479,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF lezer-feel@1.7.0 NOTICES AND INFORMATION
+END OF lezer-feel@1.8.1 NOTICES AND INFORMATION
 
 
 %% @lezer/markdown@1.3.0 NOTICES AND INFORMATION BEGIN HERE
@@ -17805,7 +17805,7 @@ THE SOFTWARE.
 END OF bpmnlint@11.6.0 NOTICES AND INFORMATION
 
 
-%% bpmnlint-plugin-camunda-compat@2.39.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint-plugin-camunda-compat@2.39.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17829,7 +17829,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint-plugin-camunda-compat@2.39.0 NOTICES AND INFORMATION
+END OF bpmnlint-plugin-camunda-compat@2.39.2 NOTICES AND INFORMATION
 
 
 %% bpmnlint-utils@1.1.1 NOTICES AND INFORMATION BEGIN HERE
