@@ -16,6 +16,8 @@
 
 import React, { useEffect, useState } from 'react';
 
+import classnames from 'classnames';
+
 import { Overlay } from '../../../shared/ui';
 
 import { default as DefaultDeploymentConfigForm } from '../deployment-plugin/DeploymentConfigForm';
@@ -45,6 +47,7 @@ export default function StartInstancePluginOverlay(props) {
   const {
     activeTab,
     anchor,
+    className,
     connectionChecker,
     deployment,
     DeploymentConfigForm = DefaultDeploymentConfigForm,
@@ -260,7 +263,7 @@ export default function StartInstancePluginOverlay(props) {
   }, [ deployment, triggerAction ]);
 
   return (
-    <Overlay className={ css.StartInstancePluginOverlay } onClose={ onClose } anchor={ anchor }>
+    <Overlay className={ classnames(css.StartInstancePluginOverlay, className) } onClose={ onClose } anchor={ anchor }>
       { deploymentConfig && startInstanceConfig
         ? (
           showDeploymentConfigForm
