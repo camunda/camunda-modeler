@@ -30,7 +30,7 @@ jobs:
         secrets: |
           secret/data/common/jenkins/downloads-camunda-cloud_google_sa_key DOWNLOAD_CENTER_GCLOUD_KEY_BYTES | GCP_CREDENTIALS_NAME;
     - name: Upload artifacts to Camunda Download Center
-      uses: camunda/infra-global-github-actions/download-center-upload@a193fa2e90d560987b9303c57f1607bf172b720c
+      uses: camunda/infra-global-github-actions/download-center-upload@cf396e9ae873612d4f4d6b31dc6a506f970bf8b6
       with:
         gcp_credentials: ${{ steps.secrets.outputs.GCP_CREDENTIALS_NAME }}
         env: 'prod'
