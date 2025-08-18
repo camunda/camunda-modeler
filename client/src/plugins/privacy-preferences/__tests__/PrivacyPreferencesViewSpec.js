@@ -185,6 +185,31 @@ describe('<PrivacyPreferencesView>', function() {
       });
     });
 
+
+    it('should respect saved preferences even for new installations', function() {
+
+      // given - mixed preferences for a user who initially accepted some but not all
+      const mixedPreferences = {
+        ENABLE_CRASH_REPORTS: false,
+        ENABLE_USAGE_STATISTICS: true,
+        ENABLE_UPDATE_CHECKS: false
+      };
+
+      // when - even if this were a new installation, saved preferences take precedence
+      const wrapper = mount(
+        <PrivacyPreferencesView
+          preferences={ mixedPreferences }
+          isInitialPreferences={ true } />
+      );
+
+      const checkboxes = wrapper.find(PRIVACY_PREFERENCES_SELECTOR).find('input');
+
+      // then - should use the saved preferences, not the new installation defaults
+      expect(checkboxes.at(0).props().defaultChecked).to.be.eql(false); // ENABLE_CRASH_REPORTS
+      expect(checkboxes.at(1).props().defaultChecked).to.be.eql(true); // ENABLE_USAGE_STATISTICS
+      expect(checkboxes.at(2).props().defaultChecked).to.be.eql(false); // ENABLE_UPDATE_CHECKS
+    });
+
     it('should not set autofocus', async function() {
 
       // given
