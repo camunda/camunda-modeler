@@ -161,6 +161,20 @@ describe('<PrivacyPreferencesView>', function() {
     });
 
 
+    it('should use opt-in default values when manually opened from settings', function() {
+
+      // when
+      const wrapper = mount(<PrivacyPreferencesView isInitialPreferences={ false } />);
+
+      const checkboxes = wrapper.find(PRIVACY_PREFERENCES_SELECTOR).find('input');
+
+      // then
+      checkboxes.forEach(function(checkbox, index) {
+        expect(checkbox.props().defaultChecked).to.be.eql(false);
+      });
+    });
+
+
     it('should load privacy preferences', function() {
 
       // given
