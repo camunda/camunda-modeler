@@ -27,7 +27,8 @@ import {
   OK_BUTTON_TEXT,
   CANCEL_BUTTON_TEXT,
   TITLE,
-  DEFAULT_VALUES
+  DEFAULT_VALUES,
+  DEFAULT_VALUES_NEW_INSTALLATION
 } from './constants';
 
 class PrivacyPreferencesView extends PureComponent {
@@ -39,11 +40,14 @@ class PrivacyPreferencesView extends PureComponent {
 
   isEnabled = (key) => {
     const {
-      preferences
+      preferences,
+      isInitialPreferences
     } = this.props;
 
     if (!preferences) {
-      return DEFAULT_VALUES[key];
+      return isInitialPreferences ?
+        DEFAULT_VALUES_NEW_INSTALLATION[key] :
+        DEFAULT_VALUES[key];
     }
 
     return preferences[key];

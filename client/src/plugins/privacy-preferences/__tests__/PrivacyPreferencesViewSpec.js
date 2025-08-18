@@ -133,7 +133,7 @@ describe('<PrivacyPreferencesView>', function() {
 
   describe('functionality', function() {
 
-    it('should use default values if preferences empty', function() {
+    it('should use default values if preferences empty (existing installation)', function() {
 
       // when
       const wrapper = mount(<PrivacyPreferencesView />);
@@ -143,6 +143,20 @@ describe('<PrivacyPreferencesView>', function() {
       // then
       checkboxes.forEach(function(checkbox, index) {
         expect(checkbox.props().defaultChecked).to.be.eql(false);
+      });
+    });
+
+
+    it('should use opt-out default values for new installations', function() {
+
+      // when
+      const wrapper = mount(<PrivacyPreferencesView isInitialPreferences={ true } />);
+
+      const checkboxes = wrapper.find(PRIVACY_PREFERENCES_SELECTOR).find('input');
+
+      // then
+      checkboxes.forEach(function(checkbox, index) {
+        expect(checkbox.props().defaultChecked).to.be.eql(true);
       });
     });
 
