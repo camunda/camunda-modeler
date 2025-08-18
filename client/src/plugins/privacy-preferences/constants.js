@@ -28,6 +28,12 @@ export const DEFAULT_VALUES = {
   ENABLE_UPDATE_CHECKS: false
 };
 
+export const DEFAULT_VALUES_NEW_INSTALLATION = {
+  ENABLE_CRASH_REPORTS: true,
+  ENABLE_USAGE_STATISTICS: true,
+  ENABLE_UPDATE_CHECKS: true
+};
+
 export const PREFERENCES_LIST = [
   {
     title: 'Enable Error Reports',
