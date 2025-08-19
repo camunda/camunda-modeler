@@ -48,6 +48,10 @@ export function getOperateUrl(endpoint) {
 /**
   * Get cluster ID from cluster URL.
   *
+  * supported formats:
+  * https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443
+  * https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  *
   * @example
   *
   * ```javascript
@@ -70,6 +74,10 @@ function getClusterId(clusterURL) {
 /**
  * Get cluster region from cluster URL.
  *
+ * supported formats:
+ * https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443
+ * https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ *
  * @example
  *
  * ```javascript
@@ -83,7 +91,7 @@ function getClusterId(clusterURL) {
  * @returns {string} clusterRegion
  */
 function getClusterRegion(clusterURL) {
-  const matches = clusterURL.match(/(?<=\.)[a-z]+-[\d]+/g);
+  const matches = clusterURL.match(/(?:(?<=\.)|(?<=:\/\/))[a-z]+-\d+(?=\.)/g);
 
   return matches ? matches[0] : null;
 }
@@ -235,9 +243,9 @@ export const DEPLOYMENT_TYPES = {
 };
 
 function getDeploymentType(deployment) {
-  if (deployment.process) {
+  if (deployment.process || deployment.processDefinition) {
     return DEPLOYMENT_TYPES.PROCESS;
-  } else if (deployment.decision) {
+  } else if (deployment.decision || deployment.decisionDefinition) {
     return DEPLOYMENT_TYPES.DECISION;
   } else if (deployment.decisionRequirements) {
     return DEPLOYMENT_TYPES.DECISION_REQUIREMENTS;

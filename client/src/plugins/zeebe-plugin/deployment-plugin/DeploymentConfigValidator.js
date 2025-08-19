@@ -158,6 +158,8 @@ export default class DeploymentConfigValidator {
  * @example
  *
  * ```javascript
+ * validateClusterUrl('https://region-1.zeebe.camunda.io/cluster-name', validationErrorMessage); // null
+ * validateClusterUrl('http://region-1.zeebe.camunda.io/cluster-name', validationErrorMessage); // validationErrorMessage
  * validateClusterUrl('https://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // null
  * validateClusterUrl('http://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // validationErrorMessage
  * validateClusterUrl('grpcs://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // null
@@ -171,7 +173,7 @@ export default class DeploymentConfigValidator {
  * @returns {string|null}
  */
 function validateClusterUrl(url, validationErrorMessage) {
-  if (!/^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url)) {
+  if (!/^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url) && !/^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?/.test(url)) {
     return validationErrorMessage;
   }
 

@@ -18,3 +18,9 @@ module.exports.ENDPOINT_TYPES = {
   SELF_HOSTED: 'selfHosted',
   CAMUNDA_CLOUD: 'camundaCloud'
 };
+
+module.exports.RESOURCE_TYPES = {
+  BPMN: 'bpmn',
+  DMN: 'dmn',
+  FORM: 'form'
+};
