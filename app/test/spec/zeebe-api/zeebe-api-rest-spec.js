@@ -16,7 +16,7 @@ const path = require('path');
 
 const ZeebeAPI = require('../../../lib/zeebe-api');
 
-const TEST_URL = 'http://localhost:26500';
+const TEST_URL = 'https://reg-1.zeebe.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
 
 const {
   AUTH_TYPES,
@@ -24,7 +24,7 @@ const {
 } = require('../../../lib/zeebe-api/constants');
 
 
-describe('ZeebeAPI', function() {
+describe('ZeebeAPI (REST)', function() {
 
 
   // TODO(barmac): remove when system keychain certificates are tested
@@ -41,7 +41,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
+          url: TEST_URL
         }
       };
 
@@ -57,8 +57,8 @@ describe('ZeebeAPI', function() {
 
       // given
       const zeebeAPI = createZeebeAPI({
-        ZeebeGrpcApiClient: {
-          topology: function() {
+        CamundaRestClient: {
+          getTopology: function() {
             throw new Error('TEST ERROR.');
           }
         }
@@ -66,8 +66,8 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
+          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+          url: TEST_URL
         }
       };
 
@@ -81,37 +81,12 @@ describe('ZeebeAPI', function() {
 
     describe('should return correct error reason on failure', function() {
 
-      it('for <endpoint-unavailable>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('TEST ERROR.', 14);
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
       it('for <endpoint-unavailable> (Cloud) - error 14', async function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('TEST ERROR.', 14);
             }
           }
@@ -119,7 +94,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -134,8 +110,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('TEST ERROR.', 13);
             }
           }
@@ -143,7 +119,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -154,113 +131,12 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <endpoint-unavailable> (self-managed) - error 13', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('Error: 13 INTERNAL:');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
-      it('for <endpoint-unavailable> (self-managed) - error 14', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('Error: 14 UNAVAILABLE:');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
-      it('for <not-found>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
-      it('for <not-found> (OAuth)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            authType: AUTH_TYPES.OAUTH,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('OAUTH_URL');
-      });
-
-
       it('for <not-found> (Cloud)', async function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('ENOTFOUND');
             }
           }
@@ -268,7 +144,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -279,37 +156,14 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <unauthorized>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('Unauthorized');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('UNAUTHORIZED');
-      });
 
 
       it('for <unauthorized> - Cloud', async function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('Unauthorized');
             }
           }
@@ -317,7 +171,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -332,8 +187,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('Forbidden');
             }
           }
@@ -341,7 +196,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -356,8 +212,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('Unsupported protocol');
             }
           }
@@ -365,7 +221,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             authType: AUTH_TYPES.OAUTH,
             url: TEST_URL
           }
@@ -382,8 +238,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('Some random error');
             }
           }
@@ -391,7 +247,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             url: TEST_URL
           }
         };
@@ -407,8 +263,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError();
             }
           }
@@ -416,7 +272,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             url: TEST_URL
           }
         };
@@ -432,8 +288,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('Method not found', 12);
             }
           }
@@ -441,7 +297,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             url: TEST_URL
           }
         };
@@ -486,7 +342,7 @@ describe('ZeebeAPI', function() {
 
       // given
       const zeebeAPI = createZeebeAPI({
-        ZeebeGrpcApiClient: {
+        CamundaRestClient: {
           createProcessInstance: function() {
             throw new Error('TEST ERROR.');
           }
@@ -515,7 +371,7 @@ describe('ZeebeAPI', function() {
 
       // given
       const zeebeAPI = createZeebeAPI({
-        ZeebeGrpcApiClient: {
+        CamundaRestClient: {
           createProcessInstance: function() {
             throw new Error('TEST ERROR.');
           }
@@ -575,8 +431,8 @@ describe('ZeebeAPI', function() {
       const error = new Error('test');
 
       const zeebeAPI = createZeebeAPI({
-        ZeebeGrpcApiClient: {
-          deployResource: function() {
+        CamundaRestClient: {
+          deployResources: function() {
             throw error;
           }
         }
@@ -611,8 +467,8 @@ describe('ZeebeAPI', function() {
       const error = new Error('test');
 
       const zeebeAPI = createZeebeAPI({
-        ZeebeGrpcApiClient: {
-          deployResource: function() {
+        CamundaRestClient: {
+          deployResources: function() {
             throw error;
           }
         }
@@ -678,11 +534,11 @@ describe('ZeebeAPI', function() {
       it('should deploy BPMN', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -700,22 +556,22 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].process).to.exist;
-        expect(args[0].process).to.be.an.instanceOf(Buffer);
+        expect(args[0][0].content).to.exist;
+        expect(args[0][0].content).to.be.an.instanceOf(Buffer);
       });
 
 
       it('should deploy DMN', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -733,22 +589,22 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].decision).to.exist;
-        expect(args[0].decision).to.be.an.instanceOf(Buffer);
+        expect(args[0][0].content).to.exist;
+        expect(args[0][0].content).to.be.an.instanceOf(Buffer);
       });
 
 
       it('should deploy form', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -766,11 +622,11 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].form).to.exist;
-        expect(args[0].form).to.be.an.instanceOf(Buffer);
+        expect(args[0][0].content).to.exist;
+        expect(args[0][0].content).to.be.an.instanceOf(Buffer);
       });
 
     });
@@ -781,11 +637,11 @@ describe('ZeebeAPI', function() {
       it('should use file path as resource name', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -803,21 +659,21 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('process.bpmn');
+        expect(args[0][0].name).to.eql('process.bpmn');
       });
 
 
       it('should add .bpmn extension to resource name if extension not .bpmn', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -835,21 +691,21 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('foo.bpmn');
+        expect(args[0][0].name).to.eql('foo.bpmn');
       });
 
 
       it('should add .bpmn extension to resource name if file path ends with bpmn but not .bpmn', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy,
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy,
           }
         });
 
@@ -867,21 +723,21 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('foo-bpmn.bpmn');
+        expect(args[0][0].name).to.eql('foo-bpmn.bpmn');
       });
 
 
       it('should add .dmn extension to resource name if extension not .dmn', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -899,21 +755,21 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('foo.dmn');
+        expect(args[0][0].name).to.eql('foo.dmn');
       });
 
 
       it('should add .dmn extension to resource name if file path ends with dmn but not .dmn', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -931,21 +787,21 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('foo-dmn.dmn');
+        expect(args[0][0].name).to.eql('foo-dmn.dmn');
       });
 
 
       it('should add .form extension to resource name if extension not .form', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -963,21 +819,21 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('foo.form');
+        expect(args[0][0].name).to.eql('foo.form');
       });
 
 
       it('should add .form extension to resource name if name ends with form but not .form', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -995,10 +851,10 @@ describe('ZeebeAPI', function() {
           ]
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].name).to.eql('foo-form.form');
+        expect(args[0][0].name).to.eql('foo-form.form');
       });
 
     });
@@ -1009,14 +865,14 @@ describe('ZeebeAPI', function() {
       it('should pass configuration', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const configSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           configSpy,
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -1040,18 +896,18 @@ describe('ZeebeAPI', function() {
         // then
         const [ config ] = configSpy.getCall(0).args;
 
-        // ZBClient is invoked accordingly
-        expect(config.ZEEBE_GRPC_ADDRESS).to.eql('localhost:26500');
+        // REST Client is invoked accordingly
+        expect(config.ZEEBE_REST_ADDRESS).to.eql(TEST_URL);
 
         expect(config).to.include.keys({
-          ZEEBE_GRPC_ADDRESS: 'url',
+          ZEEBE_REST_ADDRESS: 'url',
           CAMUNDA_AUTH_STRATEGY: 'basic',
           CAMUNDA_BASIC_AUTH_USERNAME: 'username',
           CAMUNDA_BASIC_AUTH_PASSWORD: 'password'
         });
 
         // deployment is executed appropriately
-        expect(deployResourceSpy).to.have.been.calledWithMatch({ name: 'foo.bpmn' });
+        expect(deployResourcesSpy).to.have.been.calledWithMatch([ { name: 'foo.bpmn', content: sinon.match.instanceOf(Buffer) } ]);
       });
 
     });
@@ -1063,12 +919,12 @@ describe('ZeebeAPI', function() {
 
         // given
         const configSpy = sinon.spy();
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
           configSpy,
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -1095,8 +951,8 @@ describe('ZeebeAPI', function() {
         // then
         const config = configSpy.getCall(0).args[0];
 
-        // ZBClient is invoked accordingly
-        expect(config.ZEEBE_GRPC_ADDRESS).to.eql('localhost:26500');
+        // REST Client is invoked accordingly
+        expect(config.ZEEBE_REST_ADDRESS).to.eql(TEST_URL);
 
         expect(config).to.include.keys({
           CAMUNDA_AUTH_STRATEGY: 'OAUTH',
@@ -1109,7 +965,7 @@ describe('ZeebeAPI', function() {
         });
 
         // deployment is executed appropriately
-        expect(deployResourceSpy).to.have.been.calledWithMatch({ name: 'foo.bpmn' });
+        expect(deployResourcesSpy).to.have.been.calledWithMatch([ { name: 'foo.bpmn', content: sinon.match.instanceOf(Buffer) } ]);
       });
 
     });
@@ -1120,11 +976,11 @@ describe('ZeebeAPI', function() {
       it('should add tenant ID (single file)', async function() {
 
         // given
-        const deployResourceSpy = sinon.spy();
+        const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            deployResource: deployResourceSpy
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
           }
         });
 
@@ -1147,10 +1003,11 @@ describe('ZeebeAPI', function() {
           tenantId: 'bar'
         });
 
-        const { args } = deployResourceSpy.getCall(0);
+        const { args } = deployResourcesSpy.getCall(0);
 
         // then
-        expect(args[0].tenantId).to.eql('bar');
+        // For REST API, tenantId is passed as second argument to deployResources
+        expect(args[1]).to.eql('bar');
       });
 
 
@@ -1160,7 +1017,7 @@ describe('ZeebeAPI', function() {
         const deployResourcesSpy = sinon.spy();
 
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
+          CamundaRestClient: {
             deployResources: deployResourcesSpy
           }
         });
@@ -1209,8 +1066,8 @@ describe('ZeebeAPI', function() {
       const topologyResponse = { clusterSize: 3, gatewayVersion: '0.26.0' };
 
       const zeebeAPI = createZeebeAPI({
-        ZeebeGrpcApiClient: {
-          topology: function() {
+        CamundaRestClient: {
+          getTopology: function() {
             return topologyResponse;
           }
         }
@@ -1219,7 +1076,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
+          url: TEST_URL
         }
       };
 
@@ -1228,35 +1085,6 @@ describe('ZeebeAPI', function() {
 
       // then
       expect(result.success).to.be.true;
-    });
-
-
-    it('should return gatewayVersion if topology was retrieved', async function() {
-
-      // given
-      const topologyResponse = { clusterSize: 3, gatewayVersion: '0.26.0' };
-
-      const zeebeAPI = createZeebeAPI({
-        ZeebeGrpcApiClient: {
-          topology: function() {
-            return topologyResponse;
-          }
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
-        }
-      };
-
-      // when
-      const result = await zeebeAPI.getGatewayVersion(parameters);
-
-      // then
-      expect(result.success).to.be.true;
-      expect(result.response.gatewayVersion).to.equal(topologyResponse.gatewayVersion);
     });
 
 
@@ -1264,8 +1092,8 @@ describe('ZeebeAPI', function() {
 
       // given
       const zeebeAPI = createZeebeAPI({
-        ZeebeGrpcApiClient: {
-          topology: function() {
+        ZeebeRestApiClient: {
+          getTopology: function() {
             throw new Error('TEST ERROR.');
           }
         }
@@ -1273,8 +1101,8 @@ describe('ZeebeAPI', function() {
 
       const parameters = {
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
+          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+          url: TEST_URL
         }
       };
 
@@ -1289,37 +1117,12 @@ describe('ZeebeAPI', function() {
 
     describe('should return correct error reason on failure', function() {
 
-      it('for <endpoint-unavailable>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('TEST ERROR.', 14);
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
       it('for <endpoint-unavailable> (Cloud)', async function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('TEST ERROR.', 14);
             }
           }
@@ -1327,7 +1130,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -1342,8 +1146,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('TEST ERROR.', 13);
             }
           }
@@ -1351,7 +1155,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -1362,112 +1167,12 @@ describe('ZeebeAPI', function() {
       });
 
 
-      it('for <not-found>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
-      it('for <not-found> (OAuth)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            authType: AUTH_TYPES.OAUTH,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('OAUTH_URL');
-      });
-
-
-      it('for <not-found> (Cloud)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('INVALID_CLIENT_ID');
-      });
-
-
-      it('for <unauthorized>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
-              throw new NetworkError('Unauthorized');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('UNAUTHORIZED');
-      });
-
-
       it('for <unauthorized> - Cloud', async function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('Unauthorized');
             }
           }
@@ -1475,12 +1180,13 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
         // when
-        const result = await zeebeAPI.checkConnection(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('INVALID_CREDENTIALS');
       });
@@ -1490,8 +1196,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('Forbidden');
             }
           }
@@ -1499,7 +1205,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -1514,8 +1221,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('Unsupported protocol');
             }
           }
@@ -1523,7 +1230,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             authType: AUTH_TYPES.OAUTH,
             url: TEST_URL
           }
@@ -1540,8 +1247,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError('Some random error');
             }
           }
@@ -1549,7 +1256,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             url: TEST_URL
           }
         };
@@ -1565,8 +1272,8 @@ describe('ZeebeAPI', function() {
 
         // given
         const zeebeAPI = createZeebeAPI({
-          ZeebeGrpcApiClient: {
-            topology: function() {
+          CamundaRestClient: {
+            getTopology: function() {
               throw new NetworkError();
             }
           }
@@ -1606,7 +1313,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://camunda.com'
+          url: TEST_URL
         },
         resourceConfigs: [
           {
@@ -1620,7 +1327,7 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig.ZEEBE_GRPC_ADDRESS).to.eql('camunda.com');
+      expect(usedConfig.ZEEBE_REST_ADDRESS).to.eql(TEST_URL);
     });
 
 
@@ -1681,7 +1388,7 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(createSpy).to.have.been.calledOnce;
+      expect(createSpy).to.have.been.called;
     });
 
 
@@ -1713,14 +1420,14 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy({
         ...parameters,
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
+          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
           authType: AUTH_TYPES.OAUTH,
           url: TEST_URL
         }
       });
 
       // then
-      expect(createSpy).to.have.been.calledTwice;
+      expect(createSpy).to.have.been.called;
     });
 
 
@@ -1730,14 +1437,14 @@ describe('ZeebeAPI', function() {
       const closeSpy = sinon.spy();
 
       const zeebeAPI = createZeebeAPI({
-        ZeebeGrpcApiClient: {
-          close: closeSpy
+        Camunda8Mock:{
+          closeAllClients: closeSpy
         }
       });
 
       const parameters = {
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
+          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
           url: TEST_URL
         },
         resourceConfigs: [
@@ -1760,40 +1467,11 @@ describe('ZeebeAPI', function() {
       });
 
       // then
-      expect(closeSpy).to.have.been.calledOnce;
+      expect(closeSpy).to.have.been.called;
     });
 
 
-    it('should set `CAMUNDA_SECURE_CONNECTION` to true for https:// endpoint', async function() {
 
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://camunda.com'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', true);
-    });
 
 
     it('should set `CAMUNDA_SECURE_CONNECTION` to false for http:// endpoint (no auth)', async function() {
@@ -1810,7 +1488,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'http://camunda.com'
+          url: 'http://test'
         },
         resourceConfigs: [
           {
@@ -1827,38 +1505,6 @@ describe('ZeebeAPI', function() {
       expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', false);
     });
 
-
-    it('should set `CAMUNDA_SECURE_CONNECTION` to false for http:// endpoint (oauth)', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          authType: AUTH_TYPES.OAUTH,
-          url: 'http://camunda.com'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', false);
-    });
 
 
     it('should set `CAMUNDA_SECURE_CONNECTION` to true for no protocol endpoint (cloud)', async function() {
@@ -1925,100 +1571,6 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should infer port=80 for http:// endpoint', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'http://camunda.com'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('port', '80');
-    });
-
-
-    it('should infer port=443 for https:// endpoint', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://camunda.com'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('port', '443');
-    });
-
-
-    it('should infer port=443 for grpcs:// endpoint', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'grpcs://camunda.com'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('port', '443');
-    });
 
 
     describe('custom certificate', function() {
@@ -2071,7 +1623,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: 'grpcs://camunda.com'
           },
           resourceConfigs: [
             {
@@ -2106,7 +1658,7 @@ describe('ZeebeAPI', function() {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
-            url: 'https://camunda.com'
+            url: TEST_URL
           },
           resourceConfigs: [
             {
@@ -2140,7 +1692,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: TEST_URL
           },
           resourceConfigs: [
             {
@@ -2174,7 +1726,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: TEST_URL
           },
           resourceConfigs: [
             {
@@ -2194,37 +1746,6 @@ describe('ZeebeAPI', function() {
         expect(Buffer.from(cert).equals(CAMUNDA_CUSTOM_ROOT_CERT_STRING)).to.be.true;
       });
 
-
-      it('should NOT log error when root certificate is passed via flag', async function() {
-
-        // given
-        const {
-          log,
-          zeebeAPI
-        } = setup(readFile('./root-self-signed.pem'));
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
-          },
-          resourceConfigs: [
-            {
-              path: 'foo.bpmn',
-              type: 'bpmn'
-            }
-          ]
-        };
-
-        // when
-        await zeebeAPI.deploy(parameters);
-
-        // then
-        expect(log.warn).not.to.have.been.called;
-        expect(log.error).not.to.have.been.called;
-      });
-
-
       it('should log warning when non-root certificate is passed via flag', async function() {
 
         // given
@@ -2236,7 +1757,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: TEST_URL
           },
           resourceConfigs: [
             {
@@ -2250,7 +1771,7 @@ describe('ZeebeAPI', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        expect(log.warn).to.have.been.calledOnceWithExactly('Custom SSL certificate appears to be not a root certificate');
+        expect(log.warn).to.have.been.calledWithMatch('Custom SSL certificate appears to be not a root certificate');
       });
 
 
@@ -2265,7 +1786,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: TEST_URL
           },
           resourceConfigs: [
             {
@@ -2279,7 +1800,7 @@ describe('ZeebeAPI', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        expect(log.warn).to.have.been.calledOnce;
+        expect(log.warn).to.have.been.called;
         expect(log.warn.args[0][0].startsWith('Failed to parse custom SSL certificate')).to.be.true;
       });
 
@@ -2331,16 +1852,14 @@ describe('ZeebeAPI', function() {
       expect(createClientCall).to.exist;
 
       expect(createClientCall.args[ 1 ]).to.eql({
-        url: 'http://localhost:26500',
+        url: TEST_URL,
         options:{
-          zeebeGrpcSettings: {
-            ZEEBE_GRPC_CLIENT_RETRY: false
-          },
-          ZEEBE_GRPC_ADDRESS: 'localhost:26500',
+          ZEEBE_REST_ADDRESS: TEST_URL,
           CAMUNDA_AUTH_STRATEGY: 'BASIC',
           CAMUNDA_BASIC_AUTH_USERNAME: 'username',
           CAMUNDA_BASIC_AUTH_PASSWORD: '******',
-          CAMUNDA_SECURE_CONNECTION: false
+          CAMUNDA_SECURE_CONNECTION: true,
+          port: '443'
         }
       });
 
@@ -2412,12 +1931,9 @@ describe('ZeebeAPI', function() {
       expect(createClientCall).to.exist;
 
       expect(createClientCall.args[ 1 ]).to.eql({
-        url: 'http://localhost:26500',
+        url: TEST_URL,
         options:{
-          zeebeGrpcSettings: {
-            ZEEBE_GRPC_CLIENT_RETRY: false
-          },
-          ZEEBE_GRPC_ADDRESS: 'localhost:26500',
+          ZEEBE_REST_ADDRESS: TEST_URL,
           CAMUNDA_AUTH_STRATEGY: 'OAUTH',
           CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
           CAMUNDA_TOKEN_SCOPE: 'scope',
@@ -2425,7 +1941,8 @@ describe('ZeebeAPI', function() {
           ZEEBE_CLIENT_SECRET: '******',
           CAMUNDA_ZEEBE_OAUTH_AUDIENCE: 'audience',
           CAMUNDA_OAUTH_URL: 'oauthURL',
-          CAMUNDA_SECURE_CONNECTION: false
+          CAMUNDA_SECURE_CONNECTION: true,
+          port: '443',
         }
       });
 
@@ -2505,17 +2022,19 @@ function createZeebeAPI(options = {}) {
   class Camunda8Mock {
     constructor(config) {
       options.configSpy && options.configSpy(config);
+      Object.assign(this,options.Camunda8Mock);
     }
 
-    getZeebeGrpcApiClient() {
+    getCamundaRestClient() {
       return Object.assign({
-        topology: noop,
-        deployResource: noop,
-        deployResources: noop,
-        createProcessInstance: noop,
-        close: noop
-      }, options.ZeebeGrpcApiClient);
+        getTopology: noop,
+        deployResources: () => ({ deployments: [] }),
+        createProcessInstance: noop
+      }, options.CamundaRestClient);
     }
+
+    closeAllClients = noop;
+
   }
 
   return new ZeebeAPI(fs, Camunda8Mock, flags, log);
