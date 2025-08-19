@@ -16,7 +16,7 @@ const path = require('path');
 
 const ZeebeAPI = require('../../../lib/zeebe-api');
 
-const TEST_URL = 'http://localhost:26500';
+const TEST_URL = 'grpc://localhost:26500';
 
 const {
   AUTH_TYPES,
@@ -41,7 +41,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
+          url: TEST_URL
         }
       };
 
@@ -67,7 +67,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
+          url: TEST_URL
         }
       };
 
@@ -119,7 +119,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -143,7 +144,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -268,7 +270,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -317,7 +320,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -341,7 +345,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -391,7 +396,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -416,7 +421,7 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.SELF_HOSTED,
             url: TEST_URL
           }
         };
@@ -1219,7 +1224,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
+          url: TEST_URL
         }
       };
 
@@ -1247,7 +1252,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
+          url: 'grpcs://example.com'
         }
       };
 
@@ -1274,7 +1279,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://google.com'
+          url: TEST_URL
         }
       };
 
@@ -1327,7 +1332,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -1351,7 +1357,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -1426,7 +1433,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -1475,7 +1483,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -1499,7 +1508,8 @@ describe('ZeebeAPI', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
           }
         };
 
@@ -1606,7 +1616,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://camunda.com'
+          url: TEST_URL
         },
         resourceConfigs: [
           {
@@ -1620,7 +1630,7 @@ describe('ZeebeAPI', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig.ZEEBE_GRPC_ADDRESS).to.eql('camunda.com');
+      expect(usedConfig.ZEEBE_GRPC_ADDRESS).to.eql('localhost:26500');
     });
 
 
@@ -1732,6 +1742,9 @@ describe('ZeebeAPI', function() {
       const zeebeAPI = createZeebeAPI({
         ZeebeGrpcApiClient: {
           close: closeSpy
+        },
+        Camunda8Mock:{
+          closeAllClients: closeSpy
         }
       });
 
@@ -1764,7 +1777,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `CAMUNDA_SECURE_CONNECTION` to true for https:// endpoint', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION` to true for grpcs:// endpoint', async function() {
 
       // given
       let usedConfig;
@@ -1778,7 +1791,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://camunda.com'
+          url: 'grpcs://camunda.com'
         },
         resourceConfigs: [
           {
@@ -1810,7 +1823,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'http://camunda.com'
+          url: TEST_URL
         },
         resourceConfigs: [
           {
@@ -1828,7 +1841,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should set `CAMUNDA_SECURE_CONNECTION` to false for http:// endpoint (oauth)', async function() {
+    it('should set `CAMUNDA_SECURE_CONNECTION` to false for grpc:// endpoint (oauth)', async function() {
 
       // given
       let usedConfig;
@@ -1843,7 +1856,7 @@ describe('ZeebeAPI', function() {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.OAUTH,
-          url: 'http://camunda.com'
+          url: 'grpc://camunda.com'
         },
         resourceConfigs: [
           {
@@ -1907,7 +1920,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'http://camunda.com:1337'
+          url: 'grpc://camunda.com:1337'
         },
         resourceConfigs: [
           {
@@ -1925,7 +1938,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should infer port=80 for http:// endpoint', async function() {
+    it('should infer port=80 for grpc:// endpoint', async function() {
 
       // given
       let usedConfig;
@@ -1939,7 +1952,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'http://camunda.com'
+          url: 'grpc://camunda.com'
         },
         resourceConfigs: [
           {
@@ -1957,7 +1970,7 @@ describe('ZeebeAPI', function() {
     });
 
 
-    it('should infer port=443 for https:// endpoint', async function() {
+    it('should infer port=443 for grpcs:// endpoint', async function() {
 
       // given
       let usedConfig;
@@ -1971,7 +1984,7 @@ describe('ZeebeAPI', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'https://camunda.com'
+          url: 'grpcs://camunda.com'
         },
         resourceConfigs: [
           {
@@ -2039,7 +2052,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: 'grpcs://camunda.com'
           },
           resourceConfigs: [
             {
@@ -2074,7 +2087,7 @@ describe('ZeebeAPI', function() {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
             authType: AUTH_TYPES.OAUTH,
-            url: 'https://camunda.com'
+            url: 'grpcs://camunda.com'
           },
           resourceConfigs: [
             {
@@ -2108,7 +2121,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: 'grpcs://camunda.com'
           },
           resourceConfigs: [
             {
@@ -2142,7 +2155,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: 'grpcs://camunda.com'
           },
           resourceConfigs: [
             {
@@ -2174,7 +2187,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: 'grpcs://camunda.com'
           },
           resourceConfigs: [
             {
@@ -2204,7 +2217,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: TEST_URL
           },
           resourceConfigs: [
             {
@@ -2233,7 +2246,7 @@ describe('ZeebeAPI', function() {
         const parameters = {
           endpoint: {
             type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'https://camunda.com'
+            url: TEST_URL
           },
           resourceConfigs: [
             {
@@ -2299,7 +2312,7 @@ describe('ZeebeAPI', function() {
       expect(createClientCall).to.exist;
 
       expect(createClientCall.args[ 1 ]).to.eql({
-        url: 'http://localhost:26500',
+        url: TEST_URL,
         options:{
           zeebeGrpcSettings: {
             ZEEBE_GRPC_CLIENT_RETRY: false
@@ -2380,7 +2393,7 @@ describe('ZeebeAPI', function() {
       expect(createClientCall).to.exist;
 
       expect(createClientCall.args[ 1 ]).to.eql({
-        url: 'http://localhost:26500',
+        url: TEST_URL,
         options:{
           zeebeGrpcSettings: {
             ZEEBE_GRPC_CLIENT_RETRY: false
@@ -2473,6 +2486,7 @@ function createZeebeAPI(options = {}) {
   class Camunda8Mock {
     constructor(config) {
       options.configSpy && options.configSpy(config);
+      Object.assign(this,options.Camunda8Mock);
     }
 
     getZeebeGrpcApiClient() {
@@ -2484,6 +2498,17 @@ function createZeebeAPI(options = {}) {
         close: noop
       }, options.ZeebeGrpcApiClient);
     }
+
+    getCamundaRestClient() {
+      return Object.assign({
+        getTopology: noop,
+        deployResources: noop,
+        createProcessInstance: noop
+      }, options.CamundaRestClient);
+    }
+
+    closeAllClients = noop;
+
   }
 
   return new ZeebeAPI(fs, Camunda8Mock, flags, log);

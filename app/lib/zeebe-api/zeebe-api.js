@@ -23,8 +23,10 @@
 const path = require('path');
 const { pick } = require('min-dash');
 
+
 const createLog = require('../log');
 const Camunda8SdkClients = require('./camunda8sdk');
+const { redactEndpointParameters } = require('./utils');
 
 
 const ERROR_REASONS = {
@@ -84,7 +86,7 @@ class ZeebeAPI {
     this._log = log;
 
     /** @type {Camunda8SdkClients} */
-    this._camundaClients = new Camunda8SdkClients(fs, Camunda8, flags);
+    this._camundaClients = new Camunda8SdkClients(fs, Camunda8, flags, log);
   }
 
   /**
@@ -96,7 +98,7 @@ class ZeebeAPI {
    */
   async checkConnection(config) {
     this._log.debug('check connection', {
-      parameters: filterEndpointParameters(config)
+      parameters: redactEndpointParameters(config)
     });
 
     const { endpoint } = config;
@@ -106,17 +108,23 @@ class ZeebeAPI {
       camundaRestClient
     } = await this._getClients(endpoint);
 
+
+    console.log({ zeebeGrpcClient,
+      camundaRestClient });
+
     try {
       if (zeebeGrpcClient) {
         await zeebeGrpcClient.topology();
+        return { success: true };
       }
       if (camundaRestClient) {
         await camundaRestClient.getTopology();
+        return { success: true };
       }
-      return { success: true };
+      return { success: false };
     } catch (err) {
       this._log.error('connection check failed', {
-        parameters: filterEndpointParameters(config)
+        parameters: redactEndpointParameters(config)
       }, err);
 
       return {
@@ -148,7 +156,7 @@ class ZeebeAPI {
     } = config;
 
     this._log.debug('deploy', {
-      parameters: filterEndpointParameters(config)
+      parameters: redactEndpointParameters(config)
     });
 
     try {
@@ -214,7 +222,7 @@ class ZeebeAPI {
         };
       }
     } catch (err) {
-      this._log.error('deploy failed', filterEndpointParameters(config), err);
+      this._log.error('deploy failed', redactEndpointParameters(config), err);
 
       return {
         success: false,
@@ -239,7 +247,7 @@ class ZeebeAPI {
     } = config;
 
     this._log.debug('start instance', {
-      parameters: filterEndpointParameters(config)
+      parameters: redactEndpointParameters(config)
     });
 
 
@@ -277,7 +285,7 @@ class ZeebeAPI {
       }
     } catch (err) {
       this._log.error('start instance failed', {
-        parameters: filterEndpointParameters(config)
+        parameters: redactEndpointParameters(config)
       }, err);
 
       return {
@@ -300,7 +308,7 @@ class ZeebeAPI {
     } = config;
 
     this._log.debug('fetch gateway version', {
-      parameters: filterEndpointParameters(config)
+      parameters: redactEndpointParameters(config)
     });
 
     try {
@@ -332,7 +340,7 @@ class ZeebeAPI {
       }
     } catch (err) {
       this._log.error('fetch gateway version failed', {
-        parameters: filterEndpointParameters(config)
+        parameters: redactEndpointParameters(config)
       }, err);
 
       return {
@@ -484,48 +492,5 @@ function getErrorReason(error, endpoint) {
 
 function asSerializedError(error) {
   return pick(error, [ 'message', 'code', 'details' ]);
-}
-
-/**
- * Filter endpoint connection parameters, so they can safely logged
- * without leaking secrets.
- *
- * @param {any} parameters
- *
- * @returns {any} filtered parameters
- */
-function filterEndpointParameters(parameters) {
-  return filterRecursive(parameters, [
-    'clientSecret:secret',
-    'basicAuthPassword:secret'
-  ]);
-}
-
-
-function filterRecursive(obj, keys) {
-
-  const overrides = keys.reduce((overrides, name) => {
-    const [ key, type ] = name.split(':');
-
-    overrides[key] = type;
-
-    return overrides;
-  }, {});
-
-  return JSON.parse(
-    JSON.stringify(obj, (key, value) => {
-      const override = overrides[key];
-
-      if (override === 'secret') {
-        return '******';
-      }
-
-      if (override === 'blob') {
-        return '...';
-      }
-
-      return value;
-    })
-  );
 }
 

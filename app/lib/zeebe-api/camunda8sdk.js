@@ -19,6 +19,7 @@ const {
   AUTH_TYPES,
   ENDPOINT_TYPES
 } = require('./constants');
+const { redactCamunda8Options } = require('./utils');
 
 /**
  * @typedef {import('@camunda8/sdk/dist/c8').Camunda8} Camunda8
@@ -64,7 +65,7 @@ class Camunda8SdkClients {
       return cachedCamundaClient;
     }
 
-    this._camundaClient.closeAllClients();
+    this._camundaClient?.closeAllClients();
 
     this._camundaClient = await this._createCamundaClient(endpoint);
     this._cachedEndpoint = endpoint;
@@ -80,7 +81,7 @@ class Camunda8SdkClients {
   async getSupportedCamundaClients(endpoint) {
     const camundaClient = await this.getCamundaClient(endpoint);
 
-    if (this._protocol === 'grpc') {
+    if ([ 'grpc', 'grpcs' ].includes(this._protocol)) {
       return {
         zeebeGrpcClient: camundaClient.getZeebeGrpcApiClient()
       };
@@ -108,6 +109,7 @@ class Camunda8SdkClients {
     const {
       type,
       authType = AUTH_TYPES.NONE,
+      url
     } = endpoint;
 
     if (!values(ENDPOINT_TYPES).includes(type) || !values(AUTH_TYPES).includes(authType)) {
@@ -119,6 +121,12 @@ class Camunda8SdkClients {
 
 
     const clientConfig = await this._getClientConfig(endpoint);
+
+    this._log.debug('creating client', {
+      url,
+      options: redactCamunda8Options(clientConfig)
+    });
+
     return new this._Camunda8(clientConfig);
   }
 
@@ -135,18 +143,21 @@ class Camunda8SdkClients {
 
     // TODO(@Buckwich): determine protocol based on cluster
     this._protocol = url.match(/^(https?|grpcs?):\/\//)?.[1];
-    if (!this._protocol) {
-      throw new Error(`URL with Protocol required: ${url}`);
-    }
 
-    if (this._protocol === 'grpc') {
+    switch (this._protocol) {
+    case 'grpc':
+    case 'grpcs':
       clientConfig.ZEEBE_GRPC_ADDRESS = url ? removeProtocol(url) : '';
       clientConfig.zeebeGrpcSettings = {
         ZEEBE_GRPC_CLIENT_RETRY: false
       };
-    }
-    else {
+      break;
+
+    case 'http':
+    case 'https':
+    default:
       clientConfig.ZEEBE_REST_ADDRESS = url;
+      break;
     }
 
     if (authType === AUTH_TYPES.BASIC) {
@@ -250,7 +261,7 @@ class Camunda8SdkClients {
 
     return {
       ...options,
-      port: parsedUrl.protocol === 'https:' ? '443' : '80'
+      port: parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'grpcs:' ? '443' : '80'
     };
   }
 
@@ -294,3 +305,4 @@ function removeProtocol(url) {
 }
 
 module.exports = Camunda8SdkClients;
+
