@@ -1989,6 +1989,38 @@ describe('ZeebeAPI', function() {
     });
 
 
+    it('should infer port=443 for grpcs:// endpoint', async function() {
+
+      // given
+      let usedConfig;
+
+      const zeebeAPI = createZeebeAPI({
+        configSpy(config) {
+          usedConfig = config;
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: 'grpcs://camunda.com'
+        },
+        resourceConfigs: [
+          {
+            path: 'foo.bpmn',
+            type: 'bpmn'
+          }
+        ]
+      };
+
+      // when
+      await zeebeAPI.deploy(parameters);
+
+      // then
+      expect(usedConfig).to.have.property('port', '443');
+    });
+
+
     describe('custom certificate', function() {
 
       function setup(certificate) {

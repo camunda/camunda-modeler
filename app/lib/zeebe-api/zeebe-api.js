@@ -459,7 +459,7 @@ class ZeebeAPI {
 
     return {
       ...options,
-      port: parsedUrl.protocol === 'https:' ? '443' : '80'
+      port: parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'grpcs:' ? '443' : '80'
     };
   }
 
