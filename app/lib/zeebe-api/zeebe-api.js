@@ -395,7 +395,7 @@ class ZeebeAPI {
   /**
    * Get resources based on the provided configs and tenantId.
    *
-   * @param {Array<{ path: string }>} resourceConfigs
+   * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }>} resourceConfigs
    *
    * @returns {Array<CamundaResource>}
    */
@@ -404,9 +404,13 @@ class ZeebeAPI {
     return resourceConfigs.map(resourceConfig => {
       const { contents } = this._fs.readFile(resourceConfig.path, { encoding: false });
 
+      const extension = `.${ resourceConfig.type }`;
+
+      const name = `${ path.basename(resourceConfig.path, path.extname(resourceConfig.path)) }${ extension }`;
+
       return {
         content: contents,
-        name: resourceConfig.path
+        name: name
       };
     });
   }
