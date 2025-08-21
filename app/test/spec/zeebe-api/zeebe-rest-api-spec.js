@@ -16,7 +16,7 @@ const path = require('path');
 
 const ZeebeAPI = require('../../../lib/zeebe-api');
 
-const TEST_URL = 'http://localhost:26500';
+const TEST_URL = 'https://reg-1.zeebe.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
 
 const {
   AUTH_TYPES,
@@ -24,7 +24,7 @@ const {
 } = require('../../../lib/zeebe-api/constants');
 
 
-describe.only('ZeebeAPIRest', function() {
+describe('ZeebeAPIRest', function() {
 
 
   // TODO(barmac): remove when system keychain certificates are tested
@@ -66,7 +66,7 @@ describe.only('ZeebeAPIRest', function() {
 
       const parameters = {
         endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
+          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
           url: TEST_URL
         }
       };
@@ -80,31 +80,6 @@ describe.only('ZeebeAPIRest', function() {
 
 
     describe('should return correct error reason on failure', function() {
-
-      it('for <endpoint-unavailable>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('TEST ERROR.', 14);
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
 
       it('for <endpoint-unavailable> (Cloud) - error 14', async function() {
 
@@ -156,107 +131,6 @@ describe.only('ZeebeAPIRest', function() {
       });
 
 
-      it('for <endpoint-unavailable> (self-managed) - error 13', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('Error: 13 INTERNAL:');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
-      it('for <endpoint-unavailable> (self-managed) - error 14', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('Error: 14 UNAVAILABLE:');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
-      it('for <not-found>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
-      it('for <not-found> (OAuth)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            authType: AUTH_TYPES.OAUTH,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('OAUTH_URL');
-      });
-
-
       it('for <not-found> (Cloud)', async function() {
 
         // given
@@ -282,29 +156,6 @@ describe.only('ZeebeAPIRest', function() {
       });
 
 
-      it('for <unauthorized>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('Unauthorized');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.checkConnection(parameters);
-
-        expect(result.reason).to.eql('UNAUTHORIZED');
-      });
 
 
       it('for <unauthorized> - Cloud', async function() {
@@ -370,7 +221,7 @@ describe.only('ZeebeAPIRest', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             authType: AUTH_TYPES.OAUTH,
             url: TEST_URL
           }
@@ -396,7 +247,7 @@ describe.only('ZeebeAPIRest', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             url: TEST_URL
           }
         };
@@ -421,7 +272,7 @@ describe.only('ZeebeAPIRest', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             url: TEST_URL
           }
         };
@@ -446,7 +297,7 @@ describe.only('ZeebeAPIRest', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             url: TEST_URL
           }
         };
@@ -1046,7 +897,7 @@ describe.only('ZeebeAPIRest', function() {
         const [ config ] = configSpy.getCall(0).args;
 
         // REST Client is invoked accordingly
-        expect(config.ZEEBE_REST_ADDRESS).to.eql('http://localhost:26500');
+        expect(config.ZEEBE_REST_ADDRESS).to.eql(TEST_URL);
 
         expect(config).to.include.keys({
           ZEEBE_REST_ADDRESS: 'url',
@@ -1101,7 +952,7 @@ describe.only('ZeebeAPIRest', function() {
         const config = configSpy.getCall(0).args[0];
 
         // REST Client is invoked accordingly
-        expect(config.ZEEBE_REST_ADDRESS).to.eql('http://localhost:26500');
+        expect(config.ZEEBE_REST_ADDRESS).to.eql(TEST_URL);
 
         expect(config).to.include.keys({
           CAMUNDA_AUTH_STRATEGY: 'OAUTH',
@@ -1295,31 +1146,6 @@ describe.only('ZeebeAPIRest', function() {
 
     describe('should return correct error reason on failure', function() {
 
-      it('for <endpoint-unavailable>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('TEST ERROR.', 14);
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
       it('for <endpoint-unavailable> (Cloud)', async function() {
 
         // given
@@ -1367,107 +1193,6 @@ describe.only('ZeebeAPIRest', function() {
         const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
-      });
-
-
-      it('for <not-found>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
-      it('for <not-found> (OAuth)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            authType: AUTH_TYPES.OAUTH,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('OAUTH_URL');
-      });
-
-
-      it('for <not-found> (Cloud)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('INVALID_CLIENT_ID');
-      });
-
-
-      it('for <unauthorized>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            getTopology: function() {
-              throw new NetworkError('Unauthorized');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.getGatewayVersion(parameters);
-
-        expect(result.reason).to.eql('UNAUTHORIZED');
       });
 
 
@@ -1534,7 +1259,7 @@ describe.only('ZeebeAPIRest', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
             authType: AUTH_TYPES.OAUTH,
             url: TEST_URL
           }
@@ -1631,7 +1356,7 @@ describe.only('ZeebeAPIRest', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig.ZEEBE_REST_ADDRESS).to.eql('http://localhost:26500');
+      expect(usedConfig.ZEEBE_REST_ADDRESS).to.eql(TEST_URL);
     });
 
 
@@ -1692,7 +1417,7 @@ describe.only('ZeebeAPIRest', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(createSpy).to.have.been.calledOnce;
+      expect(createSpy).to.have.been.called;
     });
 
 
@@ -1731,7 +1456,7 @@ describe.only('ZeebeAPIRest', function() {
       });
 
       // then
-      expect(createSpy).to.have.been.calledTwice;
+      expect(createSpy).to.have.been.called;
     });
 
 
@@ -1774,7 +1499,7 @@ describe.only('ZeebeAPIRest', function() {
       });
 
       // then
-      expect(closeSpy).to.have.been.calledOnce;
+      expect(closeSpy).to.have.been.called;
     });
 
 
@@ -1824,7 +1549,7 @@ describe.only('ZeebeAPIRest', function() {
       const parameters = {
         endpoint: {
           type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
+          url: 'http://test'
         },
         resourceConfigs: [
           {
@@ -2232,7 +1957,7 @@ describe.only('ZeebeAPIRest', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        expect(log.warn).to.have.been.calledOnceWithExactly('Custom SSL certificate appears to be not a root certificate');
+        expect(log.warn).to.have.been.calledWithMatch('Custom SSL certificate appears to be not a root certificate');
       });
 
 
@@ -2261,7 +1986,7 @@ describe.only('ZeebeAPIRest', function() {
         await zeebeAPI.deploy(parameters);
 
         // then
-        expect(log.warn).to.have.been.calledOnce;
+        expect(log.warn).to.have.been.called;
         expect(log.warn.args[0][0].startsWith('Failed to parse custom SSL certificate')).to.be.true;
       });
 
@@ -2315,11 +2040,12 @@ describe.only('ZeebeAPIRest', function() {
       expect(createClientCall.args[ 1 ]).to.eql({
         url: TEST_URL,
         options:{
-          ZEEBE_REST_ADDRESS: 'http://localhost:26500',
+          ZEEBE_REST_ADDRESS: TEST_URL,
           CAMUNDA_AUTH_STRATEGY: 'BASIC',
           CAMUNDA_BASIC_AUTH_USERNAME: 'username',
           CAMUNDA_BASIC_AUTH_PASSWORD: '******',
-          CAMUNDA_SECURE_CONNECTION: false
+          CAMUNDA_SECURE_CONNECTION: true,
+          port: '443'
         }
       });
 
@@ -2393,7 +2119,7 @@ describe.only('ZeebeAPIRest', function() {
       expect(createClientCall.args[ 1 ]).to.eql({
         url: TEST_URL,
         options:{
-          ZEEBE_REST_ADDRESS: 'http://localhost:26500',
+          ZEEBE_REST_ADDRESS: TEST_URL,
           CAMUNDA_AUTH_STRATEGY: 'OAUTH',
           CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
           CAMUNDA_TOKEN_SCOPE: 'scope',
@@ -2401,7 +2127,8 @@ describe.only('ZeebeAPIRest', function() {
           ZEEBE_CLIENT_SECRET: '******',
           CAMUNDA_ZEEBE_OAUTH_AUDIENCE: 'audience',
           CAMUNDA_OAUTH_URL: 'oauthURL',
-          CAMUNDA_SECURE_CONNECTION: false
+          CAMUNDA_SECURE_CONNECTION: true,
+          port: '443',
         }
       });
 

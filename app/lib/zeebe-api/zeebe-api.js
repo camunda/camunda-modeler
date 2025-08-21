@@ -108,10 +108,6 @@ class ZeebeAPI {
       camundaRestClient
     } = await this._getClients(endpoint);
 
-
-    console.log({ zeebeGrpcClient,
-      camundaRestClient });
-
     try {
       if (zeebeGrpcClient) {
         await zeebeGrpcClient.topology();
@@ -426,7 +422,7 @@ module.exports = ZeebeAPI;
  *
  * @returns {number|undefined}
  */
-function getErrorCode(message) {
+function getGrpcErrorCode(message) {
 
   if (message.includes('13 INTERNAL:')) {
     return 13;
@@ -437,11 +433,28 @@ function getErrorCode(message) {
   }
 }
 
+/**
+ * @param {string} message
+ *
+ * @returns {number|undefined}
+ */
+function getRestStatusCode(message) {
+  if (message.includes('503 (Service Temporarily Unavailable)')) {
+    return 503;
+  }
+}
+
 function getErrorReason(error, endpoint) {
+  console.log('error');
+  console.log(JSON.stringify(error,null,2));
+
+  console.log('messag');
+  console.log(JSON.stringify(error.message,null,2));
 
   const {
     message,
-    code = message && getErrorCode(message)
+    code = message && getGrpcErrorCode(message),
+    httpStatus = message && getRestStatusCode(message)
   } = error;
 
   const {
@@ -449,8 +462,8 @@ function getErrorReason(error, endpoint) {
     authType = AUTH_TYPES.NONE
   } = endpoint;
 
-  // (1) handle grpc errors
-  if (code === 14 || code === 13) {
+  // (1) handle errors
+  if (code === 14 || code === 13 || httpStatus === 503) {
     return type === ENDPOINT_TYPES.CAMUNDA_CLOUD
       ? ERROR_REASONS.CLUSTER_UNAVAILABLE
       : ERROR_REASONS.CONTACT_POINT_UNAVAILABLE;

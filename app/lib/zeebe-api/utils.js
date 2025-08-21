@@ -68,3 +68,17 @@ function redactDeep(obj, keys) {
   );
 }
 
+function isSaasUrl(url) {
+  return isGrpcSaasUrl(url) || isRestSaasUrl(url);
+}
+module.exports.isSaasUrl = isSaasUrl;
+
+function isGrpcSaasUrl(url) {
+  return /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url);
+}
+module.exports.isGrpcSaasUrl = isGrpcSaasUrl;
+
+function isRestSaasUrl(url) {
+  return /^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?/.test(url);
+}
+module.exports.isRestSaasUrl = isRestSaasUrl;

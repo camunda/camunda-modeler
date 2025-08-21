@@ -19,7 +19,7 @@ const {
   AUTH_TYPES,
   ENDPOINT_TYPES
 } = require('./constants');
-const { redactCamunda8Options } = require('./utils');
+const { redactCamunda8Options, isGrpcSaasUrl, isRestSaasUrl } = require('./utils');
 
 /**
  * @typedef {import('@camunda8/sdk/dist/c8').Camunda8} Camunda8
@@ -51,8 +51,8 @@ class Camunda8SdkClients {
     this._camundaClient = null;
     this._endpoint = undefined;
 
-    /** @type {'rest'|'grpc'} */
-    this._protocol = 'rest';
+    /** @type {'http'|'https'|'grpc'|'grpcs'} */
+    this._protocol = 'grpc';
   }
 
   /**
@@ -67,6 +67,7 @@ class Camunda8SdkClients {
 
     this._camundaClient?.closeAllClients();
 
+    this._protocol = await this._determineProtocol(endpoint);
     this._camundaClient = await this._createCamundaClient(endpoint);
     this._cachedEndpoint = endpoint;
 
@@ -91,6 +92,75 @@ class Camunda8SdkClients {
         camundaRestClient: camundaClient.getCamundaRestClient(),
       };
       return clients;
+    }
+  }
+
+  /**
+   * Determines the protocol to use based on URL and optionally testing connections
+   * @param {import("./endpoints").Endpoint} endpoint
+   * @returns {Promise<'grpc'|'grpcs'|'http'|'https'>}
+   */
+  async _determineProtocol(endpoint) {
+
+    console.log('_determineProtocol');
+    const urlProtocol = endpoint.url.match(/^(https?|grpcs?):\/\//)?.[1];
+
+    // if grpc is part of URL we can directly use it
+    if (urlProtocol && [ 'grpc', 'grpcs' ].includes(urlProtocol)) {
+      return urlProtocol;
+    }
+
+    // for SaaS we can determine the protocol from the URL pattern
+    if (endpoint.type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
+      if (isGrpcSaasUrl(endpoint.url)) {
+        return 'grpcs';
+      }
+      if (isRestSaasUrl(endpoint.url)) {
+        return 'https';
+      }
+    }
+
+    // test for rest connection, fallback to grpc if it fails
+    const isSecure = urlProtocol === 'https';
+    const grpcProtocol = isSecure ? 'grpcs' : 'grpc';
+    if (await this._testProtocol(endpoint, urlProtocol)) {
+      return urlProtocol;
+    }
+    return grpcProtocol;
+  }
+
+  /**
+   * Tests if a specific protocol works for the given endpoint
+   * @param {import("./endpoints").Endpoint} endpoint
+   * @param {'grpc'|'grpcs'|'http'|'https'} protocol
+   * @returns {Promise<boolean>}
+   */
+  async _testProtocol(endpoint, protocol) {
+    try {
+
+      // Temporarily set the protocol for testing
+      const originalProtocol = this._protocol;
+      this._protocol = protocol;
+
+      // Create a test client with the specific protocol
+      const testClient = await this._createCamundaClient(endpoint);
+
+      if ([ 'grpc', 'grpcs' ].includes(protocol)) {
+        const zeebeClient = testClient.getZeebeGrpcApiClient();
+        await zeebeClient.topology();
+      } else {
+        const restClient = testClient.getCamundaRestClient();
+        await restClient.getTopology();
+      }
+
+      testClient.closeAllClients();
+
+      // Restore original protocol
+      this._protocol = originalProtocol;
+
+      return true;
+    } catch (error) {
+      return false;
     }
   }
 
@@ -119,7 +189,6 @@ class Camunda8SdkClients {
       return;
     }
 
-
     const clientConfig = await this._getClientConfig(endpoint);
 
     this._log.debug('creating client', {
@@ -140,9 +209,6 @@ class Camunda8SdkClients {
 
     /** @type {import('@camunda8/sdk/dist/lib').Camunda8ClientConfiguration} */
     let clientConfig = {};
-
-    // TODO(@Buckwich): determine protocol based on cluster
-    this._protocol = url.match(/^(https?|grpcs?):\/\//)?.[1];
 
     switch (this._protocol) {
     case 'grpc':
