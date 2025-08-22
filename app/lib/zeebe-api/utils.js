@@ -68,16 +68,58 @@ function redactDeep(obj, keys) {
   );
 }
 
+/**
+ * Checks if the given URL is a SaaS URL.
+ *
+ * @example
+ *
+ * isSaasUrl('https://foo.zeebe.camunda.io'); // true
+ * isSaasUrl('https://foo.zeebe.camunda.io:443'); // true
+ * isSaasUrl('https://foo.zeebe.example.com:443'); // false
+ *
+ * @param {string} url
+ *
+ * @returns {boolean}
+ */
 function isSaasUrl(url) {
   return isGrpcSaasUrl(url) || isRestSaasUrl(url);
 }
 module.exports.isSaasUrl = isSaasUrl;
 
+/**
+ * Checks if the given URL is a gRPC client SaaS URL.
+ *
+ * @example
+ *
+ * isGrpcSaasUrl('https://foo.jfk-1.zeebe.camunda.io:443/'); // true
+ * isGrpcSaasUrl('https://foo.jfk-1.zeebe.camunda.io'); // true
+ * isGrpcSaasUrl('grpcs://foo.jfk-1.zeebe.camunda.io'); // true
+ * isGrpcSaasUrl('https://foo.zeebe.camunda.com:443'); // false
+ * isGrpcSaasUrl('https://foo.zeebe.camunda.io:443/bpmn'); // false
+ *
+ * @param {string} url
+ *
+ * @returns {boolean}
+ */
 function isGrpcSaasUrl(url) {
   return /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url);
 }
 module.exports.isGrpcSaasUrl = isGrpcSaasUrl;
 
+/**
+ * Checks if the given URL is a REST client SaaS URL.
+ *
+ * @example
+ *
+ * isRestSaasUrl('https://jfk-1.zeebe.camunda.io:443/foo'); // true
+ * isRestSaasUrl('https://jfk-1.zeebe.camunda.io/foo'); // true
+ * isRestSaasUrl('https://jfk-1.zeebe.camunda.io:443/'); // false
+ * isRestSaasUrl('https://bar.zeebe.camunda.io:443/foo'); // false
+ *
+ * @param {string} url
+ *
+ * @returns {boolean}
+ */
 function isRestSaasUrl(url) {
   return /^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?/.test(url);
 }
