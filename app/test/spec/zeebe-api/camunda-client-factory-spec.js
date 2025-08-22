@@ -12,13 +12,13 @@
 
 const sinon = require('sinon');
 const fs = require('fs');
-const Camunda8SdkClients = require('../../../lib/zeebe-api/camunda8sdk');
+const CamundaClientFactory = require('../../../lib/zeebe-api/camunda-client-factory');
 const {
   ENDPOINT_TYPES
 } = require('../../../lib/zeebe-api/constants');
 
 
-describe('Camunda8SdkClients', function() {
+describe('CamundaClientFactory', function() {
 
   setupPlatformStub();
 
@@ -54,7 +54,7 @@ describe('Camunda8SdkClients', function() {
       error: sinon.stub()
     };
 
-    clients = new Camunda8SdkClients(fs, Camunda8, flags, log);
+    clients = new CamundaClientFactory(fs, Camunda8, flags, log);
   });
 
   afterEach(function() {

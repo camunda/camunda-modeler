@@ -25,7 +25,7 @@ const { pick } = require('min-dash');
 
 
 const createLog = require('../log');
-const Camunda8SdkClients = require('./camunda8sdk');
+const CamundaClientFactory = require('./camunda-client-factory');
 const { redactEndpointParameters } = require('./utils');
 
 
@@ -85,8 +85,8 @@ class ZeebeAPI {
     this._flags = flags;
     this._log = log;
 
-    /** @type {Camunda8SdkClients} */
-    this._camundaClients = new Camunda8SdkClients(fs, Camunda8, flags, log);
+    /** @type {CamundaClientFactory} */
+    this._camundaClients = new CamundaClientFactory(fs, Camunda8, flags, log);
   }
 
   /**
