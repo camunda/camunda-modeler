@@ -32,7 +32,7 @@ const { redactCamunda8Options, isGrpcSaasUrl, isRestSaasUrl } = require('./utils
  * endpoint that was last requested. If a different endpoint is requested, a new
  * client is created.
  */
-class Camunda8SdkClients {
+class CamundaClientFactory {
 
   /**
    * @param { {
@@ -393,5 +393,5 @@ function removeProtocol(url) {
   return url.replace(/^(https?:\/\/|grpcs?:\/\/)/, '');
 }
 
-module.exports = Camunda8SdkClients;
+module.exports = CamundaClientFactory;
 
