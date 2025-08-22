@@ -152,9 +152,9 @@ export default class DeploymentConfigValidator {
   }
 }
 
-const GRPC_CLUSTER_URL_REGEX = /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/;
+const GRPC_CLUSTER_URL_REGEX = /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.(camunda\.io|dev\.ultrawombat\.com)(:443|)\/?/;
 
-const REST_CLUSTER_URL_REGEX = /^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?/;
+const REST_CLUSTER_URL_REGEX = /^https:\/\/[a-z]+-\d+\.zeebe\.(camunda\.io|dev\.ultrawombat\.com)(:443|)\/[a-z\d-]+\/?/;
 
 /**
  * Validate cluster URL. Valid Camunda 8 SaaS URL must start with "https://" or "grpcs://" and end with ".zeebe.camunda.io".
@@ -163,6 +163,7 @@ const REST_CLUSTER_URL_REGEX = /^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)
  *
  * ```javascript
  * validateClusterUrl('https://region-1.zeebe.camunda.io/cluster-name', validationErrorMessage); // null
+ * validateClusterUrl('https://region-1.zeebe.dev.ultrawombat.com/cluster-name', validationErrorMessage); // null
  * validateClusterUrl('http://region-1.zeebe.camunda.io/cluster-name', validationErrorMessage); // validationErrorMessage
  * validateClusterUrl('https://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // null
  * validateClusterUrl('http://cluster-name.region-1.zeebe.camunda.io:443', validationErrorMessage); // validationErrorMessage

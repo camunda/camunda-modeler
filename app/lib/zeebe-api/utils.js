@@ -106,6 +106,7 @@ module.exports.isSaasUrl = isSaasUrl;
  * @example
  *
  * isGrpcSaasUrl('https://foo.jfk-1.zeebe.camunda.io:443/'); // true
+ * isGrpcSaasUrl('https://foo.jfk-1.zeebe.dev.ultrawombat.com:443/'); // true
  * isGrpcSaasUrl('https://foo.jfk-1.zeebe.camunda.io'); // true
  * isGrpcSaasUrl('grpcs://foo.jfk-1.zeebe.camunda.io'); // true
  * isGrpcSaasUrl('https://foo.zeebe.camunda.com:443'); // false
@@ -116,7 +117,7 @@ module.exports.isSaasUrl = isSaasUrl;
  * @returns {boolean}
  */
 function isGrpcSaasUrl(url) {
-  return /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url);
+  return /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.(camunda\.io|dev\.ultrawombat\.com)(:443|)\/?/.test(url);
 }
 module.exports.isGrpcSaasUrl = isGrpcSaasUrl;
 
@@ -126,6 +127,7 @@ module.exports.isGrpcSaasUrl = isGrpcSaasUrl;
  * @example
  *
  * isRestSaasUrl('https://jfk-1.zeebe.camunda.io:443/foo'); // true
+ * isRestSaasUrl('https://jfk-1.zeebe.dev.ultrawombat.com:443/foo'); // true
  * isRestSaasUrl('https://jfk-1.zeebe.camunda.io/foo'); // true
  * isRestSaasUrl('https://jfk-1.zeebe.camunda.io:443/'); // false
  * isRestSaasUrl('https://bar.zeebe.camunda.io:443/foo'); // false
@@ -135,6 +137,6 @@ module.exports.isGrpcSaasUrl = isGrpcSaasUrl;
  * @returns {boolean}
  */
 function isRestSaasUrl(url) {
-  return /^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?/.test(url);
+  return /^https:\/\/[a-z]+-\d+\.zeebe\.(camunda\.io|dev\.ultrawombat\.com)(:443|)\/[a-z\d-]+\/?/.test(url);
 }
 module.exports.isRestSaasUrl = isRestSaasUrl;
