@@ -22,7 +22,7 @@ describe('util', function() {
 
   describe('getOperateUrl', function() {
 
-    it('should get Camunda Operate URL (grpc)', function() {
+    it('should get Camunda Operate URL (gRPC)', function() {
 
       // given
       const endpoint = {
