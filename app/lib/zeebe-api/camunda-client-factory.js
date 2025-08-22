@@ -19,7 +19,12 @@ const {
   AUTH_TYPES,
   ENDPOINT_TYPES
 } = require('./constants');
-const { redactCamunda8Options, isGrpcSaasUrl, isRestSaasUrl } = require('./utils');
+
+const {
+  sanitizeCamundaClientOptions,
+  isGrpcSaasUrl,
+  isRestSaasUrl
+} = require('./utils');
 
 /**
  * @typedef {import('@camunda8/sdk/dist/c8').Camunda8} Camunda8
@@ -235,7 +240,7 @@ class CamundaClientFactory {
 
     this._log.debug('creating client', {
       url,
-      options: redactCamunda8Options(clientConfig)
+      options: sanitizeCamundaClientOptions(clientConfig)
     });
 
     return new this._Camunda8(clientConfig);

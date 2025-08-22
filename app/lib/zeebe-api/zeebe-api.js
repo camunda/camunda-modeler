@@ -26,7 +26,7 @@ const { pick } = require('min-dash');
 
 const createLog = require('../log');
 const CamundaClientFactory = require('./camunda-client-factory');
-const { redactEndpointParameters } = require('./utils');
+const { sanitizeConfigWithEndpoint } = require('./utils');
 
 
 const ERROR_REASONS = {
@@ -46,8 +46,6 @@ const {
   ENDPOINT_TYPES,
   RESOURCE_TYPES
 } = require('./constants');
-
-
 
 /**
  * @typedef {Object} DeploymentConfig
@@ -98,7 +96,7 @@ class ZeebeAPI {
    */
   async checkConnection(config) {
     this._log.debug('check connection', {
-      parameters: redactEndpointParameters(config)
+      parameters: sanitizeConfigWithEndpoint(config)
     });
 
     const { endpoint } = config;
@@ -120,7 +118,7 @@ class ZeebeAPI {
       return { success: false };
     } catch (err) {
       this._log.error('connection check failed', {
-        parameters: redactEndpointParameters(config)
+        parameters: sanitizeConfigWithEndpoint(config)
       }, err);
 
       return {
@@ -152,7 +150,7 @@ class ZeebeAPI {
     } = config;
 
     this._log.debug('deploy', {
-      parameters: redactEndpointParameters(config)
+      parameters: sanitizeConfigWithEndpoint(config)
     });
 
     try {
@@ -218,7 +216,7 @@ class ZeebeAPI {
         };
       }
     } catch (err) {
-      this._log.error('deploy failed', redactEndpointParameters(config), err);
+      this._log.error('deploy failed', sanitizeConfigWithEndpoint(config), err);
 
       return {
         success: false,
@@ -243,7 +241,7 @@ class ZeebeAPI {
     } = config;
 
     this._log.debug('start instance', {
-      parameters: redactEndpointParameters(config)
+      parameters: sanitizeConfigWithEndpoint(config)
     });
 
 
@@ -281,7 +279,7 @@ class ZeebeAPI {
       }
     } catch (err) {
       this._log.error('start instance failed', {
-        parameters: redactEndpointParameters(config)
+        parameters: sanitizeConfigWithEndpoint(config)
       }, err);
 
       return {
@@ -304,7 +302,7 @@ class ZeebeAPI {
     } = config;
 
     this._log.debug('fetch gateway version', {
-      parameters: redactEndpointParameters(config)
+      parameters: sanitizeConfigWithEndpoint(config)
     });
 
     try {
@@ -336,7 +334,7 @@ class ZeebeAPI {
       }
     } catch (err) {
       this._log.error('fetch gateway version failed', {
-        parameters: redactEndpointParameters(config)
+        parameters: sanitizeConfigWithEndpoint(config)
       }, err);
 
       return {

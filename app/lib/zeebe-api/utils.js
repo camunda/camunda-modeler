@@ -9,63 +9,77 @@
  */
 
 /**
- * Filter Camunda8 options, so they can safely logged
- * without leaking secrets.
+ * Sanitize Camunda client options, so they can safely be logged.
  *
- * @param {any} options
+ * @param {Object} options
  *
- * @returns {any} filtered options
+ * @returns {Object}
  */
-module.exports.redactCamunda8Options = function(options) {
-  return redactDeep(options, [
-    'ZEEBE_CLIENT_SECRET:secret',
-    'CAMUNDA_CONSOLE_CLIENT_SECRET:secret',
-    'CAMUNDA_BASIC_AUTH_PASSWORD:secret',
-    'CAMUNDA_CUSTOM_ROOT_CERT_STRING:blob'
+module.exports.sanitizeCamundaClientOptions = function(options) {
+  return sanitizeObject(options, [
+    'ZEEBE_CLIENT_SECRET',
+    'CAMUNDA_CONSOLE_CLIENT_SECRET',
+    'CAMUNDA_BASIC_AUTH_PASSWORD',
+    [ 'CAMUNDA_CUSTOM_ROOT_CERT_STRING', 'blob' ]
   ]);
 };
 
 /**
- * Filter endpoint connection parameters, so they can safely logged
- * without leaking secrets.
+ * Sanitize config with endpoint, so it can safely be logged.
  *
- * @param {any} parameters
+ * @param {Object} config
  *
- * @returns {any} filtered parameters
+ * @returns {Object}
  */
-module.exports.redactEndpointParameters = function(parameters) {
-  return redactDeep(parameters, [
-    'clientSecret:secret',
-    'basicAuthPassword:secret'
+module.exports.sanitizeConfigWithEndpoint = function(config) {
+  return sanitizeObject(config, [
+    'clientSecret',
+    'basicAuthPassword'
   ]);
 };
 
+/**
+ * Sanitize an object by replacing sensitive values with placeholders.
+ *
+ * @param {Object} obj
+ * @param {Array<string|Array<string>>} sanitizations - Array of keys (strings) or [key, type] pairs. Default type is 'secret'.
+ *
+ * @returns {Object}
+ */
+function sanitizeObject(obj, sanitizations) {
+  const sanitizationTypes = sanitizations.reduce((sanitizationTypes, sanitization) => {
+    const [ key, type = 'secret' ] = Array.isArray(sanitization) ? sanitization : [ sanitization ];
 
-function redactDeep(obj, keys) {
+    sanitizationTypes[key] = type;
 
-  const overrides = keys.reduce((overrides, name) => {
-    const [ key, type ] = name.split(':');
-
-    overrides[key] = type;
-
-    return overrides;
+    return sanitizationTypes;
   }, {});
 
-  return JSON.parse(
-    JSON.stringify(obj, (key, value) => {
-      const override = overrides[key];
+  return cloneObjectWithReplacer(obj, (key, value) => {
+    const sanitizationType = sanitizationTypes[key];
 
-      if (override === 'secret') {
-        return '******';
-      }
+    if (sanitizationType === 'secret') {
+      return '******';
+    }
 
-      if (override === 'blob') {
-        return '...';
-      }
+    if (sanitizationType === 'blob') {
+      return '...';
+    }
 
-      return value;
-    })
-  );
+    return value;
+  });
+}
+
+/**
+ * Clone an object with a custom replacer function.
+ *
+ * @param {Object} obj
+ * @param {Function} replacer - Function to replace values during cloning
+ *
+ * @returns {Object}
+ */
+function cloneObjectWithReplacer(obj, replacer) {
+  return JSON.parse(JSON.stringify(obj, replacer));
 }
 
 /**
