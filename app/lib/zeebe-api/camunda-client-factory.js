@@ -110,11 +110,15 @@ class CamundaClientFactory {
    * @returns {Promise<'grpc'|'grpcs'|'http'|'https'>}
    */
   async _getProtocol(endpoint) {
-    const urlProtocol = endpoint.url.match(/^(https?|grpcs?):\/\//)?.[1];
+    const matchedProtocol = endpoint.url.match(/^(https?|grpcs?):\/\//)?.[1];
+
+    if (!matchedProtocol) {
+      return 'grpc';
+    }
 
     // Use explicit gRPC protocol from URL
-    if (urlProtocol && [ 'grpc', 'grpcs' ].includes(urlProtocol)) {
-      return urlProtocol;
+    if (matchedProtocol && [ 'grpc', 'grpcs' ].includes(matchedProtocol)) {
+      return matchedProtocol;
     }
 
     // For SaaS, get protocol from URL
@@ -127,12 +131,12 @@ class CamundaClientFactory {
     }
 
     // Test REST first, fallback to gRPC
-    const isSecure = urlProtocol === 'https';
+    const isSecure = matchedProtocol === 'https';
 
     const grpcProtocol = isSecure ? 'grpcs' : 'grpc';
 
-    if (await this._canConnectWithProtocol(endpoint, urlProtocol)) {
-      return urlProtocol;
+    if (await this._canConnectWithProtocol(endpoint, matchedProtocol)) {
+      return matchedProtocol;
     }
 
     return grpcProtocol;
