@@ -62,18 +62,17 @@ describe('CamundaClientFactory', function() {
   afterEach(function() {
 
     // Reset instance state to prevent test bleed
-    clients._protocol = 'rest';
-    clients._camundaClient = null;
-    clients._endpoint = undefined;
+    clients._cachedProtocol = 'rest';
+    clients._cachedClient = null;
     clients._cachedEndpoint = undefined;
 
     // Only restore specific stubs, not all of sinon
     // sinon.restore() affects other tests globally
   });
 
-  describe('#_determineProtocol', function() {
+  describe('#_getProtocol', function() {
 
-    it('should use pattern protocol for Camunda SaaS endpoints (gRPC)', async function() {
+    it('should detect gRPC protocol for SaaS URLs', async function() {
 
       // given
       const endpoint = {
@@ -82,14 +81,14 @@ describe('CamundaClientFactory', function() {
       };
 
       // when
-      const protocol = await clients._determineProtocol(endpoint);
+      const protocol = await clients._getProtocol(endpoint);
 
       // then
       expect(protocol).to.equal('grpcs');
     });
 
 
-    it('should use pattern protocol for Camunda SaaS endpoints (REST)', async function() {
+    it('should detect REST protocol for SaaS URLs', async function() {
 
       // given
       const endpoint = {
@@ -98,14 +97,14 @@ describe('CamundaClientFactory', function() {
       };
 
       // when
-      const protocol = await clients._determineProtocol(endpoint);
+      const protocol = await clients._getProtocol(endpoint);
 
       // then
       expect(protocol).to.equal('https');
     });
 
 
-    it('should respect explicit gRPC protocol in URL', async function() {
+    it('should detect gRPC protocol in Self-Managed gRPC URL', async function() {
 
       // given
       const endpoint = {
@@ -114,14 +113,14 @@ describe('CamundaClientFactory', function() {
       };
 
       // when
-      const protocol = await clients._determineProtocol(endpoint);
+      const protocol = await clients._getProtocol(endpoint);
 
       // then
       expect(protocol).to.equal('grpcs');
     });
 
 
-    it('should fallback to gRPC', async function() {
+    it('should fallback to gRPC for Self-Managed HTTP URLs when REST connection fails', async function() {
 
       // given
       const endpoint = {
@@ -131,14 +130,14 @@ describe('CamundaClientFactory', function() {
       mockRestClient.getTopology.rejects(new Error('Connection failed'));
 
       // when
-      const protocol = await clients._determineProtocol(endpoint);
+      const protocol = await clients._getProtocol(endpoint);
 
       // then
       expect(protocol).to.equal('grpc');
     });
 
 
-    it('should use gRPCs for https URLs', async function() {
+    it('should fallback to secure gRPC for Self-Managed HTTPS URLs when REST fails', async function() {
 
       // given
       const endpoint = {
@@ -148,13 +147,14 @@ describe('CamundaClientFactory', function() {
       mockRestClient.getTopology.rejects(new Error('Connection failed'));
 
       // when
-      const protocol = await clients._determineProtocol(endpoint);
+      const protocol = await clients._getProtocol(endpoint);
 
       // then
       expect(protocol).to.equal('grpcs');
     });
 
-    it('should handle connection timeout gracefully with protocol detection enabled', async function() {
+
+    it('should handle connection timeout gracefully with protocol detection', async function() {
 
       // given
       const endpoint = {
@@ -166,7 +166,7 @@ describe('CamundaClientFactory', function() {
       mockZeebeClient.topology.returns(new Promise(() => {})); // Never resolves
 
       // when
-      const protocol = await clients._determineProtocol(endpoint);
+      const protocol = await clients._getProtocol(endpoint);
 
       // then - should fall back to HTTP when gRPC times out
       expect(protocol).to.equal('http');
@@ -174,9 +174,10 @@ describe('CamundaClientFactory', function() {
 
   });
 
-  describe('#_testProtocol', function() {
 
-    it('should return true when gRPC connection succeeds', async function() {
+  describe('#_canConnectWithProtocol', function() {
+
+    it('should return true when gRPC topology call succeeds', async function() {
 
       // given
       const endpoint = {
@@ -187,14 +188,15 @@ describe('CamundaClientFactory', function() {
       mockZeebeClient.topology.resolves({ brokers: [] });
 
       // when
-      const result = await clients._testProtocol(endpoint, 'grpc');
+      const result = await clients._canConnectWithProtocol(endpoint, 'grpc');
 
       // then
       expect(result).to.be.true;
       expect(mockCamundaClient.closeAllClients).to.have.been.called;
     });
 
-    it('should return true when REST connection succeeds', async function() {
+
+    it('should return true when REST topology call succeeds', async function() {
 
       // given
       const endpoint = {
@@ -205,14 +207,15 @@ describe('CamundaClientFactory', function() {
       mockRestClient.getTopology.resolves({ brokers: [] });
 
       // when
-      const result = await clients._testProtocol(endpoint, 'http');
+      const result = await clients._canConnectWithProtocol(endpoint, 'http');
 
       // then
       expect(result).to.be.true;
       expect(mockCamundaClient.closeAllClients).to.have.been.called;
     });
 
-    it('should return false when connection fails', async function() {
+
+    it('should return false when connection attempt fails', async function() {
 
       // given
       const endpoint = {
@@ -223,7 +226,7 @@ describe('CamundaClientFactory', function() {
       mockZeebeClient.topology.rejects(new Error('Connection failed'));
 
       // when
-      const result = await clients._testProtocol(endpoint, 'grpc');
+      const result = await clients._canConnectWithProtocol(endpoint, 'grpc');
 
       // then
       expect(result).to.be.false;
@@ -235,12 +238,11 @@ describe('CamundaClientFactory', function() {
   describe('#getSupportedCamundaClients', function() {
 
     beforeEach(function() {
-      sinon.stub(clients, '_determineProtocol');
+      sinon.stub(clients, '_getProtocol');
     });
 
 
-
-    it('should return gRPC client when protocol is determined to be gRPC', async function() {
+    it('should return gRPC client when protocol is gRPC', async function() {
 
       // given
       const endpoint = {
@@ -248,7 +250,7 @@ describe('CamundaClientFactory', function() {
         url: 'http://localhost:26500'
       };
 
-      clients._determineProtocol.resolves('grpc');
+      clients._getProtocol.resolves('grpc');
 
       // when
       const result = await clients.getSupportedCamundaClients(endpoint);
@@ -260,7 +262,7 @@ describe('CamundaClientFactory', function() {
     });
 
 
-    it('should return REST client when protocol is determined to be http', async function() {
+    it('should return REST client when protocol is HTTP', async function() {
 
       // given
       const endpoint = {
@@ -268,7 +270,7 @@ describe('CamundaClientFactory', function() {
         url: 'grpc://localhost:8080'
       };
 
-      clients._determineProtocol.resolves('http');
+      clients._getProtocol.resolves('http');
 
       // when
       const result = await clients.getSupportedCamundaClients(endpoint);
@@ -280,7 +282,7 @@ describe('CamundaClientFactory', function() {
     });
 
 
-    it('should return gRPC client when protocol is gRPCs', async function() {
+    it('should return gRPC client when protocol is secure gRPC', async function() {
 
       // given
       const endpoint = {
@@ -288,7 +290,7 @@ describe('CamundaClientFactory', function() {
         url: 'grpcs://localhost:26500'
       };
 
-      clients._determineProtocol.resolves('grpcs');
+      clients._getProtocol.resolves('grpcs');
 
       // when
       const result = await clients.getSupportedCamundaClients(endpoint);
@@ -300,7 +302,7 @@ describe('CamundaClientFactory', function() {
     });
 
 
-    it('should set the determined protocol on the instance', async function() {
+    it('should cache detected protocol', async function() {
 
       // given
       const endpoint = {
@@ -308,21 +310,21 @@ describe('CamundaClientFactory', function() {
         url: 'http://localhost:8080'
       };
 
-      clients._determineProtocol.resolves('grpc');
+      clients._getProtocol.resolves('grpc');
 
       // when
       await clients.getSupportedCamundaClients(endpoint);
 
       // then
-      expect(clients._protocol).to.equal('grpc');
+      expect(clients._cachedProtocol).to.equal('grpc');
     });
 
   });
 
 
-  describe('Integration scenarios', function() {
+  describe('integration', function() {
 
-    it('should handle gRPC URL with explicit protocol', async function() {
+    it('should return gRPC client for explicit gRPC URLs', async function() {
 
       // given
       const endpoint = {
@@ -336,11 +338,11 @@ describe('CamundaClientFactory', function() {
       // then
       expect(result.zeebeGrpcClient).to.exist;
       expect(result.camundaRestClient).to.not.exist;
-      expect(clients._protocol).to.equal('grpc');
+      expect(clients._cachedProtocol).to.equal('grpc');
     });
 
 
-    it('should fallback to gRPC', async function() {
+    it('should fallback to gRPC when REST fails', async function() {
 
       // given
       const endpoint = {
@@ -354,13 +356,13 @@ describe('CamundaClientFactory', function() {
       const result = await clients.getSupportedCamundaClients(endpoint);
 
       // then
-      expect(clients._protocol).to.equal('grpc');
+      expect(clients._cachedProtocol).to.equal('grpc');
       expect(result.camundaRestClient).to.not.exist;
       expect(result.zeebeGrpcClient).to.exist;
     });
 
 
-    it('should use rest if available', async function() {
+    it('should use REST when connection succeeds', async function() {
 
       // given
       const endpoint = {
@@ -373,7 +375,7 @@ describe('CamundaClientFactory', function() {
       const result = await clients.getSupportedCamundaClients(endpoint);
 
       // then
-      expect(clients._protocol).to.equal('https');
+      expect(clients._cachedProtocol).to.equal('https');
       expect(result.camundaRestClient).to.exist;
       expect(result.zeebeGrpcClient).to.not.exist;
     });
