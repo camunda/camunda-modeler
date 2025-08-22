@@ -22,11 +22,26 @@ describe('util', function() {
 
   describe('getOperateUrl', function() {
 
-    it('should get Camunda Operate URL', function() {
+    it('should get Camunda Operate URL (grpc)', function() {
 
       // given
       const endpoint = {
         camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443'
+      };
+
+      // when
+      const url = getOperateUrl(endpoint);
+
+      // then
+      expect(url.toString()).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should get Camunda Operate URL (REST)', function() {
+
+      // given
+      const endpoint = {
+        camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
       };
 
       // when

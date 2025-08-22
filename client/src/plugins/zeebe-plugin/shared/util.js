@@ -48,7 +48,8 @@ export function getOperateUrl(endpoint) {
 /**
   * Get cluster ID from cluster URL.
   *
-  * supported formats:
+  * Supported formats:
+  *
   * https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443
   * https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   *
@@ -74,7 +75,8 @@ function getClusterId(clusterURL) {
 /**
  * Get cluster region from cluster URL.
  *
- * supported formats:
+ * Supported formats:
+ *
  * https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443
  * https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
  *
