@@ -146,6 +146,7 @@ describe('<DeploymentConfigValidator>', function() {
           'grpcs://cluster-name.region-1.zeebe.camunda.io:443',
           'grpcs://another-cluster-name.region-1.zeebe.camunda.io:443',
           'grpcs://cluster-name.region-1.zeebe.camunda.io',
+          'https://region-1.zeebe.camunda.io/cluster-name'
         ].map(value => DeploymentConfigValidator.validateConfigValue('endpoint.camundaCloudClusterUrl', value));
 
         // then
@@ -164,7 +165,8 @@ describe('<DeploymentConfigValidator>', function() {
           'grpc://cluster-name.region-1.zeebe.camunda.io:443',
           'grpc://another-cluster-name.region-1.zeebe.camunda.io:443',
           'grpc://cluster-name.region-1.zeebe.camunda.io',
-          'ftp://cluster-name.region-1.zeebe.camunda.io:443'
+          'ftp://cluster-name.region-1.zeebe.camunda.io:443',
+          'http://region-1.zeebe.camunda.io/cluster-name'
         ].map(value => DeploymentConfigValidator.validateConfigValue('endpoint.camundaCloudClusterUrl', value));
 
         // then
