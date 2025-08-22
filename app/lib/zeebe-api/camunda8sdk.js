@@ -27,6 +27,11 @@ const { redactCamunda8Options, isGrpcSaasUrl, isRestSaasUrl } = require('./utils
  * @typedef {import('@camunda8/sdk/dist/zeebe').ZeebeGrpcClient} ZeebeGrpcClient
  */
 
+/**
+ * A factory for Camunda 8 SDK clients that caches a single client for the
+ * endpoint that was last requested. If a different endpoint is requested, a new
+ * client is created.
+ */
 class Camunda8SdkClients {
 
   /**
@@ -184,7 +189,7 @@ class Camunda8SdkClients {
     if (!values(ENDPOINT_TYPES).includes(type) || !values(AUTH_TYPES).includes(authType)) {
 
       // TODO(nikku): this should throw an error as consumers of this method
-      //   _never_ handle a null zeebe client appropriately
+      // _never_ handle a null zeebe client appropriately
       return;
     }
 
@@ -361,10 +366,29 @@ class Camunda8SdkClients {
 
 }
 
-function isHashEqual(parameter1, parameter2) {
-  return JSON.stringify(parameter1) === JSON.stringify(parameter2);
+/**
+ * Check if two objects are equal by comparing their JSON string representations.
+ *
+ * @param {Object} obj1
+ * @param {Object} obj2
+ *
+ * @returns {boolean}
+ */
+function isHashEqual(obj1, obj2) {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
 
+/**
+ * Remove the protocol (http://, https://, etc.) from a URL.
+ *
+ * @example
+ *
+ * removeProtocol('https://example.com') // returns 'example.com'
+ *
+ * @param {string} url
+ *
+ * @returns {string}
+ */
 function removeProtocol(url) {
   return url.replace(/^(https?:\/\/|grpcs?:\/\/)/, '');
 }
