@@ -23,6 +23,8 @@ const {
   ENDPOINT_TYPES
 } = require('../../../lib/zeebe-api/constants');
 
+const { setupPlatformStub } = require('./helper');
+
 
 describe('ZeebeAPI (REST)', function() {
 
@@ -1978,20 +1980,6 @@ describe('ZeebeAPI (REST)', function() {
 
 
 // helpers //////////////////////
-function setupPlatformStub() {
-  let platformStub;
-
-  // eslint-disable-next-line mocha/no-top-level-hooks
-  before(function() {
-    platformStub = sinon.stub(process, 'platform').value('CI');
-  });
-
-  // eslint-disable-next-line mocha/no-top-level-hooks
-  after(function() {
-    platformStub.restore();
-  });
-}
-
 function createZeebeAPI(options = {}) {
   const fs = options.fs || {
     readFile: (_, { encoding = 'utf8' } = {}) => {

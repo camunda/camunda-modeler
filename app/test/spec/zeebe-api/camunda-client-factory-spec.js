@@ -17,9 +17,11 @@ const {
   ENDPOINT_TYPES
 } = require('../../../lib/zeebe-api/constants');
 
+const { setupPlatformStub } = require('./helper');
 
 describe('CamundaClientFactory', function() {
 
+  // TODO(barmac): remove when system keychain certificates are tested
   setupPlatformStub();
 
   let Camunda8, flags, log, clients;
@@ -379,19 +381,3 @@ describe('CamundaClientFactory', function() {
   });
 
 });
-
-
-// helpers //////////////////////
-function setupPlatformStub() {
-  let platformStub;
-
-  // eslint-disable-next-line mocha/no-top-level-hooks
-  before(function() {
-    platformStub = sinon.stub(process, 'platform').value('CI');
-  });
-
-  // eslint-disable-next-line mocha/no-top-level-hooks
-  after(function() {
-    platformStub.restore();
-  });
-}
