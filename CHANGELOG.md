@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: support connection through both gRPC and REST when deploying and starting instance ([#5226](https://github.com/camunda/camunda-modeler/pull/5226))
+
 ### General
 
 * `DEPS`: update to `@camunda/linting@3.41.0`
