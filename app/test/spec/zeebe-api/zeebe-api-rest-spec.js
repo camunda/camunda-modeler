@@ -1094,7 +1094,7 @@ describe('ZeebeAPI (REST)', function() {
 
       // given
       const zeebeAPI = createZeebeAPI({
-        ZeebeRestApiClient: {
+        CamundaRestClient: {
           getTopology: function() {
             throw new Error('TEST ERROR.');
           }
@@ -1283,7 +1283,8 @@ describe('ZeebeAPI (REST)', function() {
 
         const parameters = {
           endpoint: {
-            type: ENDPOINT_TYPES.OAUTH,
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            authType: AUTH_TYPES.OAUTH,
             url: TEST_URL
           }
         };
@@ -1463,7 +1464,8 @@ describe('ZeebeAPI (REST)', function() {
       await zeebeAPI.deploy({
         ...parameters,
         endpoint: {
-          type: ENDPOINT_TYPES.OAUTH,
+          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+          authType: AUTH_TYPES.OAUTH,
           url: TEST_URL
         }
       });

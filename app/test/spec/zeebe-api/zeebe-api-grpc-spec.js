@@ -1491,7 +1491,7 @@ describe('ZeebeAPI (gRPC)', function() {
         };
 
         // when
-        const result = await zeebeAPI.checkConnection(parameters);
+        const result = await zeebeAPI.getGatewayVersion(parameters);
 
         expect(result.reason).to.eql('INVALID_CREDENTIALS');
       });
