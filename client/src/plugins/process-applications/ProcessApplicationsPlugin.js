@@ -31,6 +31,8 @@ export default function ProcessApplicationsPlugin(props) {
   } = props;
 
   const [ activeTab, setActiveTab ] = useState(null);
+  const [ tabGroup, setTabGroup ] = useState(null);
+  const [ tabGroups, setTabGroups ] = useState(null);
   const [ tabs, setTabs ] = useState([]);
   const [ items, setItems ] = useState([]);
   const [ processApplication, setProcessApplication ] = useState(null);
@@ -45,6 +47,12 @@ export default function ProcessApplicationsPlugin(props) {
 
     subscribe('app.tabsChanged', (event) => {
       setTabs(event.tabs);
+    });
+
+    subscribe('app.tabGroupsChanged', (event) => {
+      const { tabGroups } = event;
+
+      setTabGroups(tabGroups);
     });
 
     subscribe('create-process-application', async () => {
@@ -173,6 +181,20 @@ export default function ProcessApplicationsPlugin(props) {
     }
   }, [ items, tabs ]);
 
+  useEffect(() => {
+    if (!activeTab || !tabGroups) {
+      return;
+    }
+
+    const tabGroup = tabGroups[activeTab.id];
+
+    if (tabGroup) {
+      setTabGroup(tabGroup);
+    } else {
+      setTabGroup(null);
+    }
+  }, [ activeTab, tabGroups ]);
+
   return <>
     <ProcessApplicationsStatusBar
       activeTab={ activeTab }
@@ -180,6 +202,7 @@ export default function ProcessApplicationsPlugin(props) {
       processApplicationItems={ processApplicationItems }
       onOpen={ (path) => triggerAction('open-diagram', { path }) }
       onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }
+      tabGroup={ tabGroup }
       tabsProvider={ _getFromApp('props').tabsProvider }
     />
     <ProcessApplicationsDeploymentPlugin
@@ -189,6 +212,7 @@ export default function ProcessApplicationsPlugin(props) {
       log={ log }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }
+      tabGroup={ tabGroup }
       triggerAction={ triggerAction } />
     <ProcessApplicationsStartInstancePlugin
       _getGlobal={ _getGlobal }
@@ -197,6 +221,7 @@ export default function ProcessApplicationsPlugin(props) {
       log={ log }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }
+      tabGroup={ tabGroup }
       triggerAction={ triggerAction } />
   </>;
 }
