@@ -24,7 +24,7 @@ const {
 } = require('../../../lib/zeebe-api/constants');
 
 
-describe('ZeebeAPI (GRPC)', function() {
+describe('ZeebeAPI (gRPC)', function() {
 
 
   // TODO(barmac): remove when system keychain certificates are tested

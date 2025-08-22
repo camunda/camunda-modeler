@@ -71,7 +71,7 @@ describe('CamundaClientFactory', function() {
 
   describe('#_determineProtocol', function() {
 
-    it('should use pattern protocol for Camunda SaaS endpoints (GRPC)', async function() {
+    it('should use pattern protocol for Camunda SaaS endpoints (gRPC)', async function() {
 
       // given
       const endpoint = {
@@ -119,7 +119,7 @@ describe('CamundaClientFactory', function() {
     });
 
 
-    it('should fallback to grpc', async function() {
+    it('should fallback to gRPC', async function() {
 
       // given
       const endpoint = {
@@ -136,7 +136,7 @@ describe('CamundaClientFactory', function() {
     });
 
 
-    it('should use grpcs for https URLs', async function() {
+    it('should use gRPCs for https URLs', async function() {
 
       // given
       const endpoint = {
@@ -238,7 +238,7 @@ describe('CamundaClientFactory', function() {
 
 
 
-    it('should return gRPC client when protocol is determined to be grpc', async function() {
+    it('should return gRPC client when protocol is determined to be gRPC', async function() {
 
       // given
       const endpoint = {
@@ -278,7 +278,7 @@ describe('CamundaClientFactory', function() {
     });
 
 
-    it('should return gRPC client when protocol is grpcs', async function() {
+    it('should return gRPC client when protocol is gRPCs', async function() {
 
       // given
       const endpoint = {
@@ -338,7 +338,7 @@ describe('CamundaClientFactory', function() {
     });
 
 
-    it('should fallback to grpc', async function() {
+    it('should fallback to gRPC', async function() {
 
       // given
       const endpoint = {
