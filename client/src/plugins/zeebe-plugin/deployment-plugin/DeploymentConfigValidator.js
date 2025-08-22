@@ -152,6 +152,10 @@ export default class DeploymentConfigValidator {
   }
 }
 
+const GRPC_CLUSTER_URL_REGEX = /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/;
+
+const REST_CLUSTER_URL_REGEX = /^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?/;
+
 /**
  * Validate cluster URL. Valid Camunda 8 SaaS URL must start with "https://" or "grpcs://" and end with ".zeebe.camunda.io".
  *
@@ -173,7 +177,7 @@ export default class DeploymentConfigValidator {
  * @returns {string|null}
  */
 function validateClusterUrl(url, validationErrorMessage) {
-  if (!/^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/.test(url) && !/^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?/.test(url)) {
+  if (!GRPC_CLUSTER_URL_REGEX.test(url) && !REST_CLUSTER_URL_REGEX.test(url)) {
     return validationErrorMessage;
   }
 
