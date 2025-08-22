@@ -6,13 +6,22 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FEAT`: support connection through both gRPC and REST when deploying and starting instance ([#5226](https://github.com/camunda/camunda-modeler/pull/5226))
+* `DEPS`: update to `bpmn-js@18.6.3`
+* `DEPS`: update to `@camunda/linting@3.42.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.33.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.42.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.11.0`
+* `DEPS`: update to `camunda-bpmn-js@5.13.0`
+* `DEPS`: update to `bpmn-moddle@9.0.3`
+* `DEPS`: update to `dmn-js@17.4.0`
+* `DEPS`: update to `camunda-dmn-js@3.5.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.17.0`
 
 ### General
 
-* `DEPS`: update to `@camunda/linting@3.41.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.41.3`
-* `DEPS`: update to `camunda-bpmn-js@5.12.0`
+* `FEAT`: support connection through both gRPC and REST when deploying and starting instance ([#4607](https://github.com/camunda/camunda-modeler/issues/4607))
+* `FEAT`: support multiline feel strings in `camunda` dialect ([#5089](https://github.com/camunda/camunda-modeler/issues/5089))
+* `FIX`: recognize unclosed feel string literal as syntax error ([#5190](https://github.com/camunda/camunda-modeler/issues/5190))
 
 ### BPMN
 
