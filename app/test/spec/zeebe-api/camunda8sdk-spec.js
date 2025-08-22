@@ -10,7 +10,6 @@
 
 'use strict';
 
-require('../../expect');
 const sinon = require('sinon');
 const fs = require('fs');
 const Camunda8SdkClients = require('../../../lib/zeebe-api/camunda8sdk');
