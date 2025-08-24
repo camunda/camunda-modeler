@@ -173,6 +173,28 @@ describe('KeyboardBindings', function() {
   });
 
 
+  it('paste-into-new-tab (Ctrl+Shift+V)', function() {
+    // given
+    event = createKeyEvent('V', { ctrlKey: true, shiftKey: true });
+
+    keyboardBindings.update([ {
+      custom: {
+        key: 'V',
+        keydown: 'paste-into-new-tab',
+        shiftKey: true,
+        ctrlKey: true,
+        metaKey: true // for Mac
+      }
+    } ]);
+
+    // when
+    keyboardBindings._keyDownHandler(event);
+
+    // then
+    expect(actionSpy).to.have.been.calledWith('paste-into-new-tab', event);
+  });
+
+
   it('undo', function() {
 
     // given
