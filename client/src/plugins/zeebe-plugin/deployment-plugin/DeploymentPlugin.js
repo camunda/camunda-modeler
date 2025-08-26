@@ -18,7 +18,7 @@ import { bootstrapDeployment } from '../shared/util';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
-import DeployIcon from 'icons/Deploy.svg';
+import DeployIcon from 'icons/Rocket.svg';
 
 import * as css from './DeploymentPlugin.less';
 
@@ -112,7 +112,7 @@ export default function DeploymentPlugin(props) {
           className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
-          <DeployIcon className="icon" />
+          <DeployIcon className="icon" width="16" height="16" viewBox="0 0 32 32" />
         </button>
       </Fill>
     ) }

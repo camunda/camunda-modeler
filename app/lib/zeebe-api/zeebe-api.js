@@ -237,13 +237,14 @@ class ZeebeAPI {
       endpoint,
       variables,
       processId,
+      startInstructions = [],
+      runtimeInstructions = [],
       tenantId
     } = config;
 
     this._log.debug('start instance', {
       parameters: sanitizeConfigWithEndpoint(config)
     });
-
 
     try {
       const {
@@ -253,9 +254,11 @@ class ZeebeAPI {
 
       if (zeebeGrpcClient) {
 
+        // runtimeInstructions are not supported with Zeebe gRPC client
         const response = await zeebeGrpcClient.createProcessInstance({
           bpmnProcessId: processId,
           variables,
+          startInstructions,
           tenantId
         });
 
@@ -269,6 +272,8 @@ class ZeebeAPI {
         const response = await camundaRestClient.createProcessInstance({
           processDefinitionId: processId,
           variables,
+          startInstructions,
+          runtimeInstructions,
           tenantId
         });
 
@@ -344,6 +349,131 @@ class ZeebeAPI {
     }
   }
 
+  /**
+   * Search process instances. Requires Camunda REST client.
+   */
+  async searchProcessInstances(config) {
+    const {
+      endpoint,
+      processInstanceKey
+    } = config;
+
+    this._log.debug('search process instances', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.searchProcessInstances({
+        filter: {
+          processInstanceKey
+        }
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search process instances failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
+  /**
+   * Search variables. Requires Camunda REST client.
+   */
+  async searchVariables(config) {
+    const {
+      endpoint,
+      processInstanceKey
+    } = config;
+
+    this._log.debug('search variables', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.searchVariables({
+        filter: {
+          processInstanceKey
+        }
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search variables failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
+  /**
+   * Search incidents. Requires Camunda REST client.
+   */
+  async searchIncidents(config) {
+    const {
+      endpoint,
+      processInstanceKey
+    } = config;
+
+    this._log.debug('search incidents', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.searchIncidents({
+        filter: {
+          processInstanceKey
+        }
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search incidents failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
 
   /**
    * Get resources based on the provided configs and tenantId.

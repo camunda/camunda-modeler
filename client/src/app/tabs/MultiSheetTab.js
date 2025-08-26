@@ -410,6 +410,8 @@ export class MultiSheetTab extends CachedComponent {
             onWarning={ this.handleWarning }
             linting={ this.props.linting }
             settings={ this.props.settings }
+            backend={ this.props.backend }
+            config={ this.props.config }
           />
         </TabContainer>
 

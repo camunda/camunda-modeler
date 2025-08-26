@@ -19,7 +19,7 @@ import { bootstrapDeployment, bootstrapStartInstance } from '../shared/util';
 import StartInstancePluginOverlay from './StartInstancePluginOverlay';
 
 import BPMNIcon from 'icons/file-types/BPMN.svg';
-import StartInstanceIcon from 'icons/Play.svg';
+import StartInstanceIcon from 'icons/PlayFilledAlt.svg';
 
 import * as css from './StartInstancePlugin.less';
 
@@ -114,7 +114,7 @@ export default function StartInstancePlugin(props) {
           className={ classNames('btn', css.StartInstancePlugin, { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
-          <StartInstanceIcon className="icon" />
+          <StartInstanceIcon className="icon" width="18" height="18" viewBox="0 0 32 32" />
         </button>
       </Fill>
     ) }

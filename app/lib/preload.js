@@ -59,7 +59,10 @@ const allowedEvents = [
   'zeebe:checkConnection',
   'zeebe:deploy',
   'zeebe:getGatewayVersion',
-  'zeebe:startInstance'
+  'zeebe:startInstance',
+  'zeebe:searchProcessInstances',
+  'zeebe:searchVariables',
+  'zeebe:searchIncidents'
 ];
 
 let executed = false;

@@ -342,6 +342,36 @@ renderer.on('zeebe:getGatewayVersion', async function(options, done) {
   }
 });
 
+renderer.on('zeebe:searchProcessInstances', async function(options, done) {
+  try {
+    const searchProcessInstancesResponse = await zeebeAPI.searchProcessInstances(options);
+
+    done(null, searchProcessInstancesResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:searchVariables', async function(options, done) {
+  try {
+    const searchVariablesResponse = await zeebeAPI.searchVariables(options);
+
+    done(null, searchVariablesResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:searchIncidents', async function(options, done) {
+  try {
+    const searchIncidentsResponse = await zeebeAPI.searchIncidents(options);
+
+    done(null, searchIncidentsResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
 // config //////////
 
 renderer.on('config:get', function(key, ...args) {

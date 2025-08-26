@@ -2198,6 +2198,8 @@ export class App extends PureComponent {
                       getPlugins={ this.getPlugins }
                       ref={ this.tabRef }
                       settings={ this.getGlobal('settings') }
+                      backend={ this.getGlobal('backend') }
+                      config={ this.getGlobal('config') }
                     />
                   }
                 </TabContainer>
