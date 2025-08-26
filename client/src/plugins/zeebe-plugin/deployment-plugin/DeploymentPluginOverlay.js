@@ -52,7 +52,7 @@ export default function DeploymentPluginOverlay(props) {
     renderDescription = null,
     renderHeader = 'Deploy',
     renderSubmit = 'Deploy',
-    triggerAction
+    triggerAction, connections,
   } = props;
 
   /** @type {DeploymentConfig} */
@@ -178,6 +178,7 @@ export default function DeploymentPluginOverlay(props) {
             renderHeader={ renderHeader }
             renderSubmit={ renderSubmit }
             validateForm={ validateForm }
+            connections={ connections }
             validateField={ (name, value) => deploymentConfigValidator.validateConfigValue(name, value) } />
         )
         : (
