@@ -28,6 +28,7 @@ import {
 
 import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
 
+import TaskTestingTab from '../../panel/tabs/task-testing/TaskTestingTab';
 import VariableTab from '../../panel/tabs/variable-outline/VariableOutlineTab';
 
 import BpmnModeler from './modeler';
@@ -829,10 +830,20 @@ export class BpmnEditor extends CachedComponent {
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
         }
 
+        <TaskTestingTab
+          backend={ this.props.backend }
+          config={ this.props.config }
+          engineProfile={ engineProfile }
+          file={ this.props.file }
+          id={ this.props.id }
+          injector={ injector }
+          layout={ layout }
+          onAction={ onAction } />
+
         <VariableTab
           id={ this.props.id }
-          layout={ layout }
           injector={ injector }
+          layout={ layout }
           onAction={ onAction } />
       </div>
     );

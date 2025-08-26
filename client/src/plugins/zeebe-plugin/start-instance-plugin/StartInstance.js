@@ -15,6 +15,8 @@
 
 import EventEmitter from 'events';
 
+import { isObject } from 'min-dash';
+
 export const CONFIG_KEYS = {
   CONFIG: 'start-process-instance'
 };
@@ -47,7 +49,9 @@ export default class StartInstance extends EventEmitter {
     const {
       deployment,
       endpoint,
-      variables = '{}'
+      variables = '{}',
+      startInstructions = [],
+      runtimeInstructions = []
     } = config;
 
     const { tenantId } = deployment;
@@ -56,7 +60,9 @@ export default class StartInstance extends EventEmitter {
       endpoint,
       processId,
       tenantId,
-      variables: parseVariables(variables)
+      variables: parseVariables(variables),
+      startInstructions,
+      runtimeInstructions
     });
 
     this.emit('instanceStarted', {
@@ -99,6 +105,10 @@ export default class StartInstance extends EventEmitter {
 }
 
 function parseVariables(variables) {
+  if (isObject(variables)) {
+    return variables;
+  }
+
   try {
     return JSON.parse(variables);
   } catch (e) {
