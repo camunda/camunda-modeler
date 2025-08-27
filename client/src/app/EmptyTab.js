@@ -12,6 +12,7 @@ import React, { PureComponent } from 'react';
 
 import CloudIcon from '../../resources/icons/Cloud.svg';
 import PlatformIcon from '../../resources/icons/Platform.svg';
+import AiIcon from '../../resources/icons/Ai.svg';
 
 import * as css from './EmptyTab.less';
 
@@ -109,6 +110,10 @@ export default class EmptyTab extends PureComponent {
       <div id="welcome-page-learn-more" className="welcome-card">
         <div className="learn-more">
           <h3>Learn more</h3>
+          <div className="article top">
+            <AiIcon />
+            <a href="https://docs.camunda.io/docs/next/guides/getting-started-agentic-orchestration?utm_source=modeler&utm_medium=referral">Build your first AI agent</a>
+          </div>
           <div className="article relative">
             <p>Introduction to Camunda 8</p>
             <a href="https://camunda.com/blog/2022/04/camunda-platform-8-orchestrate-all-the-things?utm_source=modeler&utm_medium=referral">Read blog post</a>
