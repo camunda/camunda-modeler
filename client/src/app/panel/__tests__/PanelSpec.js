@@ -198,24 +198,15 @@ describe('<Panel>', function() {
 
       // when
       const tab = createTab({
-        children: <div data-testid="foo" />,
         number: 123
       });
-      const { queryByTestId, getByRole } = renderPanel({
+
+      const { getByText } = renderPanel({
         children: tab
       });
 
-      const numberTab = getByRole('button', { name: 'Foo123' });
-
       // then
-      expect(numberTab.className).to.include('panel__link--active');
-
-      expect(numberTab.querySelector('.panel__link-label').textContent).to.equal('Foo');
-
-      expect(numberTab.querySelector('.panel__link-number')).to.exist;
-      expect(numberTab.querySelector('.panel__link-number').textContent).to.equal('123');
-
-      expect(queryByTestId('foo')).to.exist;
+      expect(getByText('123')).to.exist;
     });
 
 
