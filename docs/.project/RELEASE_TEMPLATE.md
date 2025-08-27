@@ -41,12 +41,12 @@ _To be done after code freeze to prepare and test the release._
 * [ ] close all issues which are solved by dependency updates
 * [ ] ensure that the modeler is free of major security vulnerabilities via `npm audit`
 * [ ] smoke test to verify all diagrams can be created
+* [ ] merge to main: `git checkout main && git merge develop`
 * [ ] update [Release Info](https://github.com/camunda/camunda-modeler/blob/develop/client/src/plugins/version-info/ReleaseInfo.js)
   * [ ] create a draft following [our guidelines](https://github.com/bpmn-io/internal-docs/blob/main/releases/modeler/CAMUNDA_MODELER.md#whats-new-communication) and based on priorities which were aligned with the team (PM, UX, and Engineering side)
-  * [ ] create PR to merge the draft into `develop`. Assign to PM, UX and Engineering for review
+  * [ ] create PR to merge the draft into `main`. Assign to PM, UX and Engineering for review
 * [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md)
 * [ ] compile a list of blog worthy changes as input to [release blog](https://confluence.camunda.com/pages/viewpage.action?pageId=178590449)
-* [ ] merge to main: `git checkout main && git merge develop`
 * [ ] create release candidate (`npm run release:rc -- [preminor|premajor|prepatch]`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/main/releases/RELEASE_SCHEMA.md)
   * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
   * [ ] (optional) to create further release candidates after the first one use `npm run release:rc -- prerelease`
