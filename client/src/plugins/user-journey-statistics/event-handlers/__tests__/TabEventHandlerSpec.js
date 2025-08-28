@@ -494,9 +494,12 @@ describe('<TabEventHandler>', function() {
             getAll: () => [
               { id: 'foo', modelerTemplate: 'templateId_foo' },
               { id: 'bar', modelerTemplate: 'templateId_bar' }
-            ]
-          };}
-      } });
+            ],
+            once: (name, callback) => {callback();}
+          };
+        }
+      }
+    });
 
     // then
     const { templateIds } = track.getCall(0).args[1];
