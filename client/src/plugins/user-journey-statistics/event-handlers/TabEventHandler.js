@@ -15,6 +15,9 @@ import {
 
 import { getTemplateIds } from '../util';
 
+import debug from 'debug';
+const log = debug('TabEventHandler');
+
 const types = {
   BPMN: 'bpmn',
   DMN: 'dmn',
@@ -107,16 +110,39 @@ export default class TabEventHandler {
       };
     }
 
-    const templateIds = getTemplateIds(this.modeler);
+    try {
+      await this.waitForImportDone(this.modeler);
+      const templateIds = getTemplateIds(this.modeler);
 
-    if (templateIds.length) {
+
       payload = {
         ...payload,
         templateIds
       };
+    } catch (error) {
+      log('Error getting templateIds, tracking without templateIds', error);
     }
 
     this.track('diagram:opened', payload);
   };
 
+
+  /**
+   * waits for the diagram to be completely imported or times out after 5 seconds
+   */
+  waitForImportDone = (modeler) => {
+    const eventBus = modeler.get('eventBus');
+
+    const importDonePromise = new Promise((resolve) => {
+      eventBus.once('import.done', resolve);
+    });
+
+    const timeoutPromise = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 5000);
+    });
+
+    return Promise.race([ importDonePromise, timeoutPromise ]);
+  };
 }
