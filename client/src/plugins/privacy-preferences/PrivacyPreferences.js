@@ -13,6 +13,7 @@ import React, { PureComponent } from 'react';
 import PrivacyPreferencesView from './PrivacyPreferencesView';
 
 import Flags, { DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
+import { DEFAULT_VALUES } from './constants';
 
 const CONFIG_KEY = 'editor.privacyPreferences';
 
@@ -46,7 +47,8 @@ export default class PrivacyPreferences extends PureComponent {
     if (!result) {
       this.setState({
         showModal: true,
-        isInitialPreferences: true
+        isInitialPreferences: true,
+        preferences: DEFAULT_VALUES
       });
     }
 

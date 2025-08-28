@@ -23,9 +23,9 @@ export const CANCEL_BUTTON_TEXT = 'Cancel';
 export const TITLE = 'Privacy Preferences';
 
 export const DEFAULT_VALUES = {
-  ENABLE_CRASH_REPORTS: false,
-  ENABLE_USAGE_STATISTICS: false,
-  ENABLE_UPDATE_CHECKS: false
+  ENABLE_CRASH_REPORTS: true,
+  ENABLE_USAGE_STATISTICS: true,
+  ENABLE_UPDATE_CHECKS: true
 };
 
 export const PREFERENCES_LIST = [

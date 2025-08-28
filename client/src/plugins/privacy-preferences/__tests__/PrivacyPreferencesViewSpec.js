@@ -133,7 +133,7 @@ describe('<PrivacyPreferencesView>', function() {
 
   describe('functionality', function() {
 
-    it('should use default values if preferences empty', function() {
+    it('should default to true (opt out)if preferences unset', function() {
 
       // when
       const wrapper = mount(<PrivacyPreferencesView />);
@@ -142,7 +142,21 @@ describe('<PrivacyPreferencesView>', function() {
 
       // then
       checkboxes.forEach(function(checkbox, index) {
-        expect(checkbox.props().defaultChecked).to.be.eql(false);
+        expect(checkbox.props().defaultChecked).to.be.eql(true);
+      });
+    });
+
+
+    it('should use unchecked for existing empty preferences', function() {
+
+      // when
+      const wrapper = mount(<PrivacyPreferencesView preferences={ {} } />);
+
+      const checkboxes = wrapper.find(PRIVACY_PREFERENCES_SELECTOR).find('input');
+
+      // then
+      checkboxes.forEach(function(checkbox, index) {
+        expect(checkbox.props().defaultChecked).to.not.be.ok;
       });
     });
 
