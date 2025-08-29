@@ -93,7 +93,7 @@ export default function Panel({ children, layout = {}, onLayoutChanged, onUpdate
 
   return <TabContext.Provider value={ contextValue }>
     <div className={ css.Panel }>
-      <div className="panel__header" data-testid="panel__header">
+      <div className="panel__header">
         <div className="panel__links">
           {tabs.sort((a, b) => b.priority - a.priority).map(tab => (
             <button
