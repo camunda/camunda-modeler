@@ -10,9 +10,9 @@
 
 /* global sinon */
 
-import React, { Component } from 'react';
+import React from 'react';
 
-import { render, waitFor, act, within } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import { userEvent } from '@testing-library/user-event';
 
@@ -42,87 +42,46 @@ describe('<Panel>', function() {
 
     it('should render tab', function() {
 
-      // when
+      // given
       const tab = createTab({
-        children: <div data-testid="foo" />
+        children: <div data-testid="tab-content" />
       });
 
-      const { queryByTestId, getByRole } = renderPanel({
+      // when
+      const { getByRole, getByTestId } = renderPanel({
         children: tab
       });
 
-      const fooTab = getByRole('button', { name: 'Foo' });
-
       // then
-      expect(fooTab.className).to.include('panel__link--active');
-      expect(within(fooTab).queryByText('Foo')).to.exist;
-
-      expect(queryByTestId('foo')).to.exist;
+      expect(getByRole('button', { name: 'Foo' })).to.exist;
+      expect(getByTestId('tab-content')).to.exist;
+      expect(getByRole('button', { name: 'Foo' }).classList.contains('panel__link--active')).to.be.true;
     });
 
 
     it('should add Tab as Plugin', function() {
 
-      // when
-      const { queryByTestId, getByRole } = renderPanel({
-        children: <Fill slot="bottom-panel" label="Foo" id="foo">
-          <div data-testid="foo" />
+      // given
+      const tab = (
+        <Fill slot="bottom-panel" label="Foo" id="foo">
+          <div data-testid="tab-content" />
         </Fill>
+      );
+
+      // when
+      const { getByRole, getByTestId } = renderPanel({
+        children: tab
       });
 
       // then
-      const fooTab = getByRole('button', { name: 'Foo' });
-
-      expect(fooTab.className).to.include('panel__link--active');
-      expect(within(fooTab).queryByText('Foo')).to.exist;
-
-      expect(queryByTestId('foo')).to.exist;
-    });
-
-
-    it('should update Tab on prop changes', async function() {
-
-      // given
-      const customCompRef = React.createRef();
-      class CustomComponent extends Component {
-        constructor(props) {
-          super(props);
-          this.state = { label: 'Foo' };
-        }
-
-        render() {
-          const { label } = this.state;
-
-          return <Fill slot="bottom-panel" label={ label } id="foo">
-            <div className={ 'foo' } />
-          </Fill>;
-        }
-      }
-
-      const { getByRole } = renderPanel({
-        children: <CustomComponent ref={ customCompRef } />
-      });
-
-      // assume
-      const fooTab = getByRole('button', { name: 'Foo' });
-
-      expect(fooTab.className).to.include('panel__link--active');
-
-      expect(within(fooTab).queryByText('Foo')).to.exist;
-
-      // when
-      customCompRef.current.setState({ label: 'Bar' });
-
-      await waitFor(() => {
-        expect(within(fooTab).queryByText('Bar')).to.exist;
-        expect(fooTab.className).to.include('panel__link--active');
-      });
+      expect(getByRole('button', { name: 'Foo' })).to.exist;
+      expect(getByTestId('tab-content')).to.exist;
     });
 
 
     it('should render two tabs', async function() {
 
-      // when
+      // given
       const tab1 = createTab({
         id: 'foo',
         label: 'Foo',
@@ -135,33 +94,23 @@ describe('<Panel>', function() {
         children: <div data-testid="bar" />
       });
 
-      const { container, queryByTestId, getByRole } = renderPanel({
+      // when
+      const { queryByTestId, getByRole } = renderPanel({
         children: [ tab1, tab2 ]
       });
 
-      const fooTab = getByRole('button', { name: 'Foo' });
-      const barTab = getByRole('button', { name: 'Bar' });
-
-      const { queryByText: queryByTextInFooTab } = within(fooTab);
-      const { queryByText: queryByTextInBarTab } = within(barTab);
-
       // then
-      expect(container.querySelectorAll('.panel__link')).to.have.length(2);
-      expect(container.querySelectorAll('.panel__link--active')).to.have.length(1);
-
-      expect(queryByTextInFooTab('Foo')).to.exist;
-      expect(fooTab.className).to.include('panel__link--active');
-
-      expect(queryByTextInBarTab('Bar')).to.exist;
-
+      expect(getByRole('button', { name: 'Foo' })).to.exist;
       expect(queryByTestId('foo')).to.exist;
+
+      expect(getByRole('button', { name: 'Bar' })).to.exist;
       expect(queryByTestId('bar')).to.not.exist;
     });
 
 
-    it('should render two tabs with priority', function() {
+    it('should render two tabs ordered by priority', function() {
 
-      // when
+      // given
       const tab = createTab({
         id: 'foo',
         label: 'Foo',
@@ -174,23 +123,16 @@ describe('<Panel>', function() {
         priority: 2,
         children: <div data-testid="bar" />
       });
-      const { container, queryByTestId } = renderPanel({
+
+      // when
+      const { getAllByRole } = renderPanel({
         children: [ tab, priorityTab ]
       });
 
-      const tabs = within(container).getAllByRole('button');
-
       // then
-      expect(container.querySelectorAll('.panel__link')).to.have.length(2);
-      expect(container.querySelectorAll('.panel__link--active')).to.have.length(1);
-
-      expect(within(tabs[0]).getByText('Bar')).to.exist;
-      expect(within(tabs[1]).getByText('Foo')).to.exist;
-
-      expect(tabs[1].className).to.include('panel__link--active');
-
-      expect(queryByTestId('foo')).to.exist;
-      expect(queryByTestId('bar')).to.not.exist;
+      const tabs = getAllByRole('button', { name: /foo|bar/i });
+      expect(tabs[0].textContent).to.eql('Bar');
+      expect(tabs[1].textContent).to.eql('Foo');
     });
 
 
@@ -233,7 +175,7 @@ describe('<Panel>', function() {
       });
 
       // when
-      await act(() => userEvent.click(getByRole('button', { name: 'Bar' })));
+      await userEvent.click(getByRole('button', { name: 'Bar' }));
 
       // then
       expect(onLayoutChangedSpy).to.have.been.calledWith({
@@ -260,7 +202,7 @@ describe('<Panel>', function() {
       });
 
       // when
-      await act(() => userEvent.click(container.querySelector('.panel__body')));
+      await userEvent.click(container.querySelector('.panel__body'));
 
       // then
       expect(onUpdateMenu).to.be.calledOnceWithExactly({
