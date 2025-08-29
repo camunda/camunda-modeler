@@ -10,7 +10,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-import classNames from 'classnames';
+import classnames from 'classnames';
 
 import { Fill } from '../../app/slot-fill';
 
@@ -29,6 +29,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
   const {
     _getGlobal,
     activeTab,
+    tabGroup,
     displayNotification,
     log,
     processApplication,
@@ -110,7 +111,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
         <button
           onClick={ onClick }
           title="Open process application deployment"
-          className={ classNames('btn', css.ProcessApplicationsDeploymentPlugin, { 'btn--active': overlayOpen }) }
+          className={ classnames('btn', css.ProcessApplicationsDeploymentPlugin, { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
           <DeployIcon className="icon" />
@@ -121,6 +122,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
       <DeploymentPluginOverlay
         activeTab={ activeTab }
         anchor={ anchorRef.current }
+        className={ classnames(tabGroup?.className) }
         connectionChecker={ connectionChecker }
         deployment={ deployment }
         deploymentConfigValidator={ deploymentConfigValidator }
