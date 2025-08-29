@@ -19,6 +19,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: change privacy preferences to default all settings to enabled ([#5238](https://github.com/camunda/camunda-modeler/pull/5238))
 * `FEAT`: support connection through both gRPC and REST when deploying and starting instance ([#4607](https://github.com/camunda/camunda-modeler/issues/4607))
 * `FEAT`: support multiline feel strings in `camunda` dialect ([#5089](https://github.com/camunda/camunda-modeler/issues/5089))
 * `FIX`: recognize unclosed feel string literal as syntax error ([#5190](https://github.com/camunda/camunda-modeler/issues/5190))
