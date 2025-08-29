@@ -60,7 +60,9 @@ export default class ZeebeAPI {
       endpoint,
       processId,
       tenantId,
-      variables
+      variables,
+      startInstructions,
+      runtimeInstructions
     } = options;
 
     endpoint = getEndpointForTargetType(endpoint);
@@ -69,7 +71,9 @@ export default class ZeebeAPI {
       endpoint,
       processId,
       tenantId,
-      variables
+      variables,
+      startInstructions,
+      runtimeInstructions
     });
   }
 
@@ -78,6 +82,39 @@ export default class ZeebeAPI {
 
     return this._backend.send('zeebe:getGatewayVersion', {
       endpoint
+    });
+  }
+
+  searchProcessInstances(options, processInstanceKey) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchProcessInstances', {
+      endpoint,
+      processInstanceKey
+    });
+  }
+
+  searchVariables(options, processInstanceKey) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchVariables', {
+      endpoint,
+      processInstanceKey
+    });
+  }
+
+  searchIncidents(options, processInstanceKey) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchIncidents', {
+      endpoint,
+      processInstanceKey
     });
   }
 }

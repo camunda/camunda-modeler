@@ -94,6 +94,10 @@ class CamundaClientFactory {
   async getSupportedCamundaClients(endpoint) {
     const camundaClient = await this.getCamundaClient(endpoint);
 
+    return {
+      camundaRestClient: camundaClient.getCamundaRestClient()
+    };
+
     if ([ 'grpc', 'grpcs' ].includes(this._cachedProtocol)) {
       return {
         zeebeGrpcClient: camundaClient.getZeebeGrpcApiClient()
@@ -116,10 +120,6 @@ class CamundaClientFactory {
    */
   async _getProtocol(endpoint) {
     const matchedProtocol = endpoint.url.match(/^(https?|grpcs?):\/\//)?.[1];
-
-    if (!matchedProtocol) {
-      return 'grpc';
-    }
 
     // Use explicit gRPC protocol from URL
     if (matchedProtocol && [ 'grpc', 'grpcs' ].includes(matchedProtocol)) {
@@ -247,6 +247,31 @@ class CamundaClientFactory {
   }
 
   async _getClientConfig(endpoint) {
+    return {
+      ZEEBE_ADDRESS: '681acb8f-ea7e-4020-9160-cfc1cd904484.lpp-1.zeebe.dev.ultrawombat.com:443',
+      ZEEBE_CLIENT_ID: endpoint.clientId,
+      ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
+      ZEEBE_AUTHORIZATION_SERVER_URL: 'https://login.cloud.dev.ultrawombat.com/oauth/token',
+      ZEEBE_REST_ADDRESS: 'https://lpp-1.zeebe.dev.ultrawombat.com/681acb8f-ea7e-4020-9160-cfc1cd904484',
+      ZEEBE_GRPC_ADDRESS: 'grpcs://681acb8f-ea7e-4020-9160-cfc1cd904484.lpp-1.zeebe.dev.ultrawombat.com:443',
+      ZEEBE_TOKEN_AUDIENCE: 'zeebe.dev.ultrawombat.com',
+      CAMUNDA_TOKEN_AUDIENCE: 'zeebe.dev.ultrawombat.com',
+      CAMUNDA_CLUSTER_ID: '681acb8f-ea7e-4020-9160-cfc1cd904484',
+      CAMUNDA_CLIENT_ID: endpoint.clientId,
+      CAMUNDA_CLIENT_SECRET: endpoint.clientSecret,
+      CAMUNDA_CLUSTER_REGION: 'lpp-1',
+      CAMUNDA_CREDENTIALS_SCOPES: 'Optimize,Zeebe,Tasklist,Operate',
+      CAMUNDA_TASKLIST_BASE_URL: 'https://lpp-1.tasklist.dev.ultrawombat.com/681acb8f-ea7e-4020-9160-cfc1cd904484',
+      CAMUNDA_OPTIMIZE_BASE_URL: 'https://lpp-1.optimize.dev.ultrawombat.com/681acb8f-ea7e-4020-9160-cfc1cd904484',
+      CAMUNDA_OPERATE_BASE_URL: 'https://lpp-1.operate.dev.ultrawombat.com/681acb8f-ea7e-4020-9160-cfc1cd904484',
+      CAMUNDA_OPERATE_OAUTH_AUDIENCE: 'operate.dev.ultrawombat.com',
+      CAMUNDA_OAUTH_URL: 'https://login.cloud.dev.ultrawombat.com/oauth/token',
+      CAMUNDA_CLIENT_MODE: 'saas',
+      CAMUNDA_CLIENT_AUTH_CLIENTID: endpoint.clientId,
+      CAMUNDA_CLIENT_AUTH_CLIENTSECRET: endpoint.clientSecret,
+      CAMUNDA_CLIENT_CLOUD_CLUSTERID: '681acb8f-ea7e-4020-9160-cfc1cd904484',
+      CAMUNDA_CLIENT_CLOUD_REGION: 'lpp-1'
+    };
 
     const {
       type,
