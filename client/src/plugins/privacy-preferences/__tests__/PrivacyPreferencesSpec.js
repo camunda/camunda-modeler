@@ -48,6 +48,26 @@ describe('<PrivacyPreferences>', function() {
   });
 
 
+  it('should default to opt-out on start if config non existent', async function() {
+
+    // when
+    const wrapper = await createPrivacyPreferences({
+      config: {
+        get() {
+          return new Promise((resolve, reject) => {
+            resolve(null);
+          });
+        }
+      }
+    });
+
+    // then
+    expect(wrapper.state('preferences').ENABLE_CRASH_REPORTS).to.be.true;
+    expect(wrapper.state('preferences').ENABLE_USAGE_STATISTICS).to.be.true;
+    expect(wrapper.state('preferences').ENABLE_UPDATE_CHECKS).to.be.true;
+  });
+
+
   it('should not show modal on start if config existent', async function() {
 
     // when
@@ -97,7 +117,8 @@ describe('<PrivacyPreferences>', function() {
             resolve({});
           });
         }
-      }, subscribe: subscribeSpy
+      },
+      subscribe: subscribeSpy
     });
 
     // then
