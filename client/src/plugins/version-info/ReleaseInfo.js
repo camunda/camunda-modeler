@@ -44,20 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Improvements in element templates</h4>
-          You can now configure a script task as a FEEL expression, define the called decision of a business rule task, and configure a form linked to a user task.
+          <h4>Enhanced BPMN ad-hoc sub-process support</h4>
+          You can now configure new ad-hoc sub-process properties such as output collection and implementation as a job worker.
         </li>
         <li>
-          <h4>Camunda FEEL editor intelligence</h4>
-          Our FEEL editor now supports <a href="https://docs.camunda.io/docs/components/modeler/feel/language-guide/feel-variables/#escape-variable-names">escaping variable names with backticks</a>.
+          <h4>Support for deployment using the new orchestration cluster REST API</h4>
+          The Modeler now supports deploying through the new <a href="https://docs.camunda.io/docs/8.8/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/">Orchestration Cluster REST API</a>.
         </li>
         <li>
-          <h4>Better linting for IO mapping</h4>
-          {"The Modeler now helps ensure you have the right IO mappings for the Camunda version you're using."}
-        </li>
-        <li>
-          <h4>Custom validation messages in Forms</h4>
-          You can now add custom error messages to form inputs validated with regex patterns.
+          <h4>Enhanced FEEL expression editing</h4>
+          The Modeler now supports multiline FEEL strings and provides better syntax error detection for unclosed string literals.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
