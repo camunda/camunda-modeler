@@ -44,20 +44,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Improvements in element templates</h4>
-          You can now configure a script task as a FEEL expression, define the called decision of a business rule task, and configure a form linked to a user task.
+          <h4>REST deployment support</h4>
+          You can now deploy and start process instances using either gRPC or REST.
         </li>
         <li>
-          <h4>Camunda FEEL editor intelligence</h4>
-          Our FEEL editor now supports <a href="https://docs.camunda.io/docs/components/modeler/feel/language-guide/feel-variables/#escape-variable-names">escaping variable names with backticks</a>.
+          <h4>Multiline FEEL string support</h4>
+          The FEEL editor now supports multiline string literals.
         </li>
         <li>
-          <h4>Better linting for IO mapping</h4>
-          {"The Modeler now helps ensure you have the right IO mappings for the Camunda version you're using."}
+          <h4>More powerful Ad-hoc sub-process configuration</h4>
+          You can now configure output collections and job worker implementations for bpmn:AdHocSubProcess.
         </li>
         <li>
-          <h4>Custom validation messages in Forms</h4>
-          You can now add custom error messages to form inputs validated with regex patterns.
+          <h4>New element template bindings</h4>
+          Element templates now support the following Zeebe bindings: zeebe:assignmentDefinition, zeebe:priorityDefinition, zeebe:taskSchedule, and zeebe:adHoc.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
