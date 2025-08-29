@@ -133,7 +133,7 @@ describe('<PrivacyPreferencesView>', function() {
 
   describe('functionality', function() {
 
-    it('should default to true (opt out)if preferences unset', function() {
+    it('should default to true (opt-out) if preferences unset', function() {
 
       // when
       const wrapper = mount(<PrivacyPreferencesView />);
