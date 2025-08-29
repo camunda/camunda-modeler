@@ -29,7 +29,7 @@
     "@codemirror/state": "^6.4.1",
     "@codemirror/view": "^6.34.1",
     "@ibm/plex": "^6.4.1",
-    "@sentry/browser": "^9.0.0",
+    "@sentry/browser": "^10.0.0",
     "@sentry/integrations": "^7.108.0",
     "@uiw/codemirror-theme-vscode": "^4.23.12",
     "bpmn-js": "^18.6.3",
