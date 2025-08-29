@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import { Icon } from '..';
 
@@ -18,17 +18,17 @@ import { Icon } from '..';
 describe('<Icon>', function() {
 
   it('should render', function() {
-    shallow(<Icon />);
+    render(<Icon />);
   });
 
 
   it('should accept custom className', function() {
 
     // when
-    const wrapper = shallow(<Icon className="foo" />);
+    const { container } = render(<Icon className="foo" />);
 
     // then
-    expect(wrapper.hasClass('foo')).to.be.true;
+    expect(container.querySelector('.foo')).to.exist;
   });
 
 });

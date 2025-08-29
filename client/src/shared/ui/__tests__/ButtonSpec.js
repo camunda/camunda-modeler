@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import { Button } from '..';
 
@@ -20,17 +20,17 @@ import { Button } from '..';
 describe('<Button>', function() {
 
   it('should render', function() {
-    shallow(<Button />);
+    render(<Button />);
   });
 
 
   it('should accept custom className', function() {
 
     // when
-    const wrapper = shallow(<Button className="foo" />);
+    const { container } = render(<Button className="foo" />);
 
     // then
-    expect(wrapper.hasClass('foo')).to.be.true;
+    expect(container.querySelector('.foo')).to.exist;
   });
 
 
@@ -39,10 +39,10 @@ describe('<Button>', function() {
     // given
     const spy = sinon.spy();
 
-    const wrapper = shallow(<Button onClick={ spy } />);
+    const { container } = render(<Button onClick={ spy } />);
 
     // when
-    wrapper.simulate('click');
+    fireEvent.click(container.firstChild);
 
     // then
     expect(spy).to.have.been.called;
@@ -52,10 +52,10 @@ describe('<Button>', function() {
   it('should be disabled', function() {
 
     // when
-    const wrapper = shallow(<Button disabled />);
+    const { container } = render(<Button disabled />);
 
     // then
-    expect(wrapper.hasClass('disabled')).to.be.true;
+    expect(container.querySelector('.disabled')).to.exist;
   });
 
 });
