@@ -48,7 +48,7 @@ export function ReleaseInfo(props) {
           You can now configure new ad-hoc sub-process properties such as output collection and implementation as a job worker.
         </li>
         <li>
-          <h4>Support for deployment using the new orchestration cluster REST API</h4>
+          <h4>Support for deployment using the new Orchestration Cluster REST API</h4>
           The Modeler now supports deploying through the new <a href="https://docs.camunda.io/docs/8.8/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/">Orchestration Cluster REST API</a>.
         </li>
         <li>
