@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.39.0
+
 * `DEPS`: update to `bpmn-js@18.6.3`
 * `DEPS`: update to `@camunda/linting@3.42.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.33.0`
