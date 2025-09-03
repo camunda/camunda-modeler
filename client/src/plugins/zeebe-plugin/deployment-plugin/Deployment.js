@@ -278,7 +278,7 @@ const CREDENTIALS = [
  *
  * @param {Endpoint} endpoint
  *
- * @returns {Endpoint}
+ * @returns {Partial<Endpoint>}
  */
 export function removeCredentials(endpoint) {
   return omit(endpoint, CREDENTIALS);

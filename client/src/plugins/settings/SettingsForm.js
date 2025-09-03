@@ -102,7 +102,6 @@ function SettingsField(props) {
 
   if (condition) {
     const met = isConditionMet(props.name, values, condition);
-    console.log('met', met, condition, props.name, values);
     if (!met) {
       return null;
     }
@@ -175,7 +174,7 @@ function SettingsField(props) {
 }
 
 function SettingsFieldArray(props) {
-  console.log('rendering SettingsFieldArray');
+
 
 
   const { name, label, description, childProperties, documentationUrl, formConfig } = props;
@@ -194,7 +193,7 @@ function SettingsFieldArray(props) {
           <p style={ {
             fontSize: '13px',
           } }>
-            Set up and manage connections to your process automation environments. If you want to work locally have a look at <a>c8run</a>
+            Set up and manage connections to your process automation environments. If you want to work locally have a look at <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags/">c8run</a>
           </p>
 
           {values.length === 0 && (
@@ -292,9 +291,9 @@ function SettingsFieldArray(props) {
             } }
             className="btn btn-primary"
             type="submit"
-            onClick={ () => arrayHelpers.push({ id: `${values.length + 1}` }) }
+            onClick={ () => arrayHelpers.push(formConfig.elementGenerator()) }
           >
-            Add connection
+            {formConfig.addLabel || 'Add'}
           </button>
         </div>
       );
@@ -330,13 +329,12 @@ function sortSchemaByOrder(schema) {
 
 
 function SettingsFieldArrayBackupt(props) {
-  console.log(props);
 
 
   const { name, label, description, children, documentationUrl } = props;
   const values = getIn(useFormikContext().values, name);
 
-  // console.log('hytusnruystny', formikValues);
+
   return <FieldArray name={ name }>
     {(arrayHelpers) => {
       return (
@@ -371,7 +369,7 @@ function SettingsFieldArrayBackupt(props) {
  * @returns {string} The resolved path
  */
 function resolvePath(currentPath, targetPath) {
-  console.log(targetPath);
+
   if (targetPath.includes('.')) {
     return targetPath;
   }

@@ -263,7 +263,7 @@ export default function StartInstancePluginOverlay(props) {
     <Overlay className={ css.StartInstancePluginOverlay } onClose={ onClose } anchor={ anchor }>
       { deploymentConfig && startInstanceConfig
         ? (
-          showDeploymentConfigForm
+          false
             ? (
               <DeploymentConfigForm
                 getFieldError={ getDeploymentFieldError }

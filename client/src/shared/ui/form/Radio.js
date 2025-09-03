@@ -13,7 +13,6 @@ import React from 'react';
 import classNames from 'classnames';
 
 export default function Radio(props) {
-  console.log(props);
   const {
     hint,
     label,
