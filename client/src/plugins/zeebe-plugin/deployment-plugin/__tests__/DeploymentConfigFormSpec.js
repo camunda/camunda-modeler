@@ -121,6 +121,8 @@ describe('<DeploymentConfigForm>', function() {
         expect(wrapper.find('label[htmlFor="endpoint.targetType"]').exists()).to.be.true;
         expect(wrapper.find('input[name="endpoint.targetType"][value="selfHosted"]').prop('checked')).to.be.true;
         expect(wrapper.find('label[htmlFor="endpoint.contactPoint"]').exists()).to.be.true;
+        expect(wrapper.find('label[htmlFor="deployment.tenantId"]').exists()).to.be.true;
+        expect(wrapper.find('label[htmlFor="endpoint.operateUrl"]').exists()).to.be.true;
         expect(wrapper.find('label[htmlFor="endpoint.authType"]').exists()).to.be.true;
         expect(wrapper.find('input[type="checkbox"][name="endpoint.rememberCredentials"]').exists()).to.be.true;
       });
@@ -147,6 +149,7 @@ describe('<DeploymentConfigForm>', function() {
         expect(wrapper.find('input[name="endpoint.targetType"][value="selfHosted"]').prop('checked')).to.be.true;
         expect(wrapper.find('label[htmlFor="endpoint.contactPoint"]').exists()).to.be.true;
         expect(wrapper.find('label[htmlFor="deployment.tenantId"]').exists()).to.be.true;
+        expect(wrapper.find('label[htmlFor="endpoint.operateUrl"]').exists()).to.be.true;
         expect(wrapper.find('label[htmlFor="endpoint.authType"]').exists()).to.be.true;
         expect(wrapper.find('input[name="endpoint.authType"][value="basic"]').prop('checked')).to.be.true;
         expect(wrapper.find('label[htmlFor="endpoint.basicAuthUsername"]').exists()).to.be.true;
@@ -176,6 +179,7 @@ describe('<DeploymentConfigForm>', function() {
         expect(wrapper.find('input[name="endpoint.targetType"][value="selfHosted"]').prop('checked')).to.be.true;
         expect(wrapper.find('label[htmlFor="endpoint.contactPoint"]').exists()).to.be.true;
         expect(wrapper.find('label[htmlFor="deployment.tenantId"]').exists()).to.be.true;
+        expect(wrapper.find('label[htmlFor="endpoint.operateUrl"]').exists()).to.be.true;
         expect(wrapper.find('label[htmlFor="endpoint.authType"]').exists()).to.be.true;
         expect(wrapper.find('input[name="endpoint.authType"][value="oauth"]').prop('checked')).to.be.true;
         expect(wrapper.find('label[htmlFor="endpoint.clientId"]').exists()).to.be.true;
