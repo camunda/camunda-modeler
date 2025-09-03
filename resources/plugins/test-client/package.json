@@ -4,7 +4,8 @@
   "description": "Camunda Modeler test client plug-in",
   "main": "index.js",
   "scripts": {
-    "all": "webpack",
+    "build": "webpack",
+    "all": "npm run build",
     "test": "echo \"no tests\" && exit 0"
   },
   "devDependencies": {
