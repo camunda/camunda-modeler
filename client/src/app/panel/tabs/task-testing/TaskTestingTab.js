@@ -24,12 +24,15 @@ import TestStatusBarItem from './TestStatusBarItem';
 
 import { debounce } from '../../../../util';
 
+import { ENGINES } from '../../../../util/Engines';
+
 export const TAB_ID = 'task-testing';
 
 export default function TaskTestingTab(props) {
   const {
     backend,
     config,
+    engineProfile,
     injector,
     file,
     layout = {},
@@ -52,7 +55,11 @@ export default function TaskTestingTab(props) {
   const [ deployment ] = useState(new Deployment(config, zeebeAPI));
   const [ startInstance ] = useState(new StartInstance(config, zeebeAPI));
 
-  const [ canExecuteTask, setCanExecuteTask ] = useState(false);
+  const supportedByRuntime = useMemo(() => {
+    return engineProfile &&
+      engineProfile.executionPlatform === ENGINES.CLOUD &&
+      engineProfile.executionPlatformVersion > '8.6.0';
+  }, [ engineProfile ]);
 
   const onToggle = () => {
     const { panel = {} } = layout;
@@ -146,8 +153,8 @@ export default function TaskTestingTab(props) {
       layout={ layout }
       priority={ 6 }>
       <div className={ css.TaskTestingTab }>
-        {
-          zeebeAPI && <TaskTesting
+        { supportedByRuntime ?
+          <TaskTesting
             canExecuteTask={ canExecuteTask }
             config={ taskTestingConfig }
             injector={ injector }
@@ -160,6 +167,11 @@ export default function TaskTestingTab(props) {
               getProcessInstanceIncident: onGetProcessInstanceIncident
             } }
           />
+          :
+          <div className="unsupported">
+            <p>Task testing is not supported by the current engine version.</p>
+            <p>Please use Camunda Cloud 8.7.0 or later.</p>
+          </div>
         }
       </div>
     </Fill>

@@ -833,6 +833,7 @@ export class BpmnEditor extends CachedComponent {
         <TaskTestingTab
           backend={ this.props.backend }
           config={ this.props.config }
+          engineProfile={ engineProfile }
           file={ this.props.file }
           id={ this.props.id }
           injector={ injector }
