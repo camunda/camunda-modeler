@@ -44,7 +44,7 @@ export default function Select(props) {
           >
             {props.options.map(({ value, label }) => <option key={ value } value={ value }>{label}</option>)}
           </select>
-          {<div className="custom-control-description">{ description }</div>}
+          <div className="custom-control-description">{ description }</div>
         </div>
       </div>
     </React.Fragment>

@@ -66,6 +66,33 @@ export default class TestClient extends Component {
           label: 'Icon color',
           description: 'Color of the lovely heart icon.'
         },
+        'testClientPlugin.textInput': {
+          type: 'text',
+          label: 'Text Input with Hint',
+          hint: 'Hint/Placeholder'
+        },
+        'testClientPlugin.passwordInput': {
+          type: 'password',
+          label: 'Password Input',
+        },
+        'testClientPlugin.select': {
+          type: 'select',
+          label: 'Select Dropdown',
+          options: [
+            { label: 'First Option', value: 'first' },
+            { label: 'Second Option', value: 'second' },
+            { label: 'Third Option', value: 'third' }
+          ]
+        },
+        'testClientPlugin.radio': {
+          type: 'radio',
+          label: 'Radio',
+          options: [
+            { label: 'First Option', value: 'first' },
+            { label: 'Second Option', value: 'second' },
+            { label: 'Third Option', value: 'third' }
+          ]
+        },
       }
     };
 

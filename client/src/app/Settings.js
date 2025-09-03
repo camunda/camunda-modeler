@@ -31,10 +31,11 @@ import { Flags } from '../util';
  *
  * @typedef {Object} SettingsProperty
  *
- * @property {'text' | 'boolean' | 'select'} type - one of the supported types
+ * @property {'text' | 'password' | 'boolean' | 'select' | 'radio'} type - one of the supported types
  * @property {string} label - label on the settings page
+ * @property {string} [hint] - hint/placeholder for input based fields
  * @property {string|boolean} [default] - the default value
- * @property {Array<{label: string, value: string}>} [options] - options for select type
+ * @property {Array<{label: string, value: string}>} [options] - options for select/radio type
  * @property {string} [flag] - indicates that the setting can be overridden by a flag
  * @property {string} [description] - description on the settings page
  * @property {boolean} [restartRequired] - is restart required to apply the setting
@@ -219,7 +220,7 @@ export default class Settings {
    *
    * Calls the listeners for each setting that has changed. Saves the file.
    *
-   * @param {Record<string, string|boolean} settings - Dictionary of setting keys and their values.
+   * @param {Record<string, string|boolean>} settings - Dictionary of setting keys and their values.
    */
   set(settings) {
 

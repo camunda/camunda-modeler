@@ -14,7 +14,7 @@ import { Field, Form, useFormikContext } from 'formik';
 
 import { map, forEach, sortBy } from 'min-dash';
 
-import { Section, TextInput, CheckBox, Select } from '../../shared/ui';
+import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
 import Flags from '../../util/Flags';
 
@@ -77,7 +77,7 @@ function SettingsField(props) {
   }, [ flag ]);
 
   const component = useMemo(() => {
-    if (type === 'text') {
+    if (type === 'text' || type === 'password') {
       return TextInput;
     }
 
@@ -89,6 +89,10 @@ function SettingsField(props) {
       return Select;
     }
 
+    if (type === 'radio') {
+      return Radio;
+    }
+
     return null;
   }, [ type ]);
 
@@ -96,9 +100,15 @@ function SettingsField(props) {
     return null;
   }
 
-  const { name, label, description, options, documentationUrl } = props;
+  const { name, label, description, hint, options, documentationUrl } = props;
 
-  const typeProp = type === 'boolean' ? { type: 'checkbox' } : {};
+  let typeProp = {};
+  if (type === 'boolean') {
+    typeProp = { type: 'checkbox' };
+  }
+  if (type === 'password') {
+    typeProp = { type: 'password' };
+  }
 
   const disabledByFlag = flagValue !== undefined;
 
@@ -110,7 +120,9 @@ function SettingsField(props) {
       disabled={ disabledByFlag }
       label={ label }
       description={ description }
+      hint={ hint }
       options={ options }
+      values={ options }
       documentationUrl={ documentationUrl }
     />
     { disabledByFlag &&
