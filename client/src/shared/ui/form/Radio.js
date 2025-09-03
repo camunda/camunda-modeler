@@ -12,6 +12,8 @@ import React from 'react';
 
 import classNames from 'classnames';
 
+import DocumentationIcon from './DocumentationIcon';
+
 export default function Radio(props) {
 
   const {
@@ -22,6 +24,8 @@ export default function Radio(props) {
     children,
     values,
     className,
+    documentationUrl,
+    description,
     ...restProps
   } = props;
 
@@ -38,11 +42,14 @@ export default function Radio(props) {
       <div className={
         classNames('form-group', 'form-inline', className)
       }>
-        <label htmlFor={ fieldName }>{ label }</label>
+        <label htmlFor={ fieldName }>
+          { label }
+          <DocumentationIcon url={ documentationUrl } />
+        </label>
         <div className="form-check-inline">
           {
             values.map((child) => {
-              const id = 'radio-element-' + toKebabCase(child.label);
+              const id = `radio-element-${fieldName}-${toKebabCase(child.label)}`;
               return (
                 <React.Fragment key={ child.label }>
                   <div className={
@@ -69,6 +76,7 @@ export default function Radio(props) {
             })
           }
         </div>
+        <div className="custom-control-description">{ description }</div>
       </div>
     </React.Fragment>
   );

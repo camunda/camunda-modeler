@@ -47,9 +47,8 @@ export default function CheckBox(props) {
             { label }
             <DocumentationIcon url={ documentationUrl } />
           </label>
-          {<div className="custom-control-description">{ description }</div>}
+          <div className="custom-control-description">{ description }</div>
         </div>
-        {description && <p className="form-control">{ description }</p>}
       </div>
     </React.Fragment>
   );
