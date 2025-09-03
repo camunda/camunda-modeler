@@ -52,32 +52,19 @@ export default class TestClient extends Component {
 
     const pluginSettings = {
       id: 'testClientPlugin',
-      title: 'Connections',
+      title: 'Test Client Plugin',
       properties: {
-
-        // // radio button for camunda 7, camunda 8 (SM), and camunda 8 (SaaS)
-        // 'testClientPlugin.connectionType': {
-        //   type: 'radio',
-        //   style: 'vertical',
-
-        //   default: 'camunda8-sm',
-        //   label: 'Target',
-        //   options: [
-        //     { value: 'camunda8-sm', label: 'Camunda 8 SaaS' },
-        //     { value: 'camunda8-saas', label: 'Camunda 8 Self-Managed' },
-        //     { value: 'camunda7', label: 'Camunda 7' },
-        //   ],
-
-        //   // restartRequired: true,
-        //   documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/'
-        // },
-
-        'testClientPlugin.allProps':{
+        'testClientPlugin.heartbeat': {
+          type: 'boolean',
+          default: true,
+          label: 'Will My Heart Go On?',
+          description: 'Enable the heart icon in the status bar.'
+        },
+        'testClientPlugin.iconColor': {
           type: 'text',
-          label: 'Label',
-          description: 'description',
-          default: 'default',
-          documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/'
+          default: '#10ad73',
+          label: 'Icon color',
+          description: 'Color of the lovely heart icon.'
         },
         'testClientPlugin.showAllFields': {
           type: 'boolean',

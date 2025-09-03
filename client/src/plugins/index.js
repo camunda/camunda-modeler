@@ -22,8 +22,11 @@ import VersionInfo from './version-info';
 import ZeebePlugin from './zeebe-plugin';
 import TemplateUpdater from './template-updater';
 import Settings from './settings';
+import CamundaApiPlugin from './camunda-api';
+
 
 export default [
+  CamundaApiPlugin,
   CamundaPlugin,
   ContextAction,
   CreateNewAction,

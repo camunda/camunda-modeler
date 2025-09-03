@@ -70,6 +70,7 @@ export default class ConnectionChecker extends EventEmitter {
     try {
       const { endpoint } = this._config;
 
+      console.log({ endpoint });
       const result = await this._zeebeAPI.checkConnection(endpoint);
 
       this._lastResult = result;

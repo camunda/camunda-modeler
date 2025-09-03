@@ -55,11 +55,8 @@ export default function DeploymentPluginOverlay(props) {
     triggerAction, connections,
   } = props;
 
-  /** @type {DeploymentConfig} */
-  const [ config, setConfig ] = useState(null);
-
-  /** @type {ConnectionCheckResult} */
-  const [ connectionCheckResult, setConnectionCheckResult ] = useState(null);
+  const [ config, setConfig ] = useState(/** @type {DeploymentConfig} */ (null));
+  const [ connectionCheckResult, setConnectionCheckResult ] = useState(/** @type {ConnectionCheckResult} */ (null));
 
   const getFieldError = (fieldName) => {
     return getConnectionCheckError(fieldName, connectionCheckResult);

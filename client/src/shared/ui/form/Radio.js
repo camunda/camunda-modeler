@@ -15,7 +15,6 @@ import classNames from 'classnames';
 import DocumentationIcon from './DocumentationIcon';
 
 export default function Radio(props) {
-  console.log(props);
   const {
     hint,
     label,
