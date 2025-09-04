@@ -1955,8 +1955,6 @@ export class App extends PureComponent {
     }
 
     if (action === 'open-panel') {
-      console.log('open-panel', options);
-
       const { tab } = options;
 
       return this.openPanel(tab);
