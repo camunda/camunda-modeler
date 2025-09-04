@@ -40,6 +40,7 @@ import { Flags } from '../util';
  * @property {string} [description] - description on the settings page
  * @property {boolean} [restartRequired] - is restart required to apply the setting
  * @property {string} [documentationUrl] - link to an external documentation
+ * @property {import('../plugins/settings/SettingsForm').Condition} [condition]
  */
 
 /**
@@ -109,7 +110,7 @@ export default class Settings {
    * The keys of the `properties` object must be prefixed with the `id` of the group.
    * e.g. if the `id` is `bpmn`, the keys must be `bpmn.enabled`, `bpmn.autoSave`, etc.
    *
-   * @see Refere to {@link SettingsGroup} and {@link SettingsProperty} types for more details.
+   * @see Refer to {@link SettingsGroup} and {@link SettingsProperty} types for more details.
    *
    * @param { SettingsGroup } settings
    *
