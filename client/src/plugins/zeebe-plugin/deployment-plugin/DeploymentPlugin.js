@@ -54,7 +54,11 @@ export default function DeploymentPlugin(props) {
       return;
     }
 
-    const saved = await triggerAction('save-tab', { tab: activeTab });
+    openOverlay();
+  };
+
+  const openOverlay = async (tab = activeTab) => {
+    const saved = await triggerAction('save-tab', { tab });
 
     if (!saved) {
       return;
@@ -88,8 +92,8 @@ export default function DeploymentPlugin(props) {
       setOverlayOpen(false);
     });
 
-    subscribe('app.open-deployment', () => {
-      setOverlayOpen(true);
+    subscribe('app.open-deployment', ({ tab }) => {
+      openOverlay(tab);
     });
   }, [ subscribe ]);
 

@@ -46,7 +46,7 @@ export default function TaskTestingTab(props) {
     onAction
   } = props;
 
-  const [ taskTestingConfig, setTaskTestingConfig ] = useState();
+  const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
   const [ isConnectionConfigured, setIsConnectionConfigured ] = useState(false);
 
@@ -63,18 +63,29 @@ export default function TaskTestingTab(props) {
   }, [ engineProfile ]);
 
   useEffect(() => {
-    connectionChecker.on('connectionCheck', async ({ success })=> {
+
+    // file is not saved
+    if (!file?.path) {
+      return;
+    }
+
+    const updateConfig = async () => {
       const config = await deployment.getConfigForFile(file);
       connectionChecker.updateConfig(config);
-      setIsConnectionConfigured(success);
-    });
+    };
 
-    connectionChecker.startChecking();
+    const checkConnection = async ({ success }) => {
+      await updateConfig();
+      setIsConnectionConfigured(success);
+    };
+
+    updateConfig();
+    connectionChecker.on('connectionCheck', checkConnection);
 
     return () => {
-      connectionChecker.off('connectionCheck');
+      connectionChecker.off('connectionCheck', checkConnection);
     };
-  }, []);
+  }, [ connectionChecker, file ]);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -88,12 +99,10 @@ export default function TaskTestingTab(props) {
     };
 
     loadConfig();
-  }, []);
+  }, [ injector ]);
 
   useEffect(() => {
     const saveConfig = debounce((value) => {
-      console.log('Saving task testing config after debounce:', value);
-
       config.setForFile(file, 'taskTesting', value).catch((err) => {
         console.error('Failed to save task testing config:', err);
       });
