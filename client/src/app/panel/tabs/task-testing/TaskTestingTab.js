@@ -177,7 +177,7 @@ export default function TaskTestingTab(props) {
             injector={ injector }
             config={ taskTestingConfig }
             isConnectionConfigured={ isConnectionConfigured }
-            configureConnectionCallback={ handleMissingDeploymentConfig }
+            onConfigureConnection={ handleMissingDeploymentConfig }
             onConfigChanged={ setTaskTestingConfig }
             api={ {
               deploy: handleDeployment,
