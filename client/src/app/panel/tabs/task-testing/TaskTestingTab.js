@@ -10,7 +10,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 
-import TaskTesting from 'task-testing';
+import TaskTesting from '@camunda/task-testing';
 
 import { Fill } from '../../../slot-fill';
 
