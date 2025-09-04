@@ -14,19 +14,26 @@ import TaskTesting from 'task-testing';
 
 import { Fill } from '../../../slot-fill';
 
-import ZeebeAPI from '../../../../remote/ZeebeAPI';
-import Deployment from '../../../../plugins/zeebe-plugin/deployment-plugin/Deployment';
-import StartInstance from '../../../../plugins/zeebe-plugin/start-instance-plugin/StartInstance';
-
-import * as css from './TaskTestingTab.less';
-
-import TestStatusBarItem from './TestStatusBarItem';
-
 import { debounce } from '../../../../util';
 
 import { ENGINES } from '../../../../util/Engines';
 
+import ZeebeAPI from '../../../../remote/ZeebeAPI';
+import Deployment from '../../../../plugins/zeebe-plugin/deployment-plugin/Deployment';
+import StartInstance from '../../../../plugins/zeebe-plugin/start-instance-plugin/StartInstance';
+
+import ConnectionChecker from '../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
+
+import TestStatusBarItem from './TestStatusBarItem';
+
+import * as css from './TaskTestingTab.less';
+
 export const TAB_ID = 'task-testing';
+
+export const DEFAULT_CONFIG = {
+  input: {},
+  output: {}
+};
 
 export default function TaskTestingTab(props) {
   const {
@@ -41,25 +48,59 @@ export default function TaskTestingTab(props) {
 
   const [ taskTestingConfig, setTaskTestingConfig ] = useState();
 
-  const [ saveConfigDebounced ] = useState(() => debounce((config, newConfig) => {
-    console.log('Saving task testing config after debounce:', newConfig);
-
-    config.set('taskTesting', newConfig).catch((err) => {
-      console.error('Failed to save task testing config:', err);
-    });
-  }));
-
-  const [ canExecuteTask, setCanExecuteTask ] = useState(false);
+  const [ isConnectionConfigured, setIsConnectionConfigured ] = useState(false);
 
   const [ zeebeAPI ] = useState(new ZeebeAPI(backend));
   const [ deployment ] = useState(new Deployment(config, zeebeAPI));
   const [ startInstance ] = useState(new StartInstance(config, zeebeAPI));
 
-  const supportedByRuntime = useMemo(() => {
+  const [ connectionChecker ] = useState(new ConnectionChecker(zeebeAPI));
+
+  const isSupportedByRuntime = useMemo(() => {
     return engineProfile &&
       engineProfile.executionPlatform === ENGINES.CLOUD &&
       engineProfile.executionPlatformVersion > '8.6.0';
   }, [ engineProfile ]);
+
+  useEffect(() => {
+    connectionChecker.on('connectionCheck', async ({ success })=> {
+      const config = await deployment.getConfigForFile(file);
+      connectionChecker.updateConfig(config);
+      setIsConnectionConfigured(success);
+    });
+
+    connectionChecker.startChecking();
+
+    return () => {
+      connectionChecker.off('connectionCheck');
+    };
+  }, []);
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      const fileConfig = await config.getForFile(file, 'taskTesting');
+
+      if (!fileConfig) {
+        return;
+      }
+
+      setTaskTestingConfig(fileConfig);
+    };
+
+    loadConfig();
+  }, []);
+
+  useEffect(() => {
+    const saveConfig = debounce((value) => {
+      console.log('Saving task testing config after debounce:', value);
+
+      config.setForFile(file, 'taskTesting', value).catch((err) => {
+        console.error('Failed to save task testing config:', err);
+      });
+    });
+
+    saveConfig(taskTestingConfig);
+  }, [ taskTestingConfig ]);
 
   const onToggle = () => {
     const { panel = {} } = layout;
@@ -71,33 +112,7 @@ export default function TaskTestingTab(props) {
     }
   };
 
-  useEffect(() => {
-    deployment.getConfigForFile(file).then((config) => {
-      setCanExecuteTask(!!config);
-    });
-  }, []);
-
-  useEffect(() => {
-    config.get('taskTesting', {
-      input: {},
-      output: {}
-    }).then((taskTestingConfig) => {
-      console.log('Loaded task testing config:', taskTestingConfig);
-
-      setTaskTestingConfig(taskTestingConfig);
-    }).catch((err) => {
-      console.error('Failed to load task testing config:', err);
-    });
-  }, [ config ]);
-
-  const onConfigChanged = (newConfig) => {
-    console.log('Task testing config changed:', newConfig);
-    setTaskTestingConfig(newConfig);
-
-    saveConfigDebounced(config, newConfig);
-  };
-
-  const onDeploy = async () => {
+  const handleDeployment = async () => {
     const config = await deployment.getConfigForFile(file);
 
     return deployment.deploy([
@@ -108,7 +123,11 @@ export default function TaskTestingTab(props) {
     ], config);
   };
 
-  const onStartInstance = async (processId, elementId, variables) => {
+  const handleMissingDeploymentConfig = () => {
+    onAction('open-deployment');
+  };
+
+  const handleStartInstance = async (processId, elementId, variables) => {
     const config = await deployment.getConfigForFile(file);
 
     return startInstance.startInstance(processId, {
@@ -128,19 +147,19 @@ export default function TaskTestingTab(props) {
     });
   };
 
-  const onGetProcessInstance = async (processInstanceKey) => {
+  const getProcessInstance = async (processInstanceKey) => {
     const config = await deployment.getConfigForFile(file);
 
     return zeebeAPI.searchProcessInstances(config, processInstanceKey);
   };
 
-  const onGetProcessInstanceVariables = async (processInstanceKey) => {
+  const getProcessInstanceVariables = async (processInstanceKey) => {
     const config = await deployment.getConfigForFile(file);
 
     return zeebeAPI.searchVariables(config, processInstanceKey);
   };
 
-  const onGetProcessInstanceIncident = async (processInstanceKey) => {
+  const getProcessInstanceIncident = async (processInstanceKey) => {
     const config = await deployment.getConfigForFile(file);
 
     return zeebeAPI.searchIncidents(config, processInstanceKey);
@@ -153,18 +172,19 @@ export default function TaskTestingTab(props) {
       layout={ layout }
       priority={ 6 }>
       <div className={ css.TaskTestingTab }>
-        { supportedByRuntime ?
+        { isSupportedByRuntime ?
           <TaskTesting
-            canExecuteTask={ canExecuteTask }
-            config={ taskTestingConfig }
             injector={ injector }
-            onConfigChanged={ onConfigChanged }
+            config={ taskTestingConfig }
+            isConnectionConfigured={ isConnectionConfigured }
+            configureConnectionCallback={ handleMissingDeploymentConfig }
+            onConfigChanged={ setTaskTestingConfig }
             api={ {
-              deploy: onDeploy,
-              startInstance: onStartInstance,
-              getProcessInstance: onGetProcessInstance,
-              getProcessInstanceVariables: onGetProcessInstanceVariables,
-              getProcessInstanceIncident: onGetProcessInstanceIncident
+              deploy: handleDeployment,
+              startInstance: handleStartInstance,
+              getProcessInstance: getProcessInstance,
+              getProcessInstanceVariables: getProcessInstanceVariables,
+              getProcessInstanceIncident: getProcessInstanceIncident
             } }
           />
           :
