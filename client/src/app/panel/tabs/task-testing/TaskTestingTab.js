@@ -58,7 +58,7 @@ export default function TaskTestingTab(props) {
     onAction
   } = props;
 
-  const [ taskTestingConfig, setTaskTestingConfig ] = useState();
+  const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
   const [ zeebeAPI ] = useState(new ZeebeAPI(backend));
   const [ deployment ] = useState(new Deployment(config, zeebeAPI));
@@ -111,12 +111,10 @@ export default function TaskTestingTab(props) {
     };
 
     loadConfig();
-  }, []);
+  }, [ injector ]);
 
   useEffect(() => {
     const saveConfig = debounce((value) => {
-      console.log('Saving task testing config after debounce:', value);
-
       config.setForFile(file, 'taskTesting', value).catch((err) => {
         console.error('Failed to save task testing config:', err);
       });
