@@ -1988,6 +1988,10 @@ export class App extends PureComponent {
       return this.emit('app.settings-open');
     }
 
+    if (action === 'open-deployment') {
+      return this.emit('app.open-deployment');
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
