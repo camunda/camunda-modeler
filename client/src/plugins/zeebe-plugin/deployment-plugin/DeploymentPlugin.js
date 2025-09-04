@@ -87,6 +87,10 @@ export default function DeploymentPlugin(props) {
 
       setOverlayOpen(false);
     });
+
+    subscribe('app.open-deployment', () => {
+      setOverlayOpen(true);
+    });
   }, [ subscribe ]);
 
   if (!activeTab || !connectionChecker || !deployment || !deploymentConfigValidator) {
