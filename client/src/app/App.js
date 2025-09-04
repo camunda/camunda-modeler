@@ -1987,7 +1987,7 @@ export class App extends PureComponent {
     }
 
     if (action === 'open-deployment') {
-      return this.emit('app.open-deployment');
+      return this.emitWithTab('app.open-deployment', activeTab);
     }
 
     const tab = this.tabRef.current;
