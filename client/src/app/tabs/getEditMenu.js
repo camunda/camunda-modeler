@@ -197,6 +197,17 @@ export function getCopyCutPasteEntries({
     accelerator: 'CommandOrControl + V',
     enabled: paste,
     action: 'paste'
+  }, {
+    label: 'Paste into New Tab',
+    accelerator: 'CommandOrControl + Shift + V',
+    enabled: paste,
+    custom: {
+      key: 'V',
+      keydown: 'paste-into-new-tab',
+      shiftKey: true,
+      ctrlKey: true,
+      metaKey: true // for Mac
+    }
   } ];
 }
 
