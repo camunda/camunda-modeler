@@ -218,7 +218,7 @@ export function isConditionMet(propName, values, condition) {
   const conditionPropPath = resolvePath(propName, condition.property);
   const conditionPropValue = getIn(values, conditionPropPath);
 
-  if (condition.equals) {
+  if ('equals' in condition) {
     return conditionPropValue === condition.equals;
   }
 
