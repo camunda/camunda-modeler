@@ -1850,8 +1850,6 @@ export class App extends PureComponent {
     }
 
     if (action === 'save') {
-      console.log('save', activeTab);
-
       return this.saveTab(activeTab);
     }
 
