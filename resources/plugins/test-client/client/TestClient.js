@@ -66,33 +66,71 @@ export default class TestClient extends Component {
           label: 'Icon color',
           description: 'Color of the lovely heart icon.'
         },
+        'testClientPlugin.showAllFields': {
+          type: 'boolean',
+          default: false,
+          label: 'Show all possible form fields',
+        },
+
         'testClientPlugin.textInput': {
           type: 'text',
           label: 'Text Input with Hint',
-          hint: 'Hint/Placeholder'
+          hint: 'Hint/Placeholder',
+
+          // showcasing that also absolute path works
+          condition: { property: 'testClientPlugin.showAllFields', equals: true },
         },
+
         'testClientPlugin.passwordInput': {
           type: 'password',
           label: 'Password Input',
+          description: 'describing the password',
+          condition: { property: 'showAllFields', equals: true },
+        },
+        'testClientPlugin.boolean': {
+          type: 'boolean',
+          default: false,
+          label: 'Checkbox',
+          description: 'describing the checkbox',
+          documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
+          condition: { property: 'showAllFields', equals: true },
         },
         'testClientPlugin.select': {
           type: 'select',
           label: 'Select Dropdown',
+          description: 'describing the select',
+          documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
           options: [
             { label: 'First Option', value: 'first' },
             { label: 'Second Option', value: 'second' },
             { label: 'Third Option', value: 'third' }
-          ]
+          ],
+          condition: { property: 'showAllFields', equals: true },
         },
         'testClientPlugin.radio': {
           type: 'radio',
-          label: 'Radio',
+          label: 'Radio for oneOf & matchAll condition',
+          description: 'describing the radio',
+          documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
+
+
           options: [
-            { label: 'First Option', value: 'first' },
-            { label: 'Second Option', value: 'second' },
-            { label: 'Third Option', value: 'third' }
-          ]
+            { label: 'First Option (show)', value: 'first' },
+            { label: 'Second Option (hide)', value: 'second' },
+            { label: 'Third Option (show)', value: 'third' }
+          ],
+          condition: { property: 'showAllFields', equals: true },
         },
+        'testClientPlugin.conditionOneOfTextField': {
+          type: 'text',
+          label: 'allMatch(equals, oneOf) Text Field',
+          condition: {
+            allMatch: [
+              { property: 'showAllFields', equals: true },
+              { property: 'radio', oneOf: [ 'first', 'third' ] }
+            ]
+          }
+        }
       }
     };
 
