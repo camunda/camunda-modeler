@@ -56,14 +56,14 @@ export default function SettingsPlugin(props) {
     subscribe('app.settings-open', () => {
       setOpen(true);
     });
-  }, [ ]);
+  }, [ subscribe ]);
 
   useEffect(() => {
     if (!open) return;
 
     // Schema is settings metadata e.g. type, default value, etc.
     setSchema(settings.getSchema());
-  }, [ open ]);
+  }, [ open, settings ]);
 
   useEffect(() => {
     if (!schema) return;
@@ -83,7 +83,7 @@ export default function SettingsPlugin(props) {
     });
 
     setValues(values);
-  }, [ schema ]);
+  }, [ schema, settings ]);
 
   const handleSave = (data) => {
     const formikValues = flattenFormikValues(data);
