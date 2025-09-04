@@ -124,6 +124,8 @@ export default function TaskTestingTab(props) {
   const handleDeployment = async () => {
     const config = await deployment.getConfigForFile(file);
 
+    onAction('save');
+
     return deployment.deploy([
       {
         path: file.path,
