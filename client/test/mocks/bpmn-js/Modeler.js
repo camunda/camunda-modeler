@@ -118,6 +118,8 @@ export default class Modeler {
         get() {}
       },
       eventBus: {
+        on() {},
+        off() {},
         fire() {}
       },
       canvas: {

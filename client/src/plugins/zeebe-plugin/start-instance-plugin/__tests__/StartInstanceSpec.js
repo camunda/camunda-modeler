@@ -51,7 +51,9 @@ describe('StartInstance', function() {
         endpoint,
         variables: {
           foo: 'bar'
-        }
+        },
+        startInstructions: undefined,
+        runtimeInstructions: undefined
       });
 
       expect(instanceStartedSpy).to.have.been.calledOnce;

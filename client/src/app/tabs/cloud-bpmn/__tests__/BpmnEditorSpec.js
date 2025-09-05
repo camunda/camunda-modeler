@@ -2098,11 +2098,11 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
   describe('Bottom Panel', function() {
 
     it('should show variable tab', async function() {
-      const { container } = await renderEditor(diagramXML);
+      const { getByText } = await renderEditor(diagramXML);
 
       // then
       await waitFor(() => {
-        expect(container.querySelector('.panel__link-label').textContent).to.eql('Variables');
+        expect(getByText('Variables')).to.exist;
       });
     });
 

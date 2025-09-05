@@ -255,10 +255,19 @@ export default class Deployment extends EventEmitter {
   /**
    * @param {Endpoint} endpoint
    *
-   * @returns {Promise<string>}
+   * @returns {Promise<string|null>}
    */
   async getGatewayVersion(endpoint) {
-    const { response } = await this._zeebeAPI.getGatewayVersion(endpoint);
+    const getGatewayVersionResult = await this._zeebeAPI.getGatewayVersion(endpoint);
+
+    const {
+      response,
+      success
+    } = getGatewayVersionResult;
+
+    if (!success) {
+      return null;
+    }
 
     const { gatewayVersion } = response;
 

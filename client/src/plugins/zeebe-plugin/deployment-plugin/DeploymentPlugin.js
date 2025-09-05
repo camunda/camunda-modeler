@@ -18,7 +18,7 @@ import { bootstrapDeployment } from '../shared/util';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
-import DeployIcon from 'icons/Deploy.svg';
+import DeployIcon from 'icons/Rocket.svg';
 
 import * as css from './DeploymentPlugin.less';
 
@@ -54,7 +54,11 @@ export default function DeploymentPlugin(props) {
       return;
     }
 
-    const saved = await triggerAction('save-tab', { tab: activeTab });
+    openOverlay();
+  };
+
+  const openOverlay = async (tab = activeTab) => {
+    const saved = await triggerAction('save-tab', { tab });
 
     if (!saved) {
       return;
@@ -87,6 +91,10 @@ export default function DeploymentPlugin(props) {
 
       setOverlayOpen(false);
     });
+
+    subscribe('app.open-deployment', ({ tab }) => {
+      openOverlay(tab);
+    });
   }, [ subscribe ]);
 
   if (!activeTab || !connectionChecker || !deployment || !deploymentConfigValidator) {
@@ -108,7 +116,7 @@ export default function DeploymentPlugin(props) {
           className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
-          <DeployIcon className="icon" />
+          <DeployIcon className="icon" width="16" height="16" viewBox="0 0 32 32" />
         </button>
       </Fill>
     ) }
