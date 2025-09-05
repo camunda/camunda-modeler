@@ -41,7 +41,6 @@ const LABELS = {
   OAUTH_AUDIENCE: 'OAuth audience',
   OAUTH_SCOPE: 'OAuth scope',
   OAUTH_URL: 'OAuth token URL',
-  OPERATE_URL: 'Operate URL',
   REMEMBER_CREDENTIALS: 'Remember credentials',
   SELF_HOSTED: 'Camunda 8 Self-Managed',
   TENANT_ID: 'Tenant ID'
@@ -121,18 +120,17 @@ export default function DeploymentConfigForm(props) {
                               hint={ HINTS.CONTACT_POINT }
                               autoFocus
                             />
-                            <Field
-                              name="deployment.tenantId"
-                              component={ TextInput }
-                              label={ LABELS.TENANT_ID }
-                              hint="Optional"
-                            />
-                            <Field
-                              name="endpoint.operateUrl"
-                              component={ TextInput }
-                              label={ LABELS.OPERATE_URL }
-                              hint="Optional"
-                            />
+                            {
+                              props.values.endpoint.targetType === TARGET_TYPES.SELF_HOSTED
+                                && (
+                                  <Field
+                                    name="deployment.tenantId"
+                                    component={ TextInput }
+                                    label={ LABELS.TENANT_ID }
+                                    hint="Optional"
+                                  />
+                                )
+                            }
                             <Field
                               name="endpoint.authType"
                               component={ Radio }
