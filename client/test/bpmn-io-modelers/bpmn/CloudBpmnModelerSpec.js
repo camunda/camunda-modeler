@@ -119,8 +119,6 @@ describe('BpmnModeler', function() {
  * Create modeler and wait for modeler and overview import to finish before returning modeler.
  *
  * @param {Object} [options]
- *
- * @returns {Object}
  */
 async function createModeler(options = {}) {
   const modeler = new BpmnModeler({

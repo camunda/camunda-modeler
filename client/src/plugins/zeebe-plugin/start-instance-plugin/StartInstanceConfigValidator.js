@@ -9,7 +9,7 @@
  */
 
 /**
- * @typedef {import('../types.d.ts').DeploymentConfig} DeploymentConfig
+ * @typedef {import('../deployment-plugin/types.d.ts').DeploymentConfig} DeploymentConfig
  */
 
 export const VALIDATION_ERROR_MESSAGES = {
