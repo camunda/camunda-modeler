@@ -61,8 +61,6 @@ export default function DeploymentPluginOverlay(props) {
   /** @type {ConnectionCheckResult} */
   const [ connectionCheckResult, setConnectionCheckResult ] = useState(null);
 
-  console.log('connectionCheckResult', connectionCheckResult);
-
   const getFieldError = (fieldName) => {
     return getConnectionCheckError(fieldName, connectionCheckResult);
   };
@@ -76,8 +74,6 @@ export default function DeploymentPluginOverlay(props) {
 
     if (deploymentResponse.success) {
       displayNotification(getSuccessNotification(activeTab, config, deploymentResponse));
-
-      console.log('Deployment successful', deploymentResponse);
     } else {
       displayNotification(getErrorNotification(triggerAction));
 

@@ -73,8 +73,6 @@ export default class StartInstance extends EventEmitter {
       variables: parseVariables(variables)
     });
 
-    console.log('[START INSTANCE] Start instance result:', startInstanceResult);
-
     return startInstanceResult;
   }
 

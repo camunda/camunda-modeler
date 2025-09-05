@@ -111,8 +111,6 @@ export default class Deployment extends EventEmitter {
       gatewayVersion
     });
 
-    console.log('[DEPLOYMENT] Deployment result:', deploymentResult);
-
     return deploymentResult;
   }
 
