@@ -16,7 +16,7 @@ import { SlotFillRoot } from '../../../../slot-fill';
 
 import Panel from '../../../Panel';
 
-import TestTab from '../TaskTestingTab';
+import TestTab, { REQUIRED_CAMUNDA_CLOUD_VERSION } from '../TaskTestingTab';
 
 import { ENGINES } from '../../../../../util/Engines';
 
@@ -41,13 +41,13 @@ describe('<TestTab>', function() {
   });
 
 
-  it('should not support Camunda Cloud < 8.7.0', async function() {
+  it(`should not support Camunda Cloud < ${REQUIRED_CAMUNDA_CLOUD_VERSION}`, async function() {
 
     // when
     const { getByText } = renderTab({
       engineProfile: {
         executionPlatform: ENGINES.CLOUD,
-        executionPlatformVersion: '8.6.0'
+        executionPlatformVersion: '8.7.0'
       }
     });
 

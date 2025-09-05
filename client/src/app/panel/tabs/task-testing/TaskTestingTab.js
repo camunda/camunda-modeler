@@ -10,6 +10,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 
+import semverCompare from 'semver';
+
 import TaskTesting from '@camunda/task-testing';
 
 import { Fill } from '../../../slot-fill';
@@ -35,6 +37,8 @@ export const DEFAULT_CONFIG = {
   output: {}
 };
 
+export const REQUIRED_CAMUNDA_CLOUD_VERSION = '8.8.0';
+
 export default function TaskTestingTab(props) {
   const {
     backend,
@@ -59,7 +63,7 @@ export default function TaskTestingTab(props) {
   const isSupportedByRuntime = useMemo(() => {
     return engineProfile &&
       engineProfile.executionPlatform === ENGINES.CLOUD &&
-      engineProfile.executionPlatformVersion > '8.6.0';
+      semverCompare(engineProfile.executionPlatformVersion, REQUIRED_CAMUNDA_CLOUD_VERSION) >= 0;
   }, [ engineProfile ]);
 
   useEffect(() => {
