@@ -207,7 +207,7 @@ export default function TaskTestingTab(props) {
           :
           <div className="unsupported">
             <p>Task testing is not supported by the current engine version.</p>
-            <p>Please use Camunda Cloud 8.8.0 or later.</p>
+            <p>Please use Camunda 8.8 or later.</p>
           </div>
         }
       </div>
