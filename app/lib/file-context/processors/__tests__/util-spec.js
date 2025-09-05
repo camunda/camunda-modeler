@@ -14,8 +14,10 @@ const path = require('path');
 const {
   isCamunda8BPMN,
   isCamunda8DMN,
-  isCamunda8Form
+  isCamunda8Form,
+  findProcessApplicationFile
 } = require('../util');
+
 
 describe('util', function() {
 
@@ -92,6 +94,90 @@ describe('util', function() {
       expect(result).to.be.false;
     });
 
+  });
+
+
+  describe('findProcessApplicationFile', function() {
+
+    describe('should find process application', function() {
+
+      it('for absolute file reference', function() {
+
+        // given
+        const diagramPath = path.resolve(__dirname, './fixtures/application/nested/diagram.bpmn');
+        const expectedApplicationPath = path.resolve(__dirname, './fixtures/application/.process-application');
+
+        // when
+        const applicationFile = findProcessApplicationFile(diagramPath);
+
+        // then
+        expect(applicationFile).to.eql(expectedApplicationPath);
+      });
+
+
+      it('for relative file reference', function() {
+
+        // given
+        const diagramPath = path.relative(
+          process.cwd(),
+          path.resolve(__dirname, './fixtures/application/nested/diagram.bpmn')
+        );
+
+        const expectedApplicationPath = path.relative(
+          process.cwd(),
+          path.resolve(__dirname, './fixtures/application/.process-application'),
+        );
+
+        // when
+        const applicationFile = findProcessApplicationFile(diagramPath);
+
+        // then
+        expect(applicationFile).to.eql(expectedApplicationPath);
+      });
+
+    });
+
+
+    describe('should handle not found', function() {
+
+      it('for absolute reference', function() {
+
+        // given
+        const diagramPath = path.resolve(__dirname, './fixtures/camunda8.bpmn');
+
+        // when
+        const applicationFile = findProcessApplicationFile(diagramPath);
+
+        // then
+        expect(applicationFile).to.eql(false);
+      });
+
+
+      it('for relative reference', function() {
+
+        // given
+        const diagramPath = './app/non-existing.bpmn';
+
+        // when
+        const applicationFile = findProcessApplicationFile(diagramPath);
+
+        // then
+        expect(applicationFile).to.eql(false);
+      });
+
+    });
+
+
+    it('should handle non-existing diagram', function() {
+
+      // given
+      const diagramPath = path.resolve(__dirname, './fixtures/non-existing.bpmn');
+
+      // when
+      const applicationFile = findProcessApplicationFile(diagramPath);
+
+      expect(applicationFile).to.eql(false);
+    });
   });
 
 });
