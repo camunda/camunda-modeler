@@ -56,6 +56,9 @@ const {
  * @typedef {Object} StartInstanceConfig
  * @property {import("./endpoints").Endpoint} endpoint
  * @property {string} processId
+ * @property {Array} [startInstructions]
+ * @property {Array} [runtimeInstructions]
+ * @property {Object} [variables]
  */
 
 /**
