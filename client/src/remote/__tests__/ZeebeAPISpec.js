@@ -269,7 +269,9 @@ describe('<ZeebeAPI>', function() {
           url: endpoint.contactPoint
         },
         tenantId: undefined,
-        variables
+        variables,
+        startInstructions: undefined,
+        runtimeInstructions: undefined
       });
     });
 
@@ -312,7 +314,9 @@ describe('<ZeebeAPI>', function() {
           url: `http://${ endpoint.contactPoint }`
         },
         tenantId: undefined,
-        variables
+        variables,
+        startInstructions: undefined,
+        runtimeInstructions: undefined
       });
     });
 
@@ -359,7 +363,9 @@ describe('<ZeebeAPI>', function() {
           basicAuthPassword: endpoint.basicAuthPassword
         },
         tenantId: undefined,
-        variables
+        variables,
+        startInstructions: undefined,
+        runtimeInstructions: undefined
       });
     });
 
@@ -409,7 +415,9 @@ describe('<ZeebeAPI>', function() {
           basicAuthPassword: endpoint.basicAuthPassword
         },
         tenantId: 'my-tenant',
-        variables
+        variables,
+        startInstructions: undefined,
+        runtimeInstructions: undefined
       });
     });
 
@@ -462,7 +470,9 @@ describe('<ZeebeAPI>', function() {
           clientSecret: endpoint.clientSecret
         },
         tenantId: undefined,
-        variables
+        variables,
+        startInstructions: undefined,
+        runtimeInstructions: undefined
       });
     });
 
@@ -515,7 +525,9 @@ describe('<ZeebeAPI>', function() {
           clientSecret: endpoint.clientSecret
         },
         tenantId: undefined,
-        variables
+        variables,
+        startInstructions: undefined,
+        runtimeInstructions: undefined
       });
     });
 

@@ -83,7 +83,7 @@ const mockConfig = {
 
 const defaultEngineProfile = {
   executionPlatform: ENGINES.CLOUD,
-  executionPlatformVersion: '8.7.0'
+  executionPlatformVersion: '8.8.0'
 };
 
 function renderTab(options = {}) {

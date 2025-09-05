@@ -20,7 +20,7 @@ import Panel from '../../panel/Panel';
 import { WithCachedState } from '../../cached';
 import Cache from '../../cached/Cache';
 
-import { Settings } from '../mocks';
+import { Settings, Config } from '../mocks';
 
 
 function noop() { }
@@ -40,6 +40,7 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
 
   const props = {
     cache: new Cache(),
+    config: new Config(),
     getConfig: noop,
     getPlugins: () => [],
     id: 'editor',
