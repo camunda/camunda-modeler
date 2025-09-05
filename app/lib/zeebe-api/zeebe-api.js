@@ -240,8 +240,8 @@ class ZeebeAPI {
       endpoint,
       variables,
       processId,
-      startInstructions = [],
-      runtimeInstructions = [],
+      startInstructions,
+      runtimeInstructions,
       tenantId
     } = config;
 
