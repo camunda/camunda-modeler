@@ -12,8 +12,6 @@ import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
-import { groupBy, omit } from 'min-dash';
-
 import * as css from './Tabbed.less';
 
 import {
@@ -46,14 +44,6 @@ const MIDDLE_MOUSE_BUTTON = 1;
  */
 const SMALL_TAB_WIDTH = 90;
 const SMALLER_TAB_WIDTH = 45;
-
-const COLORS = [
-  'rgb(30, 136, 229)',
-  'rgb(251, 140, 0)',
-  'rgb(67, 160, 71)',
-  'rgb(229, 57, 53)',
-  'rgb(142, 36, 170)'
-];
 
 export default class TabLinks extends PureComponent {
   constructor(props) {
@@ -108,14 +98,6 @@ export default class TabLinks extends PureComponent {
       isDirty = () => false
     } = this.props;
 
-    const tabsByGroup = omit(groupBy(tabs, tab => tabGroups[ tab.id ]), '_');
-
-    const colors = {};
-
-    Object.keys(tabsByGroup).forEach((key, index) => {
-      colors[ key ] = COLORS[ index % COLORS.length ];
-    });
-
     return (
       <div
         className={ classNames(css.LinksContainer, className) }
@@ -126,7 +108,7 @@ export default class TabLinks extends PureComponent {
               const dirty = isDirty(tab);
               const active = tab === activeTab;
 
-              const color = tabGroups[ tab.id ] && colors[ tabGroups[ tab.id ] ];
+              const tabGroup = tabGroups[ tab.id ];
 
               return (
                 <Tab
@@ -138,7 +120,7 @@ export default class TabLinks extends PureComponent {
                   onClose={ onClose }
                   onContextMenu={ onContextMenu }
                   onSelect={ onSelect }
-                  color={ color }
+                  tabGroup={ tabGroup }
                 />
               );
             })
@@ -175,7 +157,7 @@ function Tab(props) {
     onContextMenu,
     onSelect,
     tab,
-    color
+    tabGroup
   } = props;
 
   const tabRef = React.useRef(0);
@@ -199,29 +181,19 @@ function Tab(props) {
     return () => resizeObserver.disconnect();
   }, [ tabNode ]);
 
-  let style = {};
-
-  if (color) {
-    style = {
-      ...style,
-      '--tab-line-group-background-color': color
-    };
-  }
-
   return (
     <div
       tabIndex="0"
       ref={ tabRef }
       data-tab-id={ tab.id }
       title={ getTitleTag(tab, dirty) }
-      className={ classNames('tab', {
+      className={ classNames('tab', tabGroup?.className, {
         'tab--active': active,
         'tab--dirty': dirty,
         'tab--small': small,
         'tab--smaller': smaller,
-        'tab--group': !!color
+        'tab--group': tabGroup
       }) }
-      style={ style }
       onClick={ (event) => onSelect(tab, event) }
       onAuxClick={ (event) => {
         if (event.button === MIDDLE_MOUSE_BUTTON) {
