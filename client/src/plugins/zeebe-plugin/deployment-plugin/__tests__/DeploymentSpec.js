@@ -35,6 +35,7 @@ describe('Deployment', function() {
       const zeebeAPI = new MockZeebeAPI({
         deploy: sinon.stub().resolves(deploymentResult),
         getGatewayVersion: sinon.stub().resolves({
+          success: true,
           response: {
             gatewayVersion: 'foo'
           }
@@ -83,6 +84,7 @@ describe('Deployment', function() {
       const zeebeAPI = new MockZeebeAPI({
         deploy: sinon.stub().resolves(deploymentResult),
         getGatewayVersion: sinon.stub().resolves({
+          success: true,
           response: {
             gatewayVersion: 'foo'
           }
@@ -133,6 +135,7 @@ describe('Deployment', function() {
       const zeebeAPI = new MockZeebeAPI({
         deploy: sinon.stub().resolves(deploymentResult),
         getGatewayVersion: sinon.stub().resolves({
+          success: true,
           response: {
             gatewayVersion: 'foo'
           }
@@ -395,6 +398,7 @@ describe('Deployment', function() {
     const deployment = createDeployment({
       zeebeAPI: new MockZeebeAPI({
         getGatewayVersion: sinon.stub().resolves({
+          success: true,
           response: {
             gatewayVersion: 'foo'
           }

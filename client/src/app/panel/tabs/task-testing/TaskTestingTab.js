@@ -10,7 +10,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 
-import semverCompare from 'semver';
+import semverCompare from 'semver-compare';
 
 import TaskTesting from '@camunda/task-testing';
 
@@ -72,7 +72,7 @@ export default function TaskTestingTab(props) {
   const isSupportedByRuntime = useMemo(() => {
     return engineProfile &&
       engineProfile.executionPlatform === ENGINES.CLOUD &&
-      semverCompare(engineProfile.executionPlatformVersion, REQUIRED_CAMUNDA_CLOUD_VERSION) >= 0;
+      semverCompare(engineProfile.executionPlatformVersion || '0', REQUIRED_CAMUNDA_CLOUD_VERSION) >= 0;
   }, [ engineProfile ]);
 
   const connectionErrorLabels = useMemo(() => {
@@ -114,10 +114,12 @@ export default function TaskTestingTab(props) {
   }, [ injector ]);
 
   useEffect(() => {
-    const saveConfig = debounce((value) => {
-      config.setForFile(file, 'taskTesting', value).catch((err) => {
+    const saveConfig = debounce(async (value) => {
+      try {
+        await config.setForFile(file, 'taskTesting', value);
+      } catch (err) {
         console.error('Failed to save task testing config:', err);
-      });
+      }
     });
 
     saveConfig(taskTestingConfig);

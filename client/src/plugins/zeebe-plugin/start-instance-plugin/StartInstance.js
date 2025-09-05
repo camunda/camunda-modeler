@@ -50,8 +50,8 @@ export default class StartInstance extends EventEmitter {
       deployment,
       endpoint,
       variables = '{}',
-      startInstructions = [],
-      runtimeInstructions = []
+      startInstructions,
+      runtimeInstructions
     } = config;
 
     const { tenantId } = deployment;
