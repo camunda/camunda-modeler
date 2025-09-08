@@ -806,6 +806,597 @@ describe('SettingsForm', function() {
 
   });
 
+
+  describe('expandable table', function() {
+
+    it('should render with empty placeholder', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            description: 'Test table description',
+            formConfig: {
+              emptyPlaceholder: 'No items added yet',
+              addLabel: 'Add Item'
+            },
+            rowProperties: {
+              'name': {
+                type: 'text',
+                hint: 'Name',
+                default: 'Default Name'
+              }
+            },
+            childProperties: {
+              'description': {
+                type: 'text',
+                label: 'Description',
+                default: 'Default Description'
+              }
+            }
+          }
+        }
+      } ];
+
+      // when
+      const { container } = createSettingsForm({ schema });
+
+      // then
+      const label = container.querySelector('.custom-control-label');
+      expect(label).to.exist;
+      expect(label.textContent).to.equal('Expandable table');
+
+      const description = container.querySelector('.custom-control-description');
+      expect(description).to.exist;
+      expect(description.textContent).to.equal('Test table description');
+
+      const emptyPlaceholder = container.querySelector('p.empty-placeholder');
+      expect(emptyPlaceholder).to.exist;
+      expect(emptyPlaceholder.textContent).to.equal('No items added yet');
+
+      const addButton = container.querySelector('button.add');
+      expect(addButton).to.exist;
+    });
+
+
+    it('should add new array item when add button is clicked', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            formConfig: {
+              emptyPlaceholder: 'No items',
+              addLabel: 'Add Item'
+            },
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Default Name'
+              }
+            },
+            childProperties: {
+              'description': {
+                type: 'text',
+                label: 'Description',
+                default: 'Default Description'
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({ schema, initialValues: { test: { } } });
+
+      // when
+      const addButton = container.querySelector('button.add');
+      fireEvent.click(addButton);
+
+      // then
+      const table = container.querySelector('table');
+      expect(table).to.exist;
+
+      const rows = container.querySelectorAll('tr.cds--parent-row');
+      expect(rows.length).to.equal(1);
+
+      const emptyPlaceholder = container.querySelector('p.empty-placeholder');
+      expect(emptyPlaceholder).to.not.exist;
+    });
+
+
+    it('should display row properties in collapsed row', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Test Name'
+              }
+            },
+            childProperties: {
+              'description': {
+                type: 'text',
+                label: 'Description',
+                default: 'Test Description'
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            expandableTable: [
+              { id: '1', name: 'Test Name', description: 'Test Description' }
+            ]
+          }
+        }
+      });
+
+      // then
+      const cellContent = container.querySelector('span[name="test.expandableTable[0].name"]');
+      expect(cellContent).to.exist;
+      expect(cellContent.textContent).to.equal('Test Name');
+    });
+
+    it('should show row properties as input fields when expanded', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Test Name'
+              }
+            },
+            childProperties: {
+              'description': {
+                type: 'text',
+                label: 'Description'
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            expandableTable: [
+              { id: '1', name: 'Test Name', description: 'Test Description' }
+            ]
+          }
+        }
+      });
+
+      // when
+      const expandButton = container.querySelector('button.cds--table-expand__button');
+      fireEvent.click(expandButton);
+
+      // then
+      const nameField = container.querySelector('input[id="test.expandableTable[0].name"]');
+      expect(nameField).to.exist;
+      expect(nameField.value).to.equal('Test Name');
+    });
+
+    it('should display child properties in expanded row', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Test Name'
+              }
+            },
+            childProperties: {
+              'description': {
+                type: 'text',
+                label: 'Description',
+                default: 'Test Description'
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            expandableTable: [
+              { id: '1', name: 'Test Name', description: 'Test Description' }
+            ]
+          }
+        }
+      });
+
+      // when
+      const expandButton = container.querySelector('button.cds--table-expand__button');
+      fireEvent.click(expandButton);
+
+      // then
+      const descriptionField = container.querySelector('input[id="test.expandableTable[0].description"]');
+      expect(descriptionField).to.exist;
+      expect(descriptionField.value).to.equal('Test Description');
+
+      const label = container.querySelector('label[for="test.expandableTable[0].description"]');
+      expect(label).to.exist;
+      expect(label.textContent).to.equal('Description');
+    });
+
+
+
+
+
+    it('should remove array item when delete button is clicked', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            formConfig: {
+              removeLabel: 'Remove Item'
+            },
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Test Name'
+              }
+            },
+            childProperties: {
+              'description': {
+                type: 'text',
+                label: 'Description'
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            expandableTable: [
+              { id: '1', name: 'Test Name 1', description: 'Test Description 1' },
+              { id: '2', name: 'Test Name 2', description: 'Test Description 2' }
+            ]
+          }
+        }
+      });
+
+      // when
+      const deleteButtons = container.querySelectorAll('button.remove');
+      expect(deleteButtons.length).to.equal(2);
+
+      fireEvent.click(deleteButtons[0]);
+
+      // then
+      const remainingDeleteButtons = container.querySelectorAll('button.remove');
+      expect(remainingDeleteButtons.length).to.equal(1);
+
+      const remainingCellContent = container.querySelector('input[id="test.expandableTable[0].description"]');
+      expect(remainingCellContent.value).to.equal('Test Description 2');
+    });
+
+
+    it('should use default removeLabel when not provided', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Test Name'
+              }
+            },
+            childProperties: {}
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            expandableTable: [
+              { id: '1', name: 'Test Name' }
+            ]
+          }
+        }
+      });
+
+      // then
+      const deleteButtonTooltip = container.querySelector('.cds--tooltip-content');
+      expect(deleteButtonTooltip).to.exist;
+      expect(deleteButtonTooltip.textContent).to.equal('Remove');
+    });
+
+
+    it('should support different field types in child properties', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Test Name'
+              }
+            },
+            childProperties: {
+              'textField': {
+                type: 'text',
+                label: 'Text Field'
+              },
+              'passwordField': {
+                type: 'password',
+                label: 'Password Field'
+              },
+              'booleanField': {
+                type: 'boolean',
+                label: 'Boolean Field'
+              },
+              'selectField': {
+                type: 'select',
+                label: 'Select Field',
+                options: [
+                  { label: 'Option 1', value: 'opt1' },
+                  { label: 'Option 2', value: 'opt2' }
+                ]
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            expandableTable: [
+              { id: '1', name: 'Test Name' }
+            ]
+          }
+        }
+      });
+
+      // when
+      const expandButton = container.querySelector('button.cds--table-expand__button');
+      fireEvent.click(expandButton);
+
+      // then
+      const textField = container.querySelector('input[id="test.expandableTable[0].textField"]');
+      expect(textField).to.exist;
+      expect(textField.type).to.equal('text');
+
+      const passwordField = container.querySelector('input[id="test.expandableTable[0].passwordField"]');
+      expect(passwordField).to.exist;
+      expect(passwordField.type).to.equal('password');
+
+      const booleanField = container.querySelector('input[id="test.expandableTable[0].booleanField"]');
+      expect(booleanField).to.exist;
+      expect(booleanField.type).to.equal('checkbox');
+
+      const selectField = container.querySelector('select[id="test.expandableTable[0].selectField"]');
+      expect(selectField).to.exist;
+    });
+
+
+    it('should support conditional fields in child properties', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Test Name'
+              }
+            },
+            childProperties: {
+              'fieldSwitch': {
+                type: 'select',
+                label: 'Field Switch',
+                default: 'text',
+                options: [
+                  { label: 'Text field', value: 'text' },
+                  { label: 'Password field', value: 'password' }
+                ]
+              },
+              'textField': {
+                type: 'text',
+                label: 'Text Field',
+                condition: { property: 'fieldSwitch', equals: 'text' }
+              },
+              'passwordField': {
+                type: 'password',
+                label: 'Password Field',
+                condition: { property: 'fieldSwitch', equals: 'password' }
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            expandableTable: [
+              { id: '1', name: 'Test Name', fieldSwitch: 'text' }
+            ]
+          }
+        }
+      });
+
+
+      const expandButton = container.querySelector('button.cds--table-expand__button');
+      fireEvent.click(expandButton);
+
+      let textField = container.querySelector('input[id="test.expandableTable[0].textField"]');
+      expect(textField).to.exist;
+
+      let passwordField = container.querySelector('input[id="test.expandableTable[0].passwordField"]');
+      expect(passwordField).to.not.exist;
+
+      // when
+      const switchField = container.querySelector('select[id="test.expandableTable[0].fieldSwitch"]');
+      fireEvent.change(switchField, { target: { value: 'password' } });
+
+      // then
+      textField = container.querySelector('input[id="test.expandableTable[0].textField"]');
+      expect(textField).to.not.exist;
+
+      passwordField = container.querySelector('input[id="test.expandableTable[0].passwordField"]');
+      expect(passwordField).to.exist;
+    });
+
+
+    it('should support constraints validation in child properties', async function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Test Name'
+              }
+            },
+            childProperties: {
+              'requiredField': {
+                type: 'text',
+                label: 'Required Field',
+                constraints: {
+                  notEmpty: 'This field is required'
+                }
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            expandableTable: [
+              { id: '1', name: 'Test Name', requiredField: '' }
+            ]
+          }
+        }
+      });
+
+      // when
+      const expandButton = container.querySelector('button.cds--table-expand__button');
+      fireEvent.click(expandButton);
+
+      const requiredField = container.querySelector('input[id="test.expandableTable[0].requiredField"]');
+      fireEvent.change(requiredField, { target: { value: '' } });
+      fireEvent.blur(requiredField);
+
+      // then
+      await waitFor(() => {
+        const errorMessage = container.querySelector('.invalid-feedback');
+        expect(errorMessage).to.exist;
+        expect(errorMessage.textContent).to.equal('This field is required');
+      });
+    });
+
+
+    it('should apply default values when adding new items', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.expandableTable': {
+            type: 'expandableTable',
+            label: 'Expandable table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Default Name'
+              }
+            },
+            childProperties: {
+              'description': {
+                type: 'text',
+                label: 'Description',
+                default: 'Default Description'
+              },
+              'enabled': {
+                type: 'boolean',
+                label: 'Enabled',
+                default: true
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: { test: { expandableTable: [] } }
+      });
+
+      // when
+      const addButton = container.querySelector('button.add');
+      fireEvent.click(addButton);
+
+
+      const expandButton = container.querySelector('button.cds--table-expand__button');
+      fireEvent.click(expandButton);
+
+      // then
+      const nameField = container.querySelector('input[id="test.expandableTable[0].name"]');
+      expect(nameField.value).to.equal('Default Name');
+
+      const descriptionField = container.querySelector('input[id="test.expandableTable[0].description"]');
+      expect(descriptionField.value).to.equal('Default Description');
+
+      const enabledField = container.querySelector('input[id="test.expandableTable[0].enabled"]');
+      expect(enabledField.checked).to.be.true;
+    });
+
+  });
+
 });
 
 // helpers
