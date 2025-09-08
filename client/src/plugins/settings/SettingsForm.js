@@ -12,7 +12,7 @@ import React, { useEffect, useMemo } from 'react';
 
 import { Field, Form, useFormikContext, getIn } from 'formik';
 
-import { map, forEach, sortBy } from 'min-dash';
+import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
@@ -106,7 +106,7 @@ function SettingsField(props) {
     return null;
   }
 
-  const { label, description, hint, options, documentationUrl } = props;
+  const { label, description, hint, options, documentationUrl, constraints } = props;
 
   let typeProp = {};
   if (type === 'boolean') {
@@ -117,6 +117,11 @@ function SettingsField(props) {
   }
 
   const disabledByFlag = flagValue !== undefined;
+
+  let validate;
+  if (constraints) {
+    validate = validator(constraints, label || name);
+  }
 
   return <>
     <Field
@@ -130,6 +135,7 @@ function SettingsField(props) {
       options={ options }
       values={ options }
       documentationUrl={ documentationUrl }
+      validate={ validate }
     />
     { disabledByFlag &&
       <div className="flag-warning">
@@ -140,8 +146,8 @@ function SettingsField(props) {
   </>;
 }
 
-
 // helpers
+
 
 /**
  * Returns a schema sorted by `order` property.
@@ -224,4 +230,55 @@ export function isConditionMet(propName, values, condition) {
   }
 
   return false;
+}
+
+/**
+ * @typedef {Object} PatternConstraint
+ * @property {string} value - The regex pattern string
+ * @property {string} message - Custom error message when pattern doesn't match
+ */
+
+/**
+ * @typedef {Object} Constraints
+ * @property {string|boolean} [notEmpty] - If true/string, field must not be empty. If string, used as custom error message
+ * @property {string|PatternConstraint} [pattern] - Regex pattern the field must match. Can be string pattern or PatternConstraint object
+ */
+
+/**
+ * Creates a validation function for form fields based on the provided constraints.
+ *
+ * @param {Constraints} constraints - The validation constraints to apply
+ * @param {string} [propLabel] - The label of the property being validated (used in error messages)
+ * @returns {function(value: any): string|undefined} A validation function that returns an error message or undefined if valid
+ */
+function validator(constraints, propLabel) {
+  return function(value) {
+    let {
+      notEmpty,
+      pattern
+    } = constraints;
+
+    if (notEmpty && isEmpty(value)) {
+      return isString(notEmpty) ? notEmpty : `${propLabel || 'This field'} must not be empty`;
+    }
+
+    if (pattern) {
+      let message;
+      if (isObject(pattern)) {
+        ({ value: pattern, message } = pattern);
+      }
+
+      if (!matchesPattern(value, pattern)) {
+        return message || `${propLabel || 'This field'} must match pattern ${pattern}`;
+      }
+    }
+  };
+}
+
+function isEmpty(value) {
+  return value === null || value === undefined || value === '';
+}
+
+function matchesPattern(value, pattern) {
+  return value.match(pattern);
 }

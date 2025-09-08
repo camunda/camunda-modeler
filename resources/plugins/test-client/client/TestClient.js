@@ -74,11 +74,18 @@ export default class TestClient extends Component {
 
         'testClientPlugin.textInput': {
           type: 'text',
-          label: 'Text Input with Hint',
-          hint: 'Hint/Placeholder',
+          label: 'Constrained Text Input with Hint',
+          hint: 'Hint (must be URL)',
 
           // showcasing that also absolute path works
           condition: { property: 'testClientPlugin.showAllFields', equals: true },
+          constraints:{
+            notEmpty: 'This field must be filled',
+            pattern:{
+              value: /(https?:\/\/).*/,
+              message: 'Must be a valid URL'
+            }
+          }
         },
 
         'testClientPlugin.passwordInput': {

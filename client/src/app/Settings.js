@@ -41,6 +41,7 @@ import { Flags } from '../util';
  * @property {boolean} [restartRequired] - is restart required to apply the setting
  * @property {string} [documentationUrl] - link to an external documentation
  * @property {import('../plugins/settings/SettingsForm').Condition} [condition]
+ * @property {import('../plugins/settings/SettingsForm').Constraints} [constraints] - validation constraints for the field
  */
 
 /**
