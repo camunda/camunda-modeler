@@ -10,13 +10,19 @@
 
 import React, { useEffect, useMemo } from 'react';
 
-import { Field, Form, useFormikContext, getIn } from 'formik';
+import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
+
+import { DataTable, Table, TableBody, TableCell, TableExpandRow, TableExpandedRow, Button } from '@carbon/react';
+import { Add, TrashCan } from '@carbon/icons-react';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
 import Flags from '../../util/Flags';
+import { generateId } from '../../util';
+
+const FIELD_ARRAY_TYPES = [ 'expandableTable' ];
 
 /**
  * Formik form wrapper for the settings form.
@@ -78,7 +84,7 @@ function SettingsField(props) {
     return Flags.get(flag);
   }, [ flag ]);
 
-  const component = useMemo(() => {
+  const FieldComponent = useMemo(() => {
     if (condition && !isConditionMet(name, values, condition)) {
       return null;
     }
@@ -99,11 +105,20 @@ function SettingsField(props) {
       return Radio;
     }
 
+    if (type === 'expandableTable') {
+      return ExpandableTableFieldArray;
+    }
+
     return null;
   }, [ condition, name, type, values ]);
 
-  if (!component) {
+
+  if (!FieldComponent) {
     return null;
+  }
+
+  if (FIELD_ARRAY_TYPES.includes(type)) {
+    return <FieldComponent { ...props } />;
   }
 
   const { label, description, hint, options, documentationUrl, constraints } = props;
@@ -126,7 +141,7 @@ function SettingsField(props) {
   return <>
     <Field
       name={ name }
-      component={ component }
+      component={ FieldComponent }
       { ...typeProp }
       disabled={ disabledByFlag }
       label={ label }
@@ -145,6 +160,110 @@ function SettingsField(props) {
     }
   </>;
 }
+
+
+function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, formConfig }) {
+  const arrayValues = getIn(useFormikContext().values, name) || [];
+
+  function generateNewElement() {
+    const defaults = Object.entries({ ...rowProperties, ...childProperties })
+      .reduce((acc, [ key, property ]) => {
+        if (property.default !== undefined) {
+          acc[key] = property.default;
+        }
+        return acc;
+      }, {});
+
+    return { id: generateId(), ...defaults };
+  }
+
+  return <FieldArray name={ name } className="form-group">
+    {(arrayHelpers) => {
+      return (
+        <div className="form-group">
+          <div className="custom-control">
+            <label className="custom-control-label">{ label }</label>
+            <div className="custom-control-description">{ description }</div>
+          </div>
+          {(!arrayValues || arrayValues.length === 0) && (
+            <p className="empty-placeholder">{ formConfig?.emptyPlaceholder }</p>
+          )}
+          <DataTable rows={ arrayValues } headers={ [] }>
+            {({
+              rows,
+              getRowProps,
+              getExpandedRowProps,
+              getTableProps,
+            }) => (
+              <Table { ...getTableProps() }>
+                <TableBody className="expandable-table-body">
+                  {rows?.map((row, index) => (
+                    <React.Fragment key={ `${name}[${index}]` }>
+                      <TableExpandRow { ...getRowProps({ row }) }>
+                        {
+                          map(rowProperties, (rowProperty , key) => {
+                            return (
+                              <TableCell key={ `${name}[${index}].${key}` }>
+                                { row.isExpanded && <SettingsField name={ `${name}[${index}].${key}` } { ...rowProperty } /> }
+                                { !row.isExpanded && <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span> }
+                              </TableCell>
+                            );
+                          })
+                        }
+                        <TableCell className="action-cell">
+                          <Button
+                            className="remove"
+                            hasIconOnly
+                            iconDescription={ formConfig?.removeTooltip || 'Remove' }
+                            tooltipPosition="left"
+                            kind="ghost"
+                            renderIcon={ TrashCan }
+                            onClick={ () =>
+                              arrayHelpers.remove(index)
+                            }
+                          />
+                        </TableCell>
+                      </TableExpandRow>
+
+                      <TableExpandedRow
+                        { ...getExpandedRowProps({ row }) }
+                        colSpan={ Object.keys(rowProperties).length + 2 } // +1 for expand column, +1 for action column
+                      >
+                        <div>
+                          {
+                            map(childProperties, (childProperty , key) => {
+                              return (
+                                <SettingsField key={ `${name}[${index}].${key}` } name={ `${name}[${index}].${key}` } { ...childProperty } />
+                              );
+                            })
+                          }
+                        </div>
+                      </TableExpandedRow>
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </DataTable>
+          <div className="expandable-table-bottom-actions">
+            <Button
+              className="add"
+              tooltipPosition="left"
+              iconDescription={ formConfig?.addLabel || 'Add' }
+              renderIcon={ Add }
+              hasIconOnly={ true }
+              onClick={ () => {
+                const newElement = generateNewElement();
+                arrayHelpers.push(newElement);
+              } }
+            />
+          </div>
+        </div>
+      );
+    }}
+  </FieldArray>;
+}
+
 
 // helpers
 
