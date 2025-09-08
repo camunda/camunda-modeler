@@ -8,11 +8,14 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
 
 import {
   render,
-  fireEvent
+  fireEvent,
+  waitFor
 } from '@testing-library/react';
 
 import { Formik } from 'formik';
@@ -345,7 +348,7 @@ describe('SettingsForm', function() {
             condition: {
               allMatch: [
                 { property: 'checkbox', equals: true },
-                { property: 'radio', oneOf: [ 'one' , 'three' ] }
+                { property: 'radio', oneOf: [ 'one', 'three' ] }
               ]
             }
           }
@@ -428,14 +431,335 @@ describe('SettingsForm', function() {
     });
 
   });
+
+
+  describe('validation constraints', function() {
+
+    describe('notEmpty constraint', function() {
+
+      it('should validate required field with boolean true (default message)', async function() {
+
+        // given
+        const schema = [
+          {
+            properties: {
+              'test.requiredText': {
+                type: 'text',
+                label: 'Required Text',
+                constraints: {
+                  notEmpty: true
+                }
+              }
+            }
+          }
+        ];
+
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
+
+        const field = container.querySelector('.form-group input[id="test.requiredText"]');
+        fireEvent.change(field, { target: { value: '' } });
+        fireEvent.blur(field);
+
+        await waitFor(() => {
+          const errorMessage = container.querySelector('.invalid-feedback');
+          expect(errorMessage).to.exist;
+          expect(errorMessage.textContent).to.equal('Required Text must not be empty');
+        });
+
+        // when
+        fireEvent.change(field, { target: { value: 'some value' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectNoError(container);
+
+      });
+
+
+      it('should validate required field with custom error message', async function() {
+
+        // given
+        const schema = [
+          {
+            properties: {
+              'test.requiredText': {
+                type: 'text',
+                label: 'Required Text',
+                constraints: {
+                  notEmpty: 'Please provide a value for this field'
+                }
+              }
+            }
+          }
+        ];
+
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
+
+        // when
+        const field = container.querySelector('.form-group input[id="test.requiredText"]');
+        fireEvent.change(field, { target: { value: '' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectError(container, 'Please provide a value for this field');
+      });
+
+    });
+
+
+    describe('pattern constraint', function() {
+
+      it('should validate field with string pattern (default message)', async function() {
+
+        // given
+        const schema = [ {
+          properties: {
+            'test.emailField': {
+              type: 'text',
+              label: 'Email',
+              constraints: {
+                pattern: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$'
+              }
+            }
+          }
+        } ];
+
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
+
+        // when
+        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        fireEvent.change(field, { target: { value: 'invalid-email' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectError(container, 'Email must match pattern ^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$');
+      });
+
+
+      it('should validate field with pattern object', async function() {
+
+        // given
+        const schema = [
+          {
+            properties: {
+              'test.emailField': {
+                type: 'text',
+                label: 'Email',
+                constraints: {
+                  pattern: {
+                    value: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$',
+                    message: 'Please enter a valid email address'
+                  }
+                }
+              }
+            }
+          }
+        ];
+
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
+
+        // when
+        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        fireEvent.change(field, { target: { value: 'invalid-email' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectError(container, 'Please enter a valid email address');
+      });
+
+
+      it('should pass validation when pattern matches', async function() {
+
+        // given
+        const schema = [
+          {
+            properties: {
+              'test.emailField': {
+                type: 'text',
+                label: 'Email',
+                constraints: {
+                  pattern: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$'
+                }
+              }
+            }
+          }
+        ];
+
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
+
+        // assert validation triggered
+        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        fireEvent.change(field, { target: { value: 'invalid' } });
+        fireEvent.blur(field);
+
+        await waitFor(() => {
+          const errorMessage = container.querySelector('.invalid-feedback');
+          expect(errorMessage).to.exist;
+        });
+
+        // when
+        fireEvent.change(field, { target: { value: 'user@example.com' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectNoError(container);
+      });
+
+
+      it('should persist a valid value', async function() {
+
+        // given
+        const onSubmit = sinon.spy();
+        const schema = [
+          {
+            properties: {
+              'test.emailField': {
+                type: 'text',
+                label: 'Email',
+                constraints: {
+                  pattern: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$'
+                }
+              }
+            }
+          }
+        ];
+
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onSubmit });
+
+        const field = container.querySelector('.form-group input[id="test.emailField"]');
+
+        // when
+        fireEvent.change(field, { target: { value: 'test@example.com' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectNoError(container);
+        expect(onSubmit).to.have.been.calledWith(sinon.match({ 'test': { 'emailField': 'test@example.com' } }));
+      });
+
+
+      it('should not persist invalid value', async function() {
+
+        // given
+        const onSubmit = sinon.spy();
+        const schema = [
+          {
+            properties: {
+              'test.emailField': {
+                type: 'text',
+                label: 'Email',
+                constraints: {
+                  pattern: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$'
+                }
+              }
+            }
+          }
+        ];
+
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onSubmit });
+
+        const field = container.querySelector('.form-group input[id="test.emailField"]');
+
+        // when
+        fireEvent.change(field, { target: { value: 'invalid-email' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectError(container, 'Email must match pattern ^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$');
+        expect(onSubmit).not.to.have.been.called;
+      });
+
+    });
+
+
+    describe('combined constraints', function() {
+
+      it('should validate both notEmpty and pattern constraints', async function() {
+
+        // given
+        const schema = [
+          {
+            properties: {
+              'test.urlField': {
+                type: 'text',
+                label: 'URL',
+                constraints: {
+                  notEmpty: true,
+                  pattern: {
+                    value: '^https?:\\/\\/.+',
+                    message: 'URL must start with http:// or https://'
+                  }
+                }
+              }
+            }
+          }
+        ];
+
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
+
+        const field = container.querySelector('.form-group input[id="test.urlField"]');
+
+        // when
+        fireEvent.change(field, { target: { value: '' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectError(container, 'URL must not be empty');
+
+        // when
+        fireEvent.change(field, { target: { value: 'invalid-url' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectError(container, 'URL must start with http:// or https://');
+
+        // when
+        fireEvent.change(field, { target: { value: 'https://example.com' } });
+        fireEvent.blur(field);
+
+        // then
+        await expectNoError(container);
+      });
+
+    });
+
+
+    it('should not validate fields without constraints', async function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.normalText': {
+            type: 'text',
+            label: 'Normal Text'
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({ schema });
+
+      // when
+      const field = container.querySelector('.form-group input[id="test.normalText"]');
+      fireEvent.change(field, { target: { value: '' } });
+      fireEvent.blur(field);
+
+      // then - give a small amount of time for any potential validation to occur
+      // but since there are no constraints, no error should appear
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      await expectNoError(container);
+    });
+
+  });
+
 });
 
-
 // helpers
-function createSettingsForm({ schema, values, initialValues } = {}) {
+function createSettingsForm({ schema, values, initialValues, onSubmit = () => {} } = {}) {
   return render(
     <Formik
       initialValues={ initialValues }
+      onSubmit={ onSubmit }
     >
       <SettingsForm
         schema={ schema }
@@ -443,4 +767,20 @@ function createSettingsForm({ schema, values, initialValues } = {}) {
       />
     </Formik>
   );
+}
+
+async function expectNoError(container) {
+  await waitFor(() => {
+    const errorMessage = container.querySelector('.invalid-feedback');
+    expect(errorMessage).to.not.exist;
+  });
+}
+
+async function expectError(container, message) {
+  await waitFor(() => {
+    const errorMessage = container.querySelector('.invalid-feedback');
+    expect(errorMessage).to.exist;
+
+    message && expect(errorMessage.textContent).to.equal(message);
+  });
 }
