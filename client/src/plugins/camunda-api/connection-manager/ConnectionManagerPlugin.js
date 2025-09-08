@@ -31,6 +31,23 @@ import {
   Form,
   Formik
 } from 'formik';
+import ZeebeAPI from '../../../remote/ZeebeAPI';
+import { zeebeAPI } from '../../../remote';
+
+export const VALIDATION_ERROR_MESSAGES = {
+  AUDIENCE_MUST_NOT_BE_EMPTY: 'Audience must not be empty.',
+  BASIC_AUTH_PASSWORD_MUST_NOT_BE_EMPTY: 'Password must not be empty.',
+  BASIC_AUTH_USERNAME_MUST_NOT_BE_EMPTY: 'Username must not be empty.',
+  CLIENT_ID_MUST_NOT_BE_EMPTY: 'Client ID must not be empty.',
+  CLIENT_SECRET_MUST_NOT_BE_EMPTY: 'Client Secret must not be empty.',
+  CLUSTER_URL_MUST_BE_VALID_CLOUD_URL: 'Must be a valid Camunda 8 SaaS URL.',
+  CONTACT_POINT_MUST_BE_URL: 'Cluster endpoint must be a valid URL.',
+  CONTACT_POINT_MUST_NOT_BE_EMPTY: 'Cluster endpoint must not be empty.',
+  CLUSTER_URL_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
+  CONTACT_POINT_MUST_START_WITH_PROTOCOL: 'Cluster endpoint must start with "http://", "grpc://", "https://", or "grpcs", .',
+  MUST_PROVIDE_A_VALUE: 'Must provide a value.',
+  OAUTH_URL_MUST_NOT_BE_EMPTY: 'OAuth URL must not be empty.'
+};
 
 export default function ConnectionManagerPlugin(props) {
   const {
@@ -67,7 +84,9 @@ export default function ConnectionManagerPlugin(props) {
 
 
   useEffect(() => {
-    initializeSettings(props).then(()=>{
+
+    const zeebeApi = new ZeebeAPI(getConfig('backend'));
+    initializeSettings({ ...props, zeebeApi }).then(()=>{
       settings.subscribe('connectionManagerPlugin.c8connections', (connections) => {
         console.log({ connections });
         setConnections(connections.value);
@@ -267,6 +286,40 @@ export default function ConnectionManagerPlugin(props) {
   </>;
 }
 
+/**
+ * Initialize plugin settings with connection configuration schema.
+ *
+ * This function registers a comprehensive settings schema for managing Camunda 8 connections,
+ * supporting both SaaS and Self-Managed deployments with various authentication methods.
+ *
+ * @param {Object} params
+ * @param {Object} params.settings - Settings manager instance
+ * @param {Function} params.getConfig - Function to get configuration values
+ * @param {Function} params.log - Logging function
+ *
+ * @example
+ * // Settings structure that will be registered:
+ * {
+ *   id: 'connectionManagerPlugin',
+ *   title: 'Connections',
+ *   properties: {
+ *     'connectionManagerPlugin.c8connections': {
+ *       type: 'array',
+ *       childProperties: {
+ *         name: { type: 'text', label: 'Name' },
+ *         targetType: {
+ *           type: 'radio',
+ *           options: [
+ *             { value: 'camundaCloud', label: 'Camunda 8 SaaS' },
+ *             { value: 'selfHosted', label: 'Camunda 8 Self-Managed' }
+ *           ]
+ *         }
+ *         // ... other connection properties
+ *       }
+ *     }
+ *   }
+ * }
+ */
 async function initializeSettings({ settings, getConfig, log }) {
   console.log(
     { settings }
@@ -280,6 +333,9 @@ async function initializeSettings({ settings, getConfig, log }) {
         label: 'Camunda8',
         description: 'Connections to Camunda 8',
         documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
+        constraints:{
+          custom: (zeebeAPI)=> (values, something) => {console.log({ zeebeAPI, values, something }); return null; }
+        },
         formConfig: {
           placeholder: 'No connections',
           addLabel: 'Add Connection',
@@ -310,106 +366,147 @@ async function initializeSettings({ settings, getConfig, log }) {
           camundaCloudClusterUrl: {
             type: 'text',
             label: 'ClusterUrl',
-            condition: { property: 'targetType', equals: 'camundaCloud' }
+            condition: { property: 'targetType', equals: 'camundaCloud' },
+            constraints: {
+              notEmpty: VALIDATION_ERROR_MESSAGES.CLUSTER_URL_MUST_NOT_BE_EMPTY,
+              pattern: {
+                value: /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/,
+                message: VALIDATION_ERROR_MESSAGES.CLUSTER_URL_MUST_BE_VALID_CLOUD_URL
+              }
+            }
           },
-          camundaCloudClientId:{
+          camundaCloudClientId: {
             type: 'text',
             label: 'Client ID',
-            condition: { property: 'targetType', equals: 'camundaCloud' }
+            condition: { property: 'targetType', equals: 'camundaCloud' },
+            constraints: {
+              notEmpty: VALIDATION_ERROR_MESSAGES.CLIENT_ID_MUST_NOT_BE_EMPTY
+            }
           },
-          camundaCloudClientSecret:{
+          camundaCloudClientSecret: {
             type: 'password',
             label: 'Client Secret',
-            condition: { property: 'targetType', equals: 'camundaCloud' }
+            condition: { property: 'targetType', equals: 'camundaCloud' },
+            constraints: {
+              notEmpty: VALIDATION_ERROR_MESSAGES.CLIENT_SECRET_MUST_NOT_BE_EMPTY
+            }
           },
 
           contactPoint: {
             type: 'text',
             label: 'Cluster endpoint',
-            condition: { property: 'targetType', equals: 'selfHosted' }
-          },
+            condition: { property: 'targetType', equals: 'selfHosted' },
+            constraints: {
+              notEmpty: VALIDATION_ERROR_MESSAGES.CONTACT_POINT_MUST_NOT_BE_EMPTY,
+              pattern: {
+                value: /^(http|grpc)s?:\/\//,
+                message: VALIDATION_ERROR_MESSAGES.CONTACT_POINT_MUST_BE_URL
+              }
+            },
 
-          authType: {
-            type: 'radio',
-            label: 'Authentication',
-            options: [
-              { value: 'none', label: 'None' },
-              { value: 'basic', label: 'Basic' },
-              { value: 'oauth', label: 'OAuth 2.0' },
-            ],
-            default: 'none',
-            condition: { property: 'targetType', equals: 'selfHosted' }
-          },
+            authType: {
+              type: 'radio',
+              label: 'Authentication',
+              options: [
+                { value: 'none', label: 'None' },
+                { value: 'basic', label: 'Basic' },
+                { value: 'oauth', label: 'OAuth 2.0' },
+              ],
+              default: 'none',
+              condition: { property: 'targetType', equals: 'selfHosted' }
+            },
 
-          basicAuthPassword: {
-            type: 'text',
-            label: 'Username',
-            condition: {
-              allMatch: [
-                { property: 'targetType', equals: 'selfHosted' },
-                { property: 'authType', equals: 'basic' }
-              ]
-            }
-          },
-          basicAuthUsername: {
-            type: 'password',
-            label: 'Password',
-            condition: {
-              allMatch: [
-                { property: 'targetType', equals: 'selfHosted' },
-                { property: 'authType', equals: 'basic' }
-              ]
-            }
-          },
+            basicAuthPassword: {
+              type: 'text',
+              label: 'Username',
+              condition: {
+                allMatch: [
+                  { property: 'targetType', equals: 'selfHosted' },
+                  { property: 'authType', equals: 'basic' }
+                ]
+              },
+              constraints: {
+                notEmpty: VALIDATION_ERROR_MESSAGES.BASIC_AUTH_USERNAME_MUST_NOT_BE_EMPTY
+              }
+            },
+            basicAuthUsername: {
+              type: 'password',
+              label: 'Password',
+              condition: {
+                allMatch: [
+                  { property: 'targetType', equals: 'selfHosted' },
+                  { property: 'authType', equals: 'basic' }
+                ]
+              },
+              constraints: {
+                notEmpty: VALIDATION_ERROR_MESSAGES.BASIC_AUTH_PASSWORD_MUST_NOT_BE_EMPTY
+              }
+            },
 
-          clientId:{
-            type: 'text',
-            label: 'Client ID',
-            condition: {
-              allMatch: [
-                { property: 'targetType', equals: 'selfHosted' },
-                { property: 'authType', equals: 'oauth' }
-              ]
-            }
-          },
-          clientSecret:{
-            type: 'password',
-            label: 'Client Secret',
-            condition: {
-              allMatch: [
-                { property: 'targetType', equals: 'selfHosted' },
-                { property: 'authType', equals: 'oauth' },
-              ]
-            }
-          },
-          oauthURL:{
-            type: 'text',
-            label: 'OAuth token URL',
-            condition: {
-              allMatch: [
-                { property: 'targetType', equals: 'selfHosted' },
-                { property: 'authType', equals: 'oauth' },
-              ]
-            }
-          },
-          audience:{
-            type: 'text',
-            label: 'OAuth audience',
-            condition: {
-              allMatch: [
-                { property: 'targetType', equals: 'selfHosted' },
-                { property: 'authType', equals: 'oauth' },
-              ]
-            }
-          },
-          scope:{
-            type: 'text',
-            label: 'OAuth scope',
-            condition: {
-              allMatch: [
-                { property: 'targetType', equals: 'selfHosted' },
-                { property: 'authType', equals: 'oauth' },
-              ]
+            clientId:{
+              type: 'text',
+              label: 'Client ID',
+              condition: {
+                allMatch: [
+                  { property: 'targetType', equals: 'selfHosted' },
+                  { property: 'authType', equals: 'oauth' }
+                ]
+              },
+              constraints: {
+                notEmpty: VALIDATION_ERROR_MESSAGES.CLIENT_ID_MUST_NOT_BE_EMPTY
+              }
+            },
+            clientSecret:{
+              type: 'password',
+              label: 'Client Secret',
+              condition: {
+                allMatch: [
+                  { property: 'targetType', equals: 'selfHosted' },
+                  { property: 'authType', equals: 'oauth' },
+                ]
+              },
+              constraints: {
+                notEmpty: VALIDATION_ERROR_MESSAGES.CLIENT_SECRET_MUST_NOT_BE_EMPTY
+              }
+            },
+            oauthURL:{
+              type: 'text',
+              label: 'OAuth token URL',
+              condition: {
+                allMatch: [
+                  { property: 'targetType', equals: 'selfHosted' },
+                  { property: 'authType', equals: 'oauth' },
+                ]
+              },
+              constraints: {
+                notEmpty: VALIDATION_ERROR_MESSAGES.OAUTH_URL_MUST_NOT_BE_EMPTY
+              }
+            },
+            audience:{
+              type: 'text',
+              label: 'OAuth audience',
+              condition: {
+                allMatch: [
+                  { property: 'targetType', equals: 'selfHosted' },
+                  { property: 'authType', equals: 'oauth' },
+                ]
+              },
+              constraints: {
+                notEmpty: VALIDATION_ERROR_MESSAGES.AUDIENCE_MUST_NOT_BE_EMPTY
+              }
+            },
+            scope:{
+              type: 'text',
+              label: 'OAuth scope',
+              condition: {
+                allMatch: [
+                  { property: 'targetType', equals: 'selfHosted' },
+                  { property: 'authType', equals: 'oauth' },
+                ]
+              },
+              constraints: {
+                notEmpty: VALIDATION_ERROR_MESSAGES.SCOPE_MUST_NOT_BE_EMPTY
+              }
             }
           }
         }

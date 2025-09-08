@@ -10,9 +10,9 @@
 
 import React, { useEffect, useMemo } from 'react';
 
-import { Field, Form, useFormikContext, getIn } from 'formik';
+import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 
-import { map, forEach, sortBy, isString, isObject } from 'min-dash';
+import { map, forEach, sortBy, get, isString, isObject } from 'min-dash';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
@@ -25,7 +25,6 @@ import {
   Accordion,
   CodeSnippet,
   AccordionItem,
-
   DataTable,
   ModalWrapper,
   Table,
@@ -96,7 +95,18 @@ function SettingsSection(props) {
 
 function SettingsField(props) {
 
-  const { type, flag, condition, name } = props;
+  const {
+    type,
+    flag,
+    condition,
+    name,
+    constraints,
+    label,
+    description,
+    hint,
+    options,
+    documentationUrl
+  } = props;
 
   const { values } = useFormikContext();
 
@@ -150,7 +160,6 @@ function SettingsField(props) {
     return null;
   }
 
-  const { label, description, hint, options, documentationUrl, constraints } = props;
 
   let typeProp = {};
   if (type === 'boolean') {
@@ -192,13 +201,79 @@ function SettingsField(props) {
 
 function SettingsFieldArray(props) {
 
+  const { name, label, description, childProperties, formConfig, validator } = props;
+  const { setFieldError } = useFormikContext();
+  const arrayValues = getIn(useFormikContext().values, name) || [];
 
+  // Generic validation function for individual array items
+  const validateArrayItem = React.useCallback(async (item, index) => {
+    if (!item || typeof item !== 'object') return;
 
-  const { name, label, description, childProperties, documentationUrl, formConfig } = props;
-  const values = getIn(useFormikContext().values, name) || [];
+    // Clear previous errors for this item
+    const fieldKeys = Object.keys(childProperties || {});
+    fieldKeys.forEach(key => {
+      setFieldError(`${name}[${index}].${key}`, undefined);
+    });
 
+    // Basic cross-field validation within the item
+    if ((item.name && !item.url) || (!item.name && item.url)) {
+      setFieldError(`${name}[${index}].name`, 'Both name and URL must be provided together');
+      setFieldError(`${name}[${index}].url`, 'Both name and URL must be provided together');
+      return;
+    }
 
+    // Skip custom validation if validator function is not provided
+    if (!validator || typeof validator !== 'function') {
+      return;
+    }
 
+    // Check if we have enough data to run validation
+    if (!item.name) {
+      return; // Don't validate incomplete items
+    }
+
+    try {
+
+      // Run the custom validator function
+      const validationResult = await validator(item);
+
+      if (validationResult === false) {
+        setFieldError(`${name}[${index}].url`, 'Validation failed - please verify your settings');
+      } else if (typeof validationResult === 'string') {
+
+        // If validator returns a string, use it as the error message
+        setFieldError(`${name}[${index}].url`, validationResult);
+      } else if (typeof validationResult === 'object' && validationResult !== null) {
+
+        // If validator returns an object, set field-specific errors
+        Object.keys(validationResult).forEach(fieldKey => {
+          if (validationResult[fieldKey]) {
+            setFieldError(`${name}[${index}].${fieldKey}`, validationResult[fieldKey]);
+          }
+        });
+      } else {
+
+        // Validation successful, clear any previous errors
+        setFieldError(`${name}[${index}].url`, undefined);
+      }
+    } catch (error) {
+      setFieldError(`${name}[${index}].url`, `Validation error: ${error.message}`);
+    }
+  }, [ name, setFieldError, childProperties, validator ]);
+
+  // Track which item is currently being edited
+  const [ editingIndex, setEditingIndex ] = React.useState(null);
+
+  // Validate item when specific fields change for the edited item
+  // React.useEffect(() => {
+  //   if (editingIndex !== null && arrayValues[editingIndex]) {
+  //     const debounceTimer = setTimeout(() => {
+  //       validateArrayItem(arrayValues[editingIndex], editingIndex);
+  //     }, 1000); // Debounce validation by 1 second
+
+  //     return () => clearTimeout(debounceTimer);
+  //   }
+  // }, [ arrayValues, editingIndex, validateArrayItem ]);
 
   return <FieldArray name={ name }>
     {(arrayHelpers) => {
@@ -213,7 +288,7 @@ function SettingsFieldArray(props) {
             Set up and manage connections to your process automation environments. If you want to work locally have a look at <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags/">c8run</a>
           </p>
 
-          {values.length === 0 && (
+          {arrayValues.length === 0 && (
             <p style={ {
               fontSize: '13px',
             } }>
@@ -223,7 +298,7 @@ function SettingsFieldArray(props) {
             </p>
           )}
 
-          <DataTable style={ { } } rows={ values } headers={ [] }>
+          <DataTable rows={ arrayValues } headers={ [] }>
             {({
               rows,
               headers,
@@ -260,7 +335,7 @@ function SettingsFieldArray(props) {
                       <TableExpandRow { ...getRowProps({ row }) }>
 
                         <TableCell>
-                          {values[index]?.name || 'Unnamed'}
+                          {arrayValues[index]?.name || 'Unnamed'}
                         </TableCell>
                         <TableCell style={ { width: '50px' } }>
                           {/* <Button type="button" onClick={ () => arrayHelpers.remove(index) }>Remove</Button> */}
@@ -280,21 +355,25 @@ function SettingsFieldArray(props) {
                         </TableCell>
 
                       </TableExpandRow>
-                      <TableExpandedRow { ...getExpandedRowProps({ row }) } colSpan={ 3 }>
-                        {
-
-                          map(childProperties, (childProps , key) =>
+                      <TableExpandedRow
+                        { ...getExpandedRowProps({ row }) }
+                        colSpan={ 3 }
+                        onFocus={ () => setEditingIndex(index) }
+                        onBlur={ () => setEditingIndex(null) }
+                      >
+                        <div
+                          onClick={ () => setEditingIndex(index) }
+                          onFocus={ () => setEditingIndex(index) }
+                        >
                           {
-
-                            return (
-
-
-                              <SettingsField key={ `${name}[${index}].${key}` } name={ `${name}[${index}].${key}` } { ...childProps } />
-
-
-                            );
-                          })
-                        }
+                            map(childProperties, (childProps , key) =>
+                            {
+                              return (
+                                <SettingsField key={ `${name}[${index}].${key}` } name={ `${name}[${index}].${key}` } { ...childProps } />
+                              );
+                            })
+                          }
+                        </div>
                       </TableExpandedRow>
                     </React.Fragment>
                   ))}
@@ -386,10 +465,6 @@ function SettingsFieldArrayBackupt(props) {
  * @returns {string} The resolved path
  */
 function resolvePath(currentPath, targetPath) {
-<<<<<<< HEAD
-=======
-
->>>>>>> add2a19c (wip selector)
   if (targetPath.includes('.')) {
     return targetPath;
   }
