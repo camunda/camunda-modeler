@@ -73,7 +73,7 @@ module.exports.traverse = traverse;
 function findProcessApplicationFile(filePath) {
   let dirName = path.dirname(filePath);
 
-  while (dirName !== path.parse(dirName).root) {
+  while (dirName !== path.dirname(dirName)) {
     const fileNames = fs.readdirSync(dirName);
 
     const fileName = fileNames.find(fileName => {
