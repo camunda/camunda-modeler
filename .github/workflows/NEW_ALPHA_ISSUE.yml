@@ -15,8 +15,8 @@ jobs:
           ISSUE_BODY: |
             ### What should we do?
             Add a new Alpha Version to the version select.
-            - [ ] Update the version select (C7, C8)
-            - [ ] Update linting profiles (C7, C8)
+            - [ ] Update the version select (C8)
+            - [ ] Update linting profile (C8)
 
             ### Why should we do it?
             To support the next alpha release of the engine.
