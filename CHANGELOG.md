@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: mark Camunda 8.8 and 7.24 as stable ([#5265](https://github.com/camunda/camunda-modeler/issues/5265))
+
 ## 5.39.0
 
 * `DEPS`: update to `bpmn-js@18.6.3`
