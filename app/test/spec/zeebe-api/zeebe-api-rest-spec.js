@@ -634,6 +634,91 @@ describe('ZeebeAPI (REST)', function() {
     });
 
 
+    describe('compatibility', function() {
+
+      it('should map BPMN deployment result so that bpmnProcessId is available', async function() {
+
+        // given
+        const deploymentResult = {
+          deployments: [
+            {
+              processDefinition: {
+                processDefinitionId: 'processId',
+                processDefinitionVersion: '0',
+                processDefinitionKey: '2251799813686749'
+              }
+            }
+          ]
+        };
+
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            deployResources: () => deploymentResult
+          }
+        });
+
+        // when
+        const result = await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ]
+        });
+
+        // then
+        expect(result.response.deployments[0].process).to.exist;
+        expect(result.response.deployments[0].process).to.have.property('bpmnProcessId', 'processId');
+      });
+
+
+      it('should map DMN deployment result so that decisionId is available', async function() {
+
+        // given
+        const deploymentResult = {
+          deployments: [
+            {
+              decisionDefinition: {
+                decisionDefinitionId: 'decisionId',
+                decisionRequirementsId: 'string',
+                decisionDefinitionKey: '2251799813326547'
+              }
+            }
+          ]
+        };
+
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            deployResources: () => deploymentResult
+          }
+        });
+
+        // when
+        const result = await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.dmn',
+              type: 'dmn'
+            }
+          ]
+        });
+
+        // then
+        expect(result.response.deployments[0].decision).to.exist;
+        expect(result.response.deployments[0].decision).to.have.property('decisionId', 'decisionId');
+      });
+    });
+
+
     describe('resource names', function() {
 
       it('should use file path as resource name', async function() {
@@ -2012,7 +2097,7 @@ function createZeebeAPI(options = {}) {
   class Camunda8Mock {
     constructor(config) {
       options.configSpy && options.configSpy(config);
-      Object.assign(this,options.Camunda8Mock);
+      Object.assign(this, options.Camunda8Mock);
     }
 
     getCamundaRestClient() {
