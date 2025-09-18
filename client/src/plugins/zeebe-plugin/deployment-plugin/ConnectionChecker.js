@@ -92,6 +92,8 @@ export default class ConnectionChecker extends EventEmitter {
       return;
     }
 
+    this._check();
+
     this._checkInterval = setInterval(() => {
       this._check();
     }, DELAYS.LONG);

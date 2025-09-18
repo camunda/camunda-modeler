@@ -63,10 +63,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1001);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledOnce;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: true
     });
@@ -100,10 +100,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1001);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledOnce;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
       reason: 'foo'
@@ -137,10 +137,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1001);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledOnce;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
       error
@@ -185,10 +185,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledOnce;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: true
     });
@@ -199,10 +199,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(5000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledThrice;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledThrice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
       reason: 'foo'
@@ -214,10 +214,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(5000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledThrice;
+    expect(zeebeAPI.checkConnection).to.have.been.called.callCount(4);
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledThrice;
+    expect(connectionCheckSpy).to.have.been.called.callCount(4);
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: true
     });
@@ -264,13 +264,13 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith({
       ...DEFAULT_CONFIG.endpoint,
       camundaCloudClientId: 'bar'
     });
 
-    expect(connectionCheckSpy).to.have.been.calledOnce;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: true
     });
@@ -279,7 +279,7 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(5000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledThrice;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith({
       ...DEFAULT_CONFIG.endpoint,
       camundaCloudClientId: 'bar'
@@ -308,7 +308,7 @@ describe('ConnectionChecker', function() {
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
 
-    expect(connectionCheckSpy).to.have.been.calledOnce;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy.firstCall.args[0].success).to.be.false;
     expect(connectionCheckSpy.firstCall.args[0].error.message).to.equal('No configuration provided');
   });
@@ -333,8 +333,8 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(5000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
-    expect(connectionCheckSpy).to.have.been.calledOnce;
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
 
     // when
     connectionChecker.stopChecking();
@@ -342,7 +342,7 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(5000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
   });
 
 });
