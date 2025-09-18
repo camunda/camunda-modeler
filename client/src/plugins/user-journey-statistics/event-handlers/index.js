@@ -15,6 +15,7 @@ import PingEventHandler from './PingEventHandler';
 import TabEventHandler from './TabEventHandler';
 import FormEditorEventHandler from './FormEditorEventHandler';
 import ModelingEventHandler from './ModelingEventHandler';
+import TaskTestingEventHandler from './TaskTestingEventHandler';
 
 export default [
   DeploymentEventHandler,
@@ -23,5 +24,6 @@ export default [
   OverlayEventHandler,
   PingEventHandler,
   TabEventHandler,
-  ModelingEventHandler
+  ModelingEventHandler,
+  TaskTestingEventHandler
 ];

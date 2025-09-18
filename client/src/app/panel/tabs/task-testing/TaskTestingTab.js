@@ -169,15 +169,22 @@ export default function TaskTestingTab(props) {
   };
 
   const handleTaskExecutionStarted = (element) => {
-
-    // TODO: Telemetry
-    console.log('Task executed started', element);
+    onAction('emit-event', {
+      type: 'taskTesting.started',
+      payload: {
+        element
+      }
+    });
   };
 
   const handleTaskExecutionFinished = (element, output) => {
-
-    // TODO: Telemetry
-    console.log('Task executed finished', element, output);
+    onAction('emit-event', {
+      type: 'taskTesting.finished',
+      payload: {
+        element,
+        output
+      }
+    });
   };
 
   const handleTaskExecutionInterrupted = () => {
