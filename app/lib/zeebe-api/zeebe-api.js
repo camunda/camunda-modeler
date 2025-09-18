@@ -196,18 +196,18 @@ class ZeebeAPI {
               if (deployment.processDefinition) {
                 return {
                   ...deployment,
-                  process:{
+                  process: {
                     ...deployment.processDefinition,
-                    bpmnProcessId: deployment.processDefinitionId
+                    bpmnProcessId: deployment.processDefinition.processDefinitionId
                   }
                 };
               }
               if (deployment.decisionDefinition) {
                 return {
                   ...deployment,
-                  decision:{
+                  decision: {
                     ...deployment.decisionDefinition,
-                    decisionId: deployment.decisionDefinitionId
+                    decisionId: deployment.decisionDefinition.decisionDefinitionId
                   }
                 };
               }

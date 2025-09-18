@@ -6,7 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
 * `FEAT`: mark Camunda 8.8 and 7.24 as stable ([#5265](https://github.com/camunda/camunda-modeler/issues/5265))
+* `FIX`: make start instance work with REST API ([#5274](https://github.com/camunda/camunda-modeler/issues/5274))
 
 ## 5.39.0
 
