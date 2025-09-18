@@ -41,7 +41,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support `zeebe:taskSchedule` binding ([bpmn-io/bpmn-js-element-templates#173](https://github.com/bpmn-io/bpmn-js-element-templates/pull/173))
 * `FEAT`: support `zeebe:adHoc` binding ([bpmn-io/bpmn-js-element-templates#175](https://github.com/bpmn-io/bpmn-js-element-templates/pull/175))
 * `FIX`: trigger create mode if auto place of element with template not possible ([bpmn-io/bpmn-js-create-append-anything#56](https://github.com/bpmn-io/bpmn-js-create-append-anything/pull/56))
-* `FIX`: use default values for displaying edited marker ([bpmn-io/bpmn-js-element-templates#170](https://github.com/bpmn-io/bpmn-js-element-templates/pull/170))
+* `FIX`: use default values for displaying edited marker ([#5126](https://github.com/camunda/camunda-modeler/issues/5126))
 * `FIX`: `cancelRemainingInstances` of ad-hoc sub-processes is unset by default ([bpmn-io/bpmn-js-properties-panel#1148](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1148), [bpmn-io/bpmn-moddle#131](https://github.com/bpmn-io/bpmn-moddle/issues/131))
 * `FEAT`: handle `bpmn:AdHocSubProcess` with `zeebe:TaskDefinition` lint error ([camunda/linting#146](https://github.com/camunda/linting/pull/146))
 * `FEAT`: handle `zeebe:AdHoc` `outputCollection` and `outputElement` lint errors ([camunda/linting#146](https://github.com/camunda/linting/pull/146))
