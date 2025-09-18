@@ -16,6 +16,8 @@ import { omitBy } from 'lodash';
 
 import { Formik } from 'formik';
 
+import debug from 'debug';
+
 import Flags from '../../util/Flags';
 
 import { Modal } from '../../shared/ui';
@@ -25,6 +27,8 @@ import { SettingsForm } from './SettingsForm';
 import useBuiltInSettings from './useBuiltInSettings';
 
 import * as css from './SettingsPlugin.less';
+
+const log = debug('Settings');
 
 /**
  * Provides UI for the settings API.
@@ -68,6 +72,8 @@ export default function SettingsPlugin(props) {
   useEffect(() => {
     if (!schema) return;
 
+    log('Settings#updateSchema %o', schema);
+
     const values = settings.get();
 
     // Setting can specify a flag
@@ -103,6 +109,8 @@ export default function SettingsPlugin(props) {
 
     settings.set(changedValues);
     setValues({ ...values, ...changedValues });
+
+    log('Settings#handleSave %o', changedValues);
   };
 
   const handleRestart = () => {
