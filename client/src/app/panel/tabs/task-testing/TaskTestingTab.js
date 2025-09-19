@@ -23,12 +23,11 @@ import { ENGINES } from '../../../../util/Engines';
 import { getOperateUrl } from '../../../../plugins/zeebe-plugin/shared/util';
 
 import ZeebeAPI from '../../../../remote/ZeebeAPI';
-import Deployment from '../../../../plugins/zeebe-plugin/deployment-plugin/Deployment';
-import StartInstance from '../../../../plugins/zeebe-plugin/start-instance-plugin/StartInstance';
 
 import ConnectionChecker from '../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
 
 import TestStatusBarItem from './TestStatusBarItem';
+import TaskTestingApi from './TaskTestingApi';
 
 import * as css from './TaskTestingTab.less';
 
@@ -60,11 +59,10 @@ export default function TaskTestingTab(props) {
 
   const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
-  const [ zeebeAPI ] = useState(new ZeebeAPI(backend));
-  const [ deployment ] = useState(new Deployment(config, zeebeAPI));
-  const [ startInstance ] = useState(new StartInstance(config, zeebeAPI));
+  const [ zeebeApi ] = useState(new ZeebeAPI(backend));
+  const [ taskTestingApi ] = useState(new TaskTestingApi(zeebeApi, config, file, onAction));
 
-  const [ connectionChecker ] = useState(new ConnectionChecker(zeebeAPI));
+  const [ connectionChecker ] = useState(new ConnectionChecker(zeebeApi));
   const [ isConnectionConfigured, setIsConnectionConfigured ] = useState(false);
   const [ isGrpcConnection, setIsGrpcConnection ] = useState(false);
   const [ operateUrl, setOperateUrl ] = useState();
@@ -142,7 +140,7 @@ export default function TaskTestingTab(props) {
       return;
     }
 
-    const config = await deployment.getConfigForFile(file);
+    const config = await taskTestingApi.getDeploymentConfig();
     connectionChecker.updateConfig(config);
 
     if (!success) {
@@ -198,66 +196,6 @@ export default function TaskTestingTab(props) {
     onAction('open-deployment');
   };
 
-  const handleDeployment = async () => {
-    onAction('save');
-
-    const config = await deployment.getConfigForFile(file);
-
-    const result = await deployment.deploy([
-      {
-        path: file.path,
-        type: 'bpmn'
-      }
-    ], config);
-
-    if (!result.success) {
-      return {
-        success: false,
-        error: result?.response?.message || 'Deployment failed'
-      };
-    }
-
-    return result;
-  };
-
-  const handleStartInstance = async (processId, elementId, variables) => {
-    const config = await deployment.getConfigForFile(file);
-
-    return startInstance.startInstance(processId, {
-      ...config,
-      variables,
-      startInstructions:[
-        {
-          elementId
-        }
-      ],
-      runtimeInstructions: [
-        {
-          type: 'TERMINATE_PROCESS_INSTANCE',
-          afterElementId: elementId
-        }
-      ]
-    });
-  };
-
-  const getProcessInstance = async (processInstanceKey) => {
-    const config = await deployment.getConfigForFile(file);
-
-    return zeebeAPI.searchProcessInstances(config, processInstanceKey);
-  };
-
-  const getProcessInstanceVariables = async (processInstanceKey) => {
-    const config = await deployment.getConfigForFile(file);
-
-    return zeebeAPI.searchVariables(config, processInstanceKey);
-  };
-
-  const getProcessInstanceIncident = async (processInstanceKey) => {
-    const config = await deployment.getConfigForFile(file);
-
-    return zeebeAPI.searchIncidents(config, processInstanceKey);
-  };
-
   return <>
     <Fill slot="bottom-panel"
       id="task-testing"
@@ -278,13 +216,7 @@ export default function TaskTestingTab(props) {
             onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
             configureConnectionBannerTitle={ connectionErrorLabels.title }
             configureConnectionBannerDescription={ connectionErrorLabels.description }
-            api={ {
-              deploy: handleDeployment,
-              startInstance: handleStartInstance,
-              getProcessInstance: getProcessInstance,
-              getProcessInstanceVariables: getProcessInstanceVariables,
-              getProcessInstanceIncident: getProcessInstanceIncident
-            } }
+            api={ taskTestingApi.getApi() }
           />
           :
           <div className="unsupported">
