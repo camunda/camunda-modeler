@@ -65,6 +65,7 @@ describe('Deployment', function() {
 
       expect(deployedSpy).to.have.been.calledOnce;
       expect(deployedSpy).to.have.been.calledWith({
+        context: 'deploymentTool',
         deploymentResult,
         endpoint,
         gatewayVersion: 'foo'
@@ -112,6 +113,7 @@ describe('Deployment', function() {
 
       expect(deployedSpy).to.have.been.calledOnce;
       expect(deployedSpy).to.have.been.calledWith({
+        context: 'deploymentTool',
         deploymentResult,
         endpoint,
         gatewayVersion: 'foo'
@@ -163,6 +165,50 @@ describe('Deployment', function() {
 
       expect(deployedSpy).to.have.been.calledOnce;
       expect(deployedSpy).to.have.been.calledWith({
+        context: 'deploymentTool',
+        deploymentResult,
+        endpoint,
+        gatewayVersion: 'foo'
+      });
+    });
+
+
+    it('should deploy with context', async function() {
+
+      // given
+      const resourceConfigs = createMockResourceConfigs(),
+            config = createMockConfig({
+              context: 'taskTesting'
+            }),
+            deploymentResult = createMockDeploymentResult();
+
+      const { endpoint } = config;
+
+      const zeebeAPI = new MockZeebeAPI({
+        deploy: sinon.stub().resolves(deploymentResult),
+        getGatewayVersion: sinon.stub().resolves({
+          success: true,
+          response: {
+            gatewayVersion: 'foo'
+          }
+        })
+      });
+
+      const deployment = createDeployment({
+        zeebeAPI
+      });
+
+      const deployedSpy = sinon.spy();
+
+      deployment.on('deployed', deployedSpy);
+
+      // when
+      await deployment.deploy(resourceConfigs, config);
+
+      // then
+      expect(deployedSpy).to.have.been.calledOnce;
+      expect(deployedSpy).to.have.been.calledWith({
+        context: 'taskTesting',
         deploymentResult,
         endpoint,
         gatewayVersion: 'foo'
@@ -514,6 +560,7 @@ function createMockEndpoint(overrides = {}) {
 
 function createMockConfig(overrides = {}) {
   return {
+    context: 'deploymentTool',
     deployment: {},
     endpoint: createMockEndpoint(),
     ...overrides

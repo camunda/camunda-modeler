@@ -91,6 +91,7 @@ export default class Deployment extends EventEmitter {
     resourceConfigs = Array.isArray(resourceConfigs) ? resourceConfigs : [ resourceConfigs ];
 
     const {
+      context,
       deployment,
       endpoint
     } = config;
@@ -106,6 +107,7 @@ export default class Deployment extends EventEmitter {
     const gatewayVersion = await this.getGatewayVersion(endpoint);
 
     this.emit('deployed', {
+      context,
       deploymentResult,
       endpoint,
       gatewayVersion
