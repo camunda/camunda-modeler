@@ -140,7 +140,7 @@ export default class TestClient extends Component {
         },
         'testClientPlugin.connections': {
           type: 'array',
-          label: 'Connections',
+          label: 'Test Plugin Connections',
           description: 'Connections to Camunda 7 or Camunda 8',
           documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
           formConfig: {
