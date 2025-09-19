@@ -8,10 +8,14 @@
  * except in compliance with the MIT License.
  */
 
+import debug from 'debug';
+
 import Deployment from '../../../../plugins/zeebe-plugin/deployment-plugin/Deployment';
 import StartInstance from '../../../../plugins/zeebe-plugin/start-instance-plugin/StartInstance';
 
 import { getOperateUrl } from '../../../../plugins/zeebe-plugin/shared/util';
+
+const log = debug('TaskTestingApi');
 
 export default class TaskTestingApi {
   constructor(zeebeApi, config, file, onAction) {
@@ -63,6 +67,7 @@ export default class TaskTestingApi {
     ], config);
 
     if (!result.success) {
+      log('Deployment failed: ', result);
       return {
         success: false,
         error: result?.response?.message || 'Deployment failed'
@@ -71,19 +76,21 @@ export default class TaskTestingApi {
 
     // Detect gRPC connection by the response shape. We expect REST.
     if (!result.response.processes) {
+      log('Deployment failed (gRPC): ', result);
       return {
         success: false,
         error: 'gRPC connection is not supported, use REST.'
       };
     }
 
+    log('Deployment successful: ', result);
     return result;
   }
 
   async startInstance(processId, elementId, variables) {
     const config = await this.deploymentPlugin.getConfigForFile(this.file);
 
-    return this.startInstancePlugin.startInstance(processId, {
+    const response = await this.startInstancePlugin.startInstance(processId, {
       ...config,
       variables,
       startInstructions:[
@@ -98,6 +105,9 @@ export default class TaskTestingApi {
         }
       ]
     });
+
+    log('Start instance successful: ', response);
+    return response;
   }
 
   async getProcessInstance(processInstanceKey) {
