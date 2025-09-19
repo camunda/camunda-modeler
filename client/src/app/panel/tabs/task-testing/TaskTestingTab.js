@@ -39,10 +39,7 @@ export const DEFAULT_CONFIG = {
 export const REQUIRED_CAMUNDA_CLOUD_VERSION = '8.8.0';
 
 const CONNECTION_INVALID_TITLE = 'Couldn\'t connect to Camunda';
-const CONNECTION_NOT_CONFIGURED_DESCRIPTION = 'Configure a REST connection to Camunda 8 cluster.';
-
-const CONNECTION_GRPC_TITLE = 'gRPC connection is not supported';
-const CONNECTION_GRPC_DESCIPTION = 'Configure a connection using REST.';
+const CONNECTION_INVALID_DESCRIPTION = 'Configure a REST connection to Camunda 8 cluster.';
 
 export default function TaskTestingTab(props) {
   const {
@@ -76,20 +73,6 @@ export default function TaskTestingTab(props) {
       engineProfile.executionPlatform === ENGINES.CLOUD &&
       semverCompare(engineProfile.executionPlatformVersion || '0', REQUIRED_CAMUNDA_CLOUD_VERSION) >= 0;
   }, [ engineProfile ]);
-
-  const connectionErrorLabels = useMemo(() => {
-    if (isGrpcConnection) {
-      return {
-        title: CONNECTION_GRPC_TITLE,
-        description: CONNECTION_GRPC_DESCIPTION
-      };
-    }
-
-    return {
-      title: CONNECTION_INVALID_TITLE,
-      description: CONNECTION_NOT_CONFIGURED_DESCRIPTION
-    };
-  }, [ isGrpcConnection ]);
 
   useEffect(() => {
     connectionChecker.on('connectionCheck', checkConnection);
@@ -198,8 +181,8 @@ export default function TaskTestingTab(props) {
             onTaskExecutionStarted={ handleTaskExecutionStarted }
             onTaskExecutionFinished={ handleTaskExecutionFinished }
             onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
-            configureConnectionBannerTitle={ connectionErrorLabels.title }
-            configureConnectionBannerDescription={ connectionErrorLabels.description }
+            configureConnectionBannerTitle={ CONNECTION_INVALID_TITLE }
+            configureConnectionBannerDescription={ CONNECTION_INVALID_DESCRIPTION }
             api={ taskTestingApi.getApi() }
           />
           :
@@ -215,8 +198,4 @@ export default function TaskTestingTab(props) {
       layout={ layout }
       onToggle={ onToggle } />
   </>;
-}
-
-function isGrpcUrl(url) {
-  return url?.startsWith('grpcs://');
 }
