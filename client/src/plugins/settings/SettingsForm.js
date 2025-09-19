@@ -12,35 +12,22 @@ import React, { useEffect, useMemo } from 'react';
 
 import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 
-import { map, forEach, sortBy, get, isString, isObject } from 'min-dash';
+import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
 import Flags from '../../util/Flags';
-import { Settings } from '@carbon/icons-react';
-import { Edit, TrashCan } from '@carbon/icons-react';
+import { TrashCan } from '@carbon/icons-react';
 
 
 import {
-  Accordion,
-  CodeSnippet,
-  AccordionItem,
   DataTable,
-  ModalWrapper,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
-  TableExpandHeader,
   TableExpandRow,
   TableExpandedRow,
-  TableHead,
-  TableHeader,
-  TableRow,
-  Tag,
-  Tab,
   Button as CarbonButton
-
 } from '@carbon/react';
 
 
@@ -130,7 +117,7 @@ function SettingsField(props) {
       return null;
     }
 
-    if (type === 'text' || type === 'password') {
+    if (type === 'text') {
       return TextInput;
     }
 
@@ -139,7 +126,6 @@ function SettingsField(props) {
         return <TextInput { ...props } type="password" />;
       };
     }
-
 
     if (type === 'boolean') {
       return CheckBox;
@@ -159,7 +145,6 @@ function SettingsField(props) {
   if (!component) {
     return null;
   }
-
 
   let typeProp = {};
   if (type === 'boolean') {
