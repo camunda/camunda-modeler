@@ -128,13 +128,13 @@ export default function DeploymentPluginOverlay(props) {
   }, [ connectionChecker, deployment, setConfig, setConnectionCheckResult ]);
 
   useEffect(() => {
-    const onDeployed = ({ deploymentResult, endpoint, gatewayVersion }) => {
+    const onDeployed = ({ context = 'deploymentTool', deploymentResult, endpoint, gatewayVersion }) => {
       if (deploymentResult.success) {
         triggerAction('emit-event', {
           type: 'deployment.done',
           payload: {
             deployment: deploymentResult.response,
-            context: 'deploymentTool',
+            context,
             targetType: endpoint.targetType,
             deployedTo: {
               executionPlatformVersion: gatewayVersion,

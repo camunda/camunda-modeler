@@ -37,7 +37,11 @@ export default class TaskTestingApi {
   }
 
   async getDeploymentConfig() {
-    return this.deploymentPlugin.getConfigForFile(this.file);
+    const config = await this.deploymentPlugin.getConfigForFile(this.file);
+    return {
+      ...config,
+      context: 'taskTesting'
+    };
   }
 
   async getOperateUrl() {
@@ -57,7 +61,7 @@ export default class TaskTestingApi {
   async deploy() {
     this.onAction('save');
 
-    const config = await this.deploymentPlugin.getConfigForFile(this.file);
+    const config = await this.getDeploymentConfig();
 
     const result = await this.deploymentPlugin.deploy([
       {
@@ -88,7 +92,7 @@ export default class TaskTestingApi {
   }
 
   async startInstance(processId, elementId, variables) {
-    const config = await this.deploymentPlugin.getConfigForFile(this.file);
+    const config = await this.getDeploymentConfig();
 
     const response = await this.startInstancePlugin.startInstance(processId, {
       ...config,
@@ -111,19 +115,19 @@ export default class TaskTestingApi {
   }
 
   async getProcessInstance(processInstanceKey) {
-    const config = await this.deploymentPlugin.getConfigForFile(this.file);
+    const config = await this.getDeploymentConfig();
 
     return this.zeebeApi.searchProcessInstances(config, processInstanceKey);
   }
 
   async getProcessInstanceVariables(processInstanceKey) {
-    const config = await this.deploymentPlugin.getConfigForFile(this.file);
+    const config = await this.getDeploymentConfig();
 
     return this.zeebeApi.searchVariables(config, processInstanceKey);
   }
 
   async getProcessInstanceIncident(processInstanceKey) {
-    const config = await this.deploymentPlugin.getConfigForFile(this.file);
+    const config = await this.getDeploymentConfig();
 
     return this.zeebeApi.searchIncidents(config, processInstanceKey);
   }

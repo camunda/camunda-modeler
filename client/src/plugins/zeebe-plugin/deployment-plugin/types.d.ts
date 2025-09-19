@@ -51,6 +51,7 @@ export interface CamundaCloudEndpoint extends AbstractEndpoint {
 export type Endpoint = SelfHostedNoAuthEndpoint | SelfHostedBasicAuthEndpoint | SelfHostedOAuthEndpoint | CamundaCloudEndpoint;
 
 export type DeploymentConfig = {
+  context: 'deploymentTool' | 'taskTesting';
   deployment: Deployment;
   endpoint: Endpoint;
 };
