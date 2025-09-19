@@ -273,7 +273,7 @@ export default function TaskTestingTab(props) {
             onConfigureConnection={ handleMissingDeploymentConfig }
             onConfigChanged={ setTaskTestingConfig }
             operateBaseUrl={ operateUrl }
-            onTaskExecutedStarted={ handleTaskExecutionStarted }
+            onTaskExecutionStarted={ handleTaskExecutionStarted }
             onTaskExecutionFinished={ handleTaskExecutionFinished }
             onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
             configureConnectionBannerTitle={ connectionErrorLabels.title }
