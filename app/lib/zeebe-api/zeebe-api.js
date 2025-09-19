@@ -257,7 +257,13 @@ class ZeebeAPI {
 
       if (zeebeGrpcClient) {
 
-        // runtimeInstructions are not supported with Zeebe gRPC client
+        if (runtimeInstructions) {
+          return {
+            success: false,
+            response: 'Runtime instructions are not supported with gRPC client'
+          };
+        }
+
         const response = await zeebeGrpcClient.createProcessInstance({
           bpmnProcessId: processId,
           variables,
