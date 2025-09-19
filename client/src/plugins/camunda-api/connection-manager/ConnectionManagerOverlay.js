@@ -64,7 +64,6 @@ export default function DeploymentConfigForm(props) {
     connections
   } = props;
 
-  console.log(connections);
   const getFieldError = (meta, fieldName) => {
     return _getFieldError(fieldName) || (meta.touched && meta.error);
   };
