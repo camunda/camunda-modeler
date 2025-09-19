@@ -11,6 +11,8 @@
 import Deployment from '../../../../plugins/zeebe-plugin/deployment-plugin/Deployment';
 import StartInstance from '../../../../plugins/zeebe-plugin/start-instance-plugin/StartInstance';
 
+import { getOperateUrl } from '../../../../plugins/zeebe-plugin/shared/util';
+
 export default class TaskTestingApi {
   constructor(zeebeApi, config, file, onAction) {
     this.zeebeApi = zeebeApi;
@@ -32,6 +34,20 @@ export default class TaskTestingApi {
 
   async getDeploymentConfig() {
     return this.deploymentPlugin.getConfigForFile(this.file);
+  }
+
+  async getOperateUrl() {
+    const { endpoint } = await this.getDeploymentConfig();
+
+    if (endpoint.targetType === 'camundaCloud') {
+      const { href } = getOperateUrl(endpoint);
+      return href;
+    }
+
+    if (endpoint.targetType === 'selfHosted') {
+      const { operateUrl } = endpoint;
+      return operateUrl;
+    }
   }
 
   async deploy() {
