@@ -20,8 +20,6 @@ import { debounce } from '../../../../util';
 
 import { ENGINES } from '../../../../util/Engines';
 
-import { getOperateUrl } from '../../../../plugins/zeebe-plugin/shared/util';
-
 import ZeebeAPI from '../../../../remote/ZeebeAPI';
 
 import ConnectionChecker from '../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
@@ -64,8 +62,14 @@ export default function TaskTestingTab(props) {
 
   const [ connectionChecker ] = useState(new ConnectionChecker(zeebeApi));
   const [ isConnectionConfigured, setIsConnectionConfigured ] = useState(false);
-  const [ isGrpcConnection, setIsGrpcConnection ] = useState(false);
-  const [ operateUrl, setOperateUrl ] = useState();
+
+  const operateUrl = useMemo(() => {
+    if (!isConnectionConfigured) {
+      return null;
+    }
+
+    return taskTestingApi.getOperateUrl();
+  }, [ isConnectionConfigured, taskTestingApi ]);
 
   const isSupportedByRuntime = useMemo(() => {
     return engineProfile &&
@@ -142,26 +146,6 @@ export default function TaskTestingTab(props) {
 
     const config = await taskTestingApi.getDeploymentConfig();
     connectionChecker.updateConfig(config);
-
-    if (!success) {
-      setIsConnectionConfigured(success);
-      return;
-    }
-
-    const { endpoint } = config;
-
-    if (endpoint.targetType === 'camundaCloud') {
-      const { href } = getOperateUrl(endpoint);
-      setOperateUrl(href);
-      setIsGrpcConnection(isGrpcUrl(endpoint.camundaCloudClusterUrl));
-    }
-
-    if (endpoint.targetType === 'selfHosted') {
-      const { operateUrl, contactPoint } = endpoint;
-
-      operateUrl && setOperateUrl(operateUrl);
-      setIsGrpcConnection(isGrpcUrl(contactPoint));
-    }
 
     setIsConnectionConfigured(success);
   };
