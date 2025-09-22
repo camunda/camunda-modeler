@@ -1,6 +1,9 @@
 {
-  "extends": "./tsconfig.editor.json",
   "compilerOptions": {
-    "checkJs": true
+    "lib": [
+      "ES2018"
+    ],
+    "strict": true,
+    "checkJS": true
   }
 }
