@@ -19,11 +19,11 @@ const log = debug('TaskTestingApi');
 
 export default class TaskTestingApi {
   constructor(zeebeApi, config, file, onAction) {
-    this.zeebeApi = zeebeApi;
-    this.deploymentPlugin = new Deployment(config, zeebeApi);
-    this.startInstancePlugin = new StartInstance(config, zeebeApi);
-    this.onAction = onAction;
-    this.file = file;
+    this._zeebeApi = zeebeApi;
+    this._deployment = new Deployment(config, zeebeApi);
+    this._startInstance = new StartInstance(config, zeebeApi);
+    this._onAction = onAction;
+    this._file = file;
   }
 
   getApi() {
@@ -37,7 +37,7 @@ export default class TaskTestingApi {
   }
 
   async getDeploymentConfig() {
-    const config = await this.deploymentPlugin.getConfigForFile(this.file);
+    const config = await this._deployment.getConfigForFile(this._file);
     return {
       ...config,
       context: 'taskTesting'
@@ -59,13 +59,13 @@ export default class TaskTestingApi {
   }
 
   async deploy() {
-    this.onAction('save');
+    this._onAction('save');
 
     const config = await this.getDeploymentConfig();
 
-    const result = await this.deploymentPlugin.deploy([
+    const result = await this._deployment.deploy([
       {
-        path: this.file.path,
+        path: this._file.path,
         type: 'bpmn'
       }
     ], config);
@@ -94,7 +94,7 @@ export default class TaskTestingApi {
   async startInstance(processId, elementId, variables) {
     const config = await this.getDeploymentConfig();
 
-    const response = await this.startInstancePlugin.startInstance(processId, {
+    const response = await this._startInstance.startInstance(processId, {
       ...config,
       variables,
       startInstructions:[
@@ -117,18 +117,18 @@ export default class TaskTestingApi {
   async getProcessInstance(processInstanceKey) {
     const config = await this.getDeploymentConfig();
 
-    return this.zeebeApi.searchProcessInstances(config, processInstanceKey);
+    return this._zeebeApi.searchProcessInstances(config, processInstanceKey);
   }
 
   async getProcessInstanceVariables(processInstanceKey) {
     const config = await this.getDeploymentConfig();
 
-    return this.zeebeApi.searchVariables(config, processInstanceKey);
+    return this._zeebeApi.searchVariables(config, processInstanceKey);
   }
 
   async getProcessInstanceIncident(processInstanceKey) {
     const config = await this.getDeploymentConfig();
 
-    return this.zeebeApi.searchIncidents(config, processInstanceKey);
+    return this._zeebeApi.searchIncidents(config, processInstanceKey);
   }
 }
