@@ -10,7 +10,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-import classNames from 'classnames';
+import classnames from 'classnames';
 
 import { Fill } from '../../app/slot-fill';
 
@@ -36,6 +36,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
     log,
     processApplication,
     processApplicationItems,
+    tabGroup,
     triggerAction
   } = props;
 
@@ -124,7 +125,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
         <button
           onClick={ onClick }
           title="Open process application start instance"
-          className={ classNames('btn', css.ProcessApplicationsStartInstancePlugin, { 'btn--active': overlayOpen }) }
+          className={ classnames('btn', css.ProcessApplicationsStartInstancePlugin, { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
           <StartInstanceIcon className="icon" />
@@ -135,6 +136,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
       <StartInstancePluginOverlay
         activeTab={ activeTab }
         anchor={ anchorRef.current }
+        className={ classnames(tabGroup?.className) }
         connectionChecker={ connectionChecker }
         deployment={ deployment }
         deploymentConfigValidator={ deploymentConfigValidator }
