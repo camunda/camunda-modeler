@@ -23,8 +23,6 @@ import CockpitDeploymentLink from '../shared/ui/CockpitDeploymentLink';
 import DeploymentConfigOverlay from './DeploymentConfigOverlay';
 import DeploymentConfigValidator from './validation/DeploymentConfigValidator';
 
-import * as css from './DeploymentTool.less';
-
 import {
   generateId
 } from '../../../util';
@@ -582,7 +580,7 @@ export default class DeploymentTool extends PureComponent {
         <button
           onClick={ onClick }
           title="Deploy current diagram"
-          className={ classNames('btn', css.DeploymentTool, { 'btn--active': isDeployOpen() }) }
+          className={ classNames('btn', { 'btn--active': isDeployOpen() }) }
           ref={ this._anchorRef }
         >
           <DeployIcon className="icon" />

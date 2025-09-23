@@ -26,8 +26,6 @@ import {
 
 import { getSuccessNotification } from './ProcessApplicationsStartInstanceNotifications';
 
-import * as css from './ProcessApplicationsStartInstancePlugin.less';
-
 export default function ProcessApplicationsStartInstancePlugin(props) {
   const {
     _getGlobal,
@@ -124,7 +122,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
         <button
           onClick={ onClick }
           title="Open process application start instance"
-          className={ classNames('btn', css.ProcessApplicationsStartInstancePlugin, { 'btn--active': overlayOpen }) }
+          className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
           <StartInstanceIcon className="icon" />
