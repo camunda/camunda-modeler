@@ -18,7 +18,7 @@ import TaskTestingIcon from '../../../../../resources/icons/TaskTesting.svg';
 
 import { TAB_ID } from './TaskTestingTab';
 
-import * as css from './TestStatusBarItem.less';
+import * as css from './TaskTestingStatusBarItem.less';
 
 export default function TestStatusBarItem(props) {
   const {

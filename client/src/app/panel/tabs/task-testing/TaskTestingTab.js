@@ -22,7 +22,7 @@ import ZeebeAPI from '../../../../remote/ZeebeAPI';
 
 import ConnectionChecker from '../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
 
-import TestStatusBarItem from './TestStatusBarItem';
+import TaskTestingStatusBarItem from './TaskTestingStatusBarItem';
 import TaskTestingApi from './TaskTestingApi';
 
 import * as css from './TaskTestingTab.less';
@@ -182,7 +182,7 @@ export default function TaskTestingTab(props) {
         />
       </div>
     </Fill>
-    <TestStatusBarItem
+    <TaskTestingStatusBarItem
       injector={ injector }
       layout={ layout }
       onToggle={ onToggle } />
