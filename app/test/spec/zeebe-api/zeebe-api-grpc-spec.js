@@ -35,7 +35,7 @@ describe('ZeebeAPI (gRPC)', function() {
 
   describe('#checkConnection', function() {
 
-    it('should set success=true for correct check', async function() {
+    it('should set success=true if check successful', async function() {
 
       // given
       const zeebeAPI = createZeebeAPI();
@@ -52,6 +52,28 @@ describe('ZeebeAPI (gRPC)', function() {
 
       // then
       expect(result.success).to.be.true;
+    });
+
+
+    it('should set protocol and gatewayVersion if check successful', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI();
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.checkConnection(parameters);
+
+      // then
+      expect(result.response).to.exist;
+      expect(result.response.protocol).to.equal('grpc');
+      expect(result.response.gatewayVersion).to.equal('8.7.0');
     });
 
 
@@ -2479,7 +2501,7 @@ function createZeebeAPI(options = {}) {
 
     getZeebeGrpcApiClient() {
       return Object.assign({
-        topology: noop,
+        topology: () => ({ gatewayVersion: '8.7.0' }),
         deployResource: noop,
         deployResources: noop,
         createProcessInstance: noop,

@@ -102,33 +102,7 @@ class ZeebeAPI {
       parameters: sanitizeConfigWithEndpoint(config)
     });
 
-    const { endpoint } = config;
-
-    const {
-      zeebeGrpcClient,
-      camundaRestClient
-    } = await this._getClients(endpoint);
-
-    try {
-      if (zeebeGrpcClient) {
-        await zeebeGrpcClient.topology();
-        return { success: true, protocol: 'grpc' };
-      }
-      if (camundaRestClient) {
-        await camundaRestClient.getTopology();
-        return { success: true, protocol: 'rest' };
-      }
-      return { success: false };
-    } catch (err) {
-      this._log.error('connection check failed', {
-        parameters: sanitizeConfigWithEndpoint(config)
-      }, err);
-
-      return {
-        success: false,
-        reason: getErrorReason(err, endpoint)
-      };
-    }
+    return this.getGatewayVersion(config);
   }
 
   /**
@@ -325,13 +299,13 @@ class ZeebeAPI {
         camundaRestClient
       } = await this._getClients(endpoint);
 
-
       if (zeebeGrpcClient) {
         const topologyResponse = await zeebeGrpcClient.topology();
 
         return {
           success: true,
           response: {
+            protocol: 'grpc',
             gatewayVersion: topologyResponse.gatewayVersion
           }
         };
@@ -339,13 +313,17 @@ class ZeebeAPI {
 
       if (camundaRestClient) {
         const topologyResponse = await camundaRestClient.getTopology();
+
         return {
           success: true,
           response: {
+            protocol: 'rest',
             gatewayVersion: topologyResponse.gatewayVersion
           }
         };
       }
+
+      return { success: false };
     } catch (err) {
       this._log.error('fetch gateway version failed', {
         parameters: sanitizeConfigWithEndpoint(config)
@@ -353,7 +331,7 @@ class ZeebeAPI {
 
       return {
         success: false,
-        reason: getErrorReason(err, config.endpoint)
+        reason: getErrorReason(err, endpoint)
       };
     }
   }
