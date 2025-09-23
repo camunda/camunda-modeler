@@ -65,6 +65,7 @@ export default class PluginsRoot extends PureComponent {
     const pluginSettings = {
       register: settings.register.bind(settings),
       get: settings.get.bind(settings),
+      set: settings.set.bind(settings),
       subscribe: settings.subscribe.bind(settings),
     };
 

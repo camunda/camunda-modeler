@@ -180,9 +180,8 @@ function validateClusterUrl(url, validationErrorMessage) {
   if (!GRPC_CLUSTER_URL_REGEX.test(url) && !REST_CLUSTER_URL_REGEX.test(url)) {
     return validationErrorMessage;
   }
-
-  return null;
 }
+
 
 /**
  * Validate URL. Valid URL must start with "http://" or "https://" and be a valid URL.
