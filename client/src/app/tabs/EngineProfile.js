@@ -12,8 +12,7 @@ import React, { useState, useRef } from 'react';
 
 import classnames from 'classnames';
 
-import semverCompare from 'semver-compare';
-
+import semver from 'semver';
 
 import Flags, {
   PLATFORM_ENGINE_VERSION,
@@ -475,6 +474,7 @@ function toDisplayVersion(engineProfile) {
  */
 function isAlpha(version, platform) {
   const latest = getLatestStable(platform);
+  const coerced = semver.coerce(version);
 
-  return semverCompare(version, latest) > 0;
+  return semver.compare(coerced, latest) > 0;
 }
