@@ -8,7 +8,11 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
+
+import Modeler from 'bpmn-js-headless/lib/Modeler';
 
 import { render, waitFor } from '@testing-library/react';
 
@@ -16,44 +20,414 @@ import { SlotFillRoot } from '../../../../slot-fill';
 
 import Panel from '../../../Panel';
 
-import TestTab, { REQUIRED_CAMUNDA_CLOUD_VERSION } from '../TaskTestingTab';
+import TaskTestingTab, {
+  CANNOT_CONNECT_TITLE,
+  UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE,
+  UNSUPPORTED_PROTOCOL_TITLE
+} from '../TaskTestingTab';
 
-import { ENGINES } from '../../../../../util/Engines';
+import { Backend, Config } from '../../../../__tests__/mocks';
 
-import Modeler from '../../../../../../test/mocks/bpmn-js/Modeler';
+import diagramXML from './TaskTestingTab.bpmn';
+
+describe('<TaskTestingTab>', function() {
+
+  let clock;
+
+  beforeEach(function() {
+    clock = sinon.useFakeTimers();
+  });
+
+  afterEach(function() {
+    clock.restore();
+  });
 
 
-describe('<TestTab>', function() {
+  it('should not show error', async function() {
 
-  const WELCOME_MESSAGE = 'Select a task to start testing';
-  const UNSUPPORTED_MESSAGE = 'Task testing is not supported by the current engine version.';
+    // given
+    const { modeler, renderResult } = await renderTab({
+      backend: new Backend({
+        send: async (channel, data) => {
+          if (channel === 'zeebe:checkConnection') {
+            return {
+              success: true,
+              response: {
+                protocol: 'rest',
+                gatewayVersion: '8.8.0'
+              }
+            };
+          }
+        }
+      }),
+      config: new Config({
+        get: async (key) => {
+          if (key === 'zeebeEndpoints') {
+            return [
+              {
+                id: 'foo',
+                targetType: 'camundaCloud',
+                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+              }
+            ];
+          }
+        },
+        getForFile: async (file, key) => {
+          if (key === 'taskTesting') {
+            return {
+              input: {},
+              output: {}
+            };
+          }
 
-  it('should render', async function() {
+          if (key === 'zeebe-deployment-tool') {
+            return {
+              'zeebe-deployment-tool': {
+                endpointId: 'foo'
+              }
+            };
+          }
+        }
+      }),
+    });
+
+    const { container } = renderResult;
+
+    await clock.tickAsync(1001);
 
     // when
-    const { getByText } = renderTab();
+    modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
 
     // then
     await waitFor(() => {
-      expect(getByText(WELCOME_MESSAGE)).to.exist;
+      expect(container.querySelector('.output__variables--empty')).to.exist;
+    });
+  });
+
+
+  describe('errors', function() {
+
+    it('should show error (execution platform version not supported)', async function() {
+
+      // given
+      const { modeler, renderResult } = await renderTab({
+        backend: new Backend({
+          send: async (channel, data) => {
+            if (channel === 'zeebe:checkConnection') {
+              return {
+                success: true,
+                response: {
+                  protocol: 'rest',
+                  gatewayVersion: '8.7.0'
+                }
+              };
+            }
+          }
+        }),
+        config: new Config({
+          get: async (key) => {
+            if (key === 'zeebeEndpoints') {
+              return [
+                {
+                  id: 'foo',
+                  targetType: 'camundaCloud',
+                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                }
+              ];
+            }
+          },
+          getForFile: async (file, key) => {
+            if (key === 'taskTesting') {
+              return {
+                input: {},
+                output: {}
+              };
+            }
+
+            if (key === 'zeebe-deployment-tool') {
+              return {
+                'zeebe-deployment-tool': {
+                  endpointId: 'foo'
+                }
+              };
+            }
+          }
+        })
+      });
+
+      const { getByText } = renderResult;
+
+      await clock.tickAsync(1001);
+
+      // when
+      modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
+
+      // then
+      await waitFor(() => {
+        expect(getByText(UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE)).to.exist;
+      });
+    });
+
+
+    it('should show error (gRPC connection not supported)', async function() {
+
+      // given
+      const { modeler, renderResult } = await renderTab({
+        backend: new Backend({
+          send: async (channel, data) => {
+            if (channel === 'zeebe:checkConnection') {
+              return {
+                success: true,
+                response: {
+                  protocol: 'grpc',
+                  gatewayVersion: '8.8.0'
+                }
+              };
+            }
+          }
+        }),
+        config: new Config({
+          get: async (key) => {
+            if (key === 'zeebeEndpoints') {
+              return [
+                {
+                  id: 'foo',
+                  targetType: 'camundaCloud',
+                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                }
+              ];
+            }
+          },
+          getForFile: async (file, key) => {
+            if (key === 'taskTesting') {
+              return {
+                input: {},
+                output: {}
+              };
+            }
+
+            if (key === 'zeebe-deployment-tool') {
+              return {
+                'zeebe-deployment-tool': {
+                  endpointId: 'foo'
+                }
+              };
+            }
+          }
+        })
+      });
+
+      const { getByText } = renderResult;
+
+      await clock.tickAsync(1001);
+
+      // when
+      modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
+
+      // then
+      await waitFor(() => {
+        expect(getByText(UNSUPPORTED_PROTOCOL_TITLE)).to.exist;
+      });
+    });
+
+
+    it ('should show error (cannot connect to cluster)', async function() {
+
+      // given
+      const { modeler, renderResult } = await renderTab({
+        backend: new Backend({
+          send: async (channel, data) => {
+            if (channel === 'zeebe:checkConnection') {
+              return {
+                success: false,
+                reason: 'Foo'
+              };
+            }
+          }
+        }),
+        config: new Config({
+          get: async (key) => {
+            if (key === 'zeebeEndpoints') {
+              return [
+                {
+                  id: 'foo',
+                  targetType: 'camundaCloud',
+                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                }
+              ];
+            }
+          },
+          getForFile: async (file, key) => {
+            if (key === 'taskTesting') {
+              return {
+                input: {},
+                output: {}
+              };
+            }
+
+            if (key === 'zeebe-deployment-tool') {
+              return {
+                'zeebe-deployment-tool': {
+                  endpointId: 'foo'
+                }
+              };
+            }
+          }
+        })
+      });
+
+      const { getByText } = renderResult;
+
+      await clock.tickAsync(1001);
+
+      // when
+      modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
+
+      // then
+      await waitFor(() => {
+        expect(getByText(CANNOT_CONNECT_TITLE)).to.exist;
+      });
     });
 
   });
 
 
-  it(`should not support Camunda Cloud < ${REQUIRED_CAMUNDA_CLOUD_VERSION}`, async function() {
+  describe('Operate URL', function() {
 
-    // when
-    const { getByText } = renderTab({
-      engineProfile: {
-        executionPlatform: ENGINES.CLOUD,
-        executionPlatformVersion: '8.7.0'
-      }
+    it('should display Operate link if connection is successful', async function() {
+
+      // given
+      const { modeler, renderResult } = await renderTab({
+        backend: new Backend({
+          send: async (channel, data) => {
+            if (channel === 'zeebe:checkConnection') {
+              return {
+                success: true,
+                response: {
+                  protocol: 'rest',
+                  gatewayVersion: '8.8.0'
+                }
+              };
+            }
+          }
+        }),
+        config: new Config({
+          get: async (key) => {
+            if (key === 'zeebeEndpoints') {
+              return [
+                {
+                  id: 'foo',
+                  targetType: 'camundaCloud',
+                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                }
+              ];
+            }
+          },
+          getForFile: async (file, key) => {
+            if (key === 'taskTesting') {
+              return {
+                input: {},
+                output: {
+                  Task_1: {
+                    success: true,
+                    variables: {
+                      foo: 'bar'
+                    },
+                    operateUrl: 'https://operate.camunda.io'
+                  }
+                }
+              };
+            }
+
+            if (key === 'zeebe-deployment-tool') {
+              return {
+                'zeebe-deployment-tool': {
+                  endpointId: 'foo'
+                }
+              };
+            }
+          }
+        }),
+      });
+
+      const { container } = renderResult;
+
+      await clock.tickAsync(1001);
+
+      // when
+      modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
+
+      // then
+      await waitFor(() => {
+        expect(container.querySelector('.output__header--button-operate')).to.exist;
+      });
     });
 
-    // then
-    await waitFor(() => {
-      expect(getByText(UNSUPPORTED_MESSAGE)).to.exist;
+
+    it('should  not display Operate link if connection is not successful', async function() {
+
+      // given
+      const { modeler, renderResult } = await renderTab({
+        backend: new Backend({
+          send: async (channel, data) => {
+            if (channel === 'zeebe:checkConnection') {
+              return {
+                success: false,
+                reason: 'Foo'
+              };
+            }
+          }
+        }),
+        config: new Config({
+          get: async (key) => {
+            if (key === 'zeebeEndpoints') {
+              return [
+                {
+                  id: 'foo',
+                  targetType: 'camundaCloud',
+                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                }
+              ];
+            }
+          },
+          getForFile: async (file, key) => {
+            if (key === 'taskTesting') {
+              return {
+                input: {},
+                output: {
+                  Task_1: {
+                    success: true,
+                    variables: {
+                      foo: 'bar'
+                    },
+                    operateUrl: 'https://operate.camunda.io'
+                  }
+                }
+              };
+            }
+
+            if (key === 'zeebe-deployment-tool') {
+              return {
+                'zeebe-deployment-tool': {
+                  endpointId: 'foo'
+                }
+              };
+            }
+          }
+        }),
+      });
+
+      const { container } = renderResult;
+
+      await clock.tickAsync(1001);
+
+      // when
+      modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
+
+      // then
+      await waitFor(() => {
+        expect(container.querySelector('.output__header--button-operate')).to.not.exist;
+      });
     });
 
   });
@@ -70,41 +444,28 @@ const defaultLayout = {
   }
 };
 
-const mockConfig = {
-  get: async (key) => {
-    if (key === 'zeebeEndpoints') {
-      return Promise.resolve([]);
-    }
-    return Promise.resolve({});
-  },
-  getForFile: async () => Promise.resolve({}),
-  set: async () => Promise.resolve()
-};
+async function renderTab(options = {}) {
+  const modeler = new Modeler();
 
-const defaultEngineProfile = {
-  executionPlatform: ENGINES.CLOUD,
-  executionPlatformVersion: '8.8.0'
-};
-
-function renderTab(options = {}) {
+  await modeler.importXML(diagramXML);
 
   const {
-    backend = {},
-    config = mockConfig,
-    engineProfile = defaultEngineProfile,
-    injector = new Modeler(),
-    file = {},
+    backend = new Backend(),
+    config = new Config(),
+    injector = modeler.get('injector'),
+    file = {
+      path: 'foo.bpmn'
+    },
     layout = defaultLayout,
     onAction = () => {}
   } = options;
 
-  return render(
+  const renderResult = render(
     <SlotFillRoot>
       <Panel
         layout={ layout }>
-        <TestTab
+        <TaskTestingTab
           layout={ layout }
-          engineProfile={ engineProfile }
           injector={ injector }
           file={ file }
           backend={ backend }
@@ -113,4 +474,9 @@ function renderTab(options = {}) {
       </Panel>
     </SlotFillRoot>
   );
+
+  return {
+    modeler,
+    renderResult
+  };
 }
