@@ -78,15 +78,6 @@ export default class TaskTestingApi {
       };
     }
 
-    // Detect gRPC connection by the response shape. We expect REST.
-    if (!result.response.processes) {
-      log('Deployment failed (gRPC): ', result);
-      return {
-        success: false,
-        error: 'gRPC connection is not supported, use REST.'
-      };
-    }
-
     log('Deployment successful: ', result);
     return result;
   }
