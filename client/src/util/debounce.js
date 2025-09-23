@@ -23,6 +23,9 @@ export default function debounce(fn) {
 
   // noop during testing
   if (process.env.NODE_ENV === 'test') {
+    fn.flush = () => {};
+    fn.cancel = () => {};
+
     return fn;
   }
 
