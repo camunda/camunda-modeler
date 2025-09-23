@@ -8,17 +8,15 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import semverCompare from 'semver-compare';
+import semver from 'semver';
 
 import TaskTesting from '@camunda/task-testing';
 
 import { Fill } from '../../../slot-fill';
 
 import { debounce } from '../../../../util';
-
-import { ENGINES } from '../../../../util/Engines';
 
 import ZeebeAPI from '../../../../remote/ZeebeAPI';
 
@@ -39,20 +37,19 @@ export const DEFAULT_CONFIG = {
 export const MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION = '8.8.0';
 export const SUPPORTED_PROTOCOL = 'rest';
 
-const CANNOT_CONNECT_TITLE = 'Couldn\'t connect to Camunda';
-const CANNOT_CONNECT_DESCRIPTION = 'Configure a REST connection to a Camunda 8 cluster.';
+export const CANNOT_CONNECT_TITLE = 'Couldn\'t connect to Camunda';
+export const CANNOT_CONNECT_DESCRIPTION = 'Configure a REST connection to a Camunda 8 cluster.';
 
-const UNSUPPORTED_PROTOCOL_TITLE = 'REST connection required';
-const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST connection to a Camunda 8 cluster. The current connection uses gRPC.';
+export const UNSUPPORTED_PROTOCOL_TITLE = 'REST connection required';
+export const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST connection to a Camunda 8 cluster. The current connection uses gRPC.';
 
-const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE = 'Execution platform version not supported';
-const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
+export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE = 'Execution platform version not supported';
+export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
 
 export default function TaskTestingTab(props) {
   const {
     backend,
     config,
-    engineProfile,
     injector,
     file,
     layout = {},
@@ -61,35 +58,35 @@ export default function TaskTestingTab(props) {
 
   const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
-  const [ zeebeApi ] = useState(new ZeebeAPI(backend));
-  const [ taskTestingApi ] = useState(new TaskTestingApi(zeebeApi, config, file, onAction));
+  const { current: zeebeApi } = useRef(new ZeebeAPI(backend));
+  const { current: taskTestingApi } = useRef(new TaskTestingApi(zeebeApi, config, file, onAction));
+  const { current: connectionChecker } = useRef(new ConnectionChecker(zeebeApi));
 
-  const [ connectionChecker ] = useState(new ConnectionChecker(zeebeApi));
   const [ connectionCheckResult, setConnectionCheckResult ] = useState(false);
 
-  const operateUrl = useMemo(() => {
-    if (!connectionCheckResult) {
-      return null;
-    }
-
-    return taskTestingApi.getOperateUrl();
-  }, [ connectionCheckResult, taskTestingApi ]);
-
-  const isExecutionPlatformVersionSupported = useMemo(() => {
-    return engineProfile &&
-      engineProfile.executionPlatform === ENGINES.CLOUD &&
-      semverCompare(engineProfile.executionPlatformVersion || '0', MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION) >= 0;
-  }, [ engineProfile ]);
+  const [ operateUrl, setOperateUrl ] = useState(null);
 
   useEffect(() => {
-    connectionChecker.on('connectionCheck', checkConnection);
-    connectionChecker.startChecking();
+    if (connectionCheckResult) {
+      taskTestingApi.getOperateUrl().then(setOperateUrl);
+    }
+  }, [ connectionCheckResult, taskTestingApi ]);
 
-    return () => {
-      connectionChecker.stopChecking();
-      connectionChecker.off('connectionCheck', checkConnection);
-    };
-  }, [ connectionChecker ]);
+  const onConnectionCheck = async ({ success, response }) => {
+
+    // file is not saved
+    if (!file?.path) {
+      return;
+    }
+
+    const config = await taskTestingApi.getDeploymentConfig();
+
+    connectionChecker.updateConfig(config);
+
+    setConnectionCheckResult({ success, response });
+  };
+
+  useConnectionChecker(connectionChecker, onConnectionCheck);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -115,6 +112,8 @@ export default function TaskTestingTab(props) {
     });
 
     saveConfig(taskTestingConfig);
+
+    return () => saveConfig.cancel();
   }, [ taskTestingConfig ]);
 
   const onToggle = () => {
@@ -125,20 +124,6 @@ export default function TaskTestingTab(props) {
     } else if (panel.tab === TAB_ID) {
       onAction('close-panel');
     }
-  };
-
-  const checkConnection = async ({ success, protocol }) => {
-
-    // file is not saved
-    if (!file?.path) {
-      return;
-    }
-
-    const config = await taskTestingApi.getDeploymentConfig();
-
-    connectionChecker.updateConfig(config);
-
-    setConnectionCheckResult({ success, protocol });
   };
 
   const handleTaskExecutionStarted = (element) => {
@@ -168,39 +153,11 @@ export default function TaskTestingTab(props) {
   };
 
   const handleConfigureConnection = () => {
-    if (!connectionCheckResult || !connectionCheckResult.success || connectionCheckResult.protocol !== SUPPORTED_PROTOCOL) {
-      onAction('open-deployment');
-    } else if (!isExecutionPlatformVersionSupported) {
-      onAction('open-engine-profile');
-    }
+    onAction('open-deployment');
   };
 
-  const configureConnectionBannerTitle = useMemo(() => {
-    if (!connectionCheckResult || !connectionCheckResult.success) {
-      return CANNOT_CONNECT_TITLE;
-    } else if (connectionCheckResult.protocol !== SUPPORTED_PROTOCOL) {
-      return UNSUPPORTED_PROTOCOL_TITLE;
-    } else if (!isExecutionPlatformVersionSupported) {
-      return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE;
-    }
-    return null;
-  }, [ connectionCheckResult, isExecutionPlatformVersionSupported ]);
-
-  const configureConnectionBannerDescription = useMemo(() => {
-    if (!connectionCheckResult || !connectionCheckResult.success) {
-      return CANNOT_CONNECT_DESCRIPTION;
-    } else if (connectionCheckResult.protocol !== SUPPORTED_PROTOCOL) {
-      return UNSUPPORTED_PROTOCOL_DESCRIPTION;
-    } else if (!isExecutionPlatformVersionSupported) {
-      return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION;
-    }
-    return null;
-  }, [ connectionCheckResult, isExecutionPlatformVersionSupported ]);
-
-  const isConnectionConfigured = connectionCheckResult
-    && connectionCheckResult.success
-    && connectionCheckResult.protocol === SUPPORTED_PROTOCOL
-    && isExecutionPlatformVersionSupported;
+  const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult);
+  const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult);
 
   return <>
     <Fill slot="bottom-panel"
@@ -212,7 +169,7 @@ export default function TaskTestingTab(props) {
         <TaskTesting
           injector={ injector }
           config={ taskTestingConfig }
-          isConnectionConfigured={ isConnectionConfigured }
+          isConnectionConfigured={ canConnectToCluster(connectionCheckResult) }
           onConfigureConnection={ handleConfigureConnection }
           onConfigChanged={ setTaskTestingConfig }
           operateBaseUrl={ operateUrl }
@@ -230,4 +187,56 @@ export default function TaskTestingTab(props) {
       layout={ layout }
       onToggle={ onToggle } />
   </>;
+}
+
+function getConnectionBannerTitle(connectionCheckResult) {
+  if (!connectionCheckResult || !connectionCheckResult.success) {
+    return CANNOT_CONNECT_TITLE;
+  } else if (!isProtocolSupported(connectionCheckResult)) {
+    return UNSUPPORTED_PROTOCOL_TITLE;
+  } else if (!isExecutionPlatformVersionSupported(connectionCheckResult)) {
+    return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE;
+  }
+  return null;
+}
+
+function getConfigureConnectionBannerDescription(connectionCheckResult) {
+  if (!connectionCheckResult || !connectionCheckResult.success) {
+    return CANNOT_CONNECT_DESCRIPTION;
+  } else if (!isProtocolSupported(connectionCheckResult)) {
+    return UNSUPPORTED_PROTOCOL_DESCRIPTION;
+  } else if (!isExecutionPlatformVersionSupported(connectionCheckResult)) {
+    return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION;
+  }
+  return null;
+}
+
+function useConnectionChecker(connectionChecker, onConnectionCheck) {
+  useEffect(() => {
+    connectionChecker.on('connectionCheck', onConnectionCheck);
+    connectionChecker.startChecking();
+
+    return () => {
+      connectionChecker.stopChecking();
+      connectionChecker.off('connectionCheck', onConnectionCheck);
+    };
+  }, [ connectionChecker ]);
+}
+
+function canConnectToCluster(connectionCheckResult) {
+  const protocolSupported = isProtocolSupported(connectionCheckResult);
+
+  const gatewayVersionSupported = isExecutionPlatformVersionSupported(connectionCheckResult);
+
+  return connectionCheckResult?.success && protocolSupported && gatewayVersionSupported;
+}
+
+function isProtocolSupported(connectionCheckResult) {
+  return connectionCheckResult?.response?.protocol === SUPPORTED_PROTOCOL;
+}
+
+function isExecutionPlatformVersionSupported(connectionCheckResult) {
+  const coercedVersion = semver.coerce(connectionCheckResult?.response?.gatewayVersion || '0');
+
+  return semver.compare(coercedVersion || '0', MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION) >= 0;
 }
