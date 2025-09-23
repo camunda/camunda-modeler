@@ -14,7 +14,7 @@ import classnames from 'classnames';
 
 import { Fill } from '../../../slot-fill';
 
-import { MagicWandFilled } from '@carbon/icons-react';
+import TaskTestingIcon from '../../../../../resources/icons/TaskTesting.svg';
 
 import { TAB_ID } from './TaskTestingTab';
 
@@ -40,7 +40,7 @@ export default function TestStatusBarItem(props) {
       onClick={ onToggle }
       title="Toggle test view"
     >
-      <MagicWandFilled />
+      <TaskTestingIcon className="icon" />
     </button>
   </Fill>;
 }
