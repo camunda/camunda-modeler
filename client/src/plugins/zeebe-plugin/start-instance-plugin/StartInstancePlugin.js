@@ -21,8 +21,6 @@ import StartInstancePluginOverlay from './StartInstancePluginOverlay';
 import BPMNIcon from 'icons/file-types/BPMN.svg';
 import StartInstanceIcon from 'icons/Play.svg';
 
-import * as css from './StartInstancePlugin.less';
-
 export default function StartInstancePlugin(props) {
   const {
     _getFromApp,
@@ -111,7 +109,7 @@ export default function StartInstancePlugin(props) {
         <button
           onClick={ onClick }
           title="Open start instance"
-          className={ classNames('btn', css.StartInstancePlugin, { 'btn--active': overlayOpen }) }
+          className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
           <StartInstanceIcon className="icon" />

@@ -20,8 +20,6 @@ import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
 import DeployIcon from 'icons/Deploy.svg';
 
-import * as css from './DeploymentPlugin.less';
-
 export default function DeploymentPlugin(props) {
   const {
     _getFromApp,
@@ -113,7 +111,7 @@ export default function DeploymentPlugin(props) {
         <button
           onClick={ onClick }
           title="Open file deployment"
-          className={ classNames('btn', css.DeploymentPlugin, { 'btn--active': overlayOpen }) }
+          className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
           <DeployIcon className="icon" />

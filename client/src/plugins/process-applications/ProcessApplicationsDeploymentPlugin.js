@@ -23,8 +23,6 @@ import { bootstrapDeployment } from '../zeebe-plugin/shared/util';
 
 import { getSuccessNotification } from './ProcessApplicationsDeploymentNotifications';
 
-import * as css from './ProcessApplicationsDeploymentPlugin.less';
-
 export default function ProcessApplicationsDeploymentPlugin(props) {
   const {
     _getGlobal,
@@ -110,7 +108,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
         <button
           onClick={ onClick }
           title="Open process application deployment"
-          className={ classNames('btn', css.ProcessApplicationsDeploymentPlugin, { 'btn--active': overlayOpen }) }
+          className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
           <DeployIcon className="icon" />

@@ -21,8 +21,6 @@ import { Fill } from '../../app/slot-fill';
 import { ReportFeedbackOverlay } from './ReportFeedbackOverlay';
 import { ClipboardCopySystemInfo } from './ClipboardCopySystemInfo';
 
-import * as css from './ReportFeedback.less';
-
 
 export class ReportFeedback extends PureComponent {
 
@@ -102,7 +100,7 @@ export class ReportFeedback extends PureComponent {
       <Fragment>
         <Fill slot="status-bar__app" group="9_feedback">
           <button
-            className={ classNames('btn', { 'btn--active': open }, css.ReportFeedback) }
+            className={ classNames('btn', { 'btn--active': open }) }
             title="Provide Feedback"
             onClick={ toggle }
             ref={ buttonRef }
