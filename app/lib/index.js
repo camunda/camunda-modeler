@@ -55,6 +55,7 @@ const {
 const browserOpen = require('./util/browser-open');
 const fileExplorerOpen = require('./util/file-explorer-open');
 const clipboardWriteText = require('./util/clipboard-write-text');
+const clipboardReadText = require('./util/clipboard-read-text');
 const renderer = require('./util/renderer');
 
 const errorTracking = require('./util/error-tracking');
@@ -219,6 +220,11 @@ renderer.on('system-clipboard:write-text', function(options, done) {
   clipboardWriteText(text);
 
   done(null, undefined);
+});
+
+renderer.on('system-clipboard:read-text', function(options, done) {
+  const text = clipboardReadText();
+  done(null, text);
 });
 
 // file context //////////
