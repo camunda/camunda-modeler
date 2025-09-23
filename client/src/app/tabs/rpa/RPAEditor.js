@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import Monaco from 'monaco-editor';
 
 import {
   WithCache,
@@ -218,7 +219,7 @@ export class RPAEditor extends CachedComponent {
     });
 
     document.fonts.ready.then(() => {
-      editor.editor.remeasureFonts();
+      Monaco.editor.remeasureFonts();
     });
 
     this.setCached({
