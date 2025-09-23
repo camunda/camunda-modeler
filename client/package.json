@@ -69,7 +69,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "scroll-tabs": "^1.0.1",
-    "semver-compare": "^1.0.0",
+    "semver": "^6.3.1",
     "sourcemapped-stacktrace": "^1.1.11",
     "ua-parser-js": "^1.0.39",
     "zeebe-bpmn-moddle": "^1.9.0"
