@@ -112,11 +112,11 @@ class ZeebeAPI {
     try {
       if (zeebeGrpcClient) {
         await zeebeGrpcClient.topology();
-        return { success: true };
+        return { success: true, protocol: 'grpc' };
       }
       if (camundaRestClient) {
         await camundaRestClient.getTopology();
-        return { success: true };
+        return { success: true, protocol: 'rest' };
       }
       return { success: false };
     } catch (err) {
