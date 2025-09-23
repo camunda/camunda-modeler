@@ -36,10 +36,17 @@ export const DEFAULT_CONFIG = {
   output: {}
 };
 
-export const REQUIRED_CAMUNDA_CLOUD_VERSION = '8.8.0';
+export const MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION = '8.8.0';
+export const SUPPORTED_PROTOCOL = 'rest';
 
-const CONNECTION_INVALID_TITLE = 'Couldn\'t connect to Camunda';
-const CONNECTION_INVALID_DESCRIPTION = 'Configure a REST connection to Camunda 8 cluster.';
+const CANNOT_CONNECT_TITLE = 'Couldn\'t connect to Camunda';
+const CANNOT_CONNECT_DESCRIPTION = 'Configure a REST connection to a Camunda 8 cluster.';
+
+const UNSUPPORTED_PROTOCOL_TITLE = 'REST connection required';
+const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST connection to a Camunda 8 cluster. The current connection uses gRPC.';
+
+const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE = 'Execution platform version not supported';
+const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
 
 export default function TaskTestingTab(props) {
   const {
@@ -58,20 +65,20 @@ export default function TaskTestingTab(props) {
   const [ taskTestingApi ] = useState(new TaskTestingApi(zeebeApi, config, file, onAction));
 
   const [ connectionChecker ] = useState(new ConnectionChecker(zeebeApi));
-  const [ isConnectionConfigured, setIsConnectionConfigured ] = useState(false);
+  const [ connectionCheckResult, setConnectionCheckResult ] = useState(false);
 
   const operateUrl = useMemo(() => {
-    if (!isConnectionConfigured) {
+    if (!connectionCheckResult) {
       return null;
     }
 
     return taskTestingApi.getOperateUrl();
-  }, [ isConnectionConfigured, taskTestingApi ]);
+  }, [ connectionCheckResult, taskTestingApi ]);
 
-  const isSupportedByRuntime = useMemo(() => {
+  const isExecutionPlatformVersionSupported = useMemo(() => {
     return engineProfile &&
       engineProfile.executionPlatform === ENGINES.CLOUD &&
-      semverCompare(engineProfile.executionPlatformVersion || '0', REQUIRED_CAMUNDA_CLOUD_VERSION) >= 0;
+      semverCompare(engineProfile.executionPlatformVersion || '0', MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION) >= 0;
   }, [ engineProfile ]);
 
   useEffect(() => {
@@ -120,7 +127,7 @@ export default function TaskTestingTab(props) {
     }
   };
 
-  const checkConnection = async ({ success }) => {
+  const checkConnection = async ({ success, protocol }) => {
 
     // file is not saved
     if (!file?.path) {
@@ -128,9 +135,10 @@ export default function TaskTestingTab(props) {
     }
 
     const config = await taskTestingApi.getDeploymentConfig();
+
     connectionChecker.updateConfig(config);
 
-    setIsConnectionConfigured(success);
+    setConnectionCheckResult({ success, protocol });
   };
 
   const handleTaskExecutionStarted = (element) => {
@@ -159,9 +167,40 @@ export default function TaskTestingTab(props) {
     });
   };
 
-  const handleMissingDeploymentConfig = () => {
-    onAction('open-deployment');
+  const handleConfigureConnection = () => {
+    if (!connectionCheckResult || !connectionCheckResult.success || connectionCheckResult.protocol !== SUPPORTED_PROTOCOL) {
+      onAction('open-deployment');
+    } else if (!isExecutionPlatformVersionSupported) {
+      onAction('open-engine-profile');
+    }
   };
+
+  const configureConnectionBannerTitle = useMemo(() => {
+    if (!connectionCheckResult || !connectionCheckResult.success) {
+      return CANNOT_CONNECT_TITLE;
+    } else if (connectionCheckResult.protocol !== SUPPORTED_PROTOCOL) {
+      return UNSUPPORTED_PROTOCOL_TITLE;
+    } else if (!isExecutionPlatformVersionSupported) {
+      return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE;
+    }
+    return null;
+  }, [ connectionCheckResult, isExecutionPlatformVersionSupported ]);
+
+  const configureConnectionBannerDescription = useMemo(() => {
+    if (!connectionCheckResult || !connectionCheckResult.success) {
+      return CANNOT_CONNECT_DESCRIPTION;
+    } else if (connectionCheckResult.protocol !== SUPPORTED_PROTOCOL) {
+      return UNSUPPORTED_PROTOCOL_DESCRIPTION;
+    } else if (!isExecutionPlatformVersionSupported) {
+      return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION;
+    }
+    return null;
+  }, [ connectionCheckResult, isExecutionPlatformVersionSupported ]);
+
+  const isConnectionConfigured = connectionCheckResult
+    && connectionCheckResult.success
+    && connectionCheckResult.protocol === SUPPORTED_PROTOCOL
+    && isExecutionPlatformVersionSupported;
 
   return <>
     <Fill slot="bottom-panel"
@@ -170,27 +209,20 @@ export default function TaskTestingTab(props) {
       layout={ layout }
       priority={ 6 }>
       <div className={ css.TaskTestingTab }>
-        { isSupportedByRuntime ?
-          <TaskTesting
-            injector={ injector }
-            config={ taskTestingConfig }
-            isConnectionConfigured={ isConnectionConfigured }
-            onConfigureConnection={ handleMissingDeploymentConfig }
-            onConfigChanged={ setTaskTestingConfig }
-            operateBaseUrl={ operateUrl }
-            onTaskExecutionStarted={ handleTaskExecutionStarted }
-            onTaskExecutionFinished={ handleTaskExecutionFinished }
-            onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
-            configureConnectionBannerTitle={ CONNECTION_INVALID_TITLE }
-            configureConnectionBannerDescription={ CONNECTION_INVALID_DESCRIPTION }
-            api={ taskTestingApi.getApi() }
-          />
-          :
-          <div className="unsupported">
-            <p>Task testing is not supported by the current engine version.</p>
-            <p>Please use Camunda 8.8 or later.</p>
-          </div>
-        }
+        <TaskTesting
+          injector={ injector }
+          config={ taskTestingConfig }
+          isConnectionConfigured={ isConnectionConfigured }
+          onConfigureConnection={ handleConfigureConnection }
+          onConfigChanged={ setTaskTestingConfig }
+          operateBaseUrl={ operateUrl }
+          onTaskExecutionStarted={ handleTaskExecutionStarted }
+          onTaskExecutionFinished={ handleTaskExecutionFinished }
+          onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
+          configureConnectionBannerTitle={ configureConnectionBannerTitle }
+          configureConnectionBannerDescription={ configureConnectionBannerDescription }
+          api={ taskTestingApi.getApi() }
+        />
       </div>
     </Fill>
     <TestStatusBarItem
