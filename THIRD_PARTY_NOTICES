@@ -5,403 +5,407 @@ Do Not Translate or Localize
 
 This project incorporates components from the projects listed below. The original copyright notices and the licenses under which Camunda received such components are set forth below.
 
-1.    @sentry/node@9.0.0 (git://github.com/getsentry/sentry-javascript.git)
+1.    @sentry/node@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
 2.    @opentelemetry/api@1.9.0 (open-telemetry/opentelemetry-js)
-3.    @opentelemetry/instrumentation-http@0.57.1 (open-telemetry/opentelemetry-js)
-4.    @opentelemetry/core@1.30.1 (open-telemetry/opentelemetry-js)
-5.    @opentelemetry/semantic-conventions@1.28.0 (open-telemetry/opentelemetry-js)
-6.    semver@7.6.2 (git+https://github.com/npm/node-semver.git)
-7.    @opentelemetry/instrumentation@0.57.1 (git+https://github.com/open-telemetry/opentelemetry-js.git)
-8.    @opentelemetry/api-logs@0.57.1 (open-telemetry/opentelemetry-js)
-9.    shimmer@1.2.1 (https://github.com/othiym23/shimmer.git)
-10.   require-in-the-middle@7.3.0 (git+https://github.com/elastic/require-in-the-middle.git)
-11.   resolve@1.22.4 (git://github.com/browserify/resolve.git)
-12.   path-parse@1.0.7 (https://github.com/jbgutierrez/path-parse.git)
-13.   is-core-module@2.15.1 (git+https://github.com/inspect-js/is-core-module.git)
-14.   hasown@2.0.2 (git+https://github.com/inspect-js/hasOwn.git)
-15.   function-bind@1.1.2 (https://github.com/Raynos/function-bind.git)
-16.   debug@4.3.7 (git://github.com/debug-js/debug.git)
-17.   ms@2.1.3 (vercel/ms)
-18.   supports-color@5.5.0 (chalk/supports-color)
-19.   has-flag@3.0.0 (sindresorhus/has-flag)
-20.   module-details-from-path@1.0.3 (git+https://github.com/watson/module-details-from-path.git)
-21.   import-in-the-middle@1.13.0 (git+ssh://git@github.com/nodejs/import-in-the-middle.git)
-22.   forwarded-parse@2.1.2 (lpinca/forwarded-parse)
-23.   @sentry/core@9.0.0 (git://github.com/getsentry/sentry-javascript.git)
-24.   @opentelemetry/instrumentation-undici@0.10.0 (open-telemetry/opentelemetry-js-contrib)
-25.   @sentry/opentelemetry@9.0.0 (git://github.com/getsentry/sentry-javascript.git)
-26.   @opentelemetry/sdk-trace-base@1.30.1 (open-telemetry/opentelemetry-js)
-27.   @opentelemetry/resources@1.30.1 (open-telemetry/opentelemetry-js)
-28.   @opentelemetry/instrumentation-fs@0.19.0 (open-telemetry/opentelemetry-js-contrib)
-29.   @opentelemetry/instrumentation-express@0.47.0 (open-telemetry/opentelemetry-js-contrib)
-30.   @opentelemetry/instrumentation-fastify@0.44.1 (open-telemetry/opentelemetry-js-contrib)
-31.   @opentelemetry/instrumentation-graphql@0.47.0 (open-telemetry/opentelemetry-js-contrib)
-32.   @opentelemetry/instrumentation-kafkajs@0.7.0 (open-telemetry/opentelemetry-js-contrib)
-33.   @opentelemetry/instrumentation-lru-memoizer@0.44.0 (open-telemetry/opentelemetry-js-contrib)
-34.   @opentelemetry/instrumentation-mongodb@0.51.0 (open-telemetry/opentelemetry-js-contrib)
-35.   @opentelemetry/instrumentation-mongoose@0.46.0 (open-telemetry/opentelemetry-js-contrib)
-36.   @opentelemetry/instrumentation-mysql@0.45.0 (open-telemetry/opentelemetry-js-contrib)
-37.   @opentelemetry/instrumentation-mysql2@0.45.0 (open-telemetry/opentelemetry-js-contrib)
-38.   @opentelemetry/sql-common@0.40.1 (open-telemetry/opentelemetry-js-contrib)
-39.   @opentelemetry/instrumentation-ioredis@0.47.0 (open-telemetry/opentelemetry-js-contrib)
-40.   @opentelemetry/redis-common@0.36.2 (open-telemetry/opentelemetry-js-contrib)
-41.   @opentelemetry/instrumentation-redis-4@0.46.0 (open-telemetry/opentelemetry-js-contrib)
-42.   @opentelemetry/instrumentation-pg@0.50.0 (open-telemetry/opentelemetry-js-contrib)
-43.   @prisma/instrumentation@6.2.1 (https://github.com/prisma/prisma.git)
-44.   @opentelemetry/instrumentation-hapi@0.45.1 (open-telemetry/opentelemetry-js-contrib)
-45.   @opentelemetry/instrumentation-koa@0.47.0 (open-telemetry/opentelemetry-js-contrib)
-46.   @opentelemetry/instrumentation-connect@0.43.0 (open-telemetry/opentelemetry-js-contrib)
-47.   @opentelemetry/instrumentation-knex@0.44.0 (open-telemetry/opentelemetry-js-contrib)
-48.   @opentelemetry/instrumentation-tedious@0.18.0 (open-telemetry/opentelemetry-js-contrib)
-49.   @opentelemetry/instrumentation-generic-pool@0.43.0 (open-telemetry/opentelemetry-js-contrib)
-50.   @opentelemetry/instrumentation-dataloader@0.16.0 (open-telemetry/opentelemetry-js-contrib)
-51.   @opentelemetry/instrumentation-amqplib@0.46.0 (open-telemetry/opentelemetry-js-contrib)
-52.   @opentelemetry/context-async-hooks@1.30.1 (open-telemetry/opentelemetry-js)
-53.   @camunda8/sdk@8.7.28 (git+https://github.com/camunda/camunda-8-js-sdk.git)
-54.   got@11.8.6 (sindresorhus/got)
-55.   @sindresorhus/is@4.6.0 (sindresorhus/is)
-56.   p-cancelable@2.1.1 (sindresorhus/p-cancelable)
-57.   @szmarczak/http-timer@4.0.6 (git+https://github.com/szmarczak/http-timer.git)
-58.   defer-to-connect@2.0.1 (git+https://github.com/szmarczak/defer-to-connect.git)
-59.   cacheable-lookup@5.0.4 (git+https://github.com/szmarczak/cacheable-lookup.git)
-60.   cacheable-request@7.0.2 (lukechilds/cacheable-request)
-61.   normalize-url@6.1.0 (sindresorhus/normalize-url)
-62.   get-stream@5.2.0 (sindresorhus/get-stream)
-63.   pump@3.0.0 (git://github.com/mafintosh/pump.git)
-64.   once@1.4.0 (git://github.com/isaacs/once)
-65.   wrappy@1.0.2 (https://github.com/npm/wrappy)
-66.   end-of-stream@1.4.1 (git://github.com/mafintosh/end-of-stream.git)
-67.   http-cache-semantics@4.1.1 (https://github.com/kornelski/http-cache-semantics.git)
-68.   responselike@2.0.1 (https://github.com/sindresorhus/responselike.git)
-69.   lowercase-keys@2.0.0 (sindresorhus/lowercase-keys)
-70.   clone-response@1.0.3 (git+https://github.com/sindresorhus/clone-response.git)
-71.   mimic-response@1.0.1 (sindresorhus/mimic-response)
-72.   keyv@4.5.4 (git+https://github.com/jaredwray/keyv.git)
-73.   json-buffer@3.0.1 (git://github.com/dominictarr/json-buffer.git)
-74.   decompress-response@6.0.0 (sindresorhus/decompress-response)
-75.   http2-wrapper@1.0.3 (git+https://github.com/szmarczak/http2-wrapper.git)
-76.   quick-lru@5.1.1 (sindresorhus/quick-lru)
-77.   resolve-alpn@1.2.1 (git+https://github.com/szmarczak/resolve-alpn.git)
-78.   lodash.mergewith@4.6.2 (lodash/lodash)
-79.   typed-env@2.0.0 (git+https://github.com/itslukej/typed-env.git)
-80.   jwt-decode@4.0.0 (git://github.com/auth0/jwt-decode)
-81.   winston@3.17.0 (https://github.com/winstonjs/winston.git)
-82.   logform@2.7.0 (git+https://github.com/winstonjs/logform.git)
-83.   @colors/colors@1.6.0 (http://github.com/DABH/colors.js.git)
-84.   triple-beam@1.4.1 (git+https://github.com/winstonjs/triple-beam.git)
-85.   safe-stable-stringify@2.5.0 (git+https://github.com/BridgeAR/safe-stable-stringify.git)
-86.   fecha@4.2.3 (https://taylorhakes@github.com/taylorhakes/fecha.git)
-87.   winston-transport@4.9.0 (git@github.com:winstonjs/winston-transport.git)
-88.   readable-stream@3.6.2 (git://github.com/nodejs/readable-stream)
-89.   util-deprecate@1.0.2 (git://github.com/TooTallNate/util-deprecate.git)
-90.   inherits@2.0.4 (git://github.com/isaacs/inherits)
-91.   string_decoder@1.3.0 (git://github.com/nodejs/string_decoder.git)
-92.   safe-buffer@5.2.1 (git://github.com/feross/safe-buffer.git)
-93.   async@3.2.4 (https://github.com/caolan/async.git)
-94.   @dabh/diagnostics@2.0.3 (git://github.com/3rd-Eden/diagnostics.git)
-95.   colorspace@1.1.4 (https://github.com/3rd-Eden/colorspace)
-96.   color@3.2.1 (Qix-/color)
-97.   color-string@1.9.1 (Qix-/color-string)
-98.   color-name@1.1.3 (git@github.com:dfcreative/color-name.git)
-99.   simple-swizzle@0.2.2 (qix-/node-simple-swizzle)
-100.  is-arrayish@0.3.2 (https://github.com/qix-/node-is-arrayish.git)
-101.  color-convert@1.9.3 (Qix-/color-convert)
-102.  text-hex@1.0.0 (https://github.com/3rd-Eden/text-hex)
-103.  kuler@2.0.0 (https://github.com/3rd-Eden/kuler)
-104.  enabled@2.0.0 (git://github.com/3rd-Eden/enabled.git)
-105.  is-stream@2.0.1 (sindresorhus/is-stream)
-106.  one-time@1.0.0 (https://github.com/3rd-Eden/one-time.git)
-107.  fn.name@1.1.0 (https://github.com/3rd-Eden/fn.name)
-108.  stack-trace@0.0.10 (git://github.com/felixge/node-stack-trace.git)
-109.  win-ca@3.5.1 (git+https://github.com/ukoloff/win-ca.git)
-110.  is-electron@2.2.2 (git@github.com:cheton/is-electron.git)
-111.  node-forge@1.3.1 (https://github.com/digitalbazaar/forge)
-112.  split@1.0.1 (git://github.com/dominictarr/split.git)
-113.  through@2.3.8 (https://github.com/dominictarr/through.git)
-114.  make-dir@1.3.0 (sindresorhus/make-dir)
-115.  pify@3.0.0 (sindresorhus/pify)
-116.  lossless-json@4.0.2 (https://github.com/josdejong/lossless-json.git)
-117.  reflect-metadata@0.2.2 (https://github.com/rbuckton/reflect-metadata.git)
-118.  typed-duration@1.0.13 (git+https://github.com/jwulf/typed-duration.git)
-119.  fast-xml-parser@4.2.7 (https://github.com/NaturalIntelligence/fast-xml-parser)
-120.  strnum@1.0.5 (https://github.com/NaturalIntelligence/strnum)
-121.  dayjs@1.11.5 (https://github.com/iamkun/dayjs.git)
-122.  chalk@2.4.2 (chalk/chalk)
-123.  escape-string-regexp@1.0.5 (sindresorhus/escape-string-regexp)
-124.  ansi-styles@3.2.1 (chalk/ansi-styles)
-125.  uuid@7.0.3 (https://github.com/uuidjs/uuid.git)
-126.  promise-retry@1.1.1 (git://github.com/IndigoUnited/node-promise-retry.git)
-127.  err-code@1.1.2 (git://github.com/IndigoUnited/js-err-code.git)
-128.  retry@0.10.1 (git://github.com/tim-kos/node-retry.git)
-129.  @grpc/grpc-js@1.12.5 (https://github.com/grpc/grpc-node/tree/master/packages/grpc-js)
-130.  @js-sdsl/ordered-map@4.4.2 (https://github.com/js-sdsl/js-sdsl.git)
-131.  @grpc/proto-loader@0.7.13 (https://github.com/grpc/grpc-node.git)
-132.  lodash.camelcase@4.3.0 (lodash/lodash)
-133.  protobufjs@7.2.5 (protobufjs/protobuf.js)
-134.  @protobufjs/aspromise@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
-135.  @protobufjs/base64@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
-136.  @protobufjs/eventemitter@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-137.  @protobufjs/float@1.0.2 (https://github.com/dcodeIO/protobuf.js.git)
-138.  @protobufjs/inquire@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-139.  @protobufjs/utf8@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-140.  @protobufjs/pool@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-141.  @protobufjs/codegen@2.0.4 (https://github.com/dcodeIO/protobuf.js.git)
-142.  @protobufjs/fetch@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-143.  @protobufjs/path@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
-144.  long@5.2.4 (https://github.com/dcodeIO/long.js.git)
-145.  form-data@4.0.4 (git://github.com/form-data/form-data.git)
-146.  combined-stream@1.0.8 (git://github.com/felixge/node-combined-stream.git)
-147.  delayed-stream@1.0.0 (git://github.com/felixge/node-delayed-stream.git)
-148.  mime-types@2.1.35 (jshttp/mime-types)
-149.  mime-db@1.52.0 (jshttp/mime-db)
-150.  asynckit@0.4.0 (git+https://github.com/alexindigo/asynckit.git)
-151.  es-set-tostringtag@2.1.0 (git+https://github.com/es-shims/es-set-tostringtag.git)
-152.  get-intrinsic@1.3.0 (git+https://github.com/ljharb/get-intrinsic.git)
-153.  es-object-atoms@1.1.1 (git+https://github.com/ljharb/es-object-atoms.git)
-154.  es-errors@1.3.0 (git+https://github.com/ljharb/es-errors.git)
-155.  math-intrinsics@1.1.0 (git+https://github.com/es-shims/math-intrinsics.git)
-156.  gopd@1.2.0 (git+https://github.com/ljharb/gopd.git)
-157.  es-define-property@1.0.1 (git+https://github.com/ljharb/es-define-property.git)
-158.  has-symbols@1.1.0 (git://github.com/inspect-js/has-symbols.git)
-159.  get-proto@1.0.1 (git+https://github.com/ljharb/get-proto.git)
-160.  dunder-proto@1.0.1 (git+https://github.com/es-shims/dunder-proto.git)
-161.  call-bind-apply-helpers@1.0.2 (git+https://github.com/ljharb/call-bind-apply-helpers.git)
-162.  has-tostringtag@1.0.2 (git+https://github.com/inspect-js/has-tostringtag.git)
-163.  mri@1.2.0 (lukeed/mri)
-164.  min-dash@4.2.1 (git+https://github.com/bpmn-io/min-dash.git)
-165.  parents@1.0.1 (git://github.com/substack/node-parents.git)
-166.  path-platform@0.11.15 (http://github.com/tjfontaine/node-path-platform.git)
-167.  fast-glob@3.3.2 (mrmlnc/fast-glob)
-168.  glob-parent@5.1.2 (gulpjs/glob-parent)
-169.  is-glob@4.0.3 (micromatch/is-glob)
-170.  is-extglob@2.1.1 (jonschlinkert/is-extglob)
-171.  micromatch@4.0.8 (micromatch/micromatch)
-172.  braces@3.0.3 (micromatch/braces)
-173.  fill-range@7.1.1 (jonschlinkert/fill-range)
-174.  to-regex-range@5.0.1 (micromatch/to-regex-range)
-175.  is-number@7.0.0 (jonschlinkert/is-number)
-176.  picomatch@2.3.1 (micromatch/picomatch)
-177.  merge2@1.4.1 (git@github.com:teambition/merge2.git)
-178.  @nodelib/fs.walk@1.2.8 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk)
-179.  @nodelib/fs.scandir@2.1.5 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir)
-180.  @nodelib/fs.stat@2.0.5 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat)
-181.  run-parallel@1.2.0 (git://github.com/feross/run-parallel.git)
-182.  queue-microtask@1.2.3 (git://github.com/feross/queue-microtask.git)
-183.  fastq@1.13.0 (git+https://github.com/mcollina/fastq.git)
-184.  reusify@1.0.4 (git+https://github.com/mcollina/reusify.git)
-185.  chokidar@4.0.3 (git+https://github.com/paulmillr/chokidar.git)
-186.  readdirp@4.0.2 (git://github.com/paulmillr/readdirp.git)
-187.  bpmn-moddle@9.0.3 (https://github.com/bpmn-io/bpmn-moddle)
-188.  moddle@7.0.0 (https://github.com/bpmn-io/moddle)
-189.  moddle-xml@11.0.0 (https://github.com/bpmn-io/moddle-xml)
-190.  saxen@10.0.0 (https://github.com/nikku/saxen)
-191.  zeebe-bpmn-moddle@1.11.0 (https://github.com/camunda/zeebe-bpmn-moddle)
-192.  dmn-moddle@11.0.0 (https://github.com/bpmn-io/dmn-moddle)
-193.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
-194.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
-195.  localforage@1.10.0 (git://github.com/localForage/localForage.git)
-196.  epipebomb@1.0.0 (git://github.com/mhart/epipebomb.git)
-197.  monaco-editor@0.52.0 (https://github.com/microsoft/monaco-editor)
-198.  style-loader@4.0.0 (webpack-contrib/style-loader)
-199.  css-loader@7.1.2 (webpack-contrib/css-loader)
-200.  @carbon/styles@1.76.0 (https://github.com/carbon-design-system/carbon.git)
-201.  @camunda/form-playground@0.22.0 (git+https://github.com/camunda/form-playground.git)
-202.  camunda-bpmn-js@5.13.0 (https://github.com/camunda/camunda-bpmn-js)
-203.  camunda-dmn-js@3.5.0 (https://github.com/camunda/camunda-dmn-js)
-204.  @camunda/linting@3.42.0 (https://github.com/camunda/linting)
-205.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
-206.  min-dash@4.2.3 (git+https://github.com/bpmn-io/min-dash.git)
-207.  react@16.14.0 (git+https://github.com/facebook/react.git)
-208.  object-assign@4.1.1 (sindresorhus/object-assign)
-209.  classnames@2.5.1 (git+https://github.com/JedWatson/classnames.git)
-210.  react-dom@16.14.0 (git+https://github.com/facebook/react.git)
-211.  scheduler@0.19.1 (https://github.com/facebook/react.git)
-212.  formik@2.0.4 (jaredpalmer/formik)
-213.  react-fast-compare@2.0.4 (git+https://github.com/FormidableLabs/react-fast-compare.git)
-214.  deepmerge@2.2.1 (git://github.com/KyleAMathews/deepmerge.git)
-215.  lodash-es@4.17.21 (lodash/lodash)
-216.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning.git)
-217.  hoist-non-react-statics@3.3.2 (git://github.com/mridgway/hoist-non-react-statics.git)
-218.  react-is@16.13.1 (https://github.com/facebook/react.git)
-219.  events@3.3.0 (git://github.com/Gozala/events.git)
-220.  codemirror@6.0.1 (https://github.com/codemirror/basic-setup.git)
-221.  @codemirror/view@6.36.4 (https://github.com/codemirror/view.git)
-222.  @codemirror/state@6.5.2 (https://github.com/codemirror/state.git)
-223.  @marijn/find-cluster-break@1.0.2 (git+https://github.com/marijnh/find-cluster-break.git)
-224.  style-mod@4.1.0 (git+https://github.com/marijnh/style-mod.git)
-225.  w3c-keyname@2.2.6 (git+https://github.com/marijnh/w3c-keyname.git)
-226.  @codemirror/language@6.11.0 (https://github.com/codemirror/language.git)
-227.  @lezer/common@1.2.3 (https://github.com/lezer-parser/common.git)
-228.  @lezer/highlight@1.2.1 (https://github.com/lezer-parser/highlight.git)
-229.  @codemirror/commands@6.8.0 (https://github.com/codemirror/commands.git)
-230.  @codemirror/search@6.5.6 (https://github.com/codemirror/search.git)
-231.  crelt@1.0.5 (git+https://github.com/marijnh/crelt.git)
-232.  @codemirror/autocomplete@6.18.6 (https://github.com/codemirror/autocomplete.git)
-233.  @codemirror/lint@6.8.4 (https://github.com/codemirror/lint.git)
-234.  @codemirror/lang-json@6.0.1 (https://github.com/codemirror/lang-json.git)
-235.  @lezer/json@1.0.0 (https://github.com/lezer-parser/json.git)
-236.  @lezer/lr@1.4.2 (https://github.com/lezer-parser/lr.git)
-237.  @uiw/codemirror-theme-vscode@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
-238.  @babel/runtime@7.26.10 (https://github.com/babel/babel.git)
-239.  @uiw/codemirror-themes@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
-240.  drag-tabs@2.3.1 (git+ssh://git@github.com/bpmn-io/drag-tabs.git)
-241.  min-dom@4.1.0 (https://github.com/bpmn-io/min-dom)
-242.  mitt@3.0.1 (developit/mitt)
-243.  @carbon/react@1.76.0 (https://github.com/carbon-design-system/carbon.git)
-244.  @carbon/feature-flags@0.24.0 (https://github.com/carbon-design-system/carbon.git)
-245.  prop-types@15.8.1 (facebook/prop-types)
-246.  @carbon/icons-react@11.55.0 (https://github.com/carbon-design-system/carbon.git)
-247.  @carbon/icon-helpers@10.54.0 (https://github.com/carbon-design-system/carbon.git)
-248.  @floating-ui/react@0.26.22 (https://github.com/floating-ui/floating-ui.git)
-249.  @floating-ui/utils@0.2.7 (https://github.com/floating-ui/floating-ui.git)
-250.  tabbable@6.2.0 (git+https://github.com/focus-trap/tabbable.git)
-251.  @floating-ui/react-dom@2.1.1 (https://github.com/floating-ui/floating-ui.git)
-252.  @floating-ui/dom@1.6.10 (https://github.com/floating-ui/floating-ui.git)
-253.  @floating-ui/core@1.6.7 (https://github.com/floating-ui/floating-ui.git)
-254.  use-resize-observer@6.1.0 (git@github.com:ZeeCoder/use-resize-observer.git)
-255.  resize-observer-polyfill@1.5.1 (https://github.com/que-etc/resize-observer-polyfill.git)
-256.  es-toolkit@1.32.0 (https://github.com/toss/es-toolkit.git)
-257.  copy-to-clipboard@3.3.3 (git+https://github.com/sudodoki/copy-to-clipboard)
-258.  toggle-selection@1.0.6 (git+https://github.com/sudodoki/toggle-selection)
-259.  downshift@9.0.8 (https://github.com/downshift-js/downshift.git)
-260.  compute-scroll-into-view@3.1.1 (git+https://github.com/scroll-into-view/compute-scroll-into-view.git)
-261.  tslib@2.6.3 (https://github.com/Microsoft/tslib.git)
-262.  flatpickr@4.6.13 (git+https://github.com/chmln/flatpickr.git)
-263.  window-or-global@1.0.1 (purposeindustries/window-or-global)
-264.  invariant@2.2.4 (https://github.com/zertosh/invariant)
-265.  @carbon/layout@11.39.0 (https://github.com/carbon-design-system/carbon.git)
-266.  @bpmn-io/properties-panel@3.33.0 (git+https://github.com/bpmn-io/properties-panel.git)
-267.  preact-hooks@0.1.0
-268.  preact@10.19.3 (preactjs/preact)
-269.  preact-compat@4.0.0
-270.  jsx-runtime@1.0.0
-271.  feelers@1.4.0
-272.  feelin@3.2.0 (https://github.com/nikku/feelin)
-273.  luxon@3.7.1 (https://github.com/moment/luxon)
-274.  lezer-feel@1.8.1 (https://github.com/nikku/lezer-feel.git)
-275.  @lezer/markdown@1.3.0 (https://github.com/lezer-parser/markdown.git)
-276.  @bpmn-io/feel-lint@1.4.0 (git+https://github.com/bpmn-io/feel-lint.git)
-277.  @bpmn-io/cm-theme@0.1.0-alpha.2
-278.  @bpmn-io/feel-editor@1.12.0 (git+https://github.com/bpmn-io/feel-editor.git)
-279.  @bpmn-io/lezer-feel@1.9.0 (https://github.com/bpmn-io/lezer-feel.git)
-280.  @bpmn-io/lang-feel@2.4.0 (https://github.com/bpmn-io/lang-feel.git)
-281.  @camunda/feel-builtins@0.2.0 (git+https://github.com/camunda/feel-builtins.git)
-282.  focus-trap@7.5.2 (git+https://github.com/focus-trap/focus-trap.git)
-283.  bpmn-js-properties-panel@5.42.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-284.  bpmn-js@18.6.3 (https://github.com/bpmn-io/bpmn-js)
-285.  diagram-js@15.3.0 (https://github.com/bpmn-io/diagram-js)
-286.  domify@2.0.0 (sindresorhus/domify)
-287.  ids@1.0.5 (https://github.com/bpmn-io/ids)
-288.  @bpmn-io/extract-process-variables@1.0.1 (git+https://github.com/bpmn-io/extract-process-variables.git)
-289.  array-move@4.0.0 (sindresorhus/array-move)
-290.  dmn-js-properties-panel@3.8.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
-291.  debug@4.3.7 (git://github.com/debug-js/debug.git)
-292.  ms@2.1.3 (vercel/ms)
-293.  bpmn-moddle@9.0.3 (https://github.com/bpmn-io/bpmn-moddle)
-294.  moddle@7.0.0 (https://github.com/bpmn-io/moddle)
-295.  moddle-xml@11.0.0 (https://github.com/bpmn-io/moddle-xml)
-296.  saxen@10.0.0 (https://github.com/nikku/saxen)
-297.  camunda-bpmn-moddle@7.0.1 (https://github.com/camunda/camunda-bpmn-moddle)
-298.  zeebe-bpmn-moddle@1.11.0 (https://github.com/camunda/zeebe-bpmn-moddle)
-299.  modeler-moddle@0.2.0 (https://github.com/camunda/modeler-moddle)
-300.  @sentry/browser@9.0.0 (git://github.com/getsentry/sentry-javascript.git)
-301.  @sentry/core@9.0.0 (git://github.com/getsentry/sentry-javascript.git)
-302.  @sentry-internal/browser-utils@9.0.0 (git://github.com/getsentry/sentry-javascript.git)
-303.  @sentry-internal/replay@9.0.0 (git+https://github.com/getsentry/sentry-javascript.git)
-304.  @sentry-internal/replay-canvas@9.0.0 (git+https://github.com/getsentry/sentry-javascript.git)
-305.  @sentry-internal/feedback@9.0.0 (git://github.com/getsentry/sentry-javascript.git)
-306.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
-307.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
-308.  ua-parser-js@1.0.39 (https://github.com/faisalman/ua-parser-js.git)
-309.  inherits-browser@0.1.0 (git+https://github.com/nikku/inherits-browser.git)
-310.  object-refs@0.4.0 (https://github.com/bpmn-io/object-refs)
-311.  mixpanel-browser@2.55.1 (https://github.com/mixpanel/mixpanel-js.git)
-312.  lodash@4.17.21 (lodash/lodash)
-313.  semver-compare@1.0.0 (git://github.com/substack/semver-compare.git)
-314.  p-defer@4.0.1 (sindresorhus/p-defer)
-315.  p-series@3.0.0 (sindresorhus/p-series)
-316.  sourcemapped-stacktrace@1.1.11 (http://github.com/novocaine/sourcemapped-stacktrace)
-317.  @bpmn-io/replace-ids@0.2.0 (git+https://github.com/bpmn-io/replace-ids.git)
-318.  bpmnlint@11.6.0 (https://github.com/bpmn-io/bpmnlint)
-319.  bpmnlint-plugin-camunda-compat@2.42.0 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
-320.  bpmnlint-utils@1.1.1 (https://github.com/bpmn-io/bpmnlint-utils)
-321.  @bpmn-io/moddle-utils@0.2.1 (https://github.com/bpmn-io/moddle-utils)
-322.  @camunda/form-linting@0.23.0
-323.  bpmn-js-element-templates@2.11.0 (https://github.com/bpmn-io/bpmn-js-element-templates)
-324.  semver@7.7.2 (git+https://github.com/npm/node-semver.git)
-325.  @bpmn-io/element-templates-validator@2.12.0 (git+https://github.com/bpmn-io/element-templates-validator.git)
-326.  uuid@11.1.0 (https://github.com/uuidjs/uuid.git)
-327.  @camunda/rpa-integration@1.1.4 (https://github.com/camunda/rpa-frontend)
-328.  htm_preact@undefined
-329.  htm@3.1.1 (developit/htm)
-330.  tiny-svg@3.1.3 (https://github.com/bpmn-io/tiny-svg)
-331.  @bpmn-io/element-template-icon-renderer@1.0.0 (git+ssh://git@github.com/bpmn-io/element-template-icon-renderer.git)
-332.  @bpmn-io/form-variable-provider@1.3.0 (git+https://github.com/bpmn-io/form-variable-provider.git)
-333.  @bpmn-io/variable-outline@2.0.1
-334.  @camunda/example-data-properties-provider@1.2.1
-335.  camunda-bpmn-js-behaviors@1.11.1 (https://github.com/camunda/camunda-bpmn-js-behaviors)
-336.  @bpmn-io/element-template-chooser@2.0.0 (https://github.com/bpmn-io/element-template-chooser.git)
-337.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
-338.  @bpmn-io/variable-resolver@1.3.3
-339.  bpmn-js-color-picker@0.7.2 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
-340.  bpmn-js-create-append-anything@1.0.1 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
-341.  bpmn-js-executable-fix@0.2.1 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
-342.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
-343.  diagram-js-direct-editing@3.2.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
-344.  diagram-js-minimap@5.2.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
-345.  @camunda/improved-canvas@1.7.6 (git+https://github.com/camunda/improved-canvas.git)
-346.  diagram-js-grid@1.1.0 (git@github.com:bpmn-io/diagram-js-grid.git)
-347.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
-348.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
-349.  diagram-js-origin@1.4.0 (https://github.com/bpmn-io/diagram-js-origin)
-350.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
-351.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
-352.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
-353.  @bpmn-io/form-js-viewer@1.17.0 (git+https://github.com/bpmn-io/form-js.git)
-354.  cmmn-js-properties-panel@0.9.0 (https://github.com/bpmn-io/cmmn-js-properties-panel)
-355.  cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
-356.  didi@4.0.0 (git://github.com/nikku/didi.git)
-357.  path-intersection@1.1.1 (https://github.com/bpmn-io/path-intersection)
-358.  cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
-359.  hat@0.0.3 (http://github.com/substack/node-hat.git)
-360.  inherits@2.0.4 (git://github.com/isaacs/inherits)
-361.  scroll-tabs@1.0.1 (git+ssh://git@github.com/bpmn-io/scroll-tabs.git)
-362.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
-363.  selection-update@0.1.2 (git+ssh://git@github.com/nikku/selection-update.git)
-364.  @bpmn-io/dmn-variable-resolver@0.7.0
-365.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
-366.  dmn-js-boxed-expression@17.4.0 (https://github.com/bpmn-io/dmn-js)
-367.  dmn-js-decision-table@17.4.0 (https://github.com/bpmn-io/dmn-js)
-368.  dmn-js-drd@17.4.0 (https://github.com/bpmn-io/dmn-js)
-369.  dmn-js-literal-expression@17.4.0 (https://github.com/bpmn-io/dmn-js)
-370.  dmn-js-shared@17.4.0 (https://github.com/bpmn-io/dmn-js)
-371.  dmn-js@17.4.0 (https://github.com/bpmn-io/dmn-js)
-372.  escape-html@1.0.3 (component/escape-html)
-373.  inferno@5.6.3 (https://github.com/infernojs/inferno)
-374.  selection-ranges@3.0.3 (git+ssh://git@github.com/nikku/selection-ranges.git)
-375.  table-js@9.2.0 (https://github.com/bpmn-io/table-js)
-376.  @bpmn-io/form-js-editor@1.17.0 (git+https://github.com/bpmn-io/form-js.git)
-377.  @bpmn-io/form-js-playground@1.17.0 (git+https://github.com/bpmn-io/form-js.git)
-378.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
-379.  canvg@4.0.3 (https://github.com/canvg/canvg)
-380.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
-381.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
-382.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
-383.  clsx@2.1.0 (lukeed/clsx)
-384.  dmn-moddle@11.0.0 (https://github.com/bpmn-io/dmn-moddle)
-385.  camunda-dmn-moddle@1.3.0 (https://github.com/camunda/camunda-dmn-moddle)
-386.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
-387.  @bpmn-io/dmn-migrate@0.6.0 (git+https://github.com/bpmn-io/dmn-migrate.git)
-388.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
-389.  dompurify@3.2.6 (git://github.com/cure53/DOMPurify.git)
-390.  marked@16.2.0 (git://github.com/markedjs/marked.git)
-391.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
-392.  file-drops@0.6.1 (git+ssh://git@github.com/nikku/file-drops.git)
-393.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
-394.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
+3.    @opentelemetry/instrumentation-http@0.203.0 (open-telemetry/opentelemetry-js)
+4.    @opentelemetry/core@2.0.1 (open-telemetry/opentelemetry-js)
+5.    @opentelemetry/semantic-conventions@1.36.0 (open-telemetry/opentelemetry-js)
+6.    @opentelemetry/instrumentation@0.203.0 (git+https://github.com/open-telemetry/opentelemetry-js.git)
+7.    @opentelemetry/api-logs@0.203.0 (open-telemetry/opentelemetry-js)
+8.    require-in-the-middle@7.3.0 (git+https://github.com/elastic/require-in-the-middle.git)
+9.    resolve@1.22.4 (git://github.com/browserify/resolve.git)
+10.   path-parse@1.0.7 (https://github.com/jbgutierrez/path-parse.git)
+11.   is-core-module@2.15.1 (git+https://github.com/inspect-js/is-core-module.git)
+12.   hasown@2.0.2 (git+https://github.com/inspect-js/hasOwn.git)
+13.   function-bind@1.1.2 (https://github.com/Raynos/function-bind.git)
+14.   debug@4.3.7 (git://github.com/debug-js/debug.git)
+15.   ms@2.1.3 (vercel/ms)
+16.   supports-color@5.5.0 (chalk/supports-color)
+17.   has-flag@3.0.0 (sindresorhus/has-flag)
+18.   module-details-from-path@1.0.3 (git+https://github.com/watson/module-details-from-path.git)
+19.   import-in-the-middle@1.14.2 (git+ssh://git@github.com/nodejs/import-in-the-middle.git)
+20.   forwarded-parse@2.1.2 (lpinca/forwarded-parse)
+21.   @sentry/core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+22.   @sentry/node-core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+23.   @sentry/opentelemetry@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+24.   @opentelemetry/sdk-trace-base@2.0.1 (open-telemetry/opentelemetry-js)
+25.   @opentelemetry/resources@2.0.1 (open-telemetry/opentelemetry-js)
+26.   @opentelemetry/context-async-hooks@2.0.1 (open-telemetry/opentelemetry-js)
+27.   @opentelemetry/instrumentation-undici@0.14.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+28.   @opentelemetry/instrumentation-fs@0.23.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+29.   @opentelemetry/instrumentation-express@0.52.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+30.   minimatch@9.0.5 (git://github.com/isaacs/minimatch.git)
+31.   brace-expansion@2.0.2 (git://github.com/juliangruber/brace-expansion.git)
+32.   balanced-match@1.0.0 (git://github.com/juliangruber/balanced-match.git)
+33.   @opentelemetry/instrumentation-graphql@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+34.   @opentelemetry/instrumentation-kafkajs@0.13.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+35.   @opentelemetry/instrumentation-lru-memoizer@0.48.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+36.   @opentelemetry/instrumentation-mongodb@0.56.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+37.   @opentelemetry/instrumentation-mongoose@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+38.   @opentelemetry/instrumentation-mysql@0.49.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+39.   @opentelemetry/instrumentation-mysql2@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+40.   @opentelemetry/sql-common@0.41.0 (open-telemetry/opentelemetry-js-contrib)
+41.   @opentelemetry/instrumentation-ioredis@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+42.   @opentelemetry/redis-common@0.38.0 (open-telemetry/opentelemetry-js-contrib)
+43.   @opentelemetry/instrumentation-redis@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+44.   @opentelemetry/instrumentation-pg@0.55.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+45.   @prisma/instrumentation@6.14.0 (https://github.com/prisma/prisma.git)
+46.   semver@7.7.1 (git+https://github.com/npm/node-semver.git)
+47.   shimmer@1.2.1 (https://github.com/othiym23/shimmer.git)
+48.   @opentelemetry/instrumentation-hapi@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+49.   @opentelemetry/instrumentation-koa@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+50.   @opentelemetry/instrumentation-connect@0.47.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+51.   @opentelemetry/instrumentation-knex@0.48.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+52.   @opentelemetry/instrumentation-tedious@0.22.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+53.   @opentelemetry/instrumentation-generic-pool@0.47.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+54.   @opentelemetry/instrumentation-dataloader@0.21.1 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+55.   @opentelemetry/instrumentation-amqplib@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+56.   @camunda8/sdk@8.7.28 (git+https://github.com/camunda/camunda-8-js-sdk.git)
+57.   got@11.8.6 (sindresorhus/got)
+58.   @sindresorhus/is@4.6.0 (sindresorhus/is)
+59.   p-cancelable@2.1.1 (sindresorhus/p-cancelable)
+60.   @szmarczak/http-timer@4.0.6 (git+https://github.com/szmarczak/http-timer.git)
+61.   defer-to-connect@2.0.1 (git+https://github.com/szmarczak/defer-to-connect.git)
+62.   cacheable-lookup@5.0.4 (git+https://github.com/szmarczak/cacheable-lookup.git)
+63.   cacheable-request@7.0.2 (lukechilds/cacheable-request)
+64.   normalize-url@6.1.0 (sindresorhus/normalize-url)
+65.   get-stream@5.2.0 (sindresorhus/get-stream)
+66.   pump@3.0.0 (git://github.com/mafintosh/pump.git)
+67.   once@1.4.0 (git://github.com/isaacs/once)
+68.   wrappy@1.0.2 (https://github.com/npm/wrappy)
+69.   end-of-stream@1.4.1 (git://github.com/mafintosh/end-of-stream.git)
+70.   http-cache-semantics@4.1.1 (https://github.com/kornelski/http-cache-semantics.git)
+71.   responselike@2.0.1 (https://github.com/sindresorhus/responselike.git)
+72.   lowercase-keys@2.0.0 (sindresorhus/lowercase-keys)
+73.   clone-response@1.0.3 (git+https://github.com/sindresorhus/clone-response.git)
+74.   mimic-response@1.0.1 (sindresorhus/mimic-response)
+75.   keyv@4.5.4 (git+https://github.com/jaredwray/keyv.git)
+76.   json-buffer@3.0.1 (git://github.com/dominictarr/json-buffer.git)
+77.   decompress-response@6.0.0 (sindresorhus/decompress-response)
+78.   http2-wrapper@1.0.3 (git+https://github.com/szmarczak/http2-wrapper.git)
+79.   quick-lru@5.1.1 (sindresorhus/quick-lru)
+80.   resolve-alpn@1.2.1 (git+https://github.com/szmarczak/resolve-alpn.git)
+81.   lodash.mergewith@4.6.2 (lodash/lodash)
+82.   typed-env@2.0.0 (git+https://github.com/itslukej/typed-env.git)
+83.   jwt-decode@4.0.0 (git://github.com/auth0/jwt-decode)
+84.   winston@3.17.0 (https://github.com/winstonjs/winston.git)
+85.   logform@2.7.0 (git+https://github.com/winstonjs/logform.git)
+86.   @colors/colors@1.6.0 (http://github.com/DABH/colors.js.git)
+87.   triple-beam@1.4.1 (git+https://github.com/winstonjs/triple-beam.git)
+88.   safe-stable-stringify@2.5.0 (git+https://github.com/BridgeAR/safe-stable-stringify.git)
+89.   fecha@4.2.3 (https://taylorhakes@github.com/taylorhakes/fecha.git)
+90.   winston-transport@4.9.0 (git@github.com:winstonjs/winston-transport.git)
+91.   readable-stream@3.6.2 (git://github.com/nodejs/readable-stream)
+92.   util-deprecate@1.0.2 (git://github.com/TooTallNate/util-deprecate.git)
+93.   inherits@2.0.4 (git://github.com/isaacs/inherits)
+94.   string_decoder@1.3.0 (git://github.com/nodejs/string_decoder.git)
+95.   safe-buffer@5.2.1 (git://github.com/feross/safe-buffer.git)
+96.   async@3.2.4 (https://github.com/caolan/async.git)
+97.   @dabh/diagnostics@2.0.3 (git://github.com/3rd-Eden/diagnostics.git)
+98.   colorspace@1.1.4 (https://github.com/3rd-Eden/colorspace)
+99.   color@3.2.1 (Qix-/color)
+100.  color-string@1.9.1 (Qix-/color-string)
+101.  color-name@1.1.3 (git@github.com:dfcreative/color-name.git)
+102.  simple-swizzle@0.2.2 (qix-/node-simple-swizzle)
+103.  is-arrayish@0.3.2 (https://github.com/qix-/node-is-arrayish.git)
+104.  color-convert@1.9.3 (Qix-/color-convert)
+105.  text-hex@1.0.0 (https://github.com/3rd-Eden/text-hex)
+106.  kuler@2.0.0 (https://github.com/3rd-Eden/kuler)
+107.  enabled@2.0.0 (git://github.com/3rd-Eden/enabled.git)
+108.  is-stream@2.0.1 (sindresorhus/is-stream)
+109.  one-time@1.0.0 (https://github.com/3rd-Eden/one-time.git)
+110.  fn.name@1.1.0 (https://github.com/3rd-Eden/fn.name)
+111.  stack-trace@0.0.10 (git://github.com/felixge/node-stack-trace.git)
+112.  win-ca@3.5.1 (git+https://github.com/ukoloff/win-ca.git)
+113.  is-electron@2.2.2 (git@github.com:cheton/is-electron.git)
+114.  node-forge@1.3.1 (https://github.com/digitalbazaar/forge)
+115.  split@1.0.1 (git://github.com/dominictarr/split.git)
+116.  through@2.3.8 (https://github.com/dominictarr/through.git)
+117.  make-dir@1.3.0 (sindresorhus/make-dir)
+118.  pify@3.0.0 (sindresorhus/pify)
+119.  lossless-json@4.0.2 (https://github.com/josdejong/lossless-json.git)
+120.  reflect-metadata@0.2.2 (https://github.com/rbuckton/reflect-metadata.git)
+121.  typed-duration@1.0.13 (git+https://github.com/jwulf/typed-duration.git)
+122.  fast-xml-parser@4.2.7 (https://github.com/NaturalIntelligence/fast-xml-parser)
+123.  strnum@1.0.5 (https://github.com/NaturalIntelligence/strnum)
+124.  dayjs@1.11.5 (https://github.com/iamkun/dayjs.git)
+125.  chalk@2.4.2 (chalk/chalk)
+126.  escape-string-regexp@1.0.5 (sindresorhus/escape-string-regexp)
+127.  ansi-styles@3.2.1 (chalk/ansi-styles)
+128.  uuid@7.0.3 (https://github.com/uuidjs/uuid.git)
+129.  promise-retry@1.1.1 (git://github.com/IndigoUnited/node-promise-retry.git)
+130.  err-code@1.1.2 (git://github.com/IndigoUnited/js-err-code.git)
+131.  retry@0.10.1 (git://github.com/tim-kos/node-retry.git)
+132.  @grpc/grpc-js@1.12.5 (https://github.com/grpc/grpc-node/tree/master/packages/grpc-js)
+133.  @js-sdsl/ordered-map@4.4.2 (https://github.com/js-sdsl/js-sdsl.git)
+134.  @grpc/proto-loader@0.7.13 (https://github.com/grpc/grpc-node.git)
+135.  lodash.camelcase@4.3.0 (lodash/lodash)
+136.  protobufjs@7.2.5 (protobufjs/protobuf.js)
+137.  @protobufjs/aspromise@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
+138.  @protobufjs/base64@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
+139.  @protobufjs/eventemitter@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+140.  @protobufjs/float@1.0.2 (https://github.com/dcodeIO/protobuf.js.git)
+141.  @protobufjs/inquire@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+142.  @protobufjs/utf8@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+143.  @protobufjs/pool@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+144.  @protobufjs/codegen@2.0.4 (https://github.com/dcodeIO/protobuf.js.git)
+145.  @protobufjs/fetch@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+146.  @protobufjs/path@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
+147.  long@5.2.4 (https://github.com/dcodeIO/long.js.git)
+148.  form-data@4.0.4 (git://github.com/form-data/form-data.git)
+149.  combined-stream@1.0.8 (git://github.com/felixge/node-combined-stream.git)
+150.  delayed-stream@1.0.0 (git://github.com/felixge/node-delayed-stream.git)
+151.  mime-types@2.1.35 (jshttp/mime-types)
+152.  mime-db@1.52.0 (jshttp/mime-db)
+153.  asynckit@0.4.0 (git+https://github.com/alexindigo/asynckit.git)
+154.  es-set-tostringtag@2.1.0 (git+https://github.com/es-shims/es-set-tostringtag.git)
+155.  get-intrinsic@1.3.0 (git+https://github.com/ljharb/get-intrinsic.git)
+156.  es-object-atoms@1.1.1 (git+https://github.com/ljharb/es-object-atoms.git)
+157.  es-errors@1.3.0 (git+https://github.com/ljharb/es-errors.git)
+158.  math-intrinsics@1.1.0 (git+https://github.com/es-shims/math-intrinsics.git)
+159.  gopd@1.2.0 (git+https://github.com/ljharb/gopd.git)
+160.  es-define-property@1.0.1 (git+https://github.com/ljharb/es-define-property.git)
+161.  has-symbols@1.1.0 (git://github.com/inspect-js/has-symbols.git)
+162.  get-proto@1.0.1 (git+https://github.com/ljharb/get-proto.git)
+163.  dunder-proto@1.0.1 (git+https://github.com/es-shims/dunder-proto.git)
+164.  call-bind-apply-helpers@1.0.2 (git+https://github.com/ljharb/call-bind-apply-helpers.git)
+165.  has-tostringtag@1.0.2 (git+https://github.com/inspect-js/has-tostringtag.git)
+166.  mri@1.2.0 (lukeed/mri)
+167.  min-dash@4.2.1 (git+https://github.com/bpmn-io/min-dash.git)
+168.  parents@1.0.1 (git://github.com/substack/node-parents.git)
+169.  path-platform@0.11.15 (http://github.com/tjfontaine/node-path-platform.git)
+170.  fast-glob@3.3.2 (mrmlnc/fast-glob)
+171.  glob-parent@5.1.2 (gulpjs/glob-parent)
+172.  is-glob@4.0.3 (micromatch/is-glob)
+173.  is-extglob@2.1.1 (jonschlinkert/is-extglob)
+174.  micromatch@4.0.8 (micromatch/micromatch)
+175.  braces@3.0.3 (micromatch/braces)
+176.  fill-range@7.1.1 (jonschlinkert/fill-range)
+177.  to-regex-range@5.0.1 (micromatch/to-regex-range)
+178.  is-number@7.0.0 (jonschlinkert/is-number)
+179.  picomatch@2.3.1 (micromatch/picomatch)
+180.  merge2@1.4.1 (git@github.com:teambition/merge2.git)
+181.  @nodelib/fs.walk@1.2.8 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk)
+182.  @nodelib/fs.scandir@2.1.5 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir)
+183.  @nodelib/fs.stat@2.0.5 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat)
+184.  run-parallel@1.2.0 (git://github.com/feross/run-parallel.git)
+185.  queue-microtask@1.2.3 (git://github.com/feross/queue-microtask.git)
+186.  fastq@1.13.0 (git+https://github.com/mcollina/fastq.git)
+187.  reusify@1.0.4 (git+https://github.com/mcollina/reusify.git)
+188.  chokidar@4.0.3 (git+https://github.com/paulmillr/chokidar.git)
+189.  readdirp@4.0.2 (git://github.com/paulmillr/readdirp.git)
+190.  bpmn-moddle@9.0.4 (https://github.com/bpmn-io/bpmn-moddle)
+191.  moddle@7.0.0 (https://github.com/bpmn-io/moddle)
+192.  moddle-xml@11.0.0 (https://github.com/bpmn-io/moddle-xml)
+193.  saxen@10.0.0 (https://github.com/nikku/saxen)
+194.  zeebe-bpmn-moddle@1.11.0 (https://github.com/camunda/zeebe-bpmn-moddle)
+195.  dmn-moddle@11.0.0 (https://github.com/bpmn-io/dmn-moddle)
+196.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
+197.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
+198.  localforage@1.10.0 (git://github.com/localForage/localForage.git)
+199.  epipebomb@1.0.0 (git://github.com/mhart/epipebomb.git)
+200.  monaco-editor@0.52.0 (https://github.com/microsoft/monaco-editor)
+201.  style-loader@4.0.0 (webpack-contrib/style-loader)
+202.  css-loader@7.1.2 (webpack-contrib/css-loader)
+203.  @carbon/styles@1.76.0 (https://github.com/carbon-design-system/carbon.git)
+204.  @camunda/form-playground@0.22.0 (git+https://github.com/camunda/form-playground.git)
+205.  camunda-bpmn-js@5.14.0 (https://github.com/camunda/camunda-bpmn-js)
+206.  camunda-dmn-js@3.5.0 (https://github.com/camunda/camunda-dmn-js)
+207.  @camunda/linting@3.43.1 (https://github.com/camunda/linting)
+208.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
+209.  min-dash@4.2.3 (git+https://github.com/bpmn-io/min-dash.git)
+210.  react@16.14.0 (git+https://github.com/facebook/react.git)
+211.  object-assign@4.1.1 (sindresorhus/object-assign)
+212.  classnames@2.5.1 (git+https://github.com/JedWatson/classnames.git)
+213.  react-dom@16.14.0 (git+https://github.com/facebook/react.git)
+214.  scheduler@0.19.1 (https://github.com/facebook/react.git)
+215.  formik@2.0.4 (jaredpalmer/formik)
+216.  react-fast-compare@2.0.4 (git+https://github.com/FormidableLabs/react-fast-compare.git)
+217.  deepmerge@2.2.1 (git://github.com/KyleAMathews/deepmerge.git)
+218.  lodash-es@4.17.21 (lodash/lodash)
+219.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning.git)
+220.  hoist-non-react-statics@3.3.2 (git://github.com/mridgway/hoist-non-react-statics.git)
+221.  react-is@16.13.1 (https://github.com/facebook/react.git)
+222.  events@3.3.0 (git://github.com/Gozala/events.git)
+223.  codemirror@6.0.2 (https://github.com/codemirror/basic-setup.git)
+224.  @codemirror/view@6.38.2 (https://github.com/codemirror/view.git)
+225.  @codemirror/state@6.5.2 (https://github.com/codemirror/state.git)
+226.  @marijn/find-cluster-break@1.0.2 (git+https://github.com/marijnh/find-cluster-break.git)
+227.  style-mod@4.1.0 (git+https://github.com/marijnh/style-mod.git)
+228.  w3c-keyname@2.2.6 (git+https://github.com/marijnh/w3c-keyname.git)
+229.  crelt@1.0.6 (git+https://github.com/marijnh/crelt.git)
+230.  @codemirror/language@6.11.3 (https://github.com/codemirror/language.git)
+231.  @lezer/common@1.2.3 (https://github.com/lezer-parser/common.git)
+232.  @lezer/highlight@1.2.1 (https://github.com/lezer-parser/highlight.git)
+233.  @codemirror/commands@6.8.0 (https://github.com/codemirror/commands.git)
+234.  @codemirror/search@6.5.6 (https://github.com/codemirror/search.git)
+235.  @codemirror/autocomplete@6.18.6 (https://github.com/codemirror/autocomplete.git)
+236.  @codemirror/lint@6.8.4 (https://github.com/codemirror/lint.git)
+237.  @codemirror/lang-json@6.0.2 (https://github.com/codemirror/lang-json.git)
+238.  @lezer/json@1.0.0 (https://github.com/lezer-parser/json.git)
+239.  @lezer/lr@1.4.2 (https://github.com/lezer-parser/lr.git)
+240.  @uiw/codemirror-theme-vscode@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
+241.  @babel/runtime@7.26.10 (https://github.com/babel/babel.git)
+242.  @uiw/codemirror-themes@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
+243.  drag-tabs@2.3.1 (git+ssh://git@github.com/bpmn-io/drag-tabs.git)
+244.  min-dom@4.1.0 (https://github.com/bpmn-io/min-dom)
+245.  mitt@3.0.1 (developit/mitt)
+246.  @carbon/react@1.76.0 (https://github.com/carbon-design-system/carbon.git)
+247.  @carbon/feature-flags@0.24.0 (https://github.com/carbon-design-system/carbon.git)
+248.  prop-types@15.8.1 (facebook/prop-types)
+249.  @carbon/icons-react@11.55.0 (https://github.com/carbon-design-system/carbon.git)
+250.  @carbon/icon-helpers@10.54.0 (https://github.com/carbon-design-system/carbon.git)
+251.  @floating-ui/react@0.26.22 (https://github.com/floating-ui/floating-ui.git)
+252.  @floating-ui/utils@0.2.7 (https://github.com/floating-ui/floating-ui.git)
+253.  tabbable@6.2.0 (git+https://github.com/focus-trap/tabbable.git)
+254.  @floating-ui/react-dom@2.1.1 (https://github.com/floating-ui/floating-ui.git)
+255.  @floating-ui/dom@1.6.10 (https://github.com/floating-ui/floating-ui.git)
+256.  @floating-ui/core@1.6.7 (https://github.com/floating-ui/floating-ui.git)
+257.  use-resize-observer@6.1.0 (git@github.com:ZeeCoder/use-resize-observer.git)
+258.  resize-observer-polyfill@1.5.1 (https://github.com/que-etc/resize-observer-polyfill.git)
+259.  es-toolkit@1.32.0 (https://github.com/toss/es-toolkit.git)
+260.  copy-to-clipboard@3.3.3 (git+https://github.com/sudodoki/copy-to-clipboard)
+261.  toggle-selection@1.0.6 (git+https://github.com/sudodoki/toggle-selection)
+262.  downshift@9.0.8 (https://github.com/downshift-js/downshift.git)
+263.  compute-scroll-into-view@3.1.1 (git+https://github.com/scroll-into-view/compute-scroll-into-view.git)
+264.  tslib@2.6.3 (https://github.com/Microsoft/tslib.git)
+265.  flatpickr@4.6.13 (git+https://github.com/chmln/flatpickr.git)
+266.  window-or-global@1.0.1 (purposeindustries/window-or-global)
+267.  invariant@2.2.4 (https://github.com/zertosh/invariant)
+268.  @carbon/layout@11.39.0 (https://github.com/carbon-design-system/carbon.git)
+269.  @bpmn-io/properties-panel@3.33.0 (git+https://github.com/bpmn-io/properties-panel.git)
+270.  preact-hooks@0.1.0
+271.  preact@10.19.3 (preactjs/preact)
+272.  preact-compat@4.0.0
+273.  jsx-runtime@1.0.0
+274.  feelers@1.4.0
+275.  feelin@3.2.0 (https://github.com/nikku/feelin)
+276.  luxon@3.7.1 (https://github.com/moment/luxon)
+277.  lezer-feel@1.8.1 (https://github.com/nikku/lezer-feel.git)
+278.  @lezer/markdown@1.3.0 (https://github.com/lezer-parser/markdown.git)
+279.  @bpmn-io/feel-lint@1.4.0 (git+https://github.com/bpmn-io/feel-lint.git)
+280.  @bpmn-io/cm-theme@0.1.0-alpha.2
+281.  @bpmn-io/feel-editor@1.12.0 (git+https://github.com/bpmn-io/feel-editor.git)
+282.  @bpmn-io/lezer-feel@1.9.0 (https://github.com/bpmn-io/lezer-feel.git)
+283.  @bpmn-io/lang-feel@2.4.0 (https://github.com/bpmn-io/lang-feel.git)
+284.  @camunda/feel-builtins@0.2.0 (git+https://github.com/camunda/feel-builtins.git)
+285.  focus-trap@7.5.2 (git+https://github.com/focus-trap/focus-trap.git)
+286.  bpmn-js-properties-panel@5.42.1 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+287.  bpmn-js@18.7.0 (https://github.com/bpmn-io/bpmn-js)
+288.  diagram-js@15.4.0 (https://github.com/bpmn-io/diagram-js)
+289.  domify@2.0.0 (sindresorhus/domify)
+290.  ids@1.0.5 (https://github.com/bpmn-io/ids)
+291.  @bpmn-io/extract-process-variables@1.0.1 (git+https://github.com/bpmn-io/extract-process-variables.git)
+292.  array-move@4.0.0 (sindresorhus/array-move)
+293.  dmn-js-properties-panel@3.8.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
+294.  debug@4.3.7 (git://github.com/debug-js/debug.git)
+295.  ms@2.1.3 (vercel/ms)
+296.  bpmn-moddle@9.0.4 (https://github.com/bpmn-io/bpmn-moddle)
+297.  moddle@7.0.0 (https://github.com/bpmn-io/moddle)
+298.  moddle-xml@11.0.0 (https://github.com/bpmn-io/moddle-xml)
+299.  saxen@10.0.0 (https://github.com/nikku/saxen)
+300.  camunda-bpmn-moddle@7.0.1 (https://github.com/camunda/camunda-bpmn-moddle)
+301.  zeebe-bpmn-moddle@1.11.0 (https://github.com/camunda/zeebe-bpmn-moddle)
+302.  modeler-moddle@0.2.0 (https://github.com/camunda/modeler-moddle)
+303.  @sentry/browser@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+304.  @sentry-internal/feedback@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+305.  @sentry/core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+306.  @sentry-internal/browser-utils@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+307.  @sentry-internal/replay@10.8.0 (git+https://github.com/getsentry/sentry-javascript.git)
+308.  @sentry-internal/replay-canvas@10.8.0 (git+https://github.com/getsentry/sentry-javascript.git)
+309.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
+310.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
+311.  ua-parser-js@1.0.39 (https://github.com/faisalman/ua-parser-js.git)
+312.  inherits-browser@0.1.0 (git+https://github.com/nikku/inherits-browser.git)
+313.  object-refs@0.4.0 (https://github.com/bpmn-io/object-refs)
+314.  mixpanel-browser@2.55.1 (https://github.com/mixpanel/mixpanel-js.git)
+315.  lodash@4.17.21 (lodash/lodash)
+316.  semver@6.3.1 (https://github.com/npm/node-semver.git)
+317.  p-defer@4.0.1 (sindresorhus/p-defer)
+318.  p-series@3.0.0 (sindresorhus/p-series)
+319.  sourcemapped-stacktrace@1.1.11 (http://github.com/novocaine/sourcemapped-stacktrace)
+320.  @bpmn-io/replace-ids@0.2.0 (git+https://github.com/bpmn-io/replace-ids.git)
+321.  bpmnlint@11.6.1 (https://github.com/bpmn-io/bpmnlint)
+322.  bpmnlint-plugin-camunda-compat@2.43.1 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
+323.  bpmnlint-utils@1.1.1 (https://github.com/bpmn-io/bpmnlint-utils)
+324.  @bpmn-io/moddle-utils@0.2.1 (https://github.com/bpmn-io/moddle-utils)
+325.  semver-compare@1.0.0 (git://github.com/substack/semver-compare.git)
+326.  @camunda/form-linting@0.23.0
+327.  bpmn-js-element-templates@2.14.0 (https://github.com/bpmn-io/bpmn-js-element-templates)
+328.  @bpmn-io/element-templates-validator@2.13.0 (git+https://github.com/bpmn-io/element-templates-validator.git)
+329.  uuid@11.1.0 (https://github.com/uuidjs/uuid.git)
+330.  @camunda/rpa-integration@1.1.4 (https://github.com/camunda/rpa-frontend)
+331.  htm_preact@undefined
+332.  htm@3.1.1 (developit/htm)
+333.  tiny-svg@3.1.3 (https://github.com/bpmn-io/tiny-svg)
+334.  @bpmn-io/element-template-icon-renderer@1.0.0 (git+ssh://git@github.com/bpmn-io/element-template-icon-renderer.git)
+335.  @bpmn-io/form-variable-provider@1.3.0 (git+https://github.com/bpmn-io/form-variable-provider.git)
+336.  @bpmn-io/variable-outline@2.0.1
+337.  @camunda/example-data-properties-provider@1.2.1
+338.  @camunda/task-testing@0.2.5
+339.  camunda-bpmn-js-behaviors@1.11.2 (https://github.com/camunda/camunda-bpmn-js-behaviors)
+340.  @bpmn-io/element-template-chooser@2.0.0 (https://github.com/bpmn-io/element-template-chooser.git)
+341.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
+342.  @bpmn-io/variable-resolver@1.3.4
+343.  bpmn-js-color-picker@0.7.2 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
+344.  bpmn-js-create-append-anything@1.0.1 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
+345.  bpmn-js-executable-fix@0.2.1 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
+346.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
+347.  diagram-js-direct-editing@3.2.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
+348.  diagram-js-minimap@5.2.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
+349.  @camunda/improved-canvas@1.7.6 (git+https://github.com/camunda/improved-canvas.git)
+350.  diagram-js-grid@1.1.0 (git@github.com:bpmn-io/diagram-js-grid.git)
+351.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
+352.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
+353.  diagram-js-origin@1.4.0 (https://github.com/bpmn-io/diagram-js-origin)
+354.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
+355.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
+356.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
+357.  @bpmn-io/form-js-viewer@1.17.0 (git+https://github.com/bpmn-io/form-js.git)
+358.  cmmn-js-properties-panel@0.9.0 (https://github.com/bpmn-io/cmmn-js-properties-panel)
+359.  cmmn-js@0.20.0 (https://github.com/bpmn-io/cmmn-js)
+360.  didi@4.0.0 (git://github.com/nikku/didi.git)
+361.  path-intersection@1.1.1 (https://github.com/bpmn-io/path-intersection)
+362.  cmmn-moddle@5.0.0 (https://github.com/bpmn-io/cmmn-moddle)
+363.  hat@0.0.3 (http://github.com/substack/node-hat.git)
+364.  inherits@2.0.4 (git://github.com/isaacs/inherits)
+365.  scroll-tabs@1.0.1 (git+ssh://git@github.com/bpmn-io/scroll-tabs.git)
+366.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
+367.  selection-update@0.1.2 (git+ssh://git@github.com/nikku/selection-update.git)
+368.  @bpmn-io/dmn-variable-resolver@0.7.0
+369.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
+370.  dmn-js-boxed-expression@17.4.0 (https://github.com/bpmn-io/dmn-js)
+371.  dmn-js-decision-table@17.4.0 (https://github.com/bpmn-io/dmn-js)
+372.  dmn-js-drd@17.4.0 (https://github.com/bpmn-io/dmn-js)
+373.  dmn-js-literal-expression@17.4.0 (https://github.com/bpmn-io/dmn-js)
+374.  dmn-js-shared@17.4.0 (https://github.com/bpmn-io/dmn-js)
+375.  dmn-js@17.4.0 (https://github.com/bpmn-io/dmn-js)
+376.  escape-html@1.0.3 (component/escape-html)
+377.  inferno@5.6.3 (https://github.com/infernojs/inferno)
+378.  selection-ranges@3.0.3 (git+ssh://git@github.com/nikku/selection-ranges.git)
+379.  table-js@9.2.0 (https://github.com/bpmn-io/table-js)
+380.  @bpmn-io/form-js-editor@1.17.0 (git+https://github.com/bpmn-io/form-js.git)
+381.  @bpmn-io/form-js-playground@1.17.0 (git+https://github.com/bpmn-io/form-js.git)
+382.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
+383.  canvg@4.0.3 (https://github.com/canvg/canvg)
+384.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
+385.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
+386.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
+387.  clsx@2.1.0 (lukeed/clsx)
+388.  dmn-moddle@11.0.0 (https://github.com/bpmn-io/dmn-moddle)
+389.  camunda-dmn-moddle@1.3.0 (https://github.com/camunda/camunda-dmn-moddle)
+390.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
+391.  @bpmn-io/dmn-migrate@0.6.0 (git+https://github.com/bpmn-io/dmn-migrate.git)
+392.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
+393.  dompurify@3.2.6 (git://github.com/cure53/DOMPurify.git)
+394.  marked@16.2.0 (git://github.com/markedjs/marked.git)
+395.  camunda-cmmn-moddle@1.0.0 (https://github.com/camunda/camunda-cmmn-moddle)
+396.  file-drops@0.6.1 (git+ssh://git@github.com/nikku/file-drops.git)
+397.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
+398.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
 
 
-%% @sentry/node@9.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/node@10.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -426,7 +430,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @sentry/node@9.0.0 NOTICES AND INFORMATION
+END OF @sentry/node@10.8.0 NOTICES AND INFORMATION
 
 
 %% @opentelemetry/api@1.9.0 NOTICES AND INFORMATION BEGIN HERE
@@ -637,7 +641,7 @@ END OF @sentry/node@9.0.0 NOTICES AND INFORMATION
 END OF @opentelemetry/api@1.9.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-http@0.57.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-http@0.203.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -842,10 +846,10 @@ END OF @opentelemetry/api@1.9.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-http@0.57.1 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-http@0.203.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/core@1.30.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/core@2.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -1050,10 +1054,10 @@ END OF @opentelemetry/instrumentation-http@0.57.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/core@1.30.1 NOTICES AND INFORMATION
+END OF @opentelemetry/core@2.0.1 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/semantic-conventions@1.28.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/semantic-conventions@1.36.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -1258,32 +1262,10 @@ END OF @opentelemetry/core@1.30.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/semantic-conventions@1.28.0 NOTICES AND INFORMATION
+END OF @opentelemetry/semantic-conventions@1.36.0 NOTICES AND INFORMATION
 
 
-%% semver@7.6.2 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-==========================================
-END OF semver@7.6.2 NOTICES AND INFORMATION
-
-
-%% @opentelemetry/instrumentation@0.57.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation@0.203.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -1488,10 +1470,10 @@ END OF semver@7.6.2 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation@0.57.1 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation@0.203.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/api-logs@0.57.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/api-logs@0.203.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -1696,39 +1678,7 @@ END OF @opentelemetry/instrumentation@0.57.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/api-logs@0.57.1 NOTICES AND INFORMATION
-
-
-%% shimmer@1.2.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-BSD 2-Clause License
-
-Copyright (c) 2013-2019, Forrest L Norvell
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-==========================================
-END OF shimmer@1.2.1 NOTICES AND INFORMATION
+END OF @opentelemetry/api-logs@0.203.0 NOTICES AND INFORMATION
 
 
 %% require-in-the-middle@7.3.0 NOTICES AND INFORMATION BEGIN HERE
@@ -2012,7 +1962,7 @@ SOFTWARE.
 END OF module-details-from-path@1.0.3 NOTICES AND INFORMATION
 
 
-%% import-in-the-middle@1.13.0 NOTICES AND INFORMATION BEGIN HERE
+%% import-in-the-middle@1.14.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -2217,7 +2167,7 @@ END OF module-details-from-path@1.0.3 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF import-in-the-middle@1.13.0 NOTICES AND INFORMATION
+END OF import-in-the-middle@1.14.2 NOTICES AND INFORMATION
 
 
 %% forwarded-parse@2.1.2 NOTICES AND INFORMATION BEGIN HERE
@@ -2246,7 +2196,7 @@ THE SOFTWARE.
 END OF forwarded-parse@2.1.2 NOTICES AND INFORMATION
 
 
-%% @sentry/core@9.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/core@10.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -2271,218 +2221,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @sentry/core@9.0.0 NOTICES AND INFORMATION
+END OF @sentry/core@10.8.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-undici@0.10.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/node-core@10.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+MIT License
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+Copyright (c) 2025 Functional Software, Inc. dba Sentry
 
-   1. Definitions.
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
 
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
-
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
-
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
-
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
-
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
-
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
-
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
-
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
-
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
-
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
-
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
-
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
-
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
-
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
-
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
-
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
-
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
-
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
-
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
-
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
-
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
-
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
-
-   END OF TERMS AND CONDITIONS
-
-   APPENDIX: How to apply the Apache License to your work.
-
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "[]"
-      replaced with your own identifying information. (Don't include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
-
-   Copyright [yyyy] [name of copyright owner]
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ==========================================
-END OF @opentelemetry/instrumentation-undici@0.10.0 NOTICES AND INFORMATION
+END OF @sentry/node-core@10.8.0 NOTICES AND INFORMATION
 
 
-%% @sentry/opentelemetry@9.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/opentelemetry@10.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -2507,10 +2277,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @sentry/opentelemetry@9.0.0 NOTICES AND INFORMATION
+END OF @sentry/opentelemetry@10.8.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/sdk-trace-base@1.30.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/sdk-trace-base@2.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -2715,10 +2485,10 @@ END OF @sentry/opentelemetry@9.0.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/sdk-trace-base@1.30.1 NOTICES AND INFORMATION
+END OF @opentelemetry/sdk-trace-base@2.0.1 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/resources@1.30.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/resources@2.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -2923,10 +2693,10 @@ END OF @opentelemetry/sdk-trace-base@1.30.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/resources@1.30.1 NOTICES AND INFORMATION
+END OF @opentelemetry/resources@2.0.1 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-fs@0.19.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/context-async-hooks@2.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -3131,10 +2901,10 @@ END OF @opentelemetry/resources@1.30.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-fs@0.19.0 NOTICES AND INFORMATION
+END OF @opentelemetry/context-async-hooks@2.0.1 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-express@0.47.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-undici@0.14.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -3339,10 +3109,10 @@ END OF @opentelemetry/instrumentation-fs@0.19.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-express@0.47.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-undici@0.14.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-fastify@0.44.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-fs@0.23.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -3547,10 +3317,10 @@ END OF @opentelemetry/instrumentation-express@0.47.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-fastify@0.44.1 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-fs@0.23.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-graphql@0.47.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-express@0.52.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -3755,10 +3525,88 @@ END OF @opentelemetry/instrumentation-fastify@0.44.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-graphql@0.47.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-express@0.52.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-kafkajs@0.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% minimatch@9.0.5 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+==========================================
+END OF minimatch@9.0.5 NOTICES AND INFORMATION
+
+
+%% brace-expansion@2.0.2 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF brace-expansion@2.0.2 NOTICES AND INFORMATION
+
+
+%% balanced-match@1.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+(MIT)
+
+Copyright (c) 2013 Julian Gruber &lt;julian@juliangruber.com&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF balanced-match@1.0.0 NOTICES AND INFORMATION
+
+
+%% @opentelemetry/instrumentation-graphql@0.51.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -3963,10 +3811,10 @@ END OF @opentelemetry/instrumentation-graphql@0.47.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-kafkajs@0.7.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-graphql@0.51.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-lru-memoizer@0.44.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-kafkajs@0.13.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -4171,10 +4019,10 @@ END OF @opentelemetry/instrumentation-kafkajs@0.7.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-lru-memoizer@0.44.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-kafkajs@0.13.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-mongodb@0.51.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-lru-memoizer@0.48.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -4379,10 +4227,10 @@ END OF @opentelemetry/instrumentation-lru-memoizer@0.44.0 NOTICES AND INFORMATIO
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-mongodb@0.51.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-lru-memoizer@0.48.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-mongoose@0.46.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-mongodb@0.56.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -4587,10 +4435,10 @@ END OF @opentelemetry/instrumentation-mongodb@0.51.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-mongoose@0.46.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-mongodb@0.56.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-mysql@0.45.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-mongoose@0.50.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -4795,10 +4643,10 @@ END OF @opentelemetry/instrumentation-mongoose@0.46.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-mysql@0.45.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-mongoose@0.50.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-mysql2@0.45.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-mysql@0.49.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -5003,10 +4851,10 @@ END OF @opentelemetry/instrumentation-mysql@0.45.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-mysql2@0.45.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-mysql@0.49.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/sql-common@0.40.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-mysql2@0.50.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -5211,10 +5059,10 @@ END OF @opentelemetry/instrumentation-mysql2@0.45.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/sql-common@0.40.1 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-mysql2@0.50.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-ioredis@0.47.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/sql-common@0.41.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -5419,10 +5267,10 @@ END OF @opentelemetry/sql-common@0.40.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-ioredis@0.47.0 NOTICES AND INFORMATION
+END OF @opentelemetry/sql-common@0.41.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/redis-common@0.36.2 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-ioredis@0.51.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -5627,10 +5475,10 @@ END OF @opentelemetry/instrumentation-ioredis@0.47.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/redis-common@0.36.2 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-ioredis@0.51.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-redis-4@0.46.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/redis-common@0.38.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -5835,10 +5683,10 @@ END OF @opentelemetry/redis-common@0.36.2 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-redis-4@0.46.0 NOTICES AND INFORMATION
+END OF @opentelemetry/redis-common@0.38.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-pg@0.50.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-redis@0.51.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -6043,10 +5891,10 @@ END OF @opentelemetry/instrumentation-redis-4@0.46.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-pg@0.50.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-redis@0.51.0 NOTICES AND INFORMATION
 
 
-%% @prisma/instrumentation@6.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-pg@0.55.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -6251,10 +6099,10 @@ END OF @opentelemetry/instrumentation-pg@0.50.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @prisma/instrumentation@6.2.1 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-pg@0.55.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-hapi@0.45.1 NOTICES AND INFORMATION BEGIN HERE
+%% @prisma/instrumentation@6.14.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -6459,10 +6307,64 @@ END OF @prisma/instrumentation@6.2.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-hapi@0.45.1 NOTICES AND INFORMATION
+END OF @prisma/instrumentation@6.14.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-koa@0.47.0 NOTICES AND INFORMATION BEGIN HERE
+%% semver@7.7.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+==========================================
+END OF semver@7.7.1 NOTICES AND INFORMATION
+
+
+%% shimmer@1.2.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+BSD 2-Clause License
+
+Copyright (c) 2013-2019, Forrest L Norvell
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==========================================
+END OF shimmer@1.2.1 NOTICES AND INFORMATION
+
+
+%% @opentelemetry/instrumentation-hapi@0.50.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -6667,10 +6569,10 @@ END OF @opentelemetry/instrumentation-hapi@0.45.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-koa@0.47.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-hapi@0.50.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-connect@0.43.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-koa@0.51.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -6875,10 +6777,10 @@ END OF @opentelemetry/instrumentation-koa@0.47.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-connect@0.43.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-koa@0.51.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-knex@0.44.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-connect@0.47.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -7083,10 +6985,10 @@ END OF @opentelemetry/instrumentation-connect@0.43.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-knex@0.44.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-connect@0.47.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-tedious@0.18.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-knex@0.48.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -7291,10 +7193,10 @@ END OF @opentelemetry/instrumentation-knex@0.44.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-tedious@0.18.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-knex@0.48.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-generic-pool@0.43.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-tedious@0.22.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -7499,10 +7401,10 @@ END OF @opentelemetry/instrumentation-tedious@0.18.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-generic-pool@0.43.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-tedious@0.22.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-dataloader@0.16.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-generic-pool@0.47.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -7707,10 +7609,10 @@ END OF @opentelemetry/instrumentation-generic-pool@0.43.0 NOTICES AND INFORMATIO
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-dataloader@0.16.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-generic-pool@0.47.0 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/instrumentation-amqplib@0.46.0 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-dataloader@0.21.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -7915,10 +7817,10 @@ END OF @opentelemetry/instrumentation-dataloader@0.16.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/instrumentation-amqplib@0.46.0 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-dataloader@0.21.1 NOTICES AND INFORMATION
 
 
-%% @opentelemetry/context-async-hooks@1.30.1 NOTICES AND INFORMATION BEGIN HERE
+%% @opentelemetry/instrumentation-amqplib@0.50.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -8123,7 +8025,7 @@ END OF @opentelemetry/instrumentation-amqplib@0.46.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @opentelemetry/context-async-hooks@1.30.1 NOTICES AND INFORMATION
+END OF @opentelemetry/instrumentation-amqplib@0.50.0 NOTICES AND INFORMATION
 
 
 %% @camunda8/sdk@8.7.28 NOTICES AND INFORMATION BEGIN HERE
@@ -12795,7 +12697,7 @@ SOFTWARE.
 END OF readdirp@4.0.2 NOTICES AND INFORMATION
 
 
-%% bpmn-moddle@9.0.3 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-moddle@9.0.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12819,7 +12721,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-moddle@9.0.3 NOTICES AND INFORMATION
+END OF bpmn-moddle@9.0.4 NOTICES AND INFORMATION
 
 
 %% moddle@7.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -13537,7 +13439,7 @@ THE SOFTWARE.
 END OF @camunda/form-playground@0.22.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@5.13.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@5.14.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -13561,7 +13463,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@5.13.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@5.14.0 NOTICES AND INFORMATION
 
 
 %% camunda-dmn-js@3.5.0 NOTICES AND INFORMATION BEGIN HERE
@@ -13591,7 +13493,7 @@ THE SOFTWARE.
 END OF camunda-dmn-js@3.5.0 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@3.42.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@3.43.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -13615,7 +13517,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/linting@3.42.0 NOTICES AND INFORMATION
+END OF @camunda/linting@3.43.1 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.4.1 NOTICES AND INFORMATION BEGIN HERE
@@ -14144,35 +14046,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF events@3.3.0 NOTICES AND INFORMATION
 
 
-%% codemirror@6.0.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (C) 2018-2021 by Marijn Haverbeke <marijnh@gmail.com> and others
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF codemirror@6.0.1 NOTICES AND INFORMATION
-
-
-%% @codemirror/view@6.36.4 NOTICES AND INFORMATION BEGIN HERE
+%% codemirror@6.0.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -14197,7 +14071,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @codemirror/view@6.36.4 NOTICES AND INFORMATION
+END OF codemirror@6.0.2 NOTICES AND INFORMATION
+
+
+%% @codemirror/view@6.38.2 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (C) 2018-2021 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF @codemirror/view@6.38.2 NOTICES AND INFORMATION
 
 
 %% @codemirror/state@6.5.2 NOTICES AND INFORMATION BEGIN HERE
@@ -14308,7 +14210,33 @@ THE SOFTWARE.
 END OF w3c-keyname@2.2.6 NOTICES AND INFORMATION
 
 
-%% @codemirror/language@6.11.0 NOTICES AND INFORMATION BEGIN HERE
+%% crelt@1.0.6 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+Copyright (C) 2020 by Marijn Haverbeke <marijn@haverbeke.berlin>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF crelt@1.0.6 NOTICES AND INFORMATION
+
+
+%% @codemirror/language@6.11.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -14333,7 +14261,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @codemirror/language@6.11.0 NOTICES AND INFORMATION
+END OF @codemirror/language@6.11.3 NOTICES AND INFORMATION
 
 
 %% @lezer/common@1.2.3 NOTICES AND INFORMATION BEGIN HERE
@@ -14448,32 +14376,6 @@ THE SOFTWARE.
 END OF @codemirror/search@6.5.6 NOTICES AND INFORMATION
 
 
-%% crelt@1.0.5 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-Copyright (C) 2020 by Marijn Haverbeke <marijnh@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF crelt@1.0.5 NOTICES AND INFORMATION
-
-
 %% @codemirror/autocomplete@6.18.6 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
@@ -14530,11 +14432,11 @@ THE SOFTWARE.
 END OF @codemirror/lint@6.8.4 NOTICES AND INFORMATION
 
 
-%% @codemirror/lang-json@6.0.1 NOTICES AND INFORMATION BEGIN HERE
+%% @codemirror/lang-json@6.0.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
-Copyright (C) 2018-2021 by Marijn Haverbeke <marijnh@gmail.com> and others
+Copyright (C) 2018-2021 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -14555,7 +14457,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @codemirror/lang-json@6.0.1 NOTICES AND INFORMATION
+END OF @codemirror/lang-json@6.0.2 NOTICES AND INFORMATION
 
 
 %% @lezer/json@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16701,7 +16603,7 @@ SOFTWARE.
 END OF focus-trap@7.5.2 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@5.42.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@5.42.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16725,10 +16627,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@5.42.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@5.42.1 NOTICES AND INFORMATION
 
 
-%% bpmn-js@18.6.3 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@18.7.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -16755,10 +16657,10 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@18.6.3 NOTICES AND INFORMATION
+END OF bpmn-js@18.7.0 NOTICES AND INFORMATION
 
 
-%% diagram-js@15.3.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@15.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16782,7 +16684,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@15.3.0 NOTICES AND INFORMATION
+END OF diagram-js@15.4.0 NOTICES AND INFORMATION
 
 
 %% domify@2.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16954,7 +16856,7 @@ SOFTWARE.
 END OF ms@2.1.3 NOTICES AND INFORMATION
 
 
-%% bpmn-moddle@9.0.3 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-moddle@9.0.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16978,7 +16880,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-moddle@9.0.3 NOTICES AND INFORMATION
+END OF bpmn-moddle@9.0.4 NOTICES AND INFORMATION
 
 
 %% moddle@7.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -17144,7 +17046,7 @@ THE SOFTWARE.
 END OF modeler-moddle@0.2.0 NOTICES AND INFORMATION
 
 
-%% @sentry/browser@9.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry/browser@10.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -17169,122 +17071,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @sentry/browser@9.0.0 NOTICES AND INFORMATION
+END OF @sentry/browser@10.8.0 NOTICES AND INFORMATION
 
 
-%% @sentry/core@9.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2019 Functional Software, Inc. dba Sentry
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF @sentry/core@9.0.0 NOTICES AND INFORMATION
-
-
-%% @sentry-internal/browser-utils@9.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2020 Functional Software, Inc. dba Sentry
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF @sentry-internal/browser-utils@9.0.0 NOTICES AND INFORMATION
-
-
-%% @sentry-internal/replay@9.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2022 Functional Software, Inc. dba Sentry
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF @sentry-internal/replay@9.0.0 NOTICES AND INFORMATION
-
-
-%% @sentry-internal/replay-canvas@9.0.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2024 Functional Software, Inc. dba Sentry
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF @sentry-internal/replay-canvas@9.0.0 NOTICES AND INFORMATION
-
-
-%% @sentry-internal/feedback@9.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% @sentry-internal/feedback@10.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -17309,7 +17099,119 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @sentry-internal/feedback@9.0.0 NOTICES AND INFORMATION
+END OF @sentry-internal/feedback@10.8.0 NOTICES AND INFORMATION
+
+
+%% @sentry/core@10.8.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2019 Functional Software, Inc. dba Sentry
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF @sentry/core@10.8.0 NOTICES AND INFORMATION
+
+
+%% @sentry-internal/browser-utils@10.8.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2020 Functional Software, Inc. dba Sentry
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF @sentry-internal/browser-utils@10.8.0 NOTICES AND INFORMATION
+
+
+%% @sentry-internal/replay@10.8.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2022 Functional Software, Inc. dba Sentry
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF @sentry-internal/replay@10.8.0 NOTICES AND INFORMATION
+
+
+%% @sentry-internal/replay-canvas@10.8.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2024 Functional Software, Inc. dba Sentry
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF @sentry-internal/replay-canvas@10.8.0 NOTICES AND INFORMATION
 
 
 %% @sentry/integrations@7.114.0 NOTICES AND INFORMATION BEGIN HERE
@@ -17707,29 +17609,26 @@ terms above.
 END OF lodash@4.17.21 NOTICES AND INFORMATION
 
 
-%% semver-compare@1.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% semver@6.3.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-This software is released under the MIT license:
+The ISC License
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
+Copyright (c) Isaac Z. Schlueter and Contributors
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ==========================================
-END OF semver-compare@1.0.0 NOTICES AND INFORMATION
+END OF semver@6.3.1 NOTICES AND INFORMATION
 
 
 %% p-defer@4.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -17825,7 +17724,7 @@ THE SOFTWARE.
 END OF @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION
 
 
-%% bpmnlint@11.6.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint@11.6.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17849,10 +17748,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint@11.6.0 NOTICES AND INFORMATION
+END OF bpmnlint@11.6.1 NOTICES AND INFORMATION
 
 
-%% bpmnlint-plugin-camunda-compat@2.42.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint-plugin-camunda-compat@2.43.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17876,7 +17775,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint-plugin-camunda-compat@2.42.0 NOTICES AND INFORMATION
+END OF bpmnlint-plugin-camunda-compat@2.43.1 NOTICES AND INFORMATION
 
 
 %% bpmnlint-utils@1.1.1 NOTICES AND INFORMATION BEGIN HERE
@@ -17933,6 +17832,31 @@ SOFTWARE.
 END OF @bpmn-io/moddle-utils@0.2.1 NOTICES AND INFORMATION
 
 
+%% semver-compare@1.0.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+This software is released under the MIT license:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF semver-compare@1.0.0 NOTICES AND INFORMATION
+
+
 %% @camunda/form-linting@0.23.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
@@ -17961,7 +17885,7 @@ SOFTWARE.
 END OF @camunda/form-linting@0.23.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-element-templates@2.11.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-element-templates@2.14.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17985,32 +17909,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-element-templates@2.11.0 NOTICES AND INFORMATION
+END OF bpmn-js-element-templates@2.14.0 NOTICES AND INFORMATION
 
 
-%% semver@7.7.2 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The ISC License
-
-Copyright (c) Isaac Z. Schlueter and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
-IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-==========================================
-END OF semver@7.7.2 NOTICES AND INFORMATION
-
-
-%% @bpmn-io/element-templates-validator@2.12.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/element-templates-validator@2.13.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -18035,7 +17937,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @bpmn-io/element-templates-validator@2.12.0 NOTICES AND INFORMATION
+END OF @bpmn-io/element-templates-validator@2.13.0 NOTICES AND INFORMATION
 
 
 %% uuid@11.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -18658,7 +18560,34 @@ THE SOFTWARE.
 END OF @camunda/example-data-properties-provider@1.2.1 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js-behaviors@1.11.1 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/task-testing@0.2.5 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2022-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+==========================================
+END OF @camunda/task-testing@0.2.5 NOTICES AND INFORMATION
+
+
+%% camunda-bpmn-js-behaviors@1.11.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -18682,7 +18611,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js-behaviors@1.11.1 NOTICES AND INFORMATION
+END OF camunda-bpmn-js-behaviors@1.11.2 NOTICES AND INFORMATION
 
 
 %% @bpmn-io/element-template-chooser@2.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -18739,7 +18668,7 @@ THE SOFTWARE.
 END OF @bpmn-io/add-exporter@0.2.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/variable-resolver@1.3.3 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/variable-resolver@1.3.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -18763,7 +18692,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/variable-resolver@1.3.3 NOTICES AND INFORMATION
+END OF @bpmn-io/variable-resolver@1.3.4 NOTICES AND INFORMATION
 
 
 %% bpmn-js-color-picker@0.7.2 NOTICES AND INFORMATION BEGIN HERE
