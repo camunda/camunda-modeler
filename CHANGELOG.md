@@ -8,8 +8,27 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: add task testing ([#5235](https://github.com/camunda/camunda-modeler/pull/5235))
 * `FEAT`: mark Camunda 8.8 and 7.24 as stable ([#5265](https://github.com/camunda/camunda-modeler/issues/5265))
 * `FIX`: make start instance work with REST API ([#5274](https://github.com/camunda/camunda-modeler/issues/5274))
+* `DEPS`: update to `bpmn-js@18.7.0`
+* `DEPS`: update to `@camunda/linting@3.43.1`
+* `DEPS`: update to `bpmn-js-properties-panel@5.42.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.14.0`
+* `DEPS`: update to `bpmn-moddle@9.0.4`
+* `DEPS`: update to `camunda-bpmn-js@5.14.0`
+* `DEPS`: update to `diagram-js@15.4.0`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.11.0`
+
+### BPMN
+
+* `FEAT`: add linting rule `no-interrupting-event-subprocess` ([camunda/linting#148](https://github.com/camunda/linting/pull/148))
+* `FEAT`: support `activeElementsCollection` property on `zeebe:adHoc` ([camunda/element-templates-json-schema#198](https://github.com/camunda/element-templates-json-schema/pull/198), [bpmn-io/bpmn-js-element-templates#186](https://github.com/bpmn-io/bpmn-js-element-templates/pull/186))
+* `FEAT`: create sub-process templates as expanded elements ([#5273](https://github.com/camunda/camunda-modeler/issues/5273))
+* `FIX`: ensure popup menu keyboard navigation accounts for group order ([bpmn-io/diagram-js#989](https://github.com/bpmn-io/diagram-js/pull/989))
+* `FIX`: revert `AdHocSubProcess#cancelRemainingInstances` default value removal ([bpmn-io/bpmn-moddle#132](https://github.com/bpmn-io/bpmn-moddle/pull/132))
+* `FIX`: preserve variables with same name but different scopes ([bpmn-io/variable-resolver#56](https://github.com/bpmn-io/variable-resolver/pull/56))
+* `FIX`: allow intermediate catch event without outgoing sequence flows in ad-hoc subprocess ([#5189](https://github.com/camunda/camunda-modeler/issues/5189))
 
 ## 5.39.0
 
