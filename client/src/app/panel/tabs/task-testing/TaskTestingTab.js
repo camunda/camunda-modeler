@@ -162,7 +162,7 @@ export default function TaskTestingTab(props) {
   return <>
     <Fill slot="bottom-panel"
       id="task-testing"
-      label="Test"
+      label="Task testing"
       layout={ layout }
       priority={ 6 }>
       <div className={ css.TaskTestingTab }>
