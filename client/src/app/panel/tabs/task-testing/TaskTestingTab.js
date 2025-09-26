@@ -179,7 +179,7 @@ export default function TaskTestingTab(props) {
           configureConnectionBannerTitle={ configureConnectionBannerTitle }
           configureConnectionBannerDescription={ configureConnectionBannerDescription }
           api={ taskTestingApi.getApi() }
-          documentationUrl={ 'https://docs.camunda.com/docs/components/modeler/desktop-modeler/task-testing/' }
+          documentationUrl={ 'https://docs.camunda.com/docs/components/modeler/desktop-modeler/task-testing/?utm_source=modeler&utm_medium=referral' }
         />
       </div>
     </Fill>
