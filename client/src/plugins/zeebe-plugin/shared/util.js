@@ -18,6 +18,8 @@
 
 import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
+import { CONNECTION_CHECK_ERROR_MESSAGES } from '../deployment-plugin/ConnectionCheckErrors';
+
 /**
  * Get Camunda Operate URL.
  *
@@ -314,4 +316,8 @@ export function getGRPCErrorCode(response) {
   } = response;
 
   return code ? GRPC_ERROR_CODES[ code ] : 'UNKNOWN';
+}
+
+export function getMessageForReason(reason) {
+  return CONNECTION_CHECK_ERROR_MESSAGES[reason] || CONNECTION_CHECK_ERROR_MESSAGES.UNKNOWN;
 }
