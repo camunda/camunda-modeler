@@ -21,6 +21,7 @@ import debug from 'debug';
 import Flags from '../../util/Flags';
 
 import { Modal } from '../../shared/ui';
+import { KeyboardInteractionTrapContext } from '../../shared/ui/trap/KeyboardInteractionTrap';
 
 import { SettingsForm } from './SettingsForm';
 
@@ -122,39 +123,41 @@ export default function SettingsPlugin(props) {
   }
 
   return (
-    <Modal onClose={ () => setOpen(false) }>
-      <div className="modal-header">
-        <h2 className="modal-title">Settings</h2>
-      </div>
-      <div className={ `${css.SettingsPlugin} modal-body` }>
+    <KeyboardInteractionTrapContext.Provider value={ triggerAction }>
+      <Modal onClose={ () => setOpen(false) } triggerAction={ triggerAction }>
+        <div className="modal-header">
+          <h2 className="modal-title">Settings</h2>
+        </div>
+        <div className={ `${css.SettingsPlugin} modal-body` }>
 
-        {showRestartWarning &&
+          {showRestartWarning &&
           <div className="restart-warning">Restart the modeler to apply the changes.&nbsp;
             <button className="btn-restart" onClick={ handleRestart }>Restart now.</button>
           </div>
-        }
+          }
 
-        <Formik
-          initialValues={ { } }
-          onSubmit={ debounce(handleSave, 500) }
-        >
-          <SettingsForm
-            schema={ schema }
-            values={ values }
-          />
-        </Formik>
+          <Formik
+            initialValues={ { } }
+            onSubmit={ debounce(handleSave, 500) }
+          >
+            <SettingsForm
+              schema={ schema }
+              values={ values }
+            />
+          </Formik>
 
-      </div>
-      <div className="modal-footer">
-        <button
-          className="btn btn-secondary"
-          type="button"
-          onClick={ () => setOpen(false) }
-        >
-          Close
-        </button>
-      </div>
-    </Modal>
+        </div>
+        <div className="modal-footer">
+          <button
+            className="btn btn-secondary"
+            type="button"
+            onClick={ () => setOpen(false) }
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
+    </KeyboardInteractionTrapContext.Provider>
   );
 }
 

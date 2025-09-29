@@ -21,6 +21,7 @@ import {
 } from '../trap';
 
 import CloseIcon from '../../../../resources/icons/Close.svg';
+import { KeyboardInteractionTrapContext } from '../trap/KeyboardInteractionTrap';
 
 
 export default class Modal extends PureComponent {
@@ -68,16 +69,18 @@ export default class Modal extends PureComponent {
     } = this.props;
 
     return ReactDOM.createPortal(
-      <KeyboardInteractionTrap>
-        <div className="modal" tabIndex="-1" role="dialog">
-          <div className={ classNames('modal-dialog', className) } ref={ this.modalRef } role="document">
-            <div className="modal-content">
-              { children }
-              { onClose && (<Close onClick={ this.close } />) }
+      <KeyboardInteractionTrapContext.Provider value={ this.props.triggerAction }>
+        <KeyboardInteractionTrap>
+          <div className="modal" tabIndex="-1" role="dialog">
+            <div className={ classNames('modal-dialog', className) } ref={ this.modalRef } role="document">
+              <div className="modal-content">
+                { children }
+                { onClose && (<Close onClick={ this.close } />) }
+              </div>
             </div>
           </div>
-        </div>
-      </KeyboardInteractionTrap>,
+        </KeyboardInteractionTrap>
+      </KeyboardInteractionTrapContext.Provider>,
       document.body
     );
   }
