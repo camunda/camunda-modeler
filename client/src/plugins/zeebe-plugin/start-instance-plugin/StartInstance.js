@@ -29,11 +29,12 @@ export default class StartInstance extends EventEmitter {
    * @param {import('../../../remote/Config').default} config
    * @param {import('../../../remote/ZeebeAPI').default} zeebeAPI
    */
-  constructor(config, zeebeAPI) {
+  constructor(config, zeebeAPI, settings) {
     super();
 
     this._config = config;
     this._zeebeAPI = zeebeAPI;
+    this._settings = settings;
   }
 
   /**

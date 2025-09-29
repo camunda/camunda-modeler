@@ -20,6 +20,8 @@ import {
   Form,
   Formik
 } from 'formik';
+import { getMessageForReason } from '../shared/util';
+import FormFeedback from '../../../shared/ui/form/FormFeedback';
 
 export default function StartInstanceConfigForm(props) {
   const {
@@ -32,7 +34,8 @@ export default function StartInstanceConfigForm(props) {
     validateForm,
     validateField,
     VariablesComponent = JSONInput,
-    variablesComponentProps = {}
+    variablesComponentProps = {},
+    connectionCheckResult
   } = props;
 
   const getFieldError = (meta, fieldName) => {
@@ -82,12 +85,19 @@ export default function StartInstanceConfigForm(props) {
                     </div>
                   </fieldset>
                   <Section.Actions>
-                    <button
-                      type="submit"
-                      className="btn btn-primary"
-                      disabled={ props.isSubmitting }>
-                      { renderSubmit }
-                    </button>
+                    <div className="form-group">
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={ props.isSubmitting }>
+                        { renderSubmit }
+                      </button>
+                      { connectionCheckResult?.success === false && (
+                        <FormFeedback
+                          error={ getMessageForReason(connectionCheckResult.reason) }
+                        />
+                      )}
+                    </div>
                   </Section.Actions>
                 </Section.Body>
               </Section>

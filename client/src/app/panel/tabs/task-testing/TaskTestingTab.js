@@ -53,13 +53,14 @@ export default function TaskTestingTab(props) {
     injector,
     file,
     layout = {},
-    onAction
+    onAction,
+    settings
   } = props;
 
   const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
   const { current: zeebeApi } = useRef(new ZeebeAPI(backend));
-  const { current: taskTestingApi } = useRef(new TaskTestingApi(zeebeApi, config, file, onAction));
+  const { current: taskTestingApi } = useRef(new TaskTestingApi(zeebeApi, config, file, onAction, settings));
   const { current: connectionChecker } = useRef(new ConnectionChecker(zeebeApi));
 
   const [ connectionCheckResult, setConnectionCheckResult ] = useState(false);

@@ -837,7 +837,8 @@ export class BpmnEditor extends CachedComponent {
           id={ this.props.id }
           injector={ injector }
           layout={ layout }
-          onAction={ onAction } />
+          onAction={ onAction }
+          settings={ this.props.settings } />
 
         <VariableTab
           id={ this.props.id }

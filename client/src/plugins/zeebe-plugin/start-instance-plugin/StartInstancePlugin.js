@@ -28,7 +28,9 @@ export default function StartInstancePlugin(props) {
     displayNotification,
     log,
     subscribe,
-    triggerAction
+    triggerAction,
+    settings,
+    connectionCheckResult
   } = props;
 
   const [ activeTab, setActiveTab ] = useState(null);
@@ -70,18 +72,15 @@ export default function StartInstancePlugin(props) {
     const {
       connectionChecker,
       deployment,
-      deploymentConfigValidator
-    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'));
+    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'), settings);
 
     const {
       startInstance,
       startInstanceConfigValidator
-    } = bootstrapStartInstance(_getGlobal('backend'), _getGlobal('config'));
+    } = bootstrapStartInstance(_getGlobal('backend'), _getGlobal('config'), settings);
 
     setDeploymentAndStartInstanceBootstrapped({
-      connectionChecker,
       deployment,
-      deploymentConfigValidator,
       startInstance,
       startInstanceConfigValidator
     });
@@ -134,6 +133,7 @@ export default function StartInstancePlugin(props) {
         startInstance={ startInstance }
         startInstanceConfigValidator={ startInstanceConfigValidator }
         triggerAction={ triggerAction }
+        connectionCheckResult={ connectionCheckResult }
       />
     ) }
   </>;

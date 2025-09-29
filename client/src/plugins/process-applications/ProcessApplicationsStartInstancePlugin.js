@@ -34,7 +34,8 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
     log,
     processApplication,
     processApplicationItems,
-    triggerAction
+    triggerAction,
+    settings
   } = props;
 
   const [ overlayOpen, setOverlayOpen ] = useState(false);
@@ -79,12 +80,12 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
       connectionChecker,
       deployment,
       deploymentConfigValidator
-    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'));
+    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'), settings);
 
     const {
       startInstance,
       startInstanceConfigValidator
-    } = bootstrapStartInstance(_getGlobal('backend'), _getGlobal('config'));
+    } = bootstrapStartInstance(_getGlobal('backend'), _getGlobal('config'), settings);
 
     setDeploymentAndStartInstanceBootstrapped({
       connectionChecker,
