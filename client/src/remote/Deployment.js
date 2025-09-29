@@ -59,10 +59,11 @@ export default class Deployment extends EventEmitter {
    * @param {import('../../../remote/Config').default} config
    * @param {import('../../../remote/ZeebeAPI').default} zeebeAPI
    */
-  constructor(config, zeebeAPI) {
+  constructor(config, zeebeAPI, settings) {
     super();
 
     this._config = config;
+    this._settings = settings;
     this._zeebeAPI = zeebeAPI;
 
     this._resourcesProviders = [];
@@ -233,7 +234,7 @@ export default class Deployment extends EventEmitter {
    * @returns {Promise<Array<Endpoint>>}
    */
   getEndpoints() {
-    return this._config.get(CONFIG_KEYS.ENDPOINTS, []);
+    return this._settings.get('connectionManagerPlugin.c8connections');
   }
 
   /**
