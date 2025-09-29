@@ -25,6 +25,8 @@ import StartInstanceConfigValidator from '../start-instance-plugin/StartInstance
 
 import ZeebeAPI, { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
+import { CONNECTION_CHECK_ERROR_MESSAGES } from '../deployment-plugin/ConnectionCheckErrors';
+
 /**
  * Get Camunda Operate URL.
  *
@@ -295,10 +297,10 @@ export function getResourceType({ type }) {
   return null;
 }
 
-export function bootstrapDeployment(backend, config) {
+export function bootstrapDeployment(backend, config, settings) {
   const zeebeAPI = new ZeebeAPI(backend);
 
-  const deployment = new Deployment(config, zeebeAPI);
+  const deployment = new Deployment(config, zeebeAPI, settings);
 
   const connectionChecker = new ConnectionChecker(zeebeAPI);
 
@@ -309,10 +311,10 @@ export function bootstrapDeployment(backend, config) {
   };
 }
 
-export function bootstrapStartInstance(backend, config) {
+export function bootstrapStartInstance(backend, config, settings) {
   const zeebeAPI = new ZeebeAPI(backend);
 
-  const startInstance = new StartInstance(config, zeebeAPI);
+  const startInstance = new StartInstance(config, zeebeAPI, settings);
 
   return {
     startInstance,
@@ -346,4 +348,8 @@ export function getGRPCErrorCode(response) {
   } = response;
 
   return code ? GRPC_ERROR_CODES[ code ] : 'UNKNOWN';
+}
+
+export function getMessageForReason(reason) {
+  return CONNECTION_CHECK_ERROR_MESSAGES[reason] || CONNECTION_CHECK_ERROR_MESSAGES.UNKNOWN;
 }

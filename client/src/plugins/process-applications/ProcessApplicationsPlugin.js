@@ -27,7 +27,8 @@ export default function ProcessApplicationsPlugin(props) {
     displayNotification,
     log,
     subscribe,
-    triggerAction
+    triggerAction,
+    settings
   } = props;
 
   const [ activeTab, setActiveTab ] = useState(null);
@@ -189,7 +190,8 @@ export default function ProcessApplicationsPlugin(props) {
       log={ log }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }
-      triggerAction={ triggerAction } />
+      triggerAction={ triggerAction }
+      settings={ settings } />
     <ProcessApplicationsStartInstancePlugin
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
@@ -197,7 +199,8 @@ export default function ProcessApplicationsPlugin(props) {
       log={ log }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }
-      triggerAction={ triggerAction } />
+      triggerAction={ triggerAction }
+      settings={ settings } />
   </>;
 }
 

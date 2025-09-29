@@ -11,6 +11,11 @@
 import React from 'react';
 
 import DocumentationIcon from './DocumentationIcon';
+import FormFeedback from './FormFeedback';
+
+import {
+  fieldError as defaultFieldError
+} from './Util';
 
 export default function Select(props) {
 
@@ -18,14 +23,20 @@ export default function Select(props) {
     label,
     field,
     form,
+    fieldError,
     description,
     documentationUrl,
+    placeholder,
     ...restProps
   } = props;
 
   const {
     name: fieldName
   } = field;
+
+  const meta = form.getFieldMeta(fieldName);
+
+  const error = (fieldError || defaultFieldError)(meta, fieldName);
 
   return (
     <React.Fragment>
@@ -42,9 +53,16 @@ export default function Select(props) {
             id={ fieldName }
             { ...restProps }
           >
+            { placeholder && <>
+              <option hidden>{ placeholder }</option>
+              <option disabled>{ placeholder }</option>
+            </>}
             {props.options.map(({ value, label }) => <option key={ value } value={ value }>{label}</option>)}
           </select>
-          <div className="custom-control-description">{ description }</div>
+          <FormFeedback
+            error={ error }
+          />
+          {description && <div className="custom-control-description">{ description }</div>}
         </div>
       </div>
     </React.Fragment>

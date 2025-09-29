@@ -18,10 +18,10 @@ import { getOperateUrl } from '../../../../plugins/zeebe-plugin/shared/util';
 const log = debug('TaskTestingApi');
 
 export default class TaskTestingApi {
-  constructor(zeebeApi, config, file, onAction) {
+  constructor(zeebeApi, config, file, onAction, settings) {
     this._zeebeApi = zeebeApi;
-    this._deployment = new Deployment(config, zeebeApi);
-    this._startInstance = new StartInstance(config, zeebeApi);
+    this._deployment = new Deployment(config, zeebeApi, settings);
+    this._startInstance = new StartInstance(config, zeebeApi, settings);
     this._onAction = onAction;
     this._file = file;
   }

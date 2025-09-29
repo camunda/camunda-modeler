@@ -72,7 +72,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
       connectionChecker,
       deployment,
       deploymentConfigValidator
-    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'));
+    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'), _getGlobal('settings'));
 
     setDeploymentBootstrapped({
       connectionChecker,

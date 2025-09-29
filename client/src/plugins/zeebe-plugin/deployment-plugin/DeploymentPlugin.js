@@ -27,20 +27,18 @@ export default function DeploymentPlugin(props) {
     displayNotification,
     log,
     subscribe,
-    triggerAction
+    triggerAction,
+    settings,
+    connectionCheckResult
   } = props;
 
   const [ activeTab, setActiveTab ] = useState(null);
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
   const [ {
-    connectionChecker,
     deployment,
-    deploymentConfigValidator
   }, setDeploymentBootstrapped ] = useState({
-    connectionChecker: null,
     deployment: null,
-    deploymentConfigValidator: null
   });
 
   const anchorRef = useRef();
@@ -67,20 +65,12 @@ export default function DeploymentPlugin(props) {
 
   useEffect(() => {
     const {
-      connectionChecker,
       deployment,
-      deploymentConfigValidator
-    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'));
+    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'), settings);
 
     setDeploymentBootstrapped({
-      connectionChecker,
       deployment,
-      deploymentConfigValidator
     });
-
-    return () => {
-      connectionChecker.stopChecking();
-    };
   }, [ _getGlobal ]);
 
   useEffect(() => {
@@ -95,7 +85,7 @@ export default function DeploymentPlugin(props) {
     });
   }, [ subscribe ]);
 
-  if (!activeTab || !connectionChecker || !deployment || !deploymentConfigValidator) {
+  if (!activeTab || !deployment) {
     return null;
   }
 
@@ -123,9 +113,8 @@ export default function DeploymentPlugin(props) {
         _getFromApp={ _getFromApp }
         activeTab={ activeTab }
         anchor={ anchorRef.current }
-        connectionChecker={ connectionChecker }
+        connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
-        deploymentConfigValidator={ deploymentConfigValidator }
         displayNotification={ displayNotification }
         log={ log }
         onClose={ () => setOverlayOpen(false) }

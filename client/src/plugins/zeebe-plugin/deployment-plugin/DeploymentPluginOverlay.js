@@ -13,20 +13,18 @@
  * @typedef {import('./types').ConnectionCheckResult} ConnectionCheckResult
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { Overlay } from '../../../shared/ui';
 
 import { default as DefaultDeploymentConfigForm } from './DeploymentConfigForm';
 
-import { getConnectionCheckError } from './ConnectionCheckErrors';
 
 import {
   getSuccessNotification as defaultGetSuccessNotification,
   getErrorNotification as defaultGetErrorNotification
 } from './DeploymentNotifications';
 
-import Loader from '../../../app/primitives/Loader';
 
 import { getGRPCErrorCode, getResourceType } from '../shared/util';
 
@@ -38,9 +36,8 @@ export default function DeploymentPluginOverlay(props) {
   const {
     activeTab,
     anchor,
-    connectionChecker,
+    connectionCheckResult,
     deployment,
-    deploymentConfigValidator,
     displayNotification,
     DeploymentConfigForm = DefaultDeploymentConfigForm,
     getConfigFile = defaultGetConfigFile,
@@ -55,22 +52,13 @@ export default function DeploymentPluginOverlay(props) {
     triggerAction
   } = props;
 
-  /** @type {DeploymentConfig} */
-  const [ config, setConfig ] = useState(null);
-
-  /** @type {ConnectionCheckResult} */
-  const [ connectionCheckResult, setConnectionCheckResult ] = useState(null);
-
-  const getFieldError = (fieldName) => {
-    return getConnectionCheckError(fieldName, connectionCheckResult);
-  };
-
   const onSubmit = async (values) => {
-    setConfig(values);
+    const file = getConfigFile(activeTab);
+    const config = await deployment.getConfigForFile(file);
 
     const resourceConfigs = getResourceConfigs(activeTab);
 
-    const deploymentResponse = await deployment.deploy(resourceConfigs, values);
+    const deploymentResponse = await deployment.deploy(resourceConfigs, config);
 
     if (deploymentResponse.success) {
       displayNotification(getSuccessNotification(activeTab, config, deploymentResponse));
@@ -87,45 +75,6 @@ export default function DeploymentPluginOverlay(props) {
     onClose();
   };
 
-  const validateForm = async (values) => {
-    const config = values;
-
-    setConfig(config);
-
-    const configValidationErrors = deploymentConfigValidator.validateConfig(values);
-
-    if (Object.keys(configValidationErrors).length > 0) {
-      connectionChecker.updateConfig(null);
-    } else {
-      connectionChecker.updateConfig(config);
-
-      const file = getConfigFile(activeTab);
-
-      await deployment.setConfigForFile(file, config);
-    }
-
-    return configValidationErrors;
-  };
-
-  useEffect(() => {
-    (async () => {
-      const file = getConfigFile(activeTab);
-
-      const config = await deployment.getConfigForFile(file);
-
-      connectionChecker.updateConfig(config);
-
-      setConfig(config);
-    })();
-
-    connectionChecker.on('connectionCheck', setConnectionCheckResult);
-
-    return () => {
-      connectionChecker.off('connectionCheck', setConnectionCheckResult);
-
-      connectionChecker.stopChecking();
-    };
-  }, [ connectionChecker, deployment, setConfig, setConnectionCheckResult ]);
 
   useEffect(() => {
     const onDeployed = ({ context = 'deploymentTool', deploymentResult, endpoint, gatewayVersion }) => {
@@ -168,24 +117,13 @@ export default function DeploymentPluginOverlay(props) {
 
   return (
     <Overlay className={ css.DeploymentPluginOverlay } onClose={ onClose } anchor={ anchor }>
-      { config
-        ? (
-          <DeploymentConfigForm
-            getFieldError={ getFieldError }
-            initialFieldValues={ config }
-            onSubmit={ onSubmit }
-            renderDescription={ renderDescription }
-            renderHeader={ renderHeader }
-            renderSubmit={ renderSubmit }
-            validateForm={ validateForm }
-            validateField={ (name, value) => deploymentConfigValidator.validateConfigValue(name, value) } />
-        )
-        : (
-          <div className="loading">
-            <Loader />
-          </div>
-        )
-      }
+      <DeploymentConfigForm
+        onSubmit={ onSubmit }
+        renderDescription={ renderDescription }
+        renderHeader={ renderHeader }
+        renderSubmit={ renderSubmit }
+        connectionCheckResult={ connectionCheckResult }
+      />
     </Overlay>
   );
 }
