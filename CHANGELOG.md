@@ -16,7 +16,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-properties-panel@5.42.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.14.0`
 * `DEPS`: update to `bpmn-moddle@9.0.4`
-* `DEPS`: update to `camunda-bpmn-js@5.14.0`
+* `DEPS`: update to `camunda-bpmn-js@5.14.2`
 * `DEPS`: update to `diagram-js@15.4.0`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.11.0`
 
@@ -29,6 +29,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: revert `AdHocSubProcess#cancelRemainingInstances` default value removal ([bpmn-io/bpmn-moddle#132](https://github.com/bpmn-io/bpmn-moddle/pull/132))
 * `FIX`: preserve variables with same name but different scopes ([bpmn-io/variable-resolver#56](https://github.com/bpmn-io/variable-resolver/pull/56))
 * `FIX`: allow intermediate catch event without outgoing sequence flows in ad-hoc subprocess ([#5189](https://github.com/camunda/camunda-modeler/issues/5189))
+* `FIX`: do not try to find unresolved variables of a broken expression ([bpmn-io/variable-resolver#50](https://github.com/bpmn-io/variable-resolver/issues/50))
 
 ## 5.39.0
 
