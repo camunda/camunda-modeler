@@ -44,16 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Enhanced BPMN ad-hoc sub-process support</h4>
-          You can now configure new ad-hoc sub-process properties such as output collection and implementation as a job worker.
+          <h4>Support for Camunda 8.8 and 7.24</h4>
+          Camunda 8.8 and 7.24 are now fully supported.
         </li>
         <li>
-          <h4>Support for deployment using the new Orchestration Cluster REST API</h4>
-          The Modeler now supports deploying through the new <a href="https://docs.camunda.io/docs/8.8/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/">Orchestration Cluster REST API</a>.
+          <h4>Introducing task testing</h4>
+          Run a single task directly from the Modeler to verify it works as expected. Use the new task testing feature to provide input data and inspect the output of the task execution. Read more in <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/?utm_source=modeler&utm_medium=referral">the task testing documentation</a>.
         </li>
         <li>
-          <h4>Enhanced FEEL expression editing</h4>
-          The Modeler now supports multiline FEEL strings and provides better syntax error detection for unclosed string literals.
+          <h4>Enhanced ad-hoc subprocess templating support</h4>
+          The Modeler now supports templating of ad-hoc subprocesses with both BPMN and job worker implementations.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
