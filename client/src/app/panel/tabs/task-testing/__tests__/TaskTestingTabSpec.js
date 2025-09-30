@@ -28,7 +28,11 @@ import TaskTestingTab, {
 
 import { Backend, Config } from '../../../../__tests__/mocks';
 
+import { DELAYS } from '../../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
+
 import diagramXML from './TaskTestingTab.bpmn';
+
+const CONNECTION_CHECKER_INTERVAL = DELAYS.SHORT + 1;
 
 describe('<TaskTestingTab>', function() {
 
@@ -157,15 +161,14 @@ describe('<TaskTestingTab>', function() {
 
       const { getByText } = renderResult;
 
-      await clock.tickAsync(1001);
-
       // when
       modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
+      await clock.tickAsync(CONNECTION_CHECKER_INTERVAL);
 
-      // then
-      await waitFor(() => {
-        expect(getByText(UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE)).to.exist;
-      });
+      // expect
+      expect(getByText(UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE, {
+        ignore: '.cds--tooltip-content'
+      })).to.exist;
     });
 
 
@@ -219,19 +222,18 @@ describe('<TaskTestingTab>', function() {
 
       const { getByText } = renderResult;
 
-      await clock.tickAsync(1001);
-
       // when
       modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
+      await clock.tickAsync(CONNECTION_CHECKER_INTERVAL);
 
       // then
-      await waitFor(() => {
-        expect(getByText(UNSUPPORTED_PROTOCOL_TITLE)).to.exist;
-      });
+      expect(getByText(UNSUPPORTED_PROTOCOL_TITLE, {
+        ignore: '.cds--tooltip-content'
+      })).to.exist;
     });
 
 
-    it ('should show error (cannot connect to cluster)', async function() {
+    it('should show error (cannot connect to cluster)', async function() {
 
       // given
       const { modeler, renderResult } = await renderTab({
@@ -278,15 +280,14 @@ describe('<TaskTestingTab>', function() {
 
       const { getByText } = renderResult;
 
-      await clock.tickAsync(1001);
-
       // when
       modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
+      await clock.tickAsync(CONNECTION_CHECKER_INTERVAL);
 
       // then
-      await waitFor(() => {
-        expect(getByText(CANNOT_CONNECT_TITLE)).to.exist;
-      });
+      expect(getByText(CANNOT_CONNECT_TITLE, {
+        ignore: '.cds--tooltip-content'
+      })).to.exist;
     });
 
   });
