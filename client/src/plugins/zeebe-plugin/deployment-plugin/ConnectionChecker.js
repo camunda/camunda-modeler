@@ -10,7 +10,7 @@
 
 import EventEmitter from 'events';
 
-const DELAYS = {
+export const DELAYS = {
   LONG: 5000, // 5s interval if no config change
   SHORT: 1000 // 1s delay if config change
 };
