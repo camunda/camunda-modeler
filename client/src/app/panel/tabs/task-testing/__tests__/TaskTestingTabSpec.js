@@ -165,7 +165,7 @@ describe('<TaskTestingTab>', function() {
       modeler.get('selection').select(modeler.get('elementRegistry').get('Task_1'));
       await clock.tickAsync(CONNECTION_CHECKER_INTERVAL);
 
-      // expect
+      // then
       expect(getByText(UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE, {
         ignore: '.cds--tooltip-content'
       })).to.exist;
