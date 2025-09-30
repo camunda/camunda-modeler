@@ -46,6 +46,8 @@ export const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST co
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE = 'Execution platform version not supported';
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
 
+const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/?utm_source=modeler&utm_medium=referral';
+
 export default function TaskTestingTab(props) {
   const {
     backend,
@@ -179,7 +181,7 @@ export default function TaskTestingTab(props) {
           configureConnectionBannerTitle={ configureConnectionBannerTitle }
           configureConnectionBannerDescription={ configureConnectionBannerDescription }
           api={ taskTestingApi.getApi() }
-          documentationUrl={ 'https://docs.camunda.com/docs/components/modeler/desktop-modeler/task-testing/?utm_source=modeler&utm_medium=referral' }
+          documentationUrl={ DOCUMENTATION_URL }
         />
       </div>
     </Fill>
