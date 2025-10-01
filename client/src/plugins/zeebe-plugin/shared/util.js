@@ -16,14 +16,7 @@
  * @typedef {import('../start-instance-plugin/types').StartInstanceResult} StartInstanceResult
  */
 
-import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
-import Deployment from '../deployment-plugin/Deployment';
-import DeploymentConfigValidator from '../deployment-plugin/DeploymentConfigValidator';
-
-import StartInstance from '../start-instance-plugin/StartInstance';
-import StartInstanceConfigValidator from '../start-instance-plugin/StartInstanceConfigValidator';
-
-import ZeebeAPI, { TARGET_TYPES } from '../../../remote/ZeebeAPI';
+import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
 /**
  * Get Camunda Operate URL.
@@ -293,31 +286,6 @@ export function getResourceType({ type }) {
   }
 
   return null;
-}
-
-export function bootstrapDeployment(backend, config) {
-  const zeebeAPI = new ZeebeAPI(backend);
-
-  const deployment = new Deployment(config, zeebeAPI);
-
-  const connectionChecker = new ConnectionChecker(zeebeAPI);
-
-  return {
-    connectionChecker,
-    deployment,
-    deploymentConfigValidator: DeploymentConfigValidator
-  };
-}
-
-export function bootstrapStartInstance(backend, config) {
-  const zeebeAPI = new ZeebeAPI(backend);
-
-  const startInstance = new StartInstance(config, zeebeAPI);
-
-  return {
-    startInstance,
-    startInstanceConfigValidator: StartInstanceConfigValidator
-  };
 }
 
 const GRPC_ERROR_CODES = {

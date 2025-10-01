@@ -22,12 +22,14 @@ import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../../util/Flags';
 import {
   Backend,
   Config,
+  Deployment,
   Dialog,
   FileSystem,
   KeyboardBindings,
   Log,
   Plugins,
   Settings,
+  StartInstance,
   SystemClipboard,
   TabsProvider,
   Workspace,
@@ -1028,11 +1030,13 @@ function createAppParent(options = {}, mountFn = shallow) {
   const defaultGlobals = {
     backend: new Backend(),
     config: new Config(),
+    deployment: new Deployment(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     log: new Log(),
     plugins: new Plugins(),
     settings: new Settings(),
+    startInstance: new StartInstance(),
     systemClipboard: new SystemClipboard(),
     workspace: new Workspace(),
     zeebeAPI: new ZeebeAPI()

@@ -20,9 +20,9 @@ import EventEmitter from 'events';
 
 import { omit } from 'min-dash';
 
-import { generateId } from '../../../util';
+import { generateId } from '../util';
 
-import { AUTH_TYPES, TARGET_TYPES } from '../../../remote/ZeebeAPI';
+import { AUTH_TYPES, TARGET_TYPES } from './ZeebeAPI';
 
 export const CONFIG_KEYS = {
   CONFIG: 'zeebe-deployment-tool',

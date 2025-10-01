@@ -9,10 +9,12 @@
  */
 
 import Config from './Config';
+import Deployment from './Deployment';
 import Dialog from './Dialog';
 import FileSystem from './FileSystem';
 import Log from './Log';
 import Plugins from './Plugins';
+import StartInstance from './StartInstance';
 import SystemClipboard from './SystemClipboard';
 import Workspace from './Workspace';
 import ZeebeAPI from './ZeebeAPI';
@@ -41,6 +43,10 @@ export const systemClipboard = new SystemClipboard(backend);
 export const workspace = new Workspace(backend);
 
 export const zeebeAPI = new ZeebeAPI(backend);
+
+export const deployment = new Deployment(config, zeebeAPI);
+
+export const startInstance = new StartInstance(config, zeebeAPI);
 
 export {
   metadata,
