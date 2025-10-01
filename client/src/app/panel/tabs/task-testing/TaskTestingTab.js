@@ -18,8 +18,6 @@ import { Fill } from '../../../slot-fill';
 
 import { debounce } from '../../../../util';
 
-import ZeebeAPI from '../../../../remote/ZeebeAPI';
-
 import ConnectionChecker from '../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
 
 import TaskTestingStatusBarItem from './TaskTestingStatusBarItem';
@@ -50,18 +48,19 @@ const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/deskt
 
 export default function TaskTestingTab(props) {
   const {
-    backend,
     config,
+    deployment,
     injector,
     file,
     layout = {},
-    onAction
+    onAction,
+    startInstance,
+    zeebeApi
   } = props;
 
   const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
-  const { current: zeebeApi } = useRef(new ZeebeAPI(backend));
-  const { current: taskTestingApi } = useRef(new TaskTestingApi(zeebeApi, config, file, onAction));
+  const { current: taskTestingApi } = useRef(new TaskTestingApi(deployment, startInstance, zeebeApi, file, onAction));
   const { current: connectionChecker } = useRef(new ConnectionChecker(zeebeApi));
 
   const [ connectionCheckResult, setConnectionCheckResult ] = useState(false);

@@ -14,7 +14,8 @@ import classNames from 'classnames';
 
 import { Fill } from '../../../app/slot-fill';
 
-import { bootstrapDeployment } from '../shared/util';
+import ConnectionChecker from './ConnectionChecker';
+import DeploymentConfigValidator from './DeploymentConfigValidator';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
@@ -33,15 +34,7 @@ export default function DeploymentPlugin(props) {
   const [ activeTab, setActiveTab ] = useState(null);
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
-  const [ {
-    connectionChecker,
-    deployment,
-    deploymentConfigValidator
-  }, setDeploymentBootstrapped ] = useState({
-    connectionChecker: null,
-    deployment: null,
-    deploymentConfigValidator: null
-  });
+  const connectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI')));
 
   const anchorRef = useRef();
 
@@ -66,22 +59,10 @@ export default function DeploymentPlugin(props) {
   };
 
   useEffect(() => {
-    const {
-      connectionChecker,
-      deployment,
-      deploymentConfigValidator
-    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'));
-
-    setDeploymentBootstrapped({
-      connectionChecker,
-      deployment,
-      deploymentConfigValidator
-    });
-
     return () => {
-      connectionChecker.stopChecking();
+      connectionChecker.current.stopChecking();
     };
-  }, [ _getGlobal ]);
+  }, []);
 
   useEffect(() => {
     subscribe('app.activeTabChanged', ({ activeTab }) => {
@@ -95,7 +76,7 @@ export default function DeploymentPlugin(props) {
     });
   }, [ subscribe ]);
 
-  if (!activeTab || !connectionChecker || !deployment || !deploymentConfigValidator) {
+  if (!activeTab) {
     return null;
   }
 
@@ -123,9 +104,9 @@ export default function DeploymentPlugin(props) {
         _getFromApp={ _getFromApp }
         activeTab={ activeTab }
         anchor={ anchorRef.current }
-        connectionChecker={ connectionChecker }
-        deployment={ deployment }
-        deploymentConfigValidator={ deploymentConfigValidator }
+        connectionChecker={ connectionChecker.current }
+        deployment={ _getGlobal('deployment') }
+        deploymentConfigValidator={ DeploymentConfigValidator }
         displayNotification={ displayNotification }
         log={ log }
         onClose={ () => setOverlayOpen(false) }

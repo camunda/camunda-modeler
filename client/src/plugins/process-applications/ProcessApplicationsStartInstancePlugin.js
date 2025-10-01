@@ -14,15 +14,14 @@ import classNames from 'classnames';
 
 import { Fill } from '../../app/slot-fill';
 
+import ConnectionChecker from '../zeebe-plugin/deployment-plugin/ConnectionChecker';
+import DeploymentConfigValidator from '../zeebe-plugin/deployment-plugin/DeploymentConfigValidator';
+import StartInstanceConfigValidator from '../zeebe-plugin/start-instance-plugin/StartInstanceConfigValidator';
+
 import ProcessApplicationIcon from 'icons/file-types/ProcessApplication.svg';
 import StartInstanceIcon from 'icons/Play.svg';
 
 import StartInstancePluginOverlay from '../zeebe-plugin/start-instance-plugin/StartInstancePluginOverlay';
-
-import {
-  bootstrapDeployment,
-  bootstrapStartInstance
-} from '../zeebe-plugin/shared/util';
 
 import { getSuccessNotification } from './ProcessApplicationsStartInstanceNotifications';
 
@@ -39,19 +38,10 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
 
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
-  const [ {
-    connectionChecker,
-    deployment,
-    deploymentConfigValidator,
-    startInstance,
-    startInstanceConfigValidator
-  }, setDeploymentAndStartInstanceBootstrapped ] = useState({
-    connectionChecker: null,
-    deployment: null,
-    deploymentConfigValidator: null,
-    startInstance: null,
-    startInstanceConfigValidator: null
-  });
+  const connectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI')));
+
+  const deployment = _getGlobal('deployment');
+  const startInstance = _getGlobal('startInstance');
 
   const anchorRef = useRef();
 
@@ -75,29 +65,10 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
   };
 
   useEffect(() => {
-    const {
-      connectionChecker,
-      deployment,
-      deploymentConfigValidator
-    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'));
-
-    const {
-      startInstance,
-      startInstanceConfigValidator
-    } = bootstrapStartInstance(_getGlobal('backend'), _getGlobal('config'));
-
-    setDeploymentAndStartInstanceBootstrapped({
-      connectionChecker,
-      deployment,
-      deploymentConfigValidator,
-      startInstance,
-      startInstanceConfigValidator
-    });
-
     return () => {
-      connectionChecker.stopChecking();
+      connectionChecker.current.stopChecking();
     };
-  }, [ _getGlobal ]);
+  }, []);
 
   if (!processApplication) {
     return null;
@@ -133,9 +104,9 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
       <StartInstancePluginOverlay
         activeTab={ activeTab }
         anchor={ anchorRef.current }
-        connectionChecker={ connectionChecker }
+        connectionChecker={ connectionChecker.current }
         deployment={ deployment }
-        deploymentConfigValidator={ deploymentConfigValidator }
+        deploymentConfigValidator={ DeploymentConfigValidator }
         getConfigFile={ () => processApplication.file }
         getResourceConfigs={ () => resourceConfigs }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
@@ -150,7 +121,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
         renderStartInstanceHeader={ <><ProcessApplicationIcon width="16" height="16" />Start BPMN process instance</> }
         renderStartInstanceSubmit="Start BPMN process instance"
         startInstance={ startInstance }
-        startInstanceConfigValidator={ startInstanceConfigValidator }
+        startInstanceConfigValidator={ StartInstanceConfigValidator }
         triggerAction={ triggerAction }
       />
     ) }

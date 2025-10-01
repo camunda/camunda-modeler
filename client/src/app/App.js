@@ -2200,6 +2200,9 @@ export class App extends PureComponent {
                       settings={ this.getGlobal('settings') }
                       backend={ this.getGlobal('backend') }
                       config={ this.getGlobal('config') }
+                      deployment={ this.getGlobal('deployment') }
+                      startInstance={ this.getGlobal('startInstance') }
+                      zeebeApi={ this.getGlobal('zeebeAPI') }
                     />
                   }
                 </TabContainer>
