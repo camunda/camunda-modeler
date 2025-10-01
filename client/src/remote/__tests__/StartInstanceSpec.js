@@ -12,7 +12,7 @@
 
 import StartInstance, { CONFIG_KEYS } from '../StartInstance';
 
-import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
+import { TARGET_TYPES } from '../ZeebeAPI';
 
 describe('StartInstance', function() {
 

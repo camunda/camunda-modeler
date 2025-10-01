@@ -412,6 +412,9 @@ export class MultiSheetTab extends CachedComponent {
             settings={ this.props.settings }
             backend={ this.props.backend }
             config={ this.props.config }
+            deployment={ this.props.deployment }
+            startInstance={ this.props.startInstance }
+            zeebeApi={ this.props.zeebeApi }
           />
         </TabContainer>
 

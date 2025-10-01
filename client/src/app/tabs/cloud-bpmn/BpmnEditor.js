@@ -831,13 +831,15 @@ export class BpmnEditor extends CachedComponent {
         }
 
         <TaskTestingTab
-          backend={ this.props.backend }
           config={ this.props.config }
+          deployment={ this.props.deployment }
           file={ this.props.file }
           id={ this.props.id }
           injector={ injector }
           layout={ layout }
-          onAction={ onAction } />
+          onAction={ onAction }
+          startInstance={ this.props.startInstance }
+          zeebeApi={ this.props.zeebeApi } />
 
         <VariableTab
           id={ this.props.id }
