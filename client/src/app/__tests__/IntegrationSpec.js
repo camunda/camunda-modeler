@@ -18,10 +18,12 @@ import {
   Backend,
   Cache,
   Config,
+  Deployment,
   Dialog,
   FileSystem,
   Plugins,
   Settings,
+  StartInstance,
   SystemClipboard,
   Workspace,
   ZeebeAPI
@@ -158,10 +160,12 @@ function createApp(options = {}) {
   let globals = {
     backend: new Backend(),
     config: new Config(),
+    deployment: new Deployment(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),
     plugins: new Plugins(),
     settings: new Settings(),
+    startInstance: new StartInstance(),
     systemClipboard: new SystemClipboard(),
     workspace: new Workspace(),
     zeebeAPI: new ZeebeAPI()

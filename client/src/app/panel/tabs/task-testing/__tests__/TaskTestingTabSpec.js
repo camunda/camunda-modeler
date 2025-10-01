@@ -28,7 +28,7 @@ import TaskTestingTab, {
   UNSUPPORTED_PROTOCOL_TITLE
 } from '../TaskTestingTab';
 
-import { Backend, Config } from '../../../../__tests__/mocks';
+import { Config, Deployment, StartInstance, ZeebeAPI } from '../../../../__tests__/mocks';
 
 import { DELAYS } from '../../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
 
@@ -53,31 +53,18 @@ describe('<TaskTestingTab>', function() {
 
     // given
     const { modeler, renderResult } = await renderTab({
-      backend: new Backend({
-        send: async (channel, data) => {
-          if (channel === 'zeebe:checkConnection') {
-            return {
-              success: true,
-              response: {
-                protocol: 'rest',
-                gatewayVersion: '8.8.0'
-              }
-            };
-          }
+      zeebeApi: new ZeebeAPI({
+        checkConnection: async () => {
+          return {
+            success: true,
+            response: {
+              protocol: 'rest',
+              gatewayVersion: '8.8.0'
+            }
+          };
         }
       }),
       config: new Config({
-        get: async (key) => {
-          if (key === 'zeebeEndpoints') {
-            return [
-              {
-                id: 'foo',
-                targetType: 'camundaCloud',
-                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-              }
-            ];
-          }
-        },
         getForFile: async (file, key) => {
           if (key === 'taskTesting') {
             return {
@@ -85,16 +72,19 @@ describe('<TaskTestingTab>', function() {
               output: {}
             };
           }
-
-          if (key === 'zeebe-deployment-tool') {
-            return {
-              'zeebe-deployment-tool': {
-                endpointId: 'foo'
-              }
-            };
-          }
         }
       }),
+      deployment: new Deployment({
+        getConfigForFile: async () => {
+          return {
+            deployment: {},
+            endpoint: {
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+            }
+          };
+        }
+      })
     });
 
     const { container } = renderResult;
@@ -117,31 +107,18 @@ describe('<TaskTestingTab>', function() {
 
       // given
       const { modeler, renderResult } = await renderTab({
-        backend: new Backend({
-          send: async (channel, data) => {
-            if (channel === 'zeebe:checkConnection') {
-              return {
-                success: true,
-                response: {
-                  protocol: 'rest',
-                  gatewayVersion: '8.7.0'
-                }
-              };
-            }
+        zeebeApi: new ZeebeAPI({
+          checkConnection: async () => {
+            return {
+              success: true,
+              response: {
+                protocol: 'rest',
+                gatewayVersion: '8.7.0'
+              }
+            };
           }
         }),
         config: new Config({
-          get: async (key) => {
-            if (key === 'zeebeEndpoints') {
-              return [
-                {
-                  id: 'foo',
-                  targetType: 'camundaCloud',
-                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-                }
-              ];
-            }
-          },
           getForFile: async (file, key) => {
             if (key === 'taskTesting') {
               return {
@@ -149,14 +126,17 @@ describe('<TaskTestingTab>', function() {
                 output: {}
               };
             }
-
-            if (key === 'zeebe-deployment-tool') {
-              return {
-                'zeebe-deployment-tool': {
-                  endpointId: 'foo'
-                }
-              };
-            }
+          }
+        }),
+        deployment: new Deployment({
+          getConfigForFile: async () => {
+            return {
+              deployment: {},
+              endpoint: {
+                targetType: 'camundaCloud',
+                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+              }
+            };
           }
         })
       });
@@ -178,31 +158,18 @@ describe('<TaskTestingTab>', function() {
 
       // given
       const { modeler, renderResult } = await renderTab({
-        backend: new Backend({
-          send: async (channel, data) => {
-            if (channel === 'zeebe:checkConnection') {
-              return {
-                success: true,
-                response: {
-                  protocol: 'grpc',
-                  gatewayVersion: '8.8.0'
-                }
-              };
-            }
+        zeebeApi: new ZeebeAPI({
+          checkConnection: async () => {
+            return {
+              success: true,
+              response: {
+                protocol: 'grpc',
+                gatewayVersion: '8.8.0'
+              }
+            };
           }
         }),
         config: new Config({
-          get: async (key) => {
-            if (key === 'zeebeEndpoints') {
-              return [
-                {
-                  id: 'foo',
-                  targetType: 'camundaCloud',
-                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-                }
-              ];
-            }
-          },
           getForFile: async (file, key) => {
             if (key === 'taskTesting') {
               return {
@@ -210,14 +177,17 @@ describe('<TaskTestingTab>', function() {
                 output: {}
               };
             }
-
-            if (key === 'zeebe-deployment-tool') {
-              return {
-                'zeebe-deployment-tool': {
-                  endpointId: 'foo'
-                }
-              };
-            }
+          }
+        }),
+        deployment: new Deployment({
+          getConfigForFile: async () => {
+            return {
+              deployment: {},
+              endpoint: {
+                targetType: 'camundaCloud',
+                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+              }
+            };
           }
         })
       });
@@ -239,28 +209,15 @@ describe('<TaskTestingTab>', function() {
 
       // given
       const { modeler, renderResult } = await renderTab({
-        backend: new Backend({
-          send: async (channel, data) => {
-            if (channel === 'zeebe:checkConnection') {
-              return {
-                success: false,
-                reason: 'Foo'
-              };
-            }
+        zeebeApi: new ZeebeAPI({
+          checkConnection: async () => {
+            return {
+              success: false,
+              reason: 'Foo'
+            };
           }
         }),
         config: new Config({
-          get: async (key) => {
-            if (key === 'zeebeEndpoints') {
-              return [
-                {
-                  id: 'foo',
-                  targetType: 'camundaCloud',
-                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-                }
-              ];
-            }
-          },
           getForFile: async (file, key) => {
             if (key === 'taskTesting') {
               return {
@@ -268,14 +225,17 @@ describe('<TaskTestingTab>', function() {
                 output: {}
               };
             }
-
-            if (key === 'zeebe-deployment-tool') {
-              return {
-                'zeebe-deployment-tool': {
-                  endpointId: 'foo'
-                }
-              };
-            }
+          }
+        }),
+        deployment: new Deployment({
+          getConfigForFile: async () => {
+            return {
+              deployment: {},
+              endpoint: {
+                targetType: 'camundaCloud',
+                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+              }
+            };
           }
         })
       });
@@ -301,31 +261,18 @@ describe('<TaskTestingTab>', function() {
 
       // given
       const { modeler, renderResult } = await renderTab({
-        backend: new Backend({
-          send: async (channel, data) => {
-            if (channel === 'zeebe:checkConnection') {
-              return {
-                success: true,
-                response: {
-                  protocol: 'rest',
-                  gatewayVersion: '8.8.0'
-                }
-              };
-            }
+        zeebeApi: new ZeebeAPI({
+          checkConnection: async () => {
+            return {
+              success: true,
+              response: {
+                protocol: 'rest',
+                gatewayVersion: '8.8.0'
+              }
+            };
           }
         }),
         config: new Config({
-          get: async (key) => {
-            if (key === 'zeebeEndpoints') {
-              return [
-                {
-                  id: 'foo',
-                  targetType: 'camundaCloud',
-                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-                }
-              ];
-            }
-          },
           getForFile: async (file, key) => {
             if (key === 'taskTesting') {
               return {
@@ -341,16 +288,19 @@ describe('<TaskTestingTab>', function() {
                 }
               };
             }
-
-            if (key === 'zeebe-deployment-tool') {
-              return {
-                'zeebe-deployment-tool': {
-                  endpointId: 'foo'
-                }
-              };
-            }
           }
         }),
+        deployment: new Deployment({
+          getConfigForFile: async () => {
+            return {
+              deployment: {},
+              endpoint: {
+                targetType: 'camundaCloud',
+                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+              }
+            };
+          }
+        })
       });
 
       const { container } = renderResult;
@@ -371,28 +321,15 @@ describe('<TaskTestingTab>', function() {
 
       // given
       const { modeler, renderResult } = await renderTab({
-        backend: new Backend({
-          send: async (channel, data) => {
-            if (channel === 'zeebe:checkConnection') {
-              return {
-                success: false,
-                reason: 'Foo'
-              };
-            }
+        zeebeApi: new ZeebeAPI({
+          checkConnection: async () => {
+            return {
+              success: false,
+              reason: 'Foo'
+            };
           }
         }),
         config: new Config({
-          get: async (key) => {
-            if (key === 'zeebeEndpoints') {
-              return [
-                {
-                  id: 'foo',
-                  targetType: 'camundaCloud',
-                  camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-                }
-              ];
-            }
-          },
           getForFile: async (file, key) => {
             if (key === 'taskTesting') {
               return {
@@ -408,16 +345,19 @@ describe('<TaskTestingTab>', function() {
                 }
               };
             }
-
-            if (key === 'zeebe-deployment-tool') {
-              return {
-                'zeebe-deployment-tool': {
-                  endpointId: 'foo'
-                }
-              };
-            }
           }
         }),
+        deployment: new Deployment({
+          getConfigForFile: async () => {
+            return {
+              deployment: {},
+              endpoint: {
+                targetType: 'camundaCloud',
+                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+              }
+            };
+          }
+        })
       });
 
       const { container } = renderResult;
@@ -457,8 +397,10 @@ async function renderTab(options = {}) {
   await modeler.importXML(diagramXML);
 
   const {
-    backend = new Backend(),
     config = new Config(),
+    deployment = new Deployment(),
+    startInstance = new StartInstance(),
+    zeebeApi = new ZeebeAPI(),
     injector = modeler.get('injector'),
     file = {
       path: 'foo.bpmn'
@@ -472,10 +414,12 @@ async function renderTab(options = {}) {
       <Panel
         layout={ layout }>
         <TaskTestingTab
+          deployment={ deployment }
+          startInstance={ startInstance }
+          zeebeApi={ zeebeApi }
           layout={ layout }
           injector={ injector }
           file={ file }
-          backend={ backend }
           config={ config }
           onAction={ onAction } />
       </Panel>

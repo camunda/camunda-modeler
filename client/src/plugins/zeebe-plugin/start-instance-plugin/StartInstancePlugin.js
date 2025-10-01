@@ -14,7 +14,9 @@ import classNames from 'classnames';
 
 import { Fill } from '../../../app/slot-fill';
 
-import { bootstrapDeployment, bootstrapStartInstance } from '../shared/util';
+import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
+import DeploymentConfigValidator from '../deployment-plugin/DeploymentConfigValidator';
+import StartInstanceConfigValidator from './StartInstanceConfigValidator';
 
 import StartInstancePluginOverlay from './StartInstancePluginOverlay';
 
@@ -34,19 +36,7 @@ export default function StartInstancePlugin(props) {
   const [ activeTab, setActiveTab ] = useState(null);
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
-  const [ {
-    connectionChecker,
-    deployment,
-    deploymentConfigValidator,
-    startInstance,
-    startInstanceConfigValidator
-  }, setDeploymentAndStartInstanceBootstrapped ] = useState({
-    connectionChecker: null,
-    deployment: null,
-    deploymentConfigValidator: null,
-    startInstance: null,
-    startInstanceConfigValidator: null
-  });
+  const connectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI')));
 
   const anchorRef = useRef();
 
@@ -67,29 +57,10 @@ export default function StartInstancePlugin(props) {
   };
 
   useEffect(() => {
-    const {
-      connectionChecker,
-      deployment,
-      deploymentConfigValidator
-    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'));
-
-    const {
-      startInstance,
-      startInstanceConfigValidator
-    } = bootstrapStartInstance(_getGlobal('backend'), _getGlobal('config'));
-
-    setDeploymentAndStartInstanceBootstrapped({
-      connectionChecker,
-      deployment,
-      deploymentConfigValidator,
-      startInstance,
-      startInstanceConfigValidator
-    });
-
     return () => {
-      connectionChecker.stopChecking();
+      connectionChecker.current.stopChecking();
     };
-  }, [ _getGlobal ]);
+  }, []);
 
   useEffect(() => {
     subscribe('app.activeTabChanged', ({ activeTab }) => {
@@ -99,7 +70,7 @@ export default function StartInstancePlugin(props) {
     });
   }, [ subscribe ]);
 
-  if (!activeTab || !connectionChecker || !deployment || !deploymentConfigValidator || !startInstance) {
+  if (!activeTab) {
     return null;
   }
 
@@ -121,9 +92,9 @@ export default function StartInstancePlugin(props) {
         _getFromApp={ _getFromApp }
         activeTab={ activeTab }
         anchor={ anchorRef.current }
-        connectionChecker={ connectionChecker }
-        deployment={ deployment }
-        deploymentConfigValidator={ deploymentConfigValidator }
+        connectionChecker={ connectionChecker.current }
+        deployment={ _getGlobal('deployment') }
+        deploymentConfigValidator={ DeploymentConfigValidator }
         displayNotification={ displayNotification }
         log={ log }
         onClose={ () => setOverlayOpen(false) }
@@ -131,8 +102,8 @@ export default function StartInstancePlugin(props) {
         renderDeploymentSubmit="Go to start instance"
         renderStartInstanceHeader={ <><BPMNIcon width="16" height="16" />Start BPMN process instance</> }
         renderStartInstanceSubmit="Start BPMN process instance"
-        startInstance={ startInstance }
-        startInstanceConfigValidator={ startInstanceConfigValidator }
+        startInstance={ _getGlobal('startInstance') }
+        startInstanceConfigValidator={ StartInstanceConfigValidator }
         triggerAction={ triggerAction }
       />
     ) }

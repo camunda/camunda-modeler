@@ -10,18 +10,15 @@
 
 import debug from 'debug';
 
-import Deployment from '../../../../plugins/zeebe-plugin/deployment-plugin/Deployment';
-import StartInstance from '../../../../plugins/zeebe-plugin/start-instance-plugin/StartInstance';
-
 import { getOperateUrl } from '../../../../plugins/zeebe-plugin/shared/util';
 
 const log = debug('TaskTestingApi');
 
 export default class TaskTestingApi {
-  constructor(zeebeApi, config, file, onAction) {
+  constructor(deployment, startInstance, zeebeApi, file, onAction) {
+    this._deployment = deployment;
+    this._startInstance = startInstance;
     this._zeebeApi = zeebeApi;
-    this._deployment = new Deployment(config, zeebeApi);
-    this._startInstance = new StartInstance(config, zeebeApi);
     this._onAction = onAction;
     this._file = file;
   }
