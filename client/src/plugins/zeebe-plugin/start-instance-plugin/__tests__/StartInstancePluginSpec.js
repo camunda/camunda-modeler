@@ -19,6 +19,9 @@ import { mount } from 'enzyme';
 import StartInstancePlugin from '../StartInstancePlugin';
 
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
+import { DEFAULT_ENDPOINT } from '../../../../remote/Deployment';
+
+import { Deployment, StartInstance, ZeebeAPI } from '../../../../app/__tests__/mocks';
 
 describe('StartInstancePlugin', function() {
 
@@ -180,7 +183,26 @@ const DEFAULT_GET_FROM_APP = (key) => {
 function createStartInstancePlugin(props = {}) {
   const {
     _getFromApp = DEFAULT_GET_FROM_APP,
-    _getGlobal = () => {},
+    _getGlobal = (name) => {
+      if (name === 'deployment') {
+        return new Deployment({
+          async getConfigForFile(file) {
+            return {
+              deployment: {},
+              endpoint: DEFAULT_ENDPOINT
+            };
+          }
+        });
+      } else if (name === 'startInstance') {
+        return new StartInstance({
+          async getConfigForFile(file) {
+            return {};
+          }
+        });
+      } else if (name === 'zeebeAPI') {
+        return new ZeebeAPI();
+      }
+    },
     displayNotification = () => {},
     log = () => {},
     subscribe = () => {},

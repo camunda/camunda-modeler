@@ -602,6 +602,20 @@ export class SystemClipboard extends Mock {
   }
 }
 
+export class Deployment extends Mock {
+  getConfigForFile() {}
+
+  on() {}
+
+  off() {}
+
+  registerResourcesProvider() {}
+
+  unregisterResourcesProvider() {}
+}
+
+export class StartInstance extends Mock {}
+
 function without(arr, toRemove) {
   return arr.filter(item => item !== toRemove);
 }
