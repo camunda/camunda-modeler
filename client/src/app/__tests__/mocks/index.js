@@ -608,6 +608,10 @@ export class Deployment extends Mock {
   on() {}
 
   off() {}
+
+  registerResourcesProvider() {}
+
+  unregisterResourcesProvider() {}
 }
 
 export class StartInstance extends Mock {}

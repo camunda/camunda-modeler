@@ -62,16 +62,6 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     setOverlayOpen(true);
   };
 
-  useEffect(() => {
-    return () => {
-      connectionChecker.current.stopChecking();
-    };
-  }, []);
-
-  if (!processApplication) {
-    return null;
-  }
-
   const resourceConfigs = processApplicationItems.filter(canDeployItem).map((item) => {
     const { file, metadata } = item;
 
@@ -84,6 +74,28 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
       type
     };
   });
+
+  useEffect(() => {
+    return () => {
+      connectionChecker.current.stopChecking();
+    };
+  }, []);
+
+  useEffect(() => {
+    const getResourceConfigs = () => {
+
+      // return process application resource configs instead of original ones
+      return resourceConfigs;
+    };
+
+    deployment.registerResourcesProvider(getResourceConfigs);
+
+    return () => deployment.unregisterResourcesProvider(getResourceConfigs);
+  }, [ processApplicationItems ]);
+
+  if (!processApplication) {
+    return null;
+  }
 
   return <>
     { canDeployTab(activeTab) && (
@@ -106,7 +118,6 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
         deployment={ deployment }
         deploymentConfigValidator={ DeploymentConfigValidator }
         getConfigFile={ () => processApplication.file }
-        getResourceConfigs={ () => resourceConfigs }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
         log={ log }
         onClose={ () => setOverlayOpen(false) }
