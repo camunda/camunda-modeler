@@ -15,16 +15,16 @@ import React from 'react';
 import TestContainer from 'mocha-test-container-support';
 
 import {
-  mount
-} from 'enzyme';
+  fireEvent,
+  render
+} from '@testing-library/react';
 
 import { Overlay } from '..';
 
 
 describe('<Overlay>', function() {
 
-  let wrapper, anchor;
-
+  let anchor;
 
   beforeEach(function() {
     anchor = document.createElement('button');
@@ -35,33 +35,25 @@ describe('<Overlay>', function() {
     testContainer.appendChild(anchor);
   });
 
-
-  afterEach(function() {
-    if (wrapper && wrapper.exists()) {
-      wrapper.unmount();
-    }
-  });
-
-
   it('should render', function() {
-    wrapper = mount(<Overlay anchor={ anchor } />);
+    render(<Overlay anchor={ anchor } />);
   });
 
 
-  it('should render children', function() {
-    const wrapper = mount((
+  it('should render children', async function() {
+    const { findByTestId } = render((
       <Overlay anchor={ anchor }>
-        <Overlay.Title><div>{ 'Foo' }</div></Overlay.Title>
+        <Overlay.Title><div data-testid="title">Foo</div></Overlay.Title>
         <Overlay.Body>
-          <div>
-            { 'Test' }
+          <div data-testid="body">
+            Test
           </div>
         </Overlay.Body>
       </Overlay>
     ));
 
-    expect(wrapper.contains(<div>{ 'Foo' }</div>)).to.be.true;
-    expect(wrapper.contains(<div>{ 'Test' }</div>)).to.be.true;
+    expect(await findByTestId('title')).to.exist;
+    expect(await findByTestId('body')).to.exist;
   });
 
 
@@ -70,30 +62,31 @@ describe('<Overlay>', function() {
     it('should allow to pass custom class', function() {
 
       // when
-      wrapper = mount(<Overlay anchor={ anchor } className="custom" />);
+      render(<Overlay anchor={ anchor } className="custom" />);
 
       // then
-      expect(wrapper.exists('.custom'), 'Class is not set').to.be.true;
+      expect(document.querySelector('.custom'), 'Class is not set').to.exist;
     });
 
 
     it('should allow to pass custom id', function() {
 
       // when
-      wrapper = mount(<Overlay anchor={ anchor } id="custom" />);
+      render(<Overlay anchor={ anchor } data-testid="custom" id="custom" />);
 
       // then
-      expect(wrapper.exists('#custom'), 'Id is not set').to.be.true;
+      expect(document.querySelector('#custom'), 'Id is not set').to.exist;
     });
 
 
     it('should NOT set id if not provided', function() {
 
       // when
-      wrapper = mount(<Overlay anchor={ anchor } />);
+      render(<Overlay anchor={ anchor } />);
 
       // then
-      expect(wrapper.getDOMNode().id).to.eql('');
+      const overlay = document.body.querySelector('[role="dialog"]');
+      expect(overlay.id).to.eql('');
     });
   });
 
@@ -115,7 +108,7 @@ describe('<Overlay>', function() {
         minWidth
       } = props;
 
-      return mount(
+      return render(
         <Overlay
           className="test"
           anchor={ anchor }
@@ -128,28 +121,27 @@ describe('<Overlay>', function() {
 
     describe(`props#${property}`, function() {
 
-      it(`should specify string (${property}="100vh")`, function() {
+      it(`should specify string (${property}="100vh")`, async function() {
 
         // when
-        wrapper = createOverlay({ [property]: '100vh' });
+        createOverlay({ [property]: '100vh' });
 
         // then
-        expectStyle(wrapper, {
-          [cssProperty]: '100vh'
-        });
-
+        const overlay = document.body.querySelector('[role="dialog"]');
+        const computedStyle = window.getComputedStyle(overlay);
+        expect(computedStyle.getPropertyValue(cssProperty)).to.equal('100vh');
       });
 
 
-      it(`should specify (pixel) number (${property}=100)`, function() {
+      it(`should specify (pixel) number (${property}=100)`, async function() {
 
         // when
-        wrapper = createOverlay({ [property]: 100 });
+        createOverlay({ [property]: 100 });
 
         // then
-        expectStyle(wrapper, {
-          [cssProperty]: '100px'
-        });
+        const overlay = document.body.querySelector('[role="dialog"]');
+        const computedStyle = window.getComputedStyle(overlay);
+        expect(computedStyle.getPropertyValue(cssProperty)).to.equal('100px');
 
       });
 
@@ -168,10 +160,10 @@ describe('<Overlay>', function() {
       };
 
       // when
-      wrapper = mount(<Overlay anchor={ anchor } offset={ offset } />);
+      render(<Overlay anchor={ anchor } offset={ offset } />);
 
       // then
-      const overlay = wrapper.getDOMNode();
+      const overlay = document.body.querySelector('[role="dialog"]');
 
       expect(boundingRect(overlay).left).to.be.closeTo(boundingRect(anchor).left + offset.left, 5);
     });
@@ -185,14 +177,14 @@ describe('<Overlay>', function() {
       };
 
       // when
-      wrapper = mount(
+      render(
         <Overlay anchor={ anchor } offset={ offset }>
           Content
         </Overlay>
       );
 
       // then
-      const overlay = wrapper.getDOMNode();
+      const overlay = document.body.querySelector('[role="dialog"]');
       const overlayRect = boundingRect(overlay);
       const anchorRect = boundingRect(anchor);
 
@@ -214,7 +206,7 @@ describe('<Overlay>', function() {
     it('should call onClose for background click', function() {
 
       // given
-      wrapper = mount(<Overlay anchor={ anchor } onClose={ onCloseSpy } />);
+      render(<Overlay anchor={ anchor } onClose={ onCloseSpy } />);
 
       // when
       TestContainer.get(this).dispatchEvent(new MouseEvent('mousedown'));
@@ -224,17 +216,17 @@ describe('<Overlay>', function() {
     });
 
 
-    it('should NOT call onClose for click inside the overlay', function() {
+    it('should NOT call onClose for click inside the overlay', async function() {
 
       // given
-      wrapper = mount(<Overlay anchor={ anchor } onClose={ onCloseSpy }>
+      const { findByTestId } = render(<Overlay anchor={ anchor } onClose={ onCloseSpy }>
         <Overlay.Body>
-          <button id="button" />
+          <button data-testid="button">Click me</button>
         </Overlay.Body>
       </Overlay>);
 
       // when
-      wrapper.find('#button').simulate('click');
+      fireEvent.click(await findByTestId('button'));
 
       // then
       expect(onCloseSpy).to.not.be.called;
@@ -244,9 +236,9 @@ describe('<Overlay>', function() {
     it('should NOT call onClose for clicking the anchor', function() {
 
       // given
-      wrapper = mount(<Overlay anchor={ anchor } onClose={ onCloseSpy }>
+      render(<Overlay anchor={ anchor } onClose={ onCloseSpy }>
         <Overlay.Body>
-          <button id="button" />
+          <button id="button">Click me</button>
         </Overlay.Body>
       </Overlay>);
 
@@ -262,25 +254,16 @@ describe('<Overlay>', function() {
 
   describe('focus handling', function() {
 
-    let wrapper;
-
-    afterEach(function() {
-      if (wrapper) {
-        wrapper.unmount();
-      }
-    });
-
-
-    it('should correctly handle autofocus', function() {
+    it('should correctly handle autofocus', async function() {
 
       // given
-      wrapper = mount(<Overlay anchor={ anchor }>
+      const { findByTestId } = render(<Overlay anchor={ anchor }>
         <Overlay.Body>
-          <input id="input" autoFocus />
+          <input data-testid="input" autoFocus />
         </Overlay.Body>
       </Overlay>);
 
-      const input = wrapper.find('#input').getDOMNode();
+      const input = await findByTestId('input');
 
       // then
       expect(document.activeElement).to.eql(input);
@@ -293,22 +276,22 @@ describe('<Overlay>', function() {
   describe('<Overlay.Title>', function() {
 
     it('should render', function() {
-      wrapper = mount(<Overlay.Title />);
+      render(<Overlay.Title />);
     });
 
 
-    it('should render with custom props', function() {
+    it('should render with custom props', async function() {
 
       // given
       const onClickSpy = sinon.spy();
 
       // when
-      wrapper = mount(<Overlay.Title className="foo" onClick={ onClickSpy } />);
+      const { findByTestId } = render(<Overlay.Title className="foo" data-testid="title" onClick={ onClickSpy } />);
 
-      wrapper.simulate('click');
+      fireEvent.click(await findByTestId('title'));
 
       // then
-      expect(wrapper.getDOMNode().classList.contains('foo')).to.be.true;
+      expect(document.body.querySelector('.foo')).to.exist;
       expect(onClickSpy).to.have.been.called;
     });
 
@@ -318,22 +301,22 @@ describe('<Overlay>', function() {
   describe('<Overlay.Body>', function() {
 
     it('should render', function() {
-      wrapper = mount(<Overlay.Body />);
+      render(<Overlay.Body />);
     });
 
 
-    it('should render with custom props', function() {
+    it('should render with custom props', async function() {
 
       // given
       const onClickSpy = sinon.spy();
 
       // when
-      wrapper = mount(<Overlay.Body className="foo" onClick={ onClickSpy } />);
+      const { findByTestId } = render(<Overlay.Body className="foo" data-testid="body" onClick={ onClickSpy } />);
 
-      wrapper.simulate('click');
+      fireEvent.click(await findByTestId('body'));
 
       // then
-      expect(wrapper.getDOMNode().classList.contains('foo')).to.be.true;
+      expect(document.body.querySelector('.foo')).to.exist;
       expect(onClickSpy).to.have.been.called;
     });
 
@@ -343,22 +326,22 @@ describe('<Overlay>', function() {
   describe('<Overlay.Footer>', function() {
 
     it('should render', function() {
-      wrapper = mount(<Overlay.Footer />);
+      render(<Overlay.Footer />);
     });
 
 
-    it('should render with custom props', function() {
+    it('should render with custom props', async function() {
 
       // given
       const onClickSpy = sinon.spy();
 
       // when
-      wrapper = mount(<Overlay.Footer className="foo" onClick={ onClickSpy } />);
+      const { findByTestId } = render(<Overlay.Footer className="foo" data-testid="footer" onClick={ onClickSpy } />);
 
-      wrapper.simulate('click');
+      fireEvent.click(await findByTestId('footer'));
 
       // then
-      expect(wrapper.getDOMNode().classList.contains('foo')).to.be.true;
+      expect(document.body.querySelector('.foo')).to.exist;
       expect(onClickSpy).to.have.been.called;
     });
 
@@ -371,10 +354,6 @@ describe('<Overlay>', function() {
 
 function boundingRect(domNode) {
   return domNode.getBoundingClientRect();
-}
-
-function expectStyle(wrapper, expectedStyle) {
-  expect(wrapper.find('.test[style]').prop('style')).to.include(expectedStyle);
 }
 
 function camelCaseToDash(str) {
