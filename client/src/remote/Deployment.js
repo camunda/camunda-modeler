@@ -61,6 +61,8 @@ export default class Deployment extends EventEmitter {
 
     this._config = config;
     this._zeebeAPI = zeebeAPI;
+
+    this._resourcesProviders = [];
   }
 
   /**
@@ -89,6 +91,11 @@ export default class Deployment extends EventEmitter {
    */
   async deploy(resourceConfigs, config) {
     resourceConfigs = Array.isArray(resourceConfigs) ? resourceConfigs : [ resourceConfigs ];
+
+    // allow to add or remove resource configs through resources providers
+    resourceConfigs = this._resourcesProviders.reduce((configs, getResourceConfigs) => {
+      return getResourceConfigs(configs);
+    }, resourceConfigs);
 
     const {
       context,
@@ -274,6 +281,32 @@ export default class Deployment extends EventEmitter {
     const { gatewayVersion } = response;
 
     return gatewayVersion;
+  }
+
+  /**
+   * Register a resources provider.
+   *
+   * A resources provider is a function that receives an array of ResourceConfig objects
+   * and returns a (possibly modified) array of ResourceConfig objects.
+   *
+   * Signature: (configs: ResourceConfig[]) => ResourceConfig[]
+   *
+   * Providers are applied in the order they are registered during deploy().
+   * The return value of each provider must be an array.
+   *
+   * @param {(configs: ResourceConfig[]) => ResourceConfig[]} provider
+   */
+  registerResourcesProvider(provider) {
+    this._resourcesProviders.push(provider);
+  }
+
+  /**
+   * Unregister a previously registered resources provider.
+   *
+   * @param {(configs: ResourceConfig[]) => ResourceConfig[]} provider
+   */
+  unregisterResourcesProvider(provider) {
+    this._resourcesProviders = this._resourcesProviders.filter(p => p !== provider);
   }
 }
 
