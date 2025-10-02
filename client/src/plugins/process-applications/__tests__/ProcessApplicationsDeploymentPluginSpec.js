@@ -204,6 +204,51 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
       ]);
     });
   });
+
+
+  it('should register resources provider', async function() {
+
+    // given
+    const registerResourcesProvider = sinon.spy();
+    const unregisterResourcesProvider = sinon.spy();
+
+    const getGlobal = (name) => {
+      if (name === 'deployment') {
+        return new Deployment({
+          async getConfigForFile(file) {
+            return {
+              deployment: {},
+              endpoint: DEFAULT_ENDPOINT
+            };
+          },
+          registerResourcesProvider,
+          unregisterResourcesProvider
+        });
+      } else if (name === 'zeebeAPI') {
+        return new ZeebeAPI();
+      }
+    };
+
+    // when
+    const wrapper = createProcessApplicationsDeploymentPlugin({
+      _getGlobal: getGlobal,
+      processApplication: DEFAULT_PROCESS_APPLICATION
+    });
+
+    // then
+    await waitFor(() => {
+      expect(registerResourcesProvider).to.have.been.calledOnce;
+    });
+
+    // when
+    wrapper.unmount();
+
+    // then
+    await waitFor(() => {
+      expect(unregisterResourcesProvider).to.have.been.calledOnce;
+    });
+  });
+
 });
 
 const DEFAULT_PROCESS_APPLICATION = {
@@ -265,7 +310,9 @@ function createProcessApplicationsDeploymentPlugin(props = {}) {
               deployment: {},
               endpoint: DEFAULT_ENDPOINT
             };
-          }
+          },
+          registerResourcesProvider() {},
+          unregisterResourcesProvider() {}
         });
       } else if (name === 'zeebeAPI') {
         return new ZeebeAPI();
