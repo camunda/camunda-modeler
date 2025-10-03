@@ -20,10 +20,10 @@ import { debounce } from '../../../../util';
 
 import ZeebeAPI from '../../../../remote/ZeebeAPI';
 
-import ConnectionChecker from '../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
-
 import TaskTestingStatusBarItem from './TaskTestingStatusBarItem';
 import TaskTestingApi from './TaskTestingApi';
+
+import { useConnectionChecker } from './hooks/useConnectionChecker';
 
 import * as css from './TaskTestingTab.less';
 
@@ -62,33 +62,21 @@ export default function TaskTestingTab(props) {
 
   const { current: zeebeApi } = useRef(new ZeebeAPI(backend));
   const { current: taskTestingApi } = useRef(new TaskTestingApi(zeebeApi, config, file, onAction));
-  const { current: connectionChecker } = useRef(new ConnectionChecker(zeebeApi));
 
-  const [ connectionCheckResult, setConnectionCheckResult ] = useState(false);
+  const [ deployConfig, setDeployConfig ] = useState(null);
+  const { connectionSuccess, connectionError } = useConnectionChecker(zeebeApi, deployConfig);
 
   const [ operateUrl, setOperateUrl ] = useState(null);
 
   useEffect(() => {
-    if (connectionCheckResult) {
+    if (connectionSuccess) {
       taskTestingApi.getOperateUrl().then(setOperateUrl);
     }
-  }, [ connectionCheckResult, taskTestingApi ]);
+  }, [ connectionSuccess, taskTestingApi ]);
 
-  const onConnectionCheck = async ({ success, response }) => {
-
-    // file is not saved
-    if (!file?.path) {
-      return;
-    }
-
-    const config = await taskTestingApi.getDeploymentConfig();
-
-    connectionChecker.updateConfig(config);
-
-    setConnectionCheckResult({ success, response });
-  };
-
-  useConnectionChecker(connectionChecker, onConnectionCheck);
+  useEffect(() => {
+    taskTestingApi.getDeploymentConfig().then(setDeployConfig);
+  }, [ taskTestingApi ]);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -161,6 +149,10 @@ export default function TaskTestingTab(props) {
   const api = useMemo(() => {
     return taskTestingApi.getApi();
   }, [ ]);
+
+  const connectionCheckResult = {
+    success: connectionSuccess,
+    response: connectionError
   };
 
   const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult);
@@ -217,18 +209,6 @@ function getConfigureConnectionBannerDescription(connectionCheckResult) {
     return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION;
   }
   return null;
-}
-
-function useConnectionChecker(connectionChecker, onConnectionCheck) {
-  useEffect(() => {
-    connectionChecker.on('connectionCheck', onConnectionCheck);
-    connectionChecker.startChecking();
-
-    return () => {
-      connectionChecker.stopChecking();
-      connectionChecker.off('connectionCheck', onConnectionCheck);
-    };
-  }, [ connectionChecker ]);
 }
 
 function canConnectToCluster(connectionCheckResult) {
