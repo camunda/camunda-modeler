@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
 import semver from 'semver';
 
@@ -128,16 +128,16 @@ export default function TaskTestingTab(props) {
     }
   };
 
-  const handleTaskExecutionStarted = (element) => {
+  const handleTaskExecutionStarted = useCallback((element) => {
     onAction('emit-event', {
       type: 'taskTesting.started',
       payload: {
         element
       }
     });
-  };
+  }, [ onAction ]);
 
-  const handleTaskExecutionFinished = (element, output) => {
+  const handleTaskExecutionFinished = useCallback((element, output) => {
     onAction('emit-event', {
       type: 'taskTesting.finished',
       payload: {
@@ -145,17 +145,22 @@ export default function TaskTestingTab(props) {
         output
       }
     });
-  };
+  }, [ onAction ]);
 
-  const handleTaskExecutionInterrupted = () => {
+  const handleTaskExecutionInterrupted = useCallback(() => {
     onAction('display-notification', {
       type: 'warning',
       title: 'Task testing canceled',
     });
-  };
+  }, [ onAction ]);
 
-  const handleConfigureConnection = () => {
+  const handleConfigureConnection = useCallback(() => {
     onAction('open-deployment');
+  }, [ onAction ]);
+
+  const api = useMemo(() => {
+    return taskTestingApi.getApi();
+  }, [ ]);
   };
 
   const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult);
@@ -180,7 +185,7 @@ export default function TaskTestingTab(props) {
           onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
           configureConnectionBannerTitle={ configureConnectionBannerTitle }
           configureConnectionBannerDescription={ configureConnectionBannerDescription }
-          api={ taskTestingApi.getApi() }
+          api={ api }
           documentationUrl={ DOCUMENTATION_URL }
         />
       </div>
