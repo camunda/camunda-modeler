@@ -48,7 +48,7 @@ export default class TaskTestingApi {
     const { endpoint } = await this.getDeploymentConfig();
 
     if (endpoint.targetType === 'camundaCloud') {
-      const { href } = getOperateUrl(endpoint);
+      const { href } = getOperateUrl(endpoint) || {};
       return href;
     }
 
