@@ -13,6 +13,10 @@
  */
 
 /**
+ * @typedef {import('@camunda8/sdk/dist/zeebe/types').DeployResourceResponse} GrpcDeployResourceResponse
+ */
+
+/**
  * @typedef CamundaResource
  * @property {string} content
  * @property {string} name
@@ -117,7 +121,7 @@ class ZeebeAPI {
    *
    * @param {DeploymentConfig} config
    *
-   * @returns {Promise<{ success: boolean, response: object }>}
+   * @returns {Promise<{ success: boolean, response: GrpcDeployResourceResponse | { message: string, code?: any, details?: any }}>}
    */
   async deploy(config) {
     const {
@@ -169,13 +173,15 @@ class ZeebeAPI {
           success: true,
           response: {
             ...response,
+            key: response.deploymentKey,
             deployments: response.deployments.map(deployment=>{
               if (deployment.processDefinition) {
                 return {
                   ...deployment,
                   process: {
                     ...deployment.processDefinition,
-                    bpmnProcessId: deployment.processDefinition.processDefinitionId
+                    bpmnProcessId: deployment.processDefinition.processDefinitionId,
+                    version: deployment.processDefinition.processDefinitionVersion
                   }
                 };
               }
@@ -184,14 +190,35 @@ class ZeebeAPI {
                   ...deployment,
                   decision: {
                     ...deployment.decisionDefinition,
-                    decisionId: deployment.decisionDefinition.decisionDefinitionId
+                    decisionId: deployment.decisionDefinition.decisionDefinitionId,
+                    dmnDecisionId: deployment.decisionDefinition.decisionDefinitionId,
+                    dmnDecisionName: deployment.decisionDefinition.name,
+                    dmnDecisionRequirementsId: deployment.decisionDefinition.decisionRequirementsId,
+                    decisionKey: deployment.decisionDefinition.decisionDefinitionKey,
                   }
                 };
               }
+              if (deployment.decisionRequirements) {
+                return {
+                  ...deployment,
+                  decisionRequirements: {
+                    ...deployment.decisionRequirements,
+                    dmnDecisionRequirementsId: deployment.decisionRequirements.decisionRequirementsId,
+                    dmnDecisionRequirementsName: deployment.decisionRequirements.decisionRequirementsName
+                  }
+                };
+              }
+              return deployment;
             })
           }
         };
       }
+      return {
+        success: false,
+        response: {
+          message: 'No client available for deployment'
+        }
+      };
     } catch (err) {
       this._log.error('deploy failed', sanitizeConfigWithEndpoint(config), err);
 

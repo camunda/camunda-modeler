@@ -738,6 +738,134 @@ describe('ZeebeAPI (REST)', function() {
         expect(result.response.deployments[0].decision).to.exist;
         expect(result.response.deployments[0].decision).to.have.property('decisionId', 'decisionId');
       });
+
+
+      it('should map response to include all values from a grpc response', async function() {
+
+        // given
+        const restDeploymentResponse = {
+          'deploymentKey': '999',
+          'deployments': [
+            {
+              'processDefinition': {
+                'processDefinitionId': 'Process_1',
+                'processDefinitionKey': '111',
+                'processDefinitionVersion': 1,
+                'resourceName': 'diagram_1.bpmn',
+                'tenantId': '<default>'
+              }
+            },
+            {
+              'decisionDefinition': {
+                'decisionDefinitionId': 'Decision_2',
+                'decisionDefinitionKey': '222',
+                'decisionRequirementsId': 'Definitions_3',
+                'decisionRequirementsKey': '333',
+                'name': 'Decision 2',
+                'tenantId': '<default>',
+                'version': 1
+              }
+            },
+            {
+              'decisionRequirements': {
+                'decisionRequirementsId': 'Definitions_3',
+                'decisionRequirementsKey': '333',
+                'decisionRequirementsName': 'DRD',
+                'resourceName': 'diagram_2.dmn',
+                'tenantId': '<default>',
+                'version': 1
+              }
+            },
+            {
+              'form': {
+                'formId': 'Form_4',
+                'formKey': '444',
+                'resourceName': 'form_4.form',
+                'tenantId': '<default>',
+                'version': 1
+              }
+            }
+          ],
+          'tenantId': '<default>'
+        };
+
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            deployResources: () => restDeploymentResponse
+          }
+        });
+
+        // when
+        const result = await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'diagram_1.bpmn',
+              type: 'bpmn'
+            },
+            {
+              path: 'diagram_2.dmn',
+              type: 'dmn'
+            },
+            {
+              path: 'form_4.form',
+              type: 'form'
+            }
+          ]
+        });
+
+        // then
+        const grpcDeploymentResponse = {
+          'deployments': [
+            {
+              'process': {
+                'bpmnProcessId': 'Process_1',
+                'processDefinitionKey': '111',
+                'resourceName': 'diagram_1.bpmn',
+                'tenantId': '<default>',
+                'version': 1
+              }
+            },
+            {
+              'decision': {
+                'decisionKey': '222',
+                'decisionRequirementsKey': '333',
+                'dmnDecisionId': 'Decision_2',
+                'dmnDecisionName': 'Decision 2',
+                'dmnDecisionRequirementsId': 'Definitions_3',
+                'tenantId': '<default>',
+                'version': 1
+              }
+            },
+            {
+              'decisionRequirements': {
+                'decisionRequirementsKey': '333',
+                'dmnDecisionRequirementsId': 'Definitions_3',
+                'dmnDecisionRequirementsName': 'DRD',
+                'resourceName': 'diagram_2.dmn',
+                'tenantId': '<default>',
+                'version': 1
+              }
+            },
+            {
+              'form': {
+                'formId': 'Form_4',
+                'formKey': '444',
+                'resourceName': 'form_4.form',
+                'tenantId': '<default>',
+                'version': 1
+              }
+            },
+          ],
+          'key': '999',
+          'tenantId': '<default>'
+        };
+
+        expect((result.response)).to.containSubset(grpcDeploymentResponse);
+      });
     });
 
 
