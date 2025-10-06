@@ -49,6 +49,7 @@
     "@electron/notarize": "^3.0.1",
     "archiver": "^7.0.1",
     "chai": "^4.5.0",
+    "chai-subset": "^1.6.0",
     "cpx2": "^8.0.0",
     "del": "^8.0.0",
     "del-cli": "^7.0.0",
