@@ -11,8 +11,11 @@
 'use strict';
 
 var chai = require('chai');
-var sinonChai = require('sinon-chai');
 
+var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
+
+var chaiSubset = require('chai-subset');
+chai.use(chaiSubset);
 
 global.expect = chai.expect;
