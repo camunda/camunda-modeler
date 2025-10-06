@@ -12,6 +12,8 @@
 
 import React from 'react';
 
+import { ZeebeVariableResolverModule } from '@bpmn-io/variable-resolver';
+
 import Modeler from 'bpmn-js-headless/lib/Modeler';
 
 import { render, waitFor } from '@testing-library/react';
@@ -446,7 +448,11 @@ const defaultLayout = {
 };
 
 async function renderTab(options = {}) {
-  const modeler = new Modeler();
+  const modeler = new Modeler({
+    additionalModules: [
+      ZeebeVariableResolverModule
+    ]
+  });
 
   await modeler.importXML(diagramXML);
 
