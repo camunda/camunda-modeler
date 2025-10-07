@@ -15,7 +15,7 @@ import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
 import { DataTable, Table, TableBody, TableCell, TableExpandRow, TableExpandedRow, Button } from '@carbon/react';
-import { TrashCan } from '@carbon/icons-react';
+import { TrashCan, Add } from '@carbon/react/icons';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
@@ -245,13 +245,15 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
               </Table>
             )}
           </DataTable>
-          <button
-            className="btn btn-primary add"
-            type="button"
+          <div style={ { marginTop:'12px', float:'right' } }>
+            <Button
+              tooltipPosition="left"
+              iconDescription={ formConfig?.addLabel || 'Add' }
+              renderIcon={ Add }
+              hasIconOnly={ true }
             onClick={ () => arrayHelpers.push(generateNewElement()) }
-          >
-            {formConfig?.addLabel || 'Add'}
-          </button>
+            />
+          </div>
         </div>
       );
     }}
