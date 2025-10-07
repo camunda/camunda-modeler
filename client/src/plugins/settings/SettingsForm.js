@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 
@@ -165,6 +165,8 @@ function SettingsField(props) {
 function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, formConfig }) {
   const arrayValues = getIn(useFormikContext().values, name) || [];
 
+  const [ expandedRows, setExpandedRows ] = useState([]);
+
   function generateNewElement() {
     const defaults = Object.entries({ ...rowProperties, ...childProperties })
       .reduce((acc, [ key, property ]) => {
@@ -175,6 +177,19 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
       }, {});
 
     return { id: generateId(), ...defaults };
+  }
+
+  function isExpanded(row) {
+    return expandedRows.includes(row.id);
+  }
+
+  function handleExpand(rowId) {
+    if (expandedRows.includes(rowId)) {
+      setExpandedRows(expandedRows.filter(id => id !== rowId));
+    }
+    else {
+      setExpandedRows([ ...expandedRows, rowId ]);
+    }
   }
 
   return <FieldArray name={ name } className="form-group">
@@ -199,13 +214,13 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
                 <TableBody className="expandable-table-body">
                   {rows?.map((row, index) => (
                     <React.Fragment key={ `${name}[${index}]` }>
-                      <TableExpandRow { ...getRowProps({ row }) }>
+                      <TableExpandRow { ...getRowProps({ row }) } isExpanded={ isExpanded(row) } onExpand={ ()=> handleExpand(row.id) }>
                         {
                           map(rowProperties, (rowProperty , key) => {
                             return (
                               <TableCell key={ `${name}[${index}].${key}` }>
-                                { row.isExpanded && <SettingsField name={ `${name}[${index}].${key}` } { ...rowProperty } /> }
-                                { !row.isExpanded && <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span> }
+                                { isExpanded(row) && <SettingsField name={ `${name}[${index}].${key}` } { ...rowProperty } /> }
+                                { !isExpanded(row) && <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span> }
                               </TableCell>
                             );
                           })
@@ -251,7 +266,11 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
               iconDescription={ formConfig?.addLabel || 'Add' }
               renderIcon={ Add }
               hasIconOnly={ true }
-            onClick={ () => arrayHelpers.push(generateNewElement()) }
+              onClick={ () => {
+                const newElement = generateNewElement();
+                arrayHelpers.push(newElement);
+                setExpandedRows([ ...expandedRows, newElement.id ]);
+              } }
             />
           </div>
         </div>
