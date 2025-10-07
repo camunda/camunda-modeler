@@ -9,6 +9,7 @@
  */
 
 import { AUTH_TYPES, TARGET_TYPES } from '../../../remote/ZeebeAPI';
+import { generateId } from '../../../util';
 
 /**
  * Registers plugin settings and migrates legacy configs
@@ -34,11 +35,13 @@ export async function initializeSettings({ settings, getConfig, log }) {
   }
 }
 
+/** @type import('../deployment-plugin/types').Connection */
 const DEFAULT_ENDPOINT = {
+  id: generateId(),
   name: 'c8run (local)',
-  url: 'grpc://localhost:26500',
-  target: TARGET_TYPES.SELF_HOSTED,
-  auth: AUTH_TYPES.NONE,
+  contactPoint: 'grpc://localhost:26500',
+  targetType: TARGET_TYPES.SELF_HOSTED,
+  authType: AUTH_TYPES.NONE,
 };
 
 const LABELS = {
