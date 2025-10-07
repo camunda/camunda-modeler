@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.40.0
+
 ### General
 
 * `FEAT`: add task testing ([#5235](https://github.com/camunda/camunda-modeler/pull/5235))
@@ -18,6 +20,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-moddle@9.0.4`
 * `DEPS`: update to `camunda-bpmn-js@5.14.2`
 * `DEPS`: update to `diagram-js@15.4.0`
+* `DEPS`: update to `electron@37.6.0`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.11.0`
 
 ### BPMN
