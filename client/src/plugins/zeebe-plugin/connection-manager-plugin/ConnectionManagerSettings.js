@@ -28,7 +28,7 @@ export async function initializeSettings({ settings, getConfig, log }) {
 
     settings.set({ 'connectionManagerPlugin.c8connections':  zeebeEndpoints.map(endpoint=>({
       ...endpoint,
-      name: 'Migrated Connection'
+      name: 'Existing connection'
     }))
     });
   }
@@ -89,9 +89,8 @@ const pluginSettings = {
   properties: {
     'connectionManagerPlugin.c8connections': {
       type: 'expandableTable',
-      label: 'Camunda8',
-      description: 'Connections to Camunda 8',
-      documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
+      label: 'Camunda 8',
+      description: 'Manage Camunda 8 orchestration cluster connections.',
       constraints:{
         custom: (zeebeAPI)=> (values, something) => {console.log({ zeebeAPI, values, something }); return null; }
       },

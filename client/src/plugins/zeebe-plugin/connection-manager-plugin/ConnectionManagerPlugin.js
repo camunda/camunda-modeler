@@ -146,13 +146,13 @@ export default function ConnectionManagerPlugin(props) {
       <Fill name="connection-manager" slot="status-bar__file" group="8_deploy" priority={ 2 }>
         <button
           onClick={ fillClicked }
-          title="Open file deployment"
+          title="Open connection selector"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ statusBarButtonRef }
         >
 
-          { (connectionCheckResult?.success === false) && <ErrorFilled fill="var(--color-red-360-100-45)" /> }
-          { (connectionCheckResult?.success === true) && <CheckmarkFilled fill="var(--color-green-150-86-44)" /> }
+          { (connectionCheckResult?.success === false) && <ErrorFilled fill="var(--color-status-bar-error)" /> }
+          { (connectionCheckResult?.success === true) && <CheckmarkFilled fill="var(--color-status-bar-success)" /> }
           { (!connectionCheckResult) && <CircleFilled fill="var(--color-grey-225-10-35)" /> }
 
           <p style={ { marginLeft:'4px' } }>{activeConnection?.name || activeConnection?.url || 'Select Connection'}</p>
@@ -251,14 +251,9 @@ function ConnectionManagerOverlay({
                   {renderHeader}
                 </Section.Header>
                 <Section.Body className="form-body">
-                  <p>Select a connection for the currently open file.</p>
+                  <p>Select orchestration cluster connection.</p>
                   <div className="form-group" style={ { marginTop:'16px' } }>
 
-                    <div style={ { width:'100%', textAlign: 'right' } }>
-                      <a style={ { color:'var(--link-color)', cursor: 'pointer' } } onClick={ handleManageConnections }>
-                        Manage connections
-                      </a>
-                    </div>
 
                     <div>
                       <Field
@@ -274,6 +269,11 @@ function ConnectionManagerOverlay({
                         value={ activeConnection?.id }
                       >
                       </Field>
+                    </div>
+                    <div style={ { width:'100%', textAlign: 'right' } }>
+                      <a style={ { color:'var(--link-color)', cursor: 'pointer' } } onClick={ handleManageConnections }>
+                        Manage connections
+                      </a>
                     </div>
                   </div>
                 </Section.Body>
