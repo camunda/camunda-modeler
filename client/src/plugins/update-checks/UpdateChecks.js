@@ -25,6 +25,7 @@ import { Fill } from '../../app/slot-fill';
 import Metadata from '../../util/Metadata';
 
 import { UpdateAvailableOverlay } from './UpdateAvailableOverlay';
+import { utmTag } from '../../util/utmTag';
 
 const log = debug('UpdateChecks');
 
@@ -365,16 +366,9 @@ export default class UpdateChecks extends PureComponent {
 
     let downloadURL = latestVersionInfo.downloadURL;
 
-    // Check if UTM tags are already present
-    if (!downloadURL.includes('utm_source') && !downloadURL.includes('utm_medium') && !downloadURL.includes('utm_campaign')) {
-      const url = new URL(downloadURL);
-      url.searchParams.append('utm_source', 'desktop-modeler');
-      url.searchParams.append('utm_medium', 'product');
-      url.searchParams.append('utm_campaign', 'update-check');
-      downloadURL = url.toString();
-    }
-
-    _getGlobal('backend').send('external:open-url', { url: downloadURL });
+    _getGlobal('backend').send('external:open-url', {
+      url: utmTag(downloadURL, { campaign: 'update-check' })
+    });
 
     this.closeNewVersionInfoView();
   };
