@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
 import semver from 'semver';
 
@@ -20,10 +20,10 @@ import { debounce } from '../../../../util';
 
 import ZeebeAPI from '../../../../remote/ZeebeAPI';
 
-import ConnectionChecker from '../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
-
 import TaskTestingStatusBarItem from './TaskTestingStatusBarItem';
 import TaskTestingApi from './TaskTestingApi';
+
+import { useConnectionChecker } from './hooks/useConnectionChecker';
 
 import * as css from './TaskTestingTab.less';
 
@@ -60,35 +60,22 @@ export default function TaskTestingTab(props) {
 
   const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
-  const { current: zeebeApi } = useRef(new ZeebeAPI(backend));
-  const { current: taskTestingApi } = useRef(new TaskTestingApi(zeebeApi, config, file, onAction));
-  const { current: connectionChecker } = useRef(new ConnectionChecker(zeebeApi));
-
-  const [ connectionCheckResult, setConnectionCheckResult ] = useState(false);
-
+  const [ deployConfig, setDeployConfig ] = useState(null);
   const [ operateUrl, setOperateUrl ] = useState(null);
 
-  useEffect(() => {
-    if (connectionCheckResult) {
-      taskTestingApi.getOperateUrl().then(setOperateUrl);
-    }
-  }, [ connectionCheckResult, taskTestingApi ]);
+  const { current: zeebeApi } = useRef(new ZeebeAPI(backend));
 
-  const onConnectionCheck = async ({ success, response }) => {
+  const taskTestingApi = useMemo(() => {
 
-    // file is not saved
-    if (!file?.path) {
-      return;
-    }
+    const api = new TaskTestingApi(zeebeApi, config, file, onAction);
 
-    const config = await taskTestingApi.getDeploymentConfig();
+    api.getOperateUrl().then(setOperateUrl);
+    api.getDeploymentConfig().then(setDeployConfig);
 
-    connectionChecker.updateConfig(config);
+    return api.getApi();
+  }, [ zeebeApi, config, file, onAction ]);
 
-    setConnectionCheckResult({ success, response });
-  };
-
-  useConnectionChecker(connectionChecker, onConnectionCheck);
+  const { connectionSuccess, connectionError } = useConnectionChecker(zeebeApi, deployConfig);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -128,16 +115,16 @@ export default function TaskTestingTab(props) {
     }
   };
 
-  const handleTaskExecutionStarted = (element) => {
+  const handleTaskExecutionStarted = useCallback((element) => {
     onAction('emit-event', {
       type: 'taskTesting.started',
       payload: {
         element
       }
     });
-  };
+  }, [ onAction ]);
 
-  const handleTaskExecutionFinished = (element, output) => {
+  const handleTaskExecutionFinished = useCallback((element, output) => {
     onAction('emit-event', {
       type: 'taskTesting.finished',
       payload: {
@@ -145,17 +132,22 @@ export default function TaskTestingTab(props) {
         output
       }
     });
-  };
+  }, [ onAction ]);
 
-  const handleTaskExecutionInterrupted = () => {
+  const handleTaskExecutionInterrupted = useCallback(() => {
     onAction('display-notification', {
       type: 'warning',
       title: 'Task testing canceled',
     });
-  };
+  }, [ onAction ]);
 
-  const handleConfigureConnection = () => {
+  const handleConfigureConnection = useCallback(() => {
     onAction('open-deployment');
+  }, [ onAction ]);
+
+  const connectionCheckResult = {
+    success: connectionSuccess,
+    response: connectionError
   };
 
   const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult);
@@ -180,13 +172,12 @@ export default function TaskTestingTab(props) {
           onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
           configureConnectionBannerTitle={ configureConnectionBannerTitle }
           configureConnectionBannerDescription={ configureConnectionBannerDescription }
-          api={ taskTestingApi.getApi() }
+          api={ taskTestingApi }
           documentationUrl={ DOCUMENTATION_URL }
         />
       </div>
     </Fill>
     <TaskTestingStatusBarItem
-      injector={ injector }
       layout={ layout }
       onToggle={ onToggle } />
   </>;
@@ -212,18 +203,6 @@ function getConfigureConnectionBannerDescription(connectionCheckResult) {
     return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION;
   }
   return null;
-}
-
-function useConnectionChecker(connectionChecker, onConnectionCheck) {
-  useEffect(() => {
-    connectionChecker.on('connectionCheck', onConnectionCheck);
-    connectionChecker.startChecking();
-
-    return () => {
-      connectionChecker.stopChecking();
-      connectionChecker.off('connectionCheck', onConnectionCheck);
-    };
-  }, [ connectionChecker ]);
 }
 
 function canConnectToCluster(connectionCheckResult) {

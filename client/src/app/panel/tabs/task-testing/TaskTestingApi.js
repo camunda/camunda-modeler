@@ -37,6 +37,11 @@ export default class TaskTestingApi {
   }
 
   async getDeploymentConfig() {
+
+    if (!this._file?.path) {
+      return {};
+    }
+
     const config = await this._deployment.getConfigForFile(this._file);
     return {
       ...config,
@@ -59,7 +64,15 @@ export default class TaskTestingApi {
   }
 
   async deploy() {
-    this._onAction('save');
+
+    const saved = await this._onAction('save');
+
+    if (!saved) {
+      return {
+        success: false,
+        error: 'Failed to save the file before deployment'
+      };
+    }
 
     const config = await this.getDeploymentConfig();
 
