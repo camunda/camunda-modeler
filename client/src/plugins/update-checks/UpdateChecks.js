@@ -363,7 +363,18 @@ export default class UpdateChecks extends PureComponent {
       _getGlobal
     } = this.props;
 
-    _getGlobal('backend').send('external:open-url', { url: latestVersionInfo.downloadURL });
+    let downloadURL = latestVersionInfo.downloadURL;
+
+    // Check if UTM tags are already present
+    if (!downloadURL.includes('utm_source') && !downloadURL.includes('utm_medium') && !downloadURL.includes('utm_campaign')) {
+      const url = new URL(downloadURL);
+      url.searchParams.append('utm_source', 'desktop-modeler');
+      url.searchParams.append('utm_medium', 'product');
+      url.searchParams.append('utm_campaign', 'update-check');
+      downloadURL = url.toString();
+    }
+
+    _getGlobal('backend').send('external:open-url', { url: downloadURL });
 
     this.closeNewVersionInfoView();
   };
