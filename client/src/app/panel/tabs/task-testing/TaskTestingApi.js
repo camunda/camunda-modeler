@@ -37,6 +37,11 @@ export default class TaskTestingApi {
   }
 
   async getDeploymentConfig() {
+
+    if (!this._file?.path) {
+      return {};
+    }
+
     const config = await this._deployment.getConfigForFile(this._file);
     return {
       ...config,
