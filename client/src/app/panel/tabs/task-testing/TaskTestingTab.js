@@ -178,7 +178,6 @@ export default function TaskTestingTab(props) {
       </div>
     </Fill>
     <TaskTestingStatusBarItem
-      injector={ injector }
       layout={ layout }
       onToggle={ onToggle } />
   </>;
