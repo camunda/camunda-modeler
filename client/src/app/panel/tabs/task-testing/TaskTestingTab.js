@@ -75,7 +75,7 @@ export default function TaskTestingTab(props) {
     return api.getApi();
   }, [ zeebeApi, config, file, onAction ]);
 
-  const { connectionSuccess, connectionError } = useConnectionChecker(zeebeApi, deployConfig);
+  const connectionCheckResult = useConnectionChecker(zeebeApi, deployConfig);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -144,11 +144,6 @@ export default function TaskTestingTab(props) {
   const handleConfigureConnection = useCallback(() => {
     onAction('open-deployment');
   }, [ onAction ]);
-
-  const connectionCheckResult = {
-    success: connectionSuccess,
-    response: connectionError
-  };
 
   const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult);
   const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult);

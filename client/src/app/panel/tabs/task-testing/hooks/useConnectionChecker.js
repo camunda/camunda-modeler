@@ -8,13 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import { useEffect, useRef, useState } from 'react';
-
-import ConnectionChecker from '../../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
+import { useEffect, useState } from 'react';
 
 export function useConnectionChecker(zeebeApi, deployConfig) {
-
-  const { current: connectionChecker } = useRef(new ConnectionChecker(zeebeApi));
 
   const [ result, setResult ] = useState({
     success: false,
@@ -22,33 +18,36 @@ export function useConnectionChecker(zeebeApi, deployConfig) {
   });
 
   useEffect(() => {
-    connectionChecker.on('connectionCheck', checkConnection);
-    connectionChecker.startChecking();
 
-    return () => {
-      connectionChecker.stopChecking();
-      connectionChecker.off('connectionCheck', checkConnection);
-    };
-  }, []);
+    checkConnection();
 
-  useEffect(() => {
-    connectionChecker.updateConfig(deployConfig);
+    const interval = setInterval(() => {
+      checkConnection();
+    }, 2000);
+
+    return () => clearInterval(interval);
   }, [ deployConfig ]);
 
-  const checkConnection = async ({ success, response }) => {
+  const checkConnection = async () => {
 
-    if (success === result.success &&
-      response?.gatewayVersion === result.response?.gatewayVersion &&
-      response?.protocol === result.response?.protocol
-    ) {
-      return;
+    try {
+      const { endpoint } = deployConfig;
+      const checkResult = await zeebeApi.checkConnection(endpoint);
+
+      setResult(curr => {
+        if (JSON.stringify(curr) === JSON.stringify(checkResult)) {
+          return curr;
+        }
+
+        return checkResult;
+      });
+    } catch (error) {
+      setResult({
+        success: false,
+        response: error.message
+      });
     }
-
-    setResult({ success, response });
   };
 
-  return {
-    connectionSuccess: result.success,
-    connectionError: result.response
-  };
+  return result;
 }
