@@ -132,7 +132,7 @@ export default function ConnectionManagerPlugin(props) {
       }
     });
   },
-  [ activeTab ]);
+  [ activeTab, connections ]);
 
   function fillClicked() {
     setOverlayOpen(!overlayOpen);
