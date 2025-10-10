@@ -27,15 +27,15 @@ const FIELD_ARRAY_TYPES = [ 'expandableTable' ];
 /**
  * Formik form wrapper for the settings form.
  */
-export function SettingsForm(props) {
+export function SettingsForm({ schema, values, onChange }) {
 
-  const { schema, values } = props;
+  const { setFieldValue, values: formikValues } = useFormikContext();
 
-  const { setFieldValue, dirty, values: formikValues, submitForm } = useFormikContext();
+
 
   useEffect(() => {
-    dirty && submitForm();
-  }, [ dirty, formikValues, submitForm ]);
+    onChange(formikValues);
+  }, [ formikValues, onChange ]);
 
   useEffect(() => {
     forEach(values, (value, key) => {
