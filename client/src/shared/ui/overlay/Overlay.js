@@ -155,10 +155,15 @@ export class Overlay extends PureComponent {
 
   render() {
     const {
+      anchor,
       className,
       children,
       id
     } = this.props;
+
+    if (!anchor) {
+      throw new Error('Overlay must receive an `anchor` prop.');
+    }
 
     // set id only if passed via props
     const optionalId = id ? { id } : {};
