@@ -309,7 +309,7 @@ class ZeebeAPI {
    *
    * @param {{ endpoint: import("./endpoints").Endpoint }} config
    *
-   * @returns {Promise<{ success: boolean, response?: object, response?.gatewayVersion: string }>}
+   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async getGatewayVersion(config) {
     const {
