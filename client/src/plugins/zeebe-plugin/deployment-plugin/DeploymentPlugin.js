@@ -118,7 +118,7 @@ export default function DeploymentPlugin(props) {
         </button>
       </Fill>
     ) }
-    { overlayOpen && (
+    { overlayOpen && anchorRef.current && (
       <DeploymentPluginOverlay
         _getFromApp={ _getFromApp }
         activeTab={ activeTab }

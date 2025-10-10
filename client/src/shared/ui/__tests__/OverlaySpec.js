@@ -65,6 +65,21 @@ describe('<Overlay>', function() {
   });
 
 
+  describe('required props', function() {
+
+    it('should require anchor', function() {
+
+      expect(() => {
+
+        // when
+        mount(<Overlay />);
+
+        // then
+      }).to.throw().with.property('message').that.includes('Overlay must receive an `anchor` prop.');
+    });
+  });
+
+
   describe('DOM props', function() {
 
     it('should allow to pass custom class', function() {
