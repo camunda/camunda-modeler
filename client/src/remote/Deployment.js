@@ -9,16 +9,17 @@
  */
 
 /**
- * @typedef {import('./types.d.ts').DeploymentConfig} DeploymentConfig
- * @typedef {import('./types.d.ts').DeploymentResult} DeploymentResult
- * @typedef {import('./types.d.ts').Endpoint} Endpoint
- * @typedef {import('./types.d.ts').ResourceConfig} ResourceConfig
- * @typedef {import('./types.d.ts').ResourceConfigs} ResourceConfigs
+ * @typedef {import('./Deployment.d.ts').DeploymentConfig} DeploymentConfig
+ * @typedef {import('./Deployment.d.ts').DeploymentResult} DeploymentResult
+ * @typedef {import('./Deployment.d.ts').Endpoint} Endpoint
+ * @typedef {import('./Deployment.d.ts').ResourceConfig} ResourceConfig
  */
 
 import EventEmitter from 'events';
 
 import { omit } from 'min-dash';
+
+import debug from 'debug';
 
 import { generateId } from '../util';
 
@@ -49,6 +50,8 @@ export const DEFAULT_ENDPOINT = {
   rememberCredentials: false,
   targetType: TARGET_TYPES.CAMUNDA_CLOUD
 };
+
+const log = debug('Deployment');
 
 export default class Deployment extends EventEmitter {
 
@@ -84,18 +87,22 @@ export default class Deployment extends EventEmitter {
    * }], config);
    * ```
    *
-   * @param {ResourceConfig|ResourceConfigs} resourceConfigs
+   * @param {ResourceConfig|ResourceConfig[]} resourceConfigs
    * @param {DeploymentConfig} config
    *
    * @returns {Promise<DeploymentResult>}
    */
   async deploy(resourceConfigs, config) {
+    log('Starting deployment with resource configs:', resourceConfigs);
+
     resourceConfigs = Array.isArray(resourceConfigs) ? resourceConfigs : [ resourceConfigs ];
 
     // allow to add or remove resource configs through resources providers
     resourceConfigs = this._resourcesProviders.reduce((configs, getResourceConfigs) => {
       return getResourceConfigs(configs);
     }, resourceConfigs);
+
+    log('Final resource configs:', resourceConfigs);
 
     const {
       context,
