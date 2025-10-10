@@ -82,10 +82,15 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
   }, []);
 
   useEffect(() => {
-    const getResourceConfigs = () => {
-
-      // return process application resource configs instead of original ones
-      return resourceConfigs;
+    const getResourceConfigs = (previousResourceConfigs) => {
+      return [
+        ...previousResourceConfigs,
+        ...resourceConfigs.filter((resourceConfig) => {
+          return !previousResourceConfigs.some((prevConfig) => {
+            return prevConfig.path === resourceConfig.path;
+          });
+        })
+      ];
     };
 
     deployment.registerResourcesProvider(getResourceConfigs);
