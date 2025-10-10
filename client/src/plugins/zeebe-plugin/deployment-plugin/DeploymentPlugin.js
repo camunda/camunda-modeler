@@ -14,7 +14,6 @@ import classNames from 'classnames';
 
 import { Fill } from '../../../app/slot-fill';
 
-import ConnectionChecker from './ConnectionChecker';
 import DeploymentConfigValidator from './DeploymentConfigValidator';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
@@ -56,12 +55,6 @@ export default function DeploymentPlugin(props) {
 
     setOverlayOpen(true);
   };
-
-  useEffect(() => {
-    return () => {
-      connectionChecker.current.stopChecking();
-    };
-  }, []);
 
   useEffect(() => {
     subscribe('app.activeTabChanged', ({ activeTab }) => {

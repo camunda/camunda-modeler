@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 
 import { forEach, debounce, map, reduce } from 'min-dash';
 
-import { omitBy } from 'lodash';
+import { omitBy, set, get, isObject, isArray, isString } from 'lodash';
 
 import { Formik } from 'formik';
 
@@ -22,7 +22,7 @@ import Flags from '../../util/Flags';
 
 import { Modal } from '../../shared/ui';
 
-import { SettingsForm } from './SettingsForm';
+import { isConditionMet, SettingsForm } from './SettingsForm';
 
 import useBuiltInSettings from './useBuiltInSettings';
 
@@ -145,6 +145,10 @@ export default function SettingsPlugin(props) {
 
         <Formik
           initialValues={ { } }
+          validateOnChange={ false }
+          validateOnBlur={ false }
+          validateOnMount={ false }
+          validate={ async (a)=> await validate(a,schema) }
         >
           <SettingsForm
             schema={ schema }
@@ -202,4 +206,117 @@ function flattenSchema(schema) {
   return reduce(schema, (acc, { properties }) => {
     return { ...acc, ...properties };
   }, {});
+}
+
+async function validate(values, schema) {
+
+  const errors = {};
+  const flatSchema = flattenSchema(schema);
+
+  await Promise.all(Object.entries(flatSchema).map(async ([ propertyKey, propertySchema ]) => {
+
+    const constraints = propertySchema.constraints;
+    const value = get(values, propertyKey);
+
+    if (isArray(value)) {
+      if (value.length === 0) {
+        return;
+      }
+
+      const childProperties = Object.entries({ ...propertySchema.childProperties, ...propertySchema.rowProperties });
+      if (childProperties.length === 0) {
+        return;
+      }
+      await Promise.all(value.map(async (childValue, childIndex) => {
+
+        childProperties.forEach(([ childPropertyKey, childPropertySchema ]) => {
+
+          const isConditionMett = isConditionMet(`${propertyKey}.${childIndex}.${childPropertyKey}`, values, childPropertySchema.condition);
+          if (!isConditionMett) {
+            return;
+          }
+          if (!childPropertySchema.constraints) {
+            return;
+          }
+          const childValue2 = get(childValue, childPropertyKey);
+          const childError = validateField(childPropertySchema.constraints, childPropertySchema.label, childValue2);
+          if (childError) {
+            set(errors, `${propertyKey}.${childIndex}.${childPropertyKey}`, childError);
+          }
+
+        });
+
+        const childErrors = get(errors, `${propertyKey}.${childIndex}`);
+
+
+        if (childErrors) {
+          set(errors, `${propertyKey}.${childIndex}._mainError`, "There are errors in this config, I can't check the connection");
+          return;
+        };
+        if (!constraints) return;
+
+        if (constraints.custom) {
+
+          const customErrors = await constraints.custom(childValue);
+
+          if (customErrors) {
+
+            forEach(customErrors, (errorMessage, key) => {
+              set(errors, `${propertyKey}.${childIndex}.${key}`, errorMessage);
+            });
+          }
+        }
+
+      }));
+
+    }
+
+    if (!constraints) {
+      return;
+    }
+
+    // other constraints
+
+    const fieldError = validateField(constraints, propertySchema.label, value);
+    if (fieldError) {
+
+      set(errors, propertyKey, fieldError);
+    }
+
+  }));
+
+  return errors;
+}
+
+
+function validateField(constraints, propLabel, value) {
+
+  let {
+    notEmpty,
+    pattern
+  } = constraints;
+
+  if (notEmpty && isEmpty(value)) {
+    return isString(notEmpty) ? notEmpty : `${propLabel || 'This field'} must not be empty`;
+  }
+
+  if (pattern) {
+    let message;
+    if (isObject(pattern)) {
+      ({ value: pattern, message } = pattern);
+    }
+
+    if (!matchesPattern(value, pattern)) {
+      return message || `${propLabel || 'This field'} must match pattern ${pattern}`;
+    }
+  }
+};
+
+
+function isEmpty(value) {
+  return value === null || value === undefined || value === '' ;
+}
+
+function matchesPattern(value, pattern) {
+  return value.match(pattern);
 }
