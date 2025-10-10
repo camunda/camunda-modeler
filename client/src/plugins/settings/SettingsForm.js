@@ -183,12 +183,12 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
     return expandedRows.includes(row.id);
   }
 
-  function handleExpand(rowId) {
-    if (expandedRows.includes(rowId)) {
-      setExpandedRows(expandedRows.filter(id => id !== rowId));
+  function handleExpand(row) {
+    if (isExpanded(row)) {
+      setExpandedRows([]);
     }
     else {
-      setExpandedRows([ ...expandedRows, rowId ]);
+      setExpandedRows([ row.id ]);
     }
   }
 
@@ -214,7 +214,9 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
                 <TableBody className="expandable-table-body">
                   {rows?.map((row, index) => (
                     <React.Fragment key={ `${name}[${index}]` }>
-                      <TableExpandRow { ...getRowProps({ row }) } isExpanded={ isExpanded(row) } onExpand={ ()=> handleExpand(row.id) }>
+                      <TableExpandRow { ...getRowProps({ row }) }
+                        isExpanded={ isExpanded(row) } onExpand={ ()=> handleExpand(row) }
+                      >
                         {
                           map(rowProperties, (rowProperty , key) => {
                             return (
@@ -269,7 +271,7 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
               onClick={ () => {
                 const newElement = generateNewElement();
                 arrayHelpers.push(newElement);
-                setExpandedRows([ ...expandedRows, newElement.id ]);
+                setExpandedRows([ newElement.id ]);
               } }
             />
           </div>
