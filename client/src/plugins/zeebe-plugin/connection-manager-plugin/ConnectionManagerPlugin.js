@@ -16,7 +16,7 @@ import { CheckmarkFilled, ErrorFilled, CircleFilled } from '@carbon/icons-react'
 
 import { Fill } from '../../../app/slot-fill';
 import { Overlay, Section, Select } from '../../../shared/ui';
-import { bootstrapDeployment, getMessageForReason, getResourceType } from '../../zeebe-plugin/shared/util';
+import { getMessageForReason, getResourceType } from '../../zeebe-plugin/shared/util';
 
 import { initializeSettings } from './ConnectionManagerSettings';
 
@@ -28,6 +28,7 @@ import {
 import { getErrorNotification, getSuccessNotification } from '../deployment-plugin/DeploymentNotifications';
 
 import * as css from './ConnectionManagerPlugin.less';
+import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
 
 export default function ConnectionManagerPlugin(props) {
 
@@ -53,21 +54,17 @@ export default function ConnectionManagerPlugin(props) {
   const [ connections, setConnections ] = useState([]);
   const [ activeConnection, setActiveConnection ] = useState(null);
 
-  const [ {
-    connectionChecker,
-    deployment,
-  }, setDeploymentBootstrapped ] = useState({
-    connectionChecker: null,
-    deployment: null
-  });
 
+  const zeebeAPI = _getGlobal('zeebeAPI');
+  const deployment = _getGlobal('deployment');
+  const connectionChecker = useRef(new ConnectionChecker(zeebeAPI));
 
 
   const statusBarButtonRef = useRef(null);
 
 
   useEffect(() => {
-    initializeSettings({ settings, getConfig, log }).then(()=>{
+    initializeSettings({ settings, getConfig, log, zeebeAPI }).then(()=>{
       settings.subscribe('connectionManagerPlugin.c8connections', (connections) => {
         setConnections(connections.value);
       });
@@ -84,38 +81,22 @@ export default function ConnectionManagerPlugin(props) {
   }, [ subscribe ]);
 
   useEffect(() => {
-    const {
-      connectionChecker,
-      deployment
-    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'), _getGlobal('settings'));
-
-    setDeploymentBootstrapped({
-      connectionChecker,
-      deployment
-    });
-
-    return () => {
-      connectionChecker.stopChecking();
-    };
-  }, [ _getGlobal ]);
-
-  useEffect(() => {
     (async () => {
       setConnectionCheckResult(null);
       if (activeConnection) {
-        connectionChecker?.updateConfig({ endpoint: activeConnection });
+        connectionChecker.current?.updateConfig({ endpoint: activeConnection });
       }
     })();
 
-    connectionChecker?.on('connectionCheck', (connectionCheckResult)=>{
+    connectionChecker.current?.on('connectionCheck', (connectionCheckResult)=>{
       setConnectionCheckResult(connectionCheckResult);
     });
 
     return () => {
-      connectionChecker?.off('connectionCheck', setConnectionCheckResult);
-      connectionChecker?.stopChecking();
+      connectionChecker.current?.off('connectionCheck', setConnectionCheckResult);
+      connectionChecker.current?.stopChecking();
     };
-  }, [ connectionChecker, deployment, setConnectionCheckResult, activeConnection ]);
+  }, [ connectionChecker, setConnectionCheckResult, activeConnection ]);
 
   useEffect(() => {
     if (!activeTab) {

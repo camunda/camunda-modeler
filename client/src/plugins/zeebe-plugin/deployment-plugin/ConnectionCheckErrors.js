@@ -110,3 +110,82 @@ export function getConnectionCheckError(fieldName, connectionCheckResult) {
     return fieldName === 'endpoint.camundaCloudClientSecret' && CONNECTION_CHECK_ERROR_MESSAGES[ reason ];
   }
 }
+
+export function getConnectionCheckFieldErrors(connectionCheckResult) {
+  if (!connectionCheckResult) {
+    return null;
+  }
+
+  const {
+    success,
+    reason
+  } = connectionCheckResult;
+
+  if (success) {
+    return null;
+  }
+
+
+
+  const errorMessage = CONNECTION_CHECK_ERROR_MESSAGES[ reason ] || CONNECTION_CHECK_ERROR_MESSAGES.UNKNOWN;
+
+  const errorMessageWithTroubleshootLink = <>{errorMessage} <a href={ TROUBLESHOOTING_URL }>Troubleshoot</a></>;
+
+  switch (reason) {
+  case CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE:
+    return {
+      _mainError: errorMessageWithTroubleshootLink,
+      contactPoint: errorMessageWithTroubleshootLink
+    };
+
+
+  case CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE:
+    return {
+      _mainError: errorMessageWithTroubleshootLink,
+      camundaCloudClusterUrl: errorMessageWithTroubleshootLink
+    };
+
+  case CONNECTION_CHECK_ERROR_REASONS.UNSUPPORTED_ENGINE:
+    return {
+      _mainError: errorMessage,
+      camundaCloudClusterUrl: errorMessage,
+      contactPoint: errorMessage
+    };
+  case CONNECTION_CHECK_ERROR_REASONS.UNAUTHORIZED:
+  case CONNECTION_CHECK_ERROR_REASONS.FORBIDDEN:
+
+    return {
+      _mainError: errorMessage,
+      audience: errorMessage,
+      camundaCloudClientId: errorMessage,
+      camundaCloudClientSecret: errorMessage,
+      clientId: errorMessage,
+      clientSecret: errorMessage,
+      scope: errorMessage
+    };
+
+  case CONNECTION_CHECK_ERROR_REASONS.OAUTH_URL:
+    return {
+      _mainError: errorMessage,
+      oauthURL: errorMessage
+    };
+  case CONNECTION_CHECK_ERROR_REASONS.INVALID_CLIENT_ID:
+    return {
+      _mainError: errorMessage,
+      camundaCloudClientId: errorMessage
+    };
+  case CONNECTION_CHECK_ERROR_REASONS.INVALID_CREDENTIALS:
+    return {
+      _mainError: errorMessage,
+      camundaCloudClientSecret: errorMessage
+    };
+  case CONNECTION_CHECK_ERROR_REASONS.UNKNOWN:
+  default:
+    return {
+      _mainError: errorMessageWithTroubleshootLink,
+      camundaCloudClusterUrl: errorMessageWithTroubleshootLink,
+      contactPoint: errorMessageWithTroubleshootLink,
+      oauthURL: errorMessageWithTroubleshootLink
+    };
+  }
+}

@@ -15,7 +15,7 @@ import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
 import { DataTable, Table, TableBody, TableCell, TableExpandRow, TableExpandedRow, Button } from '@carbon/react';
-import { Add, TrashCan } from '@carbon/icons-react';
+import { TrashCan, Add, ErrorFilled, CheckmarkFilled, CircleFilled } from '@carbon/react/icons';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
@@ -141,11 +141,6 @@ function SettingsField(props) {
 
   const disabledByFlag = flagValue !== undefined;
 
-  let validate;
-  if (constraints) {
-    validate = validator(constraints, label || name);
-  }
-
   return <>
     <Field
       name={ name }
@@ -157,7 +152,6 @@ function SettingsField(props) {
       options={ options }
       values={ options }
       documentationUrl={ documentationUrl }
-      validate={ validate }
       { ...restProps }
     />
     { disabledByFlag &&
@@ -173,7 +167,10 @@ function SettingsField(props) {
 
 
 function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, formConfig, expandRowId }) {
-  const arrayValues = getIn(useFormikContext().values, name) || [];
+
+  const { values, isValidating, errors, validateForm } = useFormikContext();
+
+  const arrayValues = getIn(values, name) || [];
 
   const [ expandedRows, setExpandedRows ] = useState([]);
   const expandedRowRef = useRef(null);
@@ -225,6 +222,10 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
     else {
       setExpandedRows([ row.id ]);
     }
+  }
+
+  function getMainError(name,index) {
+    return getIn(errors, `${name}[${index}]._mainError`);
   }
 
   return <FieldArray name={ name } className="form-group">
@@ -283,6 +284,13 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
                         colSpan={ Object.keys(rowProperties).length + 2 } // +1 for expand column, +1 for action column
                       >
                         <div>
+                          <div>
+                            <p>
+                              { (!isValidating && getMainError(name,index)) && <> <ErrorFilled fill="var(--color-status-bar-error)" /> {getMainError(name,index)} <a href="" onClick={ () => validateForm() } title={ 'Error. DEBUG:' + JSON.stringify(errors) }>retry</a>  </> }
+                              { (!isValidating && !getMainError(name,index)) && <><CheckmarkFilled fill="var(--color-status-bar-success)" title="Connected" /> Connected </>}
+                              { (isValidating) && <><CircleFilled fill="var(--color-status-bar-loading)" title="Checking" /> Checking </> }
+                            </p>
+                          </div>
                           {
                             map(childProperties, (childProperty, key) => {
                               return (
@@ -384,6 +392,10 @@ export function resolvePath(currentPath, targetPath) {
  * @returns {boolean} True if the condition is met, false otherwise.
  */
 export function isConditionMet(propName, values, condition) {
+  if (!condition) {
+    return true;
+  }
+
   if (condition.allMatch) {
     return condition.allMatch.every((childCondition) => isConditionMet(propName, values, childCondition));
   }
