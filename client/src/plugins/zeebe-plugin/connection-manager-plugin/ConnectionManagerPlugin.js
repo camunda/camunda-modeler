@@ -28,6 +28,7 @@ import {
 import { getErrorNotification, getSuccessNotification } from '../deployment-plugin/DeploymentNotifications';
 
 import * as css from './ConnectionManagerPlugin.less';
+import ZeebeAPI from '../../../remote/ZeebeAPI';
 
 export default function ConnectionManagerPlugin(props) {
 
@@ -67,7 +68,7 @@ export default function ConnectionManagerPlugin(props) {
 
 
   useEffect(() => {
-    initializeSettings({ settings, getConfig, log }).then(()=>{
+    initializeSettings({ settings, getConfig, log, zeebeAPI: new ZeebeAPI(_getGlobal('backend')) }).then(()=>{
       settings.subscribe('connectionManagerPlugin.c8connections', (connections) => {
         setConnections(connections.value);
       });
