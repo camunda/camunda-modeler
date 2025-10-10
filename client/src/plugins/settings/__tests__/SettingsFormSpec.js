@@ -609,7 +609,7 @@ describe('SettingsForm', function() {
       it('should persist a valid value', async function() {
 
         // given
-        const onSubmit = sinon.spy();
+        const onChange = sinon.spy();
         const schema = [
           {
             properties: {
@@ -624,7 +624,7 @@ describe('SettingsForm', function() {
           }
         ];
 
-        const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onSubmit });
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
 
         const field = container.querySelector('.form-group input[id="test.emailField"]');
 
@@ -634,14 +634,14 @@ describe('SettingsForm', function() {
 
         // then
         await expectNoError(container);
-        expect(onSubmit).to.have.been.calledWith(sinon.match({ 'test': { 'emailField': 'test@example.com' } }));
+        expect(onChange).to.have.been.calledWith(sinon.match({ 'test': { 'emailField': 'test@example.com' } }));
       });
 
 
-      it('should not persist invalid value', async function() {
+      it('should persist an invalid value', async function() {
 
         // given
-        const onSubmit = sinon.spy();
+        const onChange = sinon.spy();
         const schema = [
           {
             properties: {
@@ -656,7 +656,7 @@ describe('SettingsForm', function() {
           }
         ];
 
-        const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onSubmit });
+        const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
 
         const field = container.querySelector('.form-group input[id="test.emailField"]');
 
@@ -666,7 +666,7 @@ describe('SettingsForm', function() {
 
         // then
         await expectError(container, 'Email must match pattern ^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$');
-        expect(onSubmit).not.to.have.been.called;
+        expect(onChange).to.have.been.calledWith(sinon.match({ 'test': { 'emailField': 'invalid-email' } }));
       });
 
     });
@@ -755,15 +755,15 @@ describe('SettingsForm', function() {
 });
 
 // helpers
-function createSettingsForm({ schema, values, initialValues, onSubmit = () => {} } = {}) {
+function createSettingsForm({ schema, values, initialValues, onChange = () => {} } = {}) {
   return render(
     <Formik
       initialValues={ initialValues }
-      onSubmit={ onSubmit }
     >
       <SettingsForm
         schema={ schema }
         values={ values }
+        onChange={ onChange }
       />
     </Formik>
   );
