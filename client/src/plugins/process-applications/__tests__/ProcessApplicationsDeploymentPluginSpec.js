@@ -204,6 +204,7 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
       ]);
     });
   });
+
 });
 
 const DEFAULT_PROCESS_APPLICATION = {
