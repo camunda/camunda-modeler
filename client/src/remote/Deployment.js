@@ -9,20 +9,21 @@
  */
 
 /**
- * @typedef {import('./types.d.ts').DeploymentConfig} DeploymentConfig
- * @typedef {import('./types.d.ts').DeploymentResult} DeploymentResult
- * @typedef {import('./types.d.ts').Endpoint} Endpoint
- * @typedef {import('./types.d.ts').ResourceConfig} ResourceConfig
- * @typedef {import('./types.d.ts').ResourceConfigs} ResourceConfigs
+ * @typedef {import('./Deployment.d.ts').DeploymentConfig} DeploymentConfig
+ * @typedef {import('./Deployment.d.ts').DeploymentResult} DeploymentResult
+ * @typedef {import('./Deployment.d.ts').Endpoint} Endpoint
+ * @typedef {import('./Deployment.d.ts').ResourceConfig} ResourceConfig
  */
 
 import EventEmitter from 'events';
 
 import { omit } from 'min-dash';
 
-import { generateId } from '../../../util';
+import debug from 'debug';
 
-import { AUTH_TYPES, TARGET_TYPES } from '../../../remote/ZeebeAPI';
+import { generateId } from '../util';
+
+import { AUTH_TYPES, TARGET_TYPES } from './ZeebeAPI';
 
 export const CONFIG_KEYS = {
   CONFIG: 'zeebe-deployment-tool',
@@ -50,6 +51,8 @@ export const DEFAULT_ENDPOINT = {
   targetType: TARGET_TYPES.CAMUNDA_CLOUD
 };
 
+const log = debug('Deployment');
+
 export default class Deployment extends EventEmitter {
 
   /**
@@ -61,6 +64,8 @@ export default class Deployment extends EventEmitter {
 
     this._config = config;
     this._zeebeAPI = zeebeAPI;
+
+    this._resourcesProviders = [];
   }
 
   /**
@@ -82,13 +87,22 @@ export default class Deployment extends EventEmitter {
    * }], config);
    * ```
    *
-   * @param {ResourceConfig|ResourceConfigs} resourceConfigs
+   * @param {ResourceConfig|ResourceConfig[]} resourceConfigs
    * @param {DeploymentConfig} config
    *
    * @returns {Promise<DeploymentResult>}
    */
   async deploy(resourceConfigs, config) {
+    log('Starting deployment with resource configs:', resourceConfigs);
+
     resourceConfigs = Array.isArray(resourceConfigs) ? resourceConfigs : [ resourceConfigs ];
+
+    // allow to add or remove resource configs through resources providers
+    resourceConfigs = this._resourcesProviders.reduce((configs, getResourceConfigs) => {
+      return getResourceConfigs(configs);
+    }, resourceConfigs);
+
+    log('Final resource configs:', resourceConfigs);
 
     const {
       context,
@@ -274,6 +288,32 @@ export default class Deployment extends EventEmitter {
     const { gatewayVersion } = response;
 
     return gatewayVersion;
+  }
+
+  /**
+   * Register a resources provider.
+   *
+   * A resources provider is a function that receives an array of ResourceConfig objects
+   * and returns a (possibly modified) array of ResourceConfig objects.
+   *
+   * Signature: (configs: ResourceConfig[]) => ResourceConfig[]
+   *
+   * Providers are applied in the order they are registered during deploy().
+   * The return value of each provider must be an array.
+   *
+   * @param {(configs: ResourceConfig[]) => ResourceConfig[]} provider
+   */
+  registerResourcesProvider(provider) {
+    this._resourcesProviders.push(provider);
+  }
+
+  /**
+   * Unregister a previously registered resources provider.
+   *
+   * @param {(configs: ResourceConfig[]) => ResourceConfig[]} provider
+   */
+  unregisterResourcesProvider(provider) {
+    this._resourcesProviders = this._resourcesProviders.filter(p => p !== provider);
   }
 }
 

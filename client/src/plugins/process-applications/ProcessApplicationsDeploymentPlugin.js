@@ -14,12 +14,13 @@ import classNames from 'classnames';
 
 import { Fill } from '../../app/slot-fill';
 
+import ConnectionChecker from '../zeebe-plugin/deployment-plugin/ConnectionChecker';
+import DeploymentConfigValidator from '../zeebe-plugin/deployment-plugin/DeploymentConfigValidator';
+
 import DeployIcon from 'icons/Deploy.svg';
 import ProcessApplicationIcon from 'icons/file-types/ProcessApplication.svg';
 
 import DeploymentPluginOverlay from '../zeebe-plugin/deployment-plugin/DeploymentPluginOverlay';
-
-import { bootstrapDeployment } from '../zeebe-plugin/shared/util';
 
 import { getSuccessNotification } from './ProcessApplicationsDeploymentNotifications';
 
@@ -36,15 +37,9 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
 
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
-  const [ {
-    connectionChecker,
-    deployment,
-    deploymentConfigValidator
-  }, setDeploymentBootstrapped ] = useState({
-    connectionChecker: null,
-    deployment: null,
-    deploymentConfigValidator: null
-  });
+  const deployment = _getGlobal('deployment');
+
+  const connectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI')));
 
   const anchorRef = useRef();
 
@@ -67,28 +62,6 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     setOverlayOpen(true);
   };
 
-  useEffect(() => {
-    const {
-      connectionChecker,
-      deployment,
-      deploymentConfigValidator
-    } = bootstrapDeployment(_getGlobal('backend'), _getGlobal('config'));
-
-    setDeploymentBootstrapped({
-      connectionChecker,
-      deployment,
-      deploymentConfigValidator
-    });
-
-    return () => {
-      connectionChecker.stopChecking();
-    };
-  }, [ _getGlobal ]);
-
-  if (!processApplication) {
-    return null;
-  }
-
   const resourceConfigs = processApplicationItems.filter(canDeployItem).map((item) => {
     const { file, metadata } = item;
 
@@ -101,6 +74,33 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
       type
     };
   });
+
+  useEffect(() => {
+    return () => {
+      connectionChecker.current.stopChecking();
+    };
+  }, []);
+
+  useEffect(() => {
+    const getResourceConfigs = (previousResourceConfigs) => {
+      return [
+        ...previousResourceConfigs,
+        ...resourceConfigs.filter((resourceConfig) => {
+          return !previousResourceConfigs.some((prevConfig) => {
+            return prevConfig.path === resourceConfig.path;
+          });
+        })
+      ];
+    };
+
+    deployment.registerResourcesProvider(getResourceConfigs);
+
+    return () => deployment.unregisterResourcesProvider(getResourceConfigs);
+  }, [ processApplicationItems ]);
+
+  if (!processApplication) {
+    return null;
+  }
 
   return <>
     { canDeployTab(activeTab) && (
@@ -119,11 +119,10 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
       <DeploymentPluginOverlay
         activeTab={ activeTab }
         anchor={ anchorRef.current }
-        connectionChecker={ connectionChecker }
+        connectionChecker={ connectionChecker.current }
         deployment={ deployment }
-        deploymentConfigValidator={ deploymentConfigValidator }
+        deploymentConfigValidator={ DeploymentConfigValidator }
         getConfigFile={ () => processApplication.file }
-        getResourceConfigs={ () => resourceConfigs }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
         log={ log }
         onClose={ () => setOverlayOpen(false) }

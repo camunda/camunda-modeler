@@ -17,7 +17,7 @@ import Deployment, {
   removeCredentials
 } from '../Deployment';
 
-import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
+import { TARGET_TYPES } from '../ZeebeAPI';
 
 describe('Deployment', function() {
 
@@ -209,6 +209,160 @@ describe('Deployment', function() {
       expect(deployedSpy).to.have.been.calledOnce;
       expect(deployedSpy).to.have.been.calledWith({
         context: 'taskTesting',
+        deploymentResult,
+        endpoint,
+        gatewayVersion: 'foo'
+      });
+    });
+
+
+    it('should register additional resources provider', async function() {
+
+      // given
+      const resourceConfig = createMockResourceConfigs().pop(),
+            config = createMockConfig(),
+            deploymentResult = createMockDeploymentResult({
+              response: {
+                key: 'foo',
+                deployments: [
+                  {
+                    process: {
+                      bpmnProcessId: 'Process_1',
+                      processDefinitionKey: 'bar',
+                      resourceName: 'foo.bpmn',
+                      tenantId: '<default>',
+                      version: 1
+                    }
+                  },
+                  {
+                    decision: {
+                      decisionDefinitionId: 'Decision_1',
+                      decisionDefinitionKey: 'baz',
+                      name: 'Bar',
+                      tenantId: '<default>',
+                      version: 1
+                    }
+                  }
+                ],
+                tenantId: '<default>'
+              }
+            });
+
+      const { endpoint } = config;
+
+      const zeebeAPI = new MockZeebeAPI({
+        deploy: sinon.stub().resolves(deploymentResult),
+        getGatewayVersion: sinon.stub().resolves({
+          success: true,
+          response: {
+            gatewayVersion: 'foo'
+          }
+        })
+      });
+
+      const deployment = createDeployment({
+        zeebeAPI
+      });
+
+      const deployedSpy = sinon.spy();
+
+      deployment.on('deployed', deployedSpy);
+
+      const additionalResourceConfigs = createMockResourceConfigs([ createMockFile({
+        name: 'bar.dmn',
+        path: '/baz/bar/bar.dmn'
+      }) ]);
+
+      deployment.registerResourcesProvider((previousResourceConfigs) => {
+        return [
+          ...previousResourceConfigs,
+          ...additionalResourceConfigs
+        ];
+      });
+
+      // when
+      await deployment.deploy(resourceConfig, config);
+
+      // then
+      expect(zeebeAPI.deploy).to.have.been.calledOnce;
+      expect(zeebeAPI.deploy).to.have.been.calledWith({
+        endpoint,
+        resourceConfigs: [
+          resourceConfig,
+          ...additionalResourceConfigs
+        ],
+        tenantId: undefined
+      });
+
+      expect(deployedSpy).to.have.been.calledOnce;
+      expect(deployedSpy).to.have.been.calledWith({
+        context: 'deploymentTool',
+        deploymentResult,
+        endpoint,
+        gatewayVersion: 'foo'
+      });
+    });
+
+
+    it('should unregister additional resources provider', async function() {
+
+      // given
+      const resourceConfig = createMockResourceConfigs().pop(),
+            config = createMockConfig(),
+            deploymentResult = createMockDeploymentResult();
+
+      const { endpoint } = config;
+
+      const zeebeAPI = new MockZeebeAPI({
+        deploy: sinon.stub().resolves(deploymentResult),
+        getGatewayVersion: sinon.stub().resolves({
+          success: true,
+          response: {
+            gatewayVersion: 'foo'
+          }
+        })
+      });
+
+      const deployment = createDeployment({
+        zeebeAPI
+      });
+
+      const deployedSpy = sinon.spy();
+
+      deployment.on('deployed', deployedSpy);
+
+      const additionalResourceConfigs = createMockResourceConfigs([ createMockFile({
+        name: 'bar.dmn',
+        path: '/baz/bar/bar.dmn'
+      }) ]);
+
+      const provider = (previousResourceConfigs) => {
+        return [
+          ...previousResourceConfigs,
+          ...additionalResourceConfigs
+        ];
+      };
+
+      deployment.registerResourcesProvider(provider);
+
+      // when
+      deployment.unregisterResourcesProvider(provider);
+
+      await deployment.deploy(resourceConfig, config);
+
+      // then
+      expect(zeebeAPI.deploy).to.have.been.calledOnce;
+      expect(zeebeAPI.deploy).to.have.been.calledWith({
+        endpoint,
+        resourceConfigs: [
+          resourceConfig
+        ],
+        tenantId: undefined
+      });
+
+      expect(deployedSpy).to.have.been.calledOnce;
+      expect(deployedSpy).to.have.been.calledWith({
+        context: 'deploymentTool',
         deploymentResult,
         endpoint,
         gatewayVersion: 'foo'
@@ -532,7 +686,6 @@ function createMockDeploymentResult(overrides = {}) {
       key: 'foo',
       deployments: [
         {
-          metadata: 'process',
           process: {
             bpmnProcessId: 'Process_1',
             processDefinitionKey: 'bar',
@@ -543,7 +696,8 @@ function createMockDeploymentResult(overrides = {}) {
         }
       ],
       tenantId: '<default>'
-    }
+    },
+    ...overrides
   };
 }
 

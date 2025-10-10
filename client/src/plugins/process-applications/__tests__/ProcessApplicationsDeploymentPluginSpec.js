@@ -19,7 +19,9 @@ import { mount } from 'enzyme';
 import ProcessApplicationsDeploymentPlugin, { canDeployItem } from '../ProcessApplicationsDeploymentPlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
-import { DEFAULT_ENDPOINT } from '../../zeebe-plugin/deployment-plugin/Deployment';
+import { DEFAULT_ENDPOINT } from '../../../remote/Deployment';
+
+import { Deployment, ZeebeAPI } from '../../../app/__tests__/mocks';
 
 describe('ProcessApplicationsDeploymentPlugin', function() {
 
@@ -88,14 +90,6 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
   it('should render number of deployed files (singular)', async function() {
 
     // given
-    const config = new Config();
-
-    const _getGlobal = (name) => {
-      if (name === 'config') {
-        return config;
-      }
-    };
-
     const triggerAction = sinon.spy(function(action) {
       if (action === 'save-tab') {
         return Promise.resolve(true);
@@ -103,7 +97,6 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     });
 
     const wrapper = createProcessApplicationsDeploymentPlugin({
-      _getGlobal,
       processApplication: DEFAULT_PROCESS_APPLICATION,
       processApplicationItems: DEFAULT_ITEMS.filter((item) => [ 'bpmn', 'processApplication' ].includes(item.metadata.type)),
       triggerAction
@@ -128,14 +121,6 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
   it('should render number of deployed files (plural)', async function() {
 
     // given
-    const config = new Config();
-
-    const _getGlobal = (name) => {
-      if (name === 'config') {
-        return config;
-      }
-    };
-
     const triggerAction = sinon.spy(function(action) {
       if (action === 'save-tab') {
         return Promise.resolve(true);
@@ -143,7 +128,6 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     });
 
     const wrapper = createProcessApplicationsDeploymentPlugin({
-      _getGlobal,
       processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
@@ -220,6 +204,51 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
       ]);
     });
   });
+
+
+  it('should register resources provider', async function() {
+
+    // given
+    const registerResourcesProvider = sinon.spy();
+    const unregisterResourcesProvider = sinon.spy();
+
+    const getGlobal = (name) => {
+      if (name === 'deployment') {
+        return new Deployment({
+          async getConfigForFile(file) {
+            return {
+              deployment: {},
+              endpoint: DEFAULT_ENDPOINT
+            };
+          },
+          registerResourcesProvider,
+          unregisterResourcesProvider
+        });
+      } else if (name === 'zeebeAPI') {
+        return new ZeebeAPI();
+      }
+    };
+
+    // when
+    const wrapper = createProcessApplicationsDeploymentPlugin({
+      _getGlobal: getGlobal,
+      processApplication: DEFAULT_PROCESS_APPLICATION
+    });
+
+    // then
+    await waitFor(() => {
+      expect(registerResourcesProvider).to.have.been.calledOnce;
+    });
+
+    // when
+    wrapper.unmount();
+
+    // then
+    await waitFor(() => {
+      expect(unregisterResourcesProvider).to.have.been.calledOnce;
+    });
+  });
+
 });
 
 const DEFAULT_PROCESS_APPLICATION = {
@@ -273,7 +302,22 @@ const DEFAULT_ITEMS = [
 
 function createProcessApplicationsDeploymentPlugin(props = {}) {
   const {
-    _getGlobal = () => {},
+    _getGlobal = (name) => {
+      if (name === 'deployment') {
+        return new Deployment({
+          async getConfigForFile(file) {
+            return {
+              deployment: {},
+              endpoint: DEFAULT_ENDPOINT
+            };
+          },
+          registerResourcesProvider() {},
+          unregisterResourcesProvider() {}
+        });
+      } else if (name === 'zeebeAPI') {
+        return new ZeebeAPI();
+      }
+    },
     activeTab = DEFAULT_ACTIVE_TAB,
     displayNotification = () => {},
     log = () => {},
@@ -293,30 +337,4 @@ function createProcessApplicationsDeploymentPlugin(props = {}) {
       processApplicationItems={ processApplicationItems }
       triggerAction={ triggerAction } />
   </SlotFillRoot>);
-}
-
-class Mock {
-  constructor(overrides = {}) {
-    Object.assign(this, overrides);
-  }
-}
-
-class Config extends Mock {
-  get(key) {
-    if (key === 'zeebeEndpoints') {
-      return [
-        {
-          ...DEFAULT_ENDPOINT,
-          id: 'foo'
-        }
-      ];
-    }
-  }
-
-  getForFile() {
-    return {
-      deployment: {},
-      endpointId: 'foo'
-    };
-  }
 }

@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 
 import semver from 'semver';
 
@@ -17,8 +17,6 @@ import TaskTesting from '@camunda/task-testing';
 import { Fill } from '../../../slot-fill';
 
 import { debounce } from '../../../../util';
-
-import ZeebeAPI from '../../../../remote/ZeebeAPI';
 
 import TaskTestingStatusBarItem from './TaskTestingStatusBarItem';
 import TaskTestingApi from './TaskTestingApi';
@@ -50,24 +48,25 @@ const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/deskt
 
 export default function TaskTestingTab(props) {
   const {
-    backend,
     config,
+    deployment,
     injector,
     file,
     layout = {},
-    onAction
+    onAction,
+    startInstance,
+    zeebeApi
   } = props;
 
   const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
   const [ deployConfig, setDeployConfig ] = useState(null);
-  const [ operateUrl, setOperateUrl ] = useState(null);
 
-  const { current: zeebeApi } = useRef(new ZeebeAPI(backend));
+  const [ operateUrl, setOperateUrl ] = useState(null);
 
   const taskTestingApi = useMemo(() => {
 
-    const api = new TaskTestingApi(zeebeApi, config, file, onAction);
+    const api = new TaskTestingApi(deployment, startInstance, zeebeApi, file, onAction);
 
     api.getOperateUrl().then(setOperateUrl);
     api.getDeploymentConfig().then(setDeployConfig);

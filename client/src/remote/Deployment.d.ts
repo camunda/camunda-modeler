@@ -56,19 +56,7 @@ export type DeploymentConfig = {
   endpoint: Endpoint;
 };
 
-export enum DeploymentConnectionValidationReason {
-  UNKNOWN = 'UNKNOWN',
-  CONTACT_POINT_UNAVAILABLE = 'CONTACT_POINT_UNAVAILABLE',
-  CLUSTER_UNAVAILABLE = 'CLUSTER_UNAVAILABLE',
-  UNAUTHORIZED = 'UNAUTHORIZED',
-  FORBIDDEN = 'FORBIDDEN',
-  OAUTH_URL = 'OAUTH_URL',
-  UNSUPPORTED_ENGINE = 'UNSUPPORTED_ENGINE',
-  INVALID_CLIENT_ID = 'INVALID_CLIENT_ID',
-  INVALID_CREDENTIALS = 'INVALID_CREDENTIALS'
-}
-
-export type ConnectionCheckResult = {
-  success: boolean;
-  reason?: DeploymentConnectionValidationReason;
-}
+export type ResourceConfig = {
+  path: string;
+  type: 'bpmn' | 'dmn' | 'form' | 'rpa';
+};

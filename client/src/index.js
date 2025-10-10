@@ -13,12 +13,14 @@ import './styles/style.less';
 import {
   backend,
   config,
+  deployment,
   dialog,
   fileSystem,
   flags,
   log,
   metadata,
   plugins,
+  startInstance,
   systemClipboard,
   workspace,
   zeebeAPI
@@ -64,12 +66,14 @@ const settings = new Settings({
 const globals = {
   backend,
   config,
+  deployment,
   dialog,
   fileSystem,
   isMac,
   log,
   plugins,
   settings,
+  startInstance,
   systemClipboard,
   workspace,
   zeebeAPI
