@@ -136,11 +136,11 @@ export default function SettingsPlugin(props) {
 
         <Formik
           initialValues={ { } }
-          onSubmit={ debounce(handleSave, 500) }
         >
           <SettingsForm
             schema={ schema }
             values={ values }
+            onChange={ debounce(handleSave, 200) }
           />
         </Formik>
 
