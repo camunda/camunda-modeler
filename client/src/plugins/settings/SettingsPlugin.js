@@ -33,6 +33,9 @@ const log = debug('Settings');
 /**
  * Provides UI for the settings API.
  *
+ * To open settings with a specific row expanded in an expandable table, use:
+ * triggerAction('settings-open', { expandRowId: 'your-row-id' })
+ *
  * @param {Object} props
  * @param {import('../../app/Settings').Settings} props.settings
  *
@@ -49,6 +52,7 @@ export default function SettingsPlugin(props) {
 
   const [ open, setOpen ] = useState(false);
   const [ showRestartWarning, setShowRestartWarning ] = useState(false);
+  const [ expandRowId, setExpandRowId ] = useState(null);
 
   const [ settings, _ ] = useState(_getGlobal('settings'));
   const [ schema, setSchema ] = useState();
@@ -57,8 +61,13 @@ export default function SettingsPlugin(props) {
   useBuiltInSettings(settings);
 
   useEffect(() => {
-    subscribe('app.settings-open', () => {
+    subscribe('app.settings-open', (context) => {
       setOpen(true);
+      if (context && context.expandRowId) {
+        setExpandRowId(context.expandRowId);
+      } else {
+        setExpandRowId(null);
+      }
     });
   }, [ subscribe ]);
 
@@ -144,6 +153,7 @@ export default function SettingsPlugin(props) {
           <SettingsForm
             schema={ schema }
             values={ values }
+            expandRowId={ expandRowId }
             onChange={ debounce(handleSave, 200) }
           />
         </Formik>

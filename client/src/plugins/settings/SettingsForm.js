@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 
 import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 
@@ -27,7 +27,7 @@ const FIELD_ARRAY_TYPES = [ 'expandableTable' ];
 /**
  * Formik form wrapper for the settings form.
  */
-export function SettingsForm({ schema, values, onChange }) {
+export function SettingsForm({ schema, values, expandRowId, onChange }) {
 
   const { setFieldValue, values: formikValues, validateForm } = useFormikContext();
 
@@ -61,14 +61,14 @@ export function SettingsForm({ schema, values, onChange }) {
   return (<Form>
     {
       map(orderedSchema, (value, key) =>
-        <SettingsSection key={ key } { ...value } />)
+        <SettingsSection key={ key } { ...value } expandRowId={ expandRowId } />)
     }
   </Form>);
 }
 
 function SettingsSection(props) {
 
-  const { title, properties } = props;
+  const { title, properties, expandRowId } = props;
 
   return (
     <Section>
@@ -76,7 +76,7 @@ function SettingsSection(props) {
       <Section.Body>
         {
           map(properties, (props, key) =>
-            <SettingsField key={ key } name={ key } { ...props } />)
+            <SettingsField key={ key } name={ key } { ...props } expandRowId={ expandRowId } />)
         }
       </Section.Body>
     </Section>
@@ -85,7 +85,7 @@ function SettingsSection(props) {
 
 function SettingsField(props) {
 
-  const { type, flag, condition, name } = props;
+  const { type, flag, condition, name, expandRowId } = props;
 
   const { values } = useFormikContext();
 
@@ -127,7 +127,7 @@ function SettingsField(props) {
   }
 
   if (FIELD_ARRAY_TYPES.includes(type)) {
-    return <FieldComponent { ...props } />;
+    return <FieldComponent { ...props } expandRowId={ expandRowId } />;
   }
 
   const { label, description, hint, options, documentationUrl, constraints } = props;
@@ -165,12 +165,38 @@ function SettingsField(props) {
 }
 
 
-function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, formConfig }) {
+function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, formConfig, expandRowId }) {
   const { values, isValidating, errors, validateForm } = useFormikContext();
 
   const arrayValues = getIn(values, name) || [];
 
   const [ expandedRows, setExpandedRows ] = useState([]);
+  const expandedRowRef = useRef(null);
+  const hasInitiallyExpanded = useRef(false);
+
+
+  useEffect(() => {
+    if (expandRowId && arrayValues.length > 0 && !hasInitiallyExpanded.current) {
+      const targetRow = arrayValues.find(row => row.id === expandRowId);
+      if (targetRow) {
+        setExpandedRows([ expandRowId ]);
+        hasInitiallyExpanded.current = true;
+
+        setTimeout(() => {
+          if (expandedRowRef.current) {
+            expandedRowRef.current.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }, 100);
+      }
+    }
+  }, [ expandRowId, arrayValues ]);
+
+  useEffect(() => {
+    hasInitiallyExpanded.current = false;
+  }, [ expandRowId ]);
 
   function generateNewElement() {
     const defaults = Object.entries({ ...rowProperties, ...childProperties })
@@ -224,6 +250,7 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
                   {rows?.map((row, index) => (
                     <React.Fragment key={ `${name}[${index}]` }>
                       <TableExpandRow { ...getRowProps({ row }) }
+                        ref={ row.id === expandRowId ? expandedRowRef : null }
                         isExpanded={ isExpanded(row) } onExpand={ ()=> handleExpand(row) }
                       >
                         {

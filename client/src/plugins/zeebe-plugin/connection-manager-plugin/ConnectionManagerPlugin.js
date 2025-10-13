@@ -170,7 +170,7 @@ export default function ConnectionManagerPlugin(props) {
         activeConnection={ activeConnection }
         handleManageConnections={ () => {
           setOverlayOpen(false);
-          triggerAction('settings-open');
+          triggerAction('settings-open', { expandRowId: activeConnection?.id });
         } }
         handleConnectionChange={ (connectionId)=> {
           config.setForFile(activeTab.file, 'connectionId', {
