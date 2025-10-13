@@ -107,7 +107,7 @@ export default class Modeler {
       return done(new Error('failed to save svg'));
     }
 
-    return done(null, '<svg />');
+    return done(null, '<svg width="100" height="50" xmlns="http://www.w3.org/2000/svg"></svg>');
   }
 
   attachTo() {}
