@@ -32,6 +32,8 @@ export default async function generateImage(type, svg) {
 
   let dataURL = '';
 
+  // we try with different scales, to eventually end up with an image
+  // size that we can generate
   for (let scale = INITIAL_SCALE; scale >= FINAL_SCALE; scale -= SCALE_STEP) {
     let canvas = document.createElement('canvas');
 
