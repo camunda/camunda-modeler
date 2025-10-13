@@ -55,15 +55,18 @@ export default function ResizableContainer(props) {
   const {
     className = '',
     direction,
-    width,
-    height,
-    minWidth = DEFAULT_MIN_WIDTH,
-    minHeight = DEFAULT_MIN_HEIGHT,
-    maxWidth,
-    maxHeight,
     open,
     onResized
   } = props;
+
+  const {
+    width,
+    height,
+    minWidth,
+    minHeight,
+    maxWidth,
+    maxHeight
+  } = getSizeProps(props);
 
   const ref = useRef();
 
@@ -179,6 +182,8 @@ function Resizer(props) {
     <div
       className={ classNames('resizer', `resizer-${ direction }`) }
       onMouseDown={ onMouseDown }
+      role="separator"
+      aria-orientation={ isHorizontal(direction) ? 'horizontal' : 'vertical' }
     >
       {
         isHorizontal(direction)
@@ -193,14 +198,17 @@ function Resizer(props) {
 export function getCSSFromProps(props) {
   const {
     direction,
-    width,
-    height,
-    minWidth = DEFAULT_MIN_WIDTH,
-    minHeight = DEFAULT_MIN_HEIGHT,
-    maxWidth,
-    maxHeight,
     open
   } = props;
+
+  const {
+    width,
+    height,
+    minWidth,
+    minHeight,
+    maxWidth,
+    maxHeight
+  } = getSizeProps(props);
 
   if (isHorizontal(direction)) {
     return {
@@ -320,4 +328,48 @@ function getDelta(startEvent, event, direction) {
       return { dy: clientY - startClientY };
     }
   }
+}
+
+function getSizeProps(props) {
+  const {
+    width,
+    height,
+    minWidth = DEFAULT_MIN_WIDTH,
+    minHeight = DEFAULT_MIN_HEIGHT,
+    maxWidth,
+    maxHeight
+  } = props;
+
+  return {
+    width: getWidthInPixels(width),
+    height: getHeightInPixels(height),
+    minWidth: getWidthInPixels(minWidth),
+    minHeight: getHeightInPixels(minHeight),
+    maxWidth: maxWidth ? getWidthInPixels(maxWidth) : null,
+    maxHeight: maxHeight ? getHeightInPixels(maxHeight) : null
+  };
+}
+
+function getHeightInPixels(value) {
+  return getInPixels(value, window.innerHeight);
+}
+
+function getWidthInPixels(value) {
+  return getInPixels(value, window.innerWidth);
+}
+
+function getInPixels(value, parentSize) {
+  if (typeof value === 'string') {
+    return parentSize * (parseInt(value.replace('%', '')) / 100);
+  }
+
+  if (typeof value === 'number') {
+    return value;
+  }
+
+  if (!value) {
+    return 0;
+  }
+
+  throw new Error('Unsupported ResizableContainer size value: ' + value);
 }

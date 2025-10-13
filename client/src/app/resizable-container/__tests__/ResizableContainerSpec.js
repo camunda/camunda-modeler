@@ -12,6 +12,8 @@
 
 import React from 'react';
 
+import { render, fireEvent } from '@testing-library/react';
+
 import ResizableContainer, {
   CLOSED_THRESHOLD,
   getCSSFromProps,
@@ -20,11 +22,8 @@ import ResizableContainer, {
   isVertical
 } from '../ResizableContainer';
 
-import { mount } from 'enzyme';
-
 const {
   spy,
-  stub
 } = sinon;
 
 
@@ -33,10 +32,10 @@ describe('<ResizableContainer>', function() {
   it('should render', function() {
 
     // given
-    const { wrapper } = createResizableContainer();
+    const { resizer } = createResizableContainer();
 
     // then
-    expect(wrapper).to.exist;
+    expect(resizer).to.exist;
   });
 
 
@@ -57,34 +56,28 @@ describe('<ResizableContainer>', function() {
         // given
         const onResized = spy();
 
-        const { wrapper } = createResizableContainer({
+        const { resizer } = createResizableContainer({
           direction,
           onResized,
           open: true,
           [ dimension ]: 300
         });
 
-        // mock the getBoundingClientRect() method of the DOM node to return a fixed width or height
-        // this is necessary because the getBoundingClientRect() method of the DOM node returns 0 for all values
-        stub(wrapper.getDOMNode(), 'getBoundingClientRect').returns({
-          [ dimension ]: 300
-        });
-
         // when
-        wrapper.find('.resizer').simulate('mousedown', {
+        fireEvent.mouseDown(resizer, {
           clientX: 100,
           clientY: 100
         });
 
-        window.dispatchEvent(new MouseEvent('mousemove', {
+        fireEvent.mouseMove(window, {
           clientX: 0,
           clientY: 0
-        }));
+        });
 
-        window.dispatchEvent(new MouseEvent('mouseup', {
+        fireEvent.mouseUp(window, {
           clientX: 0,
           clientY: 0
-        }));
+        });
 
         // then
         expect(onResized).to.have.been.calledWith({
@@ -99,34 +92,28 @@ describe('<ResizableContainer>', function() {
         // given
         const onResized = spy();
 
-        const { wrapper } = createResizableContainer({
+        const { resizer } = createResizableContainer({
           direction,
           onResized,
           open: true,
           [ dimension ]: 300
         });
 
-        // mock the getBoundingClientRect() method of the DOM node to return a fixed width or height
-        // this is necessary because the getBoundingClientRect() method of the DOM node returns 0 for all values
-        stub(wrapper.getDOMNode(), 'getBoundingClientRect').returns({
-          [ dimension ]: 300
-        });
-
         // when
-        wrapper.find('.resizer').simulate('mousedown', {
+        fireEvent.mouseDown(resizer, {
           clientX: 0,
           clientY: 0
         });
 
-        window.dispatchEvent(new MouseEvent('mousemove', {
+        fireEvent.mouseMove(window, {
           clientX: 275,
           clientY: 275
-        }));
+        });
 
-        window.dispatchEvent(new MouseEvent('mouseup', {
+        fireEvent.mouseUp(window, {
           clientX: 275,
           clientY: 275
-        }));
+        });
 
         // then
         expect(onResized).to.have.been.calledWith({
@@ -145,7 +132,7 @@ describe('<ResizableContainer>', function() {
         // given
         const onResized = spy();
 
-        const { wrapper } = createResizableContainer({
+        const { resizer } = createResizableContainer({
           direction,
           onResized,
           open: false,
@@ -153,15 +140,15 @@ describe('<ResizableContainer>', function() {
         });
 
         // when
-        wrapper.find('.resizer').simulate('mousedown', {
-          clientX: 100,
-          clientY: 100
+        fireEvent.mouseDown(resizer, {
+          clientX: 0,
+          clientY: 0
         });
 
-        window.dispatchEvent(new MouseEvent('mouseup', {
-          clientX: 100,
-          clientY: 100
-        }));
+        fireEvent.mouseUp(resizer, {
+          clientX: 0,
+          clientY: 0
+        });
 
         // then
         expect(onResized).to.have.been.calledWith({
@@ -176,7 +163,7 @@ describe('<ResizableContainer>', function() {
         // given
         const onResized = spy();
 
-        const { wrapper } = createResizableContainer({
+        const { resizer } = createResizableContainer({
           direction,
           onResized,
           open: true,
@@ -184,20 +171,51 @@ describe('<ResizableContainer>', function() {
         });
 
         // when
-        wrapper.find('.resizer').simulate('mousedown', {
-          clientX: 100,
-          clientY: 100
+        fireEvent.mouseDown(resizer, {
+          clientX: 0,
+          clientY: 0
         });
 
-        window.dispatchEvent(new MouseEvent('mouseup', {
-          clientX: 100,
-          clientY: 100
-        }));
+        fireEvent.mouseUp(resizer, {
+          clientX: 0,
+          clientY: 0
+        });
 
         // then
         expect(onResized).to.have.been.calledWith({
           open: false,
           [ dimension ]: 300
+        });
+      });
+
+
+      it('should toggle open with percentage size', function() {
+
+        // given
+        const onResized = spy();
+
+        const { resizer } = createResizableContainer({
+          direction,
+          onResized,
+          open: false,
+          [dimension]: '50%'
+        });
+
+        // when
+        fireEvent.mouseDown(resizer, {
+          clientX: 0,
+          clientY: 0
+        });
+
+        fireEvent.mouseUp(resizer, {
+          clientX: 0,
+          clientY: 0
+        });
+
+        // then
+        expect(onResized).to.have.been.calledWith({
+          open: true,
+          [dimension]: dimension === 'width' ? window.innerWidth / 2 : window.innerHeight / 2
         });
       });
 
@@ -293,7 +311,7 @@ describe('<ResizableContainer>', function() {
 });
 
 // helpers //////////
-function createResizableContainer(props = {}, mountFn = mount) {
+function createResizableContainer(props = {}) {
   const {
     className,
     direction,
@@ -308,7 +326,7 @@ function createResizableContainer(props = {}, mountFn = mount) {
     children = null
   } = props;
 
-  const wrapper = mountFn(
+  const rendered = render(
     <ResizableContainer
       className={ className }
       direction={ direction }
@@ -324,11 +342,11 @@ function createResizableContainer(props = {}, mountFn = mount) {
       { children }
     </ResizableContainer>);
 
-  const instance = wrapper.instance();
+  const resizer = rendered.getByRole('separator');
 
   return {
-    instance,
-    wrapper
+    ...rendered,
+    resizer
   };
 }
 
