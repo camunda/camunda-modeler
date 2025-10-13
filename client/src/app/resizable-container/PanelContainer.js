@@ -12,8 +12,8 @@ import React, { useCallback } from 'react';
 
 import ResizableContainer from './ResizableContainer';
 
-export const MIN_HEIGHT = 200;
-export const MAX_HEIGHT = 400;
+export const MIN_HEIGHT = 100;
+export const MAX_HEIGHT = '80%';
 
 export const DEFAULT_OPEN = false;
 export const DEFAULT_HEIGHT = 200;
