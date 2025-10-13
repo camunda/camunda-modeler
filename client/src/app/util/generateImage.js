@@ -66,11 +66,9 @@ export default async function generateImage(type, svg) {
 
     dataURL = canvas.toDataURL(encoding);
 
-    if (!DATA_URL_REGEX.test(dataURL)) {
-      throw new Error('Invalid data URL');
+    if (DATA_URL_REGEX.test(dataURL)) {
+      return dataURL;
     }
-
-    return dataURL;
   }
 
   throw new Error('Error happened generating image. Diagram size is too big.');
