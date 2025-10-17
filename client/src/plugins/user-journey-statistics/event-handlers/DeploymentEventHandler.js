@@ -17,6 +17,10 @@ import {
   getEngineProfile
 } from '../../../util/parse';
 
+import {
+  CONTEXT_TO_EVENT
+} from '../util';
+
 export default class DeploymentEventHandler {
   constructor(props) {
 
@@ -79,7 +83,7 @@ export default class DeploymentEventHandler {
       return;
     }
 
-    const baseEvent = context === 'deploymentTool' ? 'deploy' : 'startInstance';
+    const baseEvent = CONTEXT_TO_EVENT[context];
     const outcome = success ? 'success' : 'error';
 
     const eventName = baseEvent + ':' + outcome;

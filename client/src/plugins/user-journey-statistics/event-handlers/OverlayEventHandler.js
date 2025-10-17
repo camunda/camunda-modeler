@@ -16,6 +16,10 @@ import {
   getEngineProfile
 } from '../../../util/parse';
 
+import {
+  CONTEXT_TO_EVENT
+} from '../util';
+
 export default class UIEventHandler {
   constructor(props) {
 
@@ -69,7 +73,7 @@ export default class UIEventHandler {
       contents
     } = file;
 
-    const baseEvent = context === 'deploymentTool' ? 'deploy' : 'startInstance';
+    const baseEvent = CONTEXT_TO_EVENT[context];
     const eventName = `overlay:${baseEvent}:${action}`;
 
     const engineProfile = await getEngineProfile(contents, resourceType);

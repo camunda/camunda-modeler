@@ -48,4 +48,61 @@ describe('<TaskTestingEventHandler>', function() {
       expect(subscribe.getCall(1).args[0]).to.eql('taskTesting.finished');
     });
   });
+
+
+  describe('should track', function() {
+
+    it('should track taskTesting:started', function() {
+
+      // when
+      const event = {
+        element: {
+          id: 'Activity_1',
+          businessObject: {
+            $type: 'bpmn:UserTask',
+            modelerTemplate: 'someTemplate'
+          }
+        }
+      };
+
+      subscribe.getCall(0).args[1](event);
+
+      // then
+      expect(track).to.have.been.calledWith('taskTesting:started', {
+        elementType: 'bpmn:UserTask',
+        elementTemplate: 'someTemplate'
+      });
+    });
+
+    it('should track taskTesting:finished', function() {
+
+      // when
+      const event = {
+        element: {
+          id: 'Activity_1',
+          businessObject: {
+            $type: 'bpmn:UserTask',
+            modelerTemplate: 'someTemplate'
+          }
+        },
+        output: {
+          success: false,
+          incident: {
+            errorType: 'INCIDENT_TYPE'
+          }
+        }
+      };
+
+      subscribe.getCall(1).args[1](event);
+
+      // then
+      expect(track).to.have.been.calledWith('taskTesting:finished', {
+        elementType: 'bpmn:UserTask',
+        elementTemplate: 'someTemplate',
+        success: false,
+        incidentType: 'INCIDENT_TYPE'
+      });
+    });
+
+  });
 });

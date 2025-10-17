@@ -192,6 +192,37 @@ describe('<DeploymentEventHandler>', function() {
         expect(track).to.not.have.been.called;
       });
 
+
+      it('should send for `taskTesting` context', async function() {
+
+        // given
+        const tab = createTab({
+          type: 'bpmn'
+        });
+
+        const handleDeploymentDone = subscribe.getCall(0).args[1];
+
+        // when
+        await handleDeploymentDone({
+          tab,
+          context: 'taskTesting',
+          deployedTo: {
+            executionPlatformVersion: '8.8.0',
+            executionPlatform: 'Camunda'
+          }
+        });
+
+        // then
+        expect(track).to.have.been.calledWith('taskTesting:deploy:success', {
+          diagramType: 'bpmn',
+          deployedTo: {
+            executionPlatformVersion: '8.8.0',
+            executionPlatform: 'Camunda'
+          }
+        });
+
+      });
+
     });
 
 
