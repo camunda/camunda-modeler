@@ -80,6 +80,10 @@ export default class TaskTestingApi {
 
     const config = await this.getDeploymentConfig();
 
+    this._deployment.once('deployed', (event) => {
+      this._handleDeployment(event);
+    });
+
     const result = await this._deployment.deploy([
       {
         path: this._file.path,
@@ -138,5 +142,27 @@ export default class TaskTestingApi {
     const config = await this.getDeploymentConfig();
 
     return this._zeebeApi.searchIncidents(config, processInstanceKey);
+  }
+
+  _handleDeployment({ context, deploymentResult, endpoint }) {
+
+    if (deploymentResult.success) {
+      this._onAction('emit-event', {
+        type: 'deployment.done',
+        payload: {
+          context,
+          targetType: endpoint?.targetType,
+        }
+      });
+    } else {
+      this._onAction('emit-event', {
+        type: 'deployment.error',
+        payload: {
+          context,
+          error: deploymentResult?.response,
+          targetType: endpoint?.targetType,
+        }
+      });
+    }
   }
 }

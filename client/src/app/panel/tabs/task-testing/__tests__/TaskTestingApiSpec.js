@@ -142,7 +142,8 @@ describe('<TaskTestingApi>', function() {
                 camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
               }
             };
-          }
+          },
+          once: () => {}
         }),
         null,
         null,
