@@ -150,7 +150,7 @@ export default function DeploymentPluginOverlay(props) {
               ...deploymentResult.response,
               code: getGRPCErrorCode(deploymentResult.response)
             },
-            context: 'deploymentTool',
+            context,
             targetType: endpoint.targetType,
             deployedTo: {
               executionPlatformVersion: gatewayVersion,
