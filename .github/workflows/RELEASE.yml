@@ -221,3 +221,53 @@ jobs:
               text:
                 type: mrkdwn
                 text: '<${{ steps.milestone.outputs.LINK }}|Closed issues related to support>'
+
+  # This job waits for the FOSSA scan (triggered by CHECK_LICENSES.yml on tag push)
+  # to complete, then creates releases in FOSSA and generates attribution/SBOM reports.
+  # It only runs for stable releases (skips release candidates) and depends on successful
+  # completion of the build_release job to ensure the release artifacts are ready.
+  fossa_release:
+    name: Create FOSSA releases and generate attribution/SBOM reports
+    needs:
+      - pre_release
+      - build_release
+    runs-on: ubuntu-latest
+
+    # skip for release candidates
+    if: contains(needs.pre_release.outputs.tag, 'rc') == false
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import Secrets
+        id: secrets
+        uses: hashicorp/vault-action@v3.4.0
+        with:
+          url: ${{ secrets.VAULT_ADDR }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          exportEnv: false
+          secrets: |
+            secret/data/products/desktop-modeler/ci/fossa FOSSA_API_KEY;
+      - name: Get FOSSA context
+        id: fossa-context
+        uses: camunda/infra-global-github-actions/fossa/info@ec4caca36050ad1b7fee536facf95bc02515ddc6
+      - name: Wait for FOSSA scan completion
+        uses: camunda/infra-global-github-actions/fossa/wait-for-scan@infra-gh-854-publish-sboms
+        with:
+          fossa-api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
+          branch: ${{ steps.fossa-context.outputs.head-ref }}
+          project-id: "custom+50756/camunda/camunda-modeler"
+          revision-id: ${{ steps.fossa-context.outputs.head-revision }}
+      - name: Create FOSSA releases and generate reports
+        uses: camunda/infra-global-github-actions/fossa/release@infra-gh-854-publish-sboms
+        with:
+          fossa-api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
+          branch: ${{ steps.fossa-context.outputs.head-ref }}
+          project-id: "custom+50756/camunda/camunda-modeler"
+          attribution-release-group-id: "4917" # https://app.fossa.com/projects/group/4917
+          sbom-release-group-id: "4918"        # https://app.fossa.com/projects/group/4918
+          release-number: ${{ needs.pre_release.outputs.tag }}
+          revision-id: ${{ steps.fossa-context.outputs.head-revision }}
+          attribution-format: "TXT"
+          sbom-format: "CYCLONEDX_JSON"
