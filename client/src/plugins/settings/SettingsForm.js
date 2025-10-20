@@ -29,7 +29,7 @@ const FIELD_ARRAY_TYPES = [ 'expandableTable' ];
  */
 export function SettingsForm({ schema, values, onChange }) {
 
-  const { setFieldValue, values: formikValues } = useFormikContext();
+  const { setFieldValue, values: formikValues, validateForm } = useFormikContext();
 
 
 
@@ -42,6 +42,10 @@ export function SettingsForm({ schema, values, onChange }) {
       setFieldValue(key, value);
     });
   }, [ values, setFieldValue ]);
+
+  useEffect(() => {
+    validateForm();
+  }, [ formikValues, validateForm ]);
 
   const orderedSchema = useMemo(() => {
     if (!schema) return {};
@@ -123,12 +127,14 @@ function SettingsField(props) {
 
   const { label, description, hint, options, documentationUrl, constraints } = props;
 
-  let typeProp = {};
+  let restProps = {
+    fieldError: settingsFieldError
+  };
   if (type === 'boolean') {
-    typeProp = { type: 'checkbox' };
+    restProps.type = 'checkbox';
   }
   if (type === 'password') {
-    typeProp = { type: 'password' };
+    restProps.type = 'password';
   }
 
   const disabledByFlag = flagValue !== undefined;
@@ -142,7 +148,6 @@ function SettingsField(props) {
     <Field
       name={ name }
       component={ FieldComponent }
-      { ...typeProp }
       disabled={ disabledByFlag }
       label={ label }
       description={ description }
@@ -151,6 +156,7 @@ function SettingsField(props) {
       values={ options }
       documentationUrl={ documentationUrl }
       validate={ validate }
+      { ...restProps }
     />
     { disabledByFlag &&
       <div className="flag-warning">
@@ -400,4 +406,11 @@ function isEmpty(value) {
 
 function matchesPattern(value, pattern) {
   return value.match(pattern);
+}
+
+/**
+ * shows error as soon as there is an error (without needing to be touched)
+ */
+function settingsFieldError(meta) {
+  return meta.error;
 }
