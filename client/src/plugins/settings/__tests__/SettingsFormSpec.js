@@ -724,6 +724,31 @@ describe('SettingsForm', function() {
     });
 
 
+    it('should show validation errors as soon as settings are opened', async function() {
+
+      // given
+      const schema = [
+        {
+          properties: {
+            'test.requiredText': {
+              type: 'text',
+              label: 'Required Text',
+              constraints: {
+                notEmpty: true
+              }
+            }
+          }
+        }
+      ];
+
+      // when
+      const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
+
+      // then
+      await expectError(container, 'Required Text must not be empty');
+    });
+
+
     it('should not validate fields without constraints', async function() {
 
       // given
