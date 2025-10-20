@@ -12,7 +12,8 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 import { Radio } from '..';
 
@@ -27,7 +28,10 @@ describe('<Radio>', function() {
   it('should check option', function() {
 
     // when
-    const wrapper = createRadio({
+    const { container } = createRadio({
+      field:{
+        onChange:() => {},
+      },
       fieldMeta: {
         value: 'foo'
       },
@@ -39,19 +43,19 @@ describe('<Radio>', function() {
       ]
     });
 
-    const checkedInput = wrapper.find('.custom-control-input');
+    const checkedInput = container.querySelectorAll('.custom-control-input');
 
     // then
     expect(checkedInput).to.have.length(1);
-    expect(checkedInput.prop('checked')).to.be.true;
+    expect(checkedInput[0].checked).to.be.true;
   });
 
 
-  it('should apply field\'s onChange callback', function() {
+  it('should apply field\'s onChange callback', async function() {
 
     // given
     const onChange = sinon.spy();
-    const wrapper = createRadio({
+    const { container } = createRadio({
       field: {
         onChange
       },
@@ -62,13 +66,53 @@ describe('<Radio>', function() {
         }
       ]
     });
-    const input = wrapper.find('.custom-control-input');
+    const input = container.querySelector('.custom-control-input');
 
     // when
-    input.simulate('change');
+    await userEvent.click(input);
 
     // then
     expect(onChange).to.have.been.calledOnce;
+  });
+
+
+  it('should show error', function() {
+
+    // when
+    const { container } = createRadio({
+      fieldMeta: {
+        error: 'foo',
+        touched: true
+      },
+    });
+
+    // then
+    const invalidFeedback = container.querySelector('.form-group>.invalid-feedback');
+    expect(invalidFeedback).to.exist;
+  });
+
+
+  it('should pass field name to the error callback', function() {
+
+    // given
+    const fieldError = sinon.spy();
+    const field = {
+      name: 'name'
+    };
+    const fieldMeta = {
+      error: 'foo',
+      touched: true
+    };
+
+    // when
+    createRadio({
+      field,
+      fieldError,
+      fieldMeta
+    });
+
+    // then
+    expect(fieldError).to.have.been.calledOnceWithExactly(fieldMeta, field.name);
   });
 });
 
@@ -76,14 +120,21 @@ describe('<Radio>', function() {
 // helpers ///////////////
 
 function createRadio(options = {}) {
+  const {
+    field,
+    fieldMeta,
+    form: mockForm,
+    ...props
+  } = options;
 
-  const form = options.form || {
+  const form = mockForm || {
     getFieldMeta: () => {
-      return options.fieldMeta || {};
+      return fieldMeta || {};
     }
   };
 
-  return shallow(<Radio
+  return render(<Radio
+    { ...props }
     field={ options.field || {} }
     form={ form }
     values={ options.values || [] }

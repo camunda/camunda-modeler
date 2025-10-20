@@ -12,7 +12,12 @@ import React from 'react';
 
 import classNames from 'classnames';
 
+import FormFeedback from './FormFeedback';
 import DocumentationIcon from './DocumentationIcon';
+
+import {
+  fieldError as defaultFieldError
+} from './Util';
 
 export default function Radio(props) {
 
@@ -20,6 +25,7 @@ export default function Radio(props) {
     hint,
     label,
     field,
+    fieldError,
     form,
     children,
     values,
@@ -34,6 +40,8 @@ export default function Radio(props) {
   } = field;
 
   const meta = form.getFieldMeta(fieldName);
+
+  const error = (fieldError || defaultFieldError)(meta, fieldName);
 
   const isChecked = (childValue) => meta.value === childValue;
 
@@ -76,6 +84,9 @@ export default function Radio(props) {
             })
           }
         </div>
+        <FormFeedback
+          error={ error }
+        />
         <div className="custom-control-description">{ description }</div>
       </div>
     </React.Fragment>
