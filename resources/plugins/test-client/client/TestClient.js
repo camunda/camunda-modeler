@@ -75,6 +75,7 @@ export default class TestClient extends Component {
         'testClientPlugin.textInput': {
           type: 'text',
           label: 'Constrained Text Input with Hint',
+          description: 'describing the text input',
           hint: 'Hint (must be URL)',
 
           // showcasing that also absolute path works
@@ -93,6 +94,12 @@ export default class TestClient extends Component {
           label: 'Password Input',
           description: 'describing the password',
           condition: { property: 'showAllFields', equals: true },
+          constraints: {
+            pattern:{
+              value: 'secret',
+              message: 'Password must be secret'
+            }
+          }
         },
         'testClientPlugin.boolean': {
           type: 'boolean',
@@ -101,10 +108,17 @@ export default class TestClient extends Component {
           description: 'describing the checkbox',
           documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
           condition: { property: 'showAllFields', equals: true },
+          constraints: {
+            pattern: {
+              value: false,
+              message: 'You must uncheck the box'
+            }
+          }
         },
         'testClientPlugin.select': {
           type: 'select',
           label: 'Select Dropdown',
+          placeholder: 'You need to select second',
           description: 'describing the select',
           documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
           options: [
@@ -113,6 +127,9 @@ export default class TestClient extends Component {
             { label: 'Third Option', value: 'third' }
           ],
           condition: { property: 'showAllFields', equals: true },
+          constraints: {
+            pattern: 'second'
+          }
         },
         'testClientPlugin.radio': {
           type: 'radio',
@@ -127,6 +144,9 @@ export default class TestClient extends Component {
             { label: 'Third Option (show)', value: 'third' }
           ],
           condition: { property: 'showAllFields', equals: true },
+          constraints: {
+            pattern: 'second'
+          }
         },
         'testClientPlugin.conditionOneOfTextField': {
           type: 'text',

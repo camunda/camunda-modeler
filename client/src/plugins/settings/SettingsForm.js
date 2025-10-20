@@ -272,7 +272,7 @@ function validator(constraints, propLabel) {
       return isString(notEmpty) ? notEmpty : `${propLabel || 'This field'} must not be empty`;
     }
 
-    if (pattern) {
+    if (pattern !== undefined) {
       let message;
       if (isObject(pattern)) {
         ({ value: pattern, message } = pattern);
