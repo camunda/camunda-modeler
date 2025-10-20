@@ -605,6 +605,10 @@ export class SystemClipboard extends Mock {
 export class Deployment extends Mock {
   getConfigForFile() {}
 
+  deploy() {
+    return { success: true };
+  }
+
   on() {}
 
   off() {}

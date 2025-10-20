@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: prevent task testing freeze for unsaved file ([#5341](https://github.com/camunda/camunda-modeler/issues/5341))
+
 ## 5.40.0
 
 ### General
