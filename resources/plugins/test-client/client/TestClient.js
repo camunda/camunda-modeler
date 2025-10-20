@@ -92,7 +92,7 @@ export default class TestClient extends Component {
           type: 'password',
           label: 'Password Input',
           description: 'describing the password',
-          condition: { property: 'showAllFields', equals: true },
+          condition: { property: 'showAllFields', equals: true }
         },
         'testClientPlugin.boolean': {
           type: 'boolean',
@@ -100,11 +100,12 @@ export default class TestClient extends Component {
           label: 'Checkbox',
           description: 'describing the checkbox',
           documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
-          condition: { property: 'showAllFields', equals: true },
+          condition: { property: 'showAllFields', equals: true }
         },
         'testClientPlugin.select': {
           type: 'select',
           label: 'Select Dropdown',
+          placeholder: 'You need to select second',
           description: 'describing the select',
           documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
           options: [
@@ -113,6 +114,9 @@ export default class TestClient extends Component {
             { label: 'Third Option', value: 'third' }
           ],
           condition: { property: 'showAllFields', equals: true },
+          constraints: {
+            pattern: 'second'
+          }
         },
         'testClientPlugin.radio': {
           type: 'radio',
@@ -127,6 +131,9 @@ export default class TestClient extends Component {
             { label: 'Third Option (show)', value: 'third' }
           ],
           condition: { property: 'showAllFields', equals: true },
+          constraints: {
+            pattern: 'second'
+          }
         },
         'testClientPlugin.conditionOneOfTextField': {
           type: 'text',
