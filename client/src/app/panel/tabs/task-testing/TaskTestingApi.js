@@ -49,6 +49,10 @@ export default class TaskTestingApi {
   async getOperateUrl() {
     const { endpoint } = await this.getDeploymentConfig();
 
+    if (!endpoint) {
+      return;
+    }
+
     if (endpoint.targetType === 'camundaCloud') {
       const { href } = getOperateUrl(endpoint) || {};
       return href;
@@ -70,6 +74,9 @@ export default class TaskTestingApi {
         error: 'Failed to save the file before deployment'
       };
     }
+
+    // saved file overrides the unsaved one; noop if same
+    this._file = saved.file;
 
     const config = await this.getDeploymentConfig();
 
