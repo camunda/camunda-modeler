@@ -3,7 +3,8 @@ const {
   isRestSaasUrl,
   isSaasUrl,
   sanitizeCamundaClientOptions,
-  sanitizeConfigWithEndpoint
+  sanitizeConfigWithEndpoint,
+  removeV2OrSlashes
 } = require('../../../lib/zeebe-api/utils');
 
 describe('utils', function() {
@@ -157,6 +158,64 @@ describe('utils', function() {
         },
         tenantId: 'tenant-id'
       });
+    });
+
+  });
+
+
+  describe('#removeV2OrSlashes', function() {
+    function validateRemoveV2OrSlashes(url, expected) {
+      expect(removeV2OrSlashes(url)).to.equal(expected);
+    }
+
+
+    it('should keep base URL (no trailing slash)', function() {
+      validateRemoveV2OrSlashes('https://example.com', 'https://example.com');
+    });
+
+
+    it('should remove single trailing slash from base URL', function() {
+      validateRemoveV2OrSlashes('https://example.com/', 'https://example.com');
+    });
+
+
+    it('should remove trailing /v2', function() {
+      validateRemoveV2OrSlashes('https://example.com/v2', 'https://example.com');
+    });
+
+
+    it('should remove trailing /v2/', function() {
+      validateRemoveV2OrSlashes('https://example.com/v2/', 'https://example.com');
+    });
+
+
+    it('should keep first /v2 if double specified', function() {
+      validateRemoveV2OrSlashes('https://example.com/v2/v2', 'https://example.com/v2');
+    });
+
+
+    it('should preserve query string and hash', function() {
+      validateRemoveV2OrSlashes('https://example.com/v2?a=1#top', 'https://example.com?a=1#top');
+    });
+
+
+    it('should not remove mid-path v2', function() {
+      validateRemoveV2OrSlashes('https://example.com/api/v2/resources', 'https://example.com/api/v2/resources');
+    });
+
+
+    it('should remove trailing slashes', function() {
+      validateRemoveV2OrSlashes('https://example.com/api/', 'https://example.com/api');
+    });
+
+
+    it('should preserve port', function() {
+      validateRemoveV2OrSlashes('https://example.com:8080/v2', 'https://example.com:8080');
+    });
+
+
+    it('should support localhost', function() {
+      validateRemoveV2OrSlashes('https://localhost:8080/v2', 'https://localhost:8080');
     });
 
   });

@@ -24,7 +24,7 @@ export const VALIDATION_ERROR_MESSAGES = {
   CONTACT_POINT_MUST_BE_URL: 'Cluster endpoint must be a valid URL.',
   CONTACT_POINT_MUST_NOT_BE_EMPTY: 'Cluster endpoint must not be empty.',
   CLUSTER_URL_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
-  CONTACT_POINT_MUST_START_WITH_PROTOCOL: 'Cluster endpoint must start with "http://", "grpc://", "https://", or "grpcs", .',
+  CONTACT_POINT_MUST_START_WITH_PROTOCOL: 'Cluster endpoint must start with "http://", "grpc://", "https://", or "grpcs://".',
   MUST_PROVIDE_A_VALUE: 'Must provide a value.',
   OAUTH_URL_MUST_NOT_BE_EMPTY: 'OAuth URL must not be empty.'
 };
