@@ -112,7 +112,7 @@ export default class EmptyTab extends PureComponent {
           <h3>Learn more</h3>
           <div className="article top">
             <AiIcon />
-            <a href="https://docs.camunda.io/docs/8.8/guides/getting-started-agentic-orchestration?utm_source=modeler&utm_medium=referral">Build your first AI agent</a>
+            <a href="https://docs.camunda.io/docs/guides/getting-started-agentic-orchestration?utm_source=modeler&utm_medium=referral">Build your first AI agent</a>
           </div>
           <div className="article relative">
             <p>Introduction to Camunda 8</p>
