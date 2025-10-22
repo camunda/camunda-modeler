@@ -29,6 +29,12 @@ const TAB_TYPES_BY_RESOUCE_TYPE = {
   'form': [ TAB_TYPES.FORM, TAB_TYPES.CLOUD_FORM ]
 };
 
+export const CONTEXT_TO_EVENT = {
+  deploymentTool: 'deploy',
+  startInstanceTool: 'startInstance',
+  taskTesting: 'taskTesting:deploy'
+};
+
 export function getResourceType(tabType) {
   return find(keys(TAB_TYPES_BY_RESOUCE_TYPE), function(resourceType) {
     return TAB_TYPES_BY_RESOUCE_TYPE[ resourceType ].includes(tabType);

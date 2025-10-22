@@ -34,7 +34,7 @@ export default class TaskTestingEventHandler {
 
     const { $type: type, modelerTemplate } = getBusinessObject(element);
 
-    this.track('taskTesting.finished', {
+    this.track('taskTesting:started', {
       elementType: type,
       elementTemplate: modelerTemplate,
     });
@@ -45,7 +45,7 @@ export default class TaskTestingEventHandler {
 
     const { $type: type, modelerTemplate } = getBusinessObject(element);
 
-    this.track('taskTesting.finished', {
+    this.track('taskTesting:finished', {
       elementType: type,
       elementTemplate: modelerTemplate,
       success: output.success,
