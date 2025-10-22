@@ -23,7 +23,8 @@ const {
 const {
   sanitizeCamundaClientOptions,
   isGrpcSaasUrl,
-  isRestSaasUrl
+  isRestSaasUrl,
+  removeV2OrSlashes
 } = require('./utils');
 
 /**
@@ -269,7 +270,7 @@ class CamundaClientFactory {
     case 'http':
     case 'https':
     default:
-      clientConfig.ZEEBE_REST_ADDRESS = url;
+      clientConfig.ZEEBE_REST_ADDRESS = removeV2OrSlashes(url);
       break;
     }
 

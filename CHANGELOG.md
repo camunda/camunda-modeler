@@ -7,6 +7,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ___Note:__ Yet to be released changes appear here._
 
 * `FIX`: use `ZEEBE_GRPC_ADDRESS` in favor of deprecated `ZEEBE_ADDRESS` for cluster connections ([#5362](https://github.com/camunda/camunda-modeler/pull/5362))
+* `FEAT`: accept trailing `v2` or `/` for REST cluster URLs ([#5345](https://github.com/camunda/camunda-modeler/issues/5345))
 
 ## 5.40.1
 

@@ -138,3 +138,39 @@ function isRestSaasUrl(url) {
   return /^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?/.test(url);
 }
 module.exports.isRestSaasUrl = isRestSaasUrl;
+
+/**
+ * Remove trailing slashes and '/v2' from a URL. This is mainly used for Camunda 8 REST API endpoints as we are inconsistent if we add /v2 or not.
+ *
+ * @param {string} url
+ *
+ * @returns {string}
+ *
+ * @examples
+ * removeV2OrSlashes('https://example.com') // returns 'https://example.com'
+ * removeV2OrSlashes('https://example.com/') // returns 'https://example.com'
+ * removeV2OrSlashes('https://example.com/v2') // returns 'https://example.com'
+ * removeV2OrSlashes('https://example.com/v2/') // returns 'https://example.com'
+ * removeV2OrSlashes('https://example.com/v2/v2') // returns 'https://example.com/v2' (super edge case, they have to specify v2 explicitly twice)
+ */
+module.exports.removeV2OrSlashes = function(url) {
+
+  if (!url) {
+    return url;
+  }
+  const parsed = new URL(url);
+
+  let pathname = parsed.pathname || '';
+
+  while (pathname.endsWith('/')) {
+    pathname = pathname.slice(0, -1);
+  }
+
+  if (pathname.endsWith('/v2')) {
+    pathname = pathname.slice(0, -3);
+  }
+
+  parsed.pathname = pathname || '/';
+
+  return parsed.href.replace(/\/(\?|#|$)/, '$1');
+};

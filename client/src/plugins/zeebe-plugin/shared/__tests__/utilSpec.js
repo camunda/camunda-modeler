@@ -52,6 +52,21 @@ describe('util', function() {
     });
 
 
+    it('should get Camunda Operate URL (REST v2)', function() {
+
+      // given
+      const endpoint = {
+        camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/v2/'
+      };
+
+      // when
+      const url = getOperateUrl(endpoint);
+
+      // then
+      expect(url.toString()).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
     it('should not get Camunda Operate URL', function() {
 
       // given
