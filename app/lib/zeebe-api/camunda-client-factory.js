@@ -260,7 +260,7 @@ class CamundaClientFactory {
     switch (this._cachedProtocol) {
     case 'grpc':
     case 'grpcs':
-      clientConfig.ZEEBE_ADDRESS = url ? removeProtocol(url) : '';
+      clientConfig.ZEEBE_GRPC_ADDRESS = url ? overwriteProtocol(url, this._cachedProtocol) : '';
       clientConfig.zeebeGrpcSettings = {
         ZEEBE_GRPC_CLIENT_RETRY: false
       };
@@ -301,7 +301,6 @@ class CamundaClientFactory {
         ZEEBE_CLIENT_ID: endpoint.clientId,
         ZEEBE_CLIENT_SECRET: endpoint.clientSecret,
         CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
-        CAMUNDA_SECURE_CONNECTION: true,
         CAMUNDA_CONSOLE_CLIENT_ID: endpoint.clientId,
         CAMUNDA_CONSOLE_CLIENT_SECRET: endpoint.clientSecret
       };
@@ -325,10 +324,6 @@ class CamundaClientFactory {
   async _withTLSConfig(url, options) {
     const rootCerts = [];
 
-    // (0) set `useTLS` according to the protocol
-    const tlsOptions = {
-      CAMUNDA_SECURE_CONNECTION: options.CAMUNDA_SECURE_CONNECTION || /^(https|grpcs):\/\//.test(url)
-    };
 
     // (1) use certificate from flag
     const customCertificatePath = this._flags.get('zeebe-ssl-certificate');
@@ -346,14 +341,13 @@ class CamundaClientFactory {
     rootCerts.push(...systemCertificates);
 
     if (!rootCerts.length) {
-      return { ...options, ...tlsOptions };
+      return options;
     }
 
     const rootCertsBuffer = Buffer.from(rootCerts.join('\n'));
 
     return {
       ...options,
-      ...tlsOptions,
       CAMUNDA_CUSTOM_ROOT_CERT_STRING: rootCertsBuffer
     };
   }
@@ -410,18 +404,19 @@ class CamundaClientFactory {
 }
 
 /**
- * Remove the protocol (http://, https://, etc.) from a URL.
+ * Overwrite the protocol (http://, https://, etc.) from a URL.
  *
  * @example
  *
- * removeProtocol('https://example.com') // returns 'example.com'
+ * overwriteProtocol('https://example.com', 'grpcs') // returns 'grpcs://example.com'
  *
  * @param {string} url
+ * @param {'http'|'https'|'grpc'|'grpcs'} protocol
  *
  * @returns {string}
  */
-function removeProtocol(url) {
-  return url.replace(/^(https?:\/\/|grpcs?:\/\/)/, '');
+function overwriteProtocol(url, protocol) {
+  return url.replace(/^(https?:\/\/|grpcs?:\/\/)/, protocol + '://');
 }
 
 module.exports = CamundaClientFactory;
