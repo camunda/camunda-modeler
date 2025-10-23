@@ -224,8 +224,7 @@ jobs:
 
   # This job waits for the FOSSA scan (triggered by CHECK_LICENSES.yml on tag push)
   # to complete, then creates releases in FOSSA and generates attribution/SBOM reports.
-  # It only runs for stable releases (skips release candidates) and depends on successful
-  # completion of the build_release job to ensure the release artifacts are ready.
+  # It depends on successful completion of the build_release job to ensure the release artifacts are ready.
   fossa_release:
     name: Create FOSSA releases and generate attribution/SBOM reports
     needs:
@@ -233,11 +232,8 @@ jobs:
       - build_release
     runs-on: ubuntu-latest
 
-    # skip for release candidates
-    if: contains(needs.pre_release.outputs.tag, 'rc') == false
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Import Secrets
         id: secrets
         uses: hashicorp/vault-action@v3.4.0
