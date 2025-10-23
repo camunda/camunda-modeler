@@ -1070,10 +1070,10 @@ describe('ZeebeAPI (gRPC)', function() {
         const [ config ] = configSpy.getCall(0).args;
 
         // ZBClient is invoked accordingly
-        expect(config.ZEEBE_ADDRESS).to.eql('localhost:26500');
+        expect(config.ZEEBE_GRPC_ADDRESS).to.eql('grpc://localhost:26500');
 
         expect(config).to.include.keys({
-          ZEEBE_ADDRESS: 'url',
+          ZEEBE_GRPC_ADDRESS: 'url',
           CAMUNDA_AUTH_STRATEGY: 'basic',
           CAMUNDA_BASIC_AUTH_USERNAME: 'username',
           CAMUNDA_BASIC_AUTH_PASSWORD: 'password'
@@ -1125,7 +1125,7 @@ describe('ZeebeAPI (gRPC)', function() {
         const config = configSpy.getCall(0).args[0];
 
         // ZBClient is invoked accordingly
-        expect(config.ZEEBE_ADDRESS).to.eql('localhost:26500');
+        expect(config.ZEEBE_GRPC_ADDRESS).to.eql('grpc://localhost:26500');
 
         expect(config).to.include.keys({
           CAMUNDA_AUTH_STRATEGY: 'OAUTH',
@@ -1654,7 +1654,7 @@ describe('ZeebeAPI (gRPC)', function() {
       await zeebeAPI.deploy(parameters);
 
       // then
-      expect(usedConfig.ZEEBE_ADDRESS).to.eql('localhost:26500');
+      expect(usedConfig.ZEEBE_GRPC_ADDRESS).to.eql('grpc://localhost:26500');
     });
 
 
@@ -1798,135 +1798,6 @@ describe('ZeebeAPI (gRPC)', function() {
 
       // then
       expect(closeSpy).to.have.been.calledOnce;
-    });
-
-
-    it('should set `CAMUNDA_SECURE_CONNECTION` to true for grpcs:// endpoint', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'grpcs://camunda.com'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', true);
-    });
-
-
-    it('should set `CAMUNDA_SECURE_CONNECTION` to false for http:// endpoint (no auth)', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', false);
-    });
-
-
-    it('should set `CAMUNDA_SECURE_CONNECTION` to false for grpc:// endpoint (oauth)', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          authType: AUTH_TYPES.OAUTH,
-          url: 'grpc://camunda.com'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', false);
-    });
-
-
-    it('should set `CAMUNDA_SECURE_CONNECTION` to true for no protocol endpoint (cloud)', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-          url: 'camunda.com'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', true);
     });
 
 
@@ -2341,11 +2212,10 @@ describe('ZeebeAPI (gRPC)', function() {
           zeebeGrpcSettings: {
             ZEEBE_GRPC_CLIENT_RETRY: false
           },
-          ZEEBE_ADDRESS: 'localhost:26500',
+          ZEEBE_GRPC_ADDRESS: 'grpc://localhost:26500',
           CAMUNDA_AUTH_STRATEGY: 'BASIC',
           CAMUNDA_BASIC_AUTH_USERNAME: 'username',
           CAMUNDA_BASIC_AUTH_PASSWORD: '******',
-          CAMUNDA_SECURE_CONNECTION: false
         }
       });
 
@@ -2422,7 +2292,7 @@ describe('ZeebeAPI (gRPC)', function() {
           zeebeGrpcSettings: {
             ZEEBE_GRPC_CLIENT_RETRY: false
           },
-          ZEEBE_ADDRESS: 'localhost:26500',
+          ZEEBE_GRPC_ADDRESS: 'grpc://localhost:26500',
           CAMUNDA_AUTH_STRATEGY: 'OAUTH',
           CAMUNDA_TOKEN_DISK_CACHE_DISABLE: true,
           CAMUNDA_TOKEN_SCOPE: 'scope',
@@ -2430,7 +2300,6 @@ describe('ZeebeAPI (gRPC)', function() {
           ZEEBE_CLIENT_SECRET: '******',
           CAMUNDA_ZEEBE_OAUTH_AUDIENCE: 'audience',
           CAMUNDA_OAUTH_URL: 'oauthURL',
-          CAMUNDA_SECURE_CONNECTION: false
         }
       });
 

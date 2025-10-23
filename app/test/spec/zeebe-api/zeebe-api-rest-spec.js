@@ -1710,74 +1710,6 @@ describe('ZeebeAPI (REST)', function() {
     });
 
 
-
-
-
-    it('should set `CAMUNDA_SECURE_CONNECTION` to false for http:// endpoint (no auth)', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: 'http://test'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', false);
-    });
-
-
-
-    it('should set `CAMUNDA_SECURE_CONNECTION` to true for no protocol endpoint (cloud)', async function() {
-
-      // given
-      let usedConfig;
-
-      const zeebeAPI = createZeebeAPI({
-        configSpy(config) {
-          usedConfig = config;
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-          url: 'camunda.com'
-        },
-        resourceConfigs: [
-          {
-            path: 'foo.bpmn',
-            type: 'bpmn'
-          }
-        ]
-      };
-
-      // when
-      await zeebeAPI.deploy(parameters);
-
-      // then
-      expect(usedConfig).to.have.property('CAMUNDA_SECURE_CONNECTION', true);
-    });
-
-
     it('should accept port', async function() {
 
       // given
@@ -2097,7 +2029,6 @@ describe('ZeebeAPI (REST)', function() {
           CAMUNDA_AUTH_STRATEGY: 'BASIC',
           CAMUNDA_BASIC_AUTH_USERNAME: 'username',
           CAMUNDA_BASIC_AUTH_PASSWORD: '******',
-          CAMUNDA_SECURE_CONNECTION: true,
           port: '443'
         }
       });
@@ -2180,7 +2111,6 @@ describe('ZeebeAPI (REST)', function() {
           ZEEBE_CLIENT_SECRET: '******',
           CAMUNDA_ZEEBE_OAUTH_AUDIENCE: 'audience',
           CAMUNDA_OAUTH_URL: 'oauthURL',
-          CAMUNDA_SECURE_CONNECTION: true,
           port: '443',
         }
       });
