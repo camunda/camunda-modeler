@@ -53,7 +53,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -90,7 +90,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -127,7 +127,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -175,7 +175,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -240,7 +240,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -328,7 +328,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     await clock.tickAsync(5000);
 
@@ -343,6 +343,192 @@ describe('ConnectionChecker', function() {
 
     // then
     expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+  });
+
+
+  it('should not schedule checks when updating with no config', async function() {
+
+    // given
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy()
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when
+    connectionChecker.updateConfig(null);
+
+    // assume
+    expect(zeebeAPI.checkConnection).not.have.been.called;
+    expect(connectionCheckSpy).not.have.been.called;
+
+    // when
+    await clock.tickAsync(1000);
+
+    // when
+    await clock.tickAsync(6000);
+
+    // then
+    expect(zeebeAPI.checkConnection).not.have.been.called;
+    expect(connectionCheckSpy).not.have.been.called;
+  });
+
+
+  it('should set lastResult with error when updating with no config', async function() {
+
+    // given
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy()
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    // when
+    connectionChecker.updateConfig(null);
+
+    // then
+    const lastResult = connectionChecker.getLastResult();
+    expect(lastResult).to.exist;
+    expect(lastResult.success).to.be.false;
+    expect(lastResult.error).to.exist;
+    expect(lastResult.error.message).to.equal('No configuration provided');
+  });
+
+
+  it('should not schedule checks when updating with invalid config', async function() {
+
+    // given
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy()
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    const invalidConfig = {
+      endpoint: {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+      }
+    };
+
+    // when
+    connectionChecker.updateConfig(invalidConfig);
+
+    await clock.tickAsync(6000);
+
+    // then
+    expect(zeebeAPI.checkConnection).not.have.been.called;
+    expect(connectionCheckSpy).not.have.been.called;
+  });
+
+
+  it('should set lastResult with error when updating with invalid config', async function() {
+
+    // given
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy()
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const invalidConfig = {
+      endpoint: {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+      }
+    };
+
+    // when
+    connectionChecker.updateConfig(invalidConfig);
+
+    // then
+    const lastResult = connectionChecker.getLastResult();
+    expect(lastResult).to.exist;
+    expect(lastResult.success).to.be.false;
+    expect(lastResult.error).to.exist;
+    expect(lastResult.error.message).to.equal('Configuration is invalid');
+  });
+
+
+  it('should not continue checking after config becomes invalid', async function() {
+
+    // given
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.stub().resolves({
+        success: true
+      })
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
+
+    await clock.tickAsync(1000);
+
+    // assume
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
+
+    // when
+    const invalidConfig = {
+      endpoint: {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+      }
+    };
+
+    connectionChecker.updateConfig(invalidConfig);
+
+    await clock.tickAsync(6000);
+
+    // then
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
+  });
+
+
+  it('should not continue checking after config is cleared', async function() {
+
+    // given
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.stub().resolves({
+        success: true
+      })
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
+
+    await clock.tickAsync(1000);
+
+    // assume
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
+
+    // when
+    connectionChecker.updateConfig(null);
+
+    await clock.tickAsync(6000);
+
+    // then
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
   });
 
 });
