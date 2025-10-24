@@ -1,0 +1,7 @@
+{
+  // If you want to enable type checking for JS files copy this file to `tsconfig.json`
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "checkJs": true
+  }
+}
