@@ -372,6 +372,16 @@ renderer.on('zeebe:searchIncidents', async function(options, done) {
   }
 });
 
+renderer.on('zeebe:searchElementInstances', async function(options, done) {
+  try {
+    const searchElementInstancesResponse = await zeebeAPI.searchElementInstances(options);
+
+    done(null, searchElementInstancesResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
 // config //////////
 
 renderer.on('config:get', function(key, ...args) {

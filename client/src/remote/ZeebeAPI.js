@@ -96,6 +96,17 @@ export default class ZeebeAPI {
     });
   }
 
+  searchElementInstances(options, processInstanceKey) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchElementInstances', {
+      endpoint,
+      processInstanceKey
+    });
+  }
+
   searchVariables(options, processInstanceKey) {
     let { endpoint } = options;
 

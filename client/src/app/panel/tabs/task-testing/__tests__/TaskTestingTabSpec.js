@@ -303,7 +303,7 @@ describe('<TaskTestingTab>', function() {
         })
       });
 
-      const { container } = renderResult;
+      const { getByText } = renderResult;
 
       await clock.tickAsync(1001);
 
@@ -312,7 +312,7 @@ describe('<TaskTestingTab>', function() {
 
       // then
       await waitFor(() => {
-        expect(container.querySelector('.output__header--button-operate')).to.exist;
+        expect(getByText('View in Operate')).to.exist;
       });
     });
 
