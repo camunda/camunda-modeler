@@ -207,7 +207,7 @@ export default class Modeler {
         return reject(new Error('failed to save svg'));
       }
 
-      return resolve({ svg: '<svg />' });
+      return resolve({ svg: '<svg width="100" height="50" xmlns="http://www.w3.org/2000/svg"></svg>' });
     });
   }
 

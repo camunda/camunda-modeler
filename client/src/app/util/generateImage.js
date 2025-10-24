@@ -8,8 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import { Canvg } from 'canvg';
-
 // list of defined encodings
 const ENCODINGS = [
   'image/png',
@@ -34,24 +32,37 @@ export default async function generateImage(type, svg) {
 
   let dataURL = '';
 
+  // we try with different scales, to eventually end up with an image
+  // size that we can generate
   for (let scale = INITIAL_SCALE; scale >= FINAL_SCALE; scale -= SCALE_STEP) {
-
     let canvas = document.createElement('canvas');
 
-    svg = initialSVG.replace(/width="([^"]+)" height="([^"]+)"/, function(_, widthStr, heightStr) {
-      return `width="${parseInt(widthStr, 10) * scale}" height="${parseInt(heightStr, 10) * scale}"`;
-    });
+    svg = initialSVG.replace(
+      /width="([^"]+)" height="([^"]+)"/,
+      (_, widthStr, heightStr) =>
+        `width="${parseInt(widthStr, 10) * scale}" height="${parseInt(heightStr, 10) * scale}"`
+    );
 
-    const context = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
 
-    const canvg = Canvg.fromString(context, svg);
-    await canvg.render();
+    const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 
-    // make the background white for every format
-    context.globalCompositeOperation = 'destination-over';
-    context.fillStyle = 'white';
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = svgDataUrl;
+    await img.decode();
 
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    // Size canvas to rendered SVG dimensions
+    canvas.width = img.naturalWidth || img.width;
+    canvas.height = img.naturalHeight || img.height;
+
+    // Draw the SVG
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    // White background (put under the drawing)
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     dataURL = canvas.toDataURL(encoding);
 

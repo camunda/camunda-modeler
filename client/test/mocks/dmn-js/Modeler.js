@@ -102,7 +102,7 @@ class Viewer {
     }
 
     return {
-      svg: '<svg />'
+      svg: '<svg width="100" height="50" xmlns="http://www.w3.org/2000/svg"></svg>'
     };
   }
 
