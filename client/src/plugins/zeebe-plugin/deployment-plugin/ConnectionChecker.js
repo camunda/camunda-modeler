@@ -9,6 +9,7 @@
  */
 
 import EventEmitter from 'events';
+import DeploymentConfigValidator from './DeploymentConfigValidator';
 
 export const DELAYS = {
   LONG: 5000, // 5s interval if no config change
@@ -28,9 +29,28 @@ export default class ConnectionChecker extends EventEmitter {
   }
 
   updateConfig(config, startChecking = true) {
-    this._config = config;
-
     this._cancelCheck();
+
+    if (!config) {
+      this._config = null;
+      this._lastResult = {
+        success: false,
+        error: new Error('No configuration provided')
+      };
+      return;
+    }
+
+    const configValidationErrors = DeploymentConfigValidator.validateConfig(config);
+    if (Object.keys(configValidationErrors).length > 0) {
+      this._config = null;
+      this._lastResult = {
+        success: false,
+        error: new Error('Configuration is invalid')
+      };
+      return;
+    }
+
+    this._config = config;
 
     this._checkTimeout = setTimeout(() => {
       this._check();
