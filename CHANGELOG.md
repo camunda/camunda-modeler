@@ -6,8 +6,13 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FIX`: use `ZEEBE_GRPC_ADDRESS` in favor of deprecated `ZEEBE_ADDRESS` for cluster connections ([#5362](https://github.com/camunda/camunda-modeler/pull/5362))
+### General
+
 * `FEAT`: accept trailing `v2` or `/` for REST cluster URLs ([#5345](https://github.com/camunda/camunda-modeler/issues/5345))
+* `FIX`: use `ZEEBE_GRPC_ADDRESS` in favor of deprecated `ZEEBE_ADDRESS` for cluster connections ([#5362](https://github.com/camunda/camunda-modeler/pull/5362))
+* `FIX`: display process and local variables separately in task testing ([@camunda/task-testing#41](https://github.com/camunda/task-testing/pull/41))
+* `FIX`: fix Operate URL in task testing for self-managed ([#5357](https://github.com/camunda/camunda-modeler/issues/5357))
+* `DEPS`: update to `@camunda/task-testing@1.0.1`
 
 ## 5.40.1
 

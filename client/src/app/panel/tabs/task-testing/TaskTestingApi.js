@@ -29,6 +29,7 @@ export default class TaskTestingApi {
       startInstance: this.startInstance.bind(this),
       getProcessInstance: this.getProcessInstance.bind(this),
       getProcessInstanceVariables: this.getProcessInstanceVariables.bind(this),
+      getProcessInstanceElementInstances: this.getProcessInstanceElementInstances.bind(this),
       getProcessInstanceIncident: this.getProcessInstanceIncident.bind(this)
     };
   }
@@ -136,6 +137,12 @@ export default class TaskTestingApi {
     const config = await this.getDeploymentConfig();
 
     return this._zeebeApi.searchVariables(config, processInstanceKey);
+  }
+
+  async getProcessInstanceElementInstances(processInstanceKey) {
+    const config = await this.getDeploymentConfig();
+
+    return this._zeebeApi.searchElementInstances(config, processInstanceKey);
   }
 
   async getProcessInstanceIncident(processInstanceKey) {
