@@ -447,6 +447,45 @@ class ZeebeAPI {
     }
   }
 
+  async searchElementInstances(config) {
+    const {
+      endpoint,
+      processInstanceKey
+    } = config;
+
+    this._log.debug('search element instances', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.searchElementInstances({
+        filter: {
+          processInstanceKey
+        }
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search element instances failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
   /**
    * Search incidents. Requires Camunda REST client.
    */

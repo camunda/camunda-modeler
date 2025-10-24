@@ -61,6 +61,7 @@ const allowedEvents = [
   'zeebe:getGatewayVersion',
   'zeebe:startInstance',
   'zeebe:searchProcessInstances',
+  'zeebe:searchElementInstances',
   'zeebe:searchVariables',
   'zeebe:searchIncidents'
 ];
