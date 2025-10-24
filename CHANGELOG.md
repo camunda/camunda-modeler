@@ -16,6 +16,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-properties-panel@5.42.2`
 * `DEPS`: update to `bpmn-js-element-templates@2.15.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.8.1`
+* `DEPS`: update to `@camunda/task-testing@1.0.1`
 
 ### General
 
@@ -26,6 +27,8 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FIX`: keep selected element in sync with canvas state ([#1131](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1131))
 * `FIX`: use maximize icon in open popup button ([@bpmn-io/properties-panel#438](https://github.com/bpmn-io/properties-panel/pull/444))
+* `FIX`: display process and local variables separately in task testing ([@camunda/task-testing#41](https://github.com/camunda/task-testing/pull/41))
+* `FIX`: fix Operate URL in task testing for self-managed ([#5357](https://github.com/camunda/camunda-modeler/issues/5357))
 
 ### Forms
 
