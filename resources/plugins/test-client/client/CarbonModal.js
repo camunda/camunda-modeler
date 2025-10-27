@@ -17,8 +17,17 @@ import { Button, Theme, IconButton, TextInput } from '@carbon/react';
 import { Add } from '@carbon/icons-react';
 
 
-export default function CarbonModal({ onClose }) {
+export default function CarbonModal({ onClose, triggerAction }) {
 
+  const [ rowId, setRowId ] = React.useState('');
+
+  function deepLinkSettings() {
+    return () => {
+      triggerAction('settings-open', {
+        expandRowId: rowId || undefined
+      });
+    };
+  }
   return (
     <Modal>
       <Modal.Title>Test @react/carbon integration</Modal.Title>
@@ -40,6 +49,18 @@ export default function CarbonModal({ onClose }) {
         <IconButton label="Add">
           <Add />
         </IconButton>
+        <div style={ { marginTop: '20px', marginBottom: '10px' } }>
+          <TextInput
+            id="row-id-input"
+            labelText="Row ID for Settings Deep Link"
+            helperText="Enter the row ID to expand in settings (leave empty to open without expansion)"
+            placeholder="e.g., 1t1g4bb"
+            value={ rowId }
+            onChange={ (e) => setRowId(e.target.value) }
+            size="md"
+          />
+        </div>
+        <Button onClick={ deepLinkSettings() }>Open Settings with Row ID</Button>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={ onClose }>OK</Button>

@@ -809,6 +809,203 @@ describe('SettingsForm', function() {
 
   describe('expandable table', function() {
 
+    describe('expandRowId', function() {
+
+      it('should automatically expand row with matching id', async function() {
+
+        // given
+        const schema = [ {
+          properties: {
+            'test.expandableTable': {
+              type: 'expandableTable',
+              label: 'Expandable table',
+              rowProperties: {
+                'name': {
+                  type: 'text',
+                  default: 'Test Name'
+                }
+              },
+              childProperties: {
+                'description': {
+                  type: 'text',
+                  label: 'Description'
+                }
+              }
+            }
+          }
+        } ];
+
+        // when
+        const { container } = createSettingsForm({
+          schema,
+          initialValues: {
+            test: {
+              expandableTable: [
+                { id: 'row-1', name: 'Row 1', description: 'Description 1' },
+                { id: 'row-2', name: 'Row 2', description: 'Description 2' },
+                { id: 'row-3', name: 'Row 3', description: 'Description 3' }
+              ]
+            }
+          },
+          expandRowId: 'row-2'
+        });
+
+        // then
+        await waitFor(() => {
+          const nameInput = container.querySelector('input[id="test.expandableTable[1].name"]');
+          expect(nameInput).to.exist;
+        }, { timeout: 3000 });
+
+        const secondRowNameInput = container.querySelector('input[id="test.expandableTable[1].name"]');
+        expect(secondRowNameInput).to.exist;
+        expect(secondRowNameInput.value).to.equal('Row 2');
+
+        const descriptionField = container.querySelector('input[id="test.expandableTable[1].description"]');
+        expect(descriptionField).to.exist;
+        expect(descriptionField.value).to.equal('Description 2');
+      });
+
+
+      it('should not expand any row when expandRowId does not match', function() {
+
+        // given
+        const schema = [ {
+          properties: {
+            'test.expandableTable': {
+              type: 'expandableTable',
+              label: 'Expandable table',
+              rowProperties: {
+                'name': {
+                  type: 'text',
+                  default: 'Test Name'
+                }
+              },
+              childProperties: {
+                'description': {
+                  type: 'text',
+                  label: 'Description'
+                }
+              }
+            }
+          }
+        } ];
+
+        const { container } = createSettingsForm({
+          schema,
+          initialValues: {
+            test: {
+              expandableTable: [
+                { id: 'row-1', name: 'Row 1', description: 'Description 1' },
+                { id: 'row-2', name: 'Row 2', description: 'Description 2' }
+              ]
+            }
+          },
+          expandRowId: 'non-existent-id'
+        });
+
+        // then
+        const expandButtons = container.querySelectorAll('button.cds--table-expand__button');
+
+        // All rows should be collapsed
+        expandButtons.forEach(button => {
+          expect(button.getAttribute('aria-label')).to.equal('Expand current row');
+        });
+      });
+
+
+      it('should not expand any row when expandRowId is not provided', function() {
+
+        // given
+        const schema = [ {
+          properties: {
+            'test.expandableTable': {
+              type: 'expandableTable',
+              label: 'Expandable table',
+              rowProperties: {
+                'name': {
+                  type: 'text',
+                  default: 'Test Name'
+                }
+              },
+              childProperties: {
+                'description': {
+                  type: 'text',
+                  label: 'Description'
+                }
+              }
+            }
+          }
+        } ];
+
+        const { container } = createSettingsForm({
+          schema,
+          initialValues: {
+            test: {
+              expandableTable: [
+                { id: 'row-1', name: 'Row 1', description: 'Description 1' },
+                { id: 'row-2', name: 'Row 2', description: 'Description 2' }
+              ]
+            }
+          }
+        });
+
+        // then
+        const expandButtons = container.querySelectorAll('button.cds--table-expand__button');
+
+        // All rows should be collapsed
+        expandButtons.forEach(button => {
+          expect(button.getAttribute('aria-label')).to.equal('Expand current row');
+        });
+      });
+
+
+      it('should handle empty table with expandRowId', function() {
+
+        // given
+        const schema = [ {
+          properties: {
+            'test.expandableTable': {
+              type: 'expandableTable',
+              label: 'Expandable table',
+              formConfig: {
+                emptyPlaceholder: 'No items'
+              },
+              rowProperties: {
+                'name': {
+                  type: 'text',
+                  default: 'Test Name'
+                }
+              },
+              childProperties: {
+                'description': {
+                  type: 'text',
+                  label: 'Description'
+                }
+              }
+            }
+          }
+        } ];
+
+        // when
+        const { container } = createSettingsForm({
+          schema,
+          initialValues: {
+            test: {
+              expandableTable: []
+            }
+          },
+          expandRowId: 'row-1'
+        });
+
+        // then
+        const emptyPlaceholder = container.querySelector('p.empty-placeholder');
+        expect(emptyPlaceholder).to.exist;
+        expect(emptyPlaceholder.textContent).to.equal('No items');
+      });
+
+    });
+
+
     it('should render with empty placeholder', function() {
 
       // given
@@ -1341,7 +1538,7 @@ describe('SettingsForm', function() {
     });
 
 
-    it('should apply default values when adding new items', function() {
+    it('should apply default values and expand when adding new items', async function() {
 
       // given
       const schema = [ {
@@ -1380,11 +1577,12 @@ describe('SettingsForm', function() {
       const addButton = container.querySelector('button.add');
       fireEvent.click(addButton);
 
-
-      const expandButton = container.querySelector('button.cds--table-expand__button');
-      fireEvent.click(expandButton);
-
       // then
+      await waitFor(() => {
+        const nameField = container.querySelector('input[id="test.expandableTable[0].name"]');
+        expect(nameField).to.exist;
+      });
+
       const nameField = container.querySelector('input[id="test.expandableTable[0].name"]');
       expect(nameField.value).to.equal('Default Name');
 
@@ -1400,7 +1598,7 @@ describe('SettingsForm', function() {
 });
 
 // helpers
-function createSettingsForm({ schema, values, initialValues, onChange = () => {} } = {}) {
+function createSettingsForm({ schema, values, initialValues, onChange = () => {}, expandRowId } = {}) {
   return render(
     <Formik
       initialValues={ initialValues }
@@ -1409,6 +1607,7 @@ function createSettingsForm({ schema, values, initialValues, onChange = () => {}
         schema={ schema }
         values={ values }
         onChange={ onChange }
+        expandRowId={ expandRowId }
       />
     </Formik>
   );
