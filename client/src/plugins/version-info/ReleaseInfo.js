@@ -44,16 +44,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for Camunda 8.8 and 7.24</h4>
-          Camunda 8.8 and 7.24 are now fully supported.
+          <h4>Support for upcoming Camunda 8 features</h4>
+          You can now create diagrams for Camunda 8.9.
         </li>
         <li>
-          <h4>Introducing task testing</h4>
-          Run a single task directly from the Modeler to verify it works as expected. Use the new task testing feature to provide input data and inspect the output of the task execution. Read more in <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/?utm_source=modeler&utm_medium=referral">the task testing documentation</a>.
+          <h4>Improved task testing</h4>
+          We now separate process and local variables in the output. <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/?utm_source=modeler&utm_medium=referral">Learn more about task testing</a>.
         </li>
         <li>
-          <h4>Enhanced ad-hoc subprocess templating support</h4>
-          The Modeler now supports templating of ad-hoc subprocesses with both BPMN and job worker implementations.
+          <h4>Support orchestration cluster endpoint for c8run</h4>
+          You can now use Orchestration Cluster API endpoint for c8run deployments.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
