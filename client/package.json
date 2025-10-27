@@ -18,7 +18,7 @@
     "@camunda/form-linting": "^0.23.0",
     "@camunda/form-playground": "^0.23.0",
     "@camunda/improved-canvas": "^1.7.6",
-    "@camunda/linting": "^3.43.1",
+    "@camunda/linting": "^3.44.0",
     "@camunda/rpa-integration": "^1.1.4",
     "@camunda/task-testing": "^0.2.8",
     "@carbon/icons-react": "^11.53.0",

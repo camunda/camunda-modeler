@@ -8,13 +8,14 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 5.41.0
 
+* `DEPS`: update to `@bpmn-io/form-js@1.18.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.33.1`
+* `DEPS`: update to `@camunda/form-playground@0.23.0`
+* `DEPS`: update to `@camunda/linting@3.44.0`
 * `DEPS`: update to `bpmn-js@18.8.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.42.2`
 * `DEPS`: update to `bpmn-js-element-templates@2.15.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.8.1`
-* `DEPS`: update to `@bpmn-io/form-js@1.18.0`
-* `DEPS`: update to `@camunda/form-playground@0.23.0`
 
 ### General
 
