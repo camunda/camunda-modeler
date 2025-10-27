@@ -21,7 +21,7 @@ export const ENGINE_PROFILES = [
   },
   {
     executionPlatform: ENGINES.CLOUD,
-    executionPlatformVersions: [ '8.8.0', '8.7.0', '8.6.0', '8.5.0', '8.4.0', '8.3.0', '8.2.0', '8.1.0', '8.0.0' ],
+    executionPlatformVersions: [ '8.9.0', '8.8.0', '8.7.0', '8.6.0', '8.5.0', '8.4.0', '8.3.0', '8.2.0', '8.1.0', '8.0.0' ],
     latestStable: '8.8.0'
   }
 ];
