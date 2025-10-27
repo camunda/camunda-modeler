@@ -6,21 +6,30 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FEAT`: accept trailing `v2` or `/` for REST cluster URLs ([#5345](https://github.com/camunda/camunda-modeler/issues/5345))
-* `FIX`: use `ZEEBE_GRPC_ADDRESS` in favor of deprecated `ZEEBE_ADDRESS` for cluster connections ([#5362](https://github.com/camunda/camunda-modeler/pull/5362))
-* `FIX`: keep selected element in sync with canvas state ([#1131](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1131))
-* `FIX`: use maximize icon in open popup button ([@bpmn-io/properties-panel#438](https://github.com/bpmn-io/properties-panel/pull/444))
+## 5.41.0
+
+* `DEPS`: update to `@bpmn-io/properties-panel@3.33.1`
 * `DEPS`: update to `bpmn-js@18.8.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.42.2`
 * `DEPS`: update to `bpmn-js-element-templates@2.15.0`
-* `DEPS`: update to `@bpmn-io/properties-panel@3.33.1`
+* `DEPS`: update to `dmn-js-properties-panel@3.8.1`
+* `DEPS`: update to `@bpmn-io/form-js@1.18.0`
+* `DEPS`: update to `@camunda/form-playground@0.23.0`
+
+### General
+
+* `FEAT`: accept trailing `v2` or `/` for REST cluster URLs ([#5345](https://github.com/camunda/camunda-modeler/issues/5345))
+* `FIX`: use `ZEEBE_GRPC_ADDRESS` in favor of deprecated `ZEEBE_ADDRESS` for cluster connections ([#5362](https://github.com/camunda/camunda-modeler/pull/5362))
+
+### BPMN
+
+* `FIX`: keep selected element in sync with canvas state ([#1131](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1131))
+* `FIX`: use maximize icon in open popup button ([@bpmn-io/properties-panel#438](https://github.com/bpmn-io/properties-panel/pull/444))
 
 ### Forms
 
 * `FIX`: use field id as an identifier for custom properties ([#1443](https://github.com/bpmn-io/form-js/pull/1443))
 * `FIX`: fix radio group default value after edit ([#1439](https://github.com/bpmn-io/form-js/pull/1439))
-* `DEPS`: update to `@bpmn-io/form-js@1.18.0`
-* `DEPS`: update to `@camunda/form-playground@0.23.0`
 
 ## 5.40.1
 
@@ -31,11 +40,6 @@ ___Note:__ Yet to be released changes appear here._
 
 ## 5.40.0
 
-### General
-
-* `FEAT`: add task testing ([#5235](https://github.com/camunda/camunda-modeler/pull/5235))
-* `FEAT`: mark Camunda 8.8 and 7.24 as stable ([#5265](https://github.com/camunda/camunda-modeler/issues/5265))
-* `FIX`: make start instance work with REST API ([#5274](https://github.com/camunda/camunda-modeler/issues/5274))
 * `DEPS`: update to `bpmn-js@18.7.0`
 * `DEPS`: update to `@camunda/linting@3.43.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.42.1`
@@ -45,6 +49,12 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `diagram-js@15.4.0`
 * `DEPS`: update to `electron@37.6.0`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.11.0`
+
+### General
+
+* `FEAT`: add task testing ([#5235](https://github.com/camunda/camunda-modeler/pull/5235))
+* `FEAT`: mark Camunda 8.8 and 7.24 as stable ([#5265](https://github.com/camunda/camunda-modeler/issues/5265))
+* `FIX`: make start instance work with REST API ([#5274](https://github.com/camunda/camunda-modeler/issues/5274))
 
 ### BPMN
 
