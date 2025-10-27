@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 
 import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 
@@ -29,7 +29,7 @@ import { utmTag } from '../../util/utmTag';
 /**
  * Formik form wrapper for the settings form.
  */
-export function SettingsForm({ schema, values, onChange }) {
+export function SettingsForm({ schema, values, onChange, expandRowId }) {
 
   const { setFieldValue, values: formikValues, validateForm } = useFormikContext();
 
@@ -58,14 +58,14 @@ export function SettingsForm({ schema, values, onChange }) {
   return (<Form>
     {
       map(orderedSchema, (value, key) =>
-        <SettingsSection key={ key } { ...value } />)
+        <SettingsSection key={ key } { ...value } expandRowId={ expandRowId } />)
     }
   </Form>);
 }
 
 function SettingsSection(props) {
 
-  const { title, properties } = props;
+  const { title, properties, expandRowId } = props;
 
   return (
     <Section>
@@ -73,7 +73,7 @@ function SettingsSection(props) {
       <Section.Body>
         {
           map(properties, (props, key) =>
-            <SettingsField key={ key } name={ key } { ...props } />)
+            <SettingsField key={ key } name={ key } { ...props } expandRowId={ expandRowId } />)
         }
       </Section.Body>
     </Section>
@@ -82,7 +82,7 @@ function SettingsSection(props) {
 
 function SettingsField(props) {
 
-  const { type, flag, condition, name } = props;
+  const { type, flag, condition, name, expandRowId } = props;
 
   const { values } = useFormikContext();
 
@@ -124,7 +124,7 @@ function SettingsField(props) {
   }
 
   if (FIELD_ARRAY_TYPES.includes(type)) {
-    return <FieldComponent { ...props } />;
+    return <FieldComponent { ...props } expandRowId={ expandRowId } />;
   }
 
   const { label, description, hint, options, documentationUrl, constraints } = props;
@@ -172,8 +172,35 @@ function SettingsField(props) {
 }
 
 
-function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, formConfig }) {
+function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, formConfig, expandRowId }) {
   const arrayValues = getIn(useFormikContext().values, name) || [];
+
+  const [ expandedRows, setExpandedRows ] = useState([]);
+  const expandedRowRef = useRef(null);
+  const hasInitiallyExpanded = useRef(false);
+
+  useEffect(() => {
+    if (expandRowId && arrayValues.length > 0 && !hasInitiallyExpanded.current) {
+      const targetRow = arrayValues.find(row => row.id === expandRowId);
+      if (targetRow) {
+        setExpandedRows([ expandRowId ]);
+        hasInitiallyExpanded.current = true;
+
+        setTimeout(() => {
+          if (expandedRowRef.current) {
+            expandedRowRef.current.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }, 100);
+      }
+    }
+  }, [ expandRowId, arrayValues ]);
+
+  useEffect(() => {
+    hasInitiallyExpanded.current = false;
+  }, [ expandRowId ]);
 
   function generateNewElement() {
     const defaults = Object.entries({ ...rowProperties, ...childProperties })
@@ -185,6 +212,19 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
       }, {});
 
     return { id: generateId(), ...defaults };
+  }
+
+  function isExpanded(row) {
+    return expandedRows.includes(row.id);
+  }
+
+  function handleExpand(row) {
+    if (isExpanded(row)) {
+      setExpandedRows([]);
+    }
+    else {
+      setExpandedRows([ row.id ]);
+    }
   }
 
   return <FieldArray name={ name } className="form-group">
@@ -209,13 +249,16 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
                 <TableBody className="expandable-table-body">
                   {rows?.map((row, index) => (
                     <React.Fragment key={ `${name}[${index}]` }>
-                      <TableExpandRow { ...getRowProps({ row }) }>
+                      <TableExpandRow { ...getRowProps({ row }) }
+                        ref={ row.id === expandRowId ? expandedRowRef : null }
+                        isExpanded={ isExpanded(row) } onExpand={ () => handleExpand(row) }
+                      >
                         {
-                          map(rowProperties, (rowProperty , key) => {
+                          map(rowProperties, (rowProperty, key) => {
                             return (
                               <TableCell key={ `${name}[${index}].${key}` }>
-                                { row.isExpanded && <SettingsField name={ `${name}[${index}].${key}` } { ...rowProperty } /> }
-                                { !row.isExpanded && <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span> }
+                                { isExpanded(row) && <SettingsField name={ `${name}[${index}].${key}` } { ...rowProperty } /> }
+                                { !isExpanded(row) && <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span> }
                               </TableCell>
                             );
                           })
@@ -241,7 +284,7 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
                       >
                         <div>
                           {
-                            map(childProperties, (childProperty , key) => {
+                            map(childProperties, (childProperty, key) => {
                               return (
                                 <SettingsField key={ `${name}[${index}].${key}` } name={ `${name}[${index}].${key}` } { ...childProperty } />
                               );
@@ -265,6 +308,7 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
               onClick={ () => {
                 const newElement = generateNewElement();
                 arrayHelpers.push(newElement);
+                setExpandedRows([ newElement.id ]);
               } }
             />
           </div>
