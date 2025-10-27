@@ -21,10 +21,10 @@ export const VALIDATION_ERROR_MESSAGES = {
   CLIENT_ID_MUST_NOT_BE_EMPTY: 'Client ID must not be empty.',
   CLIENT_SECRET_MUST_NOT_BE_EMPTY: 'Client Secret must not be empty.',
   CLUSTER_URL_MUST_BE_VALID_CLOUD_URL: 'Must be a valid Camunda 8 SaaS URL.',
-  CONTACT_POINT_MUST_BE_URL: 'Cluster endpoint must be a valid URL.',
-  CONTACT_POINT_MUST_NOT_BE_EMPTY: 'Cluster endpoint must not be empty.',
+  CONTACT_POINT_MUST_BE_URL: 'Cluster URL must be a valid URL.',
+  CONTACT_POINT_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
   CLUSTER_URL_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
-  CONTACT_POINT_MUST_START_WITH_PROTOCOL: 'Cluster endpoint must start with "http://", "grpc://", "https://", or "grpcs://".',
+  CONTACT_POINT_MUST_START_WITH_PROTOCOL: 'Cluster URL must start with "http://", "grpc://", "https://", or "grpcs://".',
   MUST_PROVIDE_A_VALUE: 'Must provide a value.',
   OAUTH_URL_MUST_NOT_BE_EMPTY: 'OAuth URL must not be empty.'
 };

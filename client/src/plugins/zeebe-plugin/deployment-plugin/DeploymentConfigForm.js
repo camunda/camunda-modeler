@@ -37,7 +37,6 @@ const LABELS = {
   CLIENT_ID: 'Client ID',
   CLIENT_SECRET: 'Client secret',
   CLUSTER_URL: 'Cluster URL',
-  CONTACT_POINT: 'Cluster endpoint',
   OAUTH_AUDIENCE: 'OAuth audience',
   OAUTH_SCOPE: 'OAuth scope',
   OAUTH_URL: 'OAuth token URL',
@@ -48,7 +47,7 @@ const LABELS = {
 };
 
 const HINTS = {
-  CONTACT_POINT: 'http://localhost:26500'
+  CLUSTER_URL: 'http://localhost:26500'
 };
 
 export default function DeploymentConfigForm(props) {
@@ -115,10 +114,10 @@ export default function DeploymentConfigForm(props) {
                             <Field
                               name="endpoint.contactPoint"
                               component={ TextInput }
-                              label={ LABELS.CONTACT_POINT }
+                              label={ LABELS.CLUSTER_URL }
                               validate={ value => validateField('endpoint.contactPoint', value) }
                               fieldError={ getFieldError }
-                              hint={ HINTS.CONTACT_POINT }
+                              hint={ HINTS.CLUSTER_URL }
                               autoFocus
                             />
                             <Field
