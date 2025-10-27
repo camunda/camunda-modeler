@@ -41,4 +41,25 @@
   .action-cell {
     width: 0;
   }
+
+  .settings-field-wrapper {
+    transition: background-color 0.3s ease;
+  }
+
+  .settings-field-highlighted {
+    background-color: var(--color-yellow-47-86-91);
+    border-radius: 4px;
+    padding: 8px;
+    margin: -8px;
+    animation: highlight-fade 2s ease;
+  }
+
+  @keyframes highlight-fade {
+    0% {
+      background-color: var(--color-yellow-47-86-91);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
 }

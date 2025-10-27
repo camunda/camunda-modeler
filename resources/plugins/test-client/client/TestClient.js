@@ -25,8 +25,10 @@ export default class TestClient extends Component {
 
     const {
       subscribe,
-      settings
+      settings,
+      triggerAction
     } = props;
+    this.triggerAction = triggerAction;
 
     subscribe('tab.saved', (event) => {
       const {
@@ -289,7 +291,7 @@ export default class TestClient extends Component {
         </Fill>
         }
 
-        {showModal && <CarbonModal onClose={ () => this.setState({ showModal: false }) } />}
+        {showModal && <CarbonModal onClose={ () => this.setState({ showModal: false }) } triggerAction={ this.triggerAction } />}
       </Fragment>
     );
   }
