@@ -53,7 +53,7 @@
     "diagram-js-direct-editing": "^3.2.0",
     "diagram-js-origin": "^1.4.0",
     "dmn-js": "^17.4.0",
-    "dmn-js-properties-panel": "^3.8.0",
+    "dmn-js-properties-panel": "^3.8.1",
     "dmn-js-shared": "^17.4.0",
     "drag-tabs": "^2.3.1",
     "events": "^3.0.0",
