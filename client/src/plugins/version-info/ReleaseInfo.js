@@ -52,10 +52,6 @@ export function ReleaseInfo(props) {
           We now separate process and local variables in the output. <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/?utm_source=modeler&utm_medium=referral">Learn more about task testing</a>.
         </li>
         <li>
-          <h4>Support orchestration cluster endpoint for c8run</h4>
-          You can now use Orchestration Cluster API endpoint for c8run deployments.
-        </li>
-        <li>
           <h4>Bug fixes and more</h4>
           As always, this release incorporates bug fixes and additional minor improvements.
         </li>
