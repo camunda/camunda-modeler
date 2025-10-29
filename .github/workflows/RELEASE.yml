@@ -251,14 +251,14 @@ jobs:
       - name: Wait for FOSSA scan completion
         uses: camunda/infra-global-github-actions/fossa/wait-for-scan@ad3fd49c6526b19c2fe15f2d279e68dea2da278f
         with:
-          fossa-api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
+          api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
           branch: ${{ steps.fossa-context.outputs.head-ref }}
           project-id: "custom+50756/camunda/camunda-modeler"
           revision-id: ${{ steps.fossa-context.outputs.head-revision }}
       - name: Create FOSSA releases and generate reports
         uses: camunda/infra-global-github-actions/fossa/release@ad3fd49c6526b19c2fe15f2d279e68dea2da278f
         with:
-          fossa-api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
+          api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
           branch: ${{ steps.fossa-context.outputs.head-ref }}
           project-id: "custom+50756/camunda/camunda-modeler"
           attribution-release-group-id: "4917" # https://app.fossa.com/projects/group/4917
