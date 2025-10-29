@@ -131,7 +131,7 @@ export default function SettingsPlugin(props) {
   }
 
   return (
-    <Modal onClose={ () => setOpen(false) }>
+    <Modal adaptive={ true } onClose={ () => setOpen(false) }>
       <div className="modal-header">
         <h2 className="modal-title">Settings</h2>
       </div>
