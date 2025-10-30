@@ -20,7 +20,7 @@
     "@camunda/improved-canvas": "^1.7.6",
     "@camunda/linting": "^3.44.0",
     "@camunda/rpa-integration": "^1.1.4",
-    "@camunda/task-testing": "^1.0.1",
+    "@camunda/task-testing": "^1.0.2",
     "@carbon/icons-react": "^11.53.0",
     "@carbon/react": "^1.76.0",
     "@codemirror/commands": "^6.6.2",
