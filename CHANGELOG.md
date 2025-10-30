@@ -16,7 +16,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-properties-panel@5.42.3`
 * `DEPS`: update to `bpmn-js-element-templates@2.15.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.8.2`
-* `DEPS`: update to `@camunda/task-testing@1.0.1`
+* `DEPS`: update to `@camunda/task-testing@1.0.2`
 
 ### General
 
@@ -29,6 +29,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: remove empty values (`""`) also after blurring input fields([@bpmn-io/properties-panel#449](https://github.com/bpmn-io/properties-panel/pull/449))
 * `FIX`: display process and local variables separately in task testing ([@camunda/task-testing#41](https://github.com/camunda/task-testing/pull/41))
 * `FIX`: fix Operate URL in task testing for self-managed ([#5357](https://github.com/camunda/camunda-modeler/issues/5357))
+* `FIX`: mark tasks in ad-hoc sub-process as unsupported ([#50](https://github.com/camunda/task-testing/pull/50))
+* `FIX`: handle variables with the same name in process and local scope ([#48](https://github.com/camunda/task-testing/issues/48))
 
 ### Forms
 
