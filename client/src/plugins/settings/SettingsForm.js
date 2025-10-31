@@ -21,21 +21,25 @@ import Flags from '../../util/Flags';
 /**
  * Formik form wrapper for the settings form.
  */
-export function SettingsForm(props) {
+export function SettingsForm({ schema, values, onChange }) {
 
-  const { schema, values } = props;
+  const { setFieldValue, values: formikValues, validateForm } = useFormikContext();
 
-  const { setFieldValue, dirty, values: formikValues, submitForm } = useFormikContext();
+
 
   useEffect(() => {
-    dirty && submitForm();
-  }, [ dirty, formikValues, submitForm ]);
+    onChange(formikValues);
+  }, [ formikValues, onChange ]);
 
   useEffect(() => {
     forEach(values, (value, key) => {
       setFieldValue(key, value);
     });
   }, [ values, setFieldValue ]);
+
+  useEffect(() => {
+    validateForm();
+  }, [ formikValues, validateForm ]);
 
   const orderedSchema = useMemo(() => {
     if (!schema) return {};
@@ -108,12 +112,14 @@ function SettingsField(props) {
 
   const { label, description, hint, options, documentationUrl, constraints } = props;
 
-  let typeProp = {};
+  let restProps = {
+    fieldError: settingsFieldError
+  };
   if (type === 'boolean') {
-    typeProp = { type: 'checkbox' };
+    restProps.type = 'checkbox';
   }
   if (type === 'password') {
-    typeProp = { type: 'password' };
+    restProps.type = 'password';
   }
 
   const disabledByFlag = flagValue !== undefined;
@@ -127,7 +133,6 @@ function SettingsField(props) {
     <Field
       name={ name }
       component={ component }
-      { ...typeProp }
       disabled={ disabledByFlag }
       label={ label }
       description={ description }
@@ -136,6 +141,7 @@ function SettingsField(props) {
       values={ options }
       documentationUrl={ documentationUrl }
       validate={ validate }
+      { ...restProps }
     />
     { disabledByFlag &&
       <div className="flag-warning">
@@ -281,4 +287,11 @@ function isEmpty(value) {
 
 function matchesPattern(value, pattern) {
   return value.match(pattern);
+}
+
+/**
+ * shows error as soon as there is an error (without needing to be touched)
+ */
+function settingsFieldError(meta) {
+  return meta.error;
 }
