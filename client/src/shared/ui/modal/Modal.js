@@ -64,13 +64,14 @@ export default class Modal extends PureComponent {
     const {
       className,
       children,
-      onClose
+      onClose,
+      adaptive
     } = this.props;
 
     return ReactDOM.createPortal(
       <KeyboardInteractionTrap>
         <div className="modal" tabIndex="-1" role="dialog">
-          <div className={ classNames('modal-dialog', className) } ref={ this.modalRef } role="document">
+          <div className={ classNames('modal-dialog', { 'modal-adaptive': adaptive }, className) } ref={ this.modalRef } role="document">
             <div className="modal-content">
               { children }
               { onClose && (<Close onClick={ this.close } />) }
