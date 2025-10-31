@@ -47,6 +47,9 @@
   },
   "devDependencies": {
     "@electron/notarize": "^3.0.1",
+    "@types/karma-sinon-chai": "^2.0.6",
+    "@types/mocha": "^10.0.10",
+    "@types/webpack-env": "^1.18.8",
     "archiver": "^7.0.1",
     "chai": "^4.5.0",
     "chai-subset": "^1.6.0",
@@ -63,6 +66,7 @@
     "eslint-plugin-bpmn-io": "^2.0.2",
     "eslint-plugin-camunda-licensed": "^1.0.0",
     "execa": "^1.0.0",
+    "karma-sinon-chai": "^2.0.2",
     "lerna": "~8.1.8",
     "license-webpack-plugin": "^4.0.2",
     "mocha": "^10.8.2",
