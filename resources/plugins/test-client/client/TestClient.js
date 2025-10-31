@@ -25,8 +25,10 @@ export default class TestClient extends Component {
 
     const {
       subscribe,
-      settings
+      settings,
+      triggerAction
     } = props;
+    this.triggerAction = triggerAction;
 
     subscribe('tab.saved', (event) => {
       const {
@@ -92,7 +94,7 @@ export default class TestClient extends Component {
           type: 'password',
           label: 'Password Input',
           description: 'describing the password',
-          condition: { property: 'showAllFields', equals: true },
+          condition: { property: 'showAllFields', equals: true }
         },
         'testClientPlugin.boolean': {
           type: 'boolean',
@@ -100,11 +102,12 @@ export default class TestClient extends Component {
           label: 'Checkbox',
           description: 'describing the checkbox',
           documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
-          condition: { property: 'showAllFields', equals: true },
+          condition: { property: 'showAllFields', equals: true }
         },
         'testClientPlugin.select': {
           type: 'select',
           label: 'Select Dropdown',
+          placeholder: 'You need to select second',
           description: 'describing the select',
           documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
           options: [
@@ -113,6 +116,9 @@ export default class TestClient extends Component {
             { label: 'Third Option', value: 'third' }
           ],
           condition: { property: 'showAllFields', equals: true },
+          constraints: {
+            pattern: 'second'
+          }
         },
         'testClientPlugin.radio': {
           type: 'radio',
@@ -127,6 +133,9 @@ export default class TestClient extends Component {
             { label: 'Third Option (show)', value: 'third' }
           ],
           condition: { property: 'showAllFields', equals: true },
+          constraints: {
+            pattern: 'second'
+          }
         },
         'testClientPlugin.conditionOneOfTextField': {
           type: 'text',
@@ -136,6 +145,49 @@ export default class TestClient extends Component {
               { property: 'showAllFields', equals: true },
               { property: 'radio', oneOf: [ 'first', 'third' ] }
             ]
+          }
+        },
+        'testClientPlugin.complexArray':{
+          type: 'expandableTable',
+          label: 'Complex Array',
+          description: 'Table (array) of objects. Adding and deleting elements is supported.',
+          formConfig:{
+            emptyPlaceholder: "I'm empty",
+            addLabel: 'Create something complex',
+            removeTooltip: 'Remove the complex thing'
+          },
+          condition: { property: 'showAllFields', equals: true },
+          rowProperties:{
+            'name': {
+              hint: 'Name',
+              type: 'text',
+              default: 'A new name'
+            },
+          },
+          childProperties: {
+            'fieldSwitch': {
+              label: 'Switch Fields',
+              type: 'select',
+              default: 'text',
+              options:[
+                { label: 'Text field', value: 'text' },
+                { label: 'Password field', value:  'password' }
+              ]
+            },
+            'textField': {
+              label: 'Text Field',
+              type: 'text',
+              default: 'Hello world',
+              condition: { property: 'fieldSwitch', equals: 'text' },
+              constraints: {
+                notEmpty: 'This field must be filled'
+              }
+            },
+            'passwordField': {
+              label: 'Password Field',
+              type: 'password',
+              condition: { property: 'fieldSwitch', equals: 'password' }
+            }
           }
         }
       }
@@ -239,7 +291,7 @@ export default class TestClient extends Component {
         </Fill>
         }
 
-        {showModal && <CarbonModal onClose={ () => this.setState({ showModal: false }) } />}
+        {showModal && <CarbonModal onClose={ () => this.setState({ showModal: false }) } triggerAction={ this.triggerAction } />}
       </Fragment>
     );
   }
