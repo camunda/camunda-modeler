@@ -9,7 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 ## 5.41.0
 
 * `DEPS`: update to `@bpmn-io/form-js@1.18.0`
-* `DEPS`: update to `@bpmn-io/properties-panel@3.33.1`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.33.2`
 * `DEPS`: update to `@camunda/form-playground@0.23.0`
 * `DEPS`: update to `@camunda/linting@3.44.0`
 * `DEPS`: update to `bpmn-js@18.8.0`
@@ -26,6 +26,7 @@ ___Note:__ Yet to be released changes appear here._
 ### BPMN
 
 * `FIX`: use maximize icon in open popup button ([@bpmn-io/properties-panel#438](https://github.com/bpmn-io/properties-panel/pull/444))
+* `FIX`: remove empty values (`""`) also after blurring input fields([@bpmn-io/properties-panel#449](https://github.com/bpmn-io/properties-panel/pull/449))
 * `FIX`: display process and local variables separately in task testing ([@camunda/task-testing#41](https://github.com/camunda/task-testing/pull/41))
 * `FIX`: fix Operate URL in task testing for self-managed ([#5357](https://github.com/camunda/camunda-modeler/issues/5357))
 
