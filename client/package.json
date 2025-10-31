@@ -43,7 +43,6 @@
     "camunda-cmmn-moddle": "^1.0.0",
     "camunda-dmn-js": "^3.5.0",
     "camunda-dmn-moddle": "^1.3.0",
-    "canvg": "^4.0.3",
     "classnames": "^2.5.1",
     "cmmn-js": "^0.20.0",
     "cmmn-js-properties-panel": "^0.9.0",
