@@ -20,8 +20,7 @@ import {
 
 const TYPES = {
   bpmn: [ 'http://www.omg.org/spec/BPMN' ],
-  dmn: [ 'http://www.omg.org/spec/DMN', 'https://www.omg.org/spec/DMN' ],
-  cmmn: [ 'http://www.omg.org/spec/CMMN' ]
+  dmn: [ 'http://www.omg.org/spec/DMN', 'https://www.omg.org/spec/DMN' ]
 };
 
 

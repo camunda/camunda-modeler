@@ -639,7 +639,6 @@ function addOrUpdateById(collection, element) {
 function isCamundaTab(tab) {
   return tab && [
     'bpmn',
-    'cmmn',
     'dmn',
     'form'
   ].includes(tab.type);
@@ -654,10 +653,6 @@ function getDeploymentType(tab) {
 
   else if (type === 'dmn') {
     return 'Decision definition';
-  }
-
-  else if (type === 'cmmn') {
-    return 'Case definition';
   }
 
   else if (type === 'form') {

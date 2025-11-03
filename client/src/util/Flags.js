@@ -31,7 +31,6 @@ class Flags {
 export default new Flags();
 
 
-export const DISABLE_CMMN = 'disable-cmmn';
 export const DISABLE_DMN = 'disable-dmn';
 export const DISABLE_FORM = 'disable-form';
 export const DISABLE_PLATFORM = 'disable-platform';

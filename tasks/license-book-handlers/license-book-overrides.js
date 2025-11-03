@@ -197,7 +197,6 @@ THE SOFTWARE.`
     'dmn-js-literal-expression': './LICENSE',
     'dmn-js-shared': './LICENSE',
     'dmn-js': './LICENSE',
-    'cmmn-js': './LICENSE',
     'epipebomb': './LICENSE.txt'
   },
   licenseTypeOverrides: {
@@ -211,7 +210,6 @@ THE SOFTWARE.`
     'dmn-js-literal-expression': 'bpmn.io license',
     'dmn-js-shared': 'bpmn.io license',
     'dmn-js': 'bpmn.io license',
-    'cmmn-js': 'bpmn.io license',
     '@bpmn-io/form-js-editor': 'bpmn.io license',
     '@bpmn-io/form-js-playground': 'bpmn.io license',
     '@bpmn-io/form-js-viewer': 'bpmn.io license'

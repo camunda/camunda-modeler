@@ -97,7 +97,7 @@ module.exports = function(karma) {
                 use: 'react-svg-loader'
               },
               {
-                test: /\.(css|bpmn|cmmn|dmn|less|xml|png|svg|form|rpa)$/,
+                test: /\.(css|bpmn|dmn|less|xml|png|svg|form|rpa)$/,
                 type: 'asset/source'
               }
             ]
@@ -133,7 +133,6 @@ module.exports = function(karma) {
           'bpmn-js/lib/Modeler': modelers ? 'bpmn-js/lib/Modeler' : 'test/mocks/bpmn-js/Modeler',
           'camunda-bpmn-js/lib/camunda-cloud/Modeler': modelers ? 'camunda-bpmn-js/lib/camunda-cloud/Modeler' : 'test/mocks/bpmn-js/Modeler',
           'camunda-bpmn-js/lib/camunda-platform/Modeler': modelers ? 'camunda-bpmn-js/lib/camunda-platform/Modeler' : 'test/mocks/bpmn-js/Modeler',
-          'cmmn-js/lib/Modeler': modelers ? 'cmmn-js/lib/Modeler' : 'test/mocks/cmmn-js/Modeler',
           'camunda-dmn-js$': modelers ? 'camunda-dmn-js' : 'test/mocks/dmn-js/Modeler',
           './DmnModeler': modelers ? './DmnModeler' : 'test/mocks/dmn-js/Modeler',
           './CodeMirror': 'test/mocks/code-mirror/CodeMirror',
