@@ -14,6 +14,8 @@ import CloudIcon from '../../resources/icons/Cloud.svg';
 import PlatformIcon from '../../resources/icons/Platform.svg';
 import AiIcon from '../../resources/icons/Ai.svg';
 
+import { utmTag } from '../util/utmTag';
+
 import * as css from './EmptyTab.less';
 
 import {
@@ -73,7 +75,7 @@ export default class EmptyTab extends PureComponent {
             <CloudIcon className="engine-icon cloud-icon" />
             <h3>Camunda 8</h3>
           </div>
-          <a href="https://camunda.com/products/cloud/?utm_source=modeler&utm_medium=referral">See version details</a>
+          <a href={ utmTag('https://camunda.com/products/cloud/') }>See version details</a>
         </div>
 
         <p>Create a new file</p>
@@ -94,7 +96,7 @@ export default class EmptyTab extends PureComponent {
             <PlatformIcon className="engine-icon platform-icon" />
             <h3>Camunda 7</h3>
           </div>
-          <a href="https://camunda.com/products/camunda-platform/?utm_source=modeler&utm_medium=referral">See version details</a>
+          <a href={ utmTag('https://camunda.com/products/camunda-platform/') }>See version details</a>
         </div>
 
         <p>Create a new file</p>
@@ -112,15 +114,15 @@ export default class EmptyTab extends PureComponent {
           <h3>Learn more</h3>
           <div className="article top">
             <AiIcon />
-            <a href="https://docs.camunda.io/docs/guides/getting-started-agentic-orchestration?utm_source=modeler&utm_medium=referral">Build your first AI agent</a>
+            <a href={ utmTag('https://docs.camunda.io/docs/guides/getting-started-agentic-orchestration') }>Build your first AI agent</a>
           </div>
           <div className="article relative">
             <p>Introduction to Camunda 8</p>
-            <a href="https://camunda.com/blog/2022/04/camunda-platform-8-orchestrate-all-the-things?utm_source=modeler&utm_medium=referral">Read blog post</a>
+            <a href={ utmTag('https://camunda.com/blog/2022/04/camunda-platform-8-orchestrate-all-the-things') }>Read blog post</a>
           </div>
           <div className="article relative">
             <p>Migrating from Camunda 7</p>
-            <a href="https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/?utm_source=modeler&utm_medium=referral">Camunda Docs</a>
+            <a href={ utmTag('https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/') }>Camunda Docs</a>
           </div>
           <div className="article">
             <p>About Modeler 5</p>
@@ -128,7 +130,7 @@ export default class EmptyTab extends PureComponent {
           </div>
           <div className="article">
             <p>Model your first diagram</p>
-            <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/model-your-first-diagram/?utm_source=modeler&utm_medium=referral">Camunda Modeler Docs</a>
+            <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/model-your-first-diagram/') }>Camunda Modeler Docs</a>
           </div>
         </div>
       </div>

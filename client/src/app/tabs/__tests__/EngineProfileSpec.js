@@ -28,6 +28,7 @@ import { DEFAULT_ENGINE_PROFILE as cloudBpmnEngineProfile } from '../cloud-bpmn/
 import { DEFAULT_ENGINE_PROFILE as dmnEngineProfile } from '../dmn/DmnEditor';
 import { DEFAULT_ENGINE_PROFILE as cloudDmnEngineProfile } from '../cloud-dmn/DmnEditor';
 import { DEFAULT_ENGINE_PROFILE as formEngineProfile } from '../form/FormEditor';
+import { utmTag } from '../../../util/utmTag';
 
 const spy = sinon.spy;
 
@@ -440,11 +441,11 @@ function expectHelpText(wrapper, helpLink) {
 }
 
 function expectCloudHelp(wrapper) {
-  expectHelpText(wrapper, 'https://docs.camunda.io/?utm_source=modeler&utm_medium=referral');
+  expectHelpText(wrapper, utmTag('https://docs.camunda.io/'));
 }
 
 function expectPlatformHelp(wrapper) {
-  expectHelpText(wrapper, 'https://docs.camunda.org/manual/latest/');
+  expectHelpText(wrapper, utmTag('https://docs.camunda.org/manual/latest/'));
 }
 
 function selectVersion(wrapper, version) {

@@ -13,8 +13,10 @@
  */
 
 import React from 'react';
+import { utmTag } from '../../../util/utmTag';
 
-export const TROUBLESHOOTING_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/troubleshooting/#i-cannot-connect-to-zeebe';
+
+export const TROUBLESHOOTING_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/troubleshooting/#i-cannot-connect-to-zeebe');
 
 export const CONNECTION_CHECK_ERROR_REASONS = {
   UNKNOWN: 'UNKNOWN',

@@ -8,9 +8,12 @@
  * except in compliance with the MIT License.
  */
 
+import { utmTag } from '../../util/utmTag';
+
+
 export const PRIVACY_TEXT_FIELD = 'To enhance user experience, Camunda Modeler can integrate with 3rd party services, which requires external network requests. Please choose from the settings below.';
 
-export const PRIVACY_POLICY_URL = 'https://camunda.com/legal/privacy/?utm_source=modeler&utm_medium=referral';
+export const PRIVACY_POLICY_URL = utmTag('https://camunda.com/legal/privacy/');
 
 export const LEARN_MORE_TEXT = 'With any of these options, none of your personal information or stored data will be submitted. Learn more:';
 

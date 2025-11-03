@@ -16,9 +16,14 @@ import ProcessApplicationsDeploymentPlugin from './ProcessApplicationsDeployment
 import ProcessApplicationsStartInstancePlugin from './ProcessApplicationsStartInstancePlugin';
 import { ResourcesProviderModule } from './ResourcesProvider';
 
+import { utmTag } from '../../util/utmTag';
+
+
 const processApplications = new ProcessApplications();
 
-const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/process-applications/';
+const DOCUMENTATION_URL = utmTag(
+  'https://docs.camunda.io/docs/components/modeler/desktop-modeler/process-applications/'
+);
 
 export default function ProcessApplicationsPlugin(props) {
   const {

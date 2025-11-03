@@ -15,6 +15,7 @@ import { find, map } from 'min-dash';
 import { ENGINES, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 
 import { getAnnotatedVersion, toSemverMinor } from '../../app/tabs/EngineProfile';
+import { utmTag } from '../../util/utmTag';
 
 /**
  * Registers built-in application settings.
@@ -38,7 +39,7 @@ export const schema = {
       flag: 'enable-new-context-pad',
       label: 'Enable new context pad',
       restartRequired: true,
-      documentationUrl: 'https://docs.camunda.io/docs/components/modeler/web-modeler/context-pad/',
+      documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/web-modeler/context-pad/'),
     },
     'app.disablePlugins': {
       type: 'boolean',

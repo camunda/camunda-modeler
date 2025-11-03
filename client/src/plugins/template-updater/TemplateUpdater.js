@@ -10,7 +10,10 @@
 
 import React, { PureComponent } from 'react';
 
-const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/';
+import { utmTag } from '../../util/utmTag';
+
+
+const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/');
 
 export default class TemplateUpdater extends PureComponent {
   constructor(props) {
