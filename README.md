@@ -10,7 +10,7 @@ A desktop application for modeling BPMN diagrams, DMN decisions, and Forms, powe
 
 * [Changelog](./CHANGELOG.md)
 * [Download](https://camunda.com/download/modeler/) (see also [nightly builds](https://downloads.camunda.cloud/release/camunda-modeler/nightly/))
-* [Give Feedback](https://forum.camunda.io/c/modeler/)
+* [Give Feedback](https://forum.camunda.io/c/bpmn-modeling/)
 * [Report a Bug](https://github.com/camunda/camunda-modeler/issues)
 * [User Documentation](https://docs.camunda.io/docs/components/modeler/desktop-modeler/)
 
