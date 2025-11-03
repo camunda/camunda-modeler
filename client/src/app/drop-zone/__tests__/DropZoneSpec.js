@@ -228,7 +228,6 @@ describe('DropZone - isDropableItem', function() {
       fileItem('application/xml'),
       fileItem('application/rss+xml'),
       fileItem('application/bpmn+xml'),
-      fileItem('application/cmmn'),
       fileItem('application/dmn'),
       fileItem('application/bpmn'),
       fileItem('application/camunda-form'),

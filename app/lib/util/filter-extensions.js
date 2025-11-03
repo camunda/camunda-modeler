@@ -22,7 +22,7 @@ var EXTENSIONS = {
   },
   supported: {
     name: 'All supported',
-    extensions: [ 'bpmn', 'dmn', 'cmmn', 'xml' ]
+    extensions: [ 'bpmn', 'dmn', 'xml' ]
   },
   images: {
     name: 'All images',
@@ -35,10 +35,6 @@ var EXTENSIONS = {
   dmn: {
     name: 'DMN table',
     extensions: [ 'dmn', 'xml' ]
-  },
-  cmmn: {
-    name: 'CMMN diagram',
-    extensions: [ 'cmmn', 'xml' ]
   },
   png: {
     name: 'PNG Image',

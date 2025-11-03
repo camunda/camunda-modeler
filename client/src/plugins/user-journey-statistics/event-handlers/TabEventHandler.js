@@ -21,7 +21,6 @@ const log = debug('TabEventHandler');
 const types = {
   BPMN: 'bpmn',
   DMN: 'dmn',
-  CMMN: 'cmmn',
   FORM: 'form'
 };
 

@@ -14,7 +14,6 @@ import Flags, {
   DISABLE_DMN,
   DISABLE_ZEEBE,
   DISABLE_PLATFORM,
-  DISABLE_CMMN,
   CLOUD_ENGINE_VERSION,
   PLATFORM_ENGINE_VERSION,
   DISABLE_HTTL_HINT,
@@ -31,6 +30,9 @@ import Metadata from '../../util/Metadata';
 
 
 describe('TabsProvider', function() {
+
+  afterEach(Flags.reset);
+
 
   it('should default to noop provider', function() {
 
@@ -91,23 +93,9 @@ describe('TabsProvider', function() {
   });
 
 
-  it('should not provide CMMN tab without flags', function() {
+  it('should export BPMN and DMN as JPEG, PNG and SVG', function() {
 
     // given
-    const tabsProvider = new TabsProvider();
-
-    // then
-    expect(tabsProvider.hasProvider('cmmn')).to.be.false;
-  });
-
-
-  it('should export BPMN, CMMN and DMN as JPEG, PNG and SVG', function() {
-
-    // given
-    Flags.init({
-      [DISABLE_CMMN]: false
-    });
-
     const tabsProvider = new TabsProvider();
 
     const expected = {
@@ -131,7 +119,6 @@ describe('TabsProvider', function() {
     // then
     expect(tabsProvider.getProvider('bpmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('cloud-bpmn').exports).to.eql(expected);
-    expect(tabsProvider.getProvider('cmmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('dmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('cloud-dmn').exports).to.eql(expected);
     expect(tabsProvider.getProvider('form').exports).to.eql({});
@@ -145,10 +132,6 @@ describe('TabsProvider', function() {
       return it(name, function() {
 
         // given
-        Flags.init({
-          [DISABLE_CMMN]: false
-        });
-
         const tabsProvider = new TabsProvider();
 
         // when
@@ -165,8 +148,6 @@ describe('TabsProvider', function() {
     verifyExists('bpmn');
 
     verifyExists('cloud-bpmn');
-
-    verifyExists('cmmn');
 
     verifyExists('dmn');
 
@@ -276,9 +257,6 @@ describe('TabsProvider', function() {
 
 
     describe('engine version flag support', function() {
-
-      afterEach(Flags.reset);
-
 
       it('should replace version placeholder with version from flag (BPMN)', function() {
 
@@ -559,16 +537,11 @@ describe('TabsProvider', function() {
   it('should create tabs', function() {
 
     // given
-    Flags.init({
-      [DISABLE_CMMN]: false
-    });
-
     const tabsProvider = new TabsProvider();
 
     // then
     expect(tabsProvider.createTab('bpmn')).to.exist;
     expect(tabsProvider.createTab('cloud-bpmn')).to.exist;
-    expect(tabsProvider.createTab('cmmn')).to.exist;
     expect(tabsProvider.createTab('dmn')).to.exist;
     expect(tabsProvider.createTab('cloud-dmn')).to.exist;
     expect(tabsProvider.createTab('form')).to.exist;
@@ -586,7 +559,6 @@ describe('TabsProvider', function() {
       // then
       expect(await tabsProvider.getTabComponent('bpmn')).to.exist;
       expect(await tabsProvider.getTabComponent('cloud-bpmn')).to.exist;
-      expect(await tabsProvider.getTabComponent('cmmn')).to.exist;
       expect(await tabsProvider.getTabComponent('dmn')).to.exist;
       expect(await tabsProvider.getTabComponent('cloud-dmn')).to.exist;
       expect(await tabsProvider.getTabComponent('form')).to.exist;
@@ -872,10 +844,6 @@ describe('TabsProvider', function() {
   it('#getProviders', function() {
 
     // given
-    Flags.init({
-      [DISABLE_CMMN]: false
-    });
-
     const tabsProvider = new TabsProvider();
 
     // when
@@ -884,7 +852,6 @@ describe('TabsProvider', function() {
     // then
     expect(providers['bpmn']).to.exist;
     expect(providers['cloud-bpmn']).to.exist;
-    expect(providers['cmmn']).to.exist;
     expect(providers['dmn']).to.exist;
     expect(providers['cloud-dmn']).to.exist;
     expect(providers['rpa']).to.exist;
@@ -912,16 +879,13 @@ describe('TabsProvider', function() {
     it('should return all provider names', function() {
 
       // given
-      Flags.init({
-        [DISABLE_CMMN]: false
-      });
       const tabsProvider = new TabsProvider();
 
       // when
       const providerNames = tabsProvider.getProviderNames();
 
       // then
-      expect(providerNames).to.eql([ 'BPMN', 'CMMN', 'DMN', 'Form', 'RPA' ]);
+      expect(providerNames).to.eql([ 'BPMN', 'DMN', 'Form', 'RPA' ]);
 
     });
 
@@ -996,17 +960,12 @@ describe('TabsProvider', function() {
   describe('#getLinter', function() {
 
     [
-      'cmmn',
       'dmn'
     ].forEach((type) => {
 
       it(type, async function() {
 
         // given
-        Flags.init({
-          [DISABLE_CMMN]: false
-        });
-
         const tabsProvider = new TabsProvider().getProvider(type);
 
         // when
@@ -1134,9 +1093,6 @@ describe('TabsProvider', function() {
 
   describe('flags', function() {
 
-    afterEach(Flags.reset);
-
-
     it('should disable DMN', function() {
 
       // given
@@ -1150,36 +1106,6 @@ describe('TabsProvider', function() {
       // then
       expect(tabsProvider.hasProvider('dmn')).to.be.false;
       expect(tabsProvider.hasProvider('cloud-dmn')).to.be.false;
-    });
-
-
-    it('should disable CMMN', function() {
-
-      // given
-      Flags.init({
-        [DISABLE_CMMN]: true
-      });
-
-      // when
-      const tabsProvider = new TabsProvider();
-
-      // then
-      expect(tabsProvider.hasProvider('cmmn')).to.be.false;
-    });
-
-
-    it('should enable CMMN', function() {
-
-      // given
-      Flags.init({
-        [DISABLE_CMMN]: false
-      });
-
-      // when
-      const tabsProvider = new TabsProvider();
-
-      // then
-      expect(tabsProvider.hasProvider('cmmn')).to.be.true;
     });
 
 
@@ -1262,10 +1188,6 @@ describe('TabsProvider', function() {
     let tabsProvider;
 
     beforeEach(function() {
-      Flags.init({
-        [DISABLE_CMMN]: false
-      });
-
       tabsProvider = new TabsProvider();
     });
 
@@ -1288,16 +1210,6 @@ describe('TabsProvider', function() {
         expect(icon).to.exist;
       });
 
-    });
-
-
-    it('should NOT have icon', function() {
-
-      // when
-      const icon = tabsProvider.getTabIcon('cmmn');
-
-      // then
-      expect(icon).to.not.exist;
     });
 
   });

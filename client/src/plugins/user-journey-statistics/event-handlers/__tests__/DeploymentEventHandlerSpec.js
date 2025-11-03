@@ -176,23 +176,6 @@ describe('<DeploymentEventHandler>', function() {
       });
 
 
-      it('should NOT send for type cmmn', async function() {
-
-        // given
-        const tab = createTab({
-          type: 'cmmn'
-        });
-
-        const handleDeploymentDone = subscribe.getCall(0).args[1];
-
-        // when
-        await handleDeploymentDone({ tab });
-
-        // then
-        expect(track).to.not.have.been.called;
-      });
-
-
       it('should send for `taskTesting` context', async function() {
 
         // given
@@ -342,23 +325,6 @@ describe('<DeploymentEventHandler>', function() {
           });
         });
 
-      });
-
-
-      it('should NOT send for type cmmn', async function() {
-
-        // given
-        const tab = createTab({
-          type: 'cmmn'
-        });
-
-        const handleDeploymentDone = subscribe.getCall(0).args[1];
-
-        // when
-        await handleDeploymentDone({ tab });
-
-        // then
-        expect(track).to.not.have.been.called;
       });
 
     });

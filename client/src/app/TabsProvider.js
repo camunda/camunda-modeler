@@ -25,7 +25,6 @@ import { FormLinter } from '@camunda/form-linting/lib/FormLinter';
 
 import bpmnDiagram from './tabs/bpmn/diagram.bpmn';
 import cloudBpmnDiagram from './tabs/cloud-bpmn/diagram.bpmn';
-import cmmnDiagram from './tabs/cmmn/diagram.cmmn';
 import dmnDiagram from './tabs/dmn/diagram.dmn';
 import cloudDmnDiagram from './tabs/cloud-dmn/diagram.dmn';
 import form from './tabs/form/initial.form';
@@ -57,7 +56,6 @@ import Flags, {
   DISABLE_FORM,
   DISABLE_ZEEBE,
   DISABLE_PLATFORM,
-  DISABLE_CMMN,
   DISABLE_HTTL_HINT,
   DEFAULT_HTTL,
   DISABLE_RPA
@@ -279,51 +277,6 @@ export default class TabsProvider {
             type: 'platform',
             plugins
           });
-        }
-      },
-      cmmn: {
-        name: 'CMMN',
-        encoding: ENCODING_UTF8,
-        exports: {
-          png: EXPORT_PNG,
-          jpeg: EXPORT_JPEG,
-          svg: EXPORT_SVG
-        },
-        extensions: [ 'cmmn', 'xml' ],
-        canOpen(file) {
-          return parseDiagramType(file.contents) === 'cmmn';
-        },
-        getComponent(options) {
-          return import('./tabs/cmmn');
-        },
-        getIcon() {
-          return null;
-        },
-        getInitialContents(options) {
-          return cmmnDiagram;
-        },
-        getInitialFilename(suffix) {
-          return `diagram_${suffix}.cmmn`;
-        },
-        getHelpMenu() {
-          return [ {
-            label: 'CMMN 1.1 Tutorial',
-            action: 'https://docs.camunda.org/get-started/cmmn11/'
-          },
-          {
-            label: 'CMMN Modeling Reference',
-            action: 'https://docs.camunda.org/manual/latest/reference/cmmn11/'
-          } ];
-        },
-        getNewFileMenu() {
-          return [ {
-            label: 'CMMN diagram',
-            group: 'Camunda 7',
-            action: 'create-cmmn-diagram'
-          } ];
-        },
-        getLinter() {
-          return null;
         }
       },
       'cloud-dmn': {
@@ -574,18 +527,10 @@ export default class TabsProvider {
       this.providersByFileType.bpmn = this.providersByFileType.bpmn.filter(p => p !== this.providers.bpmn);
       delete this.providers.bpmn;
 
-      delete this.providers.cmmn;
-      delete this.providersByFileType.cmmn;
-
       delete this.providers.dmn;
       delete this.providersByFileType.dmn;
 
       delete this.providers.form;
-    }
-
-    if (Flags.get(DISABLE_CMMN, true)) {
-      delete this.providers.cmmn;
-      delete this.providersByFileType.cmmn;
     }
 
     if (Flags.get(DISABLE_DMN)) {

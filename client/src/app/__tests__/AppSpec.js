@@ -321,7 +321,6 @@ describe('<App>', function() {
       // when
       await app.createDiagram('bpmn');
       await app.createDiagram('dmn');
-      await app.createDiagram('cmmn');
       await app.createDiagram('cloud-bpmn');
       await app.createDiagram('cloud-dmn');
       await app.createDiagram();
@@ -334,7 +333,6 @@ describe('<App>', function() {
       expect(tabs.map(tab => tab.type)).to.eql([
         'bpmn',
         'dmn',
-        'cmmn',
         'cloud-bpmn',
         'cloud-dmn',
         'bpmn'
@@ -3318,7 +3316,7 @@ describe('<App>', function() {
         // given
         const options = {
           name: 'file.ext',
-          providerNames: [ 'CMMN', 'BPMN', 'DMN', 'FORM' ]
+          providerNames: [ 'BPMN', 'DMN', 'FORM' ]
         };
 
         // when
@@ -3326,7 +3324,7 @@ describe('<App>', function() {
 
         // then
         expect(message).to.equal('Unable to open file.');
-        expect(detail).to.equal('"file.ext" is not a CMMN, BPMN, DMN or FORM file.');
+        expect(detail).to.equal('"file.ext" is not a BPMN, DMN or FORM file.');
       });
 
 

@@ -1803,10 +1803,6 @@ export class App extends PureComponent {
       return this.createDiagram('dmn');
     }
 
-    if (action === 'create-cmmn-diagram') {
-      return this.createDiagram('cmmn');
-    }
-
     if (action === 'create-form') {
       return this.createDiagram('form');
     }

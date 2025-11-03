@@ -76,7 +76,7 @@ export class DropHandler {
 
 /**
  * Checks for droppable items e.g. text/foo, text/plain, application/foo+xml,
- * application/bpmn, application/cmmn, application/dmn.
+ * application/bpmn, application/dmn.
  *
  * @param {DataTransferItem} item - Item to be dropped.
  *
@@ -93,7 +93,7 @@ export function isDroppableItem(item) {
     return false;
   }
 
-  return /^(text\/.*|application\/([^+]*\+)?xml|application\/(cmmn|bpmn|dmn|camunda-form))?$/.test(type);
+  return /^(text\/.*|application\/([^+]*\+)?xml|application\/(bpmn|dmn|camunda-form))?$/.test(type);
 }
 
 /**

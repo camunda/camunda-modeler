@@ -13,7 +13,6 @@ import parseDiagramType from '../parseDiagramType';
 var files = {
   bpmn: require('./file-types/basic.bpmn20.xml'),
   bpmnWithDmnUri: require('./file-types/bpmnWithDmnUri.xml'),
-  cmmn: require('./file-types/basic.cmmn11.xml'),
   dmn: require('./file-types/basic.dmn11.xml'),
   nyan: require('./file-types/nyan_cat.png'),
   random: require('./file-types/random.xml'),
@@ -50,19 +49,6 @@ describe('util - parseDiagramType', function() {
 
     // then
     expect(notation).to.equal('bpmn');
-  });
-
-
-  it('should identify cmmn file', function() {
-
-    // given
-    var dmnFile = getFile('cmmn');
-
-    // when
-    var notation = parseDiagramType(dmnFile);
-
-    // then
-    expect(notation).to.equal('cmmn');
   });
 
 
