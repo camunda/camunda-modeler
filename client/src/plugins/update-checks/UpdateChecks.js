@@ -25,6 +25,7 @@ import { Fill } from '../../app/slot-fill';
 import Metadata from '../../util/Metadata';
 
 import { UpdateAvailableOverlay } from './UpdateAvailableOverlay';
+import { utmTag } from '../../util/utmTag';
 
 const log = debug('UpdateChecks');
 
@@ -363,7 +364,11 @@ export default class UpdateChecks extends PureComponent {
       _getGlobal
     } = this.props;
 
-    _getGlobal('backend').send('external:open-url', { url: latestVersionInfo.downloadURL });
+    let downloadURL = latestVersionInfo.downloadURL;
+
+    _getGlobal('backend').send('external:open-url', {
+      url: utmTag(downloadURL, { campaign: 'update-check' })
+    });
 
     this.closeNewVersionInfoView();
   };
