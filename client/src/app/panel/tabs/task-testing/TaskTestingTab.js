@@ -25,6 +25,9 @@ import { useConnectionChecker } from './hooks/useConnectionChecker';
 
 import * as css from './TaskTestingTab.less';
 
+import { utmTag } from '../../../../util/utmTag';
+
+
 export const TAB_ID = 'task-testing';
 
 export const DEFAULT_CONFIG = {
@@ -44,7 +47,7 @@ export const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST co
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE = 'Execution platform version not supported';
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
 
-const DOCUMENTATION_URL = 'https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/?utm_source=modeler&utm_medium=referral';
+const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/');
 
 export default function TaskTestingTab(props) {
   const {

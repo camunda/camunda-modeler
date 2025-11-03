@@ -71,28 +71,30 @@ import { getCloudTemplates } from '../util/elementTemplates';
 import { CloudElementTemplatesLinterPlugin } from 'bpmn-js-element-templates';
 import { RPALinter } from '@camunda/rpa-integration';
 
+import { utmTag } from '../util/utmTag';
+
 const BPMN_HELP_MENU = [
   {
     label: 'BPMN 2.0 Tutorial',
-    action: 'https://camunda.org/bpmn/tutorial/'
+    action: utmTag('https://camunda.org/bpmn/tutorial/')
   },
   {
     label: 'BPMN Modeling Reference',
-    action: 'https://camunda.org/bpmn/reference/'
+    action: utmTag('https://camunda.org/bpmn/reference/')
   }
 ];
 
 const C7_HELP_MENU = [
   {
     label: 'Camunda 8 Migration Guide',
-    action: 'https://docs.camunda.io/docs/guides/migrating-from-camunda-7/?utm_source=modeler&utm_medium=referral'
+    action: utmTag('https://docs.camunda.io/docs/guides/migrating-from-camunda-7/')
   }
 ];
 
 const DMN_HELP_MENU = [
   {
     label: 'DMN Tutorial',
-    action: 'https://camunda.org/dmn/tutorial/'
+    action: utmTag('https://camunda.org/dmn/tutorial/')
   }
 ];
 

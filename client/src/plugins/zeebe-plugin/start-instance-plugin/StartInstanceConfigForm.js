@@ -21,6 +21,8 @@ import {
   Formik
 } from 'formik';
 
+import { utmTag } from '../../../util/utmTag';
+
 export default function StartInstanceConfigForm(props) {
   const {
     getFieldError: _getFieldError,
@@ -73,7 +75,7 @@ export default function StartInstanceConfigForm(props) {
                         name="variables"
                         component={ VariablesComponent }
                         label="Variables (optional)"
-                        description={ <span>Must be a proper <a href="https://www.w3schools.com/js/js_json_intro.asp">JSON string</a> representing <a href="https://docs.camunda.io/docs/components/concepts/variables/?utm_source=modeler&utm_medium=referral">Zeebe variables</a>.</span> }
+                        description={ <span>Must be a proper <a href="https://www.w3schools.com/js/js_json_intro.asp">JSON string</a> representing <a href={ utmTag('https://docs.camunda.io/docs/components/concepts/variables/') }>Zeebe variables</a>.</span> }
                         hint="A JSON string representing the variables the process instance is started with."
                         validate={ value => validateField('variables', value) }
                         fieldError={ getFieldError }

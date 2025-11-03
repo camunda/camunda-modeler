@@ -24,16 +24,17 @@ import {
   Section
 } from '../../shared/ui';
 
+import { utmTag } from '../../util/utmTag';
 import { Fill } from '../slot-fill';
 
 import { ENGINES, ENGINE_LABELS, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 
 const HELP_LINKS = {
-  [ ENGINES.PLATFORM ]: 'https://docs.camunda.org/manual/latest/',
-  [ ENGINES.CLOUD ]: 'https://docs.camunda.io/?utm_source=modeler&utm_medium=referral'
+  [ ENGINES.PLATFORM ]: utmTag('https://docs.camunda.org/manual/latest/'),
+  [ ENGINES.CLOUD ]: utmTag('https://docs.camunda.io/')
 };
 
-const DONWLOAD_PAGE = 'https://camunda.com/download/modeler/';
+const DONWLOAD_PAGE = utmTag('https://camunda.com/download/modeler/');
 
 export function EngineProfile(props) {
   const {

@@ -11,6 +11,8 @@
 import React from 'react';
 import * as css from './ReleaseInfo.less';
 
+import { utmTag } from '../../util/utmTag';
+
 /**
  * Release info notice which is displayed once user clicks the version number on the status bar.
  *
@@ -49,7 +51,9 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Improved task testing</h4>
-          We now separate process and local variables in the output. <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/?utm_source=modeler&utm_medium=referral">Learn more about task testing</a>.
+          We now separate process and local variables in the output. <a href={
+            utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/')
+          }>Learn more about task testing</a>.
         </li>
         <li>
           <h4>Bug fixes and more</h4>

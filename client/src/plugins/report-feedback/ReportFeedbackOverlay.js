@@ -15,9 +15,11 @@ import { Overlay, Section } from '../../shared/ui';
 import { ReportFeedbackSystemInfoSection } from './ReportFeedbackSystemInfoSection';
 
 import * as css from './ReportFeedbackOverlay.less';
+import { utmTag } from '../../util/utmTag';
+
 
 const REPORT_ISSUE_LINK = 'https://github.com/camunda/camunda-modeler/issues/new/choose';
-const USER_FORUM_LINK = 'https://forum.camunda.io/tag/modeler?utm_source=modeler&utm_medium=referral';
+const USER_FORUM_LINK = utmTag('https://forum.camunda.io/tag/modeler');
 
 const OFFSET = { right: 0 };
 

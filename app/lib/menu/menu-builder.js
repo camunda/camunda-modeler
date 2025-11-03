@@ -616,11 +616,11 @@ class MenuBuilder {
     const topPart = [
       {
         label: 'Documentation',
-        click: () => browserOpen('https://docs.camunda.io/docs/components/modeler/desktop-modeler/')
+        click: () => browserOpen('https://docs.camunda.io/docs/components/modeler/desktop-modeler/?utm_source=modeler&utm_medium=referral')
       },
       {
         label: 'User Forum',
-        click: () => browserOpen('https://forum.camunda.io/c/bpmn-modeling/')
+        click: () => browserOpen('https://forum.camunda.io/c/bpmn-modeling/?utm_source=modeler&utm_medium=referral')
       },
       {
         label: 'Keyboard Shortcuts',
@@ -671,7 +671,7 @@ class MenuBuilder {
     const bottomPart = [
       {
         label: 'FEEL Reference',
-        click: () => browserOpen('https://docs.camunda.io/docs/components/modeler/feel/what-is-feel/')
+        click: () => browserOpen('https://docs.camunda.io/docs/components/modeler/feel/what-is-feel/?utm_source=modeler&utm_medium=referral')
       },
       getSeparatorTemplate(),
       {

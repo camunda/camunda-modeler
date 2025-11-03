@@ -18,6 +18,8 @@ import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
 import Flags from '../../util/Flags';
 
+import { utmTag } from '../../util/utmTag';
+
 /**
  * Formik form wrapper for the settings form.
  */
@@ -140,7 +142,9 @@ function SettingsField(props) {
     { disabledByFlag &&
       <div className="flag-warning">
         This option is overridden by <code>{ flag }</code> flag.&nbsp;
-        <a href="https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags/">Learn more.</a>
+        <a href={
+          utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags/')
+        }>Learn more.</a>
       </div>
     }
   </>;
