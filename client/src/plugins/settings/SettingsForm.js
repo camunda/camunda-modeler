@@ -290,7 +290,7 @@ function isEmpty(value) {
 }
 
 function matchesPattern(value, pattern) {
-  return value.match(pattern);
+  return new RegExp(pattern).test(value);
 }
 
 /**
