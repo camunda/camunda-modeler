@@ -2,7 +2,7 @@
   "name": "camunda-modeler-builder",
   "version": "0.0.0",
   "private": true,
-  "description": "Camunda Modeler for BPMN, DMN and CMMN, based on bpmn.io",
+  "description": "Modeling solution for BPMN, DMN, and Forms based on bpmn.io.",
   "scripts": {
     "app:auto-test": "npm run app:test -- --watch",
     "app:dev": "electron ./dev.js --force-update-checks resources/diagram/simple.bpmn",
