@@ -296,7 +296,7 @@ describe('<BpmnEditor>', function() {
       const contents = await instance.exportAs('svg');
 
       expect(contents).to.exist;
-      expect(contents).to.equal('<svg />');
+      expect(contents).to.contain('<svg width="100" height="50"');
     });
 
 
