@@ -568,6 +568,35 @@ describe('SettingsForm', function() {
       });
 
 
+      it('should handle undefined', async function() {
+
+        // given
+        const schema = [
+          {
+            properties: {
+              'test.select': {
+                type: 'select',
+                label: 'Select',
+                options: [],
+                constraints: {
+                  pattern: {
+                    value: 'second',
+                    message: 'Please select the second option'
+                  }
+                }
+              }
+            }
+          }
+        ];
+
+        // when
+        const { container } = createSettingsForm({ schema, initialValues: { test: { select: undefined } } });
+
+        // then
+        await expectError(container, 'Please select the second option');
+      });
+
+
       it('should pass validation when pattern matches', async function() {
 
         // given
