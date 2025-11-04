@@ -60,13 +60,6 @@
       "mimeType": "application/dmn"
     },
     {
-      "ext": "cmmn",
-      "name": "CamundaModeler.CMMN",
-      "description": "CMMN file",
-      "role": "Editor",
-      "mimeType": "application/cmmn"
-    },
-    {
       "ext": "form",
       "name": "CamundaModeler.FORM",
       "description": "FORM file",
