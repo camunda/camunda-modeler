@@ -19,7 +19,7 @@ import { utmTag } from '../../util/utmTag';
 
 
 const REPORT_ISSUE_LINK = 'https://github.com/camunda/camunda-modeler/issues/new/choose';
-const USER_FORUM_LINK = utmTag('https://forum.camunda.io/tag/modeler');
+const USER_FORUM_LINK = utmTag('https://forum.camunda.io/c/bpmn-modeling/');
 
 const OFFSET = { right: 0 };
 
