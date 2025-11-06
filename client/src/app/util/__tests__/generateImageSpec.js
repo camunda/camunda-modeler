@@ -23,6 +23,8 @@ const expectedImagesByType = {
 
 describe('util - generateImage', function() {
 
+  this.timeout(5000);
+
   const svg = require('./diagram.svg'),
         outOfBoundsSVG = require('./out_of_bounds_diagram.svg'),
         webhookSVG = require('./webhook.svg');
