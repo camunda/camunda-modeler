@@ -211,7 +211,7 @@ This project incorporates components from the projects listed below. The origina
 204.  @camunda/form-playground@0.23.0 (git+https://github.com/camunda/form-playground.git)
 205.  camunda-bpmn-js@5.14.2 (https://github.com/camunda/camunda-bpmn-js)
 206.  camunda-dmn-js@3.5.0 (https://github.com/camunda/camunda-dmn-js)
-207.  @camunda/linting@3.43.1 (https://github.com/camunda/linting)
+207.  @camunda/linting@3.44.0 (https://github.com/camunda/linting)
 208.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
 209.  min-dash@4.2.3 (git+https://github.com/bpmn-io/min-dash.git)
 210.  events@3.3.0 (git://github.com/Gozala/events.git)
@@ -285,7 +285,7 @@ This project incorporates components from the projects listed below. The origina
 278.  window-or-global@1.0.1 (purposeindustries/window-or-global)
 279.  invariant@2.2.4 (https://github.com/zertosh/invariant)
 280.  @carbon/layout@11.39.0 (https://github.com/carbon-design-system/carbon.git)
-281.  @bpmn-io/properties-panel@3.33.1 (git+https://github.com/bpmn-io/properties-panel.git)
+281.  @bpmn-io/properties-panel@3.33.2 (git+https://github.com/bpmn-io/properties-panel.git)
 282.  preact-hooks@0.1.0
 283.  preact@10.19.3 (preactjs/preact)
 284.  preact-compat@4.0.0
@@ -302,11 +302,11 @@ This project incorporates components from the projects listed below. The origina
 295.  @bpmn-io/lang-feel@2.4.0 (https://github.com/bpmn-io/lang-feel.git)
 296.  @camunda/feel-builtins@0.2.0 (git+https://github.com/camunda/feel-builtins.git)
 297.  focus-trap@7.5.2 (git+https://github.com/focus-trap/focus-trap.git)
-298.  bpmn-js-properties-panel@5.42.2 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+298.  bpmn-js-properties-panel@5.42.3 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 299.  diagram-js@15.4.0 (https://github.com/bpmn-io/diagram-js)
 300.  domify@2.0.0 (sindresorhus/domify)
 301.  array-move@4.0.0 (sindresorhus/array-move)
-302.  dmn-js-properties-panel@3.8.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
+302.  dmn-js-properties-panel@3.8.2 (https://github.com/bpmn-io/dmn-js-properties-panel)
 303.  @sentry/browser@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
 304.  @sentry-internal/feedback@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
 305.  @sentry/core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
@@ -326,7 +326,7 @@ This project incorporates components from the projects listed below. The origina
 319.  sourcemapped-stacktrace@1.1.11 (http://github.com/novocaine/sourcemapped-stacktrace)
 320.  @bpmn-io/replace-ids@0.2.0 (git+https://github.com/bpmn-io/replace-ids.git)
 321.  bpmnlint@11.6.1 (https://github.com/bpmn-io/bpmnlint)
-322.  bpmnlint-plugin-camunda-compat@2.43.1 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
+322.  bpmnlint-plugin-camunda-compat@2.44.0 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 323.  bpmnlint-utils@1.1.1 (https://github.com/bpmn-io/bpmnlint-utils)
 324.  @bpmn-io/moddle-utils@0.2.1 (https://github.com/bpmn-io/moddle-utils)
 325.  semver-compare@1.0.0 (git://github.com/substack/semver-compare.git)
@@ -342,7 +342,7 @@ This project incorporates components from the projects listed below. The origina
 335.  @bpmn-io/form-variable-provider@1.3.0 (git+https://github.com/bpmn-io/form-variable-provider.git)
 336.  @bpmn-io/variable-outline@2.0.1
 337.  @camunda/example-data-properties-provider@1.2.1
-338.  @camunda/task-testing@0.2.8
+338.  @camunda/task-testing@1.0.2
 339.  camunda-bpmn-js-behaviors@1.11.2 (https://github.com/camunda/camunda-bpmn-js-behaviors)
 340.  @bpmn-io/element-template-chooser@2.0.0 (https://github.com/bpmn-io/element-template-chooser.git)
 341.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
@@ -13493,7 +13493,7 @@ THE SOFTWARE.
 END OF camunda-dmn-js@3.5.0 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@3.43.1 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@3.44.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -13517,7 +13517,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/linting@3.43.1 NOTICES AND INFORMATION
+END OF @camunda/linting@3.44.0 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.4.1 NOTICES AND INFORMATION BEGIN HERE
@@ -16484,7 +16484,7 @@ END OF invariant@2.2.4 NOTICES AND INFORMATION
 END OF @carbon/layout@11.39.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/properties-panel@3.33.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/properties-panel@3.33.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16508,7 +16508,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/properties-panel@3.33.1 NOTICES AND INFORMATION
+END OF @bpmn-io/properties-panel@3.33.2 NOTICES AND INFORMATION
 
 
 %% preact-hooks@0.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16932,7 +16932,7 @@ SOFTWARE.
 END OF focus-trap@7.5.2 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@5.42.2 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@5.42.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16956,7 +16956,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@5.42.2 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@5.42.3 NOTICES AND INFORMATION
 
 
 %% diagram-js@15.4.0 NOTICES AND INFORMATION BEGIN HERE
@@ -17019,7 +17019,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF array-move@4.0.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-properties-panel@3.8.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-properties-panel@3.8.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17043,7 +17043,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF dmn-js-properties-panel@3.8.0 NOTICES AND INFORMATION
+END OF dmn-js-properties-panel@3.8.2 NOTICES AND INFORMATION
 
 
 %% @sentry/browser@10.8.0 NOTICES AND INFORMATION BEGIN HERE
@@ -17751,7 +17751,7 @@ THE SOFTWARE.
 END OF bpmnlint@11.6.1 NOTICES AND INFORMATION
 
 
-%% bpmnlint-plugin-camunda-compat@2.43.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint-plugin-camunda-compat@2.44.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17775,7 +17775,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint-plugin-camunda-compat@2.43.1 NOTICES AND INFORMATION
+END OF bpmnlint-plugin-camunda-compat@2.44.0 NOTICES AND INFORMATION
 
 
 %% bpmnlint-utils@1.1.1 NOTICES AND INFORMATION BEGIN HERE
@@ -18560,7 +18560,7 @@ THE SOFTWARE.
 END OF @camunda/example-data-properties-provider@1.2.1 NOTICES AND INFORMATION
 
 
-%% @camunda/task-testing@0.2.8 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/task-testing@1.0.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -18584,7 +18584,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/task-testing@0.2.8 NOTICES AND INFORMATION
+END OF @camunda/task-testing@1.0.2 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-js-behaviors@1.11.2 NOTICES AND INFORMATION BEGIN HERE
