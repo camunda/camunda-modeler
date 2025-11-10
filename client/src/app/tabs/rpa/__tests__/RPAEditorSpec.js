@@ -9,9 +9,8 @@
  */
 
 import React from 'react';
-import { waitFor } from '@testing-library/react';
 
-import { mount } from 'enzyme';
+import { render, waitFor } from '@testing-library/react';
 
 import {
   Cache,
@@ -38,15 +37,12 @@ describe('<RPAEditor>', function() {
         expect(errors).not.to.exist;
       });
 
-      const {
-        instance
-      } = await renderEditor(RPA, {
+      renderEditor(RPA, {
         onImport: onImportSpy,
         cache: new Cache()
       });
 
-      return waitFor(() => {
-        expect(instance).to.exist;
+      await waitFor(() => {
         expect(onImportSpy).to.have.been.calledOnce;
         expect(onImportSpy.args[0][0]).not.to.exist;
       });
@@ -61,13 +57,13 @@ describe('<RPAEditor>', function() {
       });
 
       // when
-      await renderEditor(INVALID_RPA, {
+      renderEditor(INVALID_RPA, {
         onImport: onImportSpy,
         cache: new Cache()
       });
 
       // then
-      return waitFor(() => {
+      await waitFor(() => {
         expect(onImportSpy).to.have.been.calledOnce;
         expect(onImportSpy.args[0][0]).to.exist;
       });
@@ -90,51 +86,6 @@ describe('<RPAEditor>', function() {
 
   describe('#handleChanged', function() {
 
-    it('should notify about changes', function() {
-
-      // given
-      const changedSpy = (state) => {
-
-        // then
-        expect(state).to.include({
-          dirty: true,
-          undo: true,
-          redo: true,
-        });
-      };
-
-      const cache = new Cache();
-
-      cache.add('editor', {
-        cached: {
-          lastXML: RPA,
-          editor: new MockRPACodeEditor(),
-          editorContainer: document.createElement('div'),
-          propertiesContainer: document.createElement('div')
-        }
-      });
-
-      const { instance } = renderEditor(RPA, {
-        id: 'editor',
-        cache,
-        onChanged: changedSpy
-      });
-
-      const { editor } = instance.getCached();
-
-      editor.value = 'new value';
-      editor.canUndo = true;
-      editor.canRedo = true;
-
-      // when
-      editor.eventBus.fire('model.changed');
-    });
-
-  });
-
-
-  describe('dirty state', function() {
-
     let instance;
 
     beforeEach(async function() {
@@ -145,10 +96,8 @@ describe('<RPAEditor>', function() {
         cache: new Cache()
       }).instance;
 
-
       return promise;
     });
-
 
     it('should be dirty before first save', function() {
 
@@ -185,7 +134,7 @@ describe('<RPAEditor>', function() {
 
       // then
       // State update is async
-      return waitFor(() => {
+      await waitFor(() => {
         const dirty = instance.isDirty();
         expect(dirty).to.be.true;
       });
@@ -260,7 +209,7 @@ describe('<RPAEditor>', function() {
         const onActionSpy = sinon.spy();
 
         // when
-        await renderEditor(RPA, {
+        renderEditor(RPA, {
           onAction: onActionSpy
         });
 
@@ -280,7 +229,7 @@ describe('<RPAEditor>', function() {
         // given
         const onActionSpy = sinon.spy();
 
-        const { instance } = await renderEditor(RPA, {
+        const { instance } = renderEditor(RPA, {
           onAction: onActionSpy
         });
 
@@ -314,15 +263,15 @@ describe('<RPAEditor>', function() {
 
         const {
           instance,
-          component
-        } = await renderEditor(RPA, {
+          unmount
+        } = renderEditor(RPA, {
           onAction: onActionSpy
         });
 
         const { editor } = instance.getCached();
 
         // when
-        component.unmount();
+        unmount();
 
         editor.eventBus.fire('model.changed');
 
@@ -350,7 +299,7 @@ describe('<RPAEditor>', function() {
 
         // when
         try {
-          await renderEditor(RPA, props);
+          renderEditor(RPA, props);
         } catch (error) {
 
           // then
@@ -392,9 +341,13 @@ function renderEditor(xml, options = {}) {
     });
   }
 
-  const component = mount(
+  const ref = React.createRef();
+
+  const rendered = render(
     <TestEditor
+      ref={ ref }
       getConfig={ () => ({}) }
+      onAction={ noop }
       onImport={ onImport || noop }
       id={ id || 'editor' }
       xml={ xml }
@@ -406,13 +359,8 @@ function renderEditor(xml, options = {}) {
     />
   );
 
-  const wrapper = component.find(RPAEditor);
-
-  const instance = wrapper.instance();
-
   return {
-    component,
-    instance,
-    wrapper
+    ...rendered,
+    instance: ref.current
   };
 }

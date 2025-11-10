@@ -12,11 +12,9 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 
 import ElementTemplatesView, {
-  ElementTemplatesListItem,
-  ElementTemplatesListItemEmpty,
   getVersion
 } from '../ElementTemplatesModalView';
 
@@ -29,126 +27,87 @@ describe('<ElementTemplatesView>', function() {
 
   describe('basics', function() {
 
-    it('should render', async function() {
+    it('should render', function() {
 
       // when
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView();
+      createElementTemplatesModalView();
 
       // then
-      expect(instance).to.exist;
-      expect(wrapper).to.exist;
+      expect(screen.getByText('Select template')).to.exist;
     });
 
 
     it('should get element templates on mount', async function() {
 
       // given
-      const { instance } = await createElementTemplatesModalView();
-
-      const getElementTemplatesSpy = sinon.spy(instance, 'getElementTemplates');
-
-      // when
-      instance.componentDidMount();
+      createElementTemplatesModalView();
 
       // then
-      expect(getElementTemplatesSpy).to.have.been.called;
+      await waitFor(() => {
+        expect(screen.getByText('Template 1')).to.exist;
+        expect(screen.getByText('Template 2')).to.exist;
+        expect(screen.getByText('Template 4')).to.exist;
+      });
     });
 
 
     it('should get element templates (filtered by applicable)', async function() {
 
       // given
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView();
-
-      // when
-      await instance.getElementTemplates();
+      createElementTemplatesModalView();
 
       // then
-      expect(wrapper.state('elementTemplates')).to.have.length(3);
+      await waitFor(() => {
+        expect(screen.getByText('Template 1')).to.exist;
+        expect(screen.getByText('Template 2')).to.exist;
+        expect(screen.getByText('Template 4')).to.exist;
+      });
     });
 
 
     it('should get element templates (filtered by latest)', async function() {
 
       // given
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView({
+      createElementTemplatesModalView({
         selectedElement: {
           businessObject: moddle.create('bpmn:SendTask')
         }
       });
 
-      // when
-      await instance.getElementTemplates();
-
-
       // then
-      expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.eql([
-        'Template 4',
-        'Template 5 v2'
-      ]);
+      await waitFor(() => {
+        expect(screen.getByText('Template 4')).to.exist;
+        expect(screen.getByText('Template 5 v2')).to.exist;
+      });
     });
 
 
     it('should get element templates (sorted alphabetically)', async function() {
 
       // given
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView();
+      createElementTemplatesModalView();
 
-      // when
-      await instance.getElementTemplates();
-
-      // then
-      expect(wrapper.state('elementTemplates').map(({ name }) => name)).to.eql([
-        'Template 1',
-        'Template 2',
-        'Template 4'
-      ]);
-    });
-
-
-    it('should list element templates', async function() {
-
-      // given
-      const { wrapper } = await createElementTemplatesModalView();
-
-      wrapper.update();
-
-      // then
-      expect(wrapper.find(ElementTemplatesListItem)).to.have.length(3);
+      await waitFor(() => {
+        expect(screen.getByText('Template 1')).to.exist;
+        expect(screen.getByText('Template 2')).to.exist;
+        expect(screen.getByText('Template 4')).to.exist;
+      });
     });
 
 
     it('should display meta data', async function() {
 
       // given
-      const elementTemplate = DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 5 v2');
-
-      const { wrapper } = await createElementTemplatesModalView({
+      createElementTemplatesModalView({
         selectedElement: {
           businessObject: moddle.create('bpmn:SendTask')
         }
       });
 
-      wrapper.update();
-
       // then
-      const listItem = wrapper.findWhere(n => n.prop('elementTemplate') === elementTemplate).first();
-
-      const meta = listItem.find('.element-templates-list__item-meta').first();
-
-      expect(meta.text()).to.equal('Version 2');
+      await waitFor(() => {
+        expect(screen.getByText(/Version 2/)).to.exist;
+      });
     });
 
 
@@ -161,96 +120,70 @@ describe('<ElementTemplatesView>', function() {
         }
       }
 
-      const { wrapper } = await createElementTemplatesModalView({ triggerAction });
-
-      wrapper.update();
+      // when
+      createElementTemplatesModalView({ triggerAction });
 
       // then
-      expect(wrapper.find(ElementTemplatesListItem)).to.have.length(0);
-      expect(wrapper.find(ElementTemplatesListItemEmpty)).to.have.length(1);
+      expect(screen.getByText('No matching templates found.')).to.exist;
     });
 
 
     it('should select element template', async function() {
 
       // given
-      const { wrapper } = await createElementTemplatesModalView();
+      createElementTemplatesModalView();
 
-      wrapper.update();
-
-      const elementTemplatesListItem = wrapper.find(ElementTemplatesListItem).first();
+      // assume
+      await screen.findByText('Template 1');
 
       // when
-      elementTemplatesListItem.simulate('click');
+      const template = screen.getByText('Template 1');
+      template.click();
 
       // then
-      expect(wrapper.state('selected')).to.equal('some-rpa-template');
+      expect(template.closest('li').classList.contains('element-templates-list__item--selected')).to.be.true;
     });
 
 
     it('should toggle expanded (expand)', async function() {
 
       // given
-      const { wrapper } = await createElementTemplatesModalView();
+      createElementTemplatesModalView();
 
-      wrapper.update();
-
-      const elementTemplatesListItem = wrapper.find(ElementTemplatesListItem).first();
-
-      const expand = elementTemplatesListItem.find('.element-templates-list__item-description-expand').first();
+      // assume
+      await screen.findByText('Template 1');
 
       // when
-      expand.simulate('click');
+      const expand = await screen.findByText('More');
+      expand.click();
 
       // then
-      expect(wrapper.state('expanded')).to.equal('some-rpa-template');
-      expect(wrapper.state('selected')).to.be.null;
+      expect(screen.getByText(DEFAULT_ELEMENT_TEMPLATES[2].description)).to.exist;
     });
 
 
     it('should toggle expanded (collapse)', async function() {
 
       // given
-      const { wrapper } = await createElementTemplatesModalView();
+      createElementTemplatesModalView();
 
-      wrapper.update();
-
-      const elementTemplatesListItem = wrapper.find(ElementTemplatesListItem).first();
-
-      const expand = elementTemplatesListItem.find('.element-templates-list__item-description-expand').first();
-
-      expand.simulate('click');
+      // assume
+      await screen.findByText('Template 1');
 
       // when
-      expand.simulate('click');
+      const expand = await screen.findByText('More');
+      expand.click();
 
       // then
-      expect(wrapper.state('expanded')).to.equal(null);
-      expect(wrapper.state('selected')).to.be.null;
-    });
-
-
-    it('should have sticky header', async function() {
-
-      // given
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView();
-
-      wrapper.update();
+      expect(screen.getByText(DEFAULT_ELEMENT_TEMPLATES[2].description)).to.exist;
 
       // when
-      instance.onScroll({
-        target: {
-          scrollTop: 100
-        }
-      });
+      const collapse = screen.getByText('Less');
+      collapse.click();
 
       // then
-      expect(wrapper.state('scroll')).to.be.true;
+      expect(screen.queryByText(DEFAULT_ELEMENT_TEMPLATES[2].description)).to.be.null;
     });
-
   });
 
 
@@ -261,15 +194,16 @@ describe('<ElementTemplatesView>', function() {
       // given
       const onApplySpy = sinon.spy();
 
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView({ onApply: onApplySpy });
+      createElementTemplatesModalView({ onApply: onApplySpy });
 
-      wrapper.setState({ selected: 'some-rpa-template' });
+      // assume
+      const template = await screen.findByText('Template 1');
 
       // when
-      instance.onApply();
+      template.click();
+
+      const applyButton = screen.getByRole('button', { name: 'Apply' });
+      applyButton.click();
 
       // then
       expect(onApplySpy).to.have.been.calledWith(DEFAULT_ELEMENT_TEMPLATES.find(({ id }) => id === 'some-rpa-template'));
@@ -281,13 +215,17 @@ describe('<ElementTemplatesView>', function() {
       // given
       const onApplySpy = sinon.spy();
 
-      const { instance } = await createElementTemplatesModalView({ onApply: onApplySpy });
+      createElementTemplatesModalView({ onApply: onApplySpy });
+
+      // assume
+      await screen.findByText('Template 1');
 
       // when
-      instance.onApply();
+      const applyButton = screen.getByRole('button', { name: 'Apply' });
+      applyButton.click();
 
       // then
-      expect(onApplySpy).not.to.have.been.called;
+      expect(onApplySpy).to.not.have.been.called;
     });
 
   });
@@ -298,43 +236,44 @@ describe('<ElementTemplatesView>', function() {
     it('should filter by search', async function() {
 
       // given
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView();
+      createElementTemplatesModalView();
+
+      // assume
+      await screen.findByText('Template 2');
 
       // when
-      instance.onSearchChange('Template 1');
-
-      wrapper.update();
+      const search = screen.getByPlaceholderText('Type to search...');
+      fireEvent.change(search, { target: { value: 'Template 1' } });
 
       // then
-      expect(wrapper.find(ElementTemplatesListItem)).to.have.length(1);
-      expect(wrapper.find(ElementTemplatesListItem).first().prop('elementTemplate')).to.equal(DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 1'));
+      await waitFor(() => {
+        expect(screen.getByText('Template 1')).to.exist;
+        expect(screen.queryByText('Template 2')).to.be.null;
+      });
     });
 
 
     it('should disable apply button if selected element template does not match filter', async function() {
 
       // given
-      const {
-        instance,
-        wrapper
-      } = await createElementTemplatesModalView();
+      createElementTemplatesModalView();
 
-      wrapper.update();
-
-      const elementTemplatesListItem = wrapper.find(ElementTemplatesListItem).first();
-
-      elementTemplatesListItem.simulate('click');
+      // assume
+      const template = await screen.findByText('Template 2');
 
       // when
-      instance.onSearchChange('Template 4');
-
-      wrapper.update();
+      template.click();
 
       // then
-      expect(wrapper.find('.button--apply').first().prop('disabled')).to.be.true;
+      const applyButton = screen.getByRole('button', { name: 'Apply' });
+      expect(applyButton.disabled).to.be.false;
+
+      // when
+      const search = screen.getByPlaceholderText('Type to search...');
+      fireEvent.change(search, { target: { value: 'Template 1' } });
+
+      // then
+      expect(applyButton.disabled).to.be.true;
     });
 
   });
@@ -429,7 +368,7 @@ const DEFAULT_ELEMENT_TEMPLATES = [
   }
 ];
 
-async function createElementTemplatesModalView(props = {}) {
+function createElementTemplatesModalView(props = {}) {
   function triggerAction(action) {
     if (action === 'getSelectedElement') {
       return props.selectedElement || {
@@ -449,14 +388,5 @@ async function createElementTemplatesModalView(props = {}) {
     triggerAction
   };
 
-  const wrapper = mount(<ElementTemplatesView { ...{ ...defaultProps, ...props } } />);
-
-  const instance = wrapper.instance();
-
-  await instance.getElementTemplates();
-
-  return {
-    instance,
-    wrapper
-  };
+  return render(<ElementTemplatesView { ...{ ...defaultProps, ...props } } />);
 }

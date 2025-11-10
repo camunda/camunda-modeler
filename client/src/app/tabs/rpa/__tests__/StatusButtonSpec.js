@@ -9,10 +9,9 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import StatusButton from '../StatusButton';
-import { Overlay } from '../../../../shared/ui';
 import { Slot, SlotFillRoot } from '../../../slot-fill';
 
 import { RPACodeEditor as MockRPACodeEditor } from 'test/mocks/rpa';
@@ -23,24 +22,24 @@ describe('<StatusButton>', function() {
   it('should render', function() {
 
     // when
-    const wrapper = renderButton();
+    const { getByRole } = renderButton();
 
     // then
-    expect(wrapper.find('button')).to.have.lengthOf(1);
+    expect(getByRole('button')).to.exist;
   });
 
 
   it('should open dialog on click', function() {
 
     // given
-    const wrapper = renderButton();
-    const button = wrapper.find('button');
+    const { getByRole } = renderButton();
+    const button = getByRole('button');
 
     // when
-    button.simulate('click');
+    button.click();
 
     // then
-    expect(wrapper.find(Overlay)).to.have.lengthOf(1);
+    expect(getByRole('dialog')).to.exist;
   });
 
 
@@ -48,14 +47,13 @@ describe('<StatusButton>', function() {
 
     // given
     const editor = new MockRPACodeEditor();
-    const wrapper = renderButton({ editor });
+    const { getByRole } = renderButton({ editor });
 
     // when
     editor.eventBus.fire('dialog.config.open');
-    await wrapper.update();
 
     // then
-    expect(wrapper.find(Overlay)).to.have.lengthOf(1);
+    expect(getByRole('dialog')).to.exist;
   });
 
 });
@@ -68,7 +66,7 @@ function renderButton(props = {}) {
     editor = new MockRPACodeEditor()
   } = props;
 
-  return mount(<SlotFillRoot>
+  return render(<SlotFillRoot>
     <Slot name="status-bar__file" />
     <StatusButton layout={ layout } onAction={ onAction } editor={ editor } />
   </SlotFillRoot>);

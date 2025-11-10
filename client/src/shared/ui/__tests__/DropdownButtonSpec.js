@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { shallow, mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import { DropdownButton } from '..';
 
@@ -20,57 +20,63 @@ import { DropdownButton } from '..';
 describe('<DropdownButton>', function() {
 
   it('should render', function() {
-    shallow(<DropdownButton />);
+    const { getByRole } = render(<DropdownButton />);
+
+    expect(getByRole('button')).to.exist;
   });
 
 
   it('should accept custom className', function() {
 
     // when
-    const wrapper = shallow(<DropdownButton className="foo" />);
+    const { container } = render(<DropdownButton className="foo" />);
 
     // then
-    expect(wrapper.hasClass('foo')).to.be.true;
+    const dropdownButton = container.querySelector('.foo');
+    expect(dropdownButton).to.exist;
   });
 
 
   it('should be disabled', function() {
 
     // when
-    const wrapper = shallow(<DropdownButton disabled />);
+    const { container } = render(<DropdownButton disabled />);
 
     // then
-    expect(wrapper.hasClass('disabled')).to.be.true;
+    const dropdownButton = container.firstChild;
+    expect(dropdownButton.classList.contains('disabled')).to.be.true;
   });
 
 
   it('should open dropdown', function() {
 
     // given
-    const wrapper = shallow(
+    const { getByRole, container } = render(
       <DropdownButton
-        items={ () => <span /> }
+        items={ () => <span>Test</span> }
       />
     );
 
     // when
-    wrapper.find('button').simulate('click', mockEvent());
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // then
-    expect(wrapper.exists('.dropdown')).to.be.true;
+    expect(container.querySelector('.dropdown')).to.exist;
   });
 
 
   it('should NOT open dropdown if disabled', function() {
 
     // given
-    const wrapper = shallow(<DropdownButton disabled={ true } />);
+    const { getByRole, container } = render(<DropdownButton disabled={ true } />);
 
     // when
-    wrapper.find('button').simulate('click', mockEvent());
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // then
-    expect(wrapper.exists('.dropdown')).to.be.false;
+    expect(container.querySelector('.dropdown')).to.not.exist;
   });
 
 
@@ -84,59 +90,57 @@ describe('<DropdownButton>', function() {
         text: 'bar'
       } ];
 
-      const wrapper = mount(<DropdownButton items={ items } { ...props } />);
+      const rendered = render(<DropdownButton items={ items } { ...props } />);
+
+      const button = rendered.getByRole('button');
 
       // open dropdown
-      wrapper.setState({
-        active: true
-      });
+      fireEvent.click(button);
 
-      return wrapper;
+      return rendered;
     }
 
 
     it('should close dropdown on item click', function() {
 
       // given
-      const wrapper = openDropdown();
+      const { getByText, container } = openDropdown();
 
       // when
-      const item = wrapper.find('.item').first();
-
-      item.simulate('click', mockEvent());
+      const item = getByText('foo');
+      fireEvent.click(item);
 
       // then
-      expect(wrapper.state().active).to.be.false;
+      expect(container.querySelector('.dropdown')).to.not.exist;
     });
 
 
     it('should close dropdown on global click', function() {
 
       // given
-      const wrapper = openDropdown();
+      const { container } = openDropdown();
 
       // when
-      document.body.click();
+      fireEvent.click(document.body);
 
       // then
-      expect(wrapper.state().active).to.be.false;
+      expect(container.querySelector('.dropdown')).to.not.exist;
     });
 
 
     it('should NOT close on click if specified', function() {
 
       // given
-      const wrapper = openDropdown({
+      const { getByText, container } = openDropdown({
         closeOnClick: false
       });
 
       // when
-      const item = wrapper.find('.item').first();
-
-      item.simulate('click', mockEvent());
+      const item = getByText('foo');
+      fireEvent.click(item);
 
       // then
-      expect(wrapper.state().active).to.be.true;
+      expect(container.querySelector('.dropdown')).to.exist;
     });
 
   });
@@ -152,12 +156,14 @@ describe('<DropdownButton>', function() {
       onClick: spy
     } ];
 
-    const wrapper = shallow(<DropdownButton items={ items } />);
+    const { getByRole, getByText } = render(<DropdownButton items={ items } />);
 
-    wrapper.find('button').simulate('click', mockEvent());
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // when
-    wrapper.find('.item').simulate('click');
+    const item = getByText('foo');
+    fireEvent.click(item);
 
     // then
     expect(spy).to.have.been.called;
@@ -166,15 +172,15 @@ describe('<DropdownButton>', function() {
 
   it('should accept custom dropdown children', function() {
 
-    // when
-    const wrapper = shallow(<DropdownButton><div className="foo"></div></DropdownButton>);
+    // given
+    const { getByRole, container } = render(<DropdownButton><div className="foo"></div></DropdownButton>);
 
-    wrapper.setState({
-      active: true
-    });
+    // when
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // then
-    expect(wrapper.exists('.foo')).to.be.true;
+    expect(container.querySelector('.foo')).to.exist;
   });
 
 
@@ -183,10 +189,11 @@ describe('<DropdownButton>', function() {
     it('should render multi-button', function() {
 
       // when
-      const wrapper = shallow(<DropdownButton multiButton />);
+      const { container } = render(<DropdownButton multiButton />);
 
       // then
-      expect(wrapper.hasClass('multi-button')).to.be.true;
+      const dropdownButton = container.firstChild;
+      expect(dropdownButton.classList.contains('multi-button')).to.be.true;
     });
 
 
@@ -195,14 +202,15 @@ describe('<DropdownButton>', function() {
       // given
       const spy = sinon.spy();
 
-      const wrapper = shallow(<DropdownButton multiButton onClick={ spy } />);
+      const { getByRole, container } = render(<DropdownButton multiButton onClick={ spy } />);
 
       // when
-      wrapper.find('button').simulate('click', mockEvent());
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
       expect(spy).to.have.been.called;
-      expect(wrapper.state().active).to.be.false;
+      expect(container.querySelector('.dropdown')).to.not.exist;
     });
 
 
@@ -211,28 +219,22 @@ describe('<DropdownButton>', function() {
       // given
       const spy = sinon.spy();
 
-      const wrapper = shallow(<DropdownButton multiButton onClick={ spy } />);
+      const items = [ {
+        text: 'foo',
+        onClick: spy
+      } ];
+
+      const { container } = render(<DropdownButton multiButton items={ items } onClick={ spy } />);
 
       // when
-      wrapper.find('.dropdown-opener').simulate('click', mockEvent());
+      const opener = container.querySelector('.dropdown-opener');
+      fireEvent.click(opener);
 
       // then
       expect(spy).to.not.have.been.called;
-      expect(wrapper.state().active).to.be.true;
+      expect(container.querySelector('.dropdown')).to.exist;
     });
 
   });
 
 });
-
-
-// helpers //////////////
-
-function mockEvent() {
-
-  return {
-    stopPropagation() {},
-    preventDefault() {}
-  };
-
-}

@@ -10,16 +10,15 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import Notifications from '..';
-import Notification from '../Notification';
 
 
 describe('<Notifications>', function() {
 
   it('should render', function() {
-    shallow(<Notifications notifications={ [] } />);
+    render(<Notifications notifications={ [] } />);
   });
 
 
@@ -28,10 +27,11 @@ describe('<Notifications>', function() {
     // given
     const notification = createNotification();
 
-    const wrapper = shallow(<Notifications notifications={ [ notification ] } />);
+    // when
+    const { getByRole } = render(<Notifications notifications={ [ notification ] } />);
 
     // then
-    expect(wrapper.find(Notification)).to.have.lengthOf(1);
+    expect(getByRole('alert')).to.exist;
   });
 
 });
