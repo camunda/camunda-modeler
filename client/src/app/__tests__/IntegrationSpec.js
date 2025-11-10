@@ -14,6 +14,8 @@ import React from 'react';
 
 import { App } from '../App';
 
+import { render } from '@testing-library/react';
+
 import {
   Backend,
   Cache,
@@ -29,10 +31,7 @@ import {
   ZeebeAPI
 } from './mocks';
 
-import {
-  findRenderedComponentWithType,
-  renderIntoDocument
-} from 'react-dom/test-utils';
+import { findRenderedComponentWithType } from 'react-dom/test-utils';
 
 import { TabsProvider } from '../';
 
@@ -51,7 +50,8 @@ describe('Integration', function() {
     let app, file2, tab1, tab2;
 
     beforeEach(async function() {
-      app = createApp();
+      const rendered = createApp();
+      app = rendered.app;
 
       const file1 = createFile('1.bpmn');
 
@@ -117,26 +117,13 @@ describe('Integration', function() {
 
 
   describe('modals', function() {
-    const modalRoot = document.createElement('div');
-    modalRoot.id = 'modal-root';
-
-
-    beforeEach(function() {
-      document.body.appendChild(modalRoot);
-    });
-
-
-    afterEach(function() {
-      document.body.removeChild(modalRoot);
-    });
-
 
     it('should show shortcuts modals', async function() {
 
       // given
       const onError = sinon.spy();
 
-      const app = createApp({ onError });
+      const { app } = createApp({ onError });
 
       // when
       await app.showShortcuts();
@@ -188,8 +175,11 @@ function createApp(options = {}) {
 
   const tabsProvider = new TabsProvider();
 
-  return renderIntoDocument(
+  const appRef = React.createRef();
+
+  const rendered = render(
     <App
+      ref={ appRef }
       cache={ cache }
       globals={ globals }
       onError={ onError }
@@ -202,6 +192,11 @@ function createApp(options = {}) {
       tabsProvider={ tabsProvider }
     />
   );
+
+  return {
+    ...rendered,
+    app: appRef.current,
+  };
 }
 
 function createFile(name) {

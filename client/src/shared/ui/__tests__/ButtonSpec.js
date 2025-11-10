@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import { Button } from '..';
 
@@ -20,17 +20,19 @@ import { Button } from '..';
 describe('<Button>', function() {
 
   it('should render', function() {
-    shallow(<Button />);
+    const { getByRole } = render(<Button />);
+    expect(getByRole('button')).to.exist;
   });
 
 
   it('should accept custom className', function() {
 
     // when
-    const wrapper = shallow(<Button className="foo" />);
+    const { getByRole } = render(<Button className="foo" />);
 
     // then
-    expect(wrapper.hasClass('foo')).to.be.true;
+    const button = getByRole('button');
+    expect(button.classList.contains('foo')).to.be.true;
   });
 
 
@@ -39,10 +41,11 @@ describe('<Button>', function() {
     // given
     const spy = sinon.spy();
 
-    const wrapper = shallow(<Button onClick={ spy } />);
+    const { getByRole } = render(<Button onClick={ spy } />);
 
     // when
-    wrapper.simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // then
     expect(spy).to.have.been.called;
@@ -52,10 +55,11 @@ describe('<Button>', function() {
   it('should be disabled', function() {
 
     // when
-    const wrapper = shallow(<Button disabled />);
+    const { getByRole } = render(<Button disabled />);
 
     // then
-    expect(wrapper.hasClass('disabled')).to.be.true;
+    const button = getByRole('button');
+    expect(button.classList.contains('disabled')).to.be.true;
   });
 
 });

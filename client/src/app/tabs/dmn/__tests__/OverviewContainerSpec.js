@@ -17,87 +17,46 @@ import OverviewContainer, {
   MAX_WIDTH
 } from '../OverviewContainer';
 
-import { mount } from 'enzyme';
+import { render, fireEvent, cleanup } from '@testing-library/react';
 
 const { spy } = sinon;
 
-
 describe('<OverviewContainer>', function() {
 
-  it('should render', function() {
+  const onLayoutChangedSpy = spy();
 
-    // given
-    const { wrapper } = createOverviewContainer();
+  beforeEach(function() {
 
-    // then
-    expect(wrapper).to.exist;
+    const layout = {
+      dmnOverview: {
+        open: true,
+        width: 500
+      }
+    };
 
-    // clean
-    wrapper.unmount();
+    render(<OverviewContainer layout={ layout } onLayoutChanged={ onLayoutChangedSpy } />);
+  });
+
+  afterEach(function() {
+    cleanup();
+    onLayoutChangedSpy.resetHistory();
   });
 
 
   it('should resize', function() {
 
-    // given
-    const layout = {
-      dmnOverview: {
-        open: true,
-        width: 500
-      }
-    };
-
-    const onLayoutChangedSpy = spy();
-
-    const {
-      instance,
-      wrapper
-    } = createOverviewContainer({
-      layout,
-      onLayoutChanged: onLayoutChangedSpy
-    });
-
     // when
-    instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
-
-    instance.handleResize(null, { x: 50 });
-
-    instance.handleResizeEnd();
+    resize(50);
 
     // then
     expect(onLayoutChangedSpy).to.be.calledWith({ dmnOverview: { open: true, width: 550 } });
-
-    // clean
-    wrapper.unmount();
   });
 
 
   it('should close when resized to smaller than minimum size', function() {
 
-    // given
-    const layout = {
-      dmnOverview: {
-        open: true,
-        width: 500
-      }
-    };
-
-    const onLayoutChangedSpy = spy();
-
-    const {
-      instance,
-      wrapper
-    } = createOverviewContainer({
-      layout,
-      onLayoutChanged: onLayoutChangedSpy
-    });
-
     // when
-    instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
-
-    instance.handleResize(null, { x: -400 });
-
-    instance.handleResizeEnd();
+    resize(-500);
 
     // then
     expect(onLayoutChangedSpy).to.be.calledWith({
@@ -106,38 +65,13 @@ describe('<OverviewContainer>', function() {
         width: DEFAULT_LAYOUT.width
       }
     });
-
-    // clean
-    wrapper.unmount();
   });
 
 
   it('should not resize to larger than maximum size', function() {
 
-    // given
-    const layout = {
-      dmnOverview: {
-        open: true,
-        width: 500
-      }
-    };
-
-    const onLayoutChangedSpy = spy();
-
-    const {
-      instance,
-      wrapper
-    } = createOverviewContainer({
-      layout,
-      onLayoutChanged: onLayoutChangedSpy
-    });
-
     // when
-    instance.handleResizeStart(createMouseEvent('dragstart', 0, 0));
-
-    instance.handleResize(null, { x: 400 });
-
-    instance.handleResizeEnd();
+    resize(1000);
 
     // then
     expect(onLayoutChangedSpy).to.be.calledWith({
@@ -146,34 +80,13 @@ describe('<OverviewContainer>', function() {
         width: MAX_WIDTH
       }
     });
-
-    // clean
-    wrapper.unmount();
   });
 
 
   it('should toggle', function() {
 
-    // given
-    const layout = {
-      dmnOverview: {
-        open: true,
-        width: 500
-      }
-    };
-
-    const onLayoutChangedSpy = spy();
-
-    const {
-      instance,
-      wrapper
-    } = createOverviewContainer({
-      layout,
-      onLayoutChanged: onLayoutChangedSpy
-    });
-
     // when
-    instance.handleToggle();
+    toggle();
 
     // then
     expect(onLayoutChangedSpy).to.be.calledWith({
@@ -182,46 +95,22 @@ describe('<OverviewContainer>', function() {
         width: 500
       }
     });
-
-    // clean
-    wrapper.unmount();
   });
 
 });
 
-
 // helpers //////////
 
-function createOverviewContainer(props = {}, mountFn = mount) {
-  props = {
-    layout: {
-      dmnOverview: {
-        open: true,
-        width: 350
-      }
-    },
-    ...props,
-  };
+function resize(x, y = 0) {
+  const resizeHandle = document.querySelector('.resize-handle');
 
-  const wrapper = mountFn(<OverviewContainer { ...props } />);
-
-  const instance = wrapper.find('OverviewContainerWrapped').first().instance();
-
-  return {
-    instance,
-    wrapper
-  };
+  fireEvent.dragStart(resizeHandle);
+  fireEvent.dragOver(resizeHandle, { clientX: x, clientY: y });
+  fireEvent.dragEnd(resizeHandle);
 }
 
-// helpers //////////
+function toggle() {
+  const toggle = document.querySelector('.toggle');
 
-function createMouseEvent(type, clientX, clientY) {
-  const event = document.createEvent('MouseEvent');
-
-  if (event.initMouseEvent) {
-    event.initMouseEvent(
-      type, true, true, window, 0, 0, 0, clientX, clientY, false, false, false, false, 0, null);
-  }
-
-  return event;
+  fireEvent.click(toggle);
 }
