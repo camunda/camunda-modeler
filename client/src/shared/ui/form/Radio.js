@@ -50,19 +50,19 @@ export default function Radio(props) {
       <div className={
         classNames('form-group', 'form-inline', className)
       }>
-        <label htmlFor={ fieldName }>
-          { label }
-          <DocumentationIcon url={ documentationUrl } />
-        </label>
-        <div className="form-check-inline">
-          {
-            values.map((child) => {
-              const id = `radio-element-${fieldName}-${toKebabCase(child.label)}`;
-              return (
-                <React.Fragment key={ child.label }>
-                  <div className={
-                    classNames('custom-control', 'custom-radio')
-                  }>
+        <div className={
+          classNames('custom-control','custom-radio')
+        }>
+          <label htmlFor={ fieldName }>
+            { label }
+            <DocumentationIcon url={ documentationUrl } />
+          </label>
+          <div className="form-check-inline">
+            {
+              values.map((child) => {
+                const id = `radio-element-${fieldName}-${toKebabCase(child.label)}`;
+                return (
+                  <React.Fragment key={ child.label }>
                     <input
                       { ...field }
                       type="radio"
@@ -78,16 +78,16 @@ export default function Radio(props) {
                       className="custom-control-label">
                       { child.label }
                     </label>
-                  </div>
-                </React.Fragment>
-              );
-            })
-          }
+                  </React.Fragment>
+                );
+              })
+            }
+          </div>
+          <FormFeedback
+            error={ error }
+          />
+          <div className="custom-control-description">{ description }</div>
         </div>
-        <FormFeedback
-          error={ error }
-        />
-        <div className="custom-control-description">{ description }</div>
       </div>
     </React.Fragment>
   );

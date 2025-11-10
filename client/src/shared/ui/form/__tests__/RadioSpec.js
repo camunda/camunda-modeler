@@ -87,7 +87,7 @@ describe('<Radio>', function() {
     });
 
     // then
-    const invalidFeedback = container.querySelector('.form-group>.invalid-feedback');
+    const invalidFeedback = container.querySelector('.form-group>.custom-control>.invalid-feedback');
     expect(invalidFeedback).to.exist;
   });
 
