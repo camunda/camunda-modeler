@@ -15,6 +15,7 @@ import { getConnectionCheckFieldErrors } from '../deployment-plugin/ConnectionCh
  * Registers plugin settings
  */
 export async function initializeSettings({ settings, getConfig, log, zeebeAPI }) {
+
   /** @type import("../../../app/Settings").SettingsGroup */
   const pluginSettings = {
     id: 'connectionManagerPlugin',
@@ -114,8 +115,16 @@ export async function initializeSettings({ settings, getConfig, log, zeebeAPI })
             type: 'text',
             label: LABELS.TENANT_ID,
             hint: HINTS.TENANT_ID,
-            condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+            condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED }
           },
+
+          operateUrl: {
+            type: 'text',
+            label: LABELS.OPERATE_URL,
+            hint: HINTS.OPERATE_URL,
+            condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED }
+          },
+
 
           authType: {
             type: 'radio',
@@ -242,12 +251,14 @@ const LABELS = {
   OAUTH_URL: 'OAuth token URL',
   SELF_HOSTED: 'Camunda 8 Self-Managed',
   TARGET: 'Target',
-  TENANT_ID: 'Tenant ID'
+  TENANT_ID: 'Tenant ID',
+  OPERATE_URL: 'Operate URL'
 };
 
 const HINTS = {
-  CLUSTER_URL: 'http://localhost:26500',
-  TENANT_ID: 'Optional'
+  CLUSTER_URL: 'http://localhost:8080/v2',
+  TENANT_ID: 'Optional',
+  OPERATE_URL: 'Optional'
 };
 
 const VALIDATION_ERROR_MESSAGES = {
