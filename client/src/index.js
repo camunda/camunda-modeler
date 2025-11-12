@@ -40,6 +40,7 @@ import Metadata from './util/Metadata';
 import Flags from './util/Flags';
 
 import debug from 'debug';
+import { initializeConnections } from './app/migrations/initializeConnections';
 
 // This fix is necessary because dragular expects `global` to be defined, see
 // https://github.com/bevacqua/dragula/issues/602 for context
@@ -94,6 +95,8 @@ async function render() {
 
     // mark as finished loading
     document.querySelector('body > .spinner-border').classList.add('hidden');
+
+    initializeConnections(settings, config);
   };
 
   const tabsProvider = new TabsProvider(plugins.get('tabs'), settings);

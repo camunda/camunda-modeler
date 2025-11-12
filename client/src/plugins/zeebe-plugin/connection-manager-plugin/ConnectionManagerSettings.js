@@ -14,9 +14,9 @@ import { getConnectionCheckFieldErrors } from '../deployment-plugin/ConnectionCh
 /**
  * Registers plugin settings
  */
-export async function initializeSettings({ settings, getConfig, log, zeebeAPI }) {
+export async function initializeSettings({ settings, zeebeAPI }) {
 
-  /** @type import("../../../app/Settings").SettingsGroup */
+  /** @type import("../../../remote/Settings").SettingsGroup */
   const pluginSettings = {
     id: 'connectionManagerPlugin',
     title: 'Connections',
