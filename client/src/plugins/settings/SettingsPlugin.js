@@ -34,7 +34,7 @@ const log = debug('Settings');
  * Provides UI for the settings API.
  *
  * @param {Object} props
- * @param {import('../../app/Settings').Settings} props.settings
+ * @param {import('../../remote/Settings').Settings} props.settings
  *
  * @returns {JSX.Element}
  *

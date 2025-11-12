@@ -14,6 +14,7 @@ import Dialog from './Dialog';
 import FileSystem from './FileSystem';
 import Log from './Log';
 import Plugins from './Plugins';
+import Settings from './Settings';
 import StartInstance from './StartInstance';
 import SystemClipboard from './SystemClipboard';
 import Workspace from './Workspace';
@@ -29,6 +30,10 @@ const {
 export const backend = appBackend;
 
 export const config = new Config(backend);
+
+export const settings = new Settings({
+  config
+});
 
 export const dialog = new Dialog(backend);
 
