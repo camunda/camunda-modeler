@@ -37,7 +37,7 @@ const log = debug('Settings');
  * triggerAction('settings-open', { expandRowId: 'your-row-id' })
  *
  * @param {Object} props
- * @param {import('../../app/Settings').Settings} props.settings
+ * @param {import('../../remote/Settings').Settings} props.settings
  *
  * @returns {JSX.Element}
  *

@@ -14,7 +14,7 @@ import { mount } from 'enzyme';
 
 import SettingsPlugin from '../SettingsPlugin';
 
-import Settings from '../../../app/Settings';
+import Settings from '../../../remote/Settings';
 
 import { Modal } from '../../../shared/ui';
 

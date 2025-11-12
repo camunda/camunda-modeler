@@ -19,7 +19,7 @@ import { utmTag } from '../../util/utmTag';
 
 /**
  * Registers built-in application settings.
- * @param {import('../../app/Settings').Settings} settings
+ * @param {import('../../remote/Settings').Settings} settings
  */
 export default function useBuiltInSettings(settings) {
 
