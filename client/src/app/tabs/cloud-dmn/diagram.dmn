@@ -12,7 +12,7 @@
   </decision>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram>
-      <dmndi:DMNShape dmnElementRef="Decision_{{ ID:decision }}">
+      <dmndi:DMNShape id="Decision_{{ ID:decision }}_di" dmnElementRef="Decision_{{ ID:decision }}">
         <dc:Bounds height="80" width="180" x="160" y="100" />
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>
