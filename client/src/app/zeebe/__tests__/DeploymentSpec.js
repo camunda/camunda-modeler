@@ -17,7 +17,7 @@ import Deployment, {
   removeCredentials
 } from '../Deployment';
 
-import { TARGET_TYPES } from '../ZeebeAPI';
+import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
 describe('Deployment', function() {
 

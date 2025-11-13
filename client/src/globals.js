@@ -9,17 +9,17 @@
  */
 
 import Config from './remote/Config';
-import Deployment from './remote/Deployment';
 import Dialog from './remote/Dialog';
 import FileSystem from './remote/FileSystem';
 import Log from './remote/Log';
 import Plugins from './remote/Plugins';
-import StartInstance from './remote/StartInstance';
 import SystemClipboard from './remote/SystemClipboard';
 import Workspace from './remote/Workspace';
 import ZeebeAPI from './remote/ZeebeAPI';
 
 import Settings from './app/Settings';
+import StartInstance from './app/zeebe/StartInstance';
+import Deployment from './app/zeebe/Deployment';
 
 const {
   metadata,
