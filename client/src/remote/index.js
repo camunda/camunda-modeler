@@ -14,6 +14,7 @@ import Dialog from './Dialog';
 import FileSystem from './FileSystem';
 import Log from './Log';
 import Plugins from './Plugins';
+import Settings from './Settings';
 import StartInstance from './StartInstance';
 import SystemClipboard from './SystemClipboard';
 import Workspace from './Workspace';
@@ -30,6 +31,10 @@ export const backend = appBackend;
 
 export const config = new Config(backend);
 
+export const settings = new Settings({
+  config
+});
+
 export const dialog = new Dialog(backend);
 
 export const fileSystem = new FileSystem(backend);
@@ -44,9 +49,9 @@ export const workspace = new Workspace(backend);
 
 export const zeebeAPI = new ZeebeAPI(backend);
 
-export const deployment = new Deployment(config, zeebeAPI);
+export const deployment = new Deployment(config, zeebeAPI, settings);
 
-export const startInstance = new StartInstance(config, zeebeAPI);
+export const startInstance = new StartInstance(config, zeebeAPI, settings);
 
 export {
   metadata,

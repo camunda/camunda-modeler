@@ -82,17 +82,21 @@ export default function TextInput(props) {
   return (
     <React.Fragment>
       <div className="form-group">
-        <label htmlFor={ fieldName }>
-          { label }
-          <DocumentationIcon url={ documentationUrl } />
-        </label>
-        { textElement() }
-        <FormFeedback
-          error={ error }
-        />
-        { description &&
-          <p className="form-control">{ description }</p>
-        }
+        <div className={
+          classNames('custom-control', 'custom-text-input')
+        }>
+          <label htmlFor={ fieldName }>
+            { label }
+            <DocumentationIcon url={ documentationUrl } />
+          </label>
+          { textElement() }
+          <FormFeedback
+            error={ error }
+          />
+          { description &&
+          <p className="custom-control-description">{ description }</p>
+          }
+        </div>
       </div>
     </React.Fragment>
   );

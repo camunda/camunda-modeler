@@ -8,6 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-export function fieldError(meta) {
-  return meta.error;
-}
+export { default } from './ConnectionManagerPlugin';

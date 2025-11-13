@@ -18,10 +18,6 @@ import React, { useEffect, useState } from 'react';
 
 import { Overlay } from '../../../shared/ui';
 
-import { default as DefaultDeploymentConfigForm } from '../deployment-plugin/DeploymentConfigForm';
-
-import { getConnectionCheckError } from '../deployment-plugin/ConnectionCheckErrors';
-
 import { default as DefaultStartInstanceConfigForm } from './StartInstanceConfigForm';
 
 import {
@@ -45,10 +41,7 @@ export default function StartInstancePluginOverlay(props) {
   const {
     activeTab,
     anchor,
-    connectionChecker,
     deployment,
-    DeploymentConfigForm = DefaultDeploymentConfigForm,
-    deploymentConfigValidator,
     displayNotification,
     getConfigFile = defaultGetConfigFile,
     getErrorNotification = defaultGetErrorNotification,
@@ -56,47 +49,23 @@ export default function StartInstancePluginOverlay(props) {
     getSuccessNotification = defaultGetSuccessNotification,
     log,
     onClose,
-    renderDeploymentDescription = null,
-    renderDeploymentHeader = 'Deploy',
-    renderDeploymentSubmit = 'Deploy',
     renderStartInstanceDescription = null,
     renderStartInstanceHeader = 'Start instance',
-    renderStartInstanceSubmit = 'Start instance',
+    renderStartInstanceSubmit = 'Deploy & run',
     startInstance,
     StartInstanceConfigForm = DefaultStartInstanceConfigForm,
     startInstanceConfigValidator,
-    triggerAction
+    triggerAction,
+    connectionCheckResult
   } = props;
 
-  /** @type {DeploymentConfig} */
-  const [ deploymentConfig, setDeploymentConfig ] = useState(null);
 
-  /** @type {ConnectionCheckResult} */
-  const [ connectionCheckResult, setConnectionCheckResult ] = useState(null);
+  const [ deploymentConfig, setDeploymentConfig ] = useState(/** @type {DeploymentConfig|null} */ (null));
 
-  /** @type {StartInstanceConfig} */
-  const [ startInstanceConfig, setStartInstanceConfig ] = useState(null);
-
-  const [ showDeploymentConfigForm, setShowDeploymentConfigForm ] = useState(false);
-
-  useEffect(() => {
-    if (connectionCheckResult && !connectionCheckResult.success) {
-      setShowDeploymentConfigForm(true);
-    }
-  }, [ connectionCheckResult ]);
-
-  const getDeploymentFieldError = (fieldName) => {
-    return getConnectionCheckError(fieldName, connectionCheckResult);
-  };
+  const [ startInstanceConfig, setStartInstanceConfig ] = useState(/** @type {StartInstanceConfig|null} */ (null));
 
   const getStartInstanceFieldError = (fieldName) => {
     return null;
-  };
-
-  const onDeploymentSubmit = async (values) => {
-    setDeploymentConfig(values);
-
-    setShowDeploymentConfigForm(false);
   };
 
   const onStartInstanceSubmit = async (values) => {
@@ -154,26 +123,6 @@ export default function StartInstancePluginOverlay(props) {
     onClose();
   };
 
-  const validateDeploymentConfigForm = async (values) => {
-    const config = values;
-
-    setDeploymentConfig(config);
-
-    const configValidationErrors = deploymentConfigValidator.validateConfig(config);
-
-    if (Object.keys(configValidationErrors).length > 0) {
-      connectionChecker.updateConfig(null);
-    } else {
-      connectionChecker.updateConfig(config);
-
-      const file = getConfigFile(activeTab);
-
-      await deployment.setConfigForFile(file, config);
-    }
-
-    return configValidationErrors;
-  };
-
   const validateStartInstanceConfigForm = async (values) => {
     const config = values;
 
@@ -198,27 +147,14 @@ export default function StartInstancePluginOverlay(props) {
 
       setDeploymentConfig(deploymentConfig);
 
-      const configValidationErrors = deploymentConfigValidator.validateConfig(deploymentConfig);
-
-      if (Object.keys(configValidationErrors).length > 0) {
-        setShowDeploymentConfigForm(true);
-      }
-
-      connectionChecker.updateConfig(deploymentConfig);
-
       const startInstanceConfig = await startInstance.getConfigForFile(file);
 
       setStartInstanceConfig(startInstanceConfig);
     })();
 
-    connectionChecker.on('connectionCheck', setConnectionCheckResult);
 
-    return () => {
-      connectionChecker.off('connectionCheck', setConnectionCheckResult);
 
-      connectionChecker.stopChecking();
-    };
-  }, [ connectionChecker, deployment, setConnectionCheckResult, setDeploymentConfig, setStartInstanceConfig, startInstance ]);
+  }, [ deployment, setDeploymentConfig, setStartInstanceConfig, startInstance ]);
 
   useEffect(() => {
     const onDeployed = ({ deploymentResult, endpoint, gatewayVersion }) => {
@@ -261,38 +197,24 @@ export default function StartInstancePluginOverlay(props) {
 
   return (
     <Overlay className={ css.StartInstancePluginOverlay } onClose={ onClose } anchor={ anchor }>
-      { deploymentConfig && startInstanceConfig
-        ? (
-          showDeploymentConfigForm
-            ? (
-              <DeploymentConfigForm
-                getFieldError={ getDeploymentFieldError }
-                initialFieldValues={ deploymentConfig }
-                onSubmit={ onDeploymentSubmit }
-                renderDescription={ renderDeploymentDescription }
-                renderHeader={ renderDeploymentHeader }
-                renderSubmit={ renderDeploymentSubmit }
-                validateForm={ validateDeploymentConfigForm }
-                validateField={ (name, value) => deploymentConfigValidator.validateConfigValue(name, value) } />
-            )
-            : (
-              <StartInstanceConfigForm
-                getFieldError={ getStartInstanceFieldError }
-                initialFieldValues={ startInstanceConfig }
-                onSubmit={ onStartInstanceSubmit }
-                renderDescription={ renderStartInstanceDescription }
-                renderHeader={ renderStartInstanceHeader }
-                renderSubmit={ renderStartInstanceSubmit }
-                validateForm={ validateStartInstanceConfigForm }
-                validateField={ (name, value) => startInstanceConfigValidator.validateConfigValue(name, value) } />
-            )
-        )
-        : (
-          <div className="loading">
-            <Loader />
-          </div>
-        )
-      }
+      {startInstanceConfig ? (
+        <StartInstanceConfigForm
+          getFieldError={ getStartInstanceFieldError }
+          initialFieldValues={ startInstanceConfig }
+          onSubmit={ onStartInstanceSubmit }
+          renderDescription={ renderStartInstanceDescription }
+          renderHeader={ renderStartInstanceHeader }
+          renderSubmit={ renderStartInstanceSubmit }
+          validateForm={ validateStartInstanceConfigForm }
+          validateField={ (name, value) => startInstanceConfigValidator.validateConfigValue(name, value) }
+          connectionCheckResult={ connectionCheckResult }
+        />
+      ) : (
+
+        <div className="loading">
+          <Loader />
+        </div>
+      )}
     </Overlay>
   );
 }

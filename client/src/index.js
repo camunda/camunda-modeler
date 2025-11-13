@@ -20,6 +20,7 @@ import {
   log,
   metadata,
   plugins,
+  settings,
   startInstance,
   systemClipboard,
   workspace,
@@ -33,13 +34,13 @@ import {
   AppParent,
   KeyboardBindings,
   TabsProvider,
-  Settings
 } from './app';
 
 import Metadata from './util/Metadata';
 import Flags from './util/Flags';
 
 import debug from 'debug';
+import { initializeConnections } from './app/migrations/initializeConnections';
 
 // This fix is necessary because dragular expects `global` to be defined, see
 // https://github.com/bevacqua/dragula/issues/602 for context
@@ -57,10 +58,6 @@ const isMac = backend.getPlatform() === 'darwin';
 
 const keyboardBindings = new KeyboardBindings({
   isMac
-});
-
-const settings = new Settings({
-  config
 });
 
 const globals = {
@@ -98,6 +95,8 @@ async function render() {
 
     // mark as finished loading
     document.querySelector('body > .spinner-border').classList.add('hidden');
+
+    initializeConnections(settings, config);
   };
 
   const tabsProvider = new TabsProvider(plugins.get('tabs'), settings);
