@@ -15,7 +15,7 @@ import PrivacyPreferencesView from './PrivacyPreferencesView';
 import Flags, { DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
 import { DEFAULT_VALUES } from './constants';
 
-const CONFIG_KEY = 'editor.privacyPreferences';
+export const CONFIG_KEY = 'editor.privacyPreferences';
 
 class NoopComponent extends PureComponent {
   render() {
