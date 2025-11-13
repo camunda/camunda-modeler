@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 
 import { userEvent } from '@testing-library/user-event';
 
@@ -202,7 +202,7 @@ describe('<Panel>', function() {
       });
 
       // when
-      await userEvent.click(container.querySelector('.panel__body'));
+      fireEvent.focus(container.querySelector('.panel__body'));
 
       // then
       expect(onUpdateMenu).to.be.calledOnceWithExactly({
