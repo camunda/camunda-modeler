@@ -44,9 +44,14 @@ if (modelers) {
   suite = 'test/all.js';
 }
 
-
-module.exports = function(karma) {
+/**
+ * @param {import('karma').Config} karma
+ */
+function setConfig(karma) {
   karma.set({
+    browserDisconnectTimeout: 10000,
+    browserDisconnectTolerance: 2,
+    browserNoActivityTimeout: 60000,
 
     frameworks: [
       'mocha',
@@ -71,8 +76,6 @@ module.exports = function(karma) {
     },
 
     browsers: browsers,
-
-    browserNoActivityTimeout: 60000,
 
     singleRun: true,
     autoWatch: false,
@@ -147,3 +150,5 @@ module.exports = function(karma) {
     }
   });
 };
+
+module.exports = setConfig;
