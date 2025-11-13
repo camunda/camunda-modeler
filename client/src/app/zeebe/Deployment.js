@@ -21,9 +21,9 @@ import { omit } from 'min-dash';
 
 import debug from 'debug';
 
-import { generateId } from '../util';
+import { generateId } from '../../util/index.js';
 
-import { AUTH_TYPES, TARGET_TYPES } from './ZeebeAPI';
+import { AUTH_TYPES, TARGET_TYPES } from '../../remote/ZeebeAPI.js';
 
 export const CONFIG_KEYS = {
   CONFIG: 'zeebe-deployment-tool',

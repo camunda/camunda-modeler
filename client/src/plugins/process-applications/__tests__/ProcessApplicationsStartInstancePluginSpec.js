@@ -19,7 +19,7 @@ import { mount } from 'enzyme';
 import ProcessApplicationsStartInstancePlugin from '../ProcessApplicationsStartInstancePlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
-import { DEFAULT_ENDPOINT } from '../../../remote/Deployment';
+import { DEFAULT_ENDPOINT } from '../../../app/zeebe/Deployment';
 
 import { Deployment, StartInstance, ZeebeAPI } from '../../../app/__tests__/mocks';
 
