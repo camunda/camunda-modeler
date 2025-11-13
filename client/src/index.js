@@ -20,6 +20,7 @@ import {
   log,
   metadata,
   plugins,
+  settings,
   startInstance,
   systemClipboard,
   workspace,
@@ -33,7 +34,6 @@ import {
   AppParent,
   KeyboardBindings,
   TabsProvider,
-  Settings
 } from './app';
 
 import Metadata from './util/Metadata';
@@ -57,10 +57,6 @@ const isMac = backend.getPlatform() === 'darwin';
 
 const keyboardBindings = new KeyboardBindings({
   isMac
-});
-
-const settings = new Settings({
-  config
 });
 
 const globals = {
