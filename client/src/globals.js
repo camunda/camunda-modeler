@@ -8,16 +8,18 @@
  * except in compliance with the MIT License.
  */
 
-import Config from './Config';
-import Deployment from './Deployment';
-import Dialog from './Dialog';
-import FileSystem from './FileSystem';
-import Log from './Log';
-import Plugins from './Plugins';
-import StartInstance from './StartInstance';
-import SystemClipboard from './SystemClipboard';
-import Workspace from './Workspace';
-import ZeebeAPI from './ZeebeAPI';
+import Config from './remote/Config';
+import Deployment from './remote/Deployment';
+import Dialog from './remote/Dialog';
+import FileSystem from './remote/FileSystem';
+import Log from './remote/Log';
+import Plugins from './remote/Plugins';
+import StartInstance from './remote/StartInstance';
+import SystemClipboard from './remote/SystemClipboard';
+import Workspace from './remote/Workspace';
+import ZeebeAPI from './remote/ZeebeAPI';
+
+import Settings from './app/Settings';
 
 const {
   metadata,
@@ -29,6 +31,10 @@ const {
 export const backend = appBackend;
 
 export const config = new Config(backend);
+
+export const settings = new Settings({
+  config
+});
 
 export const dialog = new Dialog(backend);
 
@@ -48,7 +54,25 @@ export const deployment = new Deployment(config, zeebeAPI);
 
 export const startInstance = new StartInstance(config, zeebeAPI);
 
+export const isMac = backend.getPlatform() === 'darwin';
+
 export {
   metadata,
   flags
+};
+
+export const globals = {
+  backend,
+  config,
+  deployment,
+  dialog,
+  fileSystem,
+  isMac,
+  log,
+  plugins,
+  settings,
+  startInstance,
+  systemClipboard,
+  workspace,
+  zeebeAPI
 };
