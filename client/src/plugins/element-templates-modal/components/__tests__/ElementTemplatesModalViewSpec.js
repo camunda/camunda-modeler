@@ -37,20 +37,6 @@ describe('<ElementTemplatesView>', function() {
     });
 
 
-    it('should get element templates on mount', async function() {
-
-      // given
-      createElementTemplatesModalView();
-
-      // then
-      await waitFor(() => {
-        expect(screen.getByText('Template 1')).to.exist;
-        expect(screen.getByText('Template 2')).to.exist;
-        expect(screen.getByText('Template 4')).to.exist;
-      });
-    });
-
-
     it('should get element templates (filtered by applicable)', async function() {
 
       // given
@@ -61,6 +47,10 @@ describe('<ElementTemplatesView>', function() {
         expect(screen.getByText('Template 1')).to.exist;
         expect(screen.getByText('Template 2')).to.exist;
         expect(screen.getByText('Template 4')).to.exist;
+
+        expect(screen.queryByText('Template 3')).to.be.null;
+        expect(screen.queryByText('Template 5 v1')).to.be.null;
+        expect(screen.queryByText('Template 5 v2')).to.be.null;
       });
     });
 
@@ -78,6 +68,7 @@ describe('<ElementTemplatesView>', function() {
       await waitFor(() => {
         expect(screen.getByText('Template 4')).to.exist;
         expect(screen.getByText('Template 5 v2')).to.exist;
+        expect(screen.queryByText('Template 5 v1')).to.be.null;
       });
     });
 
@@ -87,10 +78,14 @@ describe('<ElementTemplatesView>', function() {
       // given
       createElementTemplatesModalView();
 
+      // then
       await waitFor(() => {
-        expect(screen.getByText('Template 1')).to.exist;
-        expect(screen.getByText('Template 2')).to.exist;
-        expect(screen.getByText('Template 4')).to.exist;
+        const t1 = screen.getByText('Template 1');
+        const t2 = screen.getByText('Template 2');
+        const t4 = screen.getByText('Template 4');
+
+        expect(t1.compareDocumentPosition(t2)).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
+        expect(t2.compareDocumentPosition(t4)).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
       });
     });
 
