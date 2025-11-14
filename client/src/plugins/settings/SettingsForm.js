@@ -14,7 +14,7 @@ import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
-import { DataTable, Table, TableBody, TableCell, TableExpandRow, TableExpandedRow, Button } from '@carbon/react';
+import { DataTable, Table, TableHead, TableHeader, TableBody, TableCell, TableExpandRow, TableExpandedRow, Button } from '@carbon/react';
 import { Add, TrashCan } from '@carbon/icons-react';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
@@ -236,6 +236,12 @@ function TableFieldArray({ name, label, description, rowProperties, emptyPlaceho
     Object.entries(rowProperties || {}).filter(([ key, property ]) => !!property.expandedOnly)
   );
 
+  const shouldShowHeaders = Object.values(rowProperties || {}).some(property => property.header);
+  const tableHeaders = shouldShowHeaders ? Object.entries(rowHeaderProperties).map(([ key, property ]) => ({
+    key,
+    header: property.header || property.label || ''
+  })) : [];
+
   return <FieldArray name={ name } className="form-group">
     {(arrayHelpers) => {
       return (
@@ -244,17 +250,30 @@ function TableFieldArray({ name, label, description, rowProperties, emptyPlaceho
             <label className="custom-control-label">{ label }</label>
             <div className="custom-control-description">{ description }</div>
           </div>
-          {(!arrayValues || arrayValues.length === 0) && (
-            <p className="empty-placeholder">{ emptyPlaceholder }</p>
-          )}
-          <DataTable rows={ arrayValues } headers={ [] }>
+
+          <DataTable rows={ arrayValues } headers={ tableHeaders }>
             {({
               rows,
+              headers,
               getRowProps,
               getExpandedRowProps,
               getTableProps,
+              getHeaderProps,
             }) => (
               <Table { ...getTableProps() }>
+                {shouldShowHeaders && (
+                  <TableHead>
+                    <tr>
+                      <TableHeader />
+                      {headers.map((header) => (
+                        <TableHeader { ...getHeaderProps({ header }) } key={ header.key }>
+                          { header.header }
+                        </TableHeader>
+                      ))}
+                      <TableHeader />
+                    </tr>
+                  </TableHead>
+                )}
                 <TableBody className="expandable-table-body">
                   {rows?.map((row, index) => (
                     <React.Fragment key={ `${name}[${index}]` }>
@@ -307,6 +326,9 @@ function TableFieldArray({ name, label, description, rowProperties, emptyPlaceho
               </Table>
             )}
           </DataTable>
+          {(!arrayValues || arrayValues.length === 0) && (
+            <p className="empty-placeholder">{ emptyPlaceholder }</p>
+          )}
           <div className="expandable-table-bottom-actions">
             <Button
               className="add"

@@ -201,6 +201,41 @@ export default class TestClient extends Component {
               condition: { property: 'fieldSwitch', equals: 'password' }
             }
           }
+        },
+        'testClientPlugin.tableWithHeaders': {
+          type: 'table',
+          label: 'Table with Headers',
+          description: 'Example table showing column headers functionality.',
+          emptyPlaceholder: 'No connections configured',
+          addTooltip: 'Add new connection',
+          removeTooltip: 'Remove connection',
+          condition: { property: 'showAllFields', equals: true },
+          rowProperties: {
+            'name': {
+              type: 'text',
+              header: 'Connection Name',
+              default: 'New Connection'
+            },
+            'url': {
+              type: 'text',
+              header: 'URL',
+              default: 'https://example.com'
+            },
+            'description': {
+              type: 'text',
+              label: 'Description',
+              default: 'Connection description',
+              expandedOnly: true
+            },
+            'credentials': {
+              type: 'password',
+              label: 'API Key',
+              expandedOnly: true,
+              constraints: {
+                notEmpty: 'API key is required'
+              }
+            }
+          }
         }
       }
     };

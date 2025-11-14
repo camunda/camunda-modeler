@@ -1576,6 +1576,101 @@ describe('SettingsForm', function() {
       expect(enabledField.checked).to.be.true;
     });
 
+
+    it('should show table headers when header property is defined', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.table': {
+            type: 'table',
+            label: 'Table with Headers',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                header: 'Connection Name',
+                default: 'Test Name'
+              },
+              'url': {
+                type: 'text',
+                header: 'URL',
+                default: 'https://example.com'
+              },
+              'description': {
+                type: 'text',
+                label: 'Description',
+                expandedOnly: true
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            table: [
+              { id: '1', name: 'Test Connection', url: 'https://test.com', description: 'Test Description' }
+            ]
+          }
+        }
+      });
+
+      // then
+      const tableHead = container.querySelector('thead');
+      expect(tableHead).to.exist;
+
+      const headers = container.querySelectorAll('th');
+      expect(headers.length).to.equal(4); // expand column + name + url + action column
+
+      const nameHeader = Array.from(headers).find(th => th.textContent === 'Connection Name');
+      expect(nameHeader).to.exist;
+
+      const urlHeader = Array.from(headers).find(th => th.textContent === 'URL');
+      expect(urlHeader).to.exist;
+    });
+
+
+    it('should not show table headers when no header property is defined', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.table': {
+            type: 'table',
+            label: 'Table without Headers',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                default: 'Test Name'
+              },
+              'description': {
+                type: 'text',
+                label: 'Description',
+                expandedOnly: true
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            table: [
+              { id: '1', name: 'Test Name', description: 'Test Description' }
+            ]
+          }
+        }
+      });
+
+      // then
+      const tableHead = container.querySelector('thead');
+      expect(tableHead).to.not.exist;
+    });
+
   });
 
 });
