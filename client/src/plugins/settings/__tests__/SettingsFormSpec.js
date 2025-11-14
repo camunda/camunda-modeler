@@ -1671,6 +1671,191 @@ describe('SettingsForm', function() {
       expect(tableHead).to.not.exist;
     });
 
+
+    it('should render non-expandable table with edit button when multiple regular properties and no expandedOnly properties', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.table': {
+            type: 'table',
+            label: 'Non-Expandable Table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                label: 'Name',
+                header: 'Connection Name',
+                default: 'Test Connection'
+              },
+              'url': {
+                type: 'text',
+                label: 'URL',
+                header: 'URL',
+                default: 'https://example.com'
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            table: [
+              { id: '1', name: 'Test Connection', url: 'https://test.com' }
+            ]
+          }
+        }
+      });
+
+      // then
+      const expandButton = container.querySelector('button[aria-label*="expand"]');
+      expect(expandButton).to.not.exist;
+
+      const editButton = container.querySelector('button.edit');
+      expect(editButton).to.exist;
+
+      const removeButton = container.querySelector('button.remove');
+      expect(removeButton).to.exist;
+
+      const nameCell = container.querySelector('td');
+      expect(nameCell.textContent).to.include('Test Connection');
+
+      const tableBody = container.querySelector('tbody');
+      expect(tableBody.className).to.include('table-body');
+      expect(tableBody.className).to.not.include('expandable-table-body');
+    });
+
+
+    it('should toggle edit mode when edit button is clicked in non-expandable table', async function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.table': {
+            type: 'table',
+            label: 'Non-Expandable Table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                label: 'Name',
+                header: 'Connection Name',
+                default: 'Test Connection'
+              },
+              'url': {
+                type: 'text',
+                label: 'URL',
+                header: 'URL',
+                default: 'https://example.com'
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            table: [
+              { id: '1', name: 'Test Connection', url: 'https://test.com' }
+            ]
+          }
+        }
+      });
+
+      // when
+      const editButton = container.querySelector('button.edit');
+      fireEvent.click(editButton);
+
+      // then
+      await waitFor(() => {
+
+        // Should show input fields when in edit mode
+        const nameInput = container.querySelector('input[id="test.table[0].name"]');
+        expect(nameInput).to.exist;
+        expect(nameInput.value).to.equal('Test Connection');
+
+        const urlInput = container.querySelector('input[id="test.table[0].url"]');
+        expect(urlInput).to.exist;
+        expect(urlInput.value).to.equal('https://test.com');
+      });
+
+      // when - click edit button again to exit edit mode
+      fireEvent.click(editButton);
+
+      // then
+      await waitFor(() => {
+
+        // Should hide input fields and show display values
+        const nameInput = container.querySelector('input[id="test.table[0].name"]');
+        expect(nameInput).to.not.exist;
+
+        const nameDisplay = container.querySelector('td span');
+        expect(nameDisplay).to.exist;
+        expect(nameDisplay.textContent).to.equal('Test Connection');
+      });
+    });
+
+
+    it('should still use expandable table when expandedOnly properties are present', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.table': {
+            type: 'table',
+            label: 'Expandable Table',
+            rowProperties: {
+              'name': {
+                type: 'text',
+                label: 'Name',
+                header: 'Connection Name',
+                default: 'Test Connection'
+              },
+              'url': {
+                type: 'text',
+                label: 'URL',
+                header: 'URL',
+                default: 'https://example.com'
+              },
+              'description': {
+                type: 'text',
+                label: 'Description',
+                expandedOnly: true
+              }
+            }
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: {
+          test: {
+            table: [
+              { id: '1', name: 'Test Connection', url: 'https://test.com', description: 'Test Description' }
+            ]
+          }
+        }
+      });
+
+      // then
+      // Should use expandable table because of expandedOnly property
+      const expandButton = container.querySelector('button[aria-label*="Collapse"]') ||
+                          container.querySelector('button[aria-label*="Expand"]');
+      expect(expandButton).to.exist;
+
+      // Should not have edit button (uses expand instead)
+      const editButton = container.querySelector('button.edit');
+      expect(editButton).to.not.exist;
+
+      // Should have expandable class and NOT have table-body class
+      const tableBody = container.querySelector('tbody');
+      expect(tableBody.className).to.equal('expandable-table-body');
+    });
+
   });
 
 });

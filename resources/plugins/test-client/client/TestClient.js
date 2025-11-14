@@ -223,17 +223,12 @@ export default class TestClient extends Component {
             },
             'description': {
               type: 'text',
-              label: 'Description',
+              header: 'Description',
               default: 'Connection description',
-              expandedOnly: true
             },
             'credentials': {
               type: 'password',
-              label: 'API Key',
-              expandedOnly: true,
-              constraints: {
-                notEmpty: 'API key is required'
-              }
+              header: 'API Key'
             }
           }
         }
