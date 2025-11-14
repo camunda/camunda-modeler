@@ -31,7 +31,7 @@ describe('<Notifications>', function() {
     const { getByRole } = render(<Notifications notifications={ [ notification ] } />);
 
     // then
-    expect(getByRole('alert')).to.exist;
+    expect(getByRole('status')).to.exist;
   });
 
 });
