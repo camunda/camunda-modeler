@@ -168,18 +168,17 @@ export default class TestClient extends Component {
           addTooltip: 'Create something complex',
           removeTooltip: 'Remove the complex thing',
           condition: { property: 'showAllFields', equals: true },
-          rowProperties:{
+          rowProperties: {
             'name': {
               hint: 'Name',
               type: 'text',
               default: 'A new name'
             },
-          },
-          childProperties: {
             'fieldSwitch': {
               label: 'Switch Fields',
               type: 'select',
               default: 'text',
+              expandedOnly: true,
               options:[
                 { label: 'Text field', value: 'text' },
                 { label: 'Password field', value:  'password' }
@@ -189,6 +188,7 @@ export default class TestClient extends Component {
               label: 'Text Field',
               type: 'text',
               default: 'Hello world',
+              expandedOnly: true,
               condition: { property: 'fieldSwitch', equals: 'text' },
               constraints: {
                 notEmpty: 'This field must be filled'
@@ -197,6 +197,7 @@ export default class TestClient extends Component {
             'passwordField': {
               label: 'Password Field',
               type: 'password',
+              expandedOnly: true,
               condition: { property: 'fieldSwitch', equals: 'password' }
             }
           }

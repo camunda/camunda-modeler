@@ -823,12 +823,11 @@ describe('SettingsForm', function() {
                 'name': {
                   type: 'text',
                   default: 'Test Name'
-                }
-              },
-              childProperties: {
+                },
                 'description': {
                   type: 'text',
-                  label: 'Description'
+                  label: 'Description',
+                  expandedOnly: true
                 }
               }
             }
@@ -878,12 +877,11 @@ describe('SettingsForm', function() {
                 'name': {
                   type: 'text',
                   default: 'Test Name'
-                }
-              },
-              childProperties: {
+                },
                 'description': {
                   type: 'text',
-                  label: 'Description'
+                  label: 'Description',
+                  expandedOnly: true
                 }
               }
             }
@@ -925,12 +923,11 @@ describe('SettingsForm', function() {
                 'name': {
                   type: 'text',
                   default: 'Test Name'
-                }
-              },
-              childProperties: {
+                },
                 'description': {
                   type: 'text',
-                  label: 'Description'
+                  label: 'Description',
+                  expandedOnly: true
                 }
               }
             }
@@ -972,12 +969,11 @@ describe('SettingsForm', function() {
                 'name': {
                   type: 'text',
                   default: 'Test Name'
-                }
-              },
-              childProperties: {
+                },
                 'description': {
                   type: 'text',
-                  label: 'Description'
+                  label: 'Description',
+                  expandedOnly: true
                 }
               }
             }
@@ -1020,13 +1016,12 @@ describe('SettingsForm', function() {
                 type: 'text',
                 hint: 'Name',
                 default: 'Default Name'
-              }
-            },
-            childProperties: {
+              },
               'description': {
                 type: 'text',
                 label: 'Description',
-                default: 'Default Description'
+                default: 'Default Description',
+                expandedOnly: true
               }
             }
           }
@@ -1068,13 +1063,12 @@ describe('SettingsForm', function() {
               'name': {
                 type: 'text',
                 default: 'Default Name'
-              }
-            },
-            childProperties: {
+              },
               'description': {
                 type: 'text',
                 label: 'Description',
-                default: 'Default Description'
+                default: 'Default Description',
+                expandedOnly: true
               }
             }
           }
@@ -1111,13 +1105,12 @@ describe('SettingsForm', function() {
               'name': {
                 type: 'text',
                 default: 'Test Name'
-              }
-            },
-            childProperties: {
+              },
               'description': {
                 type: 'text',
                 label: 'Description',
-                default: 'Test Description'
+                default: 'Test Description',
+                expandedOnly: true
               }
             }
           }
@@ -1153,12 +1146,11 @@ describe('SettingsForm', function() {
               'name': {
                 type: 'text',
                 default: 'Test Name'
-              }
-            },
-            childProperties: {
+              },
               'description': {
                 type: 'text',
-                label: 'Description'
+                label: 'Description',
+                expandedOnly: true
               }
             }
           }
@@ -1198,13 +1190,12 @@ describe('SettingsForm', function() {
               'name': {
                 type: 'text',
                 default: 'Test Name'
-              }
-            },
-            childProperties: {
+              },
               'description': {
                 type: 'text',
                 label: 'Description',
-                default: 'Test Description'
+                default: 'Test Description',
+                expandedOnly: true
               }
             }
           }
@@ -1253,12 +1244,11 @@ describe('SettingsForm', function() {
               'name': {
                 type: 'text',
                 default: 'Test Name'
-              }
-            },
-            childProperties: {
+              },
               'description': {
                 type: 'text',
-                label: 'Description'
+                label: 'Description',
+                expandedOnly: true
               }
             }
           }
@@ -1305,8 +1295,7 @@ describe('SettingsForm', function() {
                 type: 'text',
                 default: 'Test Name'
               }
-            },
-            childProperties: {}
+            }
           }
         }
       } ];
@@ -1341,24 +1330,26 @@ describe('SettingsForm', function() {
               'name': {
                 type: 'text',
                 default: 'Test Name'
-              }
-            },
-            childProperties: {
+              },
               'textField': {
                 type: 'text',
-                label: 'Text Field'
+                label: 'Text Field',
+                expandedOnly: true
               },
               'passwordField': {
                 type: 'password',
-                label: 'Password Field'
+                label: 'Password Field',
+                expandedOnly: true
               },
               'booleanField': {
                 type: 'boolean',
-                label: 'Boolean Field'
+                label: 'Boolean Field',
+                expandedOnly: true
               },
               'selectField': {
                 type: 'select',
                 label: 'Select Field',
+                expandedOnly: true,
                 options: [
                   { label: 'Option 1', value: 'opt1' },
                   { label: 'Option 2', value: 'opt2' }
@@ -1414,13 +1405,12 @@ describe('SettingsForm', function() {
               'name': {
                 type: 'text',
                 default: 'Test Name'
-              }
-            },
-            childProperties: {
+              },
               'fieldSwitch': {
                 type: 'select',
                 label: 'Field Switch',
                 default: 'text',
+                expandedOnly: true,
                 options: [
                   { label: 'Text field', value: 'text' },
                   { label: 'Password field', value: 'password' }
@@ -1429,11 +1419,13 @@ describe('SettingsForm', function() {
               'textField': {
                 type: 'text',
                 label: 'Text Field',
+                expandedOnly: true,
                 condition: { property: 'fieldSwitch', equals: 'text' }
               },
               'passwordField': {
                 type: 'password',
                 label: 'Password Field',
+                expandedOnly: true,
                 condition: { property: 'fieldSwitch', equals: 'password' }
               }
             }
@@ -1487,12 +1479,11 @@ describe('SettingsForm', function() {
               'name': {
                 type: 'text',
                 default: 'Test Name'
-              }
-            },
-            childProperties: {
+              },
               'requiredField': {
                 type: 'text',
                 label: 'Required Field',
+                expandedOnly: true,
                 constraints: {
                   notEmpty: 'This field is required'
                 }
@@ -1542,18 +1533,18 @@ describe('SettingsForm', function() {
               'name': {
                 type: 'text',
                 default: 'Default Name'
-              }
-            },
-            childProperties: {
+              },
               'description': {
                 type: 'text',
                 label: 'Description',
-                default: 'Default Description'
+                default: 'Default Description',
+                expandedOnly: true
               },
               'enabled': {
                 type: 'boolean',
                 label: 'Enabled',
-                default: true
+                default: true,
+                expandedOnly: true
               }
             }
           }

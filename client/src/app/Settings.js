@@ -42,8 +42,8 @@ import { Flags } from '../util';
  * @property {string} [documentationUrl] - link to an external documentation
  * @property {import('../plugins/settings/SettingsForm').Condition} [condition]
  * @property {import('../plugins/settings/SettingsForm').Constraints} [constraints] - validation constraints for the field
- * @property {Record<string, SettingsProperty>} [rowProperties] - [expandableTable] properties displayed in table rows
- * @property {Record<string, SettingsProperty>} [childProperties] - [expandableTable] properties displayed in expanded rows
+ * @property {Record<string, SettingsProperty>} [rowProperties] - [expandableTable] properties for table rows and expanded content
+ * @property {boolean} [expandedOnly] - [expandableTable] if true, property only shows in expanded row
  * @property {string} [emptyPlaceholder] - [expandableTable] text shown when table is empty
  * @property {string} [addTooltip] - [expandableTable] tooltip for the add button
  * @property {string} [removeTooltip] - [expandableTable] tooltip for the remove button

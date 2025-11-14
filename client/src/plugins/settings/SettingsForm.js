@@ -172,7 +172,7 @@ function SettingsField(props) {
 }
 
 
-function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, emptyPlaceholder, addTooltip, removeTooltip, expandRowId }) {
+function ExpandableTableFieldArray({ name, label, description, rowProperties, emptyPlaceholder, addTooltip, removeTooltip, expandRowId }) {
   const arrayValues = getIn(useFormikContext().values, name) || [];
 
   const [ expandedRows, setExpandedRows ] = useState([]);
@@ -203,7 +203,7 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
   }, [ expandRowId ]);
 
   function generateNewElement() {
-    const defaults = Object.entries({ ...rowProperties, ...childProperties })
+    const defaults = Object.entries(rowProperties || {})
       .reduce((acc, [ key, property ]) => {
         if (property.default !== undefined) {
           acc[key] = property.default;
@@ -226,6 +226,15 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
       setExpandedRows([ row.id ]);
     }
   }
+
+  // If rowProperties is an object, use Object.entries() to filter and reconstruct
+  const rowHeaderProperties = Object.fromEntries(
+    Object.entries(rowProperties || {}).filter(([ key, property ]) => !property.expandedOnly)
+  );
+
+  const rowExpandedProperties = Object.fromEntries(
+    Object.entries(rowProperties || {}).filter(([ key, property ]) => !!property.expandedOnly)
+  );
 
   return <FieldArray name={ name } className="form-group">
     {(arrayHelpers) => {
@@ -254,10 +263,10 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
                         isExpanded={ isExpanded(row) } onExpand={ () => handleExpand(row) }
                       >
                         {
-                          map(rowProperties, (rowProperty, key) => {
+                          map(rowHeaderProperties, (rowHeaderProperty, key) => {
                             return (
                               <TableCell key={ `${name}[${index}].${key}` }>
-                                { isExpanded(row) && <SettingsField name={ `${name}[${index}].${key}` } { ...rowProperty } /> }
+                                { isExpanded(row) && <SettingsField name={ `${name}[${index}].${key}` } { ...rowHeaderProperty } /> }
                                 { !isExpanded(row) && <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span> }
                               </TableCell>
                             );
@@ -280,13 +289,13 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
 
                       <TableExpandedRow
                         { ...getExpandedRowProps({ row }) }
-                        colSpan={ Object.keys(rowProperties).length + 2 } // +1 for expand column, +1 for action column
+                        colSpan={ Object.keys(rowHeaderProperties).length + 2 } // +1 for expand column, +1 for action column
                       >
                         <div>
                           {
-                            map(childProperties, (childProperty, key) => {
+                            map(rowExpandedProperties, (rowExpandedProperty, key) => {
                               return (
-                                <SettingsField key={ `${name}[${index}].${key}` } name={ `${name}[${index}].${key}` } { ...childProperty } />
+                                <SettingsField key={ `${name}[${index}].${key}` } name={ `${name}[${index}].${key}` } { ...rowExpandedProperty } />
                               );
                             })
                           }
