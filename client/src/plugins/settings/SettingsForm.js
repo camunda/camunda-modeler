@@ -8,22 +8,28 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 
-import { Field, Form, useFormikContext, getIn } from 'formik';
+import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
+
+import { DataTable, Table, TableHead, TableHeader, TableBody, TableCell, TableExpandRow, TableExpandedRow, Button } from '@carbon/react';
+import { Add, TrashCan } from '@carbon/icons-react';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
 import Flags from '../../util/Flags';
+import { generateId } from '../../util';
+
+const FIELD_ARRAY_TYPES = [ 'table' ];
 
 import { utmTag } from '../../util/utmTag';
 
 /**
  * Formik form wrapper for the settings form.
  */
-export function SettingsForm({ schema, values, onChange }) {
+export function SettingsForm({ schema, values, onChange, expandRowId }) {
 
   const { setFieldValue, values: formikValues, validateForm } = useFormikContext();
 
@@ -52,14 +58,14 @@ export function SettingsForm({ schema, values, onChange }) {
   return (<Form>
     {
       map(orderedSchema, (value, key) =>
-        <SettingsSection key={ key } { ...value } />)
+        <SettingsSection key={ key } { ...value } expandRowId={ expandRowId } />)
     }
   </Form>);
 }
 
 function SettingsSection(props) {
 
-  const { title, properties } = props;
+  const { title, properties, expandRowId } = props;
 
   return (
     <Section>
@@ -67,7 +73,7 @@ function SettingsSection(props) {
       <Section.Body>
         {
           map(properties, (props, key) =>
-            <SettingsField key={ key } name={ key } { ...props } />)
+            <SettingsField key={ key } name={ key } { ...props } expandRowId={ expandRowId } />)
         }
       </Section.Body>
     </Section>
@@ -76,7 +82,7 @@ function SettingsSection(props) {
 
 function SettingsField(props) {
 
-  const { type, flag, condition, name } = props;
+  const { type, flag, condition, name, expandRowId } = props;
 
   const { values } = useFormikContext();
 
@@ -84,7 +90,7 @@ function SettingsField(props) {
     return Flags.get(flag);
   }, [ flag ]);
 
-  const component = useMemo(() => {
+  const FieldComponent = useMemo(() => {
     if (condition && !isConditionMet(name, values, condition)) {
       return null;
     }
@@ -105,11 +111,20 @@ function SettingsField(props) {
       return Radio;
     }
 
+    if (type === 'table') {
+      return TableFieldArray;
+    }
+
     return null;
   }, [ condition, name, type, values ]);
 
-  if (!component) {
+
+  if (!FieldComponent) {
     return null;
+  }
+
+  if (FIELD_ARRAY_TYPES.includes(type)) {
+    return <FieldComponent { ...props } expandRowId={ expandRowId } />;
   }
 
   const { label, description, hint, options, documentationUrl, constraints } = props;
@@ -134,7 +149,7 @@ function SettingsField(props) {
   return <>
     <Field
       name={ name }
-      component={ component }
+      component={ FieldComponent }
       disabled={ disabledByFlag }
       label={ label }
       description={ description }
@@ -155,6 +170,185 @@ function SettingsField(props) {
     }
   </>;
 }
+
+
+function TableFieldArray({ name, label, description, rowProperties, emptyPlaceholder, addTooltip, removeTooltip, expandRowId }) {
+  const arrayValues = getIn(useFormikContext().values, name) || [];
+
+  const [ expandedRows, setExpandedRows ] = useState([]);
+  const expandedRowRef = useRef(null);
+  const hasInitiallyExpanded = useRef(false);
+
+  useEffect(() => {
+    if (expandRowId && arrayValues.length > 0 && !hasInitiallyExpanded.current) {
+      const targetRow = arrayValues.find(row => row.id === expandRowId);
+      if (targetRow) {
+        setExpandedRows([ expandRowId ]);
+        hasInitiallyExpanded.current = true;
+
+        setTimeout(() => {
+          if (expandedRowRef.current) {
+            expandedRowRef.current.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }, 100);
+      }
+    }
+  }, [ expandRowId, arrayValues ]);
+
+  useEffect(() => {
+    hasInitiallyExpanded.current = false;
+  }, [ expandRowId ]);
+
+  function generateNewElement() {
+    const defaults = Object.entries(rowProperties || {})
+      .reduce((acc, [ key, property ]) => {
+        if (property.default !== undefined) {
+          acc[key] = property.default;
+        }
+        return acc;
+      }, {});
+
+    return { id: generateId(), ...defaults };
+  }
+
+  function isExpanded(row) {
+    return expandedRows.includes(row.id);
+  }
+
+  function handleExpand(row) {
+    if (isExpanded(row)) {
+      setExpandedRows([]);
+    }
+    else {
+      setExpandedRows([ row.id ]);
+    }
+  }
+
+  // If rowProperties is an object, use Object.entries() to filter and reconstruct
+  const rowHeaderProperties = Object.fromEntries(
+    Object.entries(rowProperties || {}).filter(([ key, property ]) => !property.expandedOnly)
+  );
+
+  const rowExpandedProperties = Object.fromEntries(
+    Object.entries(rowProperties || {}).filter(([ key, property ]) => !!property.expandedOnly)
+  );
+
+  const shouldShowHeaders = Object.values(rowProperties || {}).some(property => property.header);
+  const tableHeaders = shouldShowHeaders ? Object.entries(rowHeaderProperties).map(([ key, property ]) => ({
+    key,
+    header: property.header || property.label || ''
+  })) : [];
+
+  return <FieldArray name={ name } className="form-group">
+    {(arrayHelpers) => {
+      return (
+        <div className="form-group">
+          <div className="custom-control">
+            <label className="custom-control-label">{ label }</label>
+            <div className="custom-control-description">{ description }</div>
+          </div>
+
+          <DataTable rows={ arrayValues } headers={ tableHeaders }>
+            {({
+              rows,
+              headers,
+              getRowProps,
+              getExpandedRowProps,
+              getTableProps,
+              getHeaderProps,
+            }) => (
+              <Table { ...getTableProps() }>
+                {shouldShowHeaders && (
+                  <TableHead>
+                    <tr>
+                      <TableHeader />
+                      {headers.map((header) => (
+                        <TableHeader { ...getHeaderProps({ header }) } key={ header.key }>
+                          { header.header }
+                        </TableHeader>
+                      ))}
+                      <TableHeader />
+                    </tr>
+                  </TableHead>
+                )}
+                <TableBody className="expandable-table-body">
+                  {rows?.map((row, index) => (
+                    <React.Fragment key={ `${name}[${index}]` }>
+                      <TableExpandRow { ...getRowProps({ row }) }
+                        ref={ row.id === expandRowId ? expandedRowRef : null }
+                        isExpanded={ isExpanded(row) } onExpand={ () => handleExpand(row) }
+                      >
+                        {
+                          map(rowHeaderProperties, (rowHeaderProperty, key) => {
+                            return (
+                              <TableCell key={ `${name}[${index}].${key}` }>
+                                { isExpanded(row) && <SettingsField name={ `${name}[${index}].${key}` } { ...rowHeaderProperty } /> }
+                                { !isExpanded(row) && <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span> }
+                              </TableCell>
+                            );
+                          })
+                        }
+                        <TableCell className="action-cell">
+                          <Button
+                            className="remove"
+                            hasIconOnly
+                            iconDescription={ removeTooltip || 'Remove' }
+                            tooltipPosition="left"
+                            kind="ghost"
+                            renderIcon={ TrashCan }
+                            onClick={ () =>
+                              arrayHelpers.remove(index)
+                            }
+                          />
+                        </TableCell>
+                      </TableExpandRow>
+
+                      <TableExpandedRow
+                        { ...getExpandedRowProps({ row }) }
+                        colSpan={ Object.keys(rowHeaderProperties).length + 2 } // +1 for expand column, +1 for action column
+                      >
+                        <div>
+                          {
+                            map(rowExpandedProperties, (rowExpandedProperty, key) => {
+                              return (
+                                <SettingsField key={ `${name}[${index}].${key}` } name={ `${name}[${index}].${key}` } { ...rowExpandedProperty } />
+                              );
+                            })
+                          }
+                        </div>
+                      </TableExpandedRow>
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </DataTable>
+          {(!arrayValues || arrayValues.length === 0) && (
+            <p className="empty-placeholder">{ emptyPlaceholder }</p>
+          )}
+          <div className="expandable-table-bottom-actions">
+            <Button
+              className="add"
+              tooltipPosition="left"
+              iconDescription={ addTooltip || 'Add' }
+              renderIcon={ Add }
+              hasIconOnly={ true }
+              onClick={ () => {
+                const newElement = generateNewElement();
+                arrayHelpers.push(newElement);
+                setExpandedRows([ newElement.id ]);
+              } }
+            />
+          </div>
+        </div>
+      );
+    }}
+  </FieldArray>;
+}
+
 
 // helpers
 

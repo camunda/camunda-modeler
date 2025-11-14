@@ -31,7 +31,7 @@ import { Flags } from '../util';
  *
  * @typedef {Object} SettingsProperty
  *
- * @property {'text' | 'password' | 'boolean' | 'select' | 'radio'} type - one of the supported types
+ * @property {'text' | 'password' | 'boolean' | 'select' | 'radio' | 'table'} type - one of the supported types
  * @property {string} label - label on the settings page
  * @property {string} [hint] - hint/placeholder for input based fields
  * @property {string|boolean} [default] - the default value
@@ -42,6 +42,11 @@ import { Flags } from '../util';
  * @property {string} [documentationUrl] - link to an external documentation
  * @property {import('../plugins/settings/SettingsForm').Condition} [condition]
  * @property {import('../plugins/settings/SettingsForm').Constraints} [constraints] - validation constraints for the field
+ * @property {Record<string, SettingsProperty>} [rowProperties] - [table] properties for table rows and expanded content
+ * @property {boolean} [expandedOnly] - [table] if true, property only shows in expanded row
+ * @property {string} [emptyPlaceholder] - [table] text shown when table is empty
+ * @property {string} [addTooltip] - [table] tooltip for the add button
+ * @property {string} [removeTooltip] - [table] tooltip for the remove button
  */
 
 /**

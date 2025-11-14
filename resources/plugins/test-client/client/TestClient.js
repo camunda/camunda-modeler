@@ -25,8 +25,10 @@ export default class TestClient extends Component {
 
     const {
       subscribe,
-      settings
+      settings,
+      triggerAction
     } = props;
+    this.triggerAction = triggerAction;
 
     subscribe('tab.saved', (event) => {
       const {
@@ -157,6 +159,83 @@ export default class TestClient extends Component {
               { property: 'radio', oneOf: [ 'first', 'third' ] }
             ]
           }
+        },
+        'testClientPlugin.complexArray':{
+          type: 'table',
+          label: 'Array',
+          description: 'Table (array) of objects. Adding and deleting elements is supported.',
+          emptyPlaceholder: "I'm empty",
+          addTooltip: 'Create something complex',
+          removeTooltip: 'Remove the complex thing',
+          condition: { property: 'showAllFields', equals: true },
+          rowProperties: {
+            'name': {
+              hint: 'Name',
+              type: 'text',
+              default: 'A new name'
+            },
+            'fieldSwitch': {
+              label: 'Switch Fields',
+              type: 'select',
+              default: 'text',
+              expandedOnly: true,
+              options:[
+                { label: 'Text field', value: 'text' },
+                { label: 'Password field', value:  'password' }
+              ]
+            },
+            'textField': {
+              label: 'Text Field',
+              type: 'text',
+              default: 'Hello world',
+              expandedOnly: true,
+              condition: { property: 'fieldSwitch', equals: 'text' },
+              constraints: {
+                notEmpty: 'This field must be filled'
+              }
+            },
+            'passwordField': {
+              label: 'Password Field',
+              type: 'password',
+              expandedOnly: true,
+              condition: { property: 'fieldSwitch', equals: 'password' }
+            }
+          }
+        },
+        'testClientPlugin.tableWithHeaders': {
+          type: 'table',
+          label: 'Table with Headers',
+          description: 'Example table showing column headers functionality.',
+          emptyPlaceholder: 'No connections configured',
+          addTooltip: 'Add new connection',
+          removeTooltip: 'Remove connection',
+          condition: { property: 'showAllFields', equals: true },
+          rowProperties: {
+            'name': {
+              type: 'text',
+              header: 'Connection Name',
+              default: 'New Connection'
+            },
+            'url': {
+              type: 'text',
+              header: 'URL',
+              default: 'https://example.com'
+            },
+            'description': {
+              type: 'text',
+              label: 'Description',
+              default: 'Connection description',
+              expandedOnly: true
+            },
+            'credentials': {
+              type: 'password',
+              label: 'API Key',
+              expandedOnly: true,
+              constraints: {
+                notEmpty: 'API key is required'
+              }
+            }
+          }
         }
       }
     };
@@ -259,7 +338,7 @@ export default class TestClient extends Component {
         </Fill>
         }
 
-        {showModal && <CarbonModal onClose={ () => this.setState({ showModal: false }) } />}
+        {showModal && <CarbonModal onClose={ () => this.setState({ showModal: false }) } triggerAction={ this.triggerAction } />}
       </Fragment>
     );
   }
