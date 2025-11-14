@@ -25,6 +25,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
+* `FEAT`: show local and process variables in task testing outcome ([#5338](https://github.com/camunda/camunda-modeler/issues/5338))
 * `FIX`: use maximize icon in open popup button ([@bpmn-io/properties-panel#438](https://github.com/bpmn-io/properties-panel/pull/444))
 * `FIX`: remove empty values (`""`) also after blurring input fields([@bpmn-io/properties-panel#449](https://github.com/bpmn-io/properties-panel/pull/449))
 * `FIX`: display process and local variables separately in task testing ([@camunda/task-testing#41](https://github.com/camunda/task-testing/pull/41))
