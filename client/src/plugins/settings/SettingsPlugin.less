@@ -32,7 +32,7 @@
     cursor: pointer;
   }
 
-  .expandable-table-body {
+  .expandable-table-body, .table-body {
     background: var(--color-white);
     --cds-layer-hover: var(--color-white);
   }
@@ -43,6 +43,30 @@
   }
   .action-cell {
     width: 0;
+    white-space: nowrap;
+    
+    .edit, .remove {
+      display: inline-flex;
+      margin-left: 4px;
+    }
+  }
+
+  .table-field-cell {
+    .field-container, .display-container {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+    }
+
+    .field-container {
+      .form-group {
+        margin-bottom: 0;
+      }
+    }
+
+    .display-container {
+      padding: 6px 0;
+    }
   }
 
   .settings-field-wrapper {

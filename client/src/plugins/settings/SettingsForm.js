@@ -14,8 +14,8 @@ import { Field, FieldArray, Form, useFormikContext, getIn } from 'formik';
 
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
-import { DataTable, Table, TableHead, TableHeader, TableBody, TableCell, TableExpandRow, TableExpandedRow, Button } from '@carbon/react';
-import { Add, TrashCan } from '@carbon/icons-react';
+import { DataTable, Table, TableHead, TableHeader, TableBody, TableRow, TableCell, TableExpandRow, TableExpandedRow, Button } from '@carbon/react';
+import { Add, TrashCan, Edit } from '@carbon/icons-react';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 
@@ -176,14 +176,25 @@ function TableFieldArray({ name, label, description, rowProperties, emptyPlaceho
   const arrayValues = getIn(useFormikContext().values, name) || [];
 
   const [ expandedRows, setExpandedRows ] = useState([]);
+  const [ editingRows, setEditingRows ] = useState([]);
   const expandedRowRef = useRef(null);
   const hasInitiallyExpanded = useRef(false);
+
+  // Detect if table should be expandable by checking for expandedOnly properties
+  // Default to expandable (original behavior) unless explicitly no expandedOnly properties exist AND there are multiple regular properties
+  const hasExpandedOnlyProperties = Object.values(rowProperties || {}).some(property => !!property.expandedOnly);
+  const regularProperties = Object.values(rowProperties || {}).filter(property => !property.expandedOnly);
+  const shouldUseNonExpandable = !hasExpandedOnlyProperties && regularProperties.length > 1;
 
   useEffect(() => {
     if (expandRowId && arrayValues.length > 0 && !hasInitiallyExpanded.current) {
       const targetRow = arrayValues.find(row => row.id === expandRowId);
       if (targetRow) {
-        setExpandedRows([ expandRowId ]);
+        if (!shouldUseNonExpandable) {
+          setExpandedRows([ expandRowId ]);
+        } else {
+          setEditingRows([ expandRowId ]);
+        }
         hasInitiallyExpanded.current = true;
 
         setTimeout(() => {
@@ -196,7 +207,7 @@ function TableFieldArray({ name, label, description, rowProperties, emptyPlaceho
         }, 100);
       }
     }
-  }, [ expandRowId, arrayValues ]);
+  }, [ expandRowId, arrayValues, shouldUseNonExpandable ]);
 
   useEffect(() => {
     hasInitiallyExpanded.current = false;
@@ -218,12 +229,25 @@ function TableFieldArray({ name, label, description, rowProperties, emptyPlaceho
     return expandedRows.includes(row.id);
   }
 
+  function isEditing(row) {
+    return editingRows.includes(row.id);
+  }
+
   function handleExpand(row) {
     if (isExpanded(row)) {
       setExpandedRows([]);
     }
     else {
       setExpandedRows([ row.id ]);
+    }
+  }
+
+  function handleEdit(row) {
+    if (isEditing(row)) {
+      setEditingRows([]);
+    }
+    else {
+      setEditingRows([ row.id ]);
     }
   }
 
@@ -264,7 +288,7 @@ function TableFieldArray({ name, label, description, rowProperties, emptyPlaceho
                 {shouldShowHeaders && (
                   <TableHead>
                     <tr>
-                      <TableHeader />
+                      {!shouldUseNonExpandable && <TableHeader />}
                       {headers.map((header) => (
                         <TableHeader { ...getHeaderProps({ header }) } key={ header.key }>
                           { header.header }
@@ -274,54 +298,94 @@ function TableFieldArray({ name, label, description, rowProperties, emptyPlaceho
                     </tr>
                   </TableHead>
                 )}
-                <TableBody className="expandable-table-body">
-                  {rows?.map((row, index) => (
-                    <React.Fragment key={ `${name}[${index}]` }>
-                      <TableExpandRow { ...getRowProps({ row }) }
-                        ref={ row.id === expandRowId ? expandedRowRef : null }
-                        isExpanded={ isExpanded(row) } onExpand={ () => handleExpand(row) }
-                      >
-                        {
-                          map(rowHeaderProperties, (rowHeaderProperty, key) => {
-                            return (
-                              <TableCell key={ `${name}[${index}].${key}` }>
-                                { isExpanded(row) && <SettingsField name={ `${name}[${index}].${key}` } { ...rowHeaderProperty } /> }
-                                { !isExpanded(row) && <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span> }
-                              </TableCell>
-                            );
-                          })
-                        }
-                        <TableCell className="action-cell">
-                          <Button
-                            className="remove"
-                            hasIconOnly
-                            iconDescription={ removeTooltip || 'Remove' }
-                            tooltipPosition="left"
-                            kind="ghost"
-                            renderIcon={ TrashCan }
-                            onClick={ () =>
-                              arrayHelpers.remove(index)
-                            }
-                          />
-                        </TableCell>
-                      </TableExpandRow>
+                <TableBody className={ !shouldUseNonExpandable ? 'expandable-table-body' : 'table-body' }>
+                  {rows?.map((row, index) => {
+                    const RowComponent = !shouldUseNonExpandable ? TableExpandRow : TableRow;
+                    const isRowExpanded = !shouldUseNonExpandable ? isExpanded(row) : isEditing(row);
+                    const handleRowAction = !shouldUseNonExpandable ? () => handleExpand(row) : () => handleEdit(row);
 
-                      <TableExpandedRow
-                        { ...getExpandedRowProps({ row }) }
-                        colSpan={ Object.keys(rowHeaderProperties).length + 2 } // +1 for expand column, +1 for action column
-                      >
-                        <div>
+                    const rowProps = {
+                      ...getRowProps({ row }),
+                      ref: row.id === expandRowId ? expandedRowRef : null,
+                      key: `${name}[${index}]`
+                    };
+
+                    if (!shouldUseNonExpandable) {
+                      rowProps.isExpanded = isExpanded(row);
+                      rowProps.onExpand = () => handleExpand(row);
+                    }
+
+                    return (
+                      <React.Fragment key={ `${name}[${index}]` }>
+                        <RowComponent { ...rowProps }>
                           {
-                            map(rowExpandedProperties, (rowExpandedProperty, key) => {
+                            map(rowHeaderProperties, (rowHeaderProperty, key) => {
                               return (
-                                <SettingsField key={ `${name}[${index}].${key}` } name={ `${name}[${index}].${key}` } { ...rowExpandedProperty } />
+                                <TableCell key={ `${name}[${index}].${key}` } className={ !shouldUseNonExpandable ? '' : 'table-field-cell' }>
+                                  { isRowExpanded ? (
+                                    !shouldUseNonExpandable ? (
+                                      <SettingsField name={ `${name}[${index}].${key}` } { ...rowHeaderProperty } />
+                                    ) : (
+                                      <div className="field-container">
+                                        <SettingsField name={ `${name}[${index}].${key}` } { ...rowHeaderProperty } />
+                                      </div>
+                                    )
+                                  ) : (
+                                    !shouldUseNonExpandable ? (
+                                      <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span>
+                                    ) : (
+                                      <div className="display-container">
+                                        <span name={ `${name}[${index}].${key}` }>{ arrayValues[index][key] }</span>
+                                      </div>
+                                    )
+                                  ) }
+                                </TableCell>
                               );
                             })
                           }
-                        </div>
-                      </TableExpandedRow>
-                    </React.Fragment>
-                  ))}
+                          <TableCell className="action-cell">
+                            { shouldUseNonExpandable && (
+                              <Button
+                                className="edit"
+                                hasIconOnly
+                                iconDescription="Edit"
+                                tooltipPosition="left"
+                                kind="ghost"
+                                renderIcon={ Edit }
+                                onClick={ handleRowAction }
+                              />
+                            )}
+                            <Button
+                              className="remove"
+                              hasIconOnly
+                              iconDescription={ removeTooltip || 'Remove' }
+                              tooltipPosition="left"
+                              kind="ghost"
+                              renderIcon={ TrashCan }
+                              onClick={ () => arrayHelpers.remove(index) }
+                            />
+                          </TableCell>
+                        </RowComponent>
+
+                        { !shouldUseNonExpandable && (
+                          <TableExpandedRow
+                            { ...getExpandedRowProps({ row }) }
+                            colSpan={ Object.keys(rowHeaderProperties).length + 2 } // +1 for expand column, +1 for action column
+                          >
+                            <div>
+                              {
+                                map(rowExpandedProperties, (rowExpandedProperty, key) => {
+                                  return (
+                                    <SettingsField key={ `${name}[${index}].${key}` } name={ `${name}[${index}].${key}` } { ...rowExpandedProperty } />
+                                  );
+                                })
+                              }
+                            </div>
+                          </TableExpandedRow>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                 </TableBody>
               </Table>
             )}
@@ -339,7 +403,11 @@ function TableFieldArray({ name, label, description, rowProperties, emptyPlaceho
               onClick={ () => {
                 const newElement = generateNewElement();
                 arrayHelpers.push(newElement);
-                setExpandedRows([ newElement.id ]);
+                if (!shouldUseNonExpandable) {
+                  setExpandedRows([ newElement.id ]);
+                } else {
+                  setEditingRows([ newElement.id ]);
+                }
               } }
             />
           </div>
