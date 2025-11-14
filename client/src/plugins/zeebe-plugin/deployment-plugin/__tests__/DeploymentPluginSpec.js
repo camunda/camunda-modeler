@@ -12,9 +12,7 @@
 
 import React from 'react';
 
-import { waitFor } from '@testing-library/react';
-
-import { mount } from 'enzyme';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 
 import DeploymentPlugin from '../DeploymentPlugin';
 
@@ -25,24 +23,13 @@ import { Deployment, ZeebeAPI } from '../../../../app/__tests__/mocks';
 
 describe('DeploymentPlugin', function() {
 
-  beforeEach(function() {
-    document.body.innerHTML = '';
-  });
-
-  afterEach(function() {
-    document.body.innerHTML = '';
-  });
-
-
   it('should not render status bar item by default', function() {
 
     // when
-    const wrapper = createDeploymentPlugin();
+    const { queryByTitle } = createDeploymentPlugin();
 
-    const statusBarItem = wrapper.find('.btn');
-
-    // then
-    expect(statusBarItem.exists()).to.be.false;
+    const statusBarItem = queryByTitle('Open file deployment');
+    expect(statusBarItem).to.not.exist;
   });
 
 
@@ -58,13 +45,11 @@ describe('DeploymentPlugin', function() {
     });
 
     // when
-    const wrapper = createDeploymentPlugin({ subscribe });
+    const { queryByTitle } = createDeploymentPlugin({ subscribe });
 
     // then
-    const statusBarItem = wrapper.find('.btn');
-
-    expect(statusBarItem.exists()).to.be.true;
-    expect(statusBarItem.prop('title')).to.equal('Open file deployment');
+    const statusBarItem = queryByTitle('Open file deployment');
+    expect(statusBarItem).to.exist;
   });
 
 
@@ -85,15 +70,15 @@ describe('DeploymentPlugin', function() {
       }
     });
 
-    const wrapper = createDeploymentPlugin({ subscribe, triggerAction });
+    const { getByTitle, getByRole } = createDeploymentPlugin({ subscribe, triggerAction });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    const statusBarItem = getByTitle('Open file deployment');
+    fireEvent.click(statusBarItem);
 
     // then
     await waitFor(() => {
-      const overlay = document.querySelector('[role="dialog"]');
-
+      const overlay = getByRole('dialog');
       expect(overlay).to.exist;
     });
   });
@@ -116,24 +101,24 @@ describe('DeploymentPlugin', function() {
       }
     });
 
-    const wrapper = createDeploymentPlugin({ subscribe, triggerAction });
+    const { getByTitle, getByRole, queryByRole } = createDeploymentPlugin({ subscribe, triggerAction });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    const statusBarItem = getByTitle('Open file deployment');
+    fireEvent.click(statusBarItem);
 
-    // then
+    // expect
     await waitFor(() => {
-      const overlay = document.querySelector('[role="dialog"]');
-
+      const overlay = getByRole('dialog');
       expect(overlay).to.exist;
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(statusBarItem);
 
+    // then
     await waitFor(() => {
-      const overlay = document.querySelector('[role="dialog"]');
-
+      const overlay = queryByRole('dialog');
       expect(overlay).not.to.exist;
     });
   });
@@ -180,7 +165,7 @@ function createDeploymentPlugin(props = {}) {
     triggerAction = () => {}
   } = props;
 
-  return mount(<SlotFillRoot>
+  return render(<SlotFillRoot>
     <Slot name="status-bar__file" />
     <DeploymentPlugin
       _getFromApp={ _getFromApp }

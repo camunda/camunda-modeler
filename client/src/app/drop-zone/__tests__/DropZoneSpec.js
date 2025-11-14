@@ -13,8 +13,10 @@
 import React from 'react';
 
 import {
-  shallow
-} from 'enzyme';
+  render,
+  fireEvent,
+  waitFor
+} from '@testing-library/react';
 
 import {
   DropZone,
@@ -24,45 +26,33 @@ import {
 
 describe('<DropZone>', function() {
 
-  describe('#render', function() {
-
-    it('should render', function() {
-      shallow(<DropZone />);
-    });
-
-  });
-
-
   describe('#handleDragOver', function() {
 
     it('should not render overlay during drag without file', function() {
 
       // given
-      const wrapper = shallow(<DropZone />);
+      const { dropzone, container } = renderDropZone();
 
       // when
       const event = new MockDragEvent();
-
-      wrapper.simulate('dragover', event);
+      fireEvent.dragOver(dropzone, event);
 
       // then
-      expect(wrapper.find('DropOverlay').exists()).to.be.false;
-
+      expect(container.querySelector('.box')).to.not.exist;
     });
 
 
     it('should not render overlay during drag with a GIF', function() {
 
       // given
-      const wrapper = shallow(<DropZone />);
+      const { dropzone, container } = renderDropZone();
 
       // when
       const event = new MockDragEvent(fileItem('image/gif'));
-
-      wrapper.simulate('dragover', event);
+      fireEvent.dragOver(dropzone, event);
 
       // then
-      expect(wrapper.find('DropOverlay').exists()).to.be.false;
+      expect(container.querySelector('.box')).to.not.exist;
 
     });
 
@@ -70,16 +60,14 @@ describe('<DropZone>', function() {
     it('should render overlay during drag with a file', function() {
 
       // given
-      const wrapper = shallow(<DropZone />);
+      const { dropzone, container } = renderDropZone();
 
       // when
       const event = new MockDragEvent(fileItem());
-
-      wrapper.simulate('dragover', event);
+      fireEvent.dragOver(dropzone, event);
 
       // then
-      expect(wrapper.find('DropOverlay').exists()).to.be.true;
-
+      expect(container.querySelector('.box')).to.exist;
     });
 
   });
@@ -90,7 +78,7 @@ describe('<DropZone>', function() {
     it('should not render overlay when drag is over', function() {
 
       // given
-      const wrapper = shallow(<DropZone />);
+      const { dropzone, container } = renderDropZone();
 
       const dragOverEvent = new MockDragEvent(fileItem());
       const dragLeaveEvent = new MockDragEvent(fileItem());
@@ -98,11 +86,11 @@ describe('<DropZone>', function() {
       dragLeaveEvent.relatedTarget = null;
 
       // when
-      wrapper.simulate('dragover', dragOverEvent);
-      wrapper.simulate('dragleave', dragLeaveEvent);
+      fireEvent.dragOver(dropzone, dragOverEvent);
+      fireEvent.dragLeave(dropzone, dragLeaveEvent);
 
       // then
-      expect(wrapper.find('DropOverlay').exists()).to.be.false;
+      expect(container.querySelector('.box')).to.not.exist;
 
     });
 
@@ -110,7 +98,7 @@ describe('<DropZone>', function() {
     it('should render overlay when dragging over elements', function() {
 
       // given
-      const wrapper = shallow(<DropZone />);
+      const { dropzone, container } = renderDropZone();
 
       const dragOverEvent = new MockDragEvent(fileItem());
       const dragLeaveEvent = new MockDragEvent(fileItem());
@@ -118,11 +106,11 @@ describe('<DropZone>', function() {
       dragLeaveEvent.relatedTarget = document.createElement('div');
 
       // when
-      wrapper.simulate('dragover', dragOverEvent);
-      wrapper.simulate('dragleave', dragLeaveEvent);
+      fireEvent.dragOver(dropzone, dragOverEvent);
+      fireEvent.dragLeave(dropzone, dragLeaveEvent);
 
       // then
-      expect(wrapper.find('DropOverlay').exists()).to.be.true;
+      expect(container.querySelector('.box')).to.exist;
 
     });
 
@@ -134,17 +122,17 @@ describe('<DropZone>', function() {
     it('should not render overlay when file is dropped', function() {
 
       // given
-      const wrapper = shallow(<DropZone />);
+      const { dropzone, container } = renderDropZone();
 
       const dragOverEvent = new MockDragEvent(fileItem('bpmn'));
       const dropEvent = new MockDragEvent(fileItem('bpmn'));
 
       // when
-      wrapper.simulate('dragover', dragOverEvent);
-      wrapper.simulate('drop', dropEvent);
+      fireEvent.dragOver(dropzone, dragOverEvent);
+      fireEvent.drop(dropzone, dropEvent);
 
       // then
-      expect(wrapper.find('DropOverlay').exists()).to.be.false;
+      expect(container.querySelector('.box')).to.not.exist;
 
     });
 
@@ -154,14 +142,14 @@ describe('<DropZone>', function() {
       // given
       const dropSpy = sinon.spy();
 
-      const wrapper = shallow(<DropZone onDrop={ dropSpy } />);
+      const { dropzone } = renderDropZone({ onDrop: dropSpy });
 
       const dragOverEvent = new MockDragEvent();
       const dropEvent = new MockDragEvent();
 
       // when
-      wrapper.simulate('dragover', dragOverEvent);
-      wrapper.simulate('drop', dropEvent);
+      fireEvent.dragOver(dropzone, dragOverEvent);
+      fireEvent.drop(dropzone, dropEvent);
 
       // then
       expect(dropSpy).to.have.not.been.called;
@@ -169,45 +157,45 @@ describe('<DropZone>', function() {
     });
 
 
-    it('should call passed onDrop prop with filepaths from file', function() {
+    it('should call passed onDrop prop with filepaths from file', async function() {
 
       // given
       const dropSpy = sinon.spy();
       const getFilePath = () => Promise.resolve('/diagram_1.bpmn');
 
-      const wrapper = shallow(<DropZone onDrop={ dropSpy } getFilePath={ getFilePath } />);
+      const { dropzone } = renderDropZone({ onDrop: dropSpy, getFilePath });
 
       const dragOverEvent = new MockDragEvent(fileItem('text/bpmn'));
       const dropEvent = new MockDragEvent(fileItem('text/bpmn'));
 
       // when
-      wrapper.simulate('dragover', dragOverEvent);
-      wrapper.simulate('drop', dropEvent);
+      fireEvent.dragOver(dropzone, dragOverEvent);
+      fireEvent.drop(dropzone, dropEvent);
 
       // then
-      return expectEventually(() => {
+      await waitFor(() => {
         expect(dropSpy).to.be.calledOnce;
         expect(dropSpy).to.have.been.calledOnceWithExactly([ '/diagram_1.bpmn' ]);
       });
     });
 
 
-    it('should call passed onDrop prop with filepaths from VSCode', function() {
+    it('should call passed onDrop prop with filepaths from VSCode', async function() {
 
       // given
       const dropSpy = sinon.spy();
 
-      const wrapper = shallow(<DropZone onDrop={ dropSpy } />);
+      const { dropzone } = renderDropZone({ onDrop: dropSpy });
 
       const dragOverEvent = new MockDragEvent(vsCodeItem());
       const dropEvent = new MockDragEvent(vsCodeItem('/diagram.bpmn', '/form.form'));
 
       // when
-      wrapper.simulate('dragover', dragOverEvent);
-      wrapper.simulate('drop', dropEvent);
+      fireEvent.dragOver(dropzone, dragOverEvent);
+      fireEvent.drop(dropzone, dropEvent);
 
       // then
-      return expectEventually(() => {
+      await waitFor(() => {
         expect(dropSpy).to.be.calledOnce;
         expect(dropSpy).to.have.been.calledOnceWithExactly([ '/diagram.bpmn', '/form.form' ]);
       });
@@ -268,14 +256,38 @@ describe('DropZone - isDropableItem', function() {
 
 
 // helper /////
-class MockDragEvent {
-  constructor(...items) {
-    this.dataTransfer = {
-      items,
-      files: items.filter(item => item.kind === 'file')
-    };
-  }
 
+function renderDropZone(props = {}) {
+  const rendered = render(
+    <DropZone { ...props } />
+  );
+
+  return {
+    dropzone: rendered.container.firstChild,
+    ...rendered
+  };
+}
+
+class MockDragEvent {
+
+  constructor(item) {
+    const dataTransfer = new DataTransfer();
+
+    if (item) {
+      Object.defineProperty(dataTransfer, 'items', {
+        value: [ item ]
+      });
+
+      if (item.kind === 'file') {
+        const mockFile = new File([], 'test-file', { type: item.type });
+        Object.defineProperty(dataTransfer, 'files', {
+          value: [ mockFile ]
+        });
+      }
+    }
+
+    this.dataTransfer = dataTransfer;
+  }
   preventDefault() {}
 
   stopPropagation() {}
@@ -299,31 +311,4 @@ function vsCodeItem(...filepaths) {
       cb(JSON.stringify(filepaths));
     }
   });
-}
-
-async function expectEventually(expectStatement) {
-  const sleep = time => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, time);
-    });
-  };
-
-  for (let i = 0; i < 10; i++) {
-    try {
-      expectStatement();
-
-      // success
-      return;
-    } catch {
-
-      // do nothing
-    }
-
-    await sleep(50);
-  }
-
-  // let it fail correctly
-  expectStatement();
 }

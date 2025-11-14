@@ -13,8 +13,9 @@
 import React from 'react';
 
 import {
-  mount
-} from 'enzyme';
+  render,
+  cleanup
+} from '@testing-library/react';
 
 import KeyboardInteractionTrap,
 { KeyboardInteractionTrapContext } from '../trap/KeyboardInteractionTrap';
@@ -22,13 +23,7 @@ import KeyboardInteractionTrap,
 
 describe('<KeyboardInteractionTrap>', function() {
 
-  let wrapper;
-
-  afterEach(function() {
-    if (wrapper && wrapper.exists()) {
-      wrapper.unmount();
-    }
-  });
+  afterEach(cleanup);
 
 
   it('should dispatch update-menu action', function() {
@@ -37,14 +32,14 @@ describe('<KeyboardInteractionTrap>', function() {
     const triggerAction = sinon.spy();
 
     // when
-    wrapper = mount(
+    const { container } = render(
       <KeyboardInteractionTrapContext.Provider value={ triggerAction }>
         <KeyboardInteractionTrap />
       </KeyboardInteractionTrapContext.Provider>
     );
 
     // then
-    expect(wrapper).to.exist;
+    expect(container).to.exist;
     expect(triggerAction).to.have.been.calledOnce;
   });
 
@@ -52,11 +47,11 @@ describe('<KeyboardInteractionTrap>', function() {
   it('should NOT trigger error outside of context', function() {
 
     // when
-    wrapper = mount(
+    const { container } = render(
       <KeyboardInteractionTrap />
     );
 
     // then
-    expect(wrapper).to.exist;
+    expect(container).to.exist;
   });
 });

@@ -13,8 +13,9 @@
 import React from 'react';
 
 import {
-  mount
-} from 'enzyme';
+  render,
+  fireEvent
+} from '@testing-library/react';
 
 import { OverlayDropdown } from '..';
 
@@ -32,49 +33,51 @@ describe('<OverlayDropdown>', function() {
   it('should render button content', function() {
 
     // given
-    const wrapper = mount((
+    const { getByText } = render((
       <OverlayDropdown items={ [] } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
 
     // then
-    expect(wrapper.contains('TestButton')).to.be.true;
+    expect(getByText('TestButton')).to.exist;
   });
 
 
   it('should open', function() {
 
     // given
-    const wrapper = mount((
+    const { getByRole } = render((
       <OverlayDropdown items={ [] } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
 
     // when
-    wrapper.find('button').simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // then
-    expect(wrapper.exists('Overlay')).to.be.true;
+    expect(getByRole('dialog')).to.exist;
   });
 
 
   it('should close when button is clicked again', function() {
 
     // given
-    const wrapper = mount((
+    const { getByRole, queryByRole } = render((
       <OverlayDropdown items={ [] } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
-    wrapper.find('button').simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // when
-    wrapper.find('button').simulate('click');
+    fireEvent.click(button);
 
     // then
-    expect(wrapper.exists('Overlay')).to.be.false;
+    expect(queryByRole('dialog')).to.not.exist;
   });
 
 
@@ -82,18 +85,20 @@ describe('<OverlayDropdown>', function() {
 
     // given
     const items = [ { text: 'TestOption', onClick: () => {} } ];
-    const wrapper = mount((
+    const { getByRole, getByTitle, queryByRole } = render((
       <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
-    wrapper.find('button').simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // when
-    wrapper.find('Overlay button').simulate('click');
+    const option = getByTitle('TestOption');
+    fireEvent.click(option);
 
     // then
-    expect(wrapper.exists('Overlay')).to.be.false;
+    expect(queryByRole('dialog')).to.not.exist;
   });
 
 
@@ -102,15 +107,17 @@ describe('<OverlayDropdown>', function() {
     // given
     const spy = sinon.spy();
     const items = [ { text: 'TestOption', onClick: spy } ];
-    const wrapper = mount((
+    const { getByRole, getByTitle } = render((
       <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
-    wrapper.find('button').simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // when
-    wrapper.find('Overlay button').simulate('click');
+    const option = getByTitle('TestOption');
+    fireEvent.click(option);
 
     // then
     expect(spy).to.have.been.calledOnce;
@@ -126,17 +133,19 @@ describe('<OverlayDropdown>', function() {
       { key: 'C', items: [ { text: 'foo' } ] }
     ];
 
-    const wrapper = mount((
+    const { getByRole } = render((
       <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
 
     // when
-    wrapper.find('button').simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // then
-    expect(wrapper.find('Overlay section')).to.have.length(3);
+    const sections = getByRole('dialog').querySelectorAll('section');
+    expect(sections).to.have.length(3);
   });
 
 
@@ -147,38 +156,37 @@ describe('<OverlayDropdown>', function() {
       { key: 'section', items: [], maxHeight: 300 }
     ];
 
-    const wrapper = mount((
+    const { getByRole } = render((
       <OverlayDropdown items={ items } buttonRef={ mockButtonRef }>
         TestButton
       </OverlayDropdown>
     ));
 
     // when
-    wrapper.find('button').simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
-    const section = wrapper.find('Overlay section').at(0);
+    const section = getByRole('dialog').querySelector('section');
 
     // then
-    expect(section.prop('style')).to.eql({
-      '--section-max-height': '300px'
-    });
+    expect(section.style.getPropertyValue('--section-max-height')).to.equal('300px');
   });
 
 
   describe('arrow navigation', function() {
 
-    let wrapper;
+    let rendered;
 
     function expectFocus(selector) {
-      const newFocus = wrapper.find(selector).getDOMNode();
+      const newFocus = rendered.getByRole('dialog').querySelector(selector);
       expect(document.activeElement).to.eql(newFocus);
     }
 
     function focusAndNavigate(selector, keyCode) {
-      const item = wrapper.find(selector);
+      const item = rendered.getByRole('dialog').querySelector(selector);
 
-      item.getDOMNode().focus();
-      item.simulate('keyDown', { keyCode });
+      item.focus();
+      fireEvent.keyDown(item, { keyCode });
     }
 
     beforeEach(function() {
@@ -189,7 +197,7 @@ describe('<OverlayDropdown>', function() {
         { key: 'section3', items: [ { text: 'item5' }, { text: 'item6' } ] }
       ];
 
-      wrapper = mount((
+      rendered = render((
         <OverlayDropdown shouldOpen={ true } items={ items } buttonRef={ mockButtonRef }>
           foo
         </OverlayDropdown>
@@ -200,7 +208,7 @@ describe('<OverlayDropdown>', function() {
     it('should auto-focus first element', function() {
 
       // then
-      expectFocus('button[title="item1"]', wrapper);
+      expectFocus('button[title="item1"]');
     });
 
 
@@ -210,7 +218,7 @@ describe('<OverlayDropdown>', function() {
       focusAndNavigate('button[title="item1"]', 40);
 
       // then
-      expectFocus('button[title="item2"]', wrapper);
+      expectFocus('button[title="item2"]');
     });
 
 
@@ -220,7 +228,7 @@ describe('<OverlayDropdown>', function() {
       focusAndNavigate('button[title="item2"]', 40);
 
       // then
-      expectFocus('button[title="item3"]', wrapper);
+      expectFocus('button[title="item3"]');
     });
 
 
@@ -230,7 +238,7 @@ describe('<OverlayDropdown>', function() {
       focusAndNavigate('button[title="item6"]', 40);
 
       // then
-      expectFocus('button[title="item1"]', wrapper);
+      expectFocus('button[title="item1"]');
     });
 
 
@@ -240,7 +248,7 @@ describe('<OverlayDropdown>', function() {
       focusAndNavigate('button[title="item2"]', 38);
 
       // then
-      expectFocus('button[title="item1"]', wrapper);
+      expectFocus('button[title="item1"]');
     });
 
 
@@ -250,7 +258,7 @@ describe('<OverlayDropdown>', function() {
       focusAndNavigate('button[title="item3"]', 38);
 
       // then
-      expectFocus('button[title="item2"]', wrapper);
+      expectFocus('button[title="item2"]');
     });
 
 
@@ -260,7 +268,7 @@ describe('<OverlayDropdown>', function() {
       focusAndNavigate('button[title="item1"]', 38);
 
       // then
-      expectFocus('button[title="item6"]', wrapper);
+      expectFocus('button[title="item6"]');
     });
 
   });

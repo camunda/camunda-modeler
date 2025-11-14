@@ -36,6 +36,10 @@ import {
   ZeebeAPI
 } from './mocks';
 
+import {
+  CONFIG_KEY as PRIVACY_PREFERENCES_CONFIG_KEY
+} from '../../plugins/privacy-preferences/PrivacyPreferences';
+
 
 /* global sinon */
 const { spy } = sinon;
@@ -1027,9 +1031,13 @@ function createAppParent(options = {}, mountFn = shallow) {
 
   let appParent;
 
+  const defaultConfig = {
+    [PRIVACY_PREFERENCES_CONFIG_KEY]: true
+  };
+
   const defaultGlobals = {
     backend: new Backend(),
-    config: new Config(),
+    config: new Config({ get: () => defaultConfig }),
     deployment: new Deployment(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),

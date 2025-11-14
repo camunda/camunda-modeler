@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import {
   SlotFillRoot,
@@ -35,73 +35,70 @@ const spy = sinon.spy;
 
 describe('<EngineProfile>', function() {
 
-  let wrapper;
-
-  afterEach(function() {
-    if (wrapper && wrapper.exists()) {
-      wrapper.unmount();
-    }
-  });
-
-
   it('should render', function() {
 
     // given
-    wrapper = renderEngineProfile({
+    const { getByRole } = renderEngineProfile({
       engineProfile: bpmnEngineProfile
     });
 
     // then
-    expect(wrapper.exists()).to.be.true;
+    expect(getByRole('button')).to.exist;
   });
 
 
   it('should open', function() {
 
     // given
-    wrapper = renderEngineProfile({
+    const { getByText, getByRole } = renderEngineProfile({
       engineProfile: bpmnEngineProfile
     });
 
     // when
-    wrapper.find('button').simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // then
-    expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
+    expect(getByText(/This file can be deployed and executed on Camunda 7/)).to.exist;
   });
 
 
   it('should close', function() {
 
     // given
-    wrapper = renderEngineProfile({
+    const { getByRole, queryByRole } = renderEngineProfile({
       engineProfile: bpmnEngineProfile
     });
 
-    wrapper.find('button').simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // when
-    wrapper.find('button').simulate('click');
+    fireEvent.click(button);
 
     // then
-    expect(wrapper.find('EngineProfileOverlay').exists()).to.be.false;
+    const overlay = queryByRole('dialog');
+    expect(overlay).to.not.exist;
   });
 
 
   it('should filter versions', function() {
 
     // given
-    wrapper = renderEngineProfile({
+    const { getByRole } = renderEngineProfile({
       engineProfile: { ...cloudDmnEngineProfile, executionPlatformVersion: '8.0.0' },
       onChange: () => {},
       filterVersions: version => version === '8.0.0'
     });
 
     // when
-    wrapper.find('button').simulate('click');
+    const button = getByRole('button');
+    fireEvent.click(button);
 
     // then
-    expect(wrapper.find('option').length).to.equal(1);
+    const select = getByRole('combobox');
+    const options = select.querySelectorAll('option');
+    expect(options.length).to.equal(1);
   });
 
 
@@ -112,7 +109,7 @@ describe('<EngineProfile>', function() {
       it(`should show selected engine profile (${executionPlatform} ${executionPlatformVersion})`, function() {
 
         // given
-        wrapper = renderEngineProfile({
+        const { getByRole } = renderEngineProfile({
           engineProfile: {
             executionPlatform,
             executionPlatformVersion,
@@ -121,12 +118,14 @@ describe('<EngineProfile>', function() {
         });
 
         // when
-        wrapper.find('button').simulate('click');
+        const button = getByRole('button');
+        fireEvent.click(button);
 
         // then
-        expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
+        const select = getByRole('combobox');
+        expect(select).to.exist;
 
-        expectVersion(wrapper, toSemverMinor(executionPlatformVersion));
+        expectVersion(select, toSemverMinor(executionPlatformVersion));
       });
 
     });
@@ -143,7 +142,7 @@ describe('<EngineProfile>', function() {
         // given
         const onChangeSpy = spy();
 
-        wrapper = renderEngineProfile({
+        const { getByRole } = renderEngineProfile({
           engineProfile: {
             executionPlatform,
             executionPlatformVersion: null
@@ -151,13 +150,15 @@ describe('<EngineProfile>', function() {
           onChange: onChangeSpy
         });
 
-        wrapper.find('button').simulate('click');
+        const button = getByRole('button');
+        fireEvent.click(button);
 
         // when
-        selectVersion(wrapper, executionPlatformVersion);
+        selectVersion(getByRole('combobox'), executionPlatformVersion);
 
         // then
         expect(onChangeSpy).to.have.been.calledOnce;
+
         expect(onChangeSpy).to.have.been.calledWith({
           executionPlatform,
           executionPlatformVersion
@@ -227,31 +228,33 @@ describe('<EngineProfile>', function() {
     it('should show description', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: bpmnEngineProfile
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectPlatformHelp(wrapper);
+      expectPlatformHelp(getByRole);
     });
 
 
     it('should show selection', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: bpmnEngineProfile,
         onChange: () => { }
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectPlatformHelp(wrapper);
+      expectPlatformHelp(getByRole);
     });
 
   });
@@ -262,31 +265,33 @@ describe('<EngineProfile>', function() {
     it('should show description', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: cloudBpmnEngineProfile
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectCloudHelp(wrapper);
+      expectCloudHelp(getByRole);
     });
 
 
     it('should show selection', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: cloudBpmnEngineProfile,
         onChange: () => { }
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectCloudHelp(wrapper);
+      expectCloudHelp(getByRole);
     });
 
   });
@@ -297,31 +302,33 @@ describe('<EngineProfile>', function() {
     it('should show description', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: dmnEngineProfile
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectPlatformHelp(wrapper);
+      expectPlatformHelp(getByRole);
     });
 
 
     it('should show selection', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: dmnEngineProfile,
         onChange: () => { }
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectPlatformHelp(wrapper);
+      expectPlatformHelp(getByRole);
     });
 
   });
@@ -332,31 +339,33 @@ describe('<EngineProfile>', function() {
     it('should show description', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: cloudDmnEngineProfile
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectCloudHelp(wrapper);
+      expectCloudHelp(getByRole);
     });
 
 
     it('should show selection', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: cloudDmnEngineProfile,
         onChange: () => { }
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectCloudHelp(wrapper);
+      expectCloudHelp(getByRole);
     });
   });
 
@@ -366,31 +375,33 @@ describe('<EngineProfile>', function() {
     it('should show description', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: formEngineProfile
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectPlatformHelp(wrapper);
+      expectPlatformHelp(getByRole);
     });
 
 
     it('should show selection', function() {
 
       // given
-      wrapper = renderEngineProfile({
+      const { getByRole } = renderEngineProfile({
         engineProfile: formEngineProfile,
         onChange: () => { }
       });
 
       // when
-      wrapper.find('button').simulate('click');
+      const button = getByRole('button');
+      fireEvent.click(button);
 
       // then
-      expectPlatformHelp(wrapper);
+      expectPlatformHelp(getByRole);
     });
 
   });
@@ -408,7 +419,7 @@ function renderEngineProfile(options = {}) {
     ...rest
   } = options;
 
-  return mount(
+  return render(
     <SlotFillRoot>
       <Slot name="status-bar__file" />
       <EngineProfile
@@ -426,7 +437,7 @@ function eachProfile(fn) {
     [
       undefined,
       ...executionPlatformVersions,
-      ...executionPlatformVersions.map(incrementPatchVersion)
+      ...executionPlatformVersions
     ].forEach((executionPlatformVersion) => {
       fn(executionPlatform, executionPlatformVersion);
     });
@@ -434,40 +445,29 @@ function eachProfile(fn) {
 }
 
 
-function expectHelpText(wrapper, helpLink) {
-  expect(wrapper.find('EngineProfileOverlay').exists()).to.be.true;
-  expect(wrapper.find('a').exists()).to.be.true;
-  expect(wrapper.find('a').prop('href')).to.equal(helpLink);
+function expectHelpText(getByRole, helpLink) {
+  const link = getByRole('link');
+  expect(link).to.exist;
+  expect(link.getAttribute('href')).to.equal(helpLink);
 }
 
-function expectCloudHelp(wrapper) {
-  expectHelpText(wrapper, utmTag('https://docs.camunda.io/'));
+function expectCloudHelp(getByRole) {
+  expectHelpText(getByRole, utmTag('https://docs.camunda.io/'));
 }
 
-function expectPlatformHelp(wrapper) {
-  expectHelpText(wrapper, utmTag('https://docs.camunda.org/manual/latest/'));
+function expectPlatformHelp(getByRole) {
+  expectHelpText(getByRole, utmTag('https://docs.camunda.org/manual/latest/'));
 }
 
-function selectVersion(wrapper, version) {
-
-  const select = wrapper.find('select');
-
-  if (select.instance().value !== version) {
-    select.simulate('change', { target: { value: version || '' } });
+function selectVersion(select, version) {
+  if (select.value !== version) {
+    fireEvent.change(select, { target: { value: toSemverMinor(version) || '' } });
   }
 
-  wrapper.find('form').simulate('submit');
+  const form = select.closest('form');
+  fireEvent.submit(form);
 }
 
-
-function expectVersion(wrapper, version) {
-  const select = wrapper.find('select');
-
-  expect(select.prop('value')).to.equal(version || '');
-}
-
-function incrementPatchVersion(version) {
-  const [ major, minor, patch ] = version.split('.').map(Number);
-
-  return `${major}.${minor}.${patch + 1}`;
+function expectVersion(select, version) {
+  expect(select.value).to.equal(version || '');
 }

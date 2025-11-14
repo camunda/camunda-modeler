@@ -102,6 +102,7 @@ export default class Notification extends PureComponent {
     return this.state.error ? null :
       (
         <div
+          role="status"
           className={ classnames(css.Notification, type) }
           onMouseOver={ ()=> {this.resetTimeout(); } }
           onMouseOut={ ()=> {this.setupTimeout(this.props.duration);} }>

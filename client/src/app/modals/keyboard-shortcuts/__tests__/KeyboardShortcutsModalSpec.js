@@ -10,10 +10,7 @@
 
 import React from 'react';
 
-import {
-  mount,
-  shallow
-} from 'enzyme';
+import { render } from '@testing-library/react';
 
 import { KeyboardShortcutsModal } from '..';
 import View from '../View';
@@ -26,49 +23,45 @@ const CTRL_MODIFIER = 'Control';
 
 describe('<KeyboardShortcutsModal>', function() {
 
-  it('should render', function() {
-    shallow(<KeyboardShortcutsModal getGlobal={ mockGlobal('foo') } />);
-  });
-
-
   describe('keyboard shortcuts', function() {
 
     it('should render shortcuts', function() {
 
       // when
-      const { keyboardShortcuts } = renderOverlay();
-
-      const shortcuts = getShortcuts(COMMAND_MODIFIER);
+      const { getByText } = renderOverlay();
+      const shortcuts = getShortcuts(CTRL_MODIFIER);
 
       // then
-      expect(keyboardShortcuts).to.exist;
-      expect(keyboardShortcuts.children()).to.have.lengthOf(shortcuts.length);
+      shortcuts.forEach((shortcut) => {
+        expect(getByText(shortcut.label)).to.exist;
+        expect(getByText(shortcut.binding)).to.exist;
+      });
     });
 
 
     it('should render Mac OS shortcuts', function() {
 
       // when
-      const { keyboardShortcuts } = renderOverlay({
+      const { queryByText } = renderOverlay({
         platform: 'darwin'
       });
 
       // then
-      expect(keyboardShortcuts.text()).to.contain(COMMAND_MODIFIER);
-      expect(keyboardShortcuts.text()).not.to.contain(CTRL_MODIFIER);
+      expect(queryByText(COMMAND_MODIFIER, { exact: false })).to.exist;
+      expect(queryByText(CTRL_MODIFIER, { exact: false })).to.not.exist;
     });
 
 
     it('should render Windows / Linux shortcuts', function() {
 
       // when
-      const { keyboardShortcuts } = renderOverlay({
+      const { queryByText } = renderOverlay({
         platform: 'linux'
       });
 
       // then
-      expect(keyboardShortcuts.text()).not.to.contain(COMMAND_MODIFIER);
-      expect(keyboardShortcuts.text()).to.contain(CTRL_MODIFIER);
+      expect(queryByText(COMMAND_MODIFIER, { exact: false })).to.not.exist;
+      expect(queryByText(CTRL_MODIFIER, { exact: false })).to.exist;
     });
 
   });
@@ -77,7 +70,8 @@ describe('<KeyboardShortcutsModal>', function() {
   describe('<View>', function() {
 
     it('should render', function() {
-      shallow(<View />);
+      const { container } = render(<View />);
+      expect(container).to.exist;
     });
 
   });
@@ -89,15 +83,9 @@ function renderOverlay(options = {}) {
 
   const platform = options.platform || 'win32';
 
-  const wrapper = mount(<KeyboardShortcutsModal
+  return render(<KeyboardShortcutsModal
     getGlobal={ mockGlobal(platform) }
   />);
-
-  const keyboardShortcuts = wrapper.find('.keyboard-shortcuts').first();
-
-  return {
-    keyboardShortcuts
-  };
 }
 
 

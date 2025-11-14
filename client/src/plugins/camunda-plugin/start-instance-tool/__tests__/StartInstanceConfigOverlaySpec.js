@@ -10,10 +10,7 @@
 
 import React from 'react';
 
-import {
-  mount,
-  shallow
-} from 'enzyme';
+import { render } from '@testing-library/react';
 
 import StartInstanceConfigOverlay from '../StartInstanceConfigOverlay';
 
@@ -27,20 +24,15 @@ describe('<StartInstanceConfigOverlay>', function() {
   it('should render with customizations', function() {
 
     // given
-    const anchor = document.createElement('button');
-
     const options = {
       title: 'title',
-      anchor
     };
 
     // when
-    const { wrapper } = createOverlay(options, mount);
-
-    const titleWrapper = wrapper.find('.section__header');
+    const { getByText } = createOverlay(options);
 
     // then
-    expect(titleWrapper.text()).to.eql(options.title);
+    expect(getByText(options.title)).to.exist;
   });
 
 });
@@ -48,17 +40,18 @@ describe('<StartInstanceConfigOverlay>', function() {
 
 // helpers //////////
 
-function createOverlay(props = {}, renderFn = shallow) {
+function createOverlay(props = {}) {
 
   const {
     configuration,
     onClose,
     title,
-    anchor
   } = props;
 
+  const { container } = render(<button />);
+  const anchor = container.firstChild;
 
-  const wrapper = renderFn(
+  return render(
     <StartInstanceConfigOverlay
       configuration={ configuration || getDefaultConfiguration() }
       onClose={ onClose || noop }
@@ -66,11 +59,6 @@ function createOverlay(props = {}, renderFn = shallow) {
       anchor={ anchor }
     />
   );
-
-  return {
-    wrapper,
-    instance: wrapper.instance()
-  };
 }
 
 function noop() {}
