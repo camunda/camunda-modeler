@@ -172,7 +172,7 @@ function SettingsField(props) {
 }
 
 
-function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, formConfig, expandRowId }) {
+function ExpandableTableFieldArray({ name, label, description, rowProperties, childProperties, emptyPlaceholder, addTooltip, removeTooltip, expandRowId }) {
   const arrayValues = getIn(useFormikContext().values, name) || [];
 
   const [ expandedRows, setExpandedRows ] = useState([]);
@@ -236,7 +236,7 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
             <div className="custom-control-description">{ description }</div>
           </div>
           {(!arrayValues || arrayValues.length === 0) && (
-            <p className="empty-placeholder">{ formConfig?.emptyPlaceholder }</p>
+            <p className="empty-placeholder">{ emptyPlaceholder }</p>
           )}
           <DataTable rows={ arrayValues } headers={ [] }>
             {({
@@ -267,7 +267,7 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
                           <Button
                             className="remove"
                             hasIconOnly
-                            iconDescription={ formConfig?.removeTooltip || 'Remove' }
+                            iconDescription={ removeTooltip || 'Remove' }
                             tooltipPosition="left"
                             kind="ghost"
                             renderIcon={ TrashCan }
@@ -302,7 +302,7 @@ function ExpandableTableFieldArray({ name, label, description, rowProperties, ch
             <Button
               className="add"
               tooltipPosition="left"
-              iconDescription={ formConfig?.addLabel || 'Add' }
+              iconDescription={ addTooltip || 'Add' }
               renderIcon={ Add }
               hasIconOnly={ true }
               onClick={ () => {

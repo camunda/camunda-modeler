@@ -967,9 +967,7 @@ describe('SettingsForm', function() {
             'test.expandableTable': {
               type: 'expandableTable',
               label: 'Expandable table',
-              formConfig: {
-                emptyPlaceholder: 'No items'
-              },
+              emptyPlaceholder: 'No items',
               rowProperties: {
                 'name': {
                   type: 'text',
@@ -1015,10 +1013,8 @@ describe('SettingsForm', function() {
             type: 'expandableTable',
             label: 'Expandable table',
             description: 'Test table description',
-            formConfig: {
-              emptyPlaceholder: 'No items added yet',
-              addLabel: 'Add Item'
-            },
+            emptyPlaceholder: 'No items added yet',
+            addTooltip: 'Add Item',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1066,10 +1062,8 @@ describe('SettingsForm', function() {
           'test.expandableTable': {
             type: 'expandableTable',
             label: 'Expandable table',
-            formConfig: {
-              emptyPlaceholder: 'No items',
-              addLabel: 'Add Item'
-            },
+            emptyPlaceholder: 'No items',
+            addTooltip: 'Add Item',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1254,9 +1248,7 @@ describe('SettingsForm', function() {
           'test.expandableTable': {
             type: 'expandableTable',
             label: 'Expandable table',
-            formConfig: {
-              removeLabel: 'Remove Item'
-            },
+            removeTooltip: 'Remove Item',
             rowProperties: {
               'name': {
                 type: 'text',

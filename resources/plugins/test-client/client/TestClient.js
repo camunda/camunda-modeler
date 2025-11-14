@@ -164,11 +164,9 @@ export default class TestClient extends Component {
           type: 'expandableTable',
           label: 'Complex Array',
           description: 'Table (array) of objects. Adding and deleting elements is supported.',
-          formConfig:{
-            emptyPlaceholder: "I'm empty",
-            addLabel: 'Create something complex',
-            removeTooltip: 'Remove the complex thing'
-          },
+          emptyPlaceholder: "I'm empty",
+          addTooltip: 'Create something complex',
+          removeTooltip: 'Remove the complex thing',
           condition: { property: 'showAllFields', equals: true },
           rowProperties:{
             'name': {

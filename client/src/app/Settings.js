@@ -44,10 +44,9 @@ import { Flags } from '../util';
  * @property {import('../plugins/settings/SettingsForm').Constraints} [constraints] - validation constraints for the field
  * @property {Record<string, SettingsProperty>} [rowProperties] - [expandableTable] properties displayed in table rows
  * @property {Record<string, SettingsProperty>} [childProperties] - [expandableTable] properties displayed in expanded rows
- * @property {Object} [formConfig] - manipulates how the form gets rendered
- * @property {string} [formConfig.emptyPlaceholder] - [expandableTable] text shown when array is empty
- * @property {string} [formConfig.addLabel] - [expandableTable] label for the add button
- * @property {string} [formConfig.removeTooltip] - [expandableTable] tooltip for the remove button
+ * @property {string} [emptyPlaceholder] - [expandableTable] text shown when table is empty
+ * @property {string} [addTooltip] - [expandableTable] tooltip for the add button
+ * @property {string} [removeTooltip] - [expandableTable] tooltip for the remove button
  */
 
 /**
