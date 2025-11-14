@@ -161,8 +161,8 @@ export default class TestClient extends Component {
           }
         },
         'testClientPlugin.complexArray':{
-          type: 'expandableTable',
-          label: 'Complex Array',
+          type: 'table',
+          label: 'Array',
           description: 'Table (array) of objects. Adding and deleting elements is supported.',
           emptyPlaceholder: "I'm empty",
           addTooltip: 'Create something complex',

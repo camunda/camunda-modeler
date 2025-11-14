@@ -22,7 +22,7 @@ import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
 import Flags from '../../util/Flags';
 import { generateId } from '../../util';
 
-const FIELD_ARRAY_TYPES = [ 'expandableTable' ];
+const FIELD_ARRAY_TYPES = [ 'table' ];
 
 import { utmTag } from '../../util/utmTag';
 
@@ -111,8 +111,8 @@ function SettingsField(props) {
       return Radio;
     }
 
-    if (type === 'expandableTable') {
-      return ExpandableTableFieldArray;
+    if (type === 'table') {
+      return TableFieldArray;
     }
 
     return null;
@@ -172,7 +172,7 @@ function SettingsField(props) {
 }
 
 
-function ExpandableTableFieldArray({ name, label, description, rowProperties, emptyPlaceholder, addTooltip, removeTooltip, expandRowId }) {
+function TableFieldArray({ name, label, description, rowProperties, emptyPlaceholder, addTooltip, removeTooltip, expandRowId }) {
   const arrayValues = getIn(useFormikContext().values, name) || [];
 
   const [ expandedRows, setExpandedRows ] = useState([]);

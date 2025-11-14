@@ -807,7 +807,7 @@ describe('SettingsForm', function() {
   });
 
 
-  describe('expandable table', function() {
+  describe('table', function() {
 
     describe('expandRowId', function() {
 
@@ -816,9 +816,9 @@ describe('SettingsForm', function() {
         // given
         const schema = [ {
           properties: {
-            'test.expandableTable': {
-              type: 'expandableTable',
-              label: 'Expandable table',
+            'test.table': {
+              type: 'table',
+              label: 'Table',
               rowProperties: {
                 'name': {
                   type: 'text',
@@ -839,7 +839,7 @@ describe('SettingsForm', function() {
           schema,
           initialValues: {
             test: {
-              expandableTable: [
+              table: [
                 { id: 'row-1', name: 'Row 1', description: 'Description 1' },
                 { id: 'row-2', name: 'Row 2', description: 'Description 2' },
                 { id: 'row-3', name: 'Row 3', description: 'Description 3' }
@@ -851,15 +851,15 @@ describe('SettingsForm', function() {
 
         // then
         await waitFor(() => {
-          const nameInput = container.querySelector('input[id="test.expandableTable[1].name"]');
+          const nameInput = container.querySelector('input[id="test.table[1].name"]');
           expect(nameInput).to.exist;
         }, { timeout: 3000 });
 
-        const secondRowNameInput = container.querySelector('input[id="test.expandableTable[1].name"]');
+        const secondRowNameInput = container.querySelector('input[id="test.table[1].name"]');
         expect(secondRowNameInput).to.exist;
         expect(secondRowNameInput.value).to.equal('Row 2');
 
-        const descriptionField = container.querySelector('input[id="test.expandableTable[1].description"]');
+        const descriptionField = container.querySelector('input[id="test.table[1].description"]');
         expect(descriptionField).to.exist;
         expect(descriptionField.value).to.equal('Description 2');
       });
@@ -870,9 +870,9 @@ describe('SettingsForm', function() {
         // given
         const schema = [ {
           properties: {
-            'test.expandableTable': {
-              type: 'expandableTable',
-              label: 'Expandable table',
+            'test.table': {
+              type: 'table',
+              label: 'Table',
               rowProperties: {
                 'name': {
                   type: 'text',
@@ -892,7 +892,7 @@ describe('SettingsForm', function() {
           schema,
           initialValues: {
             test: {
-              expandableTable: [
+              table: [
                 { id: 'row-1', name: 'Row 1', description: 'Description 1' },
                 { id: 'row-2', name: 'Row 2', description: 'Description 2' }
               ]
@@ -916,9 +916,9 @@ describe('SettingsForm', function() {
         // given
         const schema = [ {
           properties: {
-            'test.expandableTable': {
-              type: 'expandableTable',
-              label: 'Expandable table',
+            'test.table': {
+              type: 'table',
+              label: 'Table',
               rowProperties: {
                 'name': {
                   type: 'text',
@@ -938,7 +938,7 @@ describe('SettingsForm', function() {
           schema,
           initialValues: {
             test: {
-              expandableTable: [
+              table: [
                 { id: 'row-1', name: 'Row 1', description: 'Description 1' },
                 { id: 'row-2', name: 'Row 2', description: 'Description 2' }
               ]
@@ -961,9 +961,9 @@ describe('SettingsForm', function() {
         // given
         const schema = [ {
           properties: {
-            'test.expandableTable': {
-              type: 'expandableTable',
-              label: 'Expandable table',
+            'test.table': {
+              type: 'table',
+              label: 'Table',
               emptyPlaceholder: 'No items',
               rowProperties: {
                 'name': {
@@ -985,7 +985,7 @@ describe('SettingsForm', function() {
           schema,
           initialValues: {
             test: {
-              expandableTable: []
+              table: []
             }
           },
           expandRowId: 'row-1'
@@ -1005,9 +1005,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             description: 'Test table description',
             emptyPlaceholder: 'No items added yet',
             addTooltip: 'Add Item',
@@ -1034,7 +1034,7 @@ describe('SettingsForm', function() {
       // then
       const label = container.querySelector('.custom-control-label');
       expect(label).to.exist;
-      expect(label.textContent).to.equal('Expandable table');
+      expect(label.textContent).to.equal('Table');
 
       const description = container.querySelector('.custom-control-description');
       expect(description).to.exist;
@@ -1054,9 +1054,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             emptyPlaceholder: 'No items',
             addTooltip: 'Add Item',
             rowProperties: {
@@ -1098,9 +1098,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1121,7 +1121,7 @@ describe('SettingsForm', function() {
         schema,
         initialValues: {
           test: {
-            expandableTable: [
+            table: [
               { id: '1', name: 'Test Name', description: 'Test Description' }
             ]
           }
@@ -1129,7 +1129,7 @@ describe('SettingsForm', function() {
       });
 
       // then
-      const cellContent = container.querySelector('span[name="test.expandableTable[0].name"]');
+      const cellContent = container.querySelector('span[name="test.table[0].name"]');
       expect(cellContent).to.exist;
       expect(cellContent.textContent).to.equal('Test Name');
     });
@@ -1139,9 +1139,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1161,7 +1161,7 @@ describe('SettingsForm', function() {
         schema,
         initialValues: {
           test: {
-            expandableTable: [
+            table: [
               { id: '1', name: 'Test Name', description: 'Test Description' }
             ]
           }
@@ -1173,7 +1173,7 @@ describe('SettingsForm', function() {
       fireEvent.click(expandButton);
 
       // then
-      const nameField = container.querySelector('input[id="test.expandableTable[0].name"]');
+      const nameField = container.querySelector('input[id="test.table[0].name"]');
       expect(nameField).to.exist;
       expect(nameField.value).to.equal('Test Name');
     });
@@ -1183,9 +1183,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1206,7 +1206,7 @@ describe('SettingsForm', function() {
         schema,
         initialValues: {
           test: {
-            expandableTable: [
+            table: [
               { id: '1', name: 'Test Name', description: 'Test Description' }
             ]
           }
@@ -1218,11 +1218,11 @@ describe('SettingsForm', function() {
       fireEvent.click(expandButton);
 
       // then
-      const descriptionField = container.querySelector('input[id="test.expandableTable[0].description"]');
+      const descriptionField = container.querySelector('input[id="test.table[0].description"]');
       expect(descriptionField).to.exist;
       expect(descriptionField.value).to.equal('Test Description');
 
-      const label = container.querySelector('label[for="test.expandableTable[0].description"]');
+      const label = container.querySelector('label[for="test.table[0].description"]');
       expect(label).to.exist;
       expect(label.textContent).to.equal('Description');
     });
@@ -1236,9 +1236,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             removeTooltip: 'Remove Item',
             rowProperties: {
               'name': {
@@ -1259,7 +1259,7 @@ describe('SettingsForm', function() {
         schema,
         initialValues: {
           test: {
-            expandableTable: [
+            table: [
               { id: '1', name: 'Test Name 1', description: 'Test Description 1' },
               { id: '2', name: 'Test Name 2', description: 'Test Description 2' }
             ]
@@ -1277,7 +1277,7 @@ describe('SettingsForm', function() {
       const remainingDeleteButtons = container.querySelectorAll('button.remove');
       expect(remainingDeleteButtons.length).to.equal(1);
 
-      const remainingCellContent = container.querySelector('input[id="test.expandableTable[0].description"]');
+      const remainingCellContent = container.querySelector('input[id="test.table[0].description"]');
       expect(remainingCellContent.value).to.equal('Test Description 2');
     });
 
@@ -1287,9 +1287,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1304,7 +1304,7 @@ describe('SettingsForm', function() {
         schema,
         initialValues: {
           test: {
-            expandableTable: [
+            table: [
               { id: '1', name: 'Test Name' }
             ]
           }
@@ -1323,9 +1323,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1364,7 +1364,7 @@ describe('SettingsForm', function() {
         schema,
         initialValues: {
           test: {
-            expandableTable: [
+            table: [
               { id: '1', name: 'Test Name' }
             ]
           }
@@ -1376,19 +1376,19 @@ describe('SettingsForm', function() {
       fireEvent.click(expandButton);
 
       // then
-      const textField = container.querySelector('input[id="test.expandableTable[0].textField"]');
+      const textField = container.querySelector('input[id="test.table[0].textField"]');
       expect(textField).to.exist;
       expect(textField.type).to.equal('text');
 
-      const passwordField = container.querySelector('input[id="test.expandableTable[0].passwordField"]');
+      const passwordField = container.querySelector('input[id="test.table[0].passwordField"]');
       expect(passwordField).to.exist;
       expect(passwordField.type).to.equal('password');
 
-      const booleanField = container.querySelector('input[id="test.expandableTable[0].booleanField"]');
+      const booleanField = container.querySelector('input[id="test.table[0].booleanField"]');
       expect(booleanField).to.exist;
       expect(booleanField.type).to.equal('checkbox');
 
-      const selectField = container.querySelector('select[id="test.expandableTable[0].selectField"]');
+      const selectField = container.querySelector('select[id="test.table[0].selectField"]');
       expect(selectField).to.exist;
     });
 
@@ -1398,9 +1398,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1437,7 +1437,7 @@ describe('SettingsForm', function() {
         schema,
         initialValues: {
           test: {
-            expandableTable: [
+            table: [
               { id: '1', name: 'Test Name', fieldSwitch: 'text' }
             ]
           }
@@ -1448,21 +1448,21 @@ describe('SettingsForm', function() {
       const expandButton = container.querySelector('button.cds--table-expand__button');
       fireEvent.click(expandButton);
 
-      let textField = container.querySelector('input[id="test.expandableTable[0].textField"]');
+      let textField = container.querySelector('input[id="test.table[0].textField"]');
       expect(textField).to.exist;
 
-      let passwordField = container.querySelector('input[id="test.expandableTable[0].passwordField"]');
+      let passwordField = container.querySelector('input[id="test.table[0].passwordField"]');
       expect(passwordField).to.not.exist;
 
       // when
-      const switchField = container.querySelector('select[id="test.expandableTable[0].fieldSwitch"]');
+      const switchField = container.querySelector('select[id="test.table[0].fieldSwitch"]');
       fireEvent.change(switchField, { target: { value: 'password' } });
 
       // then
-      textField = container.querySelector('input[id="test.expandableTable[0].textField"]');
+      textField = container.querySelector('input[id="test.table[0].textField"]');
       expect(textField).to.not.exist;
 
-      passwordField = container.querySelector('input[id="test.expandableTable[0].passwordField"]');
+      passwordField = container.querySelector('input[id="test.table[0].passwordField"]');
       expect(passwordField).to.exist;
     });
 
@@ -1472,9 +1472,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1497,7 +1497,7 @@ describe('SettingsForm', function() {
         schema,
         initialValues: {
           test: {
-            expandableTable: [
+            table: [
               { id: '1', name: 'Test Name', requiredField: '' }
             ]
           }
@@ -1508,7 +1508,7 @@ describe('SettingsForm', function() {
       const expandButton = container.querySelector('button.cds--table-expand__button');
       fireEvent.click(expandButton);
 
-      const requiredField = container.querySelector('input[id="test.expandableTable[0].requiredField"]');
+      const requiredField = container.querySelector('input[id="test.table[0].requiredField"]');
       fireEvent.change(requiredField, { target: { value: '' } });
       fireEvent.blur(requiredField);
 
@@ -1526,9 +1526,9 @@ describe('SettingsForm', function() {
       // given
       const schema = [ {
         properties: {
-          'test.expandableTable': {
-            type: 'expandableTable',
-            label: 'Expandable table',
+          'test.table': {
+            type: 'table',
+            label: 'Table',
             rowProperties: {
               'name': {
                 type: 'text',
@@ -1553,7 +1553,7 @@ describe('SettingsForm', function() {
 
       const { container } = createSettingsForm({
         schema,
-        initialValues: { test: { expandableTable: [] } }
+        initialValues: { test: { table: [] } }
       });
 
       // when
@@ -1562,17 +1562,17 @@ describe('SettingsForm', function() {
 
       // then
       await waitFor(() => {
-        const nameField = container.querySelector('input[id="test.expandableTable[0].name"]');
+        const nameField = container.querySelector('input[id="test.table[0].name"]');
         expect(nameField).to.exist;
       });
 
-      const nameField = container.querySelector('input[id="test.expandableTable[0].name"]');
+      const nameField = container.querySelector('input[id="test.table[0].name"]');
       expect(nameField.value).to.equal('Default Name');
 
-      const descriptionField = container.querySelector('input[id="test.expandableTable[0].description"]');
+      const descriptionField = container.querySelector('input[id="test.table[0].description"]');
       expect(descriptionField.value).to.equal('Default Description');
 
-      const enabledField = container.querySelector('input[id="test.expandableTable[0].enabled"]');
+      const enabledField = container.querySelector('input[id="test.table[0].enabled"]');
       expect(enabledField.checked).to.be.true;
     });
 

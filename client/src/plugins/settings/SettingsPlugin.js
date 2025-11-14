@@ -33,7 +33,7 @@ const log = debug('Settings');
 /**
  * Provides UI for the settings API.
  *
- * To open settings with a specific row expanded in an expandable table, use:
+ * To open settings with a specific row expanded in a table, use:
  * triggerAction('settings-open', { expandRowId: 'your-row-id' })
  *
  * @param {Object} props
