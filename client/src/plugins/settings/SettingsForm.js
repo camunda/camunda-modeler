@@ -10,7 +10,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 
-import { Field, Form, useFormikContext, getIn } from 'formik';
+import { Field, Form, useFormikContext, getIn, FieldArray } from 'formik';
 
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
@@ -74,7 +74,7 @@ function SettingsSection(props) {
   );
 }
 
-function SettingsField(props) {
+export function SettingsField(props) {
 
   const { type, flag, condition, name } = props;
 
@@ -87,6 +87,10 @@ function SettingsField(props) {
   const component = useMemo(() => {
     if (condition && !isConditionMet(name, values, condition)) {
       return null;
+    }
+
+    if (type === 'customField' || type === 'customFieldArray') {
+      return props.component;
     }
 
     if (type === 'text' || type === 'password') {
@@ -110,6 +114,10 @@ function SettingsField(props) {
 
   if (!component) {
     return null;
+  }
+
+  if (type === 'customFieldArray') {
+    return <FieldArray { ...props } component={ component } />;
   }
 
   const { label, description, hint, options, documentationUrl, constraints } = props;

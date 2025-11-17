@@ -10,12 +10,7 @@
 
 /* global sinon */
 
-import Deployment, {
-  CONFIG_KEYS,
-  DEFAULT_CREDENTIALS,
-  DEFAULT_ENDPOINT,
-  removeCredentials
-} from '../Deployment';
+import Deployment from '../Deployment';
 
 import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
@@ -126,9 +121,7 @@ describe('Deployment', function() {
       // given
       const resourceConfigs = createMockResourceConfigs(),
             config = createMockConfig({
-              deployment: {
-                tenantId: 'foo'
-              }
+              endpoint: createMockEndpoint({ tenantId: 'foo' })
             }),
             deploymentResult = createMockDeploymentResult();
 
@@ -369,226 +362,24 @@ describe('Deployment', function() {
       });
     });
 
-  });
 
-
-  describe('#getConfigForFile', function() {
-
-    it('should get config for file', async function() {
+    it('should fail deployment if no endpoint configured', async function() {
 
       // given
-      const endpoint = createMockEndpoint();
-
-      const deployment = createDeployment({
-        config: new MockConfig({
-          get: sinon.stub().resolves([ endpoint ]),
-          getForFile: sinon.stub().resolves({
-            endpointId: 'foo'
-          })
-        })
-      });
+      const resourceConfig = createMockResourceConfigs().pop(),
+            deployment = createDeployment();
 
       // when
-      const config = await deployment.getConfigForFile(createMockFile());
+      const result = await deployment.deploy(resourceConfig, null);
 
       // then
-      expect(config).to.eql({
-        deployment: {},
-        endpoint: {
-          ...DEFAULT_CREDENTIALS,
-          ...endpoint
+      expect(result).to.eql({
+        success: false,
+        response: {
+          message: 'No connection configured.'
         }
       });
     });
-
-
-    it('should get default config for file (previous endpoint)', async function() {
-
-      // given
-      const endpoint = createMockEndpoint();
-
-      const deployment = createDeployment({
-        config: new MockConfig({
-          get: sinon.stub().resolves([ endpoint ]),
-          getForFile: sinon.stub().resolves({})
-        })
-      });
-
-      // when
-      const config = await deployment.getConfigForFile(createMockFile());
-
-      // then
-      expect(config).to.eql({
-        deployment: {},
-        endpoint: {
-          ...DEFAULT_CREDENTIALS,
-          ...endpoint
-        }
-      });
-    });
-
-
-    it('should get default config for file (no previous endpoint)', async function() {
-
-      // given
-      const deployment = createDeployment({
-        config: new MockConfig({
-          get: sinon.stub().resolves([]),
-          getForFile: sinon.stub().resolves({})
-        })
-      });
-
-      // when
-      const config = await deployment.getConfigForFile(createMockFile());
-
-      // then
-      expect(config).to.eql({
-        deployment: {},
-        endpoint: DEFAULT_ENDPOINT
-      });
-    });
-
-  });
-
-
-  describe('#setConfigForFile', function() {
-
-    it('should set config for file (previous endpoint)', async function() {
-
-      // given
-      const config = createMockConfig();
-
-      const { endpoint } = config;
-
-      const setStub = sinon.stub().resolves(undefined),
-            setForFileStub = sinon.stub().resolves(undefined);
-
-      const deployment = createDeployment({
-        config: new MockConfig({
-          get: sinon.stub().resolves([ endpoint ]),
-          set: setStub,
-          setForFile: setForFileStub
-        })
-      });
-
-      const file = createMockFile();
-
-      // when
-      await deployment.setConfigForFile(file, config);
-
-      // then
-      expect(setForFileStub).to.have.been.calledOnce;
-      expect(setForFileStub).to.have.been.calledWith(
-        file,
-        CONFIG_KEYS.CONFIG,
-        {
-          deployment: {},
-          endpointId: endpoint.id
-        }
-      );
-
-      expect(setStub).to.have.been.calledOnce;
-      expect(setStub).to.have.been.calledWith(
-        CONFIG_KEYS.ENDPOINTS,
-        [
-          removeCredentials(endpoint)
-        ]
-      );
-    });
-
-
-    it('should set config for file (no previous endpoint)', async function() {
-
-      // given
-      const config = createMockConfig();
-
-      const { endpoint } = config;
-
-      const setStub = sinon.stub().resolves(undefined),
-            setForFileStub = sinon.stub().resolves(undefined);
-
-      const deployment = createDeployment({
-        config: new MockConfig({
-          get: sinon.stub().resolves([]),
-          set: setStub,
-          setForFile: setForFileStub
-        })
-      });
-
-      const file = createMockFile();
-
-      // when
-      await deployment.setConfigForFile(file, config);
-
-      // then
-      expect(setForFileStub).to.have.been.calledOnce;
-      expect(setForFileStub).to.have.been.calledWith(
-        file,
-        CONFIG_KEYS.CONFIG,
-        {
-          deployment: {},
-          endpointId: endpoint.id
-        }
-      );
-
-      expect(setStub).to.have.been.calledOnce;
-      expect(setStub).to.have.been.calledWith(
-        CONFIG_KEYS.ENDPOINTS,
-        [
-          removeCredentials(endpoint)
-        ]
-      );
-    });
-
-
-    it('should set config for file (remove credentials)', async function() {
-
-      // given
-      const config = createMockConfig({
-        endpoint: {
-          ...createMockEndpoint(),
-          rememberCredentials: false
-        }
-      });
-
-      const { endpoint } = config;
-
-      const setStub = sinon.stub().resolves(undefined),
-            setForFileStub = sinon.stub().resolves(undefined);
-
-      const deployment = createDeployment({
-        config: new MockConfig({
-          get: sinon.stub().resolves([]),
-          set: setStub,
-          setForFile: setForFileStub
-        })
-      });
-
-      const file = createMockFile();
-
-      // when
-      await deployment.setConfigForFile(file, config);
-
-      // then
-      expect(setForFileStub).to.have.been.calledOnce;
-      expect(setForFileStub).to.have.been.calledWith(
-        file,
-        CONFIG_KEYS.CONFIG,
-        {
-          deployment: {},
-          endpointId: endpoint.id
-        }
-      );
-
-      expect(setStub).to.have.been.calledOnce;
-      expect(setStub).to.have.been.calledWith(
-        CONFIG_KEYS.ENDPOINTS,
-        [
-          removeCredentials(endpoint)
-        ]
-      );
-    });
-
   });
 
 
