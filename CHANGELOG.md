@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: new connection manager to store multiple Camunda 8 Orchestration Cluster connections and easily switch between them ([#4972](https://github.com/camunda/camunda-modeler/issues/4972))
+
 ## 5.42.0
 
 * `DEPS`: update to `@bpmn-io/properties-panel@3.34.0`

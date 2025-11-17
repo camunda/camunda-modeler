@@ -9,24 +9,24 @@
  */
 
 /**
- * @typedef {import('./Deployment.d.ts').DeploymentConfig} DeploymentConfig
- * @typedef {import('./Deployment.d.ts').DeploymentResult} DeploymentResult
- * @typedef {import('./Deployment.d.ts').Endpoint} Endpoint
- * @typedef {import('./Deployment.d.ts').ResourceConfig} ResourceConfig
+ * @typedef {import('./Deployment').DeploymentConfig} DeploymentConfig
+ * @typedef {import('./Deployment').DeploymentResult} DeploymentResult
+ * @typedef {import('./Deployment').Endpoint} Endpoint
+ * @typedef {import('./Deployment').ResourceConfig} ResourceConfig
  */
 
 import EventEmitter from 'events';
-
-import { omit } from 'min-dash';
 
 import debug from 'debug';
 
 import { generateId } from '../../util/index.js';
 
 import { AUTH_TYPES, TARGET_TYPES } from '../../remote/ZeebeAPI.js';
+import { SETTINGS_KEY_CONNECTIONS } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerSettings.js';
 
 export const CONFIG_KEYS = {
   CONFIG: 'zeebe-deployment-tool',
+  CONNECTION_MANAGER: 'connection-manager',
   ENDPOINTS: 'zeebeEndpoints'
 };
 
@@ -47,7 +47,6 @@ export const DEFAULT_ENDPOINT = {
   contactPoint: '',
   id: generateId(),
   oauthURL: '',
-  rememberCredentials: false,
   targetType: TARGET_TYPES.CAMUNDA_CLOUD
 };
 
@@ -56,13 +55,15 @@ const log = debug('Deployment');
 export default class Deployment extends EventEmitter {
 
   /**
-   * @param {import('../../../remote/Config').default} config
-   * @param {import('../../../remote/ZeebeAPI').default} zeebeAPI
+   * @param {import('../../remote/Config').default} config
+   * @param {import('../../remote/ZeebeAPI').default} zeebeAPI
+   * @param {import('../../app/Settings').default} settings
    */
-  constructor(config, zeebeAPI) {
+  constructor(config, zeebeAPI, settings) {
     super();
 
     this._config = config;
+    this._settings = settings;
     this._zeebeAPI = zeebeAPI;
 
     this._resourcesProviders = [];
@@ -104,13 +105,21 @@ export default class Deployment extends EventEmitter {
 
     log('Final resource configs:', resourceConfigs);
 
+    if (!config || !config.endpoint) {
+      return {
+        success: false,
+        response: {
+          message: 'No connection configured.'
+        }
+      };
+    }
+
     const {
       context,
-      deployment,
       endpoint
     } = config;
 
-    const { tenantId } = deployment;
+    const { tenantId } = endpoint;
 
     const deploymentResult = await this._zeebeAPI.deploy({
       endpoint,
@@ -135,84 +144,29 @@ export default class Deployment extends EventEmitter {
    *
    * @param {File} file
    *
-   * @returns {Promise<DeploymentConfig>}
+   * @returns {Promise<DeploymentConfig|null>}
    */
   async getConfigForFile(file) {
     const {
-      deployment = {},
-      endpointId = null
-    } = await this._config.getForFile(file, CONFIG_KEYS.CONFIG, {});
+      connectionId = null
+    } = await this._config.getForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, {});
 
-    const defaultEndpoint = await this.getDefaultEndpoint();
-
-    const endpoint = await this.getEndpoint(endpointId) || {};
-
-    return {
-      deployment,
-      endpoint: {
-        ...defaultEndpoint,
-        ...endpoint
-      }
-    };
-  }
-
-  /**
-   * Set configuration for given file.
-   *
-   * @param {File} file
-   * @param {DeploymentConfig} config
-   *
-   * @returns {Promise<void>}
-   */
-  async setConfigForFile(file, config) {
-    let {
-      deployment = {},
-      endpoint = {}
-    } = config;
-
-    const {
-      id,
-      rememberCredentials
-    } = endpoint;
-
-    if (!rememberCredentials) {
-      endpoint = removeCredentials(endpoint);
+    const endpoint = await this.getEndpoint(connectionId);
+    if (!endpoint) {
+      return null;
     }
 
-    await this.setEndpoint(endpoint);
-
-    return this._config.setForFile(file, CONFIG_KEYS.CONFIG, {
-      deployment,
-      endpointId: id
-    });
+    return { endpoint };
   }
 
-  /**
-   * Get default endpoint.
-   *
-   * @returns {Promise<Endpoint>}
-   */
-  async getDefaultEndpoint() {
-    const endpoints = await this.getEndpoints();
-
-    let endpoint = DEFAULT_ENDPOINT;
-
-    if (endpoints.length) {
-      endpoint = {
-        ...DEFAULT_CREDENTIALS,
-        ...endpoints[0]
-      };
+  async setConnectionForFile(file, connectionId) {
+    if (!file.path) {
+      return await this._config.set(CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
     }
 
-    // backwards compatibility
-    // see https://github.com/camunda/camunda-modeler/pull/2390
-    // TODO: remove in the future
-    if (endpoint.camundaCloudClusterId && !endpoint.camundaCloudClusterUrl) {
-      endpoint.camundaCloudClusterUrl = `${ endpoint.camundaCloudClusterId }.bru-2.zeebe.camunda.io:443`;
-    }
-
-    return endpoint;
+    return await this._config.setForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
   }
+
 
   /**
    * Get endpoint with given ID.
@@ -233,40 +187,9 @@ export default class Deployment extends EventEmitter {
    * @returns {Promise<Array<Endpoint>>}
    */
   getEndpoints() {
-    return this._config.get(CONFIG_KEYS.ENDPOINTS, []);
+    return this._settings.get(SETTINGS_KEY_CONNECTIONS);
   }
 
-  /**
-   * Set endpoint with given ID.
-   *
-   * @param {Endpoint} endpoint
-   *
-   * @returns {Promise<void>}
-   */
-  async setEndpoint(endpoint) {
-    const endpoints = await this.getEndpoints();
-
-    const index = endpoints.findIndex(({ id }) => id === endpoint.id);
-
-    if (index === -1) {
-      endpoints.push(endpoint);
-    } else {
-      endpoints[index] = endpoint;
-    }
-
-    return this.setEndpoints(endpoints);
-  }
-
-  /**
-   * Set all endpoints.
-   *
-   * @param {Array<Endpoint>} endpoints
-   *
-   * @returns {Promise<void>}
-   */
-  setEndpoints(endpoints) {
-    return this._config.set(CONFIG_KEYS.ENDPOINTS, endpoints);
-  }
 
   /**
    * @param {Endpoint} endpoint
@@ -315,22 +238,4 @@ export default class Deployment extends EventEmitter {
   unregisterResourcesProvider(provider) {
     this._resourcesProviders = this._resourcesProviders.filter(p => p !== provider);
   }
-}
-
-const CREDENTIALS = [
-  'camundaCloudClientId',
-  'camundaCloudClientSecret',
-  'clientId',
-  'clientSecret'
-];
-
-/**
- * Remove credentials from endpoint.
- *
- * @param {Endpoint} endpoint
- *
- * @returns {Endpoint}
- */
-export function removeCredentials(endpoint) {
-  return omit(endpoint, CREDENTIALS);
 }
