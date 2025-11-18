@@ -92,9 +92,9 @@ export default function ProcessApplicationsStatusBar(props) {
                   if (error) {
                     Icon = ErrorIcon;
                   } else {
-                    const provider = tabsProvider.getProvider(item.metadata?.type);
+                    const provider = tabsProvider.getFileProvider(file);
 
-                    Icon = provider.getIcon(item.file);
+                    Icon = provider?.getIcon(file);
                   }
 
                   const isActiveTab = activeTab && activeTab.file.path === file.path;
@@ -108,7 +108,8 @@ export default function ProcessApplicationsStatusBar(props) {
                     })
                   } key={ file.path } title={ title }>
                     <button type="button" onClick={ () => onClick(file.path) } disabled={ isActiveTab || error }>
-                      <Icon className="file-icon" width="16" height="16" /><span className="file-name">{ file.name }</span>
+                      {Icon && <Icon className="file-icon" width="16" height="16" />}
+                      <span className="file-name">{ file.name }</span>
                     </button>
                   </li>;
                 })

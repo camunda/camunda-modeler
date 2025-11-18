@@ -17,6 +17,8 @@ import { mount } from 'enzyme';
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 import { Overlay } from '../../../shared/ui';
 
+import { TabsProvider } from '../../../app/__tests__/mocks';
+
 import ProcessApplicationsStatusBar from '../ProcessApplicationsStatusBar';
 
 describe('<ProcessApplicationsStatusBar>', function() {
@@ -181,16 +183,6 @@ const DEFAULT_OPEN_TAB = {
   }
 };
 
-const DEFAULT_TABS_PROVIDER = {
-  getProvider: (type) => {
-    return {
-      getIcon() {
-        return () => <div className={ type } />;
-      }
-    };
-  }
-};
-
 const DEFAULT_PROCESS_APPLICATION = {
   file: {
     name: '.process-application',
@@ -268,7 +260,7 @@ function createProcessApplicationsStatusBar(props = {}, render = mount) {
     onRevealInFileExplorer = () => {},
     processApplication = DEFAULT_PROCESS_APPLICATION,
     processApplicationItems = DEFAULT_PROCESS_APPLICATION_ITEMS,
-    tabsProvider = DEFAULT_TABS_PROVIDER
+    tabsProvider = new TabsProvider(activeTab)
   } = props;
 
   const wrapper = render(<SlotFillRoot>
