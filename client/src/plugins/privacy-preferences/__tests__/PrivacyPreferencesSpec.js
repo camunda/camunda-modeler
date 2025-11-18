@@ -18,6 +18,8 @@ import PrivacyPreferences from '../PrivacyPreferences';
 
 import { OK_BUTTON_TEXT, CANCEL_BUTTON_TEXT } from '../constants';
 
+import { Config } from '../../../app/__tests__/mocks';
+
 const { spy } = sinon;
 
 describe('<PrivacyPreferences>', function() {
@@ -227,15 +229,9 @@ describe('<PrivacyPreferences>', function() {
 // helper ///////////////////
 
 async function createPrivacyPreferences(props = {}) {
-
-  const mockConfig = {
-    get: noop,
-    set: noop
-  };
-
   const {
     autoFocusKey,
-    config = mockConfig,
+    config = new Config(),
     triggerAction,
     subscribe
   } = props;
