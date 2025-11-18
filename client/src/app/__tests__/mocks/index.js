@@ -278,6 +278,10 @@ export class TabsProvider {
     return this.providers;
   }
 
+  getFileProvider(file) {
+    return this.getProvider(file.name.substring(file.name.lastIndexOf('.') + 1));
+  }
+
   hasProvider(type) {
     return !!this.providers[type];
   }
