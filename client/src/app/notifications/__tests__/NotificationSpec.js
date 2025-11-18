@@ -20,7 +20,22 @@ import Notification from '../Notification';
 describe('<Notification>', function() {
 
   it('should render', function() {
-    render(<Notification />);
+
+    // when
+    const { getByRole } = render(<Notification />);
+
+    // then
+    expect(getByRole('status')).to.exist;
+  });
+
+
+  it('should render (error)', function() {
+
+    // when
+    const { getByRole } = render(<Notification type="error" />);
+
+    // then
+    expect(getByRole('alert')).to.exist;
   });
 
 
