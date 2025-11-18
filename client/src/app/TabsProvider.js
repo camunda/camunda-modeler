@@ -632,6 +632,44 @@ export default class TabsProvider {
     return (this.providers[type] || noopProvider);
   }
 
+  /**
+   * Returns provider if available.
+   *
+   * Algorithm:
+   * * check if there are providers defined for the file extension
+   *   * if there is only one, return it (happy path)
+   *   * if there are more than one:
+   *     * return the first provider which can open the file
+   *     * otherwise return the last provider
+   *   * if there are none, return the first provider (by priority) which can open the file or `null`
+   *
+   * @param {import('./TabsProvider').File} file
+   * @returns {Object | null}
+   */
+  getFileProvider(file) {
+    const typeFromExtension = getTypeFromFileExtension(file);
+
+    const providersForExtension = this._getProvidersForExtension(typeFromExtension);
+
+    // single provider specified for the extension
+    if (providersForExtension.length === 1) {
+      return providersForExtension[0];
+    }
+
+    // multiple providers specified for the extension
+    if (providersForExtension.length > 1) {
+      const provider = findProviderForFile(providersForExtension, file);
+
+      // return the matching provider or the first by priority provider as fallback
+      return provider || sortByPriority(providersForExtension)[0];
+    }
+
+    // no providers specified for the extension; return the first that can open the file
+    const provider = findProviderForFile(sortByPriority(this.providers), file);
+
+    return provider || null;
+  }
+
   getTabComponent(type, options) {
     return this.getProvider(type).getComponent(options);
   }
@@ -720,7 +758,7 @@ export default class TabsProvider {
   }
 
   _getTabType(file) {
-    const provider = this._getFileProvider(file);
+    const provider = this.getFileProvider(file);
 
     if (!provider) {
       return null;
@@ -731,44 +769,6 @@ export default class TabsProvider {
         return type;
       }
     }
-  }
-
-  /**
-   * Returns provider if available.
-   *
-   * Algorithm:
-   * * check if there are providers defined for the file extension
-   *   * if there is only one, return it (happy path)
-   *   * if there are more than one:
-   *     * return the first provider which can open the file
-   *     * otherwise return the last provider
-   *   * if there are none, return the first provider (by priority) which can open the file or `null`
-   *
-   * @param {import('./TabsProvider').File} file
-   * @returns {string | null}
-   */
-  _getFileProvider(file) {
-    const typeFromExtension = getTypeFromFileExtension(file);
-
-    const providersForExtension = this._getProvidersForExtension(typeFromExtension);
-
-    // single provider specified for the extension
-    if (providersForExtension.length === 1) {
-      return providersForExtension[0];
-    }
-
-    // multiple providers specified for the extension
-    if (providersForExtension.length > 1) {
-      const provider = findProviderForFile(providersForExtension, file);
-
-      // return the matching provider or the first by priority provider as fallback
-      return provider || sortByPriority(providersForExtension)[0];
-    }
-
-    // no providers specified for the extension; return the first that can open the file
-    const provider = findProviderForFile(sortByPriority(this.providers), file);
-
-    return provider || null;
   }
 
   _getProvidersForExtension(extension) {
