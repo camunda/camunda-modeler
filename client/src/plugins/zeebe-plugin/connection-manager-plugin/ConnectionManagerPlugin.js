@@ -109,6 +109,10 @@ export default function ConnectionManagerPlugin(props) {
     })();
 
     const connectionCheckListener = (connectionCheckResult) => {
+      triggerAction('emit-event', {
+        type: 'connectionManager.connectionStatusChanged',
+        payload: connectionCheckResult
+      });
       setConnectionCheckResult(connectionCheckResult);
     };
 
