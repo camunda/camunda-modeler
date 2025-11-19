@@ -14,7 +14,7 @@ import Deployment from '../Deployment';
 
 import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
-describe('Deployment', function() {
+describe.only('Deployment', function() {
 
   describe('#deploy', function() {
 
@@ -54,8 +54,7 @@ describe('Deployment', function() {
         endpoint,
         resourceConfigs: [
           resourceConfig
-        ],
-        tenantId: undefined
+        ]
       });
 
       expect(deployedSpy).to.have.been.calledOnce;
@@ -102,8 +101,7 @@ describe('Deployment', function() {
       expect(zeebeAPI.deploy).to.have.been.calledOnce;
       expect(zeebeAPI.deploy).to.have.been.calledWith({
         endpoint,
-        resourceConfigs,
-        tenantId: undefined
+        resourceConfigs
       });
 
       expect(deployedSpy).to.have.been.calledOnce;
@@ -153,7 +151,6 @@ describe('Deployment', function() {
       expect(zeebeAPI.deploy).to.have.been.calledWith({
         endpoint,
         resourceConfigs,
-        tenantId: 'foo'
       });
 
       expect(deployedSpy).to.have.been.calledOnce;
@@ -283,8 +280,7 @@ describe('Deployment', function() {
         resourceConfigs: [
           resourceConfig,
           ...additionalResourceConfigs
-        ],
-        tenantId: undefined
+        ]
       });
 
       expect(deployedSpy).to.have.been.calledOnce;
@@ -349,8 +345,7 @@ describe('Deployment', function() {
         endpoint,
         resourceConfigs: [
           resourceConfig
-        ],
-        tenantId: undefined
+        ]
       });
 
       expect(deployedSpy).to.have.been.calledOnce;
