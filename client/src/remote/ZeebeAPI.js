@@ -42,16 +42,14 @@ export default class ZeebeAPI {
   deploy(options) {
     let {
       endpoint,
-      resourceConfigs,
-      tenantId
+      resourceConfigs
     } = options;
 
     endpoint = getEndpointForTargetType(endpoint);
 
     return this._backend.send('zeebe:deploy', {
       endpoint,
-      resourceConfigs,
-      tenantId
+      resourceConfigs
     });
   }
 
@@ -60,7 +58,6 @@ export default class ZeebeAPI {
       endpoint,
       processDefinitionKey,
       processId,
-      tenantId,
       variables,
       startInstructions,
       runtimeInstructions
@@ -72,7 +69,6 @@ export default class ZeebeAPI {
       endpoint,
       processDefinitionKey,
       processId,
-      tenantId,
       variables,
       startInstructions,
       runtimeInstructions
@@ -151,7 +147,8 @@ export function getEndpointForTargetType(endpoint) {
     contactPoint,
     oauthURL,
     scope,
-    targetType
+    targetType,
+    tenantId
   } = endpoint;
 
   if (targetType === TARGET_TYPES.SELF_HOSTED && !isValidProtocol(contactPoint)) {
@@ -169,7 +166,8 @@ export function getEndpointForTargetType(endpoint) {
       return {
         type: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        url: contactPoint
+        url: contactPoint,
+        tenantId
       };
 
     case AUTH_TYPES.BASIC:
@@ -178,7 +176,8 @@ export function getEndpointForTargetType(endpoint) {
         authType: AUTH_TYPES.BASIC,
         url: contactPoint,
         basicAuthUsername,
-        basicAuthPassword
+        basicAuthPassword,
+        tenantId
       };
 
     case AUTH_TYPES.OAUTH:
@@ -190,7 +189,8 @@ export function getEndpointForTargetType(endpoint) {
         audience,
         scope,
         clientId,
-        clientSecret
+        clientSecret,
+        tenantId
       };
     }
   }
@@ -200,7 +200,7 @@ export function getEndpointForTargetType(endpoint) {
       type: TARGET_TYPES.CAMUNDA_CLOUD,
       url: camundaCloudClusterUrl,
       clientId: camundaCloudClientId,
-      clientSecret: camundaCloudClientSecret
+      clientSecret: camundaCloudClientSecret,
     };
   }
 

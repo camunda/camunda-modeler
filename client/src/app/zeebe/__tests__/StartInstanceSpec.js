@@ -46,10 +46,9 @@ describe('StartInstance', function() {
 
       expect(zeebeAPI.startInstance).to.have.been.calledOnce;
       expect(zeebeAPI.startInstance).to.have.been.calledWith({
+        endpoint,
         processDefinitionKey: undefined,
         processId: 'foo',
-        tenantId: undefined,
-        endpoint,
         variables: {
           foo: 'bar'
         },
@@ -63,7 +62,6 @@ describe('StartInstance', function() {
         endpoint,
         processDefinitionKey: undefined,
         processId: 'foo',
-        tenantId: undefined,
         variables: {
           foo: 'bar'
         }
@@ -218,7 +216,7 @@ function createMockFile(overrides = {}) {
 function createMockStartInstanceResult(overrides = {}) {
   return {
     success: true,
-    repsonse: {
+    response: {
       bpmnProcessId: 'Process_1',
       processDefinitionKey: 'foo',
       processInstanceKey: 'bar',
