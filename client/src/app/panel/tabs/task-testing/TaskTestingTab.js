@@ -21,11 +21,12 @@ import { debounce } from '../../../../util';
 import TaskTestingStatusBarItem from './TaskTestingStatusBarItem';
 import TaskTestingApi from './TaskTestingApi';
 
-import { useConnectionChecker } from './hooks/useConnectionChecker';
+import { useConnectionStatus } from './hooks/useConnectionStatus';
 
 import * as css from './TaskTestingTab.less';
 
 import { utmTag } from '../../../../util/utmTag';
+import { EventsContext } from '../../../EventsContext';
 
 
 export const TAB_ID = 'task-testing';
@@ -61,9 +62,9 @@ export default function TaskTestingTab(props) {
     zeebeApi
   } = props;
 
-  const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
+  const { subscribe } = React.useContext(EventsContext);
 
-  const [ deployConfig, setDeployConfig ] = useState(null);
+  const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
   const [ operateUrl, setOperateUrl ] = useState(null);
 
@@ -72,12 +73,11 @@ export default function TaskTestingTab(props) {
     const api = new TaskTestingApi(deployment, startInstance, zeebeApi, file, onAction);
 
     api.getOperateUrl().then(setOperateUrl);
-    api.getDeploymentConfig().then(setDeployConfig);
 
     return api.getApi();
   }, [ zeebeApi, config, file, onAction ]);
 
-  const { connectionSuccess, connectionError } = useConnectionChecker(zeebeApi, deployConfig);
+  const connectionCheckResult = useConnectionStatus(subscribe);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -144,13 +144,8 @@ export default function TaskTestingTab(props) {
   }, [ onAction ]);
 
   const handleConfigureConnection = useCallback(() => {
-    onAction('open-deployment');
+    onAction('settings-open');
   }, [ onAction ]);
-
-  const connectionCheckResult = {
-    success: connectionSuccess,
-    response: connectionError
-  };
 
   const isConnectionConfigured = canConnectToCluster(connectionCheckResult);
 
