@@ -14,7 +14,7 @@ import Deployment from '../Deployment';
 
 import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
-describe.only('Deployment', function() {
+describe('Deployment', function() {
 
   describe('#deploy', function() {
 
