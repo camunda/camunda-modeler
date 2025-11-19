@@ -126,8 +126,7 @@ class ZeebeAPI {
   async deploy(config) {
     const {
       endpoint,
-      resourceConfigs,
-      tenantId
+      resourceConfigs
     } = config;
 
     this._log.debug('deploy', {
@@ -143,14 +142,14 @@ class ZeebeAPI {
       if (zeebeGrpcClient) {
 
         /** @type {Array<ZeebeResource>} */
-        const resources = this._getZeebeResources(resourceConfigs, tenantId);
+        const resources = this._getZeebeResources(resourceConfigs);
 
         let response;
 
         if (resources.length > 1) {
           this._log.debug('deploying resources', resources);
 
-          response = await zeebeGrpcClient.deployResources(resources, tenantId);
+          response = await zeebeGrpcClient.deployResources(resources);
         } else {
           this._log.debug('deploying resource', resources[0]);
 
@@ -166,7 +165,7 @@ class ZeebeAPI {
       if (camundaRestClient) {
         const resources = this._getCamundaResources(resourceConfigs);
 
-        let response = await camundaRestClient.deployResources(resources, tenantId);
+        let response = await camundaRestClient.deployResources(resources);
 
         // mapping response to be compatible with grpcResponse
         return {
@@ -243,8 +242,7 @@ class ZeebeAPI {
       processDefinitionKey,
       processId,
       startInstructions,
-      runtimeInstructions,
-      tenantId
+      runtimeInstructions
     } = config;
 
     this._log.debug('start instance', {
@@ -270,7 +268,6 @@ class ZeebeAPI {
           bpmnProcessId: processId,
           variables,
           startInstructions,
-          tenantId
         });
 
         return {
@@ -284,8 +281,7 @@ class ZeebeAPI {
         const requestBody = {
           variables,
           startInstructions,
-          runtimeInstructions,
-          tenantId
+          runtimeInstructions
         };
 
         if (processDefinitionKey) {
@@ -538,14 +534,13 @@ class ZeebeAPI {
   }
 
   /**
-   * Get resources based on the provided configs and tenantId.
+   * Get resources based on the provided configs
    *
    * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }>} resourceConfigs
-   * @param {string} [tenantId]
    *
    * @returns {Array<ZeebeResource>}
    */
-  _getZeebeResources(resourceConfigs, tenantId) {
+  _getZeebeResources(resourceConfigs) {
     return resourceConfigs.map(resourceConfig => {
       const { contents } = this._fs.readFile(resourceConfig.path, { encoding: false });
 
@@ -570,16 +565,12 @@ class ZeebeAPI {
         resource.form = contents;
       }
 
-      if (resourceConfigs.length === 1 && tenantId && tenantId.length) {
-        resource.tenantId = tenantId;
-      }
-
       return resource;
     });
   }
 
   /**
-   * Get resources based on the provided configs and tenantId.
+   * Get resources based on the provided configs
    *
    * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }>} resourceConfigs
    *
