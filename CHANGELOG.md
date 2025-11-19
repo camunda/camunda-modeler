@@ -24,6 +24,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: remove title attribute when unnecessary ([bpmn-io/properties-panel#455](https://github.com/bpmn-io/properties-panel/pull/455))
 * `FIX`: improve tooltip behavior ([#5217](https://github.com/camunda/camunda-modeler/issues/5217), [#4857](https://github.com/camunda/camunda-modeler/issues/4857))
 * `FIX`: correctly handle trimming and debouncing ([#5389](https://github.com/camunda/camunda-modeler/issues/5389), [#4967](https://github.com/camunda/camunda-modeler/issues/4967), [#5392](https://github.com/camunda/camunda-modeler/issues/5392))
+* `FIX`: configured tenantId is also used for task testing API calls ([#5422](https://github.com/camunda/camunda-modeler/pull/5422))
 
 ### BPMN
 

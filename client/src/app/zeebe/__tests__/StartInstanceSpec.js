@@ -46,9 +46,8 @@ describe('StartInstance', function() {
 
       expect(zeebeAPI.startInstance).to.have.been.calledOnce;
       expect(zeebeAPI.startInstance).to.have.been.calledWith({
-        processId: 'foo',
-        tenantId: undefined,
         endpoint,
+        processId: 'foo',
         variables: {
           foo: 'bar'
         },
@@ -61,7 +60,6 @@ describe('StartInstance', function() {
         startInstanceResult,
         endpoint,
         processId: 'foo',
-        tenantId: undefined,
         variables: {
           foo: 'bar'
         }
