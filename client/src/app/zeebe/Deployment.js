@@ -105,6 +105,14 @@ export default class Deployment extends EventEmitter {
 
     log('Final resource configs:', resourceConfigs);
 
+    if (!config || !config.endpoint) {
+      return {
+        success: false,
+        response: {
+          message: 'No connection configured for deployment.'
+        }
+      };
+    }
     const {
       context,
       endpoint
