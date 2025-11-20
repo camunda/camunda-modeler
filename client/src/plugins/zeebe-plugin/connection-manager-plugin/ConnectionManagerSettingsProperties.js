@@ -54,6 +54,15 @@ const VALIDATION_ERROR_MESSAGES = {
   OAUTH_URL_MUST_NOT_BE_EMPTY: 'OAuth URL must not be empty.'
 };
 
+const REGEXES = {
+  URL: /^(http|grpc)s?:\/\//,
+  CAMUNDA_CLOUD_GRPC_URL: /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?$/,
+  CAMUNDA_CLOUD_REST_URL: /^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?$/
+};
+REGEXES.CAMUNDA_CLOUD_URL = new RegExp(
+  `${REGEXES.CAMUNDA_CLOUD_GRPC_URL.source}|${REGEXES.CAMUNDA_CLOUD_REST_URL.source}`
+);
+
 export const properties = [
   {
     key: 'targetType',
@@ -73,7 +82,7 @@ export const properties = [
     constraints: {
       notEmpty: VALIDATION_ERROR_MESSAGES.CLUSTER_URL_MUST_NOT_BE_EMPTY,
       pattern: {
-        value: /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?/,
+        value: REGEXES.CAMUNDA_CLOUD_URL,
         message: VALIDATION_ERROR_MESSAGES.CLUSTER_URL_MUST_BE_VALID_CLOUD_URL
       }
     }
@@ -102,7 +111,7 @@ export const properties = [
     constraints: {
       notEmpty: VALIDATION_ERROR_MESSAGES.CONTACT_POINT_MUST_NOT_BE_EMPTY,
       pattern: {
-        value: /^(http|grpc)s?:\/\//,
+        value: REGEXES.URL,
         message: VALIDATION_ERROR_MESSAGES.CONTACT_POINT_MUST_BE_URL
       }
     }

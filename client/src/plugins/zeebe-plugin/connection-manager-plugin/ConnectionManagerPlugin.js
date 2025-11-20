@@ -139,9 +139,10 @@ export default function ConnectionManagerPlugin(props) {
 
           { (connectionCheckResult?.success === false) && <ErrorFilled fill="var(--color-status-bar-error)" /> }
           { (connectionCheckResult?.success === true) && <CheckmarkFilled fill="var(--color-status-bar-success)" /> }
-          { (!connectionCheckResult) && <CircleFilled fill="var(--color-status-bar-inactive)" /> }
+          { (!connectionCheckResult && !!activeConnection) && <CircleFilled fill="var(--color-status-bar-loading)" /> }
+          { (!connectionCheckResult && !activeConnection) && <CircleFilled fill="var(--color-status-bar-inactive)" /> }
 
-          <p className="connection-label">{activeConnection?.name || activeConnection?.url || 'Select Connection'}</p>
+          <p className="connection-label">{activeConnection ? activeConnection.name || activeConnection.url || 'Unnamed Connection' : 'Select Connection'}</p>
 
         </button>
       </Fill>
