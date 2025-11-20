@@ -77,7 +77,7 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
                   <TableCell key={ `${fieldName}[${index}].name` }>
                     { isExpanded(row) ?
                       <SettingsField name={ `${fieldName}[${index}].name` } type="text" hint="Name" default="New Connection" /> :
-                      <span id={ `${fieldName}[${index}].name` }>{ fieldValue[index]['name'] }</span>
+                      <span id={ `${fieldName}[${index}].name` }>{ fieldValue[index]['name'] || 'Unnamed Connection'}</span>
                     }
                   </TableCell>
 
