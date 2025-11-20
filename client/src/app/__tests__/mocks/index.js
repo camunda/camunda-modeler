@@ -177,7 +177,8 @@ export class TabsProvider {
         extensions: [ 'dmn', 'xml' ],
         getLinter() {
           return null;
-        }
+        },
+        getIcon() { return null; }
       },
       dmn: {
         name: 'DMN',
@@ -190,7 +191,8 @@ export class TabsProvider {
         extensions: [ 'dmn', 'xml' ],
         getLinter() {
           return null;
-        }
+        },
+        getIcon() { return null; }
       },
       form: {
         name: 'FORM',
@@ -213,7 +215,8 @@ export class TabsProvider {
               return [];
             }
           };
-        }
+        },
+        getIcon() { return null; }
       }
     };
   }
@@ -262,6 +265,11 @@ export class TabsProvider {
 
   getProviders() {
     return this.providers;
+  }
+
+  getProviderForFile(file) {
+    const type = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
+    return this.getProvider(type);
   }
 
   hasProvider(type) {
