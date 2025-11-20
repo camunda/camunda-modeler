@@ -18,7 +18,7 @@ jobs:
       tag: ${{ steps.tag.outputs.TAG }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Get tag
       id: tag
       run: |
@@ -44,7 +44,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Use Node.js
       uses: actions/setup-node@v6
       with:
@@ -146,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         # required to compare versions in the
         # license book summary
@@ -233,7 +233,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Import Secrets
         id: secrets
         uses: hashicorp/vault-action@v3.4.0

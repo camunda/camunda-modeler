@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     # Import FOSSA_API_KEY from Vault
     - name: Import Secrets
       id: secrets
