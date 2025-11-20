@@ -281,7 +281,7 @@ export class TabsProvider {
     return this.providers;
   }
 
-  getFileProvider(file) {
+  getProviderForFile(file) {
     const type = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
     return this.getProvider(type);
   }

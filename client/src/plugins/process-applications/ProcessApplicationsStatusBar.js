@@ -92,7 +92,7 @@ export default function ProcessApplicationsStatusBar(props) {
                   if (error) {
                     Icon = ErrorIcon;
                   } else {
-                    const provider = tabsProvider.getFileProvider(file);
+                    const provider = tabsProvider.getProviderForFile(file);
 
                     Icon = provider?.getIcon(file);
                   }
