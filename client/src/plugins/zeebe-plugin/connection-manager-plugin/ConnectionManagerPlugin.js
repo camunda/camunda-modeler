@@ -9,9 +9,9 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import classNames from 'classnames';
 
-import { CheckmarkFilled, ErrorFilled, CircleFilled } from '@carbon/icons-react';
+import classNames from 'classnames';
+import { InlineLoading } from '@carbon/react';
 
 import { Fill } from '../../../app/slot-fill';
 import { Overlay, Section, Select } from '../../../shared/ui';
@@ -106,6 +106,10 @@ export default function ConnectionManagerPlugin(props) {
       if (activeConnection) {
         connectionChecker.current.updateConfig({ endpoint: activeConnection });
       }
+      else {
+        connectionChecker.current.updateConfig(null);
+        connectionChecker.current.stopChecking();
+      }
     })();
 
     const connectionCheckListener = (connectionCheckResult) => {
@@ -127,6 +131,18 @@ export default function ConnectionManagerPlugin(props) {
   const tabsProvider = _getFromApp('props').tabsProvider;
   const TabIcon = activeTab ? tabsProvider.getTabIcon(activeTab?.type) || (() => null) : (() => null);
 
+  function getStatus(connectionCheckResult, activeConnection) {
+    if (connectionCheckResult) {
+      return connectionCheckResult.success ? 'finished' : 'error';
+    }
+    if (activeConnection) {
+      return 'active';
+    }
+    return 'inactive';
+  }
+
+  const statusBarConnectionStatus = getStatus(connectionCheckResult, activeConnection);
+  const statusBarText = activeConnection ? activeConnection.name || activeConnection.url || 'Unnamed Connection' : 'Select Connection';
   return <>
     { tabNeedsConnection(activeTab) &&
       <Fill name="connection-manager" slot="status-bar__file" group="8_deploy" priority={ 2 }>
@@ -136,14 +152,11 @@ export default function ConnectionManagerPlugin(props) {
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ statusBarButtonRef }
         >
-
-          { (connectionCheckResult?.success === false) && <ErrorFilled fill="var(--color-status-bar-error)" /> }
-          { (connectionCheckResult?.success === true) && <CheckmarkFilled fill="var(--color-status-bar-success)" /> }
-          { (!connectionCheckResult && !!activeConnection) && <CircleFilled fill="var(--color-status-bar-loading)" /> }
-          { (!connectionCheckResult && !activeConnection) && <CircleFilled fill="var(--color-status-bar-inactive)" /> }
-
-          <p className="connection-label">{activeConnection ? activeConnection.name || activeConnection.url || 'Unnamed Connection' : 'Select Connection'}</p>
-
+          <InlineLoading
+            className="connection-manager-loading-indicator"
+            status={ statusBarConnectionStatus }
+            description={ statusBarText }
+          />
         </button>
       </Fill>
     }
@@ -194,31 +207,43 @@ function ConnectionManagerOverlay({
       </Section.Header>
       <Section.Body className="form-body">
         <p>Select orchestration cluster connection.</p>
-        <div className={ classNames('form-group', 'form-group-spacing') }>
-          <div>
-            <Select
-              field={ {
-                name: 'connection',
-                onChange: (event) => handleConnectionChange(event.target.value)
-              } }
-              className="form-control"
-              name="connection"
-              placeholder="Please select a connection"
-              options={ connections.map(connection => ({
-                value: connection.id,
-                label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
-              })) }
-              value={ activeConnection?.id }
-              fieldError={ () => connectionCheckResult?.success === false ? getMessageForReason(connectionCheckResult?.reason) : undefined }
-            />
+        {connections?.length ?
+          <div className={ classNames('form-group', 'form-group-spacing') }>
+            <div>
+              <Select
+                field={ {
+                  name: 'connection',
+                  onChange: (event) => handleConnectionChange(event.target.value)
+                } }
+                className="form-control"
+                name="connection"
+                placeholder="Please select a connection"
+                options={ connections.map(connection => ({
+                  value: connection.id,
+                  label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
+                })) }
+                value={ activeConnection?.id }
+                fieldError={ () => connectionCheckResult?.success === false ? getMessageForReason(connectionCheckResult?.reason) : undefined }
+              />
+
+            </div>
+            <div className="manage-connections-container">
+              <a className="manage-connections-link" onClick={ handleManageConnections }>
+                Manage connections
+              </a>
+            </div>
 
           </div>
-          <div className="manage-connections-container">
-            <a className="manage-connections-link" onClick={ handleManageConnections }>
-              Manage connections
-            </a>
+          :
+          <div>
+            <p className="empty-placeholder">No Connections Available</p>
+            <div className="manage-connections-container">
+              <a className="manage-connections-link" onClick={ handleManageConnections }>
+                Add connections
+              </a>
+            </div>
           </div>
-        </div>
+        }
       </Section.Body>
     </Section>
   );
