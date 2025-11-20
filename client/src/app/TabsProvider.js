@@ -646,7 +646,7 @@ export default class TabsProvider {
    * @param {import('./TabsProvider').File} file
    * @returns {Object | null}
    */
-  getFileProvider(file) {
+  getProviderForFile(file) {
     const typeFromExtension = getTypeFromFileExtension(file);
 
     const providersForExtension = this._getProvidersForExtension(typeFromExtension);
@@ -758,7 +758,7 @@ export default class TabsProvider {
   }
 
   _getTabType(file) {
-    const provider = this.getFileProvider(file);
+    const provider = this.getProviderForFile(file);
 
     if (!provider) {
       return null;
