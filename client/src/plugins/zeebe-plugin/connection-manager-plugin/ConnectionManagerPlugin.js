@@ -21,7 +21,7 @@ import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
 import { SETTINGS_KEY_CONNECTIONS, initializeSettings } from './ConnectionManagerSettings';
 
 
-import './ConnectionManagerPlugin.less';
+import * as css from './ConnectionManagerPlugin.less';
 
 const CONFIG_KEY = 'connection-manager';
 
@@ -145,7 +145,7 @@ export default function ConnectionManagerPlugin(props) {
   const statusBarText = activeConnection ? activeConnection.name || activeConnection.url || 'Unnamed Connection' : 'Select Connection';
   return <>
     { tabNeedsConnection(activeTab) &&
-      <Fill name="connection-manager" slot="status-bar__file" group="8_deploy" priority={ 2 }>
+      <Fill name="connection-manager" className slot="status-bar__file" group="8_deploy" priority={ 2 }>
         <button
           onClick={ () => setOverlayOpen(!overlayOpen) }
           title="Open connection selector"
@@ -153,14 +153,14 @@ export default function ConnectionManagerPlugin(props) {
           ref={ statusBarButtonRef }
         >
           <InlineLoading
-            className="connection-manager-loading-indicator"
+            className={ css.ConnectionManagerLoadingIndicator }
             status={ statusBarConnectionStatus }
             description={ statusBarText }
           />
         </button>
       </Fill>
     }
-    { overlayOpen && <Overlay className="connection-manager-overlay" onClose={ () => setOverlayOpen(false) } anchor={ statusBarButtonRef.current }>
+    { overlayOpen && <Overlay className={ css.ConnectionManagerOverlay } onClose={ () => setOverlayOpen(false) } anchor={ statusBarButtonRef.current }>
       <ConnectionManagerOverlay
         connections={ connections }
         connectionCheckResult={ connectionCheckResult }
