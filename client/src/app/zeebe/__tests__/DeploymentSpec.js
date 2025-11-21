@@ -357,9 +357,25 @@ describe('Deployment', function() {
       });
     });
 
+
+    it('should fail deployment if no endpoint configured', async function() {
+
+      // given
+      const resourceConfig = createMockResourceConfigs().pop(),
+            deployment = createDeployment();
+
+      // when
+      const result = await deployment.deploy(resourceConfig, null);
+
+      // then
+      expect(result).to.eql({
+        success: false,
+        response: {
+          message: 'No connection configured.'
+        }
+      });
+    });
   });
-
-
 
 
   it('should get gateway version', async function() {

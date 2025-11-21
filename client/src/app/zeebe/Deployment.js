@@ -109,10 +109,11 @@ export default class Deployment extends EventEmitter {
       return {
         success: false,
         response: {
-          message: 'No connection configured for deployment.'
+          message: 'No connection configured.'
         }
       };
     }
+
     const {
       context,
       endpoint
@@ -147,19 +148,19 @@ export default class Deployment extends EventEmitter {
       connectionId = null
     } = await this._config.getForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, {});
 
-
     const endpoint = await this.getEndpoint(connectionId);
-    if (!endpoint)
+    if (!endpoint) {
       return null;
-    return { endpoint };
+    }
 
+    return { endpoint };
   }
 
   async setConnectionForFile(file, connectionId) {
     if (!file.path) {
       return await this._config.set(CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
-
     }
+
     return await this._config.setForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
   }
 
