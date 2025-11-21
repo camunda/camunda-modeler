@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { render, waitFor , fireEvent } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import ConnectionManagerPlugin from '../ConnectionManagerPlugin';
 
@@ -68,20 +68,18 @@ describe('ConnectionManagerPlugin', function() {
       }
     });
 
-    const { getByTitle } = createConnectionManagerPlugin({ subscribe });
+    const { getByTitle, queryByText } = createConnectionManagerPlugin({ subscribe });
 
     await waitFor(() => {
       expect(getByTitle('Open connection selector')).to.exist;
     });
 
     // when
-    const statusBarItem = getByTitle('Open connection selector');
-    fireEvent.click(statusBarItem);
+    getByTitle('Open connection selector').click();
 
     // then
     await waitFor(() => {
-      const overlay = document.querySelector('div.connection-manager-overlay');
-      expect(overlay).to.exist;
+      expect(queryByText('Select orchestration cluster connection.')).to.exist;
     });
   });
 
@@ -97,7 +95,7 @@ describe('ConnectionManagerPlugin', function() {
       }
     });
 
-    const { getByTitle } = createConnectionManagerPlugin({ subscribe });
+    const { getByTitle, queryByText } = createConnectionManagerPlugin({ subscribe });
 
     await waitFor(() => {
       expect(getByTitle('Open connection selector')).to.exist;
@@ -108,18 +106,15 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      const overlay = document.querySelector('div.connection-manager-overlay');
-
-      expect(overlay).to.exist;
+      expect(queryByText('Select orchestration cluster connection.')).to.exist;
     });
 
     // when
     getByTitle('Open connection selector').click();
 
+    // then
     await waitFor(() => {
-      const overlay = document.querySelector('div.connection-manager-overlay');
-
-      expect(overlay).not.to.exist;
+      expect(queryByText('Select orchestration cluster connection.')).not.to.exist;
     });
   });
 
@@ -137,7 +132,7 @@ describe('ConnectionManagerPlugin', function() {
       }
     });
 
-    const { getByTitle, rerender } = createConnectionManagerPlugin({ subscribe });
+    const { getByTitle, queryByText, rerender } = createConnectionManagerPlugin({ subscribe });
 
     await waitFor(() => {
       expect(getByTitle('Open connection selector')).to.exist;
@@ -148,9 +143,7 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      const overlay = document.querySelector('div.connection-manager-overlay');
-
-      expect(overlay).to.exist;
+      expect(queryByText('Select orchestration cluster connection.')).to.exist;
     });
 
     // when
@@ -169,9 +162,7 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      const overlay = document.querySelector('div.connection-manager-overlay');
-
-      expect(overlay).not.to.exist;
+      expect(queryByText('Select orchestration cluster connection.')).not.to.exist;
     });
   });
 
@@ -255,93 +246,6 @@ describe('ConnectionManagerPlugin', function() {
     await waitFor(() => {
       const statusBarItem = getByTitle('Open connection selector');
       expect(statusBarItem.textContent).to.contain('Test Connection 1');
-    });
-  });
-
-
-  it('should handle connection change', async function() {
-
-    // given
-    const subscribe = sinon.spy(function(event, callback) {
-      if (event === 'app.activeTabChanged') {
-        callback({
-          activeTab: DEFAULT_ACTIVE_TAB
-        });
-      }
-    });
-
-    const config = createMockConfig({});
-    const settings = createMockSettings({
-      'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
-    });
-    const setConnectionForFile = sinon.spy();
-    const deployment = { setConnectionForFile };
-
-    const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings, config }, { deployment });
-
-    await waitFor(() => {
-      expect(getByTitle('Open connection selector')).to.exist;
-    });
-
-    // when
-    getByTitle('Open connection selector').click();
-
-    let overlay;
-    await waitFor(() => {
-      overlay = document.querySelector('div.connection-manager-overlay');
-      expect(overlay).to.exist;
-    });
-
-    // simulate connection change
-
-    const select = overlay.querySelector('select[name="connection"]');
-    fireEvent.change(select, { target: { value: 'connection-2' } });
-
-    // then
-    await waitFor(() => {
-      expect(setConnectionForFile).to.have.been.calledWith(
-        DEFAULT_ACTIVE_TAB.file,
-        'connection-2'
-      );
-    });
-  });
-
-
-  it('should open settings when "Manage connections" is clicked', async function() {
-
-    // given
-    const subscribe = sinon.spy(function(event, callback) {
-      if (event === 'app.activeTabChanged') {
-        callback({
-          activeTab: DEFAULT_ACTIVE_TAB
-        });
-      }
-    });
-
-    const triggerAction = sinon.spy();
-    const settings = createMockSettings({
-      'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
-    });
-
-    const { getByTitle, getByText } = createConnectionManagerPlugin({ subscribe, settings, triggerAction });
-
-    await waitFor(() => {
-      expect(getByTitle('Open connection selector')).to.exist;
-    });
-
-    // when
-    getByTitle('Open connection selector').click();
-    await waitFor(() => {
-      const overlay = document.querySelector('div.connection-manager-overlay');
-      expect(overlay).to.exist;
-    });
-
-    const manageLink = getByText('Manage connections');
-    manageLink.click();
-
-    // then
-    await waitFor(() => {
-      expect(triggerAction.calledWith('settings-open')).to.be.true;
     });
   });
 
@@ -553,123 +457,6 @@ describe('ConnectionManagerPlugin', function() {
       });
     });
 
-  });
-
-
-  describe('connections list', function() {
-
-    it('should display all available connections in overlay', async function() {
-
-      // given
-      const subscribe = sinon.spy(function(event, callback) {
-        if (event === 'app.activeTabChanged') {
-          callback({
-            activeTab: DEFAULT_ACTIVE_TAB
-          });
-        }
-      });
-
-      const settings = createMockSettings({
-        'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
-      });
-
-      const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings });
-
-      // when
-      getByTitle('Open connection selector').click();
-
-      let overlay;
-      await waitFor(() => {
-        overlay = document.querySelector('div.connection-manager-overlay');
-        expect(overlay).to.exist;
-      });
-
-      // then
-      await waitFor(() => {
-        const select = overlay.querySelector('select[name="connection"]');
-        expect(select).to.exist;
-        expect(select.options.length).to.be.at.least(2);
-      });
-    });
-
-
-    it('should display empty state when no connections available', async function() {
-
-      // given
-      const subscribe = sinon.spy(function(event, callback) {
-        if (event === 'app.activeTabChanged') {
-          callback({
-            activeTab: DEFAULT_ACTIVE_TAB
-          });
-        }
-      });
-
-      const settings = createMockSettings({
-        'connectionManagerPlugin.c8connections': []
-      });
-
-      const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings });
-
-      await waitFor(() => {
-        const statusBarItem = getByTitle('Open connection selector');
-        expect(statusBarItem).to.exist;
-        expect(statusBarItem.textContent).to.contain('Select Connection');
-      });
-    });
-
-
-    it('should persist connection selection to config', async function() {
-
-      // given
-      const subscribe = sinon.spy(function(event, callback) {
-        if (event === 'app.activeTabChanged') {
-          callback({
-            activeTab: DEFAULT_ACTIVE_TAB
-          });
-        }
-      });
-
-      const config = createMockConfig({});
-
-      const settings = createMockSettings({
-        'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
-      });
-      const setConnectionForFile = sinon.spy();
-      const { getByTitle } = createConnectionManagerPlugin(
-        { subscribe, settings, config },
-        { deployment: {
-          setConnectionForFile }
-        });
-
-      await waitFor(() => {
-        expect(getByTitle('Open connection selector')).to.exist;
-      });
-
-      getByTitle('Open connection selector').click();
-
-      let overlay;
-      await waitFor(() => {
-        overlay = document.querySelector('div.connection-manager-overlay');
-        expect(overlay).to.exist;
-      });
-
-      await waitFor(() => {
-        expect(overlay.querySelector('select[name="connection"]')).to.exist;
-      });
-
-      // when
-      const select = overlay.querySelector('select[name="connection"]');
-      fireEvent.change(select, { target: { value: 'connection-2' } });
-
-      // then
-      await waitFor(() => {
-
-        expect(setConnectionForFile).to.have.been.calledWith(
-          DEFAULT_ACTIVE_TAB.file,
-          'connection-2'
-        );
-      });
-    });
   });
 
 

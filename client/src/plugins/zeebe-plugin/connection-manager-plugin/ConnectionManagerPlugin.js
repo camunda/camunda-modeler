@@ -14,14 +14,15 @@ import classNames from 'classnames';
 import { InlineLoading } from '@carbon/react';
 
 import { Fill } from '../../../app/slot-fill';
-import { Overlay, Section, Select } from '../../../shared/ui';
-import { getMessageForReason } from '../../zeebe-plugin/shared/util';
+import { Overlay } from '../../../shared/ui';
+
 import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
 
 import { SETTINGS_KEY_CONNECTIONS, initializeSettings } from './ConnectionManagerSettings';
 
 
 import * as css from './ConnectionManagerPlugin.less';
+import { ConnectionManagerOverlay } from './ConnectionManagerOverlay';
 
 const CONFIG_KEY = 'connection-manager';
 
@@ -182,72 +183,6 @@ export default function ConnectionManagerPlugin(props) {
   </>;
 }
 
-
-function ConnectionManagerOverlay({
-  connections = [],
-  handleConnectionChange,
-  connectionCheckResult,
-  activeConnection,
-  handleManageConnections,
-  renderHeader
-}) {
-  function getUrl(connection) {
-    if (connection.targetType === 'selfHosted') {
-      return connection.contactPoint;
-    }
-    if (connection.targetType === 'camundaCloud') {
-      return connection.camundaCloudClusterUrl;
-    }
-  }
-
-  return (
-    <Section>
-      <Section.Header className="form-header">
-        {renderHeader}
-      </Section.Header>
-      <Section.Body className="form-body">
-        <p>Select orchestration cluster connection.</p>
-        {connections?.length ?
-          <div className={ classNames('form-group', 'form-group-spacing') }>
-            <div>
-              <Select
-                field={ {
-                  name: 'connection',
-                  onChange: (event) => handleConnectionChange(event.target.value)
-                } }
-                className="form-control"
-                name="connection"
-                placeholder="Please select a connection"
-                options={ connections.map(connection => ({
-                  value: connection.id,
-                  label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
-                })) }
-                value={ activeConnection?.id }
-                fieldError={ () => connectionCheckResult?.success === false ? getMessageForReason(connectionCheckResult?.reason) : undefined }
-              />
-
-            </div>
-            <div className="manage-connections-container">
-              <a className="manage-connections-link" onClick={ handleManageConnections }>
-                Manage connections
-              </a>
-            </div>
-
-          </div>
-          :
-          <div>
-            <p className="empty-placeholder">No Connections Available</p>
-            <div className="manage-connections-container">
-              <a className="manage-connections-link" onClick={ handleManageConnections }>
-                Add connections
-              </a>
-            </div>
-          </div>
-        }
-      </Section.Body>
-    </Section>
-  );
-}
 
 
 /**
