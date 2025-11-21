@@ -6,6 +6,34 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `DEPS`: update to `@bpmn-io/properties-panel@3.34.0`
+* `DEPS`: update to `@camunda/linting@3.45.0`
+* `DEPS`: update to `@camunda/rpa-integration@1.2.2`
+* `DEPS`: update to `@camunda/task-testing@1.0.4`
+* `DEPS`: update to `bpmn-js@18.9.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.16.1`
+* `DEPS`: update to `bpmn-js-properties-panel@5.43.0`
+* `DEPS`: update to `camunda-bpmn-js@5.15.0`
+
+### General
+
+* `FEAT`: remove title attribute when unnecessary ([bpmn-io/properties-panel#455](https://github.com/bpmn-io/properties-panel/pull/455))
+* `FIX`: improve tooltip behavior ([#5217](https://github.com/camunda/camunda-modeler/issues/5217), [#4857](https://github.com/camunda/camunda-modeler/issues/4857))
+* `FIX`: correctly handle trimming and debouncing ([#5389](https://github.com/camunda/camunda-modeler/issues/5389), [#4967](https://github.com/camunda/camunda-modeler/issues/4967), [#5392](https://github.com/camunda/camunda-modeler/issues/5392))
+
+### BPMN
+
+* `FEAT`: visually link external label with its target ([#369](https://github.com/camunda/camunda-modeler/issues/369))
+* `FEAT`: allow copying data object references and `isCollection` property ([bpmn-io/bpmn-js#2348](https://github.com/bpmn-io/bpmn-js/pull/2348))
+* `FEAT`: support templating signal events ([#5381](https://github.com/camunda/camunda-modeler/issues/5381))
+* `FEAT`: add `event-based-gateway` rule ([#5194](https://github.com/camunda/camunda-modeler/issues/5194))
+* `FIX`: ensure FEEL expression is enforced for `feel: required` properties ([#4967](https://github.com/camunda/camunda-modeler/issues/4967))
+* `FIX`: task testing does not show Operate button on error state ([#5391](https://github.com/camunda/camunda-modeler/issues/5391))
+
+### RPA
+
+* `FIX`: refresh list of files on editor change
+
 ## 5.41.0
 
 * `DEPS`: update to `@bpmn-io/form-js@1.18.0`
