@@ -8,28 +8,127 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-import { Button, DataTable, Table, TableBody, TableCell, TableExpandedRow, TableExpandRow } from '@carbon/react';
+import { Button, DataTable, InlineLoading, Table, TableBody, TableCell, TableExpandedRow, TableExpandRow } from '@carbon/react';
 import { Add, TrashCan } from '@carbon/icons-react';
 
-import { getIn } from 'formik';
+import { FieldArray, getIn, setIn, useFormikContext } from 'formik';
 
 import { SettingsField } from '../../settings/SettingsForm';
 import { generateNewElement, properties } from './ConnectionManagerSettingsProperties';
 
 import './ConnectionManagerSettingsComponent.less';
 
+import { getConnectionCheckFieldErrors } from '../deployment-plugin/ConnectionCheckErrors';
+import { SETTINGS_KEY_CONNECTIONS } from './ConnectionManagerSettings';
+
 /**
  *
  * @param {import("formik").FieldArrayRenderProps & { expandRowId: string }} props
  */
-export function ConnectionManagerSettingsComponent({ form, name:fieldName, push, remove, expandRowId }) {
+export function ConnectionManagerSettingsComponent(props) {
+
+  const { name:fieldName, targetElement, connectionChecker } = props;
+
+
+
+  const { values , errors, setFieldError } = useFormikContext();
 
   const [ expandedRows, setExpandedRows ] = useState([]);
   const expandedRowRef = useRef(null);
+  const [ connectionCheckResult, setConnectionCheckResult ] = useState(null);
 
-  const fieldValue = getIn(form.values, fieldName) || [];
+  const fieldValue = getIn(values, fieldName) || [];
+  const fieldErrors = getIn(errors, fieldName) || [];
+
+  const connectionIndex = useMemo(() =>
+    fieldValue.findIndex(c => c.id === expandedRows[0]),
+  [ fieldValue, expandedRows ]
+  );
+
+  const connection = useMemo(() =>
+    fieldValue[connectionIndex],
+  [ fieldValue, connectionIndex ]
+  );
+
+  const configurationErrors = useMemo(() =>
+    fieldErrors[connectionIndex],
+  [ fieldErrors, connectionIndex ]
+  );
+
+  let expandRowId = null;
+  if (targetElement) {
+    const match = targetElement.match(/\[(\d+)\]/);
+    if (match) {
+      const index = parseInt(match[1], 10);
+      if (fieldValue[index]) {
+        expandRowId = fieldValue[index].id;
+      }
+    }
+  }
+
+  // Automatically expand the row if expandRowId is set
+  useEffect(() => {
+    if (expandRowId && !expandedRows.includes(expandRowId)) {
+      setExpandedRows([ expandRowId ]);
+    }
+  }, [ expandRowId ]);
+
+  useEffect(() => {
+    console.log({ expandedRows });
+    if (expandedRows?.length > 0) {
+      setConnectionCheckResult(null);
+
+
+      // const errors = fieldErrors.find(c => c.id === expandedRows[0]);
+      if (configurationErrors) {
+        setConnectionCheckResult({ success:false, reason: 'INVALID_CONFIGURATION' });
+        connectionChecker.current.stopChecking();
+        return;
+      }
+
+      connectionChecker.current.updateConfig({ endpoint:connection });
+    }
+  },[ expandedRows, connectionChecker, connection, configurationErrors ]);
+
+  useEffect(() => {
+    console.log({ expandedRows });
+    const a = getConnectionCheckFieldErrors(connectionCheckResult);
+
+    if (!a) {
+      return;
+    }
+
+
+    // setIn(errors,`${SETTINGS_KEY_CONNECTIONS}[${connectionIndex}]`,a);
+    // Object.entries(a).forEach(([ field, message ]) => {
+    //   setFieldError(`${SETTINGS_KEY_CONNECTIONS}[${connectionIndex}].${field}`, message);
+    // });
+
+  }, [ connectionCheckResult ]);
+
+  useEffect(() => {
+    console.log({ connectionCheckResult });
+  }, [ connectionCheckResult ]);
+
+  useEffect(() => {
+    const connectionCheckListener = (connectionCheckResult) => {
+
+      setConnectionCheckResult(connectionCheckResult);
+
+
+
+    };
+    connectionChecker.current.on('connectionCheck', connectionCheckListener);
+    return () => {
+      console.log('off');
+      connectionChecker.current.off('connectionCheck', connectionCheckListener);
+      connectionChecker.current.stopChecking();
+    };
+  }, [ connectionChecker ]);
+
+
 
   /**
    * @param {{ id: any; }} row
@@ -50,84 +149,118 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
     }
   }
 
-  return <div className="connection-manager-settings-component">
-    <div className="custom-control">
-      <label className="custom-control-label">Camunda 8</label>
-      <div className="custom-control-description">Manage Camunda 8 orchestration cluster connections.</div>
-    </div>
-    {(!fieldValue || fieldValue.length === 0) && (
-      <p className="empty-placeholder">No Connections</p>
-    )}
-    <DataTable rows={ fieldValue } headers={ [] }>
-      {({
-        rows,
-        getRowProps,
-        getExpandedRowProps,
-        getTableProps,
-      }) => (
-        <Table { ...getTableProps() }>
-          <TableBody className="expandable-table-body">
-            {rows?.map((row, index) => (
-              <React.Fragment key={ `${fieldName}[${index}]` }>
-                <TableExpandRow { ...getRowProps({ row }) }
-                  ref={ row.id === expandRowId ? expandedRowRef : null }
-                  isExpanded={ isExpanded(row) }
-                  onExpand={ () => handleExpand(row) }
-                >
-                  <TableCell key={ `${fieldName}[${index}].name` }>
-                    { isExpanded(row) ?
-                      <SettingsField name={ `${fieldName}[${index}].name` } type="text" hint="Name" default="New Connection" /> :
-                      <span id={ `${fieldName}[${index}].name` }>{ fieldValue[index]['name'] || 'Unnamed Connection'}</span>
-                    }
-                  </TableCell>
+  function getStatus(connectionCheckResult) {
 
-                  <TableCell className="action-cell">
-                    <Button
-                      className="remove"
-                      hasIconOnly
-                      iconDescription="Remove connection"
-                      tooltipPosition="left"
-                      kind="ghost"
-                      renderIcon={ TrashCan }
-                      onClick={ () =>
-                        remove(index)
-                      }
-                    />
-                  </TableCell>
-                </TableExpandRow>
+    if (connectionCheckResult) {
+      return connectionCheckResult.success ? 'finished' : 'error';
+    }
 
-                <TableExpandedRow
-                  { ...getExpandedRowProps({ row }) }
-                  colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
-                >
-                  <div>
-                    {/* TODO: connection status */}
-                    {
-                      properties.map((property) =>
-                        <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
-                      )
-                    }
-                  </div>
-                </TableExpandedRow>
-              </React.Fragment>
-            ))}
-          </TableBody>
-        </Table>
-      )}
-    </DataTable>
-    <div className="action-bar">
-      <Button
-        className="add"
-        tooltipPosition="left"
-        iconDescription="Add connection"
-        renderIcon={ Add }
-        hasIconOnly={ true }
-        onClick={ () => {
-          const newElement = generateNewElement(fieldValue.length);
-          push(newElement);
-          setExpandedRows([ newElement.id ]);
-        } }
-      />
-    </div>
-  </div>;
+    return 'active';
+  }
+
+  const a = getConnectionCheckFieldErrors(connectionCheckResult);
+  function getText(connectionCheckResult) {
+    if (connectionCheckResult) {
+      return connectionCheckResult.success ? 'Connected' : a._mainError || 'Failed to connect';
+
+    }
+    return 'Connecting...';
+  }
+
+
+
+  return <FieldArray name={ fieldName }>
+    { ({ push, remove }) => {
+      return (
+        <div className="connection-manager-settings-component">
+          <div className="custom-control">
+            <label className="custom-control-label">Camunda 8</label>
+            <div className="custom-control-description">Manage Camunda 8 orchestration cluster connections.</div>
+          </div>
+          {(!fieldValue || fieldValue.length === 0) && (
+            <p className="empty-placeholder">No Connections</p>
+          )}
+          <DataTable rows={ fieldValue } headers={ [] }>
+            {({
+              rows,
+              getRowProps,
+              getExpandedRowProps,
+              getTableProps,
+            }) => (
+              <Table { ...getTableProps() }>
+                <TableBody className="expandable-table-body">
+                  {rows?.map((row, index) => (
+                    <React.Fragment key={ `${fieldName}[${index}]` }>
+                      <TableExpandRow { ...getRowProps({ row }) }
+                        ref={ row.id === expandRowId ? expandedRowRef : null }
+                        isExpanded={ isExpanded(row) }
+                        onExpand={ () => handleExpand(row) }
+                      >
+                        <TableCell key={ `${fieldName}[${index}].name` }>
+                          { isExpanded(row) ?
+                            <SettingsField name={ `${fieldName}[${index}].name` } type="text" hint="Name" default="New Connection" /> :
+                            <span id={ `${fieldName}[${index}].name` }>{ fieldValue[index]['name'] || 'Unnamed Connection'}</span>
+                          }
+                        </TableCell>
+
+                        <TableCell className="action-cell">
+                          <Button
+                            className="remove"
+                            hasIconOnly
+                            iconDescription="Remove connection"
+                            tooltipPosition="left"
+                            kind="ghost"
+                            renderIcon={ TrashCan }
+                            onClick={ () =>
+                              remove(index)
+                            }
+                          />
+                        </TableCell>
+                      </TableExpandRow>
+
+                      <TableExpandedRow
+                        { ...getExpandedRowProps({ row }) }
+                        colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
+                      >
+                        <div>
+                          {/* TODO: connection status */}
+                          {JSON.stringify(connectionCheckResult)}
+                          <InlineLoading
+                            className="connection-manager-loading-indicator"
+                            status={ getStatus(connectionCheckResult) }
+                            description={ getText(connectionCheckResult) }
+                          />
+
+                          {
+                            properties.map((property) =>
+                              <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
+                            )
+                          }
+                        </div>
+                      </TableExpandedRow>
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </DataTable>
+          <div className="action-bar">
+            <Button
+              className="add"
+              tooltipPosition="left"
+              iconDescription="Add connection"
+              renderIcon={ Add }
+              hasIconOnly={ true }
+              onClick={ () => {
+                const newElement = generateNewElement(fieldValue.length);
+                push(newElement);
+                setExpandedRows([ newElement.id ]);
+              } }
+            />
+          </div>
+        </div>
+      );
+    }}
+  </FieldArray>;
+
 }
