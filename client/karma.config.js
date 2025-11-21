@@ -73,6 +73,10 @@ module.exports = function(karma) {
     browsers: browsers,
 
     browserNoActivityTimeout: 60000,
+    browserDisconnectTolerance: 3,
+    browserSocketTimeout: 60000,
+    browserDisconnectTimeout: 60000,
+    pingTimeout: 60000,
 
     singleRun: true,
     autoWatch: false,
