@@ -10,7 +10,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 
-import { Field, Form, useFormikContext, getIn, FieldArray } from 'formik';
+import { Field, Form, useFormikContext, getIn } from 'formik';
 
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
@@ -23,7 +23,7 @@ import { utmTag } from '../../util/utmTag';
 /**
  * Formik form wrapper for the settings form.
  */
-export function SettingsForm({ schema, values, onChange }) {
+export function SettingsForm({ schema, values, onChange, targetElement }) {
 
   const { setFieldValue, values: formikValues, validateForm } = useFormikContext();
 
@@ -52,7 +52,7 @@ export function SettingsForm({ schema, values, onChange }) {
   return (<Form>
     {
       map(orderedSchema, (value, key) =>
-        <SettingsSection key={ key } { ...value } />)
+        <SettingsSection key={ key } { ...value } targetElement={ targetElement } />)
     }
   </Form>);
 }
@@ -66,8 +66,8 @@ function SettingsSection(props) {
       <Section.Header>{ title }</Section.Header>
       <Section.Body>
         {
-          map(properties, (props, key) =>
-            <SettingsField key={ key } name={ key } { ...props } />)
+          map(properties, (property, key) =>
+            <SettingsField key={ key } name={ key } { ...property } targetElement={ props.targetElement } />)
         }
       </Section.Body>
     </Section>
@@ -84,12 +84,12 @@ export function SettingsField(props) {
     return Flags.get(flag);
   }, [ flag ]);
 
-  const component = useMemo(() => {
+  const FieldComponent = useMemo(() => {
     if (condition && !isConditionMet(name, values, condition)) {
       return null;
     }
 
-    if (type === 'customField' || type === 'customFieldArray') {
+    if (type === 'custom') {
       return props.component;
     }
 
@@ -112,12 +112,13 @@ export function SettingsField(props) {
     return null;
   }, [ condition, name, type, values ]);
 
-  if (!component) {
+  if (!FieldComponent) {
     return null;
   }
 
-  if (type === 'customFieldArray') {
-    return <FieldArray { ...props } component={ component } />;
+
+  if (type === 'custom') {
+    return <FieldComponent { ...props } />;
   }
 
   const { label, description, hint, options, documentationUrl, constraints } = props;
@@ -142,7 +143,7 @@ export function SettingsField(props) {
   return <>
     <Field
       name={ name }
-      component={ component }
+      component={ FieldComponent }
       disabled={ disabledByFlag }
       label={ label }
       description={ description }

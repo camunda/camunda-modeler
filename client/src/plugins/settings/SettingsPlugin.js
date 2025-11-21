@@ -53,11 +53,25 @@ export default function SettingsPlugin(props) {
   const [ settings, _ ] = useState(_getGlobal('settings'));
   const [ schema, setSchema ] = useState();
   const [ values, setValues ] = useState({});
+  const [ targetElement, setTargetElement ] = useState(null);
 
   useBuiltInSettings(settings);
 
   useEffect(() => {
-    subscribe('app.settings-open', () => {
+    subscribe('app.settings-open', (options) => {
+      if (options?.scrollToEntry) {
+        setTargetElement(options.scrollToEntry);
+        requestAnimationFrame(() => {
+          const element = document.getElementById(options.scrollToEntry);
+
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            element.focus({ preventScroll: true });
+          }
+        });
+      } else {
+        setTargetElement(null);
+      }
       setOpen(true);
     });
   }, [ subscribe ]);
@@ -117,12 +131,17 @@ export default function SettingsPlugin(props) {
     triggerAction('restart-modeler');
   };
 
+  const handleClose = () => {
+    triggerAction('emit-event', { type: 'settings.closed' });
+    setOpen(false);
+  };
+
   if (!open) {
     return null;
   }
 
   return (
-    <Modal adaptive={ true } onClose={ () => setOpen(false) }>
+    <Modal adaptive={ true } onClose={ handleClose }>
       <div className="modal-header">
         <h2 className="modal-title">Settings</h2>
       </div>
@@ -141,6 +160,7 @@ export default function SettingsPlugin(props) {
             schema={ schema }
             values={ values }
             onChange={ debounce(handleSave, 200) }
+            targetElement={ targetElement }
           />
         </Formik>
 
@@ -149,7 +169,7 @@ export default function SettingsPlugin(props) {
         <button
           className="btn btn-secondary"
           type="button"
-          onClick={ () => setOpen(false) }
+          onClick={ handleClose }
         >
           Close
         </button>
@@ -164,7 +184,7 @@ export default function SettingsPlugin(props) {
 /**
  * Returns a flat dictionary of Formik values.
  *
- * Values submited by the Formik form are nested based on the dots in field names.
+ * Values submitted by the Formik form are nested based on the dots in field names.
  * Settings API uses dots to group settings, but we want a flat dictionary.
  *
  * @param {Object} formikValues

@@ -1986,7 +1986,7 @@ export class App extends PureComponent {
     }
 
     if (action === 'settings-open') {
-      return this.emit('app.settings-open');
+      return this.emit('app.settings-open', options);
     }
 
     if (action === 'open-deployment') {

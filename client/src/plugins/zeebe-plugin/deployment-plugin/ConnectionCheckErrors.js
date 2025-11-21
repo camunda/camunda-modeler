@@ -27,7 +27,8 @@ export const CONNECTION_CHECK_ERROR_REASONS = {
   OAUTH_URL: 'OAUTH_URL',
   UNSUPPORTED_ENGINE: 'UNSUPPORTED_ENGINE',
   INVALID_CLIENT_ID: 'INVALID_CLIENT_ID',
-  INVALID_CREDENTIALS: 'INVALID_CREDENTIALS'
+  INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
+  INVALID_CONFIGURATION: 'INVALID_CONFIGURATION'
 };
 
 export const CONNECTION_CHECK_ERROR_MESSAGES = {
@@ -39,7 +40,8 @@ export const CONNECTION_CHECK_ERROR_MESSAGES = {
   [ CONNECTION_CHECK_ERROR_REASONS.UNKNOWN ]: 'Unknown error. Please check Orchestration cluster status.',
   [ CONNECTION_CHECK_ERROR_REASONS.UNSUPPORTED_ENGINE ]: 'Unsupported Orchestration cluster version.',
   [ CONNECTION_CHECK_ERROR_REASONS.INVALID_CLIENT_ID ]: 'Invalid Client ID.',
-  [ CONNECTION_CHECK_ERROR_REASONS.INVALID_CREDENTIALS ]: 'The client secret is not valid for the client ID provided.'
+  [ CONNECTION_CHECK_ERROR_REASONS.INVALID_CREDENTIALS ]: 'The client secret is not valid for the client ID provided.',
+  [ CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION ]: 'Connection configuration is invalid.'
 };
 
 /**
@@ -108,5 +110,88 @@ export function getConnectionCheckError(fieldName, connectionCheckResult) {
     return fieldName === 'endpoint.camundaCloudClientId' && CONNECTION_CHECK_ERROR_MESSAGES[ reason ];
   case CONNECTION_CHECK_ERROR_REASONS.INVALID_CREDENTIALS:
     return fieldName === 'endpoint.camundaCloudClientSecret' && CONNECTION_CHECK_ERROR_MESSAGES[ reason ];
+  }
+}
+
+export function getConnectionCheckFieldErrors(connectionCheckResult) {
+  if (!connectionCheckResult) {
+    return null;
+  }
+
+  const {
+    success,
+    reason
+  } = connectionCheckResult;
+
+  if (success) {
+    return null;
+  }
+
+
+
+  const errorMessage = CONNECTION_CHECK_ERROR_MESSAGES[ reason ] || CONNECTION_CHECK_ERROR_MESSAGES.UNKNOWN;
+
+  const errorMessageWithTroubleshootLink = <>{errorMessage} <a href={ TROUBLESHOOTING_URL }>Troubleshoot</a></>;
+
+  switch (reason) {
+  case CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION:
+    return {
+      _mainError: errorMessage,
+    };
+
+  case CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE:
+    return {
+      _mainError: errorMessageWithTroubleshootLink,
+      contactPoint: errorMessageWithTroubleshootLink
+    };
+
+  case CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE:
+    return {
+      _mainError: errorMessageWithTroubleshootLink,
+      camundaCloudClusterUrl: errorMessageWithTroubleshootLink
+    };
+
+  case CONNECTION_CHECK_ERROR_REASONS.UNSUPPORTED_ENGINE:
+    return {
+      _mainError: errorMessage,
+      camundaCloudClusterUrl: errorMessage,
+      contactPoint: errorMessage
+    };
+  case CONNECTION_CHECK_ERROR_REASONS.UNAUTHORIZED:
+  case CONNECTION_CHECK_ERROR_REASONS.FORBIDDEN:
+
+    return {
+      _mainError: errorMessage,
+      audience: errorMessage,
+      camundaCloudClientId: errorMessage,
+      camundaCloudClientSecret: errorMessage,
+      clientId: errorMessage,
+      clientSecret: errorMessage,
+      scope: errorMessage
+    };
+
+  case CONNECTION_CHECK_ERROR_REASONS.OAUTH_URL:
+    return {
+      _mainError: errorMessage,
+      oauthURL: errorMessage
+    };
+  case CONNECTION_CHECK_ERROR_REASONS.INVALID_CLIENT_ID:
+    return {
+      _mainError: errorMessage,
+      camundaCloudClientId: errorMessage
+    };
+  case CONNECTION_CHECK_ERROR_REASONS.INVALID_CREDENTIALS:
+    return {
+      _mainError: errorMessage,
+      camundaCloudClientSecret: errorMessage
+    };
+  case CONNECTION_CHECK_ERROR_REASONS.UNKNOWN:
+  default:
+    return {
+      _mainError: errorMessageWithTroubleshootLink,
+      camundaCloudClusterUrl: errorMessageWithTroubleshootLink,
+      contactPoint: errorMessageWithTroubleshootLink,
+      oauthURL: errorMessageWithTroubleshootLink
+    };
   }
 }
