@@ -17,7 +17,7 @@ export const DELAYS = {
 };
 
 export default class ConnectionChecker extends EventEmitter {
-  constructor(zeebeAPI) {
+  constructor(zeebeAPI, name = 'default') {
     super();
 
     this._zeebeAPI = zeebeAPI;
@@ -26,6 +26,7 @@ export default class ConnectionChecker extends EventEmitter {
     this._checkTimeout = null;
     this._config = null;
     this._lastResult = null;
+    this._name = name;
   }
 
   updateConfig(config, startChecking = true) {
@@ -57,6 +58,7 @@ export default class ConnectionChecker extends EventEmitter {
   async _check() {
     if (!this._config) {
       const result = {
+        name: this._name,
         success: false,
         reason: CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG,
         error: new Error(CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG)
@@ -76,9 +78,10 @@ export default class ConnectionChecker extends EventEmitter {
 
       this._lastResult = result;
 
-      this.emit('connectionCheck', result);
+      this.emit('connectionCheck', { ...result, name: this._name });
     } catch (error) {
       const result = {
+        name: this._name,
         success: false,
         error
       };

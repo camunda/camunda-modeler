@@ -17,8 +17,10 @@ import { Overlay } from '../../../shared/ui';
 
 import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
 
-import { SETTINGS_KEY_CONNECTIONS, initializeSettings } from './ConnectionManagerSettings';
-
+import {
+  SETTINGS_KEY_CONNECTIONS,
+  initializeSettings,
+} from './ConnectionManagerSettings';
 
 import * as css from './ConnectionManagerPlugin.less';
 import { ConnectionManagerOverlay } from './ConnectionManagerOverlay';
@@ -52,17 +54,22 @@ export default function ConnectionManagerPlugin(props) {
 
   const [ activeTab, setActiveTab ] = useState(null);
   const [ overlayOpen, setOverlayOpen ] = useState(false);
+  const [ paused, setPaused ] = useState(false);
 
   const [ connections, setConnections ] = useState([]);
   const [ activeConnection, setActiveConnection ] = useState(null);
 
   const deployment = _getGlobal('deployment');
-  const connectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI')));
+  const globalConnectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI'), 'plugin'));
+  const settingsConnectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI'), 'settings'));
 
   const statusBarButtonRef = useRef(null);
 
   useEffect(() => {
-    initializeSettings({ settings }).then(() => {
+    initializeSettings({
+      settings,
+      connectionChecker: settingsConnectionChecker,
+    }).then(() => {
       settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
         setConnections(connections.value);
       });
@@ -71,19 +78,60 @@ export default function ConnectionManagerPlugin(props) {
   }, [ settings ]);
 
 
+  // close overlay on tab change
   useEffect(() => {
-
-    // close overlay on tab change
-    subscribe('app.activeTabChanged', ({ activeTab }) => {
+    const subscription = subscribe('app.activeTabChanged', ({ activeTab }) => {
       setActiveTab(activeTab);
       setOverlayOpen(false);
     });
 
-    // enable external opening
-    subscribe('app.open-connection-selector', ({ tab }) => {
+    return () => {
+      subscription.cancel();
+    };
+  }, [ subscribe ]);
+
+  // enable external opening
+  useEffect(() => {
+    const subscription = subscribe('app.open-connection-selector', () => {
       setOverlayOpen(true);
     });
+
+    return () => {
+      subscription.cancel();
+    };
   }, [ subscribe ]);
+
+  // pause connection checking when settings are opened
+  useEffect(() => {
+    const subscription = subscribe('app.settings-open', () => {
+      setPaused(true);
+      globalConnectionChecker.current.stopChecking(null);
+    });
+
+    return () => {
+      subscription.cancel();
+    };
+  }, [ subscribe ]);
+
+  useEffect(() => {
+    const subscription = subscribe('settings.closed', () => {
+      if (activeConnection) {
+        console.log('resuming connection checking');
+        console.log(activeConnection);
+        setConnectionCheckResult(null);
+        setPaused(false);
+        globalConnectionChecker.current.updateConfig({ endpoint: activeConnection });
+      }
+    });
+    return () => {
+      subscription.cancel();
+    };
+  }, [
+    subscribe,
+    activeConnection,
+    globalConnectionChecker,
+    setConnectionCheckResult,
+  ]);
 
   // load connection from file on tab change
   useEffect(() => {
@@ -106,7 +154,7 @@ export default function ConnectionManagerPlugin(props) {
         return;
       }
 
-      let connection = connections.find(conn => conn.id === connectionId);
+      let connection = connections.find((conn) => conn.id === connectionId);
       if (!connection && connections.length > 0) {
         connection = connections[0];
         deployment.setConnectionForFile(activeTab.file, connection.id);
@@ -114,20 +162,22 @@ export default function ConnectionManagerPlugin(props) {
 
       setActiveConnection(connection);
     })();
-  },
-  [ activeTab, deployment, connections ]);
+  }, [ activeTab, deployment, connections ]);
 
   // update connection checker on connection change
   useEffect(() => {
     (async () => {
       setConnectionCheckResult(null);
-      if (activeConnection && activeConnection.id !== NO_CONNECTION.id) {
-        connectionChecker.current.updateConfig({ endpoint: activeConnection });
+      if (activeConnection && activeConnection.id !== NO_CONNECTION.id && !paused) {
+        globalConnectionChecker.current.updateConfig({ endpoint: activeConnection });
       }
       else {
-        connectionChecker.current.stopChecking();
-        connectionChecker.current.updateConfig(null, false);
-        setConnectionCheckResult({ success: false, reason: CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG });
+        globalConnectionChecker.current.stopChecking();
+        globalConnectionChecker.current.updateConfig(null, false);
+        setConnectionCheckResult({
+          success: false,
+          reason: CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG,
+        });
       }
     })();
 
@@ -139,19 +189,18 @@ export default function ConnectionManagerPlugin(props) {
       setConnectionCheckResult(connectionCheckResult);
     };
 
-    connectionChecker.current.on('connectionCheck', connectionCheckListener);
+    globalConnectionChecker.current.on('connectionCheck', connectionCheckListener);
 
     return () => {
-      connectionChecker.current.off('connectionCheck', connectionCheckListener);
-      connectionChecker.current.stopChecking();
+      globalConnectionChecker.current.off('connectionCheck', connectionCheckListener);
+      globalConnectionChecker.current.stopChecking();
     };
-  }, [ activeConnection, connectionChecker, deployment, setConnectionCheckResult ]);
+  }, [ activeConnection, globalConnectionChecker, deployment, setConnectionCheckResult ]);
 
   const tabsProvider = _getFromApp('props').tabsProvider;
   const TabIcon = activeTab ? tabsProvider.getTabIcon(activeTab?.type) || (() => null) : (() => null);
-
   function getStatus(connectionCheckResult, activeConnection) {
-    if (activeConnection?.id === NO_CONNECTION.id) {
+    if (activeConnection?.id === NO_CONNECTION.id || paused) {
       return 'idle';
     }
     if (connectionCheckResult) {
@@ -186,9 +235,15 @@ export default function ConnectionManagerPlugin(props) {
         activeConnection={ activeConnection }
         handleManageConnections={ () => {
           setOverlayOpen(false);
-          triggerAction('settings-open', { expandRowId: activeConnection?.id });
+          const index = connections.findIndex((conn) => conn.id === activeConnection?.id);
+          triggerAction('settings-open', {
+            scrollToEntry:
+              index >= 0
+                ? `${SETTINGS_KEY_CONNECTIONS}[${index}].name`
+                : SETTINGS_KEY_CONNECTIONS,
+          });
         } }
-        handleConnectionChange={ async (connectionId)=> {
+        handleConnectionChange={ async (connectionId) => {
           await deployment.setConnectionForFile(activeTab.file, connectionId);
           if (connectionId === NO_CONNECTION.id) {
             setActiveConnection(NO_CONNECTION);

@@ -15,22 +15,22 @@ export const SETTINGS_KEY_CONNECTIONS = 'connectionManagerPlugin.c8connections';
 /**
  * Registers plugin settings
  */
-export async function initializeSettings({ settings }) {
+export async function initializeSettings({ settings, connectionChecker }) {
+
+  /** @type import("../../../app/Settings").SettingsGroup */
+  const pluginSettings = {
+    id: 'connectionManagerPlugin',
+    title: 'Camunda 8 cluster connections',
+    order: 1,
+    properties: {
+      [SETTINGS_KEY_CONNECTIONS]: {
+        type: 'custom',
+        component: (props) => ConnectionManagerSettingsComponent({ ...props, connectionChecker }),
+        description: 'Manage Camunda 8 orchestration cluster connections.',
+      },
+
+    }
+  };
+
   settings.register(pluginSettings);
 }
-
-/** @type import("../../../app/Settings").SettingsGroup */
-const pluginSettings = {
-  id: 'connectionManagerPlugin',
-  title: 'Camunda 8 cluster connections',
-  order: 1,
-  properties: {
-    [SETTINGS_KEY_CONNECTIONS]: {
-      type: 'customFieldArray',
-      component: ConnectionManagerSettingsComponent,
-      label: 'customFieldArray',
-      description: 'Manage Camunda 8 Orchestration Cluster connections.',
-    },
-
-  }
-};

@@ -43,6 +43,7 @@ describe('ConnectionManagerPlugin', function() {
           activeTab: DEFAULT_ACTIVE_TAB
         });
       }
+      return { cancel: () => {} };
     });
 
     // when
@@ -66,6 +67,7 @@ describe('ConnectionManagerPlugin', function() {
           activeTab: DEFAULT_ACTIVE_TAB
         });
       }
+      return { cancel: () => {} };
     });
 
     const { getByTitle, queryByText } = createConnectionManagerPlugin({ subscribe });
@@ -93,6 +95,7 @@ describe('ConnectionManagerPlugin', function() {
           activeTab: DEFAULT_ACTIVE_TAB
         });
       }
+      return { cancel: () => {} };
     });
 
     const { getByTitle, queryByText } = createConnectionManagerPlugin({ subscribe });
@@ -130,6 +133,7 @@ describe('ConnectionManagerPlugin', function() {
           activeTab: DEFAULT_ACTIVE_TAB
         });
       }
+      return { cancel: () => {} };
     });
 
     const { getByTitle, queryByText, rerender } = createConnectionManagerPlugin({ subscribe });
@@ -176,6 +180,7 @@ describe('ConnectionManagerPlugin', function() {
           activeTab: DEFAULT_ACTIVE_TAB
         });
       }
+      return { cancel: () => {} };
     });
 
     const settings = createMockSettings({
@@ -207,6 +212,7 @@ describe('ConnectionManagerPlugin', function() {
           activeTab: DEFAULT_ACTIVE_TAB
         });
       }
+      return { cancel: () => {} };
     });
 
     const settings = createMockSettings({
@@ -234,6 +240,7 @@ describe('ConnectionManagerPlugin', function() {
           activeTab: DEFAULT_ACTIVE_TAB
         });
       }
+      return { cancel: () => {} };
     });
 
     const settings = createMockSettings({
@@ -261,6 +268,7 @@ describe('ConnectionManagerPlugin', function() {
             activeTab: DEFAULT_ACTIVE_TAB
           });
         }
+        return { cancel: () => {} };
       });
 
       const settings = createMockSettings({
@@ -294,6 +302,7 @@ describe('ConnectionManagerPlugin', function() {
             activeTab: DEFAULT_ACTIVE_TAB
           });
         }
+        return { cancel: () => {} };
       });
 
       const settings = createMockSettings({
@@ -327,6 +336,7 @@ describe('ConnectionManagerPlugin', function() {
             activeTab: DEFAULT_ACTIVE_TAB
           });
         }
+        return { cancel: () => {} };
       });
 
       const settings = createMockSettings({
@@ -362,6 +372,7 @@ describe('ConnectionManagerPlugin', function() {
             activeTab: { ...DEFAULT_ACTIVE_TAB, type: 'cloud-bpmn' }
           });
         }
+        return { cancel: () => {} };
       });
 
       // when
@@ -383,6 +394,7 @@ describe('ConnectionManagerPlugin', function() {
             activeTab: { ...DEFAULT_ACTIVE_TAB, type: 'cloud-dmn' }
           });
         }
+        return { cancel: () => {} };
       });
 
       // when
@@ -404,6 +416,7 @@ describe('ConnectionManagerPlugin', function() {
             activeTab: { ...DEFAULT_ACTIVE_TAB, type: 'cloud-form' }
           });
         }
+        return { cancel: () => {} };
       });
 
       // when
@@ -425,6 +438,7 @@ describe('ConnectionManagerPlugin', function() {
             activeTab: { ...DEFAULT_ACTIVE_TAB, type: 'rpa' }
           });
         }
+        return { cancel: () => {} };
       });
 
       // when
@@ -446,6 +460,7 @@ describe('ConnectionManagerPlugin', function() {
             activeTab: { ...DEFAULT_ACTIVE_TAB, type: 'bpmn' }
           });
         }
+        return { cancel: () => {} };
       });
 
       // when
@@ -455,6 +470,210 @@ describe('ConnectionManagerPlugin', function() {
       await waitFor(() => {
         expect(queryByTitle('Configure Camunda 8 connection')).not.to.exist;
       });
+    });
+
+  });
+
+
+  describe('connection checker pause', function() {
+
+    it('should pause global connection checker when settings are opened', async function() {
+
+      // given
+      let openSettings;
+      const subscribe = sinon.spy(function(event, callback) {
+        if (event === 'app.activeTabChanged') {
+          callback({
+            activeTab: DEFAULT_ACTIVE_TAB
+          });
+          return { cancel: () => {} };
+        } else if (event === 'app.settings-open') {
+          openSettings = callback;
+          return { cancel: () => {} };
+        }
+        return { cancel: () => {} };
+      });
+
+      const settings = createMockSettings({
+        'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+      });
+
+      const connectionCheckResult = { success: true };
+
+      const ConnectionChecker = require('../../deployment-plugin/ConnectionChecker').default;
+      const stopCheckingSpy = sinon.spy(ConnectionChecker.prototype, 'stopChecking');
+
+      const { getByTitle } = createConnectionManagerPlugin({
+        subscribe,
+        settings,
+        connectionCheckResult
+      });
+
+      await waitFor(() => {
+        expect(getByTitle('Open connection selector')).to.exist;
+      });
+
+      // when
+      openSettings();
+
+      // then
+      await waitFor(() => {
+        expect(stopCheckingSpy).to.have.been.called;
+      });
+
+      stopCheckingSpy.restore();
+    });
+
+
+    it('should resume global connection checker when settings are closed', async function() {
+
+      // given
+      let openSettings;
+      let closeSettings;
+      const subscribe = sinon.spy(function(event, callback) {
+        if (event === 'app.activeTabChanged') {
+          callback({
+            activeTab: DEFAULT_ACTIVE_TAB
+          });
+          return { cancel: () => {} };
+        } else if (event === 'app.settings-open') {
+          openSettings = callback;
+          return { cancel: () => {} };
+        } else if (event === 'settings.closed') {
+          closeSettings = callback;
+          return { cancel: () => {} };
+        }
+        return { cancel: () => {} };
+      });
+
+      const settings = createMockSettings({
+        'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+      });
+
+      const setConnectionCheckResult = sinon.spy();
+
+
+      createConnectionManagerPlugin({
+        subscribe,
+        settings,
+        setConnectionCheckResult
+      });
+
+      await waitFor(() => {
+        expect(openSettings).to.exist;
+        expect(closeSettings).to.exist;
+      });
+
+      openSettings();
+
+      // when
+      closeSettings();
+
+      // then -
+      await waitFor(() => {
+        expect(setConnectionCheckResult).to.have.been.calledWith(null);
+      });
+    });
+
+
+    it('should display inactive status when paused', async function() {
+
+      // given
+      let openSettings;
+      const subscribe = sinon.spy(function(event, callback) {
+        if (event === 'app.activeTabChanged') {
+          callback({
+            activeTab: DEFAULT_ACTIVE_TAB
+          });
+          return { cancel: () => {} };
+        } else if (event === 'app.settings-open') {
+          openSettings = callback;
+          return { cancel: () => {} };
+        }
+        return { cancel: () => {} };
+      });
+
+      const settings = createMockSettings({
+        'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+      });
+
+      const connectionCheckResult = { success: true };
+
+
+      const { getByTitle, rerender } = createConnectionManagerPlugin({
+        subscribe,
+        settings,
+        connectionCheckResult
+      });
+
+      await waitFor(() => {
+        const statusBarItem = getByTitle('Open connection selector');
+        expect(statusBarItem).to.exist;
+      });
+
+      // when
+      openSettings();
+
+      const newProps = createPluginProps({ subscribe, settings, connectionCheckResult });
+      rerender(
+        <SlotFillRoot>
+          <Slot name="status-bar__file" />
+          <ConnectionManagerPlugin { ...newProps } />
+        </SlotFillRoot>
+      );
+
+      // then
+      await waitFor(() => {
+        const statusBarItem = getByTitle('Open connection selector');
+        expect(statusBarItem.querySelector('svg').getAttribute('aria-label')).to.equal('Idle');
+      });
+
+    });
+
+
+    it('should not resume checking if there is no active connection', async function() {
+
+      // given
+      let closeSettings;
+      const subscribe = sinon.spy(function(event, callback) {
+        if (event === 'app.activeTabChanged') {
+          callback({
+            activeTab: DEFAULT_ACTIVE_TAB
+          });
+          return { cancel: () => {} };
+        } else if (event === 'settings.closed') {
+          closeSettings = callback;
+          return { cancel: () => {} };
+        }
+        return { cancel: () => {} };
+      });
+
+      const settings = createMockSettings({
+        'connectionManagerPlugin.c8connections': []
+      });
+
+      const setConnectionCheckResult = sinon.spy();
+
+
+      createConnectionManagerPlugin({
+        subscribe,
+        settings,
+        setConnectionCheckResult
+      });
+
+      await waitFor(() => {
+        expect(closeSettings).to.exist;
+      });
+
+      const callsBeforeClose = setConnectionCheckResult.callCount;
+
+      // when
+      closeSettings();
+
+      // then
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      expect(setConnectionCheckResult.callCount).to.equal(callsBeforeClose);
     });
 
   });
@@ -494,6 +713,103 @@ describe('ConnectionManagerPlugin', function() {
         expect(settings.subscribe).to.have.been.calledWith(
           'connectionManagerPlugin.c8connections',
           sinon.match.func
+        );
+      });
+    });
+
+
+    it('should open settings with scrollToEntry', async function() {
+
+      // given
+      const subscribe = sinon.spy(function(event, callback) {
+        if (event === 'app.activeTabChanged') {
+          callback({
+            activeTab: DEFAULT_ACTIVE_TAB
+          });
+        }
+        return { cancel: () => {} };
+      });
+
+      const config = createMockConfig({
+        'connection-manager': {
+          connectionId: 'connection-2'
+        }
+      });
+
+      const settings = createMockSettings({
+        'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+      });
+
+      const triggerAction = sinon.spy();
+
+      const { getByTitle, getByText } = createConnectionManagerPlugin({ subscribe, settings, triggerAction, config });
+
+      await waitFor(() => {
+        const statusBarItem = getByTitle('Open connection selector');
+        expect(statusBarItem.textContent).to.contain('Test Connection 2');
+      });
+
+      getByTitle('Open connection selector').click();
+
+      await waitFor(() => {
+        expect(getByText('Manage connections')).to.exist;
+      });
+
+      // when
+      getByText('Manage connections').click();
+
+      // then
+      await waitFor(() => {
+        expect(triggerAction).to.have.been.calledWith(
+          'settings-open',
+          sinon.match({
+            scrollToEntry: 'connectionManagerPlugin.c8connections[1].name'
+          })
+        );
+      });
+    });
+
+
+    it('should open settings without specific scrollToEntry when no active connection', async function() {
+
+      // given
+      const subscribe = sinon.spy(function(event, callback) {
+        if (event === 'app.activeTabChanged') {
+          callback({
+            activeTab: DEFAULT_ACTIVE_TAB
+          });
+        }
+        return { cancel: () => {} };
+      });
+
+      const settings = createMockSettings({
+        'connectionManagerPlugin.c8connections': []
+      });
+
+      const triggerAction = sinon.spy();
+
+      const { getByTitle, getByText } = createConnectionManagerPlugin({ subscribe, settings, triggerAction });
+
+      await waitFor(() => {
+        expect(getByTitle('Open connection selector')).to.exist;
+      });
+
+      getByTitle('Open connection selector').click();
+
+      await waitFor(() => {
+        expect(getByText('Add connections')).to.exist;
+      });
+
+      // when
+      getByText('Add connections').click();
+
+      // then
+      await waitFor(() => {
+        expect(triggerAction).to.have.been.calledWith(
+          'settings-open',
+          sinon.match({
+            scrollToEntry: 'connectionManagerPlugin.c8connections'
+          })
         );
       });
     });
@@ -607,14 +923,13 @@ function createPluginProps(props = {}, globals = {}) {
     },
     displayNotification = () => {},
     log = () => {},
-    subscribe = () => {},
+    subscribe = () => ({ cancel: () => {} }),
     triggerAction = () => {},
     settings = createMockSettings(),
     config = createMockConfig(),
     getConfig = () => config,
     setConfig = () => {},
-    connectionCheckResult = null,
-    setConnectionCheckResult = () => {}
+    ...otherProps
   } = props;
 
   return {
@@ -628,7 +943,6 @@ function createPluginProps(props = {}, globals = {}) {
     config,
     getConfig,
     setConfig,
-    connectionCheckResult,
-    setConnectionCheckResult
+    ...otherProps
   };
 }

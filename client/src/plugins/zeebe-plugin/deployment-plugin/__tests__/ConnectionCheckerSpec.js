@@ -69,7 +69,8 @@ describe('ConnectionChecker', function() {
 
     expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
-      success: true
+      success: true,
+      name: 'default'
     });
   });
 
@@ -107,7 +108,8 @@ describe('ConnectionChecker', function() {
     expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
-      reason: 'foo'
+      reason: 'foo',
+      name: 'default'
     });
   });
 
@@ -144,7 +146,8 @@ describe('ConnectionChecker', function() {
     expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
-      error
+      error,
+      name: 'default'
     });
   });
 
@@ -191,7 +194,8 @@ describe('ConnectionChecker', function() {
 
     expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
-      success: true
+      success: true,
+      name: 'default'
     });
 
     // when
@@ -206,7 +210,8 @@ describe('ConnectionChecker', function() {
     expect(connectionCheckSpy).to.have.been.calledThrice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
-      reason: 'foo'
+      reason: 'foo',
+      name: 'default'
     });
 
     // when
@@ -220,7 +225,8 @@ describe('ConnectionChecker', function() {
 
     expect(connectionCheckSpy).to.have.been.called.callCount(4);
     expect(connectionCheckSpy).to.have.been.calledWith({
-      success: true
+      success: true,
+      name: 'default'
     });
   });
 
@@ -273,7 +279,8 @@ describe('ConnectionChecker', function() {
 
     expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
-      success: true
+      success: true,
+      name: 'default'
     });
 
     // when

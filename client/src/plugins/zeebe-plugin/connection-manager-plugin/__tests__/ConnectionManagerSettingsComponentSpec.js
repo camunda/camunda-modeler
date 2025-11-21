@@ -18,7 +18,7 @@ import {
   waitFor
 } from '@testing-library/react';
 
-import { Formik, FieldArray } from 'formik';
+import { Formik } from 'formik';
 
 import { ConnectionManagerSettingsComponent } from '../ConnectionManagerSettingsComponent';
 
@@ -369,6 +369,203 @@ describe('ConnectionManagerSettingsComponent', function() {
   });
 
 
+  it('should auto-expand connection', async function() {
+
+    // given
+    const connections = [
+      { id: 'conn-1', name: 'Connection 1', targetType: 'camundaCloud' },
+      { id: 'conn-2', name: 'Connection 2', targetType: 'camundaCloud' },
+      { id: 'conn-3', name: 'Connection 3', targetType: 'camundaCloud' }
+    ];
+
+    // when
+    const { container } = createComponent({
+      initialValues: connections,
+      targetElement: 'connections[1].name'
+    });
+
+    // then - verify the second connection (index 1) is expanded
+    await waitFor(() => {
+      const nameInput = container.querySelector('input[name="connections[1].name"]');
+      expect(nameInput).to.exist;
+      expect(nameInput.value).to.equal('Connection 2');
+    });
+
+    // verify other connections are not expanded
+    expect(container.querySelector('input[name="connections[0].name"]')).to.not.exist;
+    expect(container.querySelector('input[name="connections[2].name"]')).to.not.exist;
+  });
+
+
+  describe('connection checker integration', function() {
+
+    it('should start checking connection when row is expanded', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Test Connection',
+          targetType: 'camundaCloud',
+          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io',
+          camundaCloudClientId: 'test-client-id',
+          camundaCloudClientSecret: 'test-secret'
+        }
+      ];
+
+      const connectionChecker = createMockConnectionChecker();
+
+      const { container } = createComponent({
+        initialValues: connections,
+        connectionChecker
+      });
+
+      // when
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // then
+      await waitFor(() => {
+        expect(connectionChecker.current.updateConfig).to.have.been.called;
+      });
+    });
+
+
+    it('should display connection check status when checking', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Test Connection',
+          targetType: 'camundaCloud',
+          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io'
+        }
+      ];
+
+      const connectionChecker = createMockConnectionChecker();
+
+      const { container, getByLabelText } = createComponent({
+        initialValues: connections,
+        connectionChecker
+      });
+
+      // when
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // then - should show loading indicator
+      await waitFor(() => {
+        expect(getByLabelText('Loading')).to.exist;
+      });
+    });
+
+
+    it('should display success status when connection check succeeds', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Test Connection',
+          targetType: 'camundaCloud',
+          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io'
+        }
+      ];
+
+      const connectionChecker = createMockConnectionChecker();
+
+      const { container, getByLabelText } = createComponent({
+        initialValues: connections,
+        connectionChecker
+      });
+
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // when
+      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
+      connectionCheckListener({ success: true, name: 'settings' });
+
+      // then
+      await waitFor(() => {
+        expect(getByLabelText('Success')).to.exist;
+        expect(container.textContent).to.contain('Connected');
+      });
+    });
+
+
+    it('should display error status when connection check fails', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Test Connection',
+          targetType: 'camundaCloud',
+          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io'
+        }
+      ];
+
+      const connectionChecker = createMockConnectionChecker();
+
+      const { container, getByLabelText } = createComponent({
+        initialValues: connections,
+        connectionChecker
+      });
+
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // when - trigger failure
+      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
+      connectionCheckListener({
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE',
+        name: 'settings'
+      });
+
+      // then - check for error icon
+      await waitFor(() => {
+        expect(getByLabelText('Error')).to.exist;
+      });
+    });
+
+
+    it('should stop checking on unmount', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Test Connection',
+          targetType: 'camundaCloud'
+        }
+      ];
+
+      const connectionChecker = createMockConnectionChecker();
+
+      const { container, unmount } = createComponent({
+        initialValues: connections,
+        connectionChecker
+      });
+
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // when
+      unmount();
+
+      // then
+      await waitFor(() => {
+        expect(connectionChecker.current.stopChecking).to.have.been.called;
+        expect(connectionChecker.current.off).to.have.been.called;
+      });
+    });
+
+  });
+
+
   describe('table structure', function() {
 
     it('should render as a table', function() {
@@ -441,10 +638,28 @@ describe('ConnectionManagerSettingsComponent', function() {
 
 // helpers ///////////////////
 
+function createMockConnectionChecker() {
+  const onSpy = sinon.spy();
+  const offSpy = sinon.spy();
+  const updateConfigSpy = sinon.spy();
+  const stopCheckingSpy = sinon.spy();
+
+  return {
+    current: {
+      on: onSpy,
+      off: offSpy,
+      updateConfig: updateConfigSpy,
+      stopChecking: stopCheckingSpy
+    }
+  };
+}
+
 function createComponent(options = {}) {
   const {
     initialValues = [],
     expandRowId = null,
+    targetElement = null,
+    connectionChecker = createMockConnectionChecker(),
     onSubmit = () => {}
   } = options;
 
@@ -462,15 +677,11 @@ function createComponent(options = {}) {
           e.preventDefault();
           onSubmit(values);
         } }>
-          <FieldArray
+          <ConnectionManagerSettingsComponent
             name="connections"
-            render={ (arrayHelpers) => (
-              <ConnectionManagerSettingsComponent
-                { ...arrayHelpers }
-                name="connections"
-                expandRowId={ expandRowId }
-              />
-            ) }
+            expandRowId={ expandRowId }
+            targetElement={ targetElement }
+            connectionChecker={ connectionChecker }
           />
         </form>
       )}
