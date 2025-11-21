@@ -81,6 +81,12 @@ module.exports = function(karma) {
     singleRun: true,
     autoWatch: false,
 
+    client: {
+      mocha: {
+        timeout: 10000
+      }
+    },
+
     webpack: {
       mode: 'none',
       module: {
