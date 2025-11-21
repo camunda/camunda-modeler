@@ -57,7 +57,7 @@ describe('ConnectionManagerPlugin', function() {
   });
 
 
-  it('should render overlay when clicking status bar item', async function() {
+  it('should open overlay when clicking status bar item', async function() {
 
     // given
     const subscribe = sinon.spy(function(event, callback) {
@@ -79,12 +79,12 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select orchestration cluster connection.')).to.exist;
+      expect(queryByText('Select connection')).to.exist;
     });
   });
 
 
-  it('should not render overlay when clicking status bar item (overlay rendered)', async function() {
+  it('should close overlay when clicking status bar item again', async function() {
 
     // given
     const subscribe = sinon.spy(function(event, callback) {
@@ -106,7 +106,7 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select orchestration cluster connection.')).to.exist;
+      expect(queryByText('Select connection')).to.exist;
     });
 
     // when
@@ -114,7 +114,7 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select orchestration cluster connection.')).not.to.exist;
+      expect(queryByText('Select connection')).not.to.exist;
     });
   });
 
@@ -143,7 +143,7 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select orchestration cluster connection.')).to.exist;
+      expect(queryByText('Select connection')).to.exist;
     });
 
     // when
@@ -162,7 +162,7 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select orchestration cluster connection.')).not.to.exist;
+      expect(queryByText('Select connection')).not.to.exist;
     });
   });
 

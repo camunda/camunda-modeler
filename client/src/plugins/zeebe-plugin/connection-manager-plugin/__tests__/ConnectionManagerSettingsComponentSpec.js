@@ -27,10 +27,10 @@ describe('ConnectionManagerSettingsComponent', function() {
   it('should render', function() {
 
     // when
-    const wrapper = createComponent();
+    const { getByTestId } = createComponent();
 
     // then
-    expect(wrapper.getByTestId('connection-manager-settings')).to.exist;
+    expect(getByTestId('connection-manager-settings')).to.exist;
   });
 
 
@@ -41,7 +41,7 @@ describe('ConnectionManagerSettingsComponent', function() {
 
     // then
     expect(container.querySelector('.empty-placeholder')).to.exist;
-    expect(container.querySelector('.empty-placeholder').textContent).to.equal('No Connections');
+    expect(container.querySelector('.empty-placeholder').textContent).to.equal('No connections configured');
   });
 
 
@@ -424,30 +424,18 @@ describe('ConnectionManagerSettingsComponent', function() {
   });
 
 
-  describe('description text', function() {
 
-    it('should display Camunda 8 label', function() {
+  it('should display description text', function() {
 
-      // when
-      const { container } = createComponent();
+    // when
+    const { container } = createComponent();
 
-      // then
-      expect(container.querySelector('.custom-control-label').textContent).to.equal('Camunda 8');
-    });
-
-
-    it('should display description text', function() {
-
-      // when
-      const { container } = createComponent();
-
-      // then
-      const description = container.querySelector('.custom-control-description');
-      expect(description).to.exist;
-      expect(description.textContent).to.equal('Manage Camunda 8 orchestration cluster connections.');
-    });
-
+    // then
+    const description = container.querySelector('.custom-control-description');
+    expect(description).to.exist;
+    expect(description.textContent).to.equal('Manage Camunda 8 orchestration cluster connections.');
   });
+
 
 });
 

@@ -38,9 +38,9 @@ export function ConnectionManagerOverlay({
         {renderHeader}
       </Section.Header>
       <Section.Body className="form-body">
-        <p>Select orchestration cluster connection.</p>
         {connections?.length ?
           <div className={ classNames('form-group', 'form-group-spacing') }>
+            <p>Select orchestration cluster connection.</p>
             <div>
               <Select
                 field={ {
@@ -68,7 +68,7 @@ export function ConnectionManagerOverlay({
           </div>
           :
           <div>
-            <p className="empty-placeholder">No Connections Available</p>
+            <p className="empty-placeholder">No connections configured</p>
             <div className="manage-connections-container">
               <a className="manage-connections-link" onClick={ handleManageConnections }>
                 Add connections

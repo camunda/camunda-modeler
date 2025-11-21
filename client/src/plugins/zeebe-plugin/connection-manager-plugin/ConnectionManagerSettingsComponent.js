@@ -52,11 +52,10 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
 
   return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings">
     <div className="custom-control">
-      <label className="custom-control-label">Camunda 8</label>
       <div className="custom-control-description">Manage Camunda 8 orchestration cluster connections.</div>
     </div>
     {(!fieldValue || fieldValue.length === 0) && (
-      <p className="empty-placeholder">No Connections</p>
+      <p className="empty-placeholder">No connections configured</p>
     )}
     <DataTable rows={ fieldValue } headers={ [] }>
       {({
@@ -76,8 +75,8 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
                 >
                   <TableCell key={ `${fieldName}[${index}].name` }>
                     { isExpanded(row) ?
-                      <SettingsField name={ `${fieldName}[${index}].name` } type="text" hint="Name" default="New Connection" /> :
-                      <span id={ `${fieldName}[${index}].name` }>{ fieldValue[index]['name'] || 'Unnamed Connection'}</span>
+                      <SettingsField name={ `${fieldName}[${index}].name` } type="text" hint="Name" default="New connection" /> :
+                      <span id={ `${fieldName}[${index}].name` }>{ fieldValue[index]['name'] || 'Unnamed connection'}</span>
                     }
                   </TableCell>
 

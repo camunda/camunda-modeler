@@ -143,7 +143,7 @@ export default function ConnectionManagerPlugin(props) {
   }
 
   const statusBarConnectionStatus = getStatus(connectionCheckResult, activeConnection);
-  const statusBarText = activeConnection ? activeConnection.name || activeConnection.url || 'Unnamed Connection' : 'Select Connection';
+  const statusBarText = activeConnection ? activeConnection.name || 'Unnamed connection' : 'No connections';
   return <>
     { tabNeedsConnection(activeTab) &&
       <Fill name="connection-manager" className slot="status-bar__file" group="8_deploy" priority={ 2 }>

@@ -11,8 +11,6 @@
 import { AUTH_TYPES, TARGET_TYPES } from '../../../remote/ZeebeAPI';
 import { generateId } from '../../../util';
 
-
-
 const LABELS = {
   AUTHENTICATION: 'Authentication',
   AUTH_TYPE_BASIC_AUTH: 'Basic',
@@ -44,7 +42,7 @@ const VALIDATION_ERROR_MESSAGES = {
   BASIC_AUTH_PASSWORD_MUST_NOT_BE_EMPTY: 'Password must not be empty.',
   BASIC_AUTH_USERNAME_MUST_NOT_BE_EMPTY: 'Username must not be empty.',
   CLIENT_ID_MUST_NOT_BE_EMPTY: 'Client ID must not be empty.',
-  CLIENT_SECRET_MUST_NOT_BE_EMPTY: 'Client Secret must not be empty.',
+  CLIENT_SECRET_MUST_NOT_BE_EMPTY: 'Client secret must not be empty.',
   CLUSTER_URL_MUST_BE_VALID_CLOUD_URL: 'Must be a valid Camunda 8 SaaS URL.',
   CONTACT_POINT_MUST_BE_URL: 'Cluster URL must be a valid URL.',
   CONTACT_POINT_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
@@ -243,5 +241,5 @@ export function generateNewElement(elementCount = 0) {
       return acc;
     }, {});
 
-  return { id: generateId(), name: `New Connection ${elementCount + 1}`, ...defaults };
+  return { id: generateId(), name: `New connection ${elementCount + 1}`, ...defaults };
 }

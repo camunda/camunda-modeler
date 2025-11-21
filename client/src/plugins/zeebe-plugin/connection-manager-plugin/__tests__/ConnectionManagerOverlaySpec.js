@@ -45,7 +45,7 @@ describe('ConnectionManagerOverlay', function() {
 
       // then
       expect(container.querySelector('select[name="connection"]')).to.not.exist;
-      expect(getByText('No Connections Available')).to.exist;
+      expect(getByText('No connections configured')).to.exist;
       expect(getByText('Add connections')).to.exist;
     });
 
