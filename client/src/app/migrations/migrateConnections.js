@@ -12,15 +12,12 @@ import { generateId } from '../../util';
 import { AUTH_TYPES, TARGET_TYPES } from '../../remote/ZeebeAPI';
 import { SETTINGS_KEY_CONNECTIONS } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerSettings';
 
-
-
-
 export async function migrateConnections(settings, config) {
   const c8connections = settings.get(SETTINGS_KEY_CONNECTIONS);
 
   if (!c8connections) {
     const zeebeEndpoints = await config.get('zeebeEndpoints');
-    settings.set({ [SETTINGS_KEY_CONNECTIONS]:  zeebeEndpoints || [ DEFAULT_ENDPOINT ] });
+    settings.set({ [SETTINGS_KEY_CONNECTIONS]:  [ ...(zeebeEndpoints || []), DEFAULT_ENDPOINT ] });
   }
 }
 
@@ -29,6 +26,7 @@ const DEFAULT_ENDPOINT = {
   id: generateId(),
   name: 'c8run (local)',
   contactPoint: 'http://localhost:8080/v2',
+  operateUrl: 'http://localhost:8080/operate',
   targetType: TARGET_TYPES.SELF_HOSTED,
   authType: AUTH_TYPES.NONE,
 };
