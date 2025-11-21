@@ -27,10 +27,10 @@ describe('ConnectionManagerSettingsComponent', function() {
   it('should render', function() {
 
     // when
-    const { container } = createComponent();
+    const wrapper = createComponent();
 
     // then
-    expect(container.querySelector('.connection-manager-settings-component')).to.exist;
+    expect(wrapper.getByTestId('connection-manager-settings')).to.exist;
   });
 
 

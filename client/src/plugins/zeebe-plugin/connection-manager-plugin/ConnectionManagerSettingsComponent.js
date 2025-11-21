@@ -18,7 +18,7 @@ import { getIn } from 'formik';
 import { SettingsField } from '../../settings/SettingsForm';
 import { generateNewElement, properties } from './ConnectionManagerSettingsProperties';
 
-import './ConnectionManagerSettingsComponent.less';
+import * as css from './ConnectionManagerSettingsComponent.less';
 
 /**
  *
@@ -50,7 +50,7 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
     }
   }
 
-  return <div className="connection-manager-settings-component">
+  return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings">
     <div className="custom-control">
       <label className="custom-control-label">Camunda 8</label>
       <div className="custom-control-description">Manage Camunda 8 orchestration cluster connections.</div>
