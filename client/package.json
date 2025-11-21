@@ -33,7 +33,7 @@
     "@sentry/browser": "^10.0.0",
     "@sentry/integrations": "^7.108.0",
     "@uiw/codemirror-theme-vscode": "^4.23.12",
-    "bpmn-js": "^18.8.0",
+    "bpmn-js": "^18.9.1",
     "bpmn-js-element-templates": "^2.15.0",
     "bpmn-js-properties-panel": "^5.42.3",
     "bpmn-js-tracking": "^0.6.0",
