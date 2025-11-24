@@ -11,7 +11,8 @@
 import React from 'react';
 import * as css from './ReleaseInfo.less';
 
-import { utmTag } from '../../util/utmTag';
+// If you add links to the release info, make sure to track them with UTM tags
+// import { utmTag } from '../../util/utmTag';
 
 /**
  * Release info notice which is displayed once user clicks the version number on the status bar.
@@ -46,14 +47,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for upcoming Camunda 8 features</h4>
-          You can now create diagrams for Camunda 8.9.
+          <h4>Connection manager</h4>
+          You can now store multiple connections and easily switch between them using the new connection manager in settings.
         </li>
         <li>
-          <h4>Improved task testing</h4>
-          We now separate process and local variables in the output. <a href={
-            utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/')
-          }>Learn more about task testing</a>.
+          <h4>Enhanced element template support</h4>
+          Element templates now support templating signal events, enabling reusable signals across processes.
+        </li>
+        <li>
+          <h4>Enhanced label visibility</h4>
+          External labels are now visually connected to their target elements, making it easier to understand diagram relationships.
+        </li>
+        <li>
+          <h4>Improved properties panel usability</h4>
+          We addressed several issues related to input handling and made it easier to interact with the tooltips.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
