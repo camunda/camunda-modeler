@@ -11,7 +11,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import classNames from 'classnames';
-import { InlineLoading } from '@carbon/react';
 
 import { Fill } from '../../../app/slot-fill';
 import { Overlay } from '../../../shared/ui';
@@ -23,6 +22,7 @@ import { SETTINGS_KEY_CONNECTIONS, initializeSettings } from './ConnectionManage
 
 import * as css from './ConnectionManagerPlugin.less';
 import { ConnectionManagerOverlay } from './ConnectionManagerOverlay';
+import { StatusIndicator } from '../shared/StatusIndicator';
 
 const CONFIG_KEY = 'connection-manager';
 
@@ -134,12 +134,12 @@ export default function ConnectionManagerPlugin(props) {
 
   function getStatus(connectionCheckResult, activeConnection) {
     if (connectionCheckResult) {
-      return connectionCheckResult.success ? 'finished' : 'error';
+      return connectionCheckResult.success ? 'success' : 'error';
     }
     if (activeConnection) {
-      return 'active';
+      return 'loading';
     }
-    return 'inactive';
+    return 'idle';
   }
 
   const statusBarConnectionStatus = getStatus(connectionCheckResult, activeConnection);
@@ -153,11 +153,7 @@ export default function ConnectionManagerPlugin(props) {
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ statusBarButtonRef }
         >
-          <InlineLoading
-            className={ css.ConnectionManagerLoadingIndicator }
-            status={ statusBarConnectionStatus }
-            description={ statusBarText }
-          />
+          <StatusIndicator status={ statusBarConnectionStatus } text={ statusBarText }></StatusIndicator>
         </button>
       </Fill>
     }
