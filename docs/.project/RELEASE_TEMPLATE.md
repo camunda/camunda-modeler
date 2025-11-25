@@ -31,6 +31,7 @@ _To be done before the code freeze._
 
 _To be done after code freeze to prepare and test the release._
 
+* [ ] inform teams ([#team-modeling-group](https://camunda.slack.com/archives/C032H77434N)) that the freeze started and release prep is in progress 
 * [ ] make sure changes in upstream libraries are merged and released
   * `bpmn-js`, `dmn-js`, `*-properties-panel`, `*-moddle`, `camunda-bpmn-js`, `form-js`, ...
 * [ ] make sure the dependencies are updated in the [Web Modeler](https://github.com/camunda/web-modeler/)
