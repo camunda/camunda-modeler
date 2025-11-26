@@ -49,7 +49,6 @@ export function ConnectionManagerOverlay({
                 } }
                 className="form-control"
                 name="connection"
-                placeholder="Please select a connection"
                 options={ connections.map(connection => ({
                   value: connection.id,
                   label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
