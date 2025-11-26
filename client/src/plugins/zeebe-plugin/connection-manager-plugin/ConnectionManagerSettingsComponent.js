@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Button, DataTable, Table, TableBody, TableCell, TableExpandedRow, TableExpandRow } from '@carbon/react';
 import { Add, TrashCan } from '@carbon/icons-react';
@@ -27,9 +27,26 @@ import * as css from './ConnectionManagerSettingsComponent.less';
 export function ConnectionManagerSettingsComponent({ form, name:fieldName, push, remove, expandRowId }) {
 
   const [ expandedRows, setExpandedRows ] = useState([]);
+  const [ newlyCreatedRowId, setNewlyCreatedRowId ] = useState(null);
   const expandedRowRef = useRef(null);
 
   const fieldValue = getIn(form.values, fieldName) || [];
+
+  useEffect(() => {
+    if (newlyCreatedRowId && expandedRows.includes(newlyCreatedRowId)) {
+      setTimeout(() => {
+        const index = fieldValue.findIndex(item => item.id === newlyCreatedRowId);
+        if (index !== -1) {
+          const inputElement = document.getElementById(`${fieldName}[${index}].name`);
+          if (inputElement) {
+            inputElement.focus();
+            inputElement.select();
+          }
+        }
+        setNewlyCreatedRowId(null);
+      }, 0);
+    }
+  }, [ expandedRows, newlyCreatedRowId, fieldName, fieldValue ]);
 
   /**
    * @param {{ id: any; }} row
@@ -125,6 +142,7 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
           const newElement = generateNewElement(fieldValue.length);
           push(newElement);
           setExpandedRows([ newElement.id ]);
+          setNewlyCreatedRowId(newElement.id);
         } }
       />
     </div>
