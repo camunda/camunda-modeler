@@ -41,7 +41,7 @@ describe('ConnectionManagerSettingsComponent', function() {
 
     // then
     expect(container.querySelector('.empty-placeholder')).to.exist;
-    expect(container.querySelector('.empty-placeholder').textContent).to.equal('No connections configured');
+    expect(container.querySelector('.empty-placeholder').textContent).to.contain('No connections configured');
   });
 
 
@@ -126,10 +126,10 @@ describe('ConnectionManagerSettingsComponent', function() {
     it('should render add button', function() {
 
       // when
-      const { container } = createComponent();
+      const { getByText } = createComponent();
 
       // then
-      const addButton = container.querySelector('button.add');
+      const addButton = getByText('Add connection');
       expect(addButton).to.exist;
     });
 
@@ -137,10 +137,10 @@ describe('ConnectionManagerSettingsComponent', function() {
     it('should add new connection', async function() {
 
       // given
-      const { container } = createComponent({ initialValues: [] });
+      const { container, getByText } = createComponent({ initialValues: [] });
 
       // when
-      const addButton = container.querySelector('button.add');
+      const addButton = getByText('Add connection');
       fireEvent.click(addButton);
 
       // then
@@ -154,10 +154,10 @@ describe('ConnectionManagerSettingsComponent', function() {
     it('should expand newly added connection', async function() {
 
       // given
-      const { container } = createComponent({ initialValues: [] });
+      const { container, getByText } = createComponent({ initialValues: [] });
 
       // when
-      const addButton = container.querySelector('button.add');
+      const addButton = getByText('Add connection');
       fireEvent.click(addButton);
 
       // then
@@ -172,10 +172,10 @@ describe('ConnectionManagerSettingsComponent', function() {
 
       // given
       const onSubmit = sinon.spy();
-      const { container } = createComponent({ initialValues: [], onSubmit });
+      const { container, getByText } = createComponent({ initialValues: [], onSubmit });
 
       // when
-      const addButton = container.querySelector('button.add');
+      const addButton = getByText('Add connection');
       fireEvent.click(addButton);
 
       await waitFor(() => {
@@ -433,7 +433,7 @@ describe('ConnectionManagerSettingsComponent', function() {
     // then
     const description = container.querySelector('.custom-control-description');
     expect(description).to.exist;
-    expect(description.textContent).to.equal('Manage Camunda 8 orchestration cluster connections.');
+    expect(description.textContent).to.equal('Deploy and run your processes on Camunda 8 Orchestration Clusters, including Camunda 8 Run.');
   });
 
 

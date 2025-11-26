@@ -11,7 +11,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Button, DataTable, Table, TableBody, TableCell, TableExpandedRow, TableExpandRow } from '@carbon/react';
-import { Add, TrashCan } from '@carbon/icons-react';
+import { ErrorFilled, TrashCan } from '@carbon/icons-react';
 
 import { FieldArray, getIn, useFormikContext } from 'formik';
 
@@ -77,13 +77,18 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
         setNewlyCreatedRowId(newElement.id);
       }
 
-
       return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings" id={ fieldName }>
         <div className="custom-control">
-          <div className="custom-control-description">Manage Camunda 8 orchestration cluster connections.</div>
+          <div className="custom-control-description">Deploy and run your processes on Camunda 8 Orchestration Clusters, including <a href="https://docs.camunda.io/docs/self-managed/quickstart/developer-quickstart/c8run/">Camunda 8 Run</a>.</div>
         </div>
         {(!fieldValue || fieldValue.length === 0) && (
-          <p className="empty-placeholder">No connections configured</p>
+          <div className="empty-placeholder">
+            <ErrorFilled size={ 20 } />
+            <div className="placeholder-content">
+              <h1>No connections configured</h1>
+              <p>Add a cluster connection to deploy and run processes</p>
+            </div>
+          </div>
         )}
         <DataTable rows={ fieldValue } headers={ [] }>
           {({
