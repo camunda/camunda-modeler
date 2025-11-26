@@ -52,7 +52,7 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
 
   return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings">
     <div className="custom-control">
-      <div className="custom-control-description">Manage Camunda 8 orchestration cluster connections.</div>
+      <div className="custom-control-description">Manage Camunda 8 Orchestration Cluster connections.</div>
     </div>
     {(!fieldValue || fieldValue.length === 0) && (
       <p className="empty-placeholder">No connections configured</p>
