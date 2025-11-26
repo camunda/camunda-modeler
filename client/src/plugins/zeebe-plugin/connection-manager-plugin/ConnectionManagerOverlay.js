@@ -40,7 +40,7 @@ export function ConnectionManagerOverlay({
       <Section.Body className="form-body">
         {connections?.length ?
           <div className={ classNames('form-group', 'form-group-spacing') }>
-            <p>Select orchestration cluster connection.</p>
+            <p>Select Orchestration Cluster connection.</p>
             <div>
               <Select
                 field={ {

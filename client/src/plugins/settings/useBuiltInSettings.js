@@ -30,7 +30,7 @@ export default function useBuiltInSettings(settings) {
 
 export const schema = {
   id: 'app',
-  title: 'Global Settings',
+  title: 'Global settings',
   order: 0,
   properties: {
     'app.newContextPad': {

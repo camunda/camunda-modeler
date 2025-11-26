@@ -30,7 +30,7 @@ describe('ConnectionManagerOverlay', function() {
 
       // then
       expect(container.querySelector('select[name="connection"]')).to.exist;
-      expect(getByText('Select orchestration cluster connection.')).to.exist;
+      expect(getByText('Select Orchestration Cluster connection.')).to.exist;
       expect(getByText('Manage connections')).to.exist;
     });
 
@@ -187,7 +187,7 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.contain('Cannot connect to Orchestration cluster');
+      expect(errorMessage.textContent).to.contain('Cannot connect to Orchestration Cluster');
     });
 
 
