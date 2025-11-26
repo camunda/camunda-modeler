@@ -64,12 +64,18 @@ export default function ConnectionManagerPlugin(props) {
     });
   }, [ settings ]);
 
-  // close overlay on tab change
+
   useEffect(() => {
+
+    // close overlay on tab change
     subscribe('app.activeTabChanged', ({ activeTab }) => {
       setActiveTab(activeTab);
       setOverlayOpen(false);
+    });
 
+    // enable external opening
+    subscribe('app.open-connection-selector', ({ tab }) => {
+      setOverlayOpen(true);
     });
   }, [ subscribe ]);
 
