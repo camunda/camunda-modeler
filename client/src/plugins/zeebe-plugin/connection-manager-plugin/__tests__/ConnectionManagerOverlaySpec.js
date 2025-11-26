@@ -30,7 +30,7 @@ describe('ConnectionManagerOverlay', function() {
 
       // then
       expect(container.querySelector('select[name="connection"]')).to.exist;
-      expect(getByText('Select Orchestration Cluster connection.')).to.exist;
+      expect(getByText('Manage connections')).to.exist;
     });
 
 
@@ -79,12 +79,11 @@ describe('ConnectionManagerOverlay', function() {
       // then
       expect(select).to.exist;
 
-      // Note: Select component includes two placeholder options (hidden + disabled)
-      expect(select.options.length).to.equal(4);
-      expect(select.options[2].value).to.equal('connection-1');
-      expect(select.options[2].text).to.equal('Test Connection 1');
-      expect(select.options[3].value).to.equal('connection-2');
-      expect(select.options[3].text).to.equal('Test Connection 2');
+      expect(select.options.length).to.equal(3);
+      expect(select.options[0].value).to.equal('connection-1');
+      expect(select.options[0].text).to.equal('Test Connection 1');
+      expect(select.options[1].value).to.equal('connection-2');
+      expect(select.options[1].text).to.equal('Test Connection 2');
     });
 
 
@@ -140,7 +139,7 @@ describe('ConnectionManagerOverlay', function() {
       const select = container.querySelector('select[name="connection"]');
 
       // then
-      expect(select.options[2].text).to.equal('Unnamed (http://localhost:26500)');
+      expect(select.options[0].text).to.equal('Unnamed (http://localhost:26500)');
     });
 
 
@@ -161,7 +160,7 @@ describe('ConnectionManagerOverlay', function() {
       const select = container.querySelector('select[name="connection"]');
 
       // then
-      expect(select.options[2].text).to.equal('Unnamed (https://cluster.camunda.io)');
+      expect(select.options[0].text).to.equal('Unnamed (https://cluster.camunda.io)');
     });
 
   });
@@ -185,7 +184,7 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.contain('Cannot connect to Orchestration cluster');
+      expect(errorMessage.textContent).to.contain('Cannot connect to Orchestration Cluster');
     });
 
 

@@ -41,7 +41,7 @@ describe('ConnectionManagerSettingsComponent', function() {
 
     // then
     expect(container.querySelector('.empty-placeholder')).to.exist;
-    expect(container.querySelector('.empty-placeholder').textContent).to.equal('No connections configured');
+    expect(container.querySelector('.empty-placeholder').textContent).to.contain('No connections configured');
   });
 
 
@@ -433,7 +433,7 @@ describe('ConnectionManagerSettingsComponent', function() {
     // then
     const description = container.querySelector('.custom-control-description');
     expect(description).to.exist;
-    expect(description.textContent).to.equal('Manage Camunda 8 orchestration cluster connections.');
+    expect(description.textContent).to.equal('Deploy and run your processes on Camunda 8 orchestration clusters, including Camunda 8 Run.');
   });
 
 

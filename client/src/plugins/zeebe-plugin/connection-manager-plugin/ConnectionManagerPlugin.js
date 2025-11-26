@@ -106,7 +106,6 @@ export default function ConnectionManagerPlugin(props) {
       }
 
       let connection = connections.find((conn) => conn.id === connectionId);
-
       if (!connection && connections.length > 0) {
         connection = connections[0];
         deployment.setConnectionForFile(activeTab.file, connection.id);
@@ -114,8 +113,7 @@ export default function ConnectionManagerPlugin(props) {
 
       setActiveConnection(connection);
     })();
-  },
-  [ activeTab, deployment, connections ]);
+  }, [ activeTab, deployment, connections ]);
 
   // update connection checker on connection change
   useEffect(() => {
@@ -147,9 +145,6 @@ export default function ConnectionManagerPlugin(props) {
     };
   }, [ activeConnection, connectionChecker, deployment, setConnectionCheckResult ]);
 
-  const tabsProvider = _getFromApp('props').tabsProvider;
-  const TabIcon = activeTab ? tabsProvider.getTabIcon(activeTab?.type) || (() => null) : (() => null);
-
   function getStatus(connectionCheckResult, activeConnection) {
     if (activeConnection?.id === NO_CONNECTION.id) {
       return 'idle';
@@ -164,13 +159,13 @@ export default function ConnectionManagerPlugin(props) {
   }
 
   const statusBarConnectionStatus = getStatus(connectionCheckResult, activeConnection);
-  const statusBarText = activeConnection ? activeConnection.name || 'Unnamed connection' : 'No connections';
+  const statusBarText = activeConnection ? activeConnection.name || 'Unnamed connection' : 'No connection';
   return <>
     { tabNeedsConnection(activeTab) &&
       <Fill name="connection-manager" className slot="status-bar__file" group="8_deploy" priority={ 2 }>
         <button
           onClick={ () => setOverlayOpen(!overlayOpen) }
-          title="Open connection selector"
+          title="Configure Camunda 8 connection"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ statusBarButtonRef }
         >
@@ -182,11 +177,11 @@ export default function ConnectionManagerPlugin(props) {
       <ConnectionManagerOverlay
         connections={ connections }
         connectionCheckResult={ connectionCheckResult }
-        renderHeader={ <><TabIcon width="16" height="16" />Select connection</> }
+        renderHeader="Select Camunda 8 connection"
         activeConnection={ activeConnection }
         handleManageConnections={ () => {
           setOverlayOpen(false);
-          triggerAction('settings-open', { expandRowId: activeConnection?.id });
+          triggerAction('settings-open');
         } }
         handleConnectionChange={ async (connectionId) => {
           await deployment.setConnectionForFile(activeTab.file, connectionId);
