@@ -15,6 +15,7 @@ import classNames from 'classnames';
 import { Section, Select } from '../../../shared/ui';
 import { getMessageForReason } from '../../zeebe-plugin/shared/util';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
+import { utmTag } from '../../../util/utmTag';
 
 export function ConnectionManagerOverlay({
   connections = [],
@@ -69,9 +70,8 @@ export function ConnectionManagerOverlay({
         {renderHeader}
       </Section.Header>
       <Section.Body className="form-body">
-        {connections?.length ?
+        <form className="fields">
           <div className={ classNames('form-group', 'form-group-spacing') }>
-            <p>Select orchestration cluster connection.</p>
             <div>
               <Select
                 field={ {
@@ -85,25 +85,15 @@ export function ConnectionManagerOverlay({
                 value={ activeConnection?.id }
                 fieldError={ getConnectionFieldError }
               />
-
-            </div>
-            <div className="manage-connections-container">
-              <a className="manage-connections-link" onClick={ handleManageConnections }>
-                Manage connections
-              </a>
-            </div>
-
-          </div>
-          :
-          <div>
-            <p className="empty-placeholder">No connections configured</p>
-            <div className="manage-connections-container">
-              <a className="manage-connections-link" onClick={ handleManageConnections }>
-                Add connections
-              </a>
             </div>
           </div>
-        }
+
+          <div className={ classNames('form-group form-description') }>
+            A connection to a running orchestration cluster lets you test tasks, deploy resources, and run processes. <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>
+              Learn more
+            </a>
+          </div>
+        </form>
       </Section.Body>
     </Section>
   );
