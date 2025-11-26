@@ -144,7 +144,7 @@ export default function TaskTestingTab(props) {
   }, [ onAction ]);
 
   const handleConfigureConnection = useCallback(() => {
-    onAction('settings-open');
+    onAction('open-connection-selector');
   }, [ onAction ]);
 
   const isConnectionConfigured = canConnectToCluster(connectionCheckResult);
