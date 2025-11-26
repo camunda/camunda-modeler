@@ -112,19 +112,21 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
                   </TableCell>
                 </TableExpandRow>
 
-                <TableExpandedRow
-                  { ...getExpandedRowProps({ row }) }
-                  colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
-                >
-                  <div>
-                    {/* TODO: connection status */}
-                    {
-                      properties.map((property) =>
-                        <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
-                      )
-                    }
-                  </div>
-                </TableExpandedRow>
+                {isExpanded(row) && (
+                  <TableExpandedRow
+                    { ...getExpandedRowProps({ row }) }
+                    colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
+                  >
+                    <div>
+                      {/* TODO: connection status */}
+                      {
+                        properties.map((property) =>
+                          <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
+                        )
+                      }
+                    </div>
+                  </TableExpandedRow>
+                )}
               </React.Fragment>
             ))}
           </TableBody>
