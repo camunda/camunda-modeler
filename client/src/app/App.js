@@ -1993,6 +1993,10 @@ export class App extends PureComponent {
       return this.emitWithTab('app.open-deployment', activeTab);
     }
 
+    if (action === 'open-connection-selector') {
+      return this.emitWithTab('app.open-connection-selector', activeTab);
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
