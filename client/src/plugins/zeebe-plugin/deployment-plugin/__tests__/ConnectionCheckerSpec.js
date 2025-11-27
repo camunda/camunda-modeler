@@ -54,7 +54,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -64,10 +64,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1001);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: true,
       name: 'default'
@@ -92,7 +92,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -102,10 +102,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1001);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
       reason: 'foo',
@@ -130,7 +130,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -140,10 +140,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1001);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
       error,
@@ -179,7 +179,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -189,10 +189,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: true,
       name: 'default'
@@ -204,10 +204,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(5000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledThrice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.calledThrice;
+    expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
       reason: 'foo',
@@ -220,10 +220,10 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(5000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.called.callCount(4);
+    expect(zeebeAPI.checkConnection).to.have.been.called.callCount(3);
     expect(zeebeAPI.checkConnection).to.have.been.calledWith(DEFAULT_CONFIG.endpoint);
 
-    expect(connectionCheckSpy).to.have.been.called.callCount(4);
+    expect(connectionCheckSpy).to.have.been.called.callCount(3);
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: true,
       name: 'default'
@@ -247,7 +247,7 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     // then
     expect(zeebeAPI.checkConnection).not.have.been.called;
@@ -271,13 +271,13 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(1000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith({
       ...DEFAULT_CONFIG.endpoint,
       camundaCloudClientId: 'bar'
     });
 
-    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: true,
       name: 'default'
@@ -287,7 +287,7 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(5000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledThrice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
     expect(zeebeAPI.checkConnection).to.have.been.calledWith({
       ...DEFAULT_CONFIG.endpoint,
       camundaCloudClientId: 'bar'
@@ -336,13 +336,13 @@ describe('ConnectionChecker', function() {
     connectionChecker.on('connectionCheck', connectionCheckSpy);
 
     // when
-    await connectionChecker.updateConfig(DEFAULT_CONFIG);
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
 
     await clock.tickAsync(5000);
 
     // then
-    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
-    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(connectionCheckSpy).to.have.been.calledOnce;
 
     // when
     connectionChecker.stopChecking();
@@ -350,7 +350,347 @@ describe('ConnectionChecker', function() {
     await clock.tickAsync(5000);
 
     // then
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+  });
+
+
+  it('should not emit result when check is aborted during config update', async function() {
+
+    // given
+    let resolveCheck;
+
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy(() => new Promise((resolve) => {
+        resolveCheck = resolve;
+      }))
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
+
+    await clock.tickAsync(1000);
+
+    // then
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(connectionCheckSpy).not.to.have.been.called;
+
+    // when - update config while check is in progress
+    connectionChecker.updateConfig({
+      ...DEFAULT_CONFIG,
+      endpoint: {
+        ...DEFAULT_CONFIG.endpoint,
+        camundaCloudClientId: 'new-client-id'
+      }
+    });
+
+    // resolve the first check after abort
+    resolveCheck({
+      success: true
+    });
+
+    await flushPromises();
+
+    // then - aborted check result should not be emitted
+    expect(connectionCheckSpy).not.to.have.been.called;
+  });
+
+
+  it('should not emit result when check is aborted during stopChecking', async function() {
+
+    // given
+    let resolveCheck;
+
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy(() => new Promise((resolve) => {
+        resolveCheck = resolve;
+      }))
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
+
+    await clock.tickAsync(1000);
+
+    // then
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(connectionCheckSpy).not.to.have.been.called;
+
+    // when - stop checking while check is in progress
+    connectionChecker.stopChecking();
+
+    // resolve the check after abort
+    resolveCheck({
+      success: true
+    });
+
+    await flushPromises();
+
+    // then - aborted check result should not be emitted
+    expect(connectionCheckSpy).not.to.have.been.called;
+  });
+
+
+  it('should prevent concurrent checks', async function() {
+
+    // given
+    let resolveFirstCheck, resolveSecondCheck;
+    let callCount = 0;
+
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy(() => new Promise((resolve) => {
+        if (callCount === 0) {
+          resolveFirstCheck = resolve;
+        } else {
+          resolveSecondCheck = resolve;
+        }
+        callCount++;
+      }))
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when
+    connectionChecker.updateConfig(DEFAULT_CONFIG, false);
+
+    await clock.tickAsync(1000);
+
+    // then - first check starts
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(connectionCheckSpy).not.to.have.been.called;
+
+    // when - try to trigger another check while first is in progress
+    connectionChecker._check(); // returns immediately due to _isChecking guard
+
+    await flushPromises();
+
+    // then - second check should not start (returns immediately due to _isChecking guard)
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+
+    // when - resolve first check
+    resolveFirstCheck({
+      success: true
+    });
+
+    await flushPromises();
+
+    // then - first check result should be emitted
+    expect(connectionCheckSpy).to.have.been.calledOnce;
+    expect(connectionCheckSpy).to.have.been.calledWith({
+      success: true,
+      name: 'default'
+    });
+
+    // when - trigger another check after first completes
+    connectionChecker._check();
+
+    await flushPromises();
+
+    // then - second check should now start
     expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+
+    // when - resolve second check
+    resolveSecondCheck({
+      success: false,
+      reason: 'test'
+    });
+
+    await flushPromises();
+
+    // then - second check result should be emitted
+    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(connectionCheckSpy.secondCall).to.have.been.calledWith({
+      success: false,
+      reason: 'test',
+      name: 'default'
+    });
+  });
+
+
+  it('should preserve last result when check is aborted', async function() {
+
+    // given
+    let resolveFirstCheck, resolveSecondCheck;
+    let callCount = 0;
+
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy(() => new Promise((resolve) => {
+        if (callCount === 0) {
+          resolveFirstCheck = resolve;
+        } else {
+          resolveSecondCheck = resolve;
+        }
+        callCount++;
+      }))
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when - first check
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
+
+    await clock.tickAsync(1000);
+
+    // Wait for checkConnection to be called
+    await flushPromises();
+
+    resolveFirstCheck({
+      success: true
+    });
+
+    await flushPromises();
+
+    // then
+    expect(connectionChecker.getLastResult()).to.deep.equal({
+      success: true
+    });
+
+    // when - second check starts and gets aborted
+    await clock.tickAsync(5000);
+
+    expect(zeebeAPI.checkConnection).to.have.been.calledTwice;
+
+    connectionChecker.stopChecking();
+
+    resolveSecondCheck({
+      success: false,
+      reason: 'should not update',
+      name: 'default'
+    });
+
+    await flushPromises();
+
+    // then - last result should still be from first check
+    expect(connectionChecker.getLastResult()).to.deep.equal({
+      success: true
+    });
+
+    expect(connectionCheckSpy).to.have.been.calledOnce;
+  });
+
+
+  it('should not emit error when check is aborted with error', async function() {
+
+    // given
+    let rejectCheck;
+
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy(() => new Promise((_, reject) => {
+        rejectCheck = reject;
+      }))
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
+
+    await clock.tickAsync(1000);
+
+    // then
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(connectionCheckSpy).not.to.have.been.called;
+
+    // when - stop checking while check is in progress
+    connectionChecker.stopChecking();
+
+    // reject the check after abort
+    rejectCheck(new Error('Connection failed'));
+
+    await flushPromises();
+
+    // then - aborted check error should not be emitted
+    expect(connectionCheckSpy).not.to.have.been.called;
+  });
+
+
+  it('should handle rapid config updates', async function() {
+
+    // given
+    let resolveChecks = [];
+    let callCount = 0;
+
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy(() => new Promise((resolve) => {
+        resolveChecks[callCount] = resolve;
+        callCount++;
+      }))
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when - rapid config updates
+    connectionChecker.updateConfig(DEFAULT_CONFIG);
+
+    await clock.tickAsync(500);
+
+    connectionChecker.updateConfig({
+      ...DEFAULT_CONFIG,
+      endpoint: {
+        ...DEFAULT_CONFIG.endpoint,
+        camundaCloudClientId: 'client-2'
+      }
+    });
+
+    await clock.tickAsync(500);
+
+    connectionChecker.updateConfig({
+      ...DEFAULT_CONFIG,
+      endpoint: {
+        ...DEFAULT_CONFIG.endpoint,
+        camundaCloudClientId: 'client-3'
+      }
+    });
+
+    await clock.tickAsync(1000);
+
+    // Wait for checkConnection to be called
+    await flushPromises();
+
+    // then - only last config should be checked
+    expect(zeebeAPI.checkConnection).to.have.been.calledOnce;
+    expect(zeebeAPI.checkConnection.firstCall).to.have.been.calledWith({
+      ...DEFAULT_CONFIG.endpoint,
+      camundaCloudClientId: 'client-3'
+    });
+
+    // when - resolve the check
+    resolveChecks[0]({
+      success: true,
+      name: 'default'
+    });
+
+    await flushPromises();
+
+    // then - only one result should be emitted
+    expect(connectionCheckSpy).to.have.been.calledOnce;
   });
 
 });
@@ -371,3 +711,10 @@ class Mock {
 }
 
 class MockZeebeAPI extends Mock {}
+
+async function flushPromises(iterations = 5) {
+  let i = 0;
+  while (i++ < iterations) {
+    await Promise.resolve();
+  }
+}
