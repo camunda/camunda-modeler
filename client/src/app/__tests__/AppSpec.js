@@ -1271,6 +1271,76 @@ describe('<App>', function() {
       expect(staveTabStartSpy).to.have.been.calledWith('saveTab.start');
     });
 
+
+    it('should migrate config when file path changes', async function() {
+
+      // given
+      const file = createFile('diagram.bpmn');
+
+      await app.openFiles([ file ]);
+
+      const migrateConfigSpy = spy(app, 'migrateConfigForFilePath');
+
+      dialog.setShowSaveFileDialogResponse('new-diagram.bpmn');
+
+      fileSystem.setWriteFileResponse({
+        path: 'new-diagram.bpmn',
+        contents: '<contents>'
+      });
+
+      // when
+      await app.triggerAction('save-as');
+
+      // then
+      expect(migrateConfigSpy).to.have.been.calledOnceWith('diagram.bpmn', 'new-diagram.bpmn');
+    });
+
+
+    it('should not migrate config when file path stays the same', async function() {
+
+      // given
+      const file = createFile('diagram.bpmn');
+
+      await app.openFiles([ file ]);
+
+      const migrateConfigSpy = spy(app, 'migrateConfigForFilePath');
+
+      dialog.setShowSaveFileDialogResponse('diagram.bpmn');
+
+      fileSystem.setWriteFileResponse({
+        path: 'diagram.bpmn',
+        contents: '<contents>'
+      });
+
+      // when
+      await app.triggerAction('save');
+
+      // then
+      expect(migrateConfigSpy).to.not.have.been.called;
+    });
+
+
+    it('should migrate config when saving previously unsaved file', async function() {
+
+      // given
+      await app.createDiagram();
+
+      const migrateConfigSpy = spy(app, 'migrateConfigForFilePath');
+
+      dialog.setShowSaveFileDialogResponse('new-diagram.bpmn');
+
+      fileSystem.setWriteFileResponse({
+        path: 'new-diagram.bpmn',
+        contents: '<contents>'
+      });
+
+      // when
+      await app.triggerAction('save');
+
+      // then
+      expect(migrateConfigSpy).to.have.been.calledOnceWith(null, 'new-diagram.bpmn');
+    });
+
   });
 
 
@@ -3115,6 +3185,97 @@ describe('<App>', function() {
       expect(setConfigSpy).to.be.calledOnceWith('foo');
     });
 
+  });
+
+
+  describe('#migrateConfigForFilePath', function() {
+
+    afterEach(sinon.restore);
+
+
+    it('should copy config from old path to new path', async function() {
+
+      // given
+      const getForFileStub = sinon.stub().resolves({ connectionId: '123' });
+      const setForFileStub = sinon.stub().resolves();
+
+      const config = new Config({
+        getForFile: getForFileStub,
+        setForFile: setForFileStub,
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      // when
+      await app.migrateConfigForFilePath('old.bpmn', 'new.bpmn');
+
+      // then
+      expect(setForFileStub).to.be.calledOnceWith(
+        { path: 'new.bpmn' },
+        'connection-manager',
+        { connectionId: '123' }
+      );
+    });
+
+
+    it('should not set config if old file has no config', async function() {
+
+      // given
+      const getForFileStub = sinon.stub().resolves(null);
+      const setForFileStub = sinon.stub().resolves();
+
+      const config = new Config({
+        getForFile: getForFileStub,
+        setForFile: setForFileStub,
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      // when
+      await app.migrateConfigForFilePath('old.bpmn', 'new.bpmn');
+
+      // then
+      expect(setForFileStub).to.not.have.been.called;
+    });
+
+
+    it('should use global config if old file was unsaved (null)', async function() {
+
+      // given
+      const getForFileStub = sinon.stub().resolves(null);
+      const setForFileStub = sinon.stub().resolves();
+      const getStub = sinon.stub().resolves({ connectionId: '456' });
+
+      const config = new Config({
+        getForFile: getForFileStub,
+        setForFile: setForFileStub,
+        get: getStub
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      // when
+      await app.migrateConfigForFilePath(null, 'new.bpmn');
+
+      // then
+      expect(setForFileStub).to.be.calledOnceWith(
+        { path: 'new.bpmn' },
+        'connection-manager',
+        { connectionId: '456' }
+      );
+    });
   });
 
 

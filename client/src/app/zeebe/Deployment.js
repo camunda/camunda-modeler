@@ -146,7 +146,9 @@ export default class Deployment extends EventEmitter {
   async getConfigForFile(file) {
     const {
       connectionId = null
-    } = await this._config.getForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, {});
+    } = await (file.path
+      ? this._config.getForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, {})
+      : this._config.get(CONFIG_KEYS.CONNECTION_MANAGER, {}));
 
     const endpoint = await this.getEndpoint(connectionId);
     if (!endpoint) {
