@@ -577,7 +577,18 @@ export class App extends PureComponent {
     });
   }
 
+  /**
+   * Select a tab, triggering auto-save of the previously active tab.
+   * Related: #5450, #695, #1547
+   */
   selectTab = async tab => {
+    const { activeTab } = this.state;
+
+    // Auto-save the previously active tab when switching
+    if (activeTab && activeTab !== tab && !this.isEmptyTab(activeTab)) {
+      await this.autoSave(activeTab);
+    }
+
     const updatedTab = await this.checkFileChanged(tab);
     return this.showTab(updatedTab || tab);
   };
@@ -1546,6 +1557,71 @@ export class App extends PureComponent {
 
   }
 
+  /**
+   * Auto-save a tab if it is dirty and has been previously saved.
+   * This is triggered on focus loss (window blur, tab switch).
+   * It does NOT prompt the user for a save location.
+   *
+   * Related: #5450, #695, #1547
+   *
+   * @param {Tab} tab - The tab to auto-save
+   * @returns {Promise<Tab|false>} - The saved tab or false if not saved
+   */
+  async autoSave(tab) {
+
+    // Skip empty tabs
+    if (this.isEmptyTab(tab)) {
+      return false;
+    }
+
+    // Skip if tab is not dirty
+    if (!this.isDirty(tab)) {
+      return false;
+    }
+
+    // Skip if tab has never been saved (no file path)
+    // This ensures we don't force a save dialog for new files
+    if (this.isUnsaved(tab)) {
+      return false;
+    }
+
+    const {
+      tabsProvider
+    } = this.props;
+
+    const {
+      file,
+      type: fileType
+    } = tab;
+
+    try {
+      const provider = tabsProvider.getProvider(fileType);
+      const saveType = provider.extensions[0];
+      const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
+
+      const savedFile = await this.saveTabAsFile({
+        encoding,
+        originalFile: file,
+        savePath: file.path,
+        saveType
+      });
+
+      return this.tabSaved(tab, savedFile);
+    } catch (err) {
+
+      // Show non-blocking error notification
+      // Related: #5450, #695, #1547
+      this.displayNotification({
+        type: 'error',
+        title: 'Auto-save failed',
+        content: `Could not auto-save "${tab.name}": ${err.message}`,
+        duration: 4000
+      });
+
+      return false;
+    }
+  }
+
   saveAllTabs = () => {
 
     const {
@@ -1860,6 +1936,12 @@ export class App extends PureComponent {
 
     if (action === 'save-as') {
       return this.saveTab(activeTab, { saveAs: true });
+    }
+
+    // Auto-save on focus loss (window blur, tab switch)
+    // Related: #5450, #695, #1547
+    if (action === 'auto-save') {
+      return this.autoSave(activeTab);
     }
 
     if (action === 'quit') {
