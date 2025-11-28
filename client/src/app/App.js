@@ -71,6 +71,7 @@ import * as css from './App.less';
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
 import { EventsContext } from './EventsContext';
+import { CONFIG_KEYS } from './zeebe/Deployment';
 
 const log = debug('App');
 
@@ -1429,7 +1430,7 @@ export class App extends PureComponent {
    * @param {string} options.savePath
    * @param {string} options.saveType
    *
-   * @returns {File} saved file.
+   * @returns {Promise<File>} saved file.
    */
   async saveTabAsFile(options) {
 
@@ -1445,7 +1446,7 @@ export class App extends PureComponent {
 
     const contents = await this.tabRef.current.triggerAction('save');
 
-    return fileSystem.writeFile(savePath, {
+    const file = await fileSystem.writeFile(savePath, {
       ...originalFile,
       contents
     }, {
@@ -1453,6 +1454,35 @@ export class App extends PureComponent {
       fileType: saveType
     });
 
+    if (originalFile.path !== savePath) {
+      await this.migrateConfigForFilePath(originalFile.path, savePath);
+    }
+
+    return file;
+  }
+
+  /**
+   * Migrate configurations from old file path to new file path.
+   *
+   * @param {string|null} oldPath - Original file path (null for new/unsaved files)
+   * @param {string} newPath - New file path
+   */
+  async migrateConfigForFilePath(oldPath, newPath) {
+    const config = this.getGlobal('config');
+
+    const keysToMigrate = [ CONFIG_KEYS.CONNECTION_MANAGER ];
+
+    for (const key of keysToMigrate) {
+
+      const value = await (oldPath
+        ? config.getForFile({ path: oldPath }, key)
+        : config.get(key));
+
+      if (value) {
+        await config.setForFile({ path: newPath }, key, value);
+      }
+
+    }
   }
 
   /**
@@ -1470,7 +1500,7 @@ export class App extends PureComponent {
       type: fileType
     } = tab;
 
-    let {
+    const {
       saveAs
     } = options;
 
@@ -1479,9 +1509,7 @@ export class App extends PureComponent {
 
     let savePath;
 
-    saveAs = saveAs || this.isUnsaved(tab);
-
-    if (saveAs) {
+    if (saveAs || this.isUnsaved(tab)) {
       const filters = getSaveFileDialogFilters(provider);
 
       savePath = await this.showSaveFileDialog(file, {
