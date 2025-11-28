@@ -1596,8 +1596,14 @@ export class App extends PureComponent {
 
     try {
       const provider = tabsProvider.getProvider(fileType);
-      const saveType = provider.extensions[0];
-      const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
+      const saveType = provider.extensions && provider.extensions[0];
+
+      // Skip if provider has no extensions defined
+      if (!saveType) {
+        return false;
+      }
+
+      const encoding = provider.encoding || ENCODING_UTF8;
 
       const savedFile = await this.saveTabAsFile({
         encoding,
