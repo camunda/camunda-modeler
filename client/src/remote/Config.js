@@ -91,6 +91,14 @@ export default class Config {
     return value;
   }
 
+  async getFile(file) {
+    const { path } = file;
+
+    const files = await this.get('files') ;
+
+    return files[ path ];
+  }
+
   /**
    * Set configuration value for file.
    *
@@ -112,6 +120,40 @@ export default class Config {
     await this.set('files', files);
 
     return configForFile;
+  }
+
+  async setFile(file,value) {
+    const { path } = file;
+
+    const files = await this.get('files') || {};
+
+    files[ path ] = value;
+
+    await this.set('files', files);
+
+    return files[ path ];
+  }
+
+  async setDefault(key, value) {
+    const defaults = await this.get('fileDefaults') || {};
+
+    defaults[ key ] = value;
+
+    await this.set('fileDefaults', defaults);
+
+    return defaults;
+  }
+
+  async getDefault(key, defaultValue = null) {
+    const defaults = await this.get('fileDefaults') || {};
+
+    const value = defaults[ key ];
+
+    return value || defaultValue;
+  }
+
+  async getDefaults() {
+    return await this.get('fileDefaults') || {};
   }
 
   /**

@@ -561,6 +561,8 @@ function createMockSettings(initialValues = {}) {
 
 function createMockConfig(initialValues = {}) {
   const values = { ...initialValues };
+  const files = {};
+  const defaults = {};
 
   return {
     get: sinon.spy((key) => { return values[key]; }),
@@ -570,6 +572,23 @@ function createMockConfig(initialValues = {}) {
     setForFile: sinon.spy((file, key, value) => {
       values[key] = value;
       return Promise.resolve();
+    }),
+    getFile: sinon.spy((file) => {
+      return Promise.resolve(files[file.path]);
+    }),
+    setFile: sinon.spy((file, value) => {
+      files[file.path] = value;
+      return Promise.resolve();
+    }),
+    getDefault: sinon.spy((key, defaultValue) => {
+      return Promise.resolve(defaults[key] || defaultValue);
+    }),
+    setDefault: sinon.spy((key, value) => {
+      defaults[key] = value;
+      return Promise.resolve();
+    }),
+    getDefaults: sinon.spy(() => {
+      return Promise.resolve(defaults);
     })
   };
 }
