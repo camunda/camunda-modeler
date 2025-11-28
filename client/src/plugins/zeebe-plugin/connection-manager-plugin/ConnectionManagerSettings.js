@@ -29,7 +29,7 @@ const pluginSettings = {
       type: 'customFieldArray',
       component: ConnectionManagerSettingsComponent,
       label: 'customFieldArray',
-      description: 'Manage Camunda 8 orchestration cluster connections.',
+      description: 'Manage Camunda 8 Orchestration Cluster connections.',
     },
 
   }

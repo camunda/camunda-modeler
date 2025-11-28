@@ -31,13 +31,13 @@ export const CONNECTION_CHECK_ERROR_REASONS = {
 };
 
 export const CONNECTION_CHECK_ERROR_MESSAGES = {
-  [ CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE ]: 'Cannot connect to Orchestration cluster.',
-  [ CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE ]: 'Cannot connect to Orchestration cluster.',
+  [ CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE ]: 'Cannot connect to Orchestration Cluster.',
+  [ CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE ]: 'Cannot connect to Orchestration Cluster.',
   [ CONNECTION_CHECK_ERROR_REASONS.UNAUTHORIZED ]: 'Credentials rejected by server.',
   [ CONNECTION_CHECK_ERROR_REASONS.FORBIDDEN ]: 'This user is not permitted to deploy. Please use different credentials or get this user enabled to deploy.',
   [ CONNECTION_CHECK_ERROR_REASONS.OAUTH_URL ]: 'Cannot connect to OAuth token endpoint.',
-  [ CONNECTION_CHECK_ERROR_REASONS.UNKNOWN ]: 'Unknown error. Please check Orchestration cluster status.',
-  [ CONNECTION_CHECK_ERROR_REASONS.UNSUPPORTED_ENGINE ]: 'Unsupported Orchestration cluster version.',
+  [ CONNECTION_CHECK_ERROR_REASONS.UNKNOWN ]: 'Unknown error. Please check Orchestration Cluster status.',
+  [ CONNECTION_CHECK_ERROR_REASONS.UNSUPPORTED_ENGINE ]: 'Unsupported Orchestration Cluster version.',
   [ CONNECTION_CHECK_ERROR_REASONS.INVALID_CLIENT_ID ]: 'Invalid Client ID.',
   [ CONNECTION_CHECK_ERROR_REASONS.INVALID_CREDENTIALS ]: 'The client secret is not valid for the client ID provided.'
 };

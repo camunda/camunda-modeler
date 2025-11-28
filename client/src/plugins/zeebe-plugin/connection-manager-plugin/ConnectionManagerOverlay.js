@@ -40,7 +40,7 @@ export function ConnectionManagerOverlay({
       <Section.Body className="form-body">
         {connections?.length ?
           <div className={ classNames('form-group', 'form-group-spacing') }>
-            <p>Select orchestration cluster connection.</p>
+            <p>Select Orchestration Cluster connection.</p>
             <div>
               <Select
                 field={ {
@@ -49,7 +49,6 @@ export function ConnectionManagerOverlay({
                 } }
                 className="form-control"
                 name="connection"
-                placeholder="Please select a connection"
                 options={ connections.map(connection => ({
                   value: connection.id,
                   label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
