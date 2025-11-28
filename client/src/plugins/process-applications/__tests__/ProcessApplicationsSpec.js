@@ -20,9 +20,16 @@ describe('ProcessApplications', function() {
   let processApplications;
 
   beforeEach(function() {
+    document.body.innerHTML = '';
     processApplications = new ProcessApplications();
   });
 
+  afterEach(function() {
+    document.body.innerHTML = '';
+    if (processApplications && processApplications._events) {
+      processApplications._events.removeAllListeners();
+    }
+  });
 
   describe('<items-changed>', function() {
 
