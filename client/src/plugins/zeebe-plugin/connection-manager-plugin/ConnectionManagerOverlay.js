@@ -38,9 +38,8 @@ export function ConnectionManagerOverlay({
         {renderHeader}
       </Section.Header>
       <Section.Body className="form-body">
-        {connections?.length ?
+        <form className="fields">
           <div className={ classNames('form-group', 'form-group-spacing') }>
-            <p>Select Orchestration Cluster connection.</p>
             <div>
               <Select
                 field={ {
@@ -49,32 +48,37 @@ export function ConnectionManagerOverlay({
                 } }
                 className="form-control"
                 name="connection"
+                label={
+                  <>
+                    Connection <a className="manage-connections-link" onClick={ handleManageConnections } href="#">
+                      Manage connections
+                    </a>
+                  </>
+                }
                 options={ connections.map(connection => ({
                   value: connection.id,
                   label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
-                })) }
+                })).concat([ { separator: true }, { value: 'NO_CONNECTION', label: 'Disabled (offline mode)' } ]) }
                 value={ activeConnection?.id }
-                fieldError={ () => connectionCheckResult?.success === false ? getMessageForReason(connectionCheckResult?.reason) : undefined }
+                fieldError={
+                  () => connectionCheckResult?.success === false ?
+                    <>
+                      Could not establish connection: {
+                        getMessageForReason(connectionCheckResult?.reason)
+                      }
+                    </> :
+                    undefined
+                }
               />
-
-            </div>
-            <div className="manage-connections-container">
-              <a className="manage-connections-link" onClick={ handleManageConnections }>
-                Manage connections
-              </a>
-            </div>
-
-          </div>
-          :
-          <div>
-            <p className="empty-placeholder">No connections configured</p>
-            <div className="manage-connections-container">
-              <a className="manage-connections-link" onClick={ handleManageConnections }>
-                Add connections
-              </a>
             </div>
           </div>
-        }
+
+          <div className={ classNames('form-group form-description') } style={ { marginBottom: "6px" } }>
+            Use the Camunda 8 Orchestration Cluster to assist during development, i.e., to enable task testing or when using the deploy and run tools. <a href="#">
+              Learn more
+            </a>
+          </div>
+        </form>
       </Section.Body>
     </Section>
   );

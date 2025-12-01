@@ -149,13 +149,13 @@ export default function ConnectionManagerPlugin(props) {
   }
 
   const statusBarConnectionStatus = getStatus(connectionCheckResult, activeConnection);
-  const statusBarText = activeConnection ? activeConnection.name || 'Unnamed connection' : 'No connections';
+  const statusBarText = activeConnection ? activeConnection.name || 'Unnamed connection' : 'No connection';
   return <>
     { tabNeedsConnection(activeTab) &&
       <Fill name="connection-manager" className slot="status-bar__file" group="8_deploy" priority={ 2 }>
         <button
           onClick={ () => setOverlayOpen(!overlayOpen) }
-          title="Open connection selector"
+          title="Configure Camunda 8 connection"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ statusBarButtonRef }
         >
@@ -167,7 +167,7 @@ export default function ConnectionManagerPlugin(props) {
       <ConnectionManagerOverlay
         connections={ connections }
         connectionCheckResult={ connectionCheckResult }
-        renderHeader={ <><TabIcon width="16" height="16" />Select connection</> }
+        renderHeader={ <><TabIcon width="16" height="16" />Select Camunda 8 connection</> }
         activeConnection={ activeConnection }
         handleManageConnections={ () => {
           setOverlayOpen(false);
