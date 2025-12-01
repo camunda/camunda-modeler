@@ -34,14 +34,13 @@ import { StatusIndicator } from '../shared/StatusIndicator';
  */
 export function ConnectionManagerSettingsComponent({ name: fieldName, targetElement, connectionChecker }) {
 
-  const { values, errors } = useFormikContext();
+  const { values, validateForm } = useFormikContext();
 
   const [ expandedRows, setExpandedRows ] = useState([]);
   const expandedRowRef = useRef(null);
   const [ connectionCheckResult, setConnectionCheckResult ] = useState(null);
 
   const fieldValue = getIn(values, fieldName) || [];
-  const fieldErrors = getIn(errors, fieldName) || [];
 
   const connectionIndex = useMemo(() =>
     fieldValue.findIndex(c => c.id === expandedRows[0]),
@@ -53,10 +52,6 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
   [ fieldValue, connectionIndex ]
   );
 
-  const configurationErrors = useMemo(() =>
-    fieldErrors[connectionIndex],
-  [ fieldErrors, connectionIndex ]
-  );
 
   let expandRowId = null;
 
@@ -78,22 +73,26 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
   }, [ expandRowId ]);
 
   useEffect(() => {
-    if (expandedRows?.length > 0) {
-      setConnectionCheckResult(null);
+    const updateConnectionChecker = async () => {
+      if (expandedRows?.length > 0) {
+        setConnectionCheckResult(null);
+        const formErrors = await validateForm();
+        const expandedConnectionErrors = getIn(formErrors, `${fieldName}[${connectionIndex}]`);
+        if (expandedConnectionErrors) {
+          connectionChecker.current.stopChecking();
+          setConnectionCheckResult({ success: false, reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION });
+          return;
+        }
 
-      if (configurationErrors) {
-        connectionChecker.current.stopChecking();
-        setConnectionCheckResult({ success: false, reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION });
-        return;
+        connectionChecker.current.updateConfig({ endpoint: connection });
       }
-
-      connectionChecker.current.updateConfig({ endpoint: connection });
-    }
-    else {
-      connectionChecker.current.stopChecking();
-      setConnectionCheckResult(null);
-    }
-  }, [ expandedRows, connectionChecker, connection, configurationErrors ]);
+      else {
+        connectionChecker.current.stopChecking();
+        setConnectionCheckResult(null);
+      }
+    };
+    updateConnectionChecker();
+  }, [ expandedRows, connectionChecker, connection, connectionIndex ]);
 
   useEffect(() => {
     const connectionCheckListener = (connectionCheckResult) => {
