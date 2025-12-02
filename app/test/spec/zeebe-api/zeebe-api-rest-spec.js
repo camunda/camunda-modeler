@@ -1207,6 +1207,91 @@ describe('ZeebeAPI (REST)', function() {
 
     });
 
+
+    describe('tenant ID', function() {
+
+      it('should add tenant ID (single file)', async function() {
+
+        // given
+        const deployResourcesSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
+            url: TEST_URL,
+            oauthURL: 'oauthURL',
+            clientId: 'clientId',
+            clientSecret: 'clientSecret'
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            }
+          ],
+          tenantId: 'bar'
+        });
+
+        const { args } = deployResourcesSpy.getCall(0);
+
+        // then
+        // For REST API, tenantId is passed as second argument to deployResources
+        expect(args[1]).to.eql('bar');
+      });
+
+
+      it('should add tenant ID (multiple files)', async function() {
+
+        // given
+        const deployResourcesSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            authType: AUTH_TYPES.OAUTH,
+            url: TEST_URL,
+            oauthURL: 'oauthURL',
+            clientId: 'clientId',
+            clientSecret: 'clientSecret'
+          },
+          resourceConfigs: [
+            {
+              path: 'foo.bpmn',
+              type: 'bpmn'
+            },
+            {
+              path: 'bar.dmn',
+              type: 'dmn'
+            }
+          ],
+          tenantId: 'baz'
+        });
+
+        const { args } = deployResourcesSpy.getCall(0);
+
+        // then
+        expect(args[0][0].tenantId).not.to.exist;
+        expect(args[0][1].tenantId).not.to.exist;
+        expect(args[1]).to.eql('baz');
+      });
+
+    });
+
   });
 
 

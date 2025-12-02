@@ -46,8 +46,7 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           type: TARGET_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: endpoint.contactPoint,
-          tenantId: undefined
+          url: endpoint.contactPoint
         }
       });
     });
@@ -77,8 +76,7 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           type: TARGET_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: `http://${ endpoint.contactPoint }`,
-          tenantId: undefined
+          url: `http://${ endpoint.contactPoint }`
         }
       });
     });
@@ -114,8 +112,7 @@ describe('<ZeebeAPI>', function() {
           authType: AUTH_TYPES.BASIC,
           url: contactPoint,
           basicAuthUsername: 'username',
-          basicAuthPassword: 'password',
-          tenantId: undefined
+          basicAuthPassword: 'password'
         }
       });
     });
@@ -154,8 +151,7 @@ describe('<ZeebeAPI>', function() {
           audience: endpoint.audience,
           scope: endpoint.scope,
           clientId: endpoint.clientId,
-          clientSecret: endpoint.clientSecret,
-          tenantId: undefined
+          clientSecret: endpoint.clientSecret
         }
       });
     });
@@ -194,8 +190,7 @@ describe('<ZeebeAPI>', function() {
           audience: endpoint.audience,
           scope: undefined,
           clientId: endpoint.clientId,
-          clientSecret: endpoint.clientSecret,
-          tenantId: undefined
+          clientSecret: endpoint.clientSecret
         }
       });
     });
@@ -267,13 +262,13 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processId,
         endpoint: {
           authType: AUTH_TYPES.NONE,
           type: TARGET_TYPES.SELF_HOSTED,
-          url: endpoint.contactPoint,
-          tenantId: undefined
+          url: endpoint.contactPoint
         },
-        processId,
+        tenantId: undefined,
         variables,
         startInstructions: undefined,
         runtimeInstructions: undefined
@@ -312,13 +307,13 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processId,
         endpoint: {
           authType: AUTH_TYPES.NONE,
           type: TARGET_TYPES.SELF_HOSTED,
-          url: `http://${ endpoint.contactPoint }`,
-          tenantId: undefined
+          url: `http://${ endpoint.contactPoint }`
         },
-        processId,
+        tenantId: undefined,
         variables,
         startInstructions: undefined,
         runtimeInstructions: undefined
@@ -359,15 +354,15 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processId,
         endpoint: {
           authType: AUTH_TYPES.BASIC,
           type: TARGET_TYPES.SELF_HOSTED,
           url: endpoint.contactPoint,
           basicAuthUsername: endpoint.basicAuthUsername,
-          basicAuthPassword: endpoint.basicAuthPassword,
-          tenantId: undefined
+          basicAuthPassword: endpoint.basicAuthPassword
         },
-        processId,
+        tenantId: undefined,
         variables,
         startInstructions: undefined,
         runtimeInstructions: undefined
@@ -386,42 +381,40 @@ describe('<ZeebeAPI>', function() {
 
       const processId = 'Process_1';
 
-      const tenantId = 'my-tenant';
-
       const endpoint = {
         targetType: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.BASIC,
         contactPoint: 'http://localhost:26500',
         basicAuthUsername: 'username',
-        basicAuthPassword: 'password',
-        tenantId
+        basicAuthPassword: 'password'
       };
 
       const variables = {
         foo: 'bar'
       };
 
-
+      const tenantId = 'my-tenant';
 
       // when
       zeebeAPI.startInstance({
         processId,
         endpoint,
-        variables
+        variables,
+        tenantId
       });
 
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processId,
         endpoint: {
           authType: AUTH_TYPES.BASIC,
           type: TARGET_TYPES.SELF_HOSTED,
           url: endpoint.contactPoint,
           basicAuthUsername: endpoint.basicAuthUsername,
-          basicAuthPassword: endpoint.basicAuthPassword,
-          tenantId: 'my-tenant'
+          basicAuthPassword: endpoint.basicAuthPassword
         },
-        processId,
+        tenantId: 'my-tenant',
         variables,
         startInstructions: undefined,
         runtimeInstructions: undefined
@@ -465,6 +458,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processId,
         endpoint: {
           authType: AUTH_TYPES.OAUTH,
           type: TARGET_TYPES.SELF_HOSTED,
@@ -473,10 +467,9 @@ describe('<ZeebeAPI>', function() {
           audience: endpoint.audience,
           scope: endpoint.scope,
           clientId: endpoint.clientId,
-          clientSecret: endpoint.clientSecret,
-          tenantId: undefined
+          clientSecret: endpoint.clientSecret
         },
-        processId,
+        tenantId: undefined,
         variables,
         startInstructions: undefined,
         runtimeInstructions: undefined
@@ -520,6 +513,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processId,
         endpoint: {
           authType: AUTH_TYPES.OAUTH,
           type: TARGET_TYPES.SELF_HOSTED,
@@ -527,11 +521,10 @@ describe('<ZeebeAPI>', function() {
           oauthURL: endpoint.oauthURL,
           audience: endpoint.audience,
           scope: undefined,
-          tenantId: undefined,
           clientId: endpoint.clientId,
           clientSecret: endpoint.clientSecret
         },
-        processId,
+        tenantId: undefined,
         variables,
         startInstructions: undefined,
         runtimeInstructions: undefined
@@ -577,10 +570,10 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           authType: AUTH_TYPES.NONE,
           type: TARGET_TYPES.SELF_HOSTED,
-          url: endpoint.contactPoint,
-          tenantId: undefined
+          url: endpoint.contactPoint
         },
-        resourceConfigs
+        resourceConfigs,
+        tenantId: undefined
       });
     });
 
@@ -619,10 +612,10 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           authType: AUTH_TYPES.NONE,
           type: TARGET_TYPES.SELF_HOSTED,
-          url: `http://${ endpoint.contactPoint }`,
-          tenantId: undefined
+          url: `http://${ endpoint.contactPoint }`
         },
-        resourceConfigs
+        resourceConfigs,
+        tenantId: undefined
       });
     });
 
@@ -665,10 +658,10 @@ describe('<ZeebeAPI>', function() {
           type: TARGET_TYPES.SELF_HOSTED,
           url: endpoint.contactPoint,
           basicAuthUsername: endpoint.basicAuthUsername,
-          basicAuthPassword: endpoint.basicAuthPassword,
-          tenantId: undefined
+          basicAuthPassword: endpoint.basicAuthPassword
         },
-        resourceConfigs
+        resourceConfigs,
+        tenantId: undefined
       });
     });
 
@@ -682,16 +675,12 @@ describe('<ZeebeAPI>', function() {
 
       const zeebeAPI = new ZeebeAPI(backend);
 
-
-      const tenantId = 'my-tenant';
-
       const endpoint = {
         targetType: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.BASIC,
         contactPoint: 'http://localhost:26500',
         basicAuthUsername: 'username',
-        basicAuthPassword: 'password',
-        tenantId
+        basicAuthPassword: 'password'
       };
 
       const resourceConfigs = [
@@ -701,11 +690,13 @@ describe('<ZeebeAPI>', function() {
         }
       ];
 
+      const tenantId = 'my-tenant';
 
       // when
       zeebeAPI.deploy({
         endpoint,
-        resourceConfigs
+        resourceConfigs,
+        tenantId
       });
 
       // then
@@ -716,10 +707,10 @@ describe('<ZeebeAPI>', function() {
           type: TARGET_TYPES.SELF_HOSTED,
           url: endpoint.contactPoint,
           basicAuthUsername: endpoint.basicAuthUsername,
-          basicAuthPassword: endpoint.basicAuthPassword,
-          tenantId: 'my-tenant'
+          basicAuthPassword: endpoint.basicAuthPassword
         },
-        resourceConfigs
+        resourceConfigs,
+        tenantId: 'my-tenant'
       });
     });
 
@@ -768,10 +759,10 @@ describe('<ZeebeAPI>', function() {
           audience: endpoint.audience,
           scope: endpoint.scope,
           clientId: endpoint.clientId,
-          clientSecret: endpoint.clientSecret,
-          tenantId: undefined
+          clientSecret: endpoint.clientSecret
         },
-        resourceConfigs
+        resourceConfigs,
+        tenantId: undefined
       });
     });
 
@@ -785,8 +776,6 @@ describe('<ZeebeAPI>', function() {
 
       const zeebeAPI = new ZeebeAPI(backend);
 
-      const tenantId = 'my-tenant';
-
       const endpoint = {
         targetType: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.OAUTH,
@@ -794,7 +783,6 @@ describe('<ZeebeAPI>', function() {
         oauthURL: 'foo.com',
         audience: 'bar.com',
         scope: 'baz',
-        tenantId,
         clientId: 'foo',
         clientSecret: 'bar'
       };
@@ -806,12 +794,13 @@ describe('<ZeebeAPI>', function() {
         }
       ];
 
-
+      const tenantId = 'my-tenant';
 
       // when
       zeebeAPI.deploy({
         endpoint,
-        resourceConfigs
+        resourceConfigs,
+        tenantId
       });
 
       // then
@@ -825,10 +814,10 @@ describe('<ZeebeAPI>', function() {
           audience: endpoint.audience,
           scope: endpoint.scope,
           clientId: endpoint.clientId,
-          clientSecret: endpoint.clientSecret,
-          tenantId: 'my-tenant'
+          clientSecret: endpoint.clientSecret
         },
-        resourceConfigs
+        resourceConfigs,
+        tenantId: 'my-tenant'
       });
     });
 
@@ -842,14 +831,10 @@ describe('<ZeebeAPI>', function() {
 
       const zeebeAPI = new ZeebeAPI(backend);
 
-
-      const tenantId = 'my-tenant';
-
       const endpoint = {
         targetType: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.NONE,
-        contactPoint: 'http://localhost:26500',
-        tenantId
+        contactPoint: 'http://localhost:26500'
       };
 
       const resourceConfigs = [
@@ -859,11 +844,13 @@ describe('<ZeebeAPI>', function() {
         }
       ];
 
+      const tenantId = 'my-tenant';
 
       // when
       zeebeAPI.deploy({
         endpoint,
-        resourceConfigs
+        resourceConfigs,
+        tenantId
       });
 
       // then
@@ -872,10 +859,10 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           authType: AUTH_TYPES.NONE,
           type: TARGET_TYPES.SELF_HOSTED,
-          url: endpoint.contactPoint,
-          tenantId: 'my-tenant'
+          url: endpoint.contactPoint
         },
-        resourceConfigs
+        resourceConfigs,
+        tenantId: 'my-tenant'
       });
     });
 
@@ -923,11 +910,11 @@ describe('<ZeebeAPI>', function() {
           oauthURL: endpoint.oauthURL,
           audience: endpoint.audience,
           scope: undefined,
-          tenantId: undefined,
           clientId: endpoint.clientId,
           clientSecret: endpoint.clientSecret
         },
-        resourceConfigs
+        resourceConfigs,
+        tenantId: undefined
       });
     });
 
@@ -959,8 +946,7 @@ describe('<ZeebeAPI>', function() {
         endpoint: {
           type: TARGET_TYPES.SELF_HOSTED,
           authType: AUTH_TYPES.NONE,
-          url: endpoint.contactPoint,
-          tenantId: undefined
+          url: endpoint.contactPoint
         }
       });
 
