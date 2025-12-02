@@ -81,7 +81,7 @@ export default function ConnectionManagerPlugin(props) {
     }
 
     (async () => {
-      const defaultConnection = await config.get(CONFIG_KEY);
+      const defaultConnection = await config.getDefault(CONFIG_KEY);
       let { connectionId } = await config.getForFile(activeTab.file, CONFIG_KEY, {});
 
       if (!connectionId) {

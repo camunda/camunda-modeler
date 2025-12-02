@@ -146,7 +146,9 @@ export default class Deployment extends EventEmitter {
   async getConfigForFile(file) {
     const {
       connectionId = null
-    } = await this._config.getForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, {});
+    } = await (file.path
+      ? this._config.getForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, {})
+      : this._config.getDefault(CONFIG_KEYS.CONNECTION_MANAGER, {}));
 
     const endpoint = await this.getEndpoint(connectionId);
     if (!endpoint) {
@@ -158,7 +160,7 @@ export default class Deployment extends EventEmitter {
 
   async setConnectionForFile(file, connectionId) {
     if (!file.path) {
-      return await this._config.set(CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
+      return await this._config.setDefault(CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
     }
 
     return await this._config.setForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });

@@ -506,17 +506,47 @@ export class KeyboardBindings extends Mock {
 }
 
 export class Config extends Mock {
-  get() {}
+  constructor(overrides = {}) {
+    super(overrides);
 
-  set() {}
-
-  getForFile() {}
-
-  setForFile() {}
-
-  getForPlugin() {}
-
-  setForPlugin() {}
+    // Provide default promise-returning implementations for methods that weren't overridden
+    if (!overrides.get) {
+      this.get = () => Promise.resolve();
+    }
+    if (!overrides.set) {
+      this.set = () => Promise.resolve();
+    }
+    if (!overrides.getFile) {
+      this.getFile = () => Promise.resolve({});
+    }
+    if (!overrides.setFile) {
+      this.setFile = () => Promise.resolve();
+    }
+    if (!overrides.getForFile) {
+      this.getForFile = () => Promise.resolve();
+    }
+    if (!overrides.setForFile) {
+      this.setForFile = () => Promise.resolve();
+    }
+    if (!overrides.getForPlugin) {
+      this.getForPlugin = () => Promise.resolve();
+    }
+    if (!overrides.setForPlugin) {
+      this.setForPlugin = () => Promise.resolve();
+    }
+    if (!overrides.getDefault) {
+      this.getDefault = () => Promise.resolve();
+    }
+    if (!overrides.setDefault) {
+      this.setDefault = () => Promise.resolve();
+    }
+    if (!overrides.getDefaults) {
+      this.getDefaults = () => Promise.resolve({});
+    }
+    if (!overrides.setDefaults) {
+      this.setDefaults = () => Promise.resolve();
+    }
+  }
 }
 
 export class Log extends Mock {
