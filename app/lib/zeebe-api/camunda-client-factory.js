@@ -256,11 +256,7 @@ class CamundaClientFactory {
     } = endpoint;
 
     /** @type {import('@camunda8/sdk/dist/lib').Camunda8ClientConfiguration} */
-    let clientConfig = { };
-
-    if (endpoint.tenantId) {
-      clientConfig.CAMUNDA_TENANT_ID = endpoint.tenantId;
-    }
+    let clientConfig = {};
 
     switch (this._cachedProtocol) {
     case 'grpc':

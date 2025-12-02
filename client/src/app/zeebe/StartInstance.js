@@ -53,9 +53,12 @@ export default class StartInstance extends EventEmitter {
       runtimeInstructions
     } = config;
 
+    const { tenantId } = endpoint;
+
     const startInstanceResult = await this._zeebeAPI.startInstance({
       endpoint,
       processId,
+      tenantId,
       variables: parseVariables(variables),
       startInstructions,
       runtimeInstructions
@@ -65,6 +68,7 @@ export default class StartInstance extends EventEmitter {
       startInstanceResult,
       endpoint,
       processId,
+      tenantId,
       variables: parseVariables(variables)
     });
 
