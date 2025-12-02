@@ -32,8 +32,6 @@ import { Config, Deployment, StartInstance, ZeebeAPI } from '../../../../__tests
 
 import { DELAYS } from '../../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
 
-import { EventsContext } from '../../../../EventsContext';
-
 import diagramXML from './TaskTestingTab.bpmn';
 
 const CONNECTION_CHECKER_INTERVAL = DELAYS.SHORT + 1;
@@ -79,20 +77,14 @@ describe('<TaskTestingTab>', function() {
       deployment: new Deployment({
         getConfigForFile: async () => {
           return {
+            deployment: {},
             endpoint: {
               targetType: 'camundaCloud',
               camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
             }
           };
         }
-      }),
-      connectionCheckResult: {
-        success: true,
-        response: {
-          protocol: 'rest',
-          gatewayVersion: '8.8.0'
-        }
-      }
+      })
     });
 
     const { container } = renderResult;
@@ -139,20 +131,14 @@ describe('<TaskTestingTab>', function() {
         deployment: new Deployment({
           getConfigForFile: async () => {
             return {
+              deployment: {},
               endpoint: {
                 targetType: 'camundaCloud',
                 camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
               }
             };
           }
-        }),
-        connectionCheckResult: {
-          success: true,
-          response: {
-            protocol: 'rest',
-            gatewayVersion: '8.7.0'
-          }
-        }
+        })
       });
 
       const { getByText } = renderResult;
@@ -196,20 +182,14 @@ describe('<TaskTestingTab>', function() {
         deployment: new Deployment({
           getConfigForFile: async () => {
             return {
+              deployment: {},
               endpoint: {
                 targetType: 'camundaCloud',
                 camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
               }
             };
           }
-        }),
-        connectionCheckResult: {
-          success: true,
-          response: {
-            protocol: 'grpc',
-            gatewayVersion: '8.8.0'
-          }
-        }
+        })
       });
 
       const { getByText } = renderResult;
@@ -250,17 +230,14 @@ describe('<TaskTestingTab>', function() {
         deployment: new Deployment({
           getConfigForFile: async () => {
             return {
+              deployment: {},
               endpoint: {
                 targetType: 'camundaCloud',
                 camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
               }
             };
           }
-        }),
-        connectionCheckResult: {
-          success: false,
-          reason: 'Foo'
-        }
+        })
       });
 
       const { getByText } = renderResult;
@@ -316,20 +293,14 @@ describe('<TaskTestingTab>', function() {
         deployment: new Deployment({
           getConfigForFile: async () => {
             return {
+              deployment: {},
               endpoint: {
                 targetType: 'camundaCloud',
                 camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
               }
             };
           }
-        }),
-        connectionCheckResult: {
-          success: true,
-          response: {
-            protocol: 'rest',
-            gatewayVersion: '8.8.0'
-          }
-        }
+        })
       });
 
       const { getByText } = renderResult;
@@ -379,17 +350,14 @@ describe('<TaskTestingTab>', function() {
         deployment: new Deployment({
           getConfigForFile: async () => {
             return {
+              deployment: {},
               endpoint: {
                 targetType: 'camundaCloud',
                 camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
               }
             };
           }
-        }),
-        connectionCheckResult: {
-          success: false,
-          reason: 'Foo'
-        }
+        })
       });
 
       const { container } = renderResult;
@@ -438,40 +406,24 @@ async function renderTab(options = {}) {
       path: 'foo.bpmn'
     },
     layout = defaultLayout,
-    onAction = () => {},
-    connectionCheckResult = null
+    onAction = () => {}
   } = options;
 
-  const mockSubscribe = (event, listener) => {
-    if (event === 'connectionManager.connectionStatusChanged' && connectionCheckResult) {
-      setTimeout(() => listener(connectionCheckResult), 0);
-    }
-    return {
-      cancel: () => {}
-    };
-  };
-
-  const eventsContext = {
-    subscribe: mockSubscribe
-  };
-
   const renderResult = render(
-    <EventsContext.Provider value={ eventsContext }>
-      <SlotFillRoot>
-        <Panel
-          layout={ layout }>
-          <TaskTestingTab
-            deployment={ deployment }
-            startInstance={ startInstance }
-            zeebeApi={ zeebeApi }
-            layout={ layout }
-            injector={ injector }
-            file={ file }
-            config={ config }
-            onAction={ onAction } />
-        </Panel>
-      </SlotFillRoot>
-    </EventsContext.Provider>
+    <SlotFillRoot>
+      <Panel
+        layout={ layout }>
+        <TaskTestingTab
+          deployment={ deployment }
+          startInstance={ startInstance }
+          zeebeApi={ zeebeApi }
+          layout={ layout }
+          injector={ injector }
+          file={ file }
+          config={ config }
+          onAction={ onAction } />
+      </Panel>
+    </SlotFillRoot>
   );
 
   return {
