@@ -13,6 +13,7 @@
 import ConnectionChecker from '../ConnectionChecker';
 
 import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
+import { CONNECTION_CHECK_ERROR_REASONS } from '../ConnectionCheckErrors';
 
 describe('ConnectionChecker', function() {
 
@@ -310,7 +311,7 @@ describe('ConnectionChecker', function() {
 
     expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy.firstCall.args[0].success).to.be.false;
-    expect(connectionCheckSpy.firstCall.args[0].error.message).to.equal('No configuration provided');
+    expect(connectionCheckSpy.firstCall.args[0].reason).to.equal(CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG);
   });
 
 

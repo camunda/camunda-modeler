@@ -30,7 +30,6 @@ describe('ConnectionManagerOverlay', function() {
 
       // then
       expect(container.querySelector('select[name="connection"]')).to.exist;
-      expect(getByText('Select Orchestration Cluster connection.')).to.exist;
       expect(getByText('Manage connections')).to.exist;
     });
 
@@ -44,9 +43,8 @@ describe('ConnectionManagerOverlay', function() {
       const { container, getByText } = createConnectionManagerOverlay({ connections });
 
       // then
-      expect(container.querySelector('select[name="connection"]')).to.not.exist;
-      expect(getByText('No connections configured')).to.exist;
-      expect(getByText('Add connections')).to.exist;
+      expect(container.querySelector('select[name="connection"]')).to.exist;
+      expect(getByText('Disabled (offline mode)')).to.exist;
     });
 
 
@@ -81,7 +79,7 @@ describe('ConnectionManagerOverlay', function() {
       // then
       expect(select).to.exist;
 
-      expect(select.options.length).to.equal(2);
+      expect(select.options.length).to.equal(3);
       expect(select.options[0].value).to.equal('connection-1');
       expect(select.options[0].text).to.equal('Test Connection 1');
       expect(select.options[1].value).to.equal('connection-2');
@@ -234,23 +232,6 @@ describe('ConnectionManagerOverlay', function() {
       // when
       const manageLink = getByText('Manage connections');
       fireEvent.click(manageLink);
-
-      // then
-      expect(handleManageConnections).to.have.been.calledOnce;
-    });
-
-
-    it('should call handler when "Add connections" is clicked', function() {
-
-      // given
-      const connections = [];
-      const handleManageConnections = sinon.spy();
-
-      const { getByText } = createConnectionManagerOverlay({ connections, handleManageConnections });
-
-      // when
-      const addLink = getByText('Add connections');
-      fireEvent.click(addLink);
 
       // then
       expect(handleManageConnections).to.have.been.calledOnce;
