@@ -18,7 +18,7 @@ export const DELAYS = {
 const ERROR_CHECK_ABORTED = 'CHECK_ABORTED';
 
 export default class ConnectionChecker extends EventEmitter {
-  constructor(zeebeAPI) {
+  constructor(zeebeAPI, name = 'default') {
     super();
 
     this._zeebeAPI = zeebeAPI;
@@ -29,6 +29,7 @@ export default class ConnectionChecker extends EventEmitter {
     this._lastResult = null;
     this._abortController = null;
     this._isChecking = false;
+    this._name = name;
   }
 
   updateConfig(config, startChecking = true) {
@@ -69,6 +70,7 @@ export default class ConnectionChecker extends EventEmitter {
 
     if (!this._config) {
       const result = {
+        name: this._name,
         success: false,
         error: new Error('No configuration provided')
       };
@@ -106,7 +108,7 @@ export default class ConnectionChecker extends EventEmitter {
 
       this._lastResult = result;
 
-      this.emit('connectionCheck', result);
+      this.emit('connectionCheck', { ...result, name: this._name });
     } catch (error) {
 
       // we don't want to emit the result of an aborted check, last result stays valid
@@ -115,6 +117,7 @@ export default class ConnectionChecker extends EventEmitter {
       }
 
       const result = {
+        name: this._name,
         success: false,
         error
       };

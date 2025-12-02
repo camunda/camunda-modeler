@@ -31,8 +31,8 @@ import { Flags } from '../util';
  *
  * @typedef {Object} SettingsProperty
  *
- * @property {'text' | 'password' | 'boolean' | 'select' | 'radio' | 'customField' | 'customFieldArray'} type - one of the supported types
- * @property {any} component - custom React component for 'customField' and 'customFieldArray' types
+ * @property {'text' | 'password' | 'boolean' | 'select' | 'radio' | 'custom'} type - one of the supported types
+ * @property {any} component - custom React component for 'custom' type
  * @property {string} label - label on the settings page
  * @property {string} [hint] - hint/placeholder for input based fields
  * @property {string|boolean} [default] - the default value
