@@ -14,6 +14,7 @@ import classNames from 'classnames';
 
 import { Section, Select } from '../../../shared/ui';
 import { getMessageForReason } from '../../zeebe-plugin/shared/util';
+import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 
 export function ConnectionManagerOverlay({
   connections = [],
@@ -55,17 +56,20 @@ export function ConnectionManagerOverlay({
                     </a>
                   </>
                 }
-                options={ connections.map(connection => ({
-                  value: connection.id,
-                  label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
-                })).concat([ { separator: true }, { value: 'NO_CONNECTION', label: 'Disabled (offline mode)' } ]) }
+                options={ [
+                  ...connections.map(connection => ({
+                    value: connection.id,
+                    label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
+                  })),
+                  { separator: true },
+                  { value: 'NO_CONNECTION', label: 'Disabled (offline mode)' }
+                ] }
                 value={ activeConnection?.id }
                 fieldError={
-                  () => connectionCheckResult?.success === false ?
+                  () => connectionCheckResult?.success === false && connectionCheckResult.reason !== CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG ?
                     <>
-                      Could not establish connection: {
-                        getMessageForReason(connectionCheckResult?.reason)
-                      }
+                      Could not establish connection: <br />
+                      { getMessageForReason(connectionCheckResult?.reason) }
                     </> :
                     undefined
                 }
@@ -73,7 +77,7 @@ export function ConnectionManagerOverlay({
             </div>
           </div>
 
-          <div className={ classNames('form-group form-description') } style={ { marginBottom: "6px" } }>
+          <div className={ classNames('form-group form-description') }>
             Use the Camunda 8 Orchestration Cluster to assist during development, i.e., to enable task testing or when using the deploy and run tools. <a href="#">
               Learn more
             </a>

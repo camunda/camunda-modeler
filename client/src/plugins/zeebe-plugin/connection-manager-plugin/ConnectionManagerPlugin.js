@@ -23,8 +23,13 @@ import { SETTINGS_KEY_CONNECTIONS, initializeSettings } from './ConnectionManage
 import * as css from './ConnectionManagerPlugin.less';
 import { ConnectionManagerOverlay } from './ConnectionManagerOverlay';
 import { StatusIndicator } from '../shared/StatusIndicator';
+import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 
 const CONFIG_KEY = 'connection-manager';
+const NO_CONNECTION = {
+  id: 'NO_CONNECTION',
+  name: 'No Connection'
+};
 
 /**
  *
@@ -95,6 +100,12 @@ export default function ConnectionManagerPlugin(props) {
         deployment.setConnectionForFile(activeTab.file, connectionId);
       }
 
+      if (connectionId === NO_CONNECTION.id) {
+        setActiveConnection(NO_CONNECTION);
+        deployment.setConnectionForFile(activeTab.file, NO_CONNECTION.id);
+        return;
+      }
+
       let connection = connections.find(conn => conn.id === connectionId);
       if (!connection && connections.length > 0) {
         connection = connections[0];
@@ -110,12 +121,13 @@ export default function ConnectionManagerPlugin(props) {
   useEffect(() => {
     (async () => {
       setConnectionCheckResult(null);
-      if (activeConnection) {
+      if (activeConnection && activeConnection.id !== NO_CONNECTION.id) {
         connectionChecker.current.updateConfig({ endpoint: activeConnection });
       }
       else {
-        connectionChecker.current.updateConfig(null);
         connectionChecker.current.stopChecking();
+        connectionChecker.current.updateConfig(null, false);
+        setConnectionCheckResult({ success: false, reason: CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG });
       }
     })();
 
@@ -139,10 +151,13 @@ export default function ConnectionManagerPlugin(props) {
   const TabIcon = activeTab ? tabsProvider.getTabIcon(activeTab?.type) || (() => null) : (() => null);
 
   function getStatus(connectionCheckResult, activeConnection) {
+    if (activeConnection?.id === NO_CONNECTION.id) {
+      return 'idle';
+    }
     if (connectionCheckResult) {
       return connectionCheckResult.success ? 'success' : 'error';
     }
-    if (activeConnection) {
+    if (activeConnection && activeConnection.id !== NO_CONNECTION.id) {
       return 'loading';
     }
     return 'idle';
@@ -175,6 +190,10 @@ export default function ConnectionManagerPlugin(props) {
         } }
         handleConnectionChange={ async (connectionId)=> {
           await deployment.setConnectionForFile(activeTab.file, connectionId);
+          if (connectionId === NO_CONNECTION.id) {
+            setActiveConnection(NO_CONNECTION);
+            return;
+          }
           const connection = (connections.find(conn => conn.id === connectionId));
           setActiveConnection(connection);
         }

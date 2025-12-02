@@ -9,6 +9,7 @@
  */
 
 import EventEmitter from 'events';
+import { CONNECTION_CHECK_ERROR_REASONS } from './ConnectionCheckErrors';
 
 export const DELAYS = {
   LONG: 5000, // 5s interval if no config change
@@ -57,7 +58,8 @@ export default class ConnectionChecker extends EventEmitter {
     if (!this._config) {
       const result = {
         success: false,
-        error: new Error('No configuration provided')
+        reason: CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG,
+        error: new Error(CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG)
       };
 
       this._lastResult = result;
