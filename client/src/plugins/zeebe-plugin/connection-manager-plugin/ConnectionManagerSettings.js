@@ -22,7 +22,7 @@ export async function initializeSettings({ settings }) {
 /** @type import("../../../app/Settings").SettingsGroup */
 const pluginSettings = {
   id: 'connectionManagerPlugin',
-  title: 'Connections',
+  title: 'Camunda 8 cluster connections',
   order: 1,
   properties: {
     [SETTINGS_KEY_CONNECTIONS]: {

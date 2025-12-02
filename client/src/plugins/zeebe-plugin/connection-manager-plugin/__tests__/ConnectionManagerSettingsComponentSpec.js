@@ -433,7 +433,7 @@ describe('ConnectionManagerSettingsComponent', function() {
     // then
     const description = container.querySelector('.custom-control-description');
     expect(description).to.exist;
-    expect(description.textContent).to.equal('Manage Camunda 8 Orchestration Cluster connections.');
+    expect(description.textContent).to.equal('Deploy and run your processes on Camunda 8 orchestration clusters, including Camunda 8 Run.');
   });
 
 

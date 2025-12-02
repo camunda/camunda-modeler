@@ -69,7 +69,7 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
 
   return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings">
     <div className="custom-control">
-      <div className="custom-control-description">Manage Camunda 8 Orchestration Cluster connections.</div>
+      <div className="custom-control-description">Deploy and run your processes on Camunda 8 orchestration clusters, including <a href="https://docs.camunda.io/docs/self-managed/quickstart/developer-quickstart/c8run/">Camunda 8 Run</a>.</div>
     </div>
     {(!fieldValue || fieldValue.length === 0) && (
       <p className="empty-placeholder">No connections configured</p>
@@ -139,14 +139,17 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
         tooltipPosition="left"
         iconDescription="Add connection"
         renderIcon={ Add }
-        hasIconOnly={ true }
+        hasIconOnly={ false }
+        kind="tertiary"
         onClick={ () => {
           const newElement = generateNewElement(fieldValue.length);
           push(newElement);
           setExpandedRows([ newElement.id ]);
           setNewlyCreatedRowId(newElement.id);
         } }
-      />
+      >
+        Add connection
+      </Button>
     </div>
   </div>;
 }
