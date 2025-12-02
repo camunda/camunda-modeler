@@ -14,6 +14,7 @@ import classNames from 'classnames';
 
 import { Section, Select } from '../../../shared/ui';
 import { getMessageForReason } from '../../zeebe-plugin/shared/util';
+import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 
 export function ConnectionManagerOverlay({
   connections = [],
@@ -38,9 +39,8 @@ export function ConnectionManagerOverlay({
         {renderHeader}
       </Section.Header>
       <Section.Body className="form-body">
-        {connections?.length ?
+        <form className="fields">
           <div className={ classNames('form-group', 'form-group-spacing') }>
-            <p>Select orchestration cluster connection.</p>
             <div>
               <Select
                 field={ {
@@ -49,33 +49,40 @@ export function ConnectionManagerOverlay({
                 } }
                 className="form-control"
                 name="connection"
-                placeholder="Please select a connection"
-                options={ connections.map(connection => ({
-                  value: connection.id,
-                  label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
-                })) }
+                label={
+                  <>
+                    Connection <a className="manage-connections-link" onClick={ handleManageConnections } href="#">
+                      Manage connections
+                    </a>
+                  </>
+                }
+                options={ [
+                  ...connections.map(connection => ({
+                    value: connection.id,
+                    label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
+                  })),
+                  { separator: true },
+                  { value: 'NO_CONNECTION', label: 'Disabled (offline mode)' }
+                ] }
                 value={ activeConnection?.id }
-                fieldError={ () => connectionCheckResult?.success === false ? getMessageForReason(connectionCheckResult?.reason) : undefined }
+                fieldError={
+                  () => connectionCheckResult?.success === false && connectionCheckResult.reason !== CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG ?
+                    <>
+                      Could not establish connection: <br />
+                      { getMessageForReason(connectionCheckResult?.reason) }
+                    </> :
+                    undefined
+                }
               />
-
-            </div>
-            <div className="manage-connections-container">
-              <a className="manage-connections-link" onClick={ handleManageConnections }>
-                Manage connections
-              </a>
-            </div>
-
-          </div>
-          :
-          <div>
-            <p className="empty-placeholder">No connections configured</p>
-            <div className="manage-connections-container">
-              <a className="manage-connections-link" onClick={ handleManageConnections }>
-                Add connections
-              </a>
             </div>
           </div>
-        }
+
+          <div className={ classNames('form-group form-description') }>
+            Use the Camunda 8 Orchestration Cluster to assist during development, i.e., to enable task testing or when using the deploy and run tools. <a href="#">
+              Learn more
+            </a>
+          </div>
+        </form>
       </Section.Body>
     </Section>
   );

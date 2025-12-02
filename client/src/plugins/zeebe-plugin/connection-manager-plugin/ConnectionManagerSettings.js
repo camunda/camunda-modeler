@@ -22,14 +22,14 @@ export async function initializeSettings({ settings }) {
 /** @type import("../../../app/Settings").SettingsGroup */
 const pluginSettings = {
   id: 'connectionManagerPlugin',
-  title: 'Connections',
+  title: 'Camunda 8 cluster connections',
   order: 1,
   properties: {
     [SETTINGS_KEY_CONNECTIONS]: {
       type: 'customFieldArray',
       component: ConnectionManagerSettingsComponent,
       label: 'customFieldArray',
-      description: 'Manage Camunda 8 orchestration cluster connections.',
+      description: 'Manage Camunda 8 Orchestration Cluster connections.',
     },
 
   }

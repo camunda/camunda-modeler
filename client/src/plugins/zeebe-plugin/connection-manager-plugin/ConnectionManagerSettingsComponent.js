@@ -8,10 +8,10 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Button, DataTable, Table, TableBody, TableCell, TableExpandedRow, TableExpandRow } from '@carbon/react';
-import { Add, TrashCan } from '@carbon/icons-react';
+import { Add, ErrorFilled, TrashCan } from '@carbon/icons-react';
 
 import { getIn } from 'formik';
 
@@ -27,9 +27,26 @@ import * as css from './ConnectionManagerSettingsComponent.less';
 export function ConnectionManagerSettingsComponent({ form, name:fieldName, push, remove, expandRowId }) {
 
   const [ expandedRows, setExpandedRows ] = useState([]);
+  const [ newlyCreatedRowId, setNewlyCreatedRowId ] = useState(null);
   const expandedRowRef = useRef(null);
 
   const fieldValue = getIn(form.values, fieldName) || [];
+
+  useEffect(() => {
+    if (newlyCreatedRowId && expandedRows.includes(newlyCreatedRowId)) {
+      setTimeout(() => {
+        const index = fieldValue.findIndex(item => item.id === newlyCreatedRowId);
+        if (index !== -1) {
+          const inputElement = document.getElementById(`${fieldName}[${index}].name`);
+          if (inputElement) {
+            inputElement.focus();
+            inputElement.select();
+          }
+        }
+        setNewlyCreatedRowId(null);
+      }, 0);
+    }
+  }, [ expandedRows, newlyCreatedRowId, fieldName, fieldValue ]);
 
   /**
    * @param {{ id: any; }} row
@@ -52,10 +69,17 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
 
   return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings">
     <div className="custom-control">
-      <div className="custom-control-description">Manage Camunda 8 orchestration cluster connections.</div>
+      <div className="custom-control-description">Deploy and run your processes on Camunda 8 orchestration clusters, including <a href="https://docs.camunda.io/docs/self-managed/quickstart/developer-quickstart/c8run/">Camunda 8 Run</a>.</div>
     </div>
     {(!fieldValue || fieldValue.length === 0) && (
-      <p className="empty-placeholder">No connections configured</p>
+      <div className="empty-placeholder">
+        <ErrorFilled size={ 20 } />
+        <div className="placeholder-content">
+          <h1>No connections configured</h1>
+          <p>Add a cluster to deploy and run processes</p>
+        </div>
+      </div>
+
     )}
     <DataTable rows={ fieldValue } headers={ [] }>
       {({
@@ -95,19 +119,21 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
                   </TableCell>
                 </TableExpandRow>
 
-                <TableExpandedRow
-                  { ...getExpandedRowProps({ row }) }
-                  colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
-                >
-                  <div>
-                    {/* TODO: connection status */}
-                    {
-                      properties.map((property) =>
-                        <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
-                      )
-                    }
-                  </div>
-                </TableExpandedRow>
+                {isExpanded(row) && (
+                  <TableExpandedRow
+                    { ...getExpandedRowProps({ row }) }
+                    colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
+                  >
+                    <div>
+                      {/* TODO: connection status */}
+                      {
+                        properties.map((property) =>
+                          <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
+                        )
+                      }
+                    </div>
+                  </TableExpandedRow>
+                )}
               </React.Fragment>
             ))}
           </TableBody>
@@ -120,13 +146,17 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
         tooltipPosition="left"
         iconDescription="Add connection"
         renderIcon={ Add }
-        hasIconOnly={ true }
+        hasIconOnly={ false }
+        kind="tertiary"
         onClick={ () => {
           const newElement = generateNewElement(fieldValue.length);
           push(newElement);
           setExpandedRows([ newElement.id ]);
+          setNewlyCreatedRowId(newElement.id);
         } }
-      />
+      >
+        Add connection
+      </Button>
     </div>
   </div>;
 }

@@ -1,10 +1,13 @@
 :local(.StatusIndicator) {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
 
   .loading {
     --cds-interactive: var(--color-status-bar-loading);
+  }
+
+  .status-icon {
+    margin-right: var(--icon-margin);
   }
 
   svg.status-icon,
