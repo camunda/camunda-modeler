@@ -11,6 +11,7 @@
     button.remove {
       --cds-icon-primary: var(--color-danger-fill-color);
       --cds-background-hover: var(--color-danger-background-hover-color);
+
       &:hover {
         --cds-icon-primary: var(--color-danger-fill-hover-color);
       }
@@ -24,5 +25,37 @@
 
   .custom-control-description {
     margin-bottom: 1rem;
+  }
+
+  .empty-placeholder{
+    display: flex;
+    align-items: flex-start;
+    gap: var(--icon-margin);
+    padding: 20px;
+    background: var(--color-grey-225-10-97);
+    margin: 1rem auto 0;
+    width: fit-content;
+
+    svg {
+      color: var(--color-grey-225-10-35);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .placeholder-content {
+      h1 {
+        font-size: 16px;
+        font-weight: normal;
+        margin: 0;
+        color: var(--color-grey-225-10-15);
+      }
+
+      p {
+        font-size: 12px;
+        font-weight: normal;
+        margin: 0;
+        color: var(--color-grey-225-10-15);
+      }
+    }
   }
 }
