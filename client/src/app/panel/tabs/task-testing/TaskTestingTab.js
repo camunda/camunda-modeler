@@ -21,12 +21,11 @@ import { debounce } from '../../../../util';
 import TaskTestingStatusBarItem from './TaskTestingStatusBarItem';
 import TaskTestingApi from './TaskTestingApi';
 
-import { useConnectionStatus } from './hooks/useConnectionStatus';
+import { useConnectionChecker } from './hooks/useConnectionChecker';
 
 import * as css from './TaskTestingTab.less';
 
 import { utmTag } from '../../../../util/utmTag';
-import { EventsContext } from '../../../EventsContext';
 
 
 export const TAB_ID = 'task-testing';
@@ -62,9 +61,9 @@ export default function TaskTestingTab(props) {
     zeebeApi
   } = props;
 
-  const { subscribe } = React.useContext(EventsContext);
-
   const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
+
+  const [ deployConfig, setDeployConfig ] = useState(null);
 
   const [ operateUrl, setOperateUrl ] = useState(null);
 
@@ -73,11 +72,12 @@ export default function TaskTestingTab(props) {
     const api = new TaskTestingApi(deployment, startInstance, zeebeApi, file, onAction);
 
     api.getOperateUrl().then(setOperateUrl);
+    api.getDeploymentConfig().then(setDeployConfig);
 
     return api.getApi();
   }, [ zeebeApi, config, file, onAction ]);
 
-  const connectionStatus = useConnectionStatus(subscribe);
+  const { connectionSuccess, connectionError } = useConnectionChecker(zeebeApi, deployConfig);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -144,12 +144,16 @@ export default function TaskTestingTab(props) {
   }, [ onAction ]);
 
   const handleConfigureConnection = useCallback(() => {
-    onAction('settings-open');
+    onAction('open-deployment');
   }, [ onAction ]);
 
+  const connectionCheckResult = {
+    success: connectionSuccess,
+    response: connectionError
+  };
 
-  const configureConnectionBannerTitle = getConnectionBannerTitle(connectionStatus);
-  const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionStatus);
+  const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult);
+  const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult);
 
   return <>
     <Fill slot="bottom-panel"
@@ -161,7 +165,7 @@ export default function TaskTestingTab(props) {
         <TaskTesting
           injector={ injector }
           config={ taskTestingConfig }
-          isConnectionConfigured={ canConnectToCluster(connectionStatus) }
+          isConnectionConfigured={ canConnectToCluster(connectionCheckResult) }
           onConfigureConnection={ handleConfigureConnection }
           onConfigChanged={ setTaskTestingConfig }
           operateBaseUrl={ operateUrl }
@@ -203,12 +207,12 @@ function getConfigureConnectionBannerDescription(connectionCheckResult) {
   return null;
 }
 
-function canConnectToCluster(connectionStatus) {
-  const protocolSupported = isProtocolSupported(connectionStatus);
+function canConnectToCluster(connectionCheckResult) {
+  const protocolSupported = isProtocolSupported(connectionCheckResult);
 
-  const gatewayVersionSupported = isExecutionPlatformVersionSupported(connectionStatus);
+  const gatewayVersionSupported = isExecutionPlatformVersionSupported(connectionCheckResult);
 
-  return connectionStatus?.success && protocolSupported && gatewayVersionSupported;
+  return connectionCheckResult?.success && protocolSupported && gatewayVersionSupported;
 }
 
 function isProtocolSupported(connectionCheckResult) {
