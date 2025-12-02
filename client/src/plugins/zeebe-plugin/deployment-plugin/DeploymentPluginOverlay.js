@@ -54,6 +54,18 @@ export default function DeploymentPluginOverlay(props) {
 
   const [ isSubmitting, setIsSubmitting ] = React.useState(false);
 
+  const handleChangeConnections = () => {
+    onClose();
+    triggerAction('open-connection-selector');
+    return false;
+  };
+
+  const handleManageConnections = () => {
+    onClose();
+    triggerAction('settings-open');
+    return false;
+  };
+
   const onSubmit = async () => {
     setIsSubmitting(true);
     const file = getConfigFile(activeTab);
@@ -128,6 +140,8 @@ export default function DeploymentPluginOverlay(props) {
         renderSubmit={ renderSubmit }
         connectionCheckResult={ connectionCheckResult }
         isSubmitting={ isSubmitting }
+        handleChangeConnections={ handleChangeConnections }
+        handleManageConnections={ handleManageConnections }
       />
     </Overlay>
   );

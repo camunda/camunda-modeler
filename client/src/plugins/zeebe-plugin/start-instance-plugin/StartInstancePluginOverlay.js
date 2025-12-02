@@ -64,6 +64,18 @@ export default function StartInstancePluginOverlay(props) {
 
   const [ startInstanceConfig, setStartInstanceConfig ] = useState(/** @type {StartInstanceConfig|null} */ (null));
 
+  const handleChangeConnections = () => {
+    onClose();
+    triggerAction('open-connection-selector');
+    return false;
+  };
+
+  const handleManageConnections = () => {
+    onClose();
+    triggerAction('settings-open');
+    return false;
+  };
+
   const getStartInstanceFieldError = (fieldName) => {
     return null;
   };
@@ -208,6 +220,8 @@ export default function StartInstancePluginOverlay(props) {
           validateForm={ validateStartInstanceConfigForm }
           validateField={ (name, value) => startInstanceConfigValidator.validateConfigValue(name, value) }
           connectionCheckResult={ connectionCheckResult }
+          handleChangeConnections={ handleChangeConnections }
+          handleManageConnections={ handleManageConnections }
         />
       ) : (
 
