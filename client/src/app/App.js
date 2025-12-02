@@ -1278,7 +1278,7 @@ export class App extends PureComponent {
    * @param {string} message - Message to be logged.
    * @param {string} category - Category of message.
    * @param {string} action - Action to be triggered.
-   * @param {boolean} silent - Log without opening the panel.
+   * @param {bool} silent - Log without opening the panel.
    */
   logEntry(message, category, action, silent) {
 

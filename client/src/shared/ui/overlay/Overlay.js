@@ -38,7 +38,6 @@ const DEFAULT_OFFSET = {
  * @prop {string | number} [maxWidth]
  * @prop {string | number} [minHeight]
  * @prop {string | number} [minWidth]
- * @prop {string} [className]
  * @prop {function} [onClose]
  *
  * @extends {PureComponent<OverlayProps>}
