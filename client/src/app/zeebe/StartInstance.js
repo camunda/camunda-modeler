@@ -47,13 +47,14 @@ export default class StartInstance extends EventEmitter {
    */
   async startInstance(processId, config) {
     const {
+      deployment,
       endpoint,
       variables = '{}',
       startInstructions,
       runtimeInstructions
     } = config;
 
-    const { tenantId } = endpoint;
+    const { tenantId } = deployment;
 
     const startInstanceResult = await this._zeebeAPI.startInstance({
       endpoint,

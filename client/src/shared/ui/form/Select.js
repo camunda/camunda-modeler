@@ -36,7 +36,7 @@ export default function Select(props) {
     name: fieldName
   } = field;
 
-  const meta = form?.getFieldMeta(fieldName);
+  const meta = form.getFieldMeta(fieldName);
 
   const error = (fieldError || defaultFieldError)(meta, fieldName);
 
@@ -50,7 +50,7 @@ export default function Select(props) {
           </label>
           <select
             { ...field }
-            disabled={ form?.isSubmitting }
+            disabled={ form.isSubmitting }
             className={ classNames('form-control', {
               'is-invalid': !!error
             }) }

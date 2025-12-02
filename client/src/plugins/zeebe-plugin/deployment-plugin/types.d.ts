@@ -1,6 +1,6 @@
 import type {
   Deployment as _Deployment,
-  DeployResourceResponse,
+  DeployResourceResponse
 } from '@camunda8/sdk/dist/zeebe/types';
 
 export type DeploymentResponse = DeployResourceResponse<_Deployment>;
@@ -16,7 +16,7 @@ export interface Deployment {
 
 export interface AbstractEndpoint {
   id: string;
-  name: string;
+  url: string;
 }
 
 export interface SelfHostedNoAuthEndpoint extends AbstractEndpoint {
@@ -48,17 +48,7 @@ export interface CamundaCloudEndpoint extends AbstractEndpoint {
   camundaCloudClientSecret: string;
 }
 
-export type Endpoint =
-  | SelfHostedNoAuthEndpoint
-  | SelfHostedBasicAuthEndpoint
-  | SelfHostedOAuthEndpoint
-  | CamundaCloudEndpoint;
-
-export type EndpointUnion =
-  | Partial<SelfHostedNoAuthEndpoint>
-  | Partial<SelfHostedBasicAuthEndpoint>
-  | Partial<SelfHostedOAuthEndpoint>
-  | Partial<CamundaCloudEndpoint>;
+export type Endpoint = SelfHostedNoAuthEndpoint | SelfHostedBasicAuthEndpoint | SelfHostedOAuthEndpoint | CamundaCloudEndpoint;
 
 export type DeploymentConfig = {
   context: 'deploymentTool' | 'taskTesting';
@@ -75,10 +65,10 @@ export enum DeploymentConnectionValidationReason {
   OAUTH_URL = 'OAUTH_URL',
   UNSUPPORTED_ENGINE = 'UNSUPPORTED_ENGINE',
   INVALID_CLIENT_ID = 'INVALID_CLIENT_ID',
-  INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
+  INVALID_CREDENTIALS = 'INVALID_CREDENTIALS'
 }
 
 export type ConnectionCheckResult = {
   success: boolean;
   reason?: DeploymentConnectionValidationReason;
-};
+}
