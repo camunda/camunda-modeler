@@ -47,10 +47,6 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Connection manager</h4>
-          You can now store multiple connections and easily switch between them using the new connection manager in settings.
-        </li>
-        <li>
           <h4>Enhanced element template support</h4>
           Element templates now support templating signal events, enabling reusable signals across processes.
         </li>

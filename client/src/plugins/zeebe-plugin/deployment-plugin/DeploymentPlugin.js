@@ -14,6 +14,7 @@ import classNames from 'classnames';
 
 import { Fill } from '../../../app/slot-fill';
 
+import ConnectionChecker from './ConnectionChecker';
 import DeploymentConfigValidator from './DeploymentConfigValidator';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
@@ -27,12 +28,13 @@ export default function DeploymentPlugin(props) {
     displayNotification,
     log,
     subscribe,
-    triggerAction,
-    connectionCheckResult
+    triggerAction
   } = props;
 
   const [ activeTab, setActiveTab ] = useState(null);
   const [ overlayOpen, setOverlayOpen ] = useState(false);
+
+  const connectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI')));
 
   const anchorRef = useRef();
 
@@ -55,6 +57,12 @@ export default function DeploymentPlugin(props) {
 
     setOverlayOpen(true);
   };
+
+  useEffect(() => {
+    return () => {
+      connectionChecker.current.stopChecking();
+    };
+  }, []);
 
   useEffect(() => {
     subscribe('app.activeTabChanged', ({ activeTab }) => {
@@ -96,7 +104,7 @@ export default function DeploymentPlugin(props) {
         _getFromApp={ _getFromApp }
         activeTab={ activeTab }
         anchor={ anchorRef.current }
-        connectionCheckResult={ connectionCheckResult }
+        connectionChecker={ connectionChecker.current }
         deployment={ _getGlobal('deployment') }
         deploymentConfigValidator={ DeploymentConfigValidator }
         displayNotification={ displayNotification }

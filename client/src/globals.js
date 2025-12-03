@@ -50,7 +50,7 @@ export const workspace = new Workspace(backend);
 
 export const zeebeAPI = new ZeebeAPI(backend);
 
-export const deployment = new Deployment(config, zeebeAPI, settings);
+export const deployment = new Deployment(config, zeebeAPI);
 
 export const startInstance = new StartInstance(config, zeebeAPI);
 

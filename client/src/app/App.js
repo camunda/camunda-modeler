@@ -70,7 +70,6 @@ import * as css from './App.less';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
-import { EventsContext } from './EventsContext';
 
 const log = debug('App');
 
@@ -118,14 +117,6 @@ export class App extends PureComponent {
     this.navigationHistory = new History();
 
     this.events = new EventEmitter();
-    this.eventsContext = {
-      subscribe: (event, listener) => {
-        this.on(event, listener);
-        return {
-          cancel: () => this.off(event, listener)
-        };
-      }
-    };
 
     // TODO(nikku): make state
     this.closedTabs = new History();
@@ -1287,7 +1278,7 @@ export class App extends PureComponent {
    * @param {string} message - Message to be logged.
    * @param {string} category - Category of message.
    * @param {string} action - Action to be triggered.
-   * @param {boolean} silent - Log without opening the panel.
+   * @param {bool} silent - Log without opening the panel.
    */
   logEntry(message, category, action, silent) {
 
@@ -2160,99 +2151,95 @@ export class App extends PureComponent {
 
         <div className={ css.App }>
 
-          <EventsContext.Provider value={ this.eventsContext }>
+          <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
 
-            <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
+            <SlotFillRoot>
 
-              <SlotFillRoot>
-
-                <div className="tabs">
-                  <TabLinks
-                    tabs={ tabs }
-                    tabGroups={ tabGroups }
-                    isDirty={ isDirty }
-                    activeTab={ activeTab }
-                    getTabIcon={ this._getTabIcon }
-                    onSelect={ this.selectTab }
-                    onMoveTab={ this.moveTab }
-                    onContextMenu={ this.openTabLinksMenu }
-                    onClose={ this.handleCloseTab }
-                    placeholder={ tabs.length ? false : {
-                      label: 'Welcome',
-                      title: 'Welcome Screen'
-                    } }
-                    draggable
-                  />
-
-                  <TabContainer className="main">
-                    {
-                      <Tab
-                        key={ activeTab.id }
-                        tab={ activeTab }
-                        layout={ layout }
-                        linting={ this.getLintingState(activeTab) }
-                        onChanged={ this.handleTabChanged(activeTab) }
-                        onError={ this.handleTabError(activeTab) }
-                        onWarning={ this.handleTabWarning(activeTab) }
-                        onShown={ this.handleTabShown(activeTab) }
-                        onLayoutChanged={ this.handleLayoutChanged }
-                        onContextMenu={ this.openTabMenu }
-                        onAction={ this.triggerAction }
-                        onModal={ this.openModal }
-                        onUpdateMenu={ this.updateMenu }
-                        getConfig={ this.getConfig }
-                        setConfig={ this.setConfig }
-                        getPlugins={ this.getPlugins }
-                        ref={ this.tabRef }
-                        settings={ this.getGlobal('settings') }
-                        backend={ this.getGlobal('backend') }
-                        config={ this.getGlobal('config') }
-                        deployment={ this.getGlobal('deployment') }
-                        startInstance={ this.getGlobal('startInstance') }
-                        zeebeApi={ this.getGlobal('zeebeAPI') }
-                      />
-                    }
-                  </TabContainer>
-                </div>
-
-                <PanelContainer
-                  layout={ layout }
-                  onLayoutChanged={ this.handleLayoutChanged }>
-                  <Panel
-                    layout={ layout }
-                    onLayoutChanged={ this.handleLayoutChanged }
-                    onUpdateMenu={ this.updateMenu } />
-
-                  <LogTab
-                    layout={ layout }
-                    entries={ logEntries }
-                    onClear={ this.clearLog }
-                    onAction={ this.triggerAction } />
-
-                  <LintingTab
-                    layout={ layout }
-                    linting={ this.getLintingState(activeTab) }
-                    onAction={ this.triggerAction } />
-                </PanelContainer>
-
-                <StatusBar />
-
-                <PluginsRoot
-                  app={ this }
-                  plugins={ this.plugins }
+              <div className="tabs">
+                <TabLinks
+                  tabs={ tabs }
+                  tabGroups={ tabGroups }
+                  isDirty={ isDirty }
+                  activeTab={ activeTab }
+                  getTabIcon={ this._getTabIcon }
+                  onSelect={ this.selectTab }
+                  onMoveTab={ this.moveTab }
+                  onContextMenu={ this.openTabLinksMenu }
+                  onClose={ this.handleCloseTab }
+                  placeholder={ tabs.length ? false : {
+                    label: 'Welcome',
+                    title: 'Welcome Screen'
+                  } }
+                  draggable
                 />
 
-              </SlotFillRoot>
+                <TabContainer className="main">
+                  {
+                    <Tab
+                      key={ activeTab.id }
+                      tab={ activeTab }
+                      layout={ layout }
+                      linting={ this.getLintingState(activeTab) }
+                      onChanged={ this.handleTabChanged(activeTab) }
+                      onError={ this.handleTabError(activeTab) }
+                      onWarning={ this.handleTabWarning(activeTab) }
+                      onShown={ this.handleTabShown(activeTab) }
+                      onLayoutChanged={ this.handleLayoutChanged }
+                      onContextMenu={ this.openTabMenu }
+                      onAction={ this.triggerAction }
+                      onModal={ this.openModal }
+                      onUpdateMenu={ this.updateMenu }
+                      getConfig={ this.getConfig }
+                      setConfig={ this.setConfig }
+                      getPlugins={ this.getPlugins }
+                      ref={ this.tabRef }
+                      settings={ this.getGlobal('settings') }
+                      backend={ this.getGlobal('backend') }
+                      config={ this.getGlobal('config') }
+                      deployment={ this.getGlobal('deployment') }
+                      startInstance={ this.getGlobal('startInstance') }
+                      zeebeApi={ this.getGlobal('zeebeAPI') }
+                    />
+                  }
+                </TabContainer>
+              </div>
 
-              { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
-                <KeyboardShortcutsModal
-                  getGlobal={ this.getGlobal }
-                  onClose={ this.closeModal }
-                /> : null }
+              <PanelContainer
+                layout={ layout }
+                onLayoutChanged={ this.handleLayoutChanged }>
+                <Panel
+                  layout={ layout }
+                  onLayoutChanged={ this.handleLayoutChanged }
+                  onUpdateMenu={ this.updateMenu } />
 
-            </KeyboardInteractionTrapContext.Provider>
+                <LogTab
+                  layout={ layout }
+                  entries={ logEntries }
+                  onClear={ this.clearLog }
+                  onAction={ this.triggerAction } />
 
-          </EventsContext.Provider>
+                <LintingTab
+                  layout={ layout }
+                  linting={ this.getLintingState(activeTab) }
+                  onAction={ this.triggerAction } />
+              </PanelContainer>
+
+              <StatusBar />
+
+              <PluginsRoot
+                app={ this }
+                plugins={ this.plugins }
+              />
+
+            </SlotFillRoot>
+
+            { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
+              <KeyboardShortcutsModal
+                getGlobal={ this.getGlobal }
+                onClose={ this.closeModal }
+              /> : null }
+
+          </KeyboardInteractionTrapContext.Provider>
 
         </div>
 

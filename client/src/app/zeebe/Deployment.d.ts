@@ -1,6 +1,6 @@
 import type {
   Deployment as _Deployment,
-  DeployResourceResponse,
+  DeployResourceResponse
 } from '@camunda8/sdk/dist/zeebe/types';
 
 export type DeploymentResponse = DeployResourceResponse<_Deployment>;
@@ -10,12 +10,13 @@ export interface DeploymentResult {
   response: DeploymentResponse;
 }
 
+export interface Deployment {
+  tenantId?: string;
+}
+
 export interface AbstractEndpoint {
   id: string;
   url: string;
-  name?: string;
-  tenantId?: string;
-  operateUrl?: string;
 }
 
 export interface SelfHostedNoAuthEndpoint extends AbstractEndpoint {
@@ -47,14 +48,11 @@ export interface CamundaCloudEndpoint extends AbstractEndpoint {
   camundaCloudClientSecret: string;
 }
 
-export type Endpoint =
-  | SelfHostedNoAuthEndpoint
-  | SelfHostedBasicAuthEndpoint
-  | SelfHostedOAuthEndpoint
-  | CamundaCloudEndpoint;
+export type Endpoint = SelfHostedNoAuthEndpoint | SelfHostedBasicAuthEndpoint | SelfHostedOAuthEndpoint | CamundaCloudEndpoint;
 
 export type DeploymentConfig = {
   context: 'deploymentTool' | 'taskTesting';
+  deployment: Deployment;
   endpoint: Endpoint;
 };
 
