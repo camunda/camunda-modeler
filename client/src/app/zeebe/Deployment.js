@@ -119,12 +119,9 @@ export default class Deployment extends EventEmitter {
       endpoint
     } = config;
 
-    const { tenantId } = endpoint;
-
     const deploymentResult = await this._zeebeAPI.deploy({
       endpoint,
-      resourceConfigs,
-      tenantId
+      resourceConfigs
     });
 
     const gatewayVersion = await this.getGatewayVersion(endpoint);
