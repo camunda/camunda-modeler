@@ -9,7 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/properties-panel@3.34.0`
 * `DEPS`: update to `@camunda/linting@3.45.0`
 * `DEPS`: update to `@camunda/rpa-integration@1.2.2`
-* `DEPS`: update to `@camunda/task-testing@1.0.4`
+* `DEPS`: update to `@camunda/task-testing@1.0.5`
 * `DEPS`: update to `bpmn-js@18.9.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.16.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.43.0`
@@ -29,6 +29,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add `event-based-gateway` rule ([#5194](https://github.com/camunda/camunda-modeler/issues/5194))
 * `FIX`: ensure FEEL expression is enforced for `feel: required` properties ([#4967](https://github.com/camunda/camunda-modeler/issues/4967))
 * `FIX`: task testing does not show Operate button on error state ([#5391](https://github.com/camunda/camunda-modeler/issues/5391))
+* `FIX`: better autocomplete suggestions in task testing ([#5475](https://github.com/camunda/camunda-modeler/pull/5475))
 
 ### RPA
 
