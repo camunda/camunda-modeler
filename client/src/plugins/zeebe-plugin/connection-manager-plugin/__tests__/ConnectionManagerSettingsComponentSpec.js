@@ -439,7 +439,9 @@ describe('ConnectionManagerSettingsComponent', function() {
           id: 'conn-1',
           name: 'Test Connection',
           targetType: 'camundaCloud',
-          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io'
+          camundaCloudClusterUrl: 'https://test-cluster.bru-2.zeebe.camunda.io:443',
+          camundaCloudClientId: 'test-client-id',
+          camundaCloudClientSecret: 'test-client-secret'
         }
       ];
 

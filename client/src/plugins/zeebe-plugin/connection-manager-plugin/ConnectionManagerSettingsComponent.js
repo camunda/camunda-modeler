@@ -15,7 +15,7 @@ import { Add, ErrorFilled, TrashCan } from '@carbon/icons-react';
 
 import { FieldArray, getIn, useFormikContext } from 'formik';
 
-import { SettingsField } from '../../settings/SettingsForm';
+import { SettingsField, validateProperties } from '../../settings/SettingsForm';
 import { generateNewElement, properties } from './ConnectionManagerSettingsProperties';
 
 import * as css from './ConnectionManagerSettingsComponent.less';
@@ -34,7 +34,7 @@ import { StatusIndicator } from '../shared/StatusIndicator';
  */
 export function ConnectionManagerSettingsComponent({ name: fieldName, targetElement, connectionChecker }) {
 
-  const { values, validateForm } = useFormikContext();
+  const { values } = useFormikContext();
 
   const [ expandedRows, setExpandedRows ] = useState([]);
   const expandedRowRef = useRef(null);
@@ -73,12 +73,11 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
   }, [ expandRowId ]);
 
   useEffect(() => {
-    const updateConnectionChecker = async () => {
+    const updateConnectionChecker = () => {
       if (expandedRows?.length > 0) {
         setConnectionCheckResult(null);
-        const formErrors = await validateForm();
-        const expandedConnectionErrors = getIn(formErrors, `${fieldName}[${connectionIndex}]`);
-        if (expandedConnectionErrors) {
+        const validationErrors = validateProperties(connection, properties);
+        if (Object.keys(validationErrors).length > 0) {
           connectionChecker.current.stopChecking();
           setConnectionCheckResult({ success: false, reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION });
           return;

@@ -223,13 +223,18 @@ export function resolvePath(currentPath, targetPath) {
 
 /**
  * Checks if a given condition is met based on the provided form values.
+ * Works with both nested Formik values (when propName is provided) and flat objects.
  *
- * @param {string} propName - The base path for the property being evaluated.
- * @param {Object} values - The object containing all form values, used to cross reference other section/fields
+ * @param {string} [propName] - The base path for the property being evaluated. If omitted, values are treated as a flat object.
+ * @param {Object} values - The object containing form values
  * @param {Condition} condition - The condition object to evaluate.
  * @returns {boolean} True if the condition is met, false otherwise.
  */
 export function isConditionMet(propName, values, condition) {
+  if (!condition) {
+    return true;
+  }
+
   if (condition.allMatch) {
     return condition.allMatch.every((childCondition) => isConditionMet(propName, values, childCondition));
   }
@@ -237,8 +242,12 @@ export function isConditionMet(propName, values, condition) {
   if (!condition.property) {
     return false;
   }
-  const conditionPropPath = resolvePath(propName, condition.property);
-  const conditionPropValue = getIn(values, conditionPropPath);
+
+  // If propName is provided, use path resolution for nested Formik values
+  // Otherwise, treat values as a flat object with direct property access
+  const conditionPropValue = propName
+    ? getIn(values, resolvePath(propName, condition.property))
+    : values[condition.property];
 
   if ('equals' in condition) {
     return conditionPropValue === condition.equals;
@@ -300,6 +309,73 @@ function isEmpty(value) {
 
 function matchesPattern(value, pattern) {
   return new RegExp(pattern).test(value);
+}
+
+/**
+ * Validates a single value against constraints.
+ *
+ * @param {any} value - The value to validate
+ * @param {Constraints} constraints - The constraints to apply
+ * @param {string} [label] - The label for error messages
+ * @returns {string|undefined} Error message or undefined if valid
+ */
+function validateValue(value, constraints, label) {
+  if (!constraints) {
+    return undefined;
+  }
+
+  let { notEmpty, pattern } = constraints;
+
+  if (notEmpty && isEmpty(value)) {
+    return isString(notEmpty) ? notEmpty : `${label || 'This field'} must not be empty`;
+  }
+
+  if (pattern !== undefined) {
+    let message;
+    if (isObject(pattern)) {
+      ({ value: pattern, message } = pattern);
+    }
+
+    if (!matchesPattern(value, pattern)) {
+      return message || `${label || 'This field'} must match pattern ${pattern}`;
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Validates a flat values object against an array of property definitions.
+ * This is useful for validating settings/config objects outside of Formik.
+ *
+ * @param {Object} values - The flat object to validate
+ * @param {Array<{key: string, label?: string, condition?: Condition, constraints?: Constraints}>} properties - Property definitions with validation rules
+ * @returns {{ [key: string]: string }} Object with property keys as keys and error messages as values (empty if valid)
+ */
+export function validateProperties(values, properties) {
+  if (!values) {
+    return { _error: 'No values provided' };
+  }
+
+  const errors = {};
+
+  for (const property of properties) {
+    const { key, condition, constraints, label } = property;
+
+    // Skip validation if condition is not met (field is not visible/applicable)
+    if (!isConditionMet(null, values, condition)) {
+      continue;
+    }
+
+    const value = values[key];
+    const error = validateValue(value, constraints, label);
+
+    if (error) {
+      errors[key] = error;
+    }
+  }
+
+  return errors;
 }
 
 /**

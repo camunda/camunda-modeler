@@ -10,6 +10,8 @@
 
 import EventEmitter from 'events';
 import { CONNECTION_CHECK_ERROR_REASONS } from './ConnectionCheckErrors';
+import { validateProperties } from '../../settings/SettingsForm';
+import { properties as connectionProperties } from '../connection-manager-plugin/ConnectionManagerSettingsProperties';
 
 export const DELAYS = {
   LONG: 5000, // 5s interval if no config change
@@ -84,14 +86,30 @@ export default class ConnectionChecker extends EventEmitter {
       return;
     }
 
+    const { endpoint: connection } = this._config;
+
+    const validationErrors = validateProperties(connection, connectionProperties);
+    if (Object.keys(validationErrors).length > 0) {
+      const result = {
+        name: this._name,
+        success: false,
+        reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION,
+        validationErrors
+      };
+
+      this._lastResult = result;
+
+      this.emit('connectionCheck', result);
+
+      return;
+    }
+
     this._isChecking = true;
     const abortController = new AbortController();
     this._abortController = abortController;
     const { signal } = abortController;
 
     try {
-      const { endpoint } = this._config;
-
       const abortPromise = new Promise((_, reject) => {
         signal.addEventListener('abort', () => {
           reject(new Error(ERROR_CHECK_ABORTED));
@@ -100,7 +118,7 @@ export default class ConnectionChecker extends EventEmitter {
 
       // Race between the API call and abort signal
       const result = await Promise.race([
-        this._zeebeAPI.checkConnection(endpoint),
+        this._zeebeAPI.checkConnection(connection),
         abortPromise
       ]);
 

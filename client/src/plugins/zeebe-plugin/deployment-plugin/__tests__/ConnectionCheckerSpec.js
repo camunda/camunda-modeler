@@ -322,6 +322,42 @@ describe('ConnectionChecker', function() {
   });
 
 
+  it('should emit INVALID_CONFIGURATION error for invalid endpoint config', async function() {
+
+    // given
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy()
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when - update with invalid config (missing client secret)
+    await connectionChecker.updateConfig({
+      endpoint: {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClientId: 'foo',
+        camundaCloudClientSecret: '', // empty = invalid
+        camundaCloudClusterUrl: 'https://cluster-name.region-1.zeebe.camunda.io:443'
+      }
+    });
+
+    await clock.tickAsync(1001);
+
+    // then - should not call API
+    expect(zeebeAPI.checkConnection).not.have.been.called;
+
+    // should emit INVALID_CONFIGURATION error
+    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(connectionCheckSpy.firstCall.args[0].success).to.be.false;
+    expect(connectionCheckSpy.firstCall.args[0].reason).to.equal(CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION);
+    expect(connectionCheckSpy.firstCall.args[0].validationErrors).to.have.property('camundaCloudClientSecret');
+  });
+
+
   it('should stop checking', async function() {
 
     // given
