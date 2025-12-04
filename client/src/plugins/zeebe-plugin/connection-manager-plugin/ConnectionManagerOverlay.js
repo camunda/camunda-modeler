@@ -78,7 +78,7 @@ export function ConnectionManagerOverlay({
           </div>
 
           <div className={ classNames('form-group form-description') }>
-            Use the Camunda 8 Orchestration Cluster to assist during development, i.e., to enable task testing or when using the deploy and run tools. <a href="#">
+            A connection to a running orchestration cluster lets you test tasks, deploy resources, and run processes. <a href="#">
               Learn more
             </a>
           </div>
