@@ -231,7 +231,7 @@ export default function ConnectionManagerPlugin(props) {
       <ConnectionManagerOverlay
         connections={ connections }
         connectionCheckResult={ connectionCheckResult }
-        renderHeader={ <><TabIcon width="16" height="16" />Select Camunda 8 connection</> }
+        renderHeader="Select Camunda 8 connection"
         activeConnection={ activeConnection }
         handleManageConnections={ () => {
           setOverlayOpen(false);
