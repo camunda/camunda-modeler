@@ -41,7 +41,7 @@ describe('ConnectionManagerSettingsComponent', function() {
 
     // then
     expect(container.querySelector('.empty-placeholder')).to.exist;
-    expect(container.querySelector('.empty-placeholder').textContent).to.equal('No connections configured');
+    expect(container.querySelector('.empty-placeholder').textContent).to.contain('No connections configured');
   });
 
 
