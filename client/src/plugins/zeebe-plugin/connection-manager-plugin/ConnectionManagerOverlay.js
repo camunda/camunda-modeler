@@ -15,6 +15,7 @@ import classNames from 'classnames';
 import { Section, Select } from '../../../shared/ui';
 import { getMessageForReason } from '../../zeebe-plugin/shared/util';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
+import { utmTag } from '../../../util/utmTag';
 
 export function ConnectionManagerOverlay({
   connections = [],
@@ -78,7 +79,7 @@ export function ConnectionManagerOverlay({
           </div>
 
           <div className={ classNames('form-group form-description') }>
-            A connection to a running orchestration cluster lets you test tasks, deploy resources, and run processes. <a href="#">
+            A connection to a running orchestration cluster lets you test tasks, deploy resources, and run processes. <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>
               Learn more
             </a>
           </div>
