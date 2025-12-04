@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.42.0
+
 * `DEPS`: update to `@bpmn-io/properties-panel@3.34.0`
 * `DEPS`: update to `@camunda/linting@3.45.0`
 * `DEPS`: update to `@camunda/rpa-integration@1.2.2`
