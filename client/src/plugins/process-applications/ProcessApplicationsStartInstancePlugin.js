@@ -33,12 +33,11 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
     log,
     processApplication,
     processApplicationItems,
-    triggerAction
+    triggerAction,
+    connectionCheckResult
   } = props;
 
   const [ overlayOpen, setOverlayOpen ] = useState(false);
-
-  const connectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI')));
 
   const deployment = _getGlobal('deployment');
   const startInstance = _getGlobal('startInstance');
@@ -63,12 +62,6 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
 
     setOverlayOpen(true);
   };
-
-  useEffect(() => {
-    return () => {
-      connectionChecker.current.stopChecking();
-    };
-  }, []);
 
   if (!processApplication) {
     return null;
@@ -104,7 +97,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
       <StartInstancePluginOverlay
         activeTab={ activeTab }
         anchor={ anchorRef.current }
-        connectionChecker={ connectionChecker.current }
+        connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
         deploymentConfigValidator={ DeploymentConfigValidator }
         getConfigFile={ () => processApplication.file }

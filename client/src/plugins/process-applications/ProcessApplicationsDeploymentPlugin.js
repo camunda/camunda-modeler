@@ -14,7 +14,7 @@ import classNames from 'classnames';
 
 import { Fill } from '../../app/slot-fill';
 
-import ConnectionChecker from '../zeebe-plugin/deployment-plugin/ConnectionChecker';
+
 import DeploymentConfigValidator from '../zeebe-plugin/deployment-plugin/DeploymentConfigValidator';
 
 import DeployIcon from 'icons/Deploy.svg';
@@ -32,14 +32,13 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     log,
     processApplication,
     processApplicationItems,
-    triggerAction
+    triggerAction,
+    connectionCheckResult
   } = props;
 
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
   const deployment = _getGlobal('deployment');
-
-  const connectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI')));
 
   const anchorRef = useRef();
 
@@ -74,12 +73,6 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
       type
     };
   });
-
-  useEffect(() => {
-    return () => {
-      connectionChecker.current.stopChecking();
-    };
-  }, []);
 
   useEffect(() => {
     const getResourceConfigs = (previousResourceConfigs) => {
@@ -119,7 +112,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
       <DeploymentPluginOverlay
         activeTab={ activeTab }
         anchor={ anchorRef.current }
-        connectionChecker={ connectionChecker.current }
+        connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
         deploymentConfigValidator={ DeploymentConfigValidator }
         getConfigFile={ () => processApplication.file }
