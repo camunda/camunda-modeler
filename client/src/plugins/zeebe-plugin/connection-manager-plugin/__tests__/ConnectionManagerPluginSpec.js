@@ -510,7 +510,7 @@ describe('ConnectionManagerPlugin', function() {
       });
 
       await waitFor(() => {
-        expect(getByTitle('Open connection selector')).to.exist;
+        expect(getByTitle('Configure Camunda 8 connection')).to.exist;
       });
 
       // when
@@ -607,7 +607,7 @@ describe('ConnectionManagerPlugin', function() {
       });
 
       await waitFor(() => {
-        const statusBarItem = getByTitle('Open connection selector');
+        const statusBarItem = getByTitle('Configure Camunda 8 connection');
         expect(statusBarItem).to.exist;
       });
 
@@ -624,7 +624,7 @@ describe('ConnectionManagerPlugin', function() {
 
       // then
       await waitFor(() => {
-        const statusBarItem = getByTitle('Open connection selector');
+        const statusBarItem = getByTitle('Configure Camunda 8 connection');
         expect(statusBarItem.querySelector('svg').getAttribute('aria-label')).to.equal('Idle');
       });
 
@@ -745,11 +745,11 @@ describe('ConnectionManagerPlugin', function() {
       const { getByTitle, getByText } = createConnectionManagerPlugin({ subscribe, settings, triggerAction, config });
 
       await waitFor(() => {
-        const statusBarItem = getByTitle('Open connection selector');
+        const statusBarItem = getByTitle('Configure Camunda 8 connection');
         expect(statusBarItem.textContent).to.contain('Test Connection 2');
       });
 
-      getByTitle('Open connection selector').click();
+      getByTitle('Configure Camunda 8 connection').click();
 
       await waitFor(() => {
         expect(getByText('Manage connections')).to.exist;
@@ -791,17 +791,17 @@ describe('ConnectionManagerPlugin', function() {
       const { getByTitle, getByText } = createConnectionManagerPlugin({ subscribe, settings, triggerAction });
 
       await waitFor(() => {
-        expect(getByTitle('Open connection selector')).to.exist;
+        expect(getByTitle('Configure Camunda 8 connection')).to.exist;
       });
 
-      getByTitle('Open connection selector').click();
+      getByTitle('Configure Camunda 8 connection').click();
 
       await waitFor(() => {
-        expect(getByText('Add connections')).to.exist;
+        expect(getByText('Manage connections')).to.exist;
       });
 
       // when
-      getByText('Add connections').click();
+      getByText('Manage connections').click();
 
       // then
       await waitFor(() => {
