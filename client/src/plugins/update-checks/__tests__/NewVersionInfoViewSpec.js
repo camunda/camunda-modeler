@@ -8,12 +8,11 @@
  * except in compliance with the MIT License.
  */
 
+/* global sinon */
+
 import React from 'react';
 
-import {
-  mount,
-  shallow
-} from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import {
   MODAL_TITLE,
@@ -23,71 +22,73 @@ import {
 
 import NewVersionInfoView from '../NewVersionInfoView';
 
-/* global sinon */
 const { spy } = sinon;
 
 describe('<NewVersionInfoView>', function() {
 
-  let wrapper;
+  function createNewVersionInfoView(options = {}) {
+    const {
+      latestVersionInfo = {
+        latestVersion: 'v3.7.0',
+        releases: [ {
+          version: 'v3.5.0',
+          releaseNoteHTML: 'HTML 1'
+        }, {
+          version: 'v3.6.0',
+          releaseNoteHTML: 'HTML 2'
+        } ]
+      },
+      currentVersion = 'v3.4.0',
+      ...props
+    } = options;
 
-  beforeEach(function() {
-
-    wrapper = mount(<NewVersionInfoView latestVersionInfo={ {
-      latestVersion: 'v3.7.0',
-      releases: [ {
-        version: 'v3.5.0',
-        releaseNoteHTML: 'HTML 1'
-      }, {
-        version: 'v3.6.0',
-        releaseNoteHTML: 'HTML 2'
-      } ]
-    } } currentVersion={ 'v3.4.0' } />);
-  });
-
+    return render(
+      <NewVersionInfoView
+        latestVersionInfo={ latestVersionInfo }
+        currentVersion={ currentVersion }
+        { ...props }
+      />
+    );
+  }
 
   it('should render', function() {
-
-    shallow(<NewVersionInfoView latestVersionInfo={ {} } />);
+    createNewVersionInfoView({ latestVersionInfo: {} });
   });
 
 
   it('should render title', function() {
 
-    const title = wrapper.find('.modal-title');
+    // when
+    createNewVersionInfoView();
 
-    expect(title.text()).to.be.eql(MODAL_TITLE);
+    // then
+    expect(screen.getByText(MODAL_TITLE)).to.exist;
   });
 
 
   it('should render body', function() {
 
     // given
-    const expectedText = `
-      Camunda Modeler v3.7.0 is available. Your version is v3.4.0.
-
-      Would you like to download it now?
-
-      Release notes
-
-      v3.5.0
-      HTML 1
-
-      v3.6.0
-      HTML 2
-
-      Periodic update checks are currently disabled. Enable them in the  Privacy Preferences.
-    `;
-
-    const expectedFragments = expectedText.split('\n').map(l => l.trim()).filter(l => l);
+    const expectedFragments = [
+      'Camunda Modeler v3.7.0 is available. Your version is v3.4.0.',
+      'Would you like to download it now?',
+      'Release notes',
+      'v3.5.0',
+      'HTML 1',
+      'v3.6.0',
+      'HTML 2',
+      'Periodic update checks are currently',
+      'disabled',
+      'Enable them in the',
+      'Privacy Preferences'
+    ];
 
     // when
-    const body = wrapper.find('.modal-body');
-
-    const text = body.text();
+    createNewVersionInfoView();
 
     // then
     for (const expectedText of expectedFragments) {
-      expect(text, 'body text').to.include(expectedText);
+      expect(screen.getByText(expectedText, { exact: false })).to.exist;
     }
   });
 
@@ -96,30 +97,26 @@ describe('<NewVersionInfoView>', function() {
 
     it('should render <Download> button', function() {
 
-      // given
-      const footer = wrapper.find('.modal-footer');
-
       // when
-      const downloadButton = footer.find('.btn-primary');
+      createNewVersionInfoView();
 
       // then
-      expect(downloadButton.text().trim()).to.be.eql(BUTTON_POSITIVE);
+      const downloadButton = screen.getByRole('button', { name: BUTTON_POSITIVE });
+      expect(downloadButton).to.exist;
 
       // and auto-focussed
-      expect(downloadButton.instance()).to.eql(document.activeElement);
+      expect(downloadButton).to.eql(document.activeElement);
     });
 
 
     it('should render <Skip> button', function() {
 
-      // given
-      const footer = wrapper.find('.modal-footer');
-
       // when
-      const skipButton = footer.find('.btn-secondary');
+      createNewVersionInfoView();
 
       // then
-      expect(skipButton.text().trim()).to.be.eql(BUTTON_NEGATIVE);
+      const skipButton = screen.getByRole('button', { name: BUTTON_NEGATIVE });
+      expect(skipButton).to.exist;
     });
 
   });
@@ -127,40 +124,41 @@ describe('<NewVersionInfoView>', function() {
 
   it('should close', function() {
 
+    // given
     const onCloseSpy = spy();
 
-    const component = shallow(
-      <NewVersionInfoView latestVersionInfo={ {} } onClose={ onCloseSpy } />
-    );
+    // when
+    createNewVersionInfoView({ latestVersionInfo: {}, onClose: onCloseSpy });
 
-    const negativeButton = component.find('.btn-secondary');
+    const negativeButton = screen.getByRole('button', { name: BUTTON_NEGATIVE });
+    fireEvent.click(negativeButton);
 
-    negativeButton.simulate('click');
-
+    // then
     expect(onCloseSpy).to.have.been.called;
   });
 
 
   it('should go to download page', function() {
 
+    // given
     const onOpenDownloadUrlSpy = spy();
 
-    const component = shallow(
-      <NewVersionInfoView latestVersionInfo={ {} } onOpenDownloadUrl={ onOpenDownloadUrlSpy } />
-    );
+    // when
+    createNewVersionInfoView({ latestVersionInfo: {}, onOpenDownloadUrl: onOpenDownloadUrlSpy });
 
-    const positiveButton = component.find('.btn-primary');
+    const positiveButton = screen.getByRole('button', { name: BUTTON_POSITIVE });
+    fireEvent.click(positiveButton);
 
-    positiveButton.simulate('click');
-
+    // then
     expect(onOpenDownloadUrlSpy).to.have.been.called;
   });
 
 
   it('should render HTML snippets', function() {
 
-    const component = shallow(
-      <NewVersionInfoView latestVersionInfo={ {
+    // when
+    createNewVersionInfoView({
+      latestVersionInfo: {
         latestVersion: 'v3.7.0',
         releases: [
           {
@@ -171,12 +169,19 @@ describe('<NewVersionInfoView>', function() {
             releaseNoteHTML: '<b> HTML 2 </b>'
           }
         ]
-      } } />
-    );
+      }
+    });
 
-    const htmlSnippet = component.find('.htmlSnippet');
+    // then
+    expect(screen.getByText('v3.1.0')).to.exist;
+    expect(screen.getByText('v3.2.0')).to.exist;
+    expect(screen.getByText('HTML 1')).to.exist;
+    expect(screen.getByText('HTML 2')).to.exist;
 
-    expect(htmlSnippet.html()).to.contain('<b> HTML 1 </b>');
-    expect(htmlSnippet.html()).to.contain('<b> HTML 2 </b>');
+    // verify HTML is actually rendered with bold tags
+    const htmlSnippet = document.querySelector('.htmlSnippet');
+    expect(htmlSnippet).to.exist;
+    expect(htmlSnippet.innerHTML).to.contain('<b> HTML 1 </b>');
+    expect(htmlSnippet.innerHTML).to.contain('<b> HTML 2 </b>');
   });
 });
