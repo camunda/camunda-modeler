@@ -69,7 +69,8 @@ describe('ConnectionChecker', function() {
 
     expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
-      success: true
+      success: true,
+      name: 'default'
     });
   });
 
@@ -107,7 +108,8 @@ describe('ConnectionChecker', function() {
     expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
-      reason: 'foo'
+      reason: 'foo',
+      name: 'default'
     });
   });
 
@@ -144,7 +146,8 @@ describe('ConnectionChecker', function() {
     expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
-      error
+      error,
+      name: 'default'
     });
   });
 
@@ -191,7 +194,8 @@ describe('ConnectionChecker', function() {
 
     expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
-      success: true
+      success: true,
+      name: 'default'
     });
 
     // when
@@ -206,7 +210,8 @@ describe('ConnectionChecker', function() {
     expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: false,
-      reason: 'foo'
+      reason: 'foo',
+      name: 'default'
     });
 
     // when
@@ -220,7 +225,8 @@ describe('ConnectionChecker', function() {
 
     expect(connectionCheckSpy).to.have.been.called.callCount(3);
     expect(connectionCheckSpy).to.have.been.calledWith({
-      success: true
+      success: true,
+      name: 'default'
     });
   });
 
@@ -273,7 +279,8 @@ describe('ConnectionChecker', function() {
 
     expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
-      success: true
+      success: true,
+      name: 'default'
     });
 
     // when
@@ -312,6 +319,42 @@ describe('ConnectionChecker', function() {
     expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy.firstCall.args[0].success).to.be.false;
     expect(connectionCheckSpy.firstCall.args[0].reason).to.equal(CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG);
+  });
+
+
+  it('should emit INVALID_CONFIGURATION error for invalid endpoint config', async function() {
+
+    // given
+    const zeebeAPI = new MockZeebeAPI({
+      checkConnection: sinon.spy()
+    });
+
+    const connectionChecker = new ConnectionChecker(zeebeAPI);
+
+    const connectionCheckSpy = sinon.spy();
+
+    connectionChecker.on('connectionCheck', connectionCheckSpy);
+
+    // when - update with invalid config (missing client secret)
+    await connectionChecker.updateConfig({
+      endpoint: {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClientId: 'foo',
+        camundaCloudClientSecret: '', // empty = invalid
+        camundaCloudClusterUrl: 'https://cluster-name.region-1.zeebe.camunda.io:443'
+      }
+    });
+
+    await clock.tickAsync(1001);
+
+    // then - should not call API
+    expect(zeebeAPI.checkConnection).not.have.been.called;
+
+    // should emit INVALID_CONFIGURATION error
+    expect(connectionCheckSpy).to.have.been.calledTwice;
+    expect(connectionCheckSpy.firstCall.args[0].success).to.be.false;
+    expect(connectionCheckSpy.firstCall.args[0].reason).to.equal(CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION);
+    expect(connectionCheckSpy.firstCall.args[0].validationErrors).to.have.property('camundaCloudClientSecret');
   });
 
 
@@ -477,7 +520,8 @@ describe('ConnectionChecker', function() {
 
     // when - resolve first check
     resolveFirstCheck({
-      success: true
+      success: true,
+      name: 'default'
     });
 
     await flushPromises();
@@ -486,6 +530,7 @@ describe('ConnectionChecker', function() {
     expect(connectionCheckSpy).to.have.been.calledOnce;
     expect(connectionCheckSpy).to.have.been.calledWith({
       success: true,
+      name: 'default'
     });
 
     // when - trigger another check after first completes
@@ -499,7 +544,8 @@ describe('ConnectionChecker', function() {
     // when - resolve second check
     resolveSecondCheck({
       success: false,
-      reason: 'test'
+      reason: 'test',
+      name: 'default'
     });
 
     await flushPromises();
@@ -508,7 +554,8 @@ describe('ConnectionChecker', function() {
     expect(connectionCheckSpy).to.have.been.calledTwice;
     expect(connectionCheckSpy.secondCall).to.have.been.calledWith({
       success: false,
-      reason: 'test'
+      reason: 'test',
+      name: 'default'
     });
   });
 
@@ -545,14 +592,16 @@ describe('ConnectionChecker', function() {
     await flushPromises();
 
     resolveFirstCheck({
-      success: true
+      success: true,
+      name: 'default'
     });
 
     await flushPromises();
 
     // then
     expect(connectionChecker.getLastResult()).to.deep.equal({
-      success: true
+      success: true,
+      name: 'default'
     });
 
     // when - second check starts and gets aborted
@@ -571,7 +620,8 @@ describe('ConnectionChecker', function() {
 
     // then - last result should still be from first check
     expect(connectionChecker.getLastResult()).to.deep.equal({
-      success: true
+      success: true,
+      name: 'default'
     });
 
     expect(connectionCheckSpy).to.have.been.calledOnce;
@@ -673,7 +723,8 @@ describe('ConnectionChecker', function() {
 
     // when - resolve the check
     resolveChecks[0]({
-      success: true
+      success: true,
+      name: 'default'
     });
 
     await flushPromises();
