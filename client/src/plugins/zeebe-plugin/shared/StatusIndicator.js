@@ -26,23 +26,22 @@ export function StatusIndicator({ status, text, reserveIconSpace = true }) {
 
   switch (status) {
   case 'loading':
-    icon = <Loading small={ true } withOverlay={ false } className={ 'status-icon loading' } />;
+    icon = <Loading small={ true } withOverlay={ false } className={ 'status-icon loading' } aria-label="Loading" />;
     break;
   case 'success':
-    icon = <CheckmarkFilled className={ 'status-icon success' } />;
+    icon = <CheckmarkFilled className={ 'status-icon success' } aria-label="Success" />;
     break;
   case 'error':
-    icon = <ErrorFilled className={ 'status-icon error' } />;
+    icon = <ErrorFilled className={ 'status-icon error' } aria-label="Error" />;
     break;
   case 'paused':
-    icon = <PauseOutlineFilled className={ 'status-icon paused' } />;
+    icon = <PauseOutlineFilled className={ 'status-icon paused' } aria-label="Paused" />;
     break;
   case 'idle':
-    icon = <ErrorFilled className={ 'status-icon idle' } />;
+    icon = <ErrorFilled className={ 'status-icon idle' } aria-label="Idle" />;
     break;
   default:
     icon = reserveIconSpace ? <span className={ 'status-icon placeholder' } /> : null;
-    break;
   }
 
   return <div className={ css.StatusIndicator }>
