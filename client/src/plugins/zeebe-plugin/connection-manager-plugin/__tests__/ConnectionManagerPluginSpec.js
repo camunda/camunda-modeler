@@ -27,7 +27,7 @@ describe('ConnectionManagerPlugin', function() {
     // when
     const { queryByTitle } = createConnectionManagerPlugin();
 
-    const statusBarItem = queryByTitle('Open connection selector');
+    const statusBarItem = queryByTitle('Configure Camunda 8 connection');
 
     // then
     expect(statusBarItem).to.not.exist;
@@ -50,9 +50,9 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      const statusBarItem = getByTitle('Open connection selector');
+      const statusBarItem = getByTitle('Configure Camunda 8 connection');
       expect(statusBarItem).to.exist;
-      expect(statusBarItem.title).to.equal('Open connection selector');
+      expect(statusBarItem.title).to.equal('Configure Camunda 8 connection');
     });
   });
 
@@ -71,15 +71,15 @@ describe('ConnectionManagerPlugin', function() {
     const { getByTitle, queryByText } = createConnectionManagerPlugin({ subscribe });
 
     await waitFor(() => {
-      expect(getByTitle('Open connection selector')).to.exist;
+      expect(getByTitle('Configure Camunda 8 connection')).to.exist;
     });
 
     // when
-    getByTitle('Open connection selector').click();
+    getByTitle('Configure Camunda 8 connection').click();
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select connection')).to.exist;
+      expect(queryByText('Select Camunda 8 connection')).to.exist;
     });
   });
 
@@ -98,23 +98,23 @@ describe('ConnectionManagerPlugin', function() {
     const { getByTitle, queryByText } = createConnectionManagerPlugin({ subscribe });
 
     await waitFor(() => {
-      expect(getByTitle('Open connection selector')).to.exist;
+      expect(getByTitle('Configure Camunda 8 connection')).to.exist;
     });
 
     // when
-    getByTitle('Open connection selector').click();
+    getByTitle('Configure Camunda 8 connection').click();
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select connection')).to.exist;
+      expect(queryByText('Select Camunda 8 connection')).to.exist;
     });
 
     // when
-    getByTitle('Open connection selector').click();
+    getByTitle('Configure Camunda 8 connection').click();
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select connection')).not.to.exist;
+      expect(queryByText('Select Camunda 8 connection')).not.to.exist;
     });
   });
 
@@ -135,15 +135,15 @@ describe('ConnectionManagerPlugin', function() {
     const { getByTitle, queryByText, rerender } = createConnectionManagerPlugin({ subscribe });
 
     await waitFor(() => {
-      expect(getByTitle('Open connection selector')).to.exist;
+      expect(getByTitle('Configure Camunda 8 connection')).to.exist;
     });
 
     // when
-    getByTitle('Open connection selector').click();
+    getByTitle('Configure Camunda 8 connection').click();
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select connection')).to.exist;
+      expect(queryByText('Select Camunda 8 connection')).to.exist;
     });
 
     // when
@@ -162,7 +162,7 @@ describe('ConnectionManagerPlugin', function() {
 
     // then
     await waitFor(() => {
-      expect(queryByText('Select connection')).not.to.exist;
+      expect(queryByText('Select Camunda 8 connection')).to.not.exist;
     });
   });
 
@@ -186,7 +186,7 @@ describe('ConnectionManagerPlugin', function() {
     const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings });
 
     await waitFor(() => {
-      const statusBarItem = getByTitle('Open connection selector');
+      const statusBarItem = getByTitle('Configure Camunda 8 connection');
       expect(statusBarItem).to.exist;
       expect(statusBarItem.textContent).to.contain('Test Connection 1');
     });
@@ -217,7 +217,7 @@ describe('ConnectionManagerPlugin', function() {
     const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings, config });
 
     await waitFor(() => {
-      const statusBarItem = getByTitle('Open connection selector');
+      const statusBarItem = getByTitle('Configure Camunda 8 connection');
       expect(statusBarItem.textContent).to.contain('Test Connection 2');
     });
   });
@@ -244,8 +244,68 @@ describe('ConnectionManagerPlugin', function() {
     const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings, config });
 
     await waitFor(() => {
-      const statusBarItem = getByTitle('Open connection selector');
+      const statusBarItem = getByTitle('Configure Camunda 8 connection');
       expect(statusBarItem.textContent).to.contain('Test Connection 1');
+    });
+  });
+
+
+  it('should default to "No connection" when connections array is empty', async function() {
+
+    // given
+    const config = createMockConfig({});
+
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
+    });
+
+    const settings = createMockSettings({
+      'connectionManagerPlugin.c8connections': []
+    });
+
+    // when
+    const { getByTitle, getByLabelText } = createConnectionManagerPlugin({ subscribe, settings, config });
+
+    // then
+    await waitFor(() => {
+      const statusBarItem = getByTitle('Configure Camunda 8 connection');
+      expect(statusBarItem.textContent).to.contain('No connection');
+      const idleIcon = getByLabelText('Idle');
+      expect(idleIcon).to.exist;
+    });
+  });
+
+
+  it('should default to "No connection" when connections is null or undefined', async function() {
+
+    // given
+    const config = createMockConfig({});
+
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
+    });
+
+    const settings = createMockSettings({
+      'connectionManagerPlugin.c8connections': null
+    });
+
+    // when
+    const { getByTitle, getByLabelText } = createConnectionManagerPlugin({ subscribe, settings, config });
+
+    // then
+    await waitFor(() => {
+      const statusBarItem = getByTitle('Configure Camunda 8 connection');
+      expect(statusBarItem.textContent).to.contain('No connection');
+      const idleIcon = getByLabelText('Idle');
+      expect(idleIcon).to.exist;
     });
   });
 
@@ -278,7 +338,7 @@ describe('ConnectionManagerPlugin', function() {
 
       // then
       await waitFor(() => {
-        const statusBarItem = getByTitle('Open connection selector');
+        const statusBarItem = getByTitle('Configure Camunda 8 connection');
         expect(statusBarItem).to.exist;
         expect(statusBarItem.querySelector('svg')).to.exist;
       });
@@ -311,7 +371,7 @@ describe('ConnectionManagerPlugin', function() {
 
       // then
       await waitFor(() => {
-        const statusBarItem = getByTitle('Open connection selector');
+        const statusBarItem = getByTitle('Configure Camunda 8 connection');
         expect(statusBarItem).to.exist;
         expect(statusBarItem.querySelector('svg')).to.exist;
       });
@@ -342,7 +402,7 @@ describe('ConnectionManagerPlugin', function() {
 
       // then
       await waitFor(() => {
-        const statusBarItem = getByTitle('Open connection selector');
+        const statusBarItem = getByTitle('Configure Camunda 8 connection');
         expect(statusBarItem).to.exist;
         expect(statusBarItem.querySelector('svg')).to.exist;
       });
@@ -369,7 +429,7 @@ describe('ConnectionManagerPlugin', function() {
 
       // then
       await waitFor(() => {
-        expect(getByTitle('Open connection selector')).to.exist;
+        expect(getByTitle('Configure Camunda 8 connection')).to.exist;
       });
     });
 
@@ -390,7 +450,7 @@ describe('ConnectionManagerPlugin', function() {
 
       // then
       await waitFor(() => {
-        expect(getByTitle('Open connection selector')).to.exist;
+        expect(getByTitle('Configure Camunda 8 connection')).to.exist;
       });
     });
 
@@ -411,7 +471,7 @@ describe('ConnectionManagerPlugin', function() {
 
       // then
       await waitFor(() => {
-        expect(getByTitle('Open connection selector')).to.exist;
+        expect(getByTitle('Configure Camunda 8 connection')).to.exist;
       });
     });
 
@@ -432,7 +492,7 @@ describe('ConnectionManagerPlugin', function() {
 
       // then
       await waitFor(() => {
-        expect(getByTitle('Open connection selector')).to.exist;
+        expect(getByTitle('Configure Camunda 8 connection')).to.exist;
       });
     });
 
@@ -453,7 +513,7 @@ describe('ConnectionManagerPlugin', function() {
 
       // then
       await waitFor(() => {
-        expect(queryByTitle('Open connection selector')).not.to.exist;
+        expect(queryByTitle('Configure Camunda 8 connection')).not.to.exist;
       });
     });
 

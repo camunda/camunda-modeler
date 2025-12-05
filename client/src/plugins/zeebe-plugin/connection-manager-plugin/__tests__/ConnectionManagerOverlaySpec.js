@@ -30,8 +30,7 @@ describe('ConnectionManagerOverlay', function() {
 
       // then
       expect(container.querySelector('select[name="connection"]')).to.exist;
-      expect(getByText('Select orchestration cluster connection.')).to.exist;
-      expect(getByText('Manage connections')).to.exist;
+      expect(getByText('Select Orchestration Cluster connection.')).to.exist;
     });
 
 
@@ -44,9 +43,8 @@ describe('ConnectionManagerOverlay', function() {
       const { container, getByText } = createConnectionManagerOverlay({ connections });
 
       // then
-      expect(container.querySelector('select[name="connection"]')).to.not.exist;
-      expect(getByText('No connections configured')).to.exist;
-      expect(getByText('Add connections')).to.exist;
+      expect(container.querySelector('select[name="connection"]')).to.exist;
+      expect(getByText('Disabled (offline mode)')).to.exist;
     });
 
 
@@ -222,42 +220,22 @@ describe('ConnectionManagerOverlay', function() {
   });
 
 
-  describe('manage connections', function() {
+  it('should call handler when "Manage connections" is clicked', function() {
 
-    it('should call handler when "Manage connections" is clicked', function() {
+    // given
+    const connections = DEFAULT_CONNECTIONS;
+    const handleManageConnections = sinon.spy();
 
-      // given
-      const connections = DEFAULT_CONNECTIONS;
-      const handleManageConnections = sinon.spy();
+    const { getByText } = createConnectionManagerOverlay({ connections, handleManageConnections });
 
-      const { getByText } = createConnectionManagerOverlay({ connections, handleManageConnections });
+    // when
+    const manageLink = getByText('Manage connections');
+    fireEvent.click(manageLink);
 
-      // when
-      const manageLink = getByText('Manage connections');
-      fireEvent.click(manageLink);
-
-      // then
-      expect(handleManageConnections).to.have.been.calledOnce;
-    });
-
-
-    it('should call handler when "Add connections" is clicked', function() {
-
-      // given
-      const connections = [];
-      const handleManageConnections = sinon.spy();
-
-      const { getByText } = createConnectionManagerOverlay({ connections, handleManageConnections });
-
-      // when
-      const addLink = getByText('Add connections');
-      fireEvent.click(addLink);
-
-      // then
-      expect(handleManageConnections).to.have.been.calledOnce;
-    });
-
+    // then
+    expect(handleManageConnections).to.have.been.calledOnce;
   });
+
 
 });
 
