@@ -8,29 +8,67 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Button, DataTable, Table, TableBody, TableCell, TableExpandedRow, TableExpandRow } from '@carbon/react';
 import { ErrorFilled, TrashCan } from '@carbon/icons-react';
 
 import { FieldArray, getIn, useFormikContext } from 'formik';
 
-import { SettingsField } from '../../settings/SettingsForm';
+import { SettingsField, validateProperties } from '../../settings/SettingsForm';
 import { generateNewElement, properties } from './ConnectionManagerSettingsProperties';
 
 import * as css from './ConnectionManagerSettingsComponent.less';
 
+import { CONNECTION_CHECK_ERROR_REASONS, getConnectionCheckFieldErrors } from '../deployment-plugin/ConnectionCheckErrors';
+import { StatusIndicator } from '../shared/StatusIndicator';
+
+
 /**
+ * Connection Manager Settings Component
  *
- * @param {import("formik").FieldArrayRenderProps & { expandRowId: string }} props
+ * @param {Object} props
+ * @param {string} props.name - Field name for the connection array
+ * @param {string} props.targetElement - Element ID to scroll to and expand
+ * @param {Object} props.connectionChecker - Connection checker instance ref
  */
-export function ConnectionManagerSettingsComponent({ form, name:fieldName, push, remove }) {
+export function ConnectionManagerSettingsComponent({ name: fieldName, targetElement, connectionChecker }) {
 
   const [ expandedRows, setExpandedRows ] = useState([]);
   const [ newlyCreatedRowId, setNewlyCreatedRowId ] = useState(null);
+  const [ connectionCheckResult, setConnectionCheckResult ] = useState(null);
 
-  const { values } = useFormikContext();
+  const expandedRowRef = useRef(null);
+
+  const { values, validateForm } = useFormikContext();
   const fieldValue = getIn(values, fieldName) || [];
+
+  const connectionIndex = useMemo(() =>
+    fieldValue.findIndex(c => c.id === expandedRows[0]),
+  [ fieldValue, expandedRows ]
+  );
+
+  const connection = useMemo(() =>
+    connectionIndex >= 0 ? fieldValue[connectionIndex] : null,
+  [ fieldValue, connectionIndex ]
+  );
+
+  const targetRowId = useMemo(() => {
+    if (!targetElement) return null;
+    const match = targetElement.match(/\[(\d+)\]/);
+    if (match) {
+      const index = parseInt(match[1], 10);
+      return fieldValue[index]?.id ?? null;
+    }
+    return null;
+  }, [ targetElement, fieldValue ]);
+
+  // Automatically expand the row if targetElement is set
+  useEffect(() => {
+    if (targetRowId) {
+      setExpandedRows([ targetRowId ]);
+    }
+  }, [ targetRowId ]);
 
   useEffect(() => {
     if (newlyCreatedRowId && expandedRows.includes(newlyCreatedRowId)) {
@@ -47,6 +85,41 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
       });
     }
   }, [ expandedRows, newlyCreatedRowId, fieldName, fieldValue ]);
+
+  useEffect(() => {
+    const updateConnectionChecker = () => {
+      if (expandedRows?.length > 0) {
+        setConnectionCheckResult(null);
+        validateForm();
+        const validationErrors = validateProperties(connection, properties);
+        if (Object.keys(validationErrors).length > 0) {
+          connectionChecker.current.stopChecking();
+          setConnectionCheckResult({ success: false, reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION });
+          return;
+        }
+
+        connectionChecker.current.updateConfig({ endpoint: connection });
+      }
+      else {
+        connectionChecker.current.stopChecking();
+        setConnectionCheckResult(null);
+      }
+    };
+    updateConnectionChecker();
+  }, [ expandedRows, connectionChecker, connection, connectionIndex, validateForm, properties ]);
+
+  useEffect(() => {
+    const connectionCheckListener = (connectionCheckResult) => {
+      setConnectionCheckResult(connectionCheckResult);
+    };
+
+    connectionChecker.current.on('connectionCheck', connectionCheckListener);
+
+    return () => {
+      connectionChecker.current.off('connectionCheck', connectionCheckListener);
+      connectionChecker.current.stopChecking();
+    };
+  }, [ connectionChecker ]);
 
   /**
    * @param {{ id: any; }} row
@@ -65,6 +138,22 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
     else {
       setExpandedRows([ row.id ]);
     }
+  }
+
+  function getStatus(connectionCheckResult) {
+    if (connectionCheckResult) {
+      return connectionCheckResult.success ? 'success' : 'error';
+    }
+    return 'loading';
+  }
+
+  const errorMessages = getConnectionCheckFieldErrors(connectionCheckResult);
+
+  function getText(connectionCheckResult) {
+    if (connectionCheckResult) {
+      return connectionCheckResult.success ? 'Connected' : errorMessages?._mainError || 'Failed to connect';
+    }
+    return 'Connecting...';
   }
 
   return <FieldArray name={ fieldName }>
@@ -102,6 +191,7 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
                 {rows?.map((row, index) => (
                   <React.Fragment key={ `${fieldName}[${index}]` }>
                     <TableExpandRow { ...getRowProps({ row }) }
+                      ref={ row.id === targetRowId ? expandedRowRef : null }
                       isExpanded={ isExpanded(row) }
                       onExpand={ () => handleExpand(row) }
                     >
@@ -131,7 +221,10 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
                         colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
                       >
                         <div>
-                          {/* TODO: connection status */}
+                          <StatusIndicator
+                            status={ getStatus(connectionCheckResult) }
+                            text={ getText(connectionCheckResult) }
+                          />
                           {
                             properties.map((property) =>
                               <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />

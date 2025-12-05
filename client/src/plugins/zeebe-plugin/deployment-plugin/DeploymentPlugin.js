@@ -14,8 +14,6 @@ import classNames from 'classnames';
 
 import { Fill } from '../../../app/slot-fill';
 
-import DeploymentConfigValidator from './DeploymentConfigValidator';
-
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
 import DeployIcon from 'icons/Deploy.svg';
@@ -98,7 +96,6 @@ export default function DeploymentPlugin(props) {
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
         deployment={ _getGlobal('deployment') }
-        deploymentConfigValidator={ DeploymentConfigValidator }
         displayNotification={ displayNotification }
         log={ log }
         onClose={ () => setOverlayOpen(false) }
