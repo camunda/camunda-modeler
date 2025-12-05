@@ -30,6 +30,10 @@ import { CONNECTION_CHECK_ERROR_MESSAGES } from '../deployment-plugin/Connection
 export function getOperateUrl(endpoint) {
   const { camundaCloudClusterUrl } = endpoint;
 
+  if (!camundaCloudClusterUrl) {
+    return null;
+  }
+
   const clusterId = getClusterId(camundaCloudClusterUrl),
         clusterRegion = getClusterRegion(camundaCloudClusterUrl);
 
