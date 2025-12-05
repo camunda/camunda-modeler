@@ -1,0 +1,35 @@
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+import { ConnectionManagerSettingsComponent } from './ConnectionManagerSettingsComponent';
+
+export const SETTINGS_KEY_CONNECTIONS = 'connectionManagerPlugin.c8connections';
+
+/**
+ * Registers plugin settings
+ */
+export async function initializeSettings({ settings }) {
+
+  /** @type import("../../../app/Settings").SettingsGroup */
+  const pluginSettings = {
+    id: 'connectionManagerPlugin',
+    title: 'Connections',
+    order: 1,
+    properties: {
+      [SETTINGS_KEY_CONNECTIONS]: {
+        type: 'custom',
+        component: ConnectionManagerSettingsComponent,
+        description: 'Manage Camunda 8 Orchestration Cluster connections.',
+      },
+
+    }
+  };
+  settings.register(pluginSettings);
+}
