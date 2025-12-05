@@ -69,7 +69,16 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
 
   return <FieldArray name={ fieldName }>
     { ({ push, remove }) => {
-      return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings">
+
+      function handleAddConnection() {
+        const newElement = generateNewElement(fieldValue.length);
+        push(newElement);
+        setExpandedRows([ newElement.id ]);
+        setNewlyCreatedRowId(newElement.id);
+      }
+
+
+      return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings" id={ fieldName }>
         <div className="custom-control">
           <div className="custom-control-description">Manage Camunda 8 orchestration cluster connections.</div>
         </div>
@@ -106,9 +115,7 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
                           tooltipPosition="left"
                           kind="ghost"
                           renderIcon={ TrashCan }
-                          onClick={ () =>
-                            remove(index)
-                          }
+                          onClick={ () => remove(index) }
                         />
                       </TableCell>
                     </TableExpandRow>
@@ -135,19 +142,9 @@ export function ConnectionManagerSettingsComponent({ form, name:fieldName, push,
           )}
         </DataTable>
         <div className="action-bar">
-          <Button
-            className="add"
-            tooltipPosition="left"
-            iconDescription="Add connection"
-            renderIcon={ Add }
-            hasIconOnly={ true }
-            onClick={ () => {
-              const newElement = generateNewElement(fieldValue.length);
-              push(newElement);
-              setExpandedRows([ newElement.id ]);
-              setNewlyCreatedRowId(newElement.id);
-            } }
-          />
+          <button type="button" className="btn btn-primary" onClick={ handleAddConnection }>
+            Add connection
+          </button>
         </div>
       </div>;
     } }
