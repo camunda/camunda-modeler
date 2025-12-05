@@ -61,7 +61,11 @@ export default function Select(props) {
               <option hidden>{ placeholder }</option>
               <option disabled>{ placeholder }</option>
             </>}
-            {props.options.map(({ value, label }) => <option key={ value } value={ value }>{label}</option>)}
+            {
+              props.options.map(({ separator, value, label }, idx) =>
+                separator ? <hr key={ idx } /> : <option key={ value } value={ value }>{label}</option>
+              )
+            }
           </select>
           <FormFeedback
             error={ error }

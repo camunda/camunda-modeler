@@ -17,6 +17,7 @@ import ProcessApplicationsStartInstancePlugin from './ProcessApplicationsStartIn
 import { ResourcesProviderModule } from './ResourcesProvider';
 
 import { utmTag } from '../../util/utmTag';
+import { useConnectionStatus } from '../../app/panel/tabs/task-testing/hooks/useConnectionStatus';
 
 
 const processApplications = new ProcessApplications();
@@ -40,6 +41,8 @@ export default function ProcessApplicationsPlugin(props) {
   const [ items, setItems ] = useState([]);
   const [ processApplication, setProcessApplication ] = useState(null);
   const [ processApplicationItems, setProcessApplicationItems ] = useState([]);
+
+  const connectionCheckResult = useConnectionStatus(subscribe);
 
   useEffect(() => {
     subscribe('app.activeTabChanged', (event) => {
@@ -194,7 +197,8 @@ export default function ProcessApplicationsPlugin(props) {
       log={ log }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }
-      triggerAction={ triggerAction } />
+      triggerAction={ triggerAction }
+      connectionCheckResult={ connectionCheckResult } />
     <ProcessApplicationsStartInstancePlugin
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
@@ -202,7 +206,8 @@ export default function ProcessApplicationsPlugin(props) {
       log={ log }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }
-      triggerAction={ triggerAction } />
+      triggerAction={ triggerAction }
+      connectionCheckResult={ connectionCheckResult } />
   </>;
 }
 

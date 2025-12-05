@@ -24,7 +24,9 @@ export default function DeploymentConfigForm(props) {
     renderDescription = null,
     renderHeader = null,
     renderSubmit = 'Submit',
-    isSubmitting = false
+    isSubmitting = false,
+    handleChangeConnections,
+    handleManageConnections
   } = props;
 
   return (
@@ -53,7 +55,11 @@ export default function DeploymentConfigForm(props) {
               </button>
               { connectionCheckResult?.success === false && (
                 <FormFeedback
-                  error={ getMessageForReason(connectionCheckResult.reason) }
+                  error={ <>
+                    Could not establish connection: <br />
+                    { getMessageForReason(connectionCheckResult?.reason) } <br />
+                    <a href="#" onClick={ handleChangeConnections }>Change</a> or <a href="#" onClick={ handleManageConnections }>manage connection.</a>
+                  </> }
                 />
               )}
             </div>

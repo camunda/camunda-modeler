@@ -37,7 +37,9 @@ export default function StartInstanceConfigForm(props) {
     validateField,
     VariablesComponent = JSONInput,
     variablesComponentProps = {},
-    connectionCheckResult
+    connectionCheckResult,
+    handleChangeConnections,
+    handleManageConnections
   } = props;
 
   const getFieldError = (meta, fieldName) => {
@@ -96,7 +98,11 @@ export default function StartInstanceConfigForm(props) {
                       </button>
                       { connectionCheckResult?.success === false && (
                         <FormFeedback
-                          error={ getMessageForReason(connectionCheckResult.reason) }
+                          error={ <>
+                            Could not establish connection: <br />
+                            { getMessageForReason(connectionCheckResult?.reason) } <br />
+                            <a href="#" onClick={ handleChangeConnections }>Change</a> or <a href="#" onClick={ handleManageConnections }>manage connection.</a>
+                          </> }
                         />
                       )}
                     </div>
