@@ -568,7 +568,31 @@ export class App extends PureComponent {
     });
   }
 
+  /**
+   * Select a tab, triggering auto-save of the previously active tab.
+   * Auto-save happens asynchronously to avoid blocking tab switching.
+   * Related: #5450, #695, #1547
+   */
   selectTab = async tab => {
+    const { activeTab } = this.state;
+
+    // Auto-save the previously active tab when switching (async, non-blocking)
+    if (activeTab && activeTab !== tab && this.shouldAutoSave(activeTab) && this.tabRef.current) {
+
+      // Get content from the current tab BEFORE switching
+      // This is necessary because we can only get content from the currently displayed tab
+      try {
+        const contents = await this.tabRef.current.triggerAction('save');
+
+        // Start auto-save asynchronously (don't await to avoid blocking tab switch)
+        this.autoSaveWithContents(activeTab, contents);
+      } catch (err) {
+
+        // Errors getting content from the tab are expected when the tab is in an error state
+        // or not fully loaded. In these cases, we simply skip auto-save.
+      }
+    }
+
     const updatedTab = await this.checkFileChanged(tab);
     return this.showTab(updatedTab || tab);
   };
@@ -1537,6 +1561,134 @@ export class App extends PureComponent {
 
   }
 
+  /**
+   * Check if a tab should be auto-saved.
+   * A tab should be auto-saved if it is:
+   * - Not an empty tab
+   * - Dirty (has unsaved changes)
+   * - Previously saved (has a file path)
+   *
+   * Related: #5450, #695, #1547
+   *
+   * @param {Tab} tab - The tab to check
+   * @returns {boolean} - Whether the tab should be auto-saved
+   */
+  shouldAutoSave(tab) {
+    return !this.isEmptyTab(tab) && this.isDirty(tab) && !this.isUnsaved(tab);
+  }
+
+  /**
+   * Auto-save a tab if it is dirty and has been previously saved.
+   * This is triggered on focus loss (window blur, tab switch).
+   * It does NOT prompt the user for a save location.
+   *
+   * Related: #5450, #695, #1547
+   *
+   * @param {Tab} tab - The tab to auto-save
+   * @returns {Promise<Tab|false>} - The saved tab or false if not saved
+   */
+  async autoSave(tab) {
+
+    if (!this.shouldAutoSave(tab)) {
+      return false;
+    }
+
+    const {
+      tabsProvider
+    } = this.props;
+
+    const {
+      file,
+      type: fileType
+    } = tab;
+
+    try {
+      const provider = tabsProvider.getProvider(fileType);
+      const saveType = provider.extensions && provider.extensions[0];
+
+      // Skip if provider has no extensions defined
+      if (!saveType) {
+        return false;
+      }
+
+      const encoding = provider.encoding || ENCODING_UTF8;
+
+      const savedFile = await this.saveTabAsFile({
+        encoding,
+        originalFile: file,
+        savePath: file.path,
+        saveType
+      });
+
+      return this.tabSaved(tab, savedFile);
+    } catch (err) {
+      this.showAutoSaveError(tab, err);
+
+      return false;
+    }
+  }
+
+  /**
+   * Show auto-save error notification.
+   * Related: #5450, #695, #1547
+   *
+   * @param {Tab} tab - The tab that failed to save
+   * @param {Error} err - The error that occurred
+   */
+  showAutoSaveError(tab, err) {
+    this.displayNotification({
+      type: 'error',
+      title: 'Auto-save failed',
+      content: `Could not auto-save "${tab.name}": ${err.message}`,
+      duration: 4000
+    });
+  }
+
+  /**
+   * Auto-save a tab with pre-fetched contents.
+   * This allows saving content independent of the currently displayed tab.
+   * The save operation is performed asynchronously and does not block.
+   *
+   * Related: #5450, #695, #1547
+   *
+   * @param {Tab} tab - The tab to auto-save
+   * @param {string} contents - The tab contents to save
+   */
+  autoSaveWithContents(tab, contents) {
+    const {
+      tabsProvider
+    } = this.props;
+
+    const {
+      file,
+      type: fileType
+    } = tab;
+
+    const provider = tabsProvider.getProvider(fileType);
+    const saveType = provider.extensions && provider.extensions[0];
+
+    // Skip if provider has no extensions defined
+    if (!saveType) {
+      return;
+    }
+
+    const encoding = provider.encoding || ENCODING_UTF8;
+    const fileSystem = this.getGlobal('fileSystem');
+
+    // Perform the file write asynchronously (fire-and-forget)
+    fileSystem.writeFile(file.path, {
+      ...file,
+      contents
+    }, {
+      encoding,
+      fileType: saveType
+    }).then(savedFile => {
+      this.tabSaved(tab, savedFile);
+    }).catch(err => {
+      this.showAutoSaveError(tab, err);
+    });
+  }
+
   saveAllTabs = () => {
 
     const {
@@ -1851,6 +2003,12 @@ export class App extends PureComponent {
 
     if (action === 'save-as') {
       return this.saveTab(activeTab, { saveAs: true });
+    }
+
+    // Auto-save on focus loss (window blur, tab switch)
+    // Related: #5450, #695, #1547
+    if (action === 'auto-save') {
+      return this.autoSave(activeTab);
     }
 
     if (action === 'quit') {
