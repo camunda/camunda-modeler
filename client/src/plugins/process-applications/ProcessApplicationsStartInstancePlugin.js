@@ -14,7 +14,6 @@ import classNames from 'classnames';
 
 import { Fill } from '../../app/slot-fill';
 
-import DeploymentConfigValidator from '../zeebe-plugin/deployment-plugin/DeploymentConfigValidator';
 import StartInstanceConfigValidator from '../zeebe-plugin/start-instance-plugin/StartInstanceConfigValidator';
 
 import ProcessApplicationIcon from 'icons/file-types/ProcessApplication.svg';
@@ -98,7 +97,6 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
-        deploymentConfigValidator={ DeploymentConfigValidator }
         getConfigFile={ () => processApplication.file }
         getResourceConfigs={ () => resourceConfigs }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }

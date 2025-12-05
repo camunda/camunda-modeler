@@ -23,7 +23,7 @@ import { utmTag } from '../../util/utmTag';
 /**
  * Formik form wrapper for the settings form.
  */
-export function SettingsForm({ schema, values, onChange }) {
+export function SettingsForm({ schema, values, onChange, targetElement }) {
 
   const { setFieldValue, values: formikValues, validateForm } = useFormikContext();
 
@@ -52,7 +52,7 @@ export function SettingsForm({ schema, values, onChange }) {
   return (<Form>
     {
       map(orderedSchema, (value, key) =>
-        <SettingsSection key={ key } { ...value } />)
+        <SettingsSection key={ key } { ...value } targetElement={ targetElement } />)
     }
   </Form>);
 }
@@ -66,8 +66,8 @@ function SettingsSection(props) {
       <Section.Header>{ title }</Section.Header>
       <Section.Body>
         {
-          map(properties, (props, key) =>
-            <SettingsField key={ key } name={ key } { ...props } />)
+          map(properties, (property, key) =>
+            <SettingsField key={ key } name={ key } { ...property } targetElement={ props.targetElement } />)
         }
       </Section.Body>
     </Section>
@@ -222,13 +222,18 @@ export function resolvePath(currentPath, targetPath) {
 
 /**
  * Checks if a given condition is met based on the provided form values.
+ * Works with both nested Formik values (when propName is provided) and flat objects.
  *
- * @param {string} propName - The base path for the property being evaluated.
- * @param {Object} values - The object containing all form values, used to cross reference other section/fields
+ * @param {string} [propName] - The base path for the property being evaluated. If omitted, values are treated as a flat object.
+ * @param {Object} values - The object containing form values
  * @param {Condition} condition - The condition object to evaluate.
  * @returns {boolean} True if the condition is met, false otherwise.
  */
 export function isConditionMet(propName, values, condition) {
+  if (!condition) {
+    return true;
+  }
+
   if (condition.allMatch) {
     return condition.allMatch.every((childCondition) => isConditionMet(propName, values, childCondition));
   }
@@ -236,8 +241,12 @@ export function isConditionMet(propName, values, condition) {
   if (!condition.property) {
     return false;
   }
-  const conditionPropPath = resolvePath(propName, condition.property);
-  const conditionPropValue = getIn(values, conditionPropPath);
+
+  // If propName is provided, use path resolution for nested Formik values
+  // Otherwise, treat values as a flat object with direct property access
+  const conditionPropValue = propName
+    ? getIn(values, resolvePath(propName, condition.property))
+    : values[condition.property];
 
   if ('equals' in condition) {
     return conditionPropValue === condition.equals;
@@ -299,6 +308,37 @@ function isEmpty(value) {
 
 function matchesPattern(value, pattern) {
   return new RegExp(pattern).test(value);
+}
+
+function validateValue(value, constraints, label) {
+  if (constraints)
+    return validator(constraints, label)(value);
+}
+
+export function validateProperties(values, properties) {
+  if (!values) {
+    return { _error: 'No values provided' };
+  }
+
+  const errors = {};
+
+  for (const property of properties) {
+    const { key, condition, constraints, label } = property;
+
+    // Skip validation if condition is not met (field is not visible/applicable)
+    if (!isConditionMet(null, values, condition)) {
+      continue;
+    }
+
+    const value = values[key];
+    const error = validateValue(value, constraints, label);
+
+    if (error) {
+      errors[key] = error;
+    }
+  }
+
+  return errors;
 }
 
 /**
