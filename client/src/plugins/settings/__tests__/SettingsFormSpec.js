@@ -19,7 +19,7 @@ import {
 } from '@testing-library/react';
 
 import { Formik } from 'formik';
-import { SettingsForm } from '../SettingsForm';
+import { SettingsForm, validateProperties } from '../SettingsForm';
 
 describe('SettingsForm', function() {
 
@@ -974,6 +974,196 @@ describe('SettingsForm', function() {
       await new Promise(resolve => setTimeout(resolve, 10));
 
       await expectNoError(container);
+    });
+
+  });
+
+
+  describe('validateProperties', function() {
+
+    it('should return error for null values', function() {
+
+      // given
+      const properties = [];
+
+      // when
+      const errors = validateProperties(null, properties);
+
+      // then
+      expect(errors).to.have.property('_error');
+    });
+
+
+    it('should return error for undefined values', function() {
+
+      // given
+      const properties = [];
+
+      // when
+      const errors = validateProperties(undefined, properties);
+
+      // then
+      expect(errors).to.have.property('_error');
+    });
+
+
+    it('should return empty errors for valid values', function() {
+
+      // given
+      const properties = [
+        { key: 'name', constraints: { notEmpty: true } }
+      ];
+
+      // when
+      const errors = validateProperties({ name: 'test' }, properties);
+
+      // then
+      expect(errors).to.deep.equal({});
+    });
+
+
+    it('should return error for empty required field', function() {
+
+      // given
+      const properties = [
+        { key: 'name', label: 'Name', constraints: { notEmpty: true } }
+      ];
+
+      // when
+      const errors = validateProperties({ name: '' }, properties);
+
+      // then
+      expect(errors).to.have.property('name');
+    });
+
+
+    it('should return custom error message for notEmpty', function() {
+
+      // given
+      const properties = [
+        { key: 'name', constraints: { notEmpty: 'Name is required!' } }
+      ];
+
+      // when
+      const errors = validateProperties({ name: '' }, properties);
+
+      // then
+      expect(errors.name).to.equal('Name is required!');
+    });
+
+
+    it('should return error for invalid pattern', function() {
+
+      // given
+      const properties = [
+        { key: 'email', constraints: { pattern: { value: '^[^@]+@[^@]+$', message: 'Invalid email' } } }
+      ];
+
+      // when
+      const errors = validateProperties({ email: 'invalid' }, properties);
+
+      // then
+      expect(errors.email).to.equal('Invalid email');
+    });
+
+
+    it('should skip validation if condition is not met', function() {
+
+      // given
+      const properties = [
+        { key: 'type', constraints: {} },
+        { key: 'secret', constraints: { notEmpty: true }, condition: { property: 'type', equals: 'oauth' } }
+      ];
+
+      // when
+      const errors = validateProperties({ type: 'none', secret: '' }, properties);
+
+      // then
+      expect(errors).to.deep.equal({});
+    });
+
+
+    it('should validate if condition is met', function() {
+
+      // given
+      const properties = [
+        { key: 'type', constraints: {} },
+        { key: 'secret', constraints: { notEmpty: true }, condition: { property: 'type', equals: 'oauth' } }
+      ];
+
+      // when
+      const errors = validateProperties({ type: 'oauth', secret: '' }, properties);
+
+      // then
+      expect(errors).to.have.property('secret');
+    });
+
+
+    it('should support oneOf condition', function() {
+
+      // given
+      const properties = [
+        { key: 'type', constraints: {} },
+        { key: 'token', constraints: { notEmpty: true }, condition: { property: 'type', oneOf: [ 'oauth', 'basic' ] } }
+      ];
+
+      // when
+      const errors = validateProperties({ type: 'oauth', token: '' }, properties);
+
+      // then
+      expect(errors).to.have.property('token');
+    });
+
+
+    it('should support allMatch condition', function() {
+
+      // given
+      const properties = [
+        { key: 'enabled', constraints: {} },
+        { key: 'type', constraints: {} },
+        {
+          key: 'secret',
+          constraints: { notEmpty: true },
+          condition: {
+            allMatch: [
+              { property: 'enabled', equals: true },
+              { property: 'type', equals: 'oauth' }
+            ]
+          }
+        }
+      ];
+
+      // when
+      const errors = validateProperties({ enabled: true, type: 'oauth', secret: '' }, properties);
+
+      // then
+      expect(errors).to.have.property('secret');
+    });
+
+
+    it('should not validate when allMatch condition is not fully met', function() {
+
+      // given
+      const properties = [
+        { key: 'enabled', constraints: {} },
+        { key: 'type', constraints: {} },
+        {
+          key: 'secret',
+          constraints: { notEmpty: true },
+          condition: {
+            allMatch: [
+              { property: 'enabled', equals: true },
+              { property: 'type', equals: 'oauth' }
+            ]
+          }
+        }
+      ];
+
+      // when
+      const errors = validateProperties({ enabled: false, type: 'oauth', secret: '' }, properties);
+
+      // then
+      expect(errors).to.deep.equal({});
     });
 
   });
