@@ -493,7 +493,7 @@ function createMockEndpoint(overrides = {}) {
     id: 'foo',
     camundaCloudClientId: 'bar',
     camundaCloudClientSecret: 'baz',
-    camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443',
+    camundaCloudClusterUrl: 'https://my-cluster-id.bru-2.zeebe.camunda.io:443',
     ...overrides
   };
 }
