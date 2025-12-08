@@ -58,9 +58,9 @@ class ElementTemplatesView extends PureComponent {
       triggerAction
     } = this.props;
 
-    let elementTemplates = await triggerAction('getElementTemplates');
-
     const selectedElement = await triggerAction('getSelectedElement');
+
+    let elementTemplates = await triggerAction('getElementTemplates', { element: selectedElement });
 
     if (selectedElement) {
 

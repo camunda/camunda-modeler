@@ -159,6 +159,25 @@ describe('EditorActions', function() {
       expect(elementTemplates).to.have.length(5);
     });
 
+
+    it('should return only applicable templates for element', function() {
+
+      // given
+      const editorActions = modeler.get('editorActions');
+      const elementTemplatesLoader = modeler.get('elementTemplatesLoader');
+      elementTemplatesLoader.setTemplates(templatesJSON);
+
+      const elementRegistry = modeler.get('elementRegistry');
+      const serviceTask = elementRegistry.get('ServiceTask_1');
+
+      // when
+      const elementTemplates = editorActions.trigger('getElementTemplates', { element: serviceTask });
+
+      // then
+      expect(elementTemplates).to.exist;
+      expect(elementTemplates).to.have.length(3);
+    });
+
   });
 
 
