@@ -77,7 +77,7 @@ export default function Radio(props) {
                       { ...restProps } />
                     <label
                       htmlFor={ id }
-                      className={ classNames('custom-control-label', {
+                      className={ classNames('custom-control-option', {
                         'is-invalid': !!error
                       }) }
                     >

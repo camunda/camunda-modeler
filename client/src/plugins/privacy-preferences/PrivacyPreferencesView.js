@@ -75,7 +75,7 @@ class PrivacyPreferencesView extends PureComponent {
                 onChange={ (event) => {
                   this.setState({ [item.key]: event.target.checked });
                 } } />
-              <label className="custom-control-label" htmlFor={ item.key }> </label>
+              <label className="custom-control-option" htmlFor={ item.key }> </label>
             </div>
           </div>
         </div>
