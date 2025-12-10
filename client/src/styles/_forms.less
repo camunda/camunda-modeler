@@ -102,9 +102,9 @@
   textarea.form-control.is-invalid,
   input[type=text].form-control.is-invalid,
   select.form-control.is-invalid,
-  .custom-radio .custom-control-input.is-invalid:checked + .custom-control-label:before,
-  .custom-checkbox .custom-control-input.is-invalid:checked+ .custom-control-label:before, 
-  .custom-checkbox .custom-control-input.is-invalid:not(:checked) + .custom-control-label:before {
+  .custom-radio .custom-control-input.is-invalid:checked + .custom-control-option:before,
+  .custom-checkbox .custom-control-input.is-invalid:checked+ .custom-control-option:before, 
+  .custom-checkbox .custom-control-input.is-invalid:not(:checked) + .custom-control-option:before {
     border: solid 1px var(--color-red-360-100-45);
   }
 
@@ -112,9 +112,9 @@
   textarea.form-control.is-invalid:focus,
   input[type=text].form-control.is-invalid:focus,
   select.form-control.is-invalid:focus,
-  .custom-radio .custom-control-input.is-invalid:checked:focus + .custom-control-label:before,
-  .custom-checkbox .custom-control-input.is-invalid:checked:focus + .custom-control-label:before, 
-  .custom-checkbox .custom-control-input.is-invalid:not(:checked):focus + .custom-control-label:before {
+  .custom-radio .custom-control-input.is-invalid:checked:focus + .custom-control-option:before,
+  .custom-checkbox .custom-control-input.is-invalid:checked:focus + .custom-control-option:before, 
+  .custom-checkbox .custom-control-input.is-invalid:not(:checked):focus + .custom-control-option:before {
     outline: none;
     box-shadow: 0 0 0 1px var(--color-red-360-100-92), 0 0 0 1px var(--color-grey-225-10-75) inset;
     border: solid 1px var(--color-red-360-100-45) !important;
@@ -130,6 +130,9 @@
     line-height: normal;
     letter-spacing: normal;
     color: var(--color-grey-225-10-15);
+    &.custom-control-option{
+      margin-bottom: 0px;
+    }
   }
 
   .form-check-inline {
@@ -158,27 +161,26 @@
     }
 
     // the text
-    .custom-control-input:checked + .custom-control-label,
-    .custom-control-input:not(:checked) + .custom-control-label {
+    .custom-control-input:checked + .custom-control-option,
+    .custom-control-input:not(:checked) + .custom-control-option {
         position: relative;
         padding-left: 26px;
         line-height: 20px;
-        margin-bottom: 0; // overwriting `.form-group label`
     }
 
     // radio control
-    .custom-control-input:not(:checked) + .custom-control-label:after {
+    .custom-control-input:not(:checked) + .custom-control-option:after {
         opacity: 0;
     }
-    .custom-control-input:checked + .custom-control-label:after {
+    .custom-control-input:checked + .custom-control-option:after {
         opacity: 1;
     }
 
-    .custom-control-label:focus {
+    .custom-control-option:focus {
       outline: none;
     }
 
-    .custom-control-input:focus + .custom-control-label:before {
+    .custom-control-input:focus + .custom-control-option:before {
       box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
       border: solid 1px var(--color-blue-205-100-50) !important;
     }
@@ -187,8 +189,8 @@
   .custom-checkbox {
 
     // border of the radio
-    .custom-control-input:checked + .custom-control-label:before,
-    .custom-control-input:not(:checked) + .custom-control-label:before {
+    .custom-control-input:checked + .custom-control-option:before,
+    .custom-control-input:not(:checked) + .custom-control-option:before {
       content: '';
       position: absolute;
       left: 0;
@@ -202,8 +204,8 @@
     }
 
     // inside the checkbox
-    .custom-control-input:checked + .custom-control-label:after,
-    .custom-control-input:not(:checked) + .custom-control-label:after {
+    .custom-control-input:checked + .custom-control-option:after,
+    .custom-control-input:not(:checked) + .custom-control-option:after {
       position: absolute;
       left: 1px;
       width: 16px;
@@ -213,7 +215,7 @@
       box-sizing: content-box;
     }
 
-    .custom-control-input:disabled + label {
+    .custom-control-input:disabled + .custom-control-label {
       color: var(--color-grey-225-10-35);
     }
   }
@@ -221,8 +223,8 @@
   .custom-radio {
 
     // border of the radio
-    .custom-control-input:checked + .custom-control-label:before,
-    .custom-control-input:not(:checked) + .custom-control-label:before {
+    .custom-control-input:checked + .custom-control-option:before,
+    .custom-control-input:not(:checked) + .custom-control-option:before {
       content: '';
       position: absolute;
       left: 0;
@@ -236,8 +238,8 @@
     }
 
     // inside the radio
-    .custom-control-input:checked + .custom-control-label:after,
-    .custom-control-input:not(:checked) + .custom-control-label:after {
+    .custom-control-input:checked + .custom-control-option:after,
+    .custom-control-input:not(:checked) + .custom-control-option:after {
       content: '';
       width: 8px;
       height: 8px;
@@ -250,18 +252,18 @@
     }
 
     // radio control
-    .custom-control-input:not(:checked) + .custom-control-label:after {
+    .custom-control-input:not(:checked) + .custom-control-option:after {
       opacity: 0;
     }
-    .custom-control-input:checked + .custom-control-label:after {
+    .custom-control-input:checked + .custom-control-option:after {
       opacity: 1;
     }
 
-    .custom-control-label:focus {
+    .custom-control-option:focus {
       outline: none;
     }
 
-    .custom-control-input:focus + .custom-control-label:before {
+    .custom-control-input:focus + .custom-control-option:before {
       box-shadow: 0 0 0 1px var(--color-blue-205-100-50), 0 0 0 1px var(--color-grey-225-10-75) inset;
       border: solid 1px var(--color-blue-205-100-50) !important;
     }

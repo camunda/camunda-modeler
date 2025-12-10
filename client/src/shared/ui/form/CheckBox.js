@@ -55,7 +55,7 @@ export default function CheckBox(props) {
             { ...restProps }
           />
           <label
-            className={ classNames('custom-control-label', {
+            className={ classNames('custom-control-option', {
               'is-invalid': !!error
             }) }
             htmlFor={ fieldName }
