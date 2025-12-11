@@ -121,6 +121,7 @@ export default class Settings {
     const {
       id,
       title,
+      description,
       order,
       properties
     } = settings;
@@ -130,7 +131,7 @@ export default class Settings {
     // Create a group if it does not exist
     if (!this._settings[id]) {
 
-      this._settings[id] = { id, title, properties: {} };
+      this._settings[id] = { id, title, description, properties: {} };
 
       if (Number.isInteger(order)) {
         this._settings[id].order = order;

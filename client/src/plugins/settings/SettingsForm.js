@@ -49,22 +49,65 @@ export function SettingsForm({ schema, values, onChange }) {
     return sortSchemaByOrder(schema);
   }, [ schema ]);
 
+  const sections = useMemo(() => {
+    const result = [];
+
+    forEach(orderedSchema, (value, key) => {
+
+      // If the schema has sections, group properties by section and render each
+      if (value.sections) {
+
+        // Group properties by section
+        const propertiesBySection = {};
+        forEach(value.properties, (property, propKey) => {
+          const sectionId = property.section || 'default';
+          if (!propertiesBySection[sectionId]) {
+            propertiesBySection[sectionId] = [];
+          }
+          propertiesBySection[sectionId].push({ key: propKey, ...property });
+        });
+
+        // Render each section
+        forEach(value.sections, (section, sectionId) => {
+          const sectionProperties = propertiesBySection[sectionId] || [];
+          result.push(
+            <Section key={ `${key}-${sectionId}` }>
+              <Section.Header>{ section.title }</Section.Header>
+              <Section.Body>
+                { section.description && <p className="section__description">{ section.description }</p> }
+                {
+                  sectionProperties.map(({ key: propKey, ...property }) => (
+                    <SettingsField key={ propKey } name={ propKey } { ...property } />
+                  ))
+                }
+              </Section.Body>
+            </Section>
+          );
+        });
+      } else {
+
+        // Otherwise render as a single section
+        result.push(<SettingsSection key={ key } { ...value } />);
+      }
+    });
+
+    return result;
+  }, [ orderedSchema ]);
+
   return (<Form>
-    {
-      map(orderedSchema, (value, key) =>
-        <SettingsSection key={ key } { ...value } />)
-    }
+    { sections }
   </Form>);
 }
 
 function SettingsSection(props) {
 
-  const { title, properties } = props;
+  const { title, description, properties } = props;
 
   return (
     <Section>
       <Section.Header>{ title }</Section.Header>
       <Section.Body>
+        { description && <p className="section__description">{ description }</p> }
         {
           map(properties, (props, key) =>
             <SettingsField key={ key } name={ key } { ...props } />)

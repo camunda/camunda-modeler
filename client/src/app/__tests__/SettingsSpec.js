@@ -99,6 +99,23 @@ describe('Settings', function() {
     });
 
 
+    it('should register description when provided', function() {
+
+      // given
+      const settingsWithDescription = {
+        ...settingsMock,
+        description: 'Test description'
+      };
+
+      // when
+      settings.register(settingsWithDescription);
+      const schema = settings.getSchema();
+
+      // then
+      expect(schema[settingsMock.id].description).to.equal('Test description');
+    });
+
+
     it('should add new properties to an existing group', function() {
 
       // given
