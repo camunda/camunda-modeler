@@ -55,6 +55,7 @@ export const schema = {
       default: false,
       flag: 'disable-plugins',
       label: 'Disable plugins',
+      documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/plugins/#disabling-plugins'),
       restartRequired: true,
       section: 'general'
     },
@@ -63,6 +64,7 @@ export const schema = {
       default: false,
       flag: 'disable-connector-templates',
       label: 'Disable connector templates',
+      documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/#automatic-connector-template-fetching'),
       restartRequired: true,
       section: 'general'
     },
