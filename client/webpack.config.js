@@ -132,7 +132,7 @@ module.exports = {
   devServer: {
     writeToDisk: true
   },
-  devtool: DEV ? 'cheap-module-source-map' : 'source-map'
+  devtool: DEV ? 'eval-source-map' : 'source-map'
 };
 
 
