@@ -62,26 +62,21 @@ export function SettingsForm({ schema, values, onChange }) {
         forEach(value.properties, (property, propKey) => {
           const sectionId = property.section || 'default';
           if (!propertiesBySection[sectionId]) {
-            propertiesBySection[sectionId] = [];
+            propertiesBySection[sectionId] = {};
           }
-          propertiesBySection[sectionId].push({ key: propKey, ...property });
+          propertiesBySection[sectionId][propKey] = property;
         });
 
         // Render each section
         forEach(value.sections, (section, sectionId) => {
-          const sectionProperties = propertiesBySection[sectionId] || [];
+          const sectionProperties = propertiesBySection[sectionId] || {};
           result.push(
-            <Section key={ `${key}-${sectionId}` }>
-              <Section.Header>{ section.title }</Section.Header>
-              <Section.Body>
-                { section.description && <p className="section__description">{ section.description }</p> }
-                {
-                  sectionProperties.map(({ key: propKey, ...property }) => (
-                    <SettingsField key={ propKey } name={ propKey } { ...property } />
-                  ))
-                }
-              </Section.Body>
-            </Section>
+            <SettingsSection
+              key={ `${key}-${sectionId}` }
+              title={ section.title }
+              description={ section.description }
+              properties={ sectionProperties }
+            />
           );
         });
       } else {

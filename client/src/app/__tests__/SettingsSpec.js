@@ -80,7 +80,7 @@ describe('Settings', function() {
       const schema = settings.getSchema();
 
       // then
-      const expected = { test: { ...settingsMock } };
+      const expected = { test: { ...settingsMock, description: undefined, sections: undefined } };
       expect(schema).to.deep.equal(expected);
     });
 
@@ -113,6 +113,31 @@ describe('Settings', function() {
 
       // then
       expect(schema[settingsMock.id].description).to.equal('Test description');
+    });
+
+
+    it('should register sections when provided', function() {
+
+      // given
+      const settingsWithSections = {
+        ...settingsMock,
+        sections: {
+          general: {
+            title: 'General Settings'
+          },
+          advanced: {
+            title: 'Advanced Settings',
+            description: 'Advanced options'
+          }
+        }
+      };
+
+      // when
+      settings.register(settingsWithSections);
+      const schema = settings.getSchema();
+
+      // then
+      expect(schema[settingsMock.id].sections).to.deep.equal(settingsWithSections.sections);
     });
 
 
