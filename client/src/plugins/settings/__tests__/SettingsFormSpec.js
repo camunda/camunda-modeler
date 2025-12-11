@@ -149,6 +149,32 @@ describe('SettingsForm', function() {
   });
 
 
+  describe('sections', function() {
+
+    it('should render section description when provided', function() {
+
+      // given
+      const schema = [ {
+        title: 'Test Section',
+        description: 'This is a test section description',
+        properties: {
+          'test.text': {
+            type: 'text',
+            label: 'Text Input'
+          }
+        }
+      } ];
+
+      // when
+      const { getByText } = createSettingsForm({ schema });
+
+      // then
+      expect(getByText('This is a test section description')).to.exist;
+    });
+
+  });
+
+
   describe('conditional fields', function() {
 
     it('should show field if condition "equals true" is met', function() {
