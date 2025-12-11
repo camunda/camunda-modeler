@@ -151,7 +151,7 @@ export default function SettingsPlugin(props) {
           type="button"
           onClick={ () => setOpen(false) }
         >
-          Close
+          Done
         </button>
       </div>
     </Modal>
