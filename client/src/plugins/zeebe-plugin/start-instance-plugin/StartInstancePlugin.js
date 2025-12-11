@@ -15,7 +15,6 @@ import classNames from 'classnames';
 import { Fill } from '../../../app/slot-fill';
 
 import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
-import DeploymentConfigValidator from '../deployment-plugin/DeploymentConfigValidator';
 import StartInstanceConfigValidator from './StartInstanceConfigValidator';
 
 import StartInstancePluginOverlay from './StartInstancePluginOverlay';
@@ -95,7 +94,6 @@ export default function StartInstancePlugin(props) {
         anchor={ anchorRef.current }
         connectionChecker={ connectionChecker.current }
         deployment={ _getGlobal('deployment') }
-        deploymentConfigValidator={ DeploymentConfigValidator }
         displayNotification={ displayNotification }
         log={ log }
         onClose={ () => setOverlayOpen(false) }

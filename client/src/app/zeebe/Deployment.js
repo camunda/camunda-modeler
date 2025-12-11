@@ -23,6 +23,7 @@ import { generateId } from '../../util/index.js';
 
 import { AUTH_TYPES, TARGET_TYPES } from '../../remote/ZeebeAPI.js';
 import { SETTINGS_KEY_CONNECTIONS } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerSettings.js';
+import { validateConnection } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionValidator.js';
 
 export const CONFIG_KEYS = {
   CONFIG: 'zeebe-deployment-tool',
@@ -110,6 +111,16 @@ export default class Deployment extends EventEmitter {
         success: false,
         response: {
           message: 'No connection configured.'
+        }
+      };
+    }
+
+    const errors = validateConnection(config.endpoint);
+    if (Object.keys(errors).length > 0) {
+      return {
+        success: false,
+        response: {
+          message: 'Connection configuration is invalid'
         }
       };
     }
