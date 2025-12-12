@@ -9,7 +9,7 @@
  */
 
 /**
- * @typedef {import('../deployment-plugin/types').Endpoint} Endpoint
+ * @typedef {import('../deployment-plugin/types').EndpointUnion} Endpoint
  * @typedef {import('../deployment-plugin/types').DeploymentConfig} DeploymentConfig
  * @typedef {import('../deployment-plugin/types').DeploymentResult} DeploymentResult
  * @typedef {import('../start-instance-plugin/types').StartInstanceConfig} StartInstanceConfig
@@ -17,6 +17,8 @@
  */
 
 import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
+
+import { CONNECTION_CHECK_ERROR_MESSAGES } from '../deployment-plugin/ConnectionCheckErrors';
 
 /**
  * Get Camunda Operate URL.
@@ -314,4 +316,8 @@ export function getGRPCErrorCode(response) {
   } = response;
 
   return code ? GRPC_ERROR_CODES[ code ] : 'UNKNOWN';
+}
+
+export function getMessageForReason(reason) {
+  return CONNECTION_CHECK_ERROR_MESSAGES[reason] || CONNECTION_CHECK_ERROR_MESSAGES.UNKNOWN;
 }
