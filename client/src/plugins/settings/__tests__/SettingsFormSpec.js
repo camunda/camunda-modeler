@@ -149,6 +149,178 @@ describe('SettingsForm', function() {
   });
 
 
+  describe('sections', function() {
+
+    it('should render section description when provided', function() {
+
+      // given
+      const schema = [ {
+        title: 'Test Section',
+        description: 'This is a test section description',
+        properties: {
+          'test.text': {
+            type: 'text',
+            label: 'Text Input'
+          }
+        }
+      } ];
+
+      // when
+      const { getByText } = createSettingsForm({ schema });
+
+      // then
+      expect(getByText('This is a test section description')).to.exist;
+    });
+
+
+    it('should group properties by section when sections are defined', function() {
+
+      // given
+      const schema = {
+        app: {
+          id: 'app',
+          order: 0,
+          sections: {
+            general: {
+              title: 'General Settings'
+            },
+            versions: {
+              title: 'Version Settings',
+              description: 'Configure default versions'
+            }
+          },
+          properties: {
+            'app.enableFeature': {
+              type: 'boolean',
+              label: 'Enable Feature',
+              section: 'general'
+            },
+            'app.version': {
+              type: 'select',
+              label: 'Version',
+              options: [
+                { label: 'v1', value: '1' },
+                { label: 'v2', value: '2' }
+              ],
+              section: 'versions'
+            }
+          }
+        }
+      };
+
+      // when
+      const { getByText, getByLabelText } = createSettingsForm({ schema });
+
+      // then
+      expect(getByText('General Settings')).to.exist;
+      expect(getByText('Version Settings')).to.exist;
+      expect(getByText('Configure default versions')).to.exist;
+      expect(getByLabelText('Enable Feature')).to.exist;
+      expect(getByLabelText('Version')).to.exist;
+    });
+
+
+    it('should render single section when sections are not defined', function() {
+
+      // given
+      const schema = {
+        app: {
+          id: 'app',
+          title: 'App Settings',
+          order: 0,
+          properties: {
+            'app.enableFeature': {
+              type: 'boolean',
+              label: 'Enable Feature'
+            },
+            'app.name': {
+              type: 'text',
+              label: 'Name'
+            }
+          }
+        }
+      };
+
+      // when
+      const { getByText, getByLabelText } = createSettingsForm({ schema });
+
+      // then
+      expect(getByText('App Settings')).to.exist;
+      expect(getByLabelText('Enable Feature')).to.exist;
+      expect(getByLabelText('Name')).to.exist;
+    });
+
+
+    it('should render properties without section assignment in default section', function() {
+
+      // given
+      const schema = {
+        app: {
+          id: 'app',
+          order: 0,
+          sections: {
+            default: {
+              title: 'General Settings',
+              description: 'General application settings'
+            },
+            advanced: {
+              title: 'Advanced Settings',
+              description: 'Advanced configuration options'
+            },
+            versions: {
+              title: 'Version Settings'
+            }
+          },
+          properties: {
+
+            // no section - should go to default
+            'app.enableFeature': {
+              type: 'boolean',
+              label: 'Enable Feature'
+            },
+            'app.name': {
+              type: 'text',
+              label: 'Name',
+              section: 'default'
+            },
+            'app.debugMode': {
+              type: 'boolean',
+              label: 'Debug Mode',
+              section: 'advanced'
+            },
+            'app.version': {
+              type: 'select',
+              label: 'Version',
+              options: [
+                { label: 'v1', value: '1' },
+                { label: 'v2', value: '2' }
+              ],
+              section: 'versions'
+            }
+          }
+        }
+      };
+
+      // when
+      const { getByText, getByLabelText } = createSettingsForm({ schema });
+
+      // then
+      expect(getByText('General Settings')).to.exist;
+      expect(getByText('Advanced Settings')).to.exist;
+      expect(getByText('Version Settings')).to.exist;
+
+      expect(getByText('General application settings')).to.exist;
+      expect(getByText('Advanced configuration options')).to.exist;
+
+      expect(getByLabelText('Enable Feature')).to.exist;
+      expect(getByLabelText('Name')).to.exist;
+      expect(getByLabelText('Debug Mode')).to.exist;
+      expect(getByLabelText('Version')).to.exist;
+    });
+
+  });
+
+
   describe('conditional fields', function() {
 
     it('should show field if condition "equals true" is met', function() {

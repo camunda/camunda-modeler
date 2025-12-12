@@ -30,8 +30,16 @@ export default function useBuiltInSettings(settings) {
 
 export const schema = {
   id: 'app',
-  title: 'Global Settings',
   order: 0,
+  sections: {
+    general: {
+      title: 'Global settings'
+    },
+    versions: {
+      title: 'Default Camunda versions',
+      description: 'Engine version to be used for new diagrams.'
+    }
+  },
   properties: {
     'app.newContextPad': {
       type: 'boolean',
@@ -40,20 +48,25 @@ export const schema = {
       label: 'Enable new context pad',
       restartRequired: true,
       documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/web-modeler/context-pad/'),
+      section: 'general'
     },
     'app.disablePlugins': {
       type: 'boolean',
       default: false,
       flag: 'disable-plugins',
       label: 'Disable plugins',
+      documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/plugins/#disabling-plugins'),
       restartRequired: true,
+      section: 'general'
     },
     'app.disableConnectorTemplates': {
       type: 'boolean',
       default: false,
       flag: 'disable-connector-templates',
       label: 'Disable connector templates',
+      documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/#automatic-connector-template-fetching'),
       restartRequired: true,
+      section: 'general'
     },
 
     // TODO(@jarekdanielak): Enable this setting when getEditMenu issue is resolved.
@@ -63,6 +76,7 @@ export const schema = {
     //   flag: 'disable-adjust-origin',
     //   label: 'Disable adjust origin',
     //   restartRequired: true,
+    //   section: 'general'
     // },
     'app.defaultC8Version': {
       type: 'select',
@@ -70,6 +84,7 @@ export const schema = {
       default: getLatestStable(ENGINES.CLOUD),
       flag: 'c8-engine-version',
       label: 'Default Camunda 8 version',
+      section: 'versions'
     },
     'app.defaultC7Version': {
       type: 'select',
@@ -77,6 +92,7 @@ export const schema = {
       default: getLatestStable(ENGINES.PLATFORM),
       flag: 'c7-engine-version',
       label: 'Default Camunda 7 version',
+      section: 'versions'
     }
   }
 };
