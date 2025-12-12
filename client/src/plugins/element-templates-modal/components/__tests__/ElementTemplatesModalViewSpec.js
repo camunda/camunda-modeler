@@ -37,42 +37,6 @@ describe('<ElementTemplatesView>', function() {
     });
 
 
-    it('should get element templates (filtered by applicable)', async function() {
-
-      // given
-      createElementTemplatesModalView();
-
-      // then
-      await waitFor(() => {
-        expect(screen.getByText('Template 1')).to.exist;
-        expect(screen.getByText('Template 2')).to.exist;
-        expect(screen.getByText('Template 4')).to.exist;
-
-        expect(screen.queryByText('Template 3')).to.be.null;
-        expect(screen.queryByText('Template 5 v1')).to.be.null;
-        expect(screen.queryByText('Template 5 v2')).to.be.null;
-      });
-    });
-
-
-    it('should get element templates (filtered by latest)', async function() {
-
-      // given
-      createElementTemplatesModalView({
-        selectedElement: {
-          businessObject: moddle.create('bpmn:SendTask')
-        }
-      });
-
-      // then
-      await waitFor(() => {
-        expect(screen.getByText('Template 4')).to.exist;
-        expect(screen.getByText('Template 5 v2')).to.exist;
-        expect(screen.queryByText('Template 5 v1')).to.be.null;
-      });
-    });
-
-
     it('should get element templates (sorted alphabetically)', async function() {
 
       // given
@@ -341,15 +305,6 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     ],
     id: 'some-local-template',
     name: 'Template 4',
-    properties: []
-  },
-  {
-    appliesTo: [
-      'bpmn:SendTask'
-    ],
-    id: 'versioned-template',
-    version: 1,
-    name: 'Template 5 v1',
     properties: []
   },
   {
