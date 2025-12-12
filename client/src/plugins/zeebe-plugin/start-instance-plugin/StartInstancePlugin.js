@@ -30,7 +30,8 @@ export default function StartInstancePlugin(props) {
     displayNotification,
     log,
     subscribe,
-    triggerAction
+    triggerAction,
+    connectionCheckResult
   } = props;
 
   const [ activeTab, setActiveTab ] = useState(null);
@@ -105,6 +106,7 @@ export default function StartInstancePlugin(props) {
         startInstance={ _getGlobal('startInstance') }
         startInstanceConfigValidator={ StartInstanceConfigValidator }
         triggerAction={ triggerAction }
+        connectionCheckResult={ connectionCheckResult }
       />
     ) }
   </>;

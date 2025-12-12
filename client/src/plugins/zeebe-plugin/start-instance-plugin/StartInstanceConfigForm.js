@@ -20,6 +20,8 @@ import {
   Form,
   Formik
 } from 'formik';
+import { getMessageForReason } from '../shared/util';
+import FormFeedback from '../../../shared/ui/form/FormFeedback';
 
 import { utmTag } from '../../../util/utmTag';
 
@@ -34,7 +36,10 @@ export default function StartInstanceConfigForm(props) {
     validateForm,
     validateField,
     VariablesComponent = JSONInput,
-    variablesComponentProps = {}
+    variablesComponentProps = {},
+    connectionCheckResult,
+    handleChangeConnections,
+    handleManageConnections
   } = props;
 
   const getFieldError = (meta, fieldName) => {
@@ -84,12 +89,23 @@ export default function StartInstanceConfigForm(props) {
                     </div>
                   </fieldset>
                   <Section.Actions>
-                    <button
-                      type="submit"
-                      className="btn btn-primary"
-                      disabled={ props.isSubmitting }>
-                      { renderSubmit }
-                    </button>
+                    <div className="form-group">
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={ props.isSubmitting }>
+                        { renderSubmit }
+                      </button>
+                      { connectionCheckResult?.success === false && (
+                        <FormFeedback
+                          error={ <>
+                            Could not establish connection: <br />
+                            { getMessageForReason(connectionCheckResult?.reason) } <br />
+                            <a href="#" onClick={ handleChangeConnections }>Change</a> or <a href="#" onClick={ handleManageConnections }>manage connections.</a>
+                          </> }
+                        />
+                      )}
+                    </div>
                   </Section.Actions>
                 </Section.Body>
               </Section>

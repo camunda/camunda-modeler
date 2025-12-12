@@ -74,7 +74,7 @@ function SettingsSection(props) {
   );
 }
 
-function SettingsField(props) {
+export function SettingsField(props) {
 
   const { type, flag, condition, name } = props;
 
@@ -84,9 +84,13 @@ function SettingsField(props) {
     return Flags.get(flag);
   }, [ flag ]);
 
-  const component = useMemo(() => {
+  const FieldComponent = useMemo(() => {
     if (condition && !isConditionMet(name, values, condition)) {
       return null;
+    }
+
+    if (type === 'custom') {
+      return props.component;
     }
 
     if (type === 'text' || type === 'password') {
@@ -108,8 +112,12 @@ function SettingsField(props) {
     return null;
   }, [ condition, name, type, values ]);
 
-  if (!component) {
+  if (!FieldComponent) {
     return null;
+  }
+
+  if (type === 'custom') {
+    return <FieldComponent { ...props } />;
   }
 
   const { label, description, hint, options, documentationUrl, constraints } = props;
@@ -134,7 +142,7 @@ function SettingsField(props) {
   return <>
     <Field
       name={ name }
-      component={ component }
+      component={ FieldComponent }
       disabled={ disabledByFlag }
       label={ label }
       description={ description }

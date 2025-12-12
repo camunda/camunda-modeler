@@ -9,11 +9,14 @@
  */
 
 import EventEmitter from 'events';
+import { CONNECTION_CHECK_ERROR_REASONS } from './ConnectionCheckErrors';
 
 export const DELAYS = {
   LONG: 5000, // 5s interval if no config change
   SHORT: 1000 // 1s delay if config change
 };
+
+const ERROR_CHECK_ABORTED = 'CHECK_ABORTED';
 
 export default class ConnectionChecker extends EventEmitter {
   constructor(zeebeAPI) {
@@ -25,6 +28,8 @@ export default class ConnectionChecker extends EventEmitter {
     this._checkTimeout = null;
     this._config = null;
     this._lastResult = null;
+    this._abortController = null;
+    this._isChecking = false;
   }
 
   updateConfig(config, startChecking = true) {
@@ -49,15 +54,25 @@ export default class ConnectionChecker extends EventEmitter {
     clearInterval(this._checkInterval);
     clearTimeout(this._checkTimeout);
 
+    if (this._abortController) {
+      this._abortController.abort();
+      this._abortController = null;
+    }
+
     this._checkInterval = null;
     this._checkTimeout = null;
   }
 
   async _check() {
+    if (this._isChecking) {
+      return;
+    }
+
     if (!this._config) {
       const result = {
         success: false,
-        error: new Error('No configuration provided')
+        reason: CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG,
+        error: new Error(CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG)
       };
 
       this._lastResult = result;
@@ -67,15 +82,40 @@ export default class ConnectionChecker extends EventEmitter {
       return;
     }
 
+    this._isChecking = true;
+    const abortController = new AbortController();
+    this._abortController = abortController;
+    const { signal } = abortController;
+
     try {
       const { endpoint } = this._config;
 
-      const result = await this._zeebeAPI.checkConnection(endpoint);
+      const abortPromise = new Promise((_, reject) => {
+        signal.addEventListener('abort', () => {
+          reject(new Error(ERROR_CHECK_ABORTED));
+        });
+      });
+
+      // Race between the API call and abort signal
+      const result = await Promise.race([
+        this._zeebeAPI.checkConnection(endpoint),
+        abortPromise
+      ]);
+
+      if (this._abortController !== abortController || signal.aborted) {
+        throw new Error(ERROR_CHECK_ABORTED);
+      }
 
       this._lastResult = result;
 
       this.emit('connectionCheck', result);
     } catch (error) {
+
+      // we don't want to emit the result of an aborted check, last result stays valid
+      if (error.message === ERROR_CHECK_ABORTED || this._abortController !== abortController || signal.aborted) {
+        return null;
+      }
+
       const result = {
         success: false,
         error
@@ -84,6 +124,11 @@ export default class ConnectionChecker extends EventEmitter {
       this._lastResult = result;
 
       this.emit('connectionCheck', result);
+    } finally {
+      if (this._abortController === abortController) {
+        this._abortController = null;
+      }
+      this._isChecking = false;
     }
   }
 
