@@ -18,6 +18,7 @@ import Workspace from './remote/Workspace';
 import ZeebeAPI from './remote/ZeebeAPI';
 
 import Settings from './app/Settings';
+import TabStorage from './app/TabStorage';
 import StartInstance from './app/zeebe/StartInstance';
 import Deployment from './app/zeebe/Deployment';
 
@@ -50,7 +51,9 @@ export const workspace = new Workspace(backend);
 
 export const zeebeAPI = new ZeebeAPI(backend);
 
-export const deployment = new Deployment(config, zeebeAPI, settings);
+export const tabStorage = new TabStorage();
+
+export const deployment = new Deployment(tabStorage, config, zeebeAPI, settings);
 
 export const startInstance = new StartInstance(config, zeebeAPI);
 
@@ -73,6 +76,7 @@ export const globals = {
   settings,
   startInstance,
   systemClipboard,
+  tabStorage,
   workspace,
   zeebeAPI
 };

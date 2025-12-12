@@ -32,6 +32,28 @@ import { ENGINES } from '../../../util/Engines';
 
 import * as css from './DeploymentPluginOverlay.less';
 
+/**
+ * @typedef {Object} DeploymentPluginOverlayProps
+ * @property {Object} activeTab - The currently active tab
+ * @property {HTMLElement} anchor - The anchor element for positioning the overlay
+ * @property {Object} connectionCheckResult - Result of the connection check
+ * @property {import('../../../app/zeebe/Deployment').default} deployment - The deployment instance
+ * @property {Function} displayNotification - Function to display notifications
+ * @property {React.ComponentType} [DeploymentConfigForm] - Custom deployment configuration form component
+ * @property {Function} [getErrorNotification] - Function to generate error notifications
+ * @property {Function} [getResourceConfigs] - Function to get resource configurations
+ * @property {Function} [getSuccessNotification] - Function to generate success notifications
+ * @property {Function} log - Logging function
+ * @property {Function} onClose - Callback function when overlay is closed
+ * @property {Function|null} [renderDescription] - Function to render description or null
+ * @property {string} [renderHeader] - Header text for the overlay
+ * @property {string} [renderSubmit] - Submit button text
+ * @property {Function} triggerAction - Function to trigger actions
+ */
+
+/**
+ * @param {DeploymentPluginOverlayProps} props
+ */
 export default function DeploymentPluginOverlay(props) {
   const {
     activeTab,
@@ -40,7 +62,6 @@ export default function DeploymentPluginOverlay(props) {
     deployment,
     displayNotification,
     DeploymentConfigForm = DefaultDeploymentConfigForm,
-    getConfigFile = defaultGetConfigFile,
     getErrorNotification = defaultGetErrorNotification,
     getResourceConfigs = defaultGetResourceConfigs,
     getSuccessNotification = defaultGetSuccessNotification,
@@ -68,9 +89,12 @@ export default function DeploymentPluginOverlay(props) {
 
   const onSubmit = async () => {
     setIsSubmitting(true);
-    const file = getConfigFile(activeTab);
-    const config = await deployment.getConfigForFile(file);
+    const connection = await deployment.getConnectionForTab(activeTab);
 
+    const config = {
+      context: 'deploymentTool',
+      endpoint: connection
+    };
     const resourceConfigs = getResourceConfigs(activeTab);
 
     const deploymentResponse = await deployment.deploy(resourceConfigs, config);
@@ -145,12 +169,6 @@ export default function DeploymentPluginOverlay(props) {
       />
     </Overlay>
   );
-}
-
-function defaultGetConfigFile(activeTab) {
-  const { file } = activeTab;
-
-  return file;
 }
 
 function defaultGetResourceConfigs(activeTab) {

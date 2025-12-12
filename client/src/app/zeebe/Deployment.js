@@ -22,13 +22,17 @@ import debug from 'debug';
 import { generateId } from '../../util/index.js';
 
 import { AUTH_TYPES, TARGET_TYPES } from '../../remote/ZeebeAPI.js';
-import { SETTINGS_KEY_CONNECTIONS } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerSettings.js';
 import { validateConnection } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionValidator.js';
+import { SETTINGS_KEY_CONNECTIONS } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerSettings.js';
+import { NO_CONNECTION } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerPlugin.js';
+
+const STORAGE_KEY = 'connectionId';
 
 export const CONFIG_KEYS = {
   CONFIG: 'zeebe-deployment-tool',
   CONNECTION_MANAGER: 'connection-manager',
-  ENDPOINTS: 'zeebeEndpoints'
+  ENDPOINTS: 'zeebeEndpoints',
+  LAST_USED_CONNECTION: 'lastUsedConnection'
 };
 
 export const DEFAULT_CREDENTIALS = {
@@ -60,12 +64,13 @@ export default class Deployment extends EventEmitter {
    * @param {import('../../remote/ZeebeAPI').default} zeebeAPI
    * @param {import('../../app/Settings').default} settings
    */
-  constructor(config, zeebeAPI, settings) {
+  constructor(tabStorage, config, zeebeAPI, settings) {
     super();
 
     this._config = config;
     this._settings = settings;
     this._zeebeAPI = zeebeAPI;
+    this._tabStorage = tabStorage;
 
     this._resourcesProviders = [];
   }
@@ -125,6 +130,8 @@ export default class Deployment extends EventEmitter {
       };
     }
 
+    log(`Deploying to connection ${config.endpoint.name} (${config.endpoint.id}) in the context of ${config.context}`);
+
     const {
       context,
       endpoint
@@ -148,56 +155,94 @@ export default class Deployment extends EventEmitter {
   }
 
   /**
-   * Get configuration for given file.
+   * Get the connection for a tab
    *
-   * @param {File} file
-   *
-   * @returns {Promise<DeploymentConfig|null>}
+   * @param {Object} tab - The tab object
+   * @returns {Promise<{endpoint: Endpoint, connectionId: string}|null>}
    */
-  async getConfigForFile(file) {
-    const {
-      connectionId = null
-    } = await this._config.getForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, {});
+  async getConnectionForTab(tab) {
+    let connectionId = null;
 
-    const endpoint = await this.getEndpoint(connectionId);
+
+
+    if (tab.file.path) {
+      const fileConfig = await this._config.getForFile(tab.file, CONFIG_KEYS.CONNECTION_MANAGER, {});
+      connectionId = fileConfig.connectionId;
+    }
+    else {
+      connectionId = this._tabStorage.get(tab, STORAGE_KEY);
+    }
+
+    if (!connectionId) {
+      const lastUsedConnectionId = await this._config.get(CONFIG_KEYS.LAST_USED_CONNECTION);
+      if (lastUsedConnectionId) {
+        connectionId = lastUsedConnectionId;
+        await this.setConnectionIdForTab(tab, connectionId);
+      }
+    }
+
+    const endpoint = this.getEndpoint(connectionId);
     if (!endpoint) {
-      return null;
+      return NO_CONNECTION;
     }
 
-    return { endpoint };
+    return endpoint;
   }
 
-  async setConnectionForFile(file, connectionId) {
-    if (!file.path) {
-      return await this._config.set(CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
+  /**
+   * Set the connection for a tab
+   *
+   * @param {Object} tab - The tab object
+   * @param {string} connectionId - The connection ID to set
+   * @returns {Promise<void>}
+   */
+  async setConnectionIdForTab(tab, connectionId) {
+
+    if (tab.file?.path) {
+      await this._config.setForFile(tab.file, CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
+    } else {
+      this._tabStorage.set(tab, STORAGE_KEY, connectionId);
     }
 
-    return await this._config.setForFile(file, CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
+    if (connectionId) {
+      await this._config.set(CONFIG_KEYS.LAST_USED_CONNECTION, connectionId);
+    }
   }
-
 
   /**
    * Get endpoint with given ID.
    *
    * @param {string} id
-   *
-   * @returns {Promise<Endpoint|null>}
+   * @returns {Endpoint|null}
    */
-  async getEndpoint(id) {
-    const endpoints = await this.getEndpoints();
-
+  getEndpoint(id) {
+    const endpoints = this.getEndpoints();
     return endpoints.find(endpoint => endpoint.id === id) || null;
   }
 
   /**
    * Get all endpoints.
    *
-   * @returns {Promise<Array<Endpoint>>}
+   * @returns {Array<Endpoint>}
    */
   getEndpoints() {
     return this._settings.get(SETTINGS_KEY_CONNECTIONS);
   }
 
+  /**
+   * Handle tab saved event - persist connection from tab storage to config
+   *
+   * @param {Object} tab - The tab object
+   *
+   * @returns {Promise<void>}
+   */
+  async onTabSaved(tab) {
+    const connectionId = this._tabStorage.get(tab, STORAGE_KEY);
+
+    if (connectionId && tab.file?.path) {
+      await this._config.setForFile(tab.file, CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
+    }
+  }
 
   /**
    * @param {Endpoint} endpoint

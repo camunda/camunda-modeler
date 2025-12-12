@@ -439,13 +439,52 @@ class MockZeebeAPI extends Mock {
   }
 }
 
+class MockTabStorage extends Mock {
+  constructor() {
+    super();
+    this._storage = new Map();
+  }
+
+  get(tab, key, defaultValue = null) {
+    const tabData = this._storage.get(tab.id);
+    if (!tabData) {
+      return defaultValue;
+    }
+    const value = tabData[key];
+    return value !== undefined ? value : defaultValue;
+  }
+
+  set(tab, key, value) {
+    const tabId = tab.id;
+    if (!this._storage.has(tabId)) {
+      this._storage.set(tabId, {});
+    }
+    const tabData = this._storage.get(tabId);
+    tabData[key] = value;
+  }
+
+  getAll(tab) {
+    return this._storage.get(tab.id) || {};
+  }
+
+  removeTab(tabId) {
+    this._storage.delete(tabId);
+  }
+
+  clear() {
+    this._storage.clear();
+  }
+}
+
+
 function createDeployment(options = {}) {
   const {
+    tabStorage = new MockTabStorage(),
     config = new MockConfig(),
     zeebeAPI = new MockZeebeAPI()
   } = options;
 
-  return new Deployment(config, zeebeAPI);
+  return new Deployment(tabStorage, config, zeebeAPI);
 }
 
 function createMockFile(overrides = {}) {

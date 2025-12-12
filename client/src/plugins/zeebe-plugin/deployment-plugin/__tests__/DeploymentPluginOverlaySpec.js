@@ -38,11 +38,11 @@ describe('DeploymentPluginOverlay', function() {
     it('should submit form (success)', async function() {
 
       // given
-      const config = createMockConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-        getConfigForFile: () => Promise.resolve(config)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -60,7 +60,7 @@ describe('DeploymentPluginOverlay', function() {
       });
 
       // when
-      getFormProps().onSubmit(config);
+      getFormProps().onSubmit({});
 
       // expect
       await waitFor(() => {
@@ -72,7 +72,7 @@ describe('DeploymentPluginOverlay', function() {
           path: 'foo.bpmn',
           type: 'bpmn'
         }
-      ], config);
+      ], { endpoint, context: 'deploymentTool' });
 
       expect(displayNotificationSpy).to.have.been.calledOnce;
       expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
@@ -85,7 +85,7 @@ describe('DeploymentPluginOverlay', function() {
     it('should submit form (no success)', async function() {
 
       // given
-      const config = createMockConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult({
@@ -94,7 +94,7 @@ describe('DeploymentPluginOverlay', function() {
             details: 'foo'
           }
         }))),
-        getConfigForFile: () => Promise.resolve(config)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -115,7 +115,7 @@ describe('DeploymentPluginOverlay', function() {
       });
 
       // when
-      getFormProps().onSubmit(config);
+      getFormProps().onSubmit({});
 
       // expect
       await waitFor(() => {
@@ -127,7 +127,7 @@ describe('DeploymentPluginOverlay', function() {
           path: 'foo.bpmn',
           type: 'bpmn'
         }
-      ], config);
+      ], { endpoint, context: 'deploymentTool' });
 
       expect(displayNotificationSpy).to.have.been.calledOnce;
       expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
@@ -151,14 +151,14 @@ describe('DeploymentPluginOverlay', function() {
     it('should emit event (success)', async function() {
 
       // given
-      const config = createMockConfig();
+      const endpoint = createMockEndpoint();
 
       const mockDeploymentResult = createMockDeploymentResult();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
         on: sinon.spy(),
-        getConfigForFile: () => Promise.resolve(config)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const triggerActionSpy = sinon.spy();
@@ -178,7 +178,7 @@ describe('DeploymentPluginOverlay', function() {
       // when
       deployment.on.getCall(0).args[1]({
         deploymentResult: mockDeploymentResult,
-        endpoint: config.endpoint,
+        endpoint: endpoint,
         gatewayVersion: '7.0.0'
       });
 
@@ -202,7 +202,7 @@ describe('DeploymentPluginOverlay', function() {
     it('should emit event (error)', async function() {
 
       // given
-      const config = createMockConfig();
+      const endpoint = createMockEndpoint();
 
       const mockDeploymentResult = createMockDeploymentResult({
         success: false,
@@ -212,7 +212,7 @@ describe('DeploymentPluginOverlay', function() {
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
         on: sinon.spy(),
-        getConfigForFile: () => Promise.resolve(config)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const triggerActionSpy = sinon.spy();
@@ -232,7 +232,7 @@ describe('DeploymentPluginOverlay', function() {
       // when
       deployment.on.getCall(0).args[1]({
         deploymentResult: mockDeploymentResult,
-        endpoint: config.endpoint,
+        endpoint: endpoint,
         gatewayVersion: '7.0.0'
       });
 
@@ -255,58 +255,6 @@ describe('DeploymentPluginOverlay', function() {
       }));
     });
 
-
-    it('should emit event (custom context)', async function() {
-
-      // given
-      const config = createMockConfig({ context: 'testSuite' });
-
-      const mockDeploymentResult = createMockDeploymentResult();
-
-      const deployment = new MockDeployment({
-        deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
-        on: sinon.spy(),
-        getConfigForFile: () => Promise.resolve(config)
-      });
-
-      const triggerActionSpy = sinon.spy();
-
-      createDeploymentPluginOverlay({
-        deployment,
-        triggerAction: triggerActionSpy
-      });
-
-      await waitFor(() => {
-        expect(document.querySelector('.loading')).not.to.exist;
-      });
-
-      expect(deployment.on).to.have.been.calledOnce;
-      expect(deployment.on).to.have.been.calledWith('deployed', sinon.match.func);
-
-      // when
-      deployment.on.getCall(0).args[1]({
-        deploymentResult: mockDeploymentResult,
-        endpoint: config.endpoint,
-        gatewayVersion: '7.0.0',
-        context: 'testSuite'
-      });
-
-      // then
-      expect(triggerActionSpy).to.have.been.calledOnce;
-      expect(triggerActionSpy).to.have.been.calledWith('emit-event', sinon.match({
-        type: 'deployment.done',
-        payload: {
-          deployment: mockDeploymentResult.response,
-          context: 'testSuite',
-          targetType: 'camundaCloud',
-          deployedTo: {
-            executionPlatformVersion: '7.0.0',
-            executionPlatform: 'Camunda Cloud'
-          }
-        }
-      }));
-    });
-
   });
 
 
@@ -315,10 +263,10 @@ describe('DeploymentPluginOverlay', function() {
     it('should render custom header', async function() {
 
       // when
-      const config = createMockConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
-        getConfigForFile: () => Promise.resolve(config)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       createDeploymentPluginOverlay({
@@ -338,10 +286,10 @@ describe('DeploymentPluginOverlay', function() {
     it('should render custom submit', async function() {
 
       // when
-      const config = createMockConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
-        getConfigForFile: () => Promise.resolve(config)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       createDeploymentPluginOverlay({
@@ -361,11 +309,11 @@ describe('DeploymentPluginOverlay', function() {
     it('should deploy custom resources', async function() {
 
       // given
-      const config = createMockConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-        getConfigForFile: () => Promise.resolve(config)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -391,7 +339,7 @@ describe('DeploymentPluginOverlay', function() {
       });
 
       // when
-      getFormProps().onSubmit(config);
+      getFormProps().onSubmit();
 
       // expect
       await waitFor(() => {
@@ -403,7 +351,7 @@ describe('DeploymentPluginOverlay', function() {
           path: 'bar.bpmn',
           type: 'bpmn'
         }
-      ], config);
+      ], { endpoint, context: 'deploymentTool' });
 
       expect(displayNotificationSpy).to.have.been.calledOnce;
       expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
@@ -416,11 +364,11 @@ describe('DeploymentPluginOverlay', function() {
     it('should display custom success notification', async function() {
 
       // given
-      const config = createMockConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-        getConfigForFile: () => Promise.resolve(config)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -442,7 +390,7 @@ describe('DeploymentPluginOverlay', function() {
       });
 
       // when
-      getFormProps().onSubmit(config);
+      getFormProps().onSubmit();
 
       // expect
       await waitFor(() => {
@@ -454,7 +402,7 @@ describe('DeploymentPluginOverlay', function() {
           path: 'foo.bpmn',
           type: 'bpmn'
         }
-      ], config);
+      ], { endpoint, context: 'deploymentTool' });
 
       expect(displayNotificationSpy).to.have.been.calledOnce;
       expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
@@ -467,7 +415,7 @@ describe('DeploymentPluginOverlay', function() {
     it('should display custom error notification', async function() {
 
       // given
-      const config = createMockConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult({
@@ -476,7 +424,7 @@ describe('DeploymentPluginOverlay', function() {
             details: 'foo'
           }
         }))),
-        getConfigForFile: () => Promise.resolve(config)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -498,7 +446,7 @@ describe('DeploymentPluginOverlay', function() {
       });
 
       // when
-      getFormProps().onSubmit(config);
+      getFormProps().onSubmit();
 
       // expect
       await waitFor(() => {
@@ -510,7 +458,7 @@ describe('DeploymentPluginOverlay', function() {
           path: 'foo.bpmn',
           type: 'bpmn'
         }
-      ], config);
+      ], { endpoint, context: 'deploymentTool' });
 
       expect(displayNotificationSpy).to.have.been.calledOnce;
       expect(displayNotificationSpy).to.have.been.calledWith(sinon.match({
@@ -558,13 +506,9 @@ class MockConnectionChecker extends Mock {
 class MockDeployment extends Mock {
   deploy() {}
 
-  getConfigForFile() {}
-
   off() {}
 
   on() {}
-
-  setConfigForFile() {}
 }
 
 class MockConfigValidator extends Mock {
@@ -651,14 +595,6 @@ function createMockEndpoint(overrides = {}) {
     camundaCloudClientId: 'bar',
     camundaCloudClientSecret: 'baz',
     camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443',
-    ...overrides
-  };
-}
-
-function createMockConfig(overrides = {}) {
-  return {
-    deployment: {},
-    endpoint: createMockEndpoint(),
     ...overrides
   };
 }

@@ -215,11 +215,8 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     const getGlobal = (name) => {
       if (name === 'deployment') {
         return new Deployment({
-          async getConfigForFile(file) {
-            return {
-              deployment: {},
-              endpoint: DEFAULT_ENDPOINT
-            };
+          async getConnectionForTab(file) {
+            return DEFAULT_ENDPOINT;
           },
           registerResourcesProvider,
           unregisterResourcesProvider
@@ -305,11 +302,8 @@ function createProcessApplicationsDeploymentPlugin(props = {}) {
     _getGlobal = (name) => {
       if (name === 'deployment') {
         return new Deployment({
-          async getConfigForFile(file) {
-            return {
-              deployment: {},
-              endpoint: DEFAULT_ENDPOINT
-            };
+          async getConnectionForTab(file) {
+            return DEFAULT_ENDPOINT;
           },
           registerResourcesProvider() {},
           unregisterResourcesProvider() {}

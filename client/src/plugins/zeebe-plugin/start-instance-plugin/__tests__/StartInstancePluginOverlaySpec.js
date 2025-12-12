@@ -46,10 +46,10 @@ describe('StartInstancePluginOverlay', function() {
   it('should render start instance config (deployment config valid, no connection check result)', async function() {
 
     // when
-    const deploymentConfig = createMockDeploymentConfig();
+    const deploymentConfig = createMockEndpoint();
 
     const deployment = new MockDeployment({
-      getConfigForFile: () => Promise.resolve(deploymentConfig)
+      getConnectionForTab: () => Promise.resolve(deploymentConfig)
     });
 
     const startInstanceConfig = createMockStartInstanceConfig();
@@ -78,11 +78,11 @@ describe('StartInstancePluginOverlay', function() {
       it('should submit form (success)', async function() {
 
         // given
-        const deploymentConfig = createMockDeploymentConfig();
+        const endpoint = createMockEndpoint();
 
         const deployment = new MockDeployment({
           deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-          getConfigForFile: () => Promise.resolve(deploymentConfig)
+          getConnectionForTab: () => Promise.resolve(endpoint)
         });
 
         const displayNotificationSpy = sinon.spy();
@@ -116,7 +116,8 @@ describe('StartInstancePluginOverlay', function() {
         });
 
         expect(startInstance.startInstance).to.have.been.calledWith({
-          ...deploymentConfig,
+          endpoint,
+          context: 'startInstancePlugin',
           ...startInstanceConfig
         });
 
@@ -131,11 +132,11 @@ describe('StartInstancePluginOverlay', function() {
       it('should submit form (no success)', async function() {
 
         // given
-        const deploymentConfig = createMockDeploymentConfig();
+        const endpoint = createMockEndpoint();
 
         const deployment = new MockDeployment({
           deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-          getConfigForFile: () => Promise.resolve(deploymentConfig)
+          getConnectionForTab: () => Promise.resolve(endpoint)
         });
 
         const displayNotificationSpy = sinon.spy();
@@ -174,7 +175,9 @@ describe('StartInstancePluginOverlay', function() {
         });
 
         expect(startInstance.startInstance).to.have.been.calledWith({
-          ...deploymentConfig,
+          endpoint,
+          context: 'startInstancePlugin',
+
           ...startInstanceConfig
         });
 
@@ -195,14 +198,14 @@ describe('StartInstancePluginOverlay', function() {
     it('should emit event (success)', async function() {
 
       // given
-      const deploymentConfig = createMockDeploymentConfig();
+      const endpoint = createMockEndpoint();
 
       const mockDeploymentResult = createMockDeploymentResult();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
         on: sinon.spy(),
-        getConfigForFile: () => Promise.resolve(deploymentConfig)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const startInstanceConfig = createMockStartInstanceConfig();
@@ -230,7 +233,7 @@ describe('StartInstancePluginOverlay', function() {
       // when
       deployment.on.getCall(0).args[1]({
         deploymentResult: mockDeploymentResult,
-        endpoint: deploymentConfig.endpoint,
+        endpoint: endpoint,
         gatewayVersion: '7.0.0'
       });
 
@@ -254,7 +257,7 @@ describe('StartInstancePluginOverlay', function() {
     it('should emit event (error)', async function() {
 
       // given
-      const deploymentConfig = createMockDeploymentConfig();
+      const endpoint = createMockEndpoint();
 
       const mockDeploymentResult = createMockDeploymentResult({
         success: false,
@@ -264,7 +267,7 @@ describe('StartInstancePluginOverlay', function() {
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
         on: sinon.spy(),
-        getConfigForFile: () => Promise.resolve(deploymentConfig)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const startInstanceConfig = createMockStartInstanceConfig();
@@ -292,7 +295,7 @@ describe('StartInstancePluginOverlay', function() {
       // when
       deployment.on.getCall(0).args[1]({
         deploymentResult: mockDeploymentResult,
-        endpoint: deploymentConfig.endpoint,
+        endpoint: endpoint,
         gatewayVersion: '7.0.0'
       });
 
@@ -323,10 +326,10 @@ describe('StartInstancePluginOverlay', function() {
     it('should render custom start instance header', async function() {
 
       // when
-      const deploymentConfig = createMockDeploymentConfig();
+      const deploymentConfig = createMockEndpoint();
 
       const deployment = new MockDeployment({
-        getConfigForFile: () => Promise.resolve(deploymentConfig)
+        getConnectionForTab: () => Promise.resolve(deploymentConfig)
       });
 
       const startInstanceConfig = createMockStartInstanceConfig();
@@ -353,10 +356,10 @@ describe('StartInstancePluginOverlay', function() {
     it('should render custom start instance submit', async function() {
 
       // when
-      const deploymentConfig = createMockDeploymentConfig();
+      const deploymentConfig = createMockEndpoint();
 
       const deployment = new MockDeployment({
-        getConfigForFile: () => Promise.resolve(deploymentConfig)
+        getConnectionForTab: () => Promise.resolve(deploymentConfig)
       });
 
       const startInstanceConfig = createMockStartInstanceConfig();
@@ -383,7 +386,7 @@ describe('StartInstancePluginOverlay', function() {
     it('should deploy custom resources', async function() {
 
       // given
-      const deploymentConfig = createMockDeploymentConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult({
@@ -404,7 +407,7 @@ describe('StartInstancePluginOverlay', function() {
             ]
           }
         }))),
-        getConfigForFile: () => Promise.resolve(deploymentConfig)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -459,10 +462,11 @@ describe('StartInstancePluginOverlay', function() {
           path: 'bar.bpmn',
           type: 'bpmn'
         }
-      ], deploymentConfig);
+      ], { endpoint, context: 'startInstancePlugin' });
 
       expect(startInstance.startInstance).to.have.been.calledWith({
-        ...deploymentConfig,
+        endpoint,
+        context: 'startInstancePlugin',
         ...startInstanceConfig
       });
 
@@ -477,11 +481,11 @@ describe('StartInstancePluginOverlay', function() {
     it('should display custom success notification', async function() {
 
       // given
-      const deploymentConfig = createMockDeploymentConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-        getConfigForFile: () => Promise.resolve(deploymentConfig)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -518,8 +522,10 @@ describe('StartInstancePluginOverlay', function() {
         expect(startInstance.startInstance).to.have.been.calledOnce;
       });
 
+
       expect(startInstance.startInstance).to.have.been.calledWith({
-        ...deploymentConfig,
+        endpoint,
+        context: 'startInstancePlugin',
         ...startInstanceConfig
       });
 
@@ -534,11 +540,11 @@ describe('StartInstancePluginOverlay', function() {
     it('should display custom error notification', async function() {
 
       // given
-      const deploymentConfig = createMockDeploymentConfig();
+      const endpoint = createMockEndpoint();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-        getConfigForFile: () => Promise.resolve(deploymentConfig)
+        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -581,7 +587,8 @@ describe('StartInstancePluginOverlay', function() {
       });
 
       expect(startInstance.startInstance).to.have.been.calledWith({
-        ...deploymentConfig,
+        endpoint,
+        context: 'startInstancePlugin',
         ...startInstanceConfig
       });
 
@@ -631,7 +638,7 @@ class MockConnectionChecker extends Mock {
 class MockDeployment extends Mock {
   deploy() {}
 
-  getConfigForFile() {}
+  getConnectionForTab() {}
 
   off() {}
 
@@ -747,13 +754,6 @@ function createMockEndpoint(overrides = {}) {
   };
 }
 
-function createMockDeploymentConfig(overrides = {}) {
-  return {
-    deployment: {},
-    endpoint: createMockEndpoint(),
-    ...overrides
-  };
-}
 
 function createMockStartInstanceConfig(overrides = {}) {
   return {
