@@ -77,12 +77,10 @@ describe('<TaskTestingTab>', function() {
         }
       }),
       deployment: new Deployment({
-        getConfigForFile: async () => {
+        getConnectionForTab: async () => {
           return {
-            endpoint: {
-              targetType: 'camundaCloud',
-              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-            }
+            targetType: 'camundaCloud',
+            camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
           };
         }
       }),
@@ -137,12 +135,10 @@ describe('<TaskTestingTab>', function() {
           }
         }),
         deployment: new Deployment({
-          getConfigForFile: async () => {
+          getConnectionForTab: async () => {
             return {
-              endpoint: {
-                targetType: 'camundaCloud',
-                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-              }
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
             };
           }
         }),
@@ -194,12 +190,10 @@ describe('<TaskTestingTab>', function() {
           }
         }),
         deployment: new Deployment({
-          getConfigForFile: async () => {
+          getConnectionForTab: async () => {
             return {
-              endpoint: {
-                targetType: 'camundaCloud',
-                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-              }
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
             };
           }
         }),
@@ -248,12 +242,10 @@ describe('<TaskTestingTab>', function() {
           }
         }),
         deployment: new Deployment({
-          getConfigForFile: async () => {
+          getConnectionForTab: async () => {
             return {
-              endpoint: {
-                targetType: 'camundaCloud',
-                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-              }
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
             };
           }
         }),
@@ -314,12 +306,10 @@ describe('<TaskTestingTab>', function() {
           }
         }),
         deployment: new Deployment({
-          getConfigForFile: async () => {
+          getConnectionForTab: async () => {
             return {
-              endpoint: {
-                targetType: 'camundaCloud',
-                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-              }
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
             };
           }
         }),
@@ -377,12 +367,10 @@ describe('<TaskTestingTab>', function() {
           }
         }),
         deployment: new Deployment({
-          getConfigForFile: async () => {
+          getConnectionForTab: async () => {
             return {
-              endpoint: {
-                targetType: 'camundaCloud',
-                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-              }
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
             };
           }
         }),

@@ -118,7 +118,7 @@ describe('ConnectionManagerOverlay', function() {
 
       // then
       expect(handleConnectionChange).to.have.been.calledOnce;
-      expect(handleConnectionChange).to.have.been.calledWith('connection-2');
+      expect(handleConnectionChange).to.have.been.calledWith(connections[1]);
     });
 
 

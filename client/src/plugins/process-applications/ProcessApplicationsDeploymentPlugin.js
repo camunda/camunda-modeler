@@ -111,7 +111,6 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
-        getConfigFile={ () => processApplication.file }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
         log={ log }
         onClose={ () => setOverlayOpen(false) }

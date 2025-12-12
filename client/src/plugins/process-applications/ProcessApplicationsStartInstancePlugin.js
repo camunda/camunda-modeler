@@ -97,7 +97,6 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
-        getConfigFile={ () => processApplication.file }
         getResourceConfigs={ () => resourceConfigs }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
         log={ log }
