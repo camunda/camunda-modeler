@@ -26,8 +26,6 @@ import {
   sortBy
 } from 'min-dash';
 
-import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
-
 const MAX_DESCRIPTION_LENGTH = 200;
 
 const DEFAULT_CATEGORY = '__default';
@@ -63,15 +61,7 @@ class ElementTemplatesView extends PureComponent {
     let elementTemplates = await triggerAction('getElementTemplates', { element: selectedElement });
 
     if (selectedElement) {
-
-      // (1) Filter by valid templates
-      // (2) Filter by templates that can be applied
-      // (3) Filter by latest version
-      // (4) Sort alphabetically
-      elementTemplates = sortAlphabetically(filterByLatest(filterByApplicable(
-        elementTemplates,
-        selectedElement
-      )));
+      elementTemplates = sortAlphabetically(elementTemplates);
     } else {
       elementTemplates = [];
     }
@@ -331,24 +321,6 @@ export class ElementTemplatesListItemEmpty extends PureComponent {
 }
 
 // helpers //////////
-
-function filterByApplicable(elementTemplates, element) {
-  return elementTemplates.filter(({ appliesTo }) => {
-    return isAny(element, appliesTo);
-  });
-}
-
-function filterByLatest(elementTemplates) {
-  return Object.values(groupBy(elementTemplates, 'id'))
-    .map(templates => templates.reduce((latest, template) => {
-      if (!latest || template.version > latest.version) {
-        return template;
-      }
-
-      return latest;
-    }, null));
-}
-
 function filterElementTemplates(elementTemplates, filter) {
   return elementTemplates.filter(elementTemplate => {
     const { search } = filter;
@@ -374,7 +346,7 @@ function getKey(id, version = '_') {
 }
 
 function sortAlphabetically(elementTemplates) {
-  return elementTemplates.sort((a, b) => {
+  return elementTemplates.slice().sort((a, b) => {
     if (a.name.toLowerCase() < b.name.toLowerCase()) {
       return -1;
     } else {
