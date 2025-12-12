@@ -15,12 +15,12 @@ import { getOperateUrl } from '../../../../plugins/zeebe-plugin/shared/util';
 const log = debug('TaskTestingApi');
 
 export default class TaskTestingApi {
-  constructor(deployment, startInstance, zeebeApi, file, onAction) {
+  constructor(deployment, startInstance, zeebeApi, tab, onAction) {
     this._deployment = deployment;
     this._startInstance = startInstance;
     this._zeebeApi = zeebeApi;
     this._onAction = onAction;
-    this._file = file;
+    this._tab = tab;
   }
 
   getApi() {
@@ -36,13 +36,13 @@ export default class TaskTestingApi {
 
   async getDeploymentConfig() {
 
-    if (!this._file?.path) {
+    if (!this._tab) {
       return {};
     }
 
-    const config = await this._deployment.getConfigForFile(this._file);
+    const connection = await this._deployment.getConnectionForTab(this._tab);
     return {
-      ...config,
+      endpoint: connection,
       context: 'taskTesting'
     };
   }
@@ -66,6 +66,7 @@ export default class TaskTestingApi {
   }
 
   async deploy() {
+    const config = await this.getDeploymentConfig();
 
     const saved = await this._onAction('save');
 
@@ -76,18 +77,13 @@ export default class TaskTestingApi {
       };
     }
 
-    // saved file overrides the unsaved one; noop if same
-    this._file = saved.file;
-
-    const config = await this.getDeploymentConfig();
-
     this._deployment.once('deployed', (event) => {
       this._handleDeployment(event);
     });
 
     const result = await this._deployment.deploy([
       {
-        path: this._file.path,
+        path: saved.file.path,
         type: 'bpmn'
       }
     ], config);

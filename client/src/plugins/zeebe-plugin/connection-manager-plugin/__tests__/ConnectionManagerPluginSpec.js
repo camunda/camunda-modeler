@@ -187,71 +187,20 @@ describe('ConnectionManagerPlugin', function() {
       'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
     });
 
+    const globals = {
+      deployment: {
+        async getConnectionForTab(tab) {
+          return DEFAULT_CONNECTIONS[0];
+        }
+      }
+    };
+
     // when
-    const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings });
+    const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings }, globals);
 
     await waitFor(() => {
       const statusBarItem = getByTitle('Configure Camunda 8 connection');
       expect(statusBarItem).to.exist;
-      expect(statusBarItem.textContent).to.contain('Test Connection 1');
-    });
-  });
-
-
-  it('should load connection from config for active tab', async function() {
-
-    // given
-    const connectionId = 'connection-2';
-    const config = createMockConfig({
-      'connection-manager': { connectionId }
-    });
-
-    const subscribe = sinon.spy(function(event, callback) {
-      if (event === 'app.activeTabChanged') {
-        callback({
-          activeTab: DEFAULT_ACTIVE_TAB
-        });
-      }
-      return { cancel: () => {} };
-    });
-
-    const settings = createMockSettings({
-      'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
-    });
-
-    // when
-    const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings, config });
-
-    await waitFor(() => {
-      const statusBarItem = getByTitle('Configure Camunda 8 connection');
-      expect(statusBarItem.textContent).to.contain('Test Connection 2');
-    });
-  });
-
-
-  it('should use first connection as default when no config exists', async function() {
-
-    // given
-    const config = createMockConfig({});
-
-    const subscribe = sinon.spy(function(event, callback) {
-      if (event === 'app.activeTabChanged') {
-        callback({
-          activeTab: DEFAULT_ACTIVE_TAB
-        });
-      }
-      return { cancel: () => {} };
-    });
-
-    const settings = createMockSettings({
-      'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
-    });
-
-    // when
-    const { getByTitle } = createConnectionManagerPlugin({ subscribe, settings, config });
-
-    await waitFor(() => {
-      const statusBarItem = getByTitle('Configure Camunda 8 connection');
       expect(statusBarItem.textContent).to.contain('Test Connection 1');
     });
   });
@@ -268,6 +217,7 @@ describe('ConnectionManagerPlugin', function() {
           activeTab: DEFAULT_ACTIVE_TAB
         });
       }
+      return { cancel: () => {} };
     });
 
     const settings = createMockSettings({
@@ -298,6 +248,7 @@ describe('ConnectionManagerPlugin', function() {
           activeTab: DEFAULT_ACTIVE_TAB
         });
       }
+      return { cancel: () => {} };
     });
 
     const settings = createMockSettings({
@@ -690,52 +641,6 @@ describe('ConnectionManagerPlugin', function() {
 
     });
 
-
-    it('should not resume checking if there is no active connection', async function() {
-
-      // given
-      let closeSettings;
-      const subscribe = sinon.spy(function(event, callback) {
-        if (event === 'app.activeTabChanged') {
-          callback({
-            activeTab: DEFAULT_ACTIVE_TAB
-          });
-          return { cancel: () => {} };
-        } else if (event === 'settings.closed') {
-          closeSettings = callback;
-          return { cancel: () => {} };
-        }
-        return { cancel: () => {} };
-      });
-
-      const settings = createMockSettings({
-        'connectionManagerPlugin.c8connections': []
-      });
-
-      const setConnectionCheckResult = sinon.spy();
-
-
-      createConnectionManagerPlugin({
-        subscribe,
-        settings,
-        setConnectionCheckResult
-      });
-
-      await waitFor(() => {
-        expect(closeSettings).to.exist;
-      });
-
-      const callsBeforeClose = setConnectionCheckResult.callCount;
-
-      // when
-      closeSettings();
-
-      // then
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      expect(setConnectionCheckResult.callCount).to.equal(callsBeforeClose + 1); // +1 for resetting result to null
-    });
-
   });
 
 
@@ -802,7 +707,15 @@ describe('ConnectionManagerPlugin', function() {
 
       const triggerAction = sinon.spy();
 
-      const { getByTitle, getByText } = createConnectionManagerPlugin({ subscribe, settings, triggerAction, config });
+      const globals = {
+        deployment: {
+          async getConnectionForTab(tab) {
+            return DEFAULT_CONNECTIONS[1];
+          }
+        }
+      };
+
+      const { getByTitle, getByText } = createConnectionManagerPlugin({ subscribe, settings, triggerAction, config }, globals);
 
       await waitFor(() => {
         const statusBarItem = getByTitle('Configure Camunda 8 connection');
@@ -965,11 +878,8 @@ function createPluginProps(props = {}, globals = {}) {
     _getGlobal = (name) => {
       if (name === 'deployment') {
         return new Deployment({
-          async getConfigForFile(file) {
-            return {
-              deployment: {},
-              endpoint: DEFAULT_ENDPOINT
-            };
+          async getConnectionForTab(file) {
+            return DEFAULT_ENDPOINT;
           },
 
           async setConnectionForFile(file, connectionId) {

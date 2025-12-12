@@ -24,13 +24,10 @@ describe('<TaskTestingApi>', function() {
       // given
       const api = new TaskTestingApi(
         new Deployment({
-          getConfigForFile: async () => {
+          getConnectionForTab: async () => {
             return {
-              deployment: {},
-              endpoint: {
-                targetType: 'camundaCloud',
-                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-              }
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
             };
           }
         }),
@@ -56,13 +53,10 @@ describe('<TaskTestingApi>', function() {
       // given
       const api = new TaskTestingApi(
         new Deployment({
-          getConfigForFile: async () => {
+          getConnectionForTab: async () => {
             return {
-              deployment: {},
-              endpoint: {
-                targetType: 'selfHosted',
-                operateUrl: 'https://operate.example.com'
-              }
+              targetType: 'selfHosted',
+              operateUrl: 'https://operate.example.com'
             };
           }
         }),
@@ -83,18 +77,15 @@ describe('<TaskTestingApi>', function() {
     });
 
 
-    it('should return no URL for unsaved file', async function() {
+    it('should return URL for unsaved file', async function() {
 
       // given
       const api = new TaskTestingApi(
         new Deployment({
-          getConfigForFile: async () => {
+          getConnectionForTab: async () => {
             return {
-              deployment: {},
-              endpoint: {
-                targetType: 'selfHosted',
-                operateUrl: 'https://operate.example.com'
-              }
+              targetType: 'selfHosted',
+              operateUrl: 'https://operate.example.com'
             };
           }
         }),
@@ -111,7 +102,7 @@ describe('<TaskTestingApi>', function() {
       const operateUrl = await api.getOperateUrl();
 
       // then
-      expect(operateUrl).not.to.exist;
+      expect(operateUrl).to.equal('https://operate.example.com');
     });
   });
 
@@ -130,17 +121,10 @@ describe('<TaskTestingApi>', function() {
       const api = new TaskTestingApi(
         new Deployment({
           deploy: deploySpy,
-          getConfigForFile: async file => {
-            if (!file.path) {
-              throw new Error('File not saved');
-            }
-
+          getConnectionForTab: async file => {
             return {
-              deployment: {},
-              endpoint: {
-                targetType: 'camundaCloud',
-                camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-              }
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
             };
           },
           once: () => {}

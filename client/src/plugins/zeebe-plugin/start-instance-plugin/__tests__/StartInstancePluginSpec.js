@@ -186,7 +186,7 @@ function createStartInstancePlugin(props = {}) {
     _getGlobal = (name) => {
       if (name === 'deployment') {
         return new Deployment({
-          async getConfigForFile(file) {
+          async getConnectionForTab(file) {
             return {
               deployment: {},
               endpoint: DEFAULT_ENDPOINT
@@ -195,7 +195,7 @@ function createStartInstancePlugin(props = {}) {
         });
       } else if (name === 'startInstance') {
         return new StartInstance({
-          async getConfigForFile(file) {
+          async getConnectionForTab(file) {
             return {};
           }
         });

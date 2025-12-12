@@ -23,8 +23,7 @@ import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionC
 
 import * as css from './ConnectionManagerPlugin.less';
 
-const CONFIG_KEY = 'connection-manager';
-const NO_CONNECTION = {
+export const NO_CONNECTION = {
   id: 'NO_CONNECTION',
   name: 'No connection'
 };
@@ -38,10 +37,8 @@ const NO_CONNECTION = {
 export default function ConnectionManagerPlugin(props) {
 
   const {
-    _getFromApp,
     subscribe,
     settings,
-    config,
     triggerAction,
     _getGlobal,
     connectionCheckResult,
@@ -55,6 +52,10 @@ export default function ConnectionManagerPlugin(props) {
   const [ connections, setConnections ] = useState([]);
   const [ activeConnection, setActiveConnection ] = useState(null);
 
+
+  /**
+   * @type {import('../../../app/zeebe/Deployment').default}
+   */
   const deployment = _getGlobal('deployment');
   const globalConnectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI'), 'plugin'));
   const settingsConnectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI'), 'settings'));
@@ -97,6 +98,17 @@ export default function ConnectionManagerPlugin(props) {
     };
   }, [ subscribe ]);
 
+  // handle tab saved event to persist connection
+  useEffect(() => {
+    const subscription = subscribe('tab.saved', ({ tab }) => {
+      deployment.onTabSaved(tab);
+    });
+
+    return () => {
+      subscription.cancel();
+    };
+  }, [ subscribe, deployment ]);
+
   // pause connection checking when settings are opened
   useEffect(() => {
     const subscription = subscribe('app.settings-open', () => {
@@ -127,33 +139,14 @@ export default function ConnectionManagerPlugin(props) {
     setConnectionCheckResult,
   ]);
 
-  // load connection from file on tab change
+  // load connection from tab on tab change
   useEffect(() => {
     if (!activeTab) {
       return;
     }
 
     (async () => {
-      const defaultConnection = await config.get(CONFIG_KEY);
-      let { connectionId } = await config.getForFile(activeTab.file, CONFIG_KEY, {});
-
-      if (!connectionId) {
-        connectionId = defaultConnection?.connectionId;
-        deployment.setConnectionForFile(activeTab.file, connectionId);
-      }
-
-      if (connectionId === NO_CONNECTION.id || !connections || connections.length === 0) {
-        setActiveConnection(NO_CONNECTION);
-        deployment.setConnectionForFile(activeTab.file, NO_CONNECTION.id);
-        return;
-      }
-
-      let connection = connections.find((conn) => conn.id === connectionId);
-      if (!connection && connections.length > 0) {
-        connection = connections[0];
-        deployment.setConnectionForFile(activeTab.file, connection.id);
-      }
-
+      const connection = await deployment.getConnectionForTab(activeTab);
       setActiveConnection(connection);
     })();
   }, [ activeTab, deployment, connections ]);
@@ -235,15 +228,8 @@ export default function ConnectionManagerPlugin(props) {
                 : CONNECTION_MANAGER_PLUGIN_ID,
           });
         } }
-        handleConnectionChange={ async (connectionId) => {
-          await deployment.setConnectionForFile(activeTab.file, connectionId);
-
-          if (connectionId === NO_CONNECTION.id) {
-            setActiveConnection(NO_CONNECTION);
-            return;
-          }
-
-          const connection = (connections.find((conn) => conn.id === connectionId));
+        handleConnectionChange={ async (connection) => {
+          await deployment.setConnectionIdForTab(activeTab, connection.id);
           setActiveConnection(connection);
         }
         }

@@ -597,7 +597,7 @@ export class SystemClipboard extends Mock {
 }
 
 export class Deployment extends Mock {
-  getConfigForFile() {}
+  getConnectionForTab() {}
 
   deploy() {
     return { success: true };
@@ -607,12 +607,51 @@ export class Deployment extends Mock {
 
   off() {}
 
+  onTabSaved() {}
+
   registerResourcesProvider() {}
 
   unregisterResourcesProvider() {}
 }
 
 export class StartInstance extends Mock {}
+
+export class TabStorage extends Mock {
+  constructor(overrides) {
+    super(overrides);
+    this._storage = new Map();
+  }
+
+  get(tab, key, defaultValue = null) {
+    const tabData = this._storage.get(tab.id);
+    if (!tabData) {
+      return defaultValue;
+    }
+    const value = tabData[key];
+    return value !== undefined ? value : defaultValue;
+  }
+
+  set(tab, key, value) {
+    const tabId = tab.id;
+    if (!this._storage.has(tabId)) {
+      this._storage.set(tabId, {});
+    }
+    const tabData = this._storage.get(tabId);
+    tabData[key] = value;
+  }
+
+  getAll(tab) {
+    return this._storage.get(tab.id) || {};
+  }
+
+  removeTab(tabId) {
+    this._storage.delete(tabId);
+  }
+
+  clear() {
+    this._storage.clear();
+  }
+}
 
 function without(arr, toRemove) {
   return arr.filter(item => item !== toRemove);

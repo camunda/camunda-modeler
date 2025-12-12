@@ -16,6 +16,7 @@ import { Section, Select } from '../../../shared/ui';
 import { getMessageForReason } from '../../zeebe-plugin/shared/util';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 import { utmTag } from '../../../util/utmTag';
+import { NO_CONNECTION } from './ConnectionManagerPlugin';
 
 export function ConnectionManagerOverlay({
   connections = [],
@@ -49,7 +50,7 @@ export function ConnectionManagerOverlay({
       label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
     })),
     { separator: true },
-    { value: 'NO_CONNECTION', label: 'Disabled (offline mode)' }
+    { value: NO_CONNECTION.id, label: 'Disabled (offline mode)' }
   ];
 
   const getConnectionFieldError = () => {
@@ -64,6 +65,11 @@ export function ConnectionManagerOverlay({
     return undefined;
   };
 
+  function handleConnectionIdChange(connectionId) {
+    const connection = connections.find(c => c.id === connectionId) || NO_CONNECTION;
+    handleConnectionChange(connection);
+  }
+
   return (
     <Section>
       <Section.Header className="form-header">
@@ -76,7 +82,7 @@ export function ConnectionManagerOverlay({
               <Select
                 field={ {
                   name: 'connection',
-                  onChange: (event) => handleConnectionChange(event.target.value)
+                  onChange: (event) => handleConnectionIdChange(event.target.value)
                 } }
                 className="form-control"
                 name="connection"
