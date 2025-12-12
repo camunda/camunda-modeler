@@ -32,6 +32,7 @@ import {
   StartInstance,
   SystemClipboard,
   TabsProvider,
+  TabStorage,
   Workspace,
   ZeebeAPI
 } from './mocks';
@@ -3855,6 +3856,7 @@ function createApp(options = {}) {
     settings: new Settings(),
     startInstance: new StartInstance(),
     systemClipboard: new SystemClipboard(),
+    tabStorage: new TabStorage(),
     workspace: new Workspace(),
     zeebeAPI: new ZeebeAPI()
   };

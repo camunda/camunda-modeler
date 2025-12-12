@@ -101,14 +101,14 @@ describe('StartInstance', function() {
     it('should get default config for file', async function() {
 
       // given
-      const deployment = createStartInstance({
+      const startInstance = createStartInstance({
         config: new MockConfig({
-          getForFile: sinon.stub().resolves(JSON.stringify({}))
+          getConfigForFile: sinon.stub().resolves(JSON.stringify({}))
         })
       });
 
       // when
-      const config = await deployment.getConfigForFile(createMockFile());
+      const config = await startInstance.getConfigForFile(createMockFile());
 
       // then
       expect(config).to.eql({

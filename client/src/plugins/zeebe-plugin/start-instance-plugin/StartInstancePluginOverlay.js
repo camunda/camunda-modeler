@@ -154,12 +154,11 @@ export default function StartInstancePluginOverlay(props) {
 
   useEffect(() => {
     (async () => {
+      const connection = await deployment.getConnectionForTab(activeTab);
+
+      setDeploymentConfig({ endpoint: connection, context: 'startInstancePlugin' });
+
       const file = getConfigFile(activeTab);
-
-      const deploymentConfig = await deployment.getConfigForFile(file);
-
-      setDeploymentConfig(deploymentConfig);
-
       const startInstanceConfig = await startInstance.getConfigForFile(file);
 
       setStartInstanceConfig(startInstanceConfig);
@@ -167,7 +166,7 @@ export default function StartInstancePluginOverlay(props) {
 
 
 
-  }, [ deployment, setDeploymentConfig, setStartInstanceConfig, startInstance ]);
+  }, [ deployment, activeTab, setDeploymentConfig, setStartInstanceConfig, startInstance ]);
 
   useEffect(() => {
     const onDeployed = ({ deploymentResult, endpoint, gatewayVersion }) => {

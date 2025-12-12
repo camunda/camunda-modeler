@@ -148,7 +148,7 @@ function createDeploymentPlugin(props = {}) {
     _getGlobal = (name) => {
       if (name === 'deployment') {
         return new Deployment({
-          async getConfigForFile(file) {
+          async getConnectionForTab(file) {
             return {
               deployment: {},
               endpoint: DEFAULT_ENDPOINT
