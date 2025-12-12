@@ -30,7 +30,7 @@ var MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 var absoluteBasePath = path.resolve(__dirname);
 var resourcePath = path.resolve(__dirname + '/resources');
 
-process.env.CHROME_BIN = require('puppeteer').executablePath();
+process.env.CHROME_BIN = process.env.CHROME_BIN || require('puppeteer').executablePath();
 
 // configures browsers to run test against
 // any of [ 'ChromeHeadless', 'Chrome', 'Firefox', 'IE', 'PhantomJS' ]
