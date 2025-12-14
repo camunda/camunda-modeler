@@ -65,7 +65,7 @@
     "p-series": "^3.0.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "saxen": "^10.0.0",
+    "saxen": "^11.0.0",
     "scroll-tabs": "^1.0.1",
     "semver": "^7.0.0",
     "sourcemapped-stacktrace": "^1.1.11",
