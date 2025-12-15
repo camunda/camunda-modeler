@@ -52,17 +52,17 @@ export function SettingsForm({ schema, values, onChange, targetElement }) {
   return (<Form>
     {
       map(orderedSchema, (value, key) =>
-        <SettingsSection key={ key } { ...value } targetElement={ targetElement } />)
+        <SettingsSection key={ key } id={ key } { ...value } targetElement={ targetElement } />)
     }
   </Form>);
 }
 
 function SettingsSection(props) {
 
-  const { title, properties } = props;
+  const { title, properties, id } = props;
 
   return (
-    <Section>
+    <Section id={ id }>
       <Section.Header>{ title }</Section.Header>
       <Section.Body>
         {

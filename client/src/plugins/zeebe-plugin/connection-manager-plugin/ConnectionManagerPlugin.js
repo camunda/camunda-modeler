@@ -16,7 +16,7 @@ import { Fill } from '../../../app/slot-fill';
 import { Overlay } from '../../../shared/ui';
 
 import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
-import { SETTINGS_KEY_CONNECTIONS, initializeSettings } from './ConnectionManagerSettings';
+import { CONNECTION_MANAGER_PLUGIN_ID, SETTINGS_KEY_CONNECTIONS, initializeSettings } from './ConnectionManagerSettings';
 import { ConnectionManagerOverlay } from './ConnectionManagerOverlay';
 import { StatusIndicator } from '../shared/StatusIndicator';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
@@ -232,7 +232,7 @@ export default function ConnectionManagerPlugin(props) {
             scrollToEntry:
               index >= 0
                 ? `${SETTINGS_KEY_CONNECTIONS}[${index}].name`
-                : SETTINGS_KEY_CONNECTIONS,
+                : CONNECTION_MANAGER_PLUGIN_ID,
           });
         } }
         handleConnectionChange={ async (connectionId) => {
