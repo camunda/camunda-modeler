@@ -19,6 +19,7 @@ import * as css from './Section.less';
 export function Section(props) {
 
   const {
+    id,
     children,
     className,
     maxHeight,
@@ -49,6 +50,7 @@ export function Section(props) {
 
   return (
     <section
+      id={ id }
       className={ classNames(css.Section, 'section', {
         [ className ]: className
       }) }

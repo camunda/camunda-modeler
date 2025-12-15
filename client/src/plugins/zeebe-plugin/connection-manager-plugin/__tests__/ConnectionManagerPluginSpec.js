@@ -868,7 +868,7 @@ describe('ConnectionManagerPlugin', function() {
         expect(triggerAction).to.have.been.calledWith(
           'settings-open',
           sinon.match({
-            scrollToEntry: 'connectionManagerPlugin.c8connections'
+            scrollToEntry: 'connectionManagerPlugin'
           })
         );
       });

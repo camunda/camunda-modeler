@@ -83,7 +83,7 @@ export function SettingsForm({ schema, values, onChange, targetElement }) {
       } else {
 
         // Otherwise render as a single section
-        result.push(<SettingsSection key={ key } { ...value } targetElement={ targetElement } />);
+        result.push(<SettingsSection id={ key } key={ key } { ...value } targetElement={ targetElement } />);
       }
     });
 
@@ -97,10 +97,10 @@ export function SettingsForm({ schema, values, onChange, targetElement }) {
 
 function SettingsSection(props) {
 
-  const { title, description, properties } = props;
+  const { title, description, id, properties } = props;
 
   return (
-    <Section>
+    <Section id={ id }>
       <Section.Header>{ title }</Section.Header>
       <Section.Body>
         { description && <p className="section__description">{ description }</p> }
