@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Button, DataTable, Table, TableBody, TableCell, TableExpandedRow, TableExpandRow } from '@carbon/react';
 import { ErrorFilled, TrashCan } from '@carbon/icons-react';
@@ -22,6 +22,42 @@ import * as css from './ConnectionManagerSettingsComponent.less';
 
 import { CONNECTION_CHECK_ERROR_REASONS, getConnectionCheckFieldErrors } from '../deployment-plugin/ConnectionCheckErrors';
 import { StatusIndicator } from '../shared/StatusIndicator';
+
+/**
+ * Get the connection index from the fieldValue based on the first expanded row
+ * @param {Array} fieldValue - Array of connection values
+ * @param {Array} expandedRows - Array of expanded row IDs
+ * @returns {number} The index of the connection, or -1 if not found
+ */
+function getConnectionIndex(fieldValue, expandedRows) {
+  return fieldValue.findIndex(c => c.id === expandedRows[0]);
+}
+
+/**
+ * Get the connection object based on the connection index
+ * @param {Array} fieldValue - Array of connection values
+ * @param {number} connectionIndex - Index of the connection
+ * @returns {Object|null} The connection object, or null if not found
+ */
+function getConnection(fieldValue, connectionIndex) {
+  return connectionIndex >= 0 ? fieldValue[connectionIndex] : null;
+}
+
+/**
+ * Extract the target row ID from targetElement string
+ * @param {string|null} targetElement - Element ID string (e.g., "connections[1].name")
+ * @param {Array} fieldValue - Array of connection values
+ * @returns {string|null} The target row ID, or null if not found
+ */
+function getTargetRowId(targetElement, fieldValue) {
+  if (!targetElement) return null;
+  const match = targetElement.match(/\[(\d+)\]/);
+  if (match) {
+    const index = parseInt(match[1], 10);
+    return fieldValue[index]?.id ?? null;
+  }
+  return null;
+}
 
 
 /**
@@ -43,25 +79,9 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
   const { values, validateForm } = useFormikContext();
   const fieldValue = getIn(values, fieldName) || [];
 
-  const connectionIndex = useMemo(() =>
-    fieldValue.findIndex(c => c.id === expandedRows[0]),
-  [ fieldValue, expandedRows ]
-  );
-
-  const connection = useMemo(() =>
-    connectionIndex >= 0 ? fieldValue[connectionIndex] : null,
-  [ fieldValue, connectionIndex ]
-  );
-
-  const targetRowId = useMemo(() => {
-    if (!targetElement) return null;
-    const match = targetElement.match(/\[(\d+)\]/);
-    if (match) {
-      const index = parseInt(match[1], 10);
-      return fieldValue[index]?.id ?? null;
-    }
-    return null;
-  }, [ targetElement, fieldValue ]);
+  const connectionIndex = getConnectionIndex(fieldValue, expandedRows);
+  const connection = getConnection(fieldValue, connectionIndex);
+  const targetRowId = getTargetRowId(targetElement, fieldValue);
 
   // Automatically expand the row if targetElement is set
   useEffect(() => {
