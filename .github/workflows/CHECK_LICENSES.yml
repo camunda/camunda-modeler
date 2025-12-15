@@ -32,12 +32,12 @@ jobs:
         secrets: |
           secret/data/products/desktop-modeler/ci/fossa FOSSA_API_KEY;
     - name: Setup fossa-cli
-      uses: camunda/infra-global-github-actions/fossa/setup@39cfd357d270487b9f1ac02bbdbcfc7ae4e19d97
+      uses: camunda/infra-global-github-actions/fossa/setup@0c4e88e40ead84b4bf47435eed87f333d4776469
     - name: Get context info
       id: info
-      uses: camunda/infra-global-github-actions/fossa/info@39cfd357d270487b9f1ac02bbdbcfc7ae4e19d97
+      uses: camunda/infra-global-github-actions/fossa/info@0c4e88e40ead84b4bf47435eed87f333d4776469
     - name: Analyze project
-      uses: camunda/infra-global-github-actions/fossa/analyze@39cfd357d270487b9f1ac02bbdbcfc7ae4e19d97
+      uses: camunda/infra-global-github-actions/fossa/analyze@0c4e88e40ead84b4bf47435eed87f333d4776469
       with:
         api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
         branch: ${{  steps.info.outputs.head-ref }}
@@ -47,7 +47,7 @@ jobs:
     # It does not fail for pre-existing issues already present in the base branch.
     - name: Check Pull Request for new License Issues
       if: steps.info.outputs.is-pull-request == 'true'
-      uses: camunda/infra-global-github-actions/fossa/pr-check@39cfd357d270487b9f1ac02bbdbcfc7ae4e19d97
+      uses: camunda/infra-global-github-actions/fossa/pr-check@0c4e88e40ead84b4bf47435eed87f333d4776469
       with:
         api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
         base-ref: ${{ steps.info.outputs.base-ref }}
