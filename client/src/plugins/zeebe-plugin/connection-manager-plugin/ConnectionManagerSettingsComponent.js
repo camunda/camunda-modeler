@@ -24,43 +24,6 @@ import { CONNECTION_CHECK_ERROR_REASONS, getConnectionCheckFieldErrors } from '.
 import { StatusIndicator } from '../shared/StatusIndicator';
 
 /**
- * Get the connection index from the fieldValue based on the first expanded row
- * @param {Array} fieldValue - Array of connection values
- * @param {Array} expandedRows - Array of expanded row IDs
- * @returns {number} The index of the connection, or -1 if not found
- */
-function getConnectionIndex(fieldValue, expandedRows) {
-  return fieldValue.findIndex(c => c.id === expandedRows[0]);
-}
-
-/**
- * Get the connection object based on the connection index
- * @param {Array} fieldValue - Array of connection values
- * @param {number} connectionIndex - Index of the connection
- * @returns {Object|null} The connection object, or null if not found
- */
-function getConnection(fieldValue, connectionIndex) {
-  return connectionIndex >= 0 ? fieldValue[connectionIndex] : null;
-}
-
-/**
- * Extract the target row ID from targetElement string
- * @param {string|null} targetElement - Element ID string (e.g., "connections[1].name")
- * @param {Array} fieldValue - Array of connection values
- * @returns {string|null} The target row ID, or null if not found
- */
-function getTargetRowId(targetElement, fieldValue) {
-  if (!targetElement) return null;
-  const match = targetElement.match(/\[(\d+)\]/);
-  if (match) {
-    const index = parseInt(match[1], 10);
-    return fieldValue[index]?.id ?? null;
-  }
-  return null;
-}
-
-
-/**
  * Connection Manager Settings Component
  *
  * @param {Object} props
@@ -267,4 +230,40 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
       </div>;
     } }
   </FieldArray>;
+}
+
+/**
+ * Get the connection index from the fieldValue based on the first expanded row
+ * @param {Array} fieldValue - Array of connection values
+ * @param {Array} expandedRows - Array of expanded row IDs
+ * @returns {number} The index of the connection, or -1 if not found
+ */
+function getConnectionIndex(fieldValue, expandedRows) {
+  return fieldValue.findIndex(c => c.id === expandedRows[0]);
+}
+
+/**
+ * Get the connection object based on the connection index
+ * @param {Array} fieldValue - Array of connection values
+ * @param {number} connectionIndex - Index of the connection
+ * @returns {Object|null} The connection object, or null if not found
+ */
+function getConnection(fieldValue, connectionIndex) {
+  return connectionIndex >= 0 ? fieldValue[connectionIndex] : null;
+}
+
+/**
+ * Extract the target row ID from targetElement string
+ * @param {string|null} targetElement - Element ID string (e.g., "connections[1].name")
+ * @param {Array} fieldValue - Array of connection values
+ * @returns {string|null} The target row ID, or null if not found
+ */
+function getTargetRowId(targetElement, fieldValue) {
+  if (!targetElement) return null;
+  const match = targetElement.match(/\[(\d+)\]/);
+  if (match) {
+    const index = parseInt(match[1], 10);
+    return fieldValue[index]?.id ?? null;
+  }
+  return null;
 }
