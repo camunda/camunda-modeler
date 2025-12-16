@@ -27,7 +27,7 @@ describe('config', function() {
 
   describe('#getForFile', function() {
 
-    it('should get', async function() {
+    it('should get config value (key provided)', async function() {
 
       // given
       const file = {
@@ -48,7 +48,30 @@ describe('config', function() {
     });
 
 
-    it('should return default value (no config for file)', async function() {
+    it('should get entire config (no key provided)', async function() {
+
+      // given
+      const file = {
+        path: 'foo.bpmn'
+      };
+
+      backend.setSendResponse({
+        'foo.bpmn': {
+          foo: 42
+        }
+      });
+
+      // when
+      const value = await config.getForFile(file);
+
+      // then
+      expect(value).to.eql({
+        foo: 42
+      });
+    });
+
+
+    it('should return default value (key provided, no config for file, default value provided)', async function() {
 
       // given
       const file = {
@@ -65,7 +88,7 @@ describe('config', function() {
     });
 
 
-    it('should return null (no config for file, no default value)', async function() {
+    it('should return null (key provided, no config for file, no default value provided)', async function() {
 
       // given
       const file = {
@@ -82,7 +105,7 @@ describe('config', function() {
     });
 
 
-    it('should return default value (no config value)', async function() {
+    it('should return default value (key provided, no config value, default value provided)', async function() {
 
       // given
       const file = {
@@ -101,7 +124,7 @@ describe('config', function() {
     });
 
 
-    it('should return null (no config value, no default value)', async function() {
+    it('should return null (key provided, no config value, no default value provided)', async function() {
 
       // given
       const file = {
@@ -141,7 +164,7 @@ describe('config', function() {
 
   describe('#setForFile', function() {
 
-    it('should set', async function() {
+    it('should set config value (key provided)', async function() {
 
       // given
       const file = {
@@ -155,16 +178,16 @@ describe('config', function() {
       });
 
       // when
-      const value = await config.setForFile(file, 'foo', 42);
+      const value = await config.setForFile(file, 'foo', 43);
 
       // then
       expect(value).to.eql({
-        foo: 42
+        foo: 43
       });
     });
 
 
-    it('should set (no config)', async function() {
+    it('should set config value (key provided, no config)', async function() {
 
       // given
       const file = {
@@ -179,6 +202,29 @@ describe('config', function() {
       // then
       expect(value).to.eql({
         foo: 42
+      });
+    });
+
+
+    it('should set entire config (no key provided)', async function() {
+
+      // given
+      const file = {
+        path: 'foo.bpmn'
+      };
+
+      backend.setSendResponse({
+        'foo.bpmn': {
+          foo: 42
+        }
+      });
+
+      // when
+      const value = await config.setForFile(file, undefined, { bar: 'baz' });
+
+      // then
+      expect(value).to.eql({
+        bar: 'baz'
       });
     });
 
