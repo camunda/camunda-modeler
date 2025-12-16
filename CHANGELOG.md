@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: migrate configs when file path changes ([#5464](https://github.com/camunda/camunda-modeler/pull/5464/))
+
 ## 5.42.0
 
 * `DEPS`: update to `@bpmn-io/properties-panel@3.34.0`

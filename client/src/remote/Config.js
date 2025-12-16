@@ -59,10 +59,10 @@ export default class Config {
   }
 
   /**
-   * Get configuration value for file.
+   * Get configuration or value for file.
    *
    * @param {File} file
-   * @param {string} [key]
+   * @param {string} [key] if no key is provided returns the whole config for file
    * @param {*} [defaultValue]
    *
    * @returns {Promise<*>}
@@ -92,10 +92,10 @@ export default class Config {
   }
 
   /**
-   * Set configuration value for file.
+   * Set configuration or value for file.
    *
    * @param {File} file
-   * @param {string} key
+   * @param {string} [key] if no key is provided sets the whole config
    * @param {*} value
    *
    * @returns {Promise<*>}
@@ -107,18 +107,22 @@ export default class Config {
 
     const configForFile = files[ path ] = files[ path ] || {};
 
-    configForFile[ key ] = value;
+    if (key) {
+      configForFile[ key ] = value;
+    } else {
+      files[ path ] = value;
+    }
 
     await this.set('files', files);
 
-    return configForFile;
+    return files[ path ];
   }
 
   /**
-   * Get configuration value for plugin.
+   * Get configuration or value for plugin.
    *
    * @param {string} name
-   * @param {string} [key]
+   * @param {string} [key] if no key is provided returns the whole config for plugin
    * @param {*} [defaultValue]
    *
    * @returns {Promise<*>}

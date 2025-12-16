@@ -1271,6 +1271,68 @@ describe('<App>', function() {
       expect(staveTabStartSpy).to.have.been.calledWith('saveTab.start');
     });
 
+
+    describe('config migration', function() {
+
+      it('should migrate config on save (file path changed)', async function() {
+
+        // given
+        const file = createFile('diagram.bpmn');
+
+        await app.openFiles([ file ]);
+
+        const migrateConfigSpy = spy(app, 'migrateConfigForFile');
+
+        dialog.setShowSaveFileDialogResponse('new-diagram.bpmn');
+
+        fileSystem.setWriteFileResponse({
+          path: 'new-diagram.bpmn',
+          contents: '<contents>'
+        });
+
+        // when
+        await app.triggerAction('save-as');
+
+        // then
+        expect(migrateConfigSpy).to.have.been.calledOnceWith(
+          {
+            'path': 'diagram.bpmn',
+            'contents': 'foo',
+            'lastModified': undefined,
+            'name': 'diagram.bpmn'
+          },
+          {
+            'path': 'new-diagram.bpmn',
+            'contents': '<contents>'
+          });
+      });
+
+
+      it('should not migrate on save (file path unchanged)', async function() {
+
+        // given
+        const file = createFile('diagram.bpmn');
+
+        await app.openFiles([ file ]);
+
+        const migrateConfigSpy = spy(app, 'migrateConfigForFile');
+
+        dialog.setShowSaveFileDialogResponse('diagram.bpmn');
+
+        fileSystem.setWriteFileResponse({
+          path: 'diagram.bpmn',
+          contents: '<contents>'
+        });
+
+        // when
+        await app.triggerAction('save');
+
+        // then
+        expect(migrateConfigSpy).to.not.have.been.called;
+      });
+
+    });
+
   });
 
 
@@ -3115,6 +3177,66 @@ describe('<App>', function() {
       expect(setConfigSpy).to.be.calledOnceWith('foo');
     });
 
+  });
+
+
+  describe('#migrateConfigForFile', function() {
+
+    afterEach(sinon.restore);
+
+
+    it('should copy config from old path to new path', async function() {
+
+      // given
+      const getForFileStub = sinon.stub().resolves({ 'connection-manager': { connectionId: '123' } });
+      const setForFileStub = sinon.stub().resolves();
+
+      const config = new Config({
+        getForFile: getForFileStub,
+        setForFile: setForFileStub,
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      // when
+      await app.migrateConfigForFile({ path: 'old.bpmn' }, { path: 'new.bpmn' });
+
+      // then
+      expect(setForFileStub).to.be.calledOnceWith(
+        { path: 'new.bpmn' },
+        undefined,
+        { 'connection-manager': { connectionId: '123' } }
+      );
+    });
+
+
+    it('should not set config if old file has no config', async function() {
+
+      // given
+      const getForFileStub = sinon.stub().resolves(undefined);
+      const setForFileStub = sinon.stub().resolves();
+
+      const config = new Config({
+        getForFile: getForFileStub,
+        setForFile: setForFileStub,
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      // when
+      await app.migrateConfigForFile({ path: 'old.bpmn' }, { path: 'new.bpmn' });
+
+      // then
+      expect(setForFileStub).to.not.have.been.called;
+    });
   });
 
 

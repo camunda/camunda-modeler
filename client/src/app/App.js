@@ -1420,7 +1420,7 @@ export class App extends PureComponent {
    * @param {string} options.savePath
    * @param {string} options.saveType
    *
-   * @returns {File} saved file.
+   * @returns {Promise<File>} saved file.
    */
   async saveTabAsFile(options) {
 
@@ -1436,7 +1436,7 @@ export class App extends PureComponent {
 
     const contents = await this.tabRef.current.triggerAction('save');
 
-    return fileSystem.writeFile(savePath, {
+    const file = await fileSystem.writeFile(savePath, {
       ...originalFile,
       contents
     }, {
@@ -1444,6 +1444,31 @@ export class App extends PureComponent {
       fileType: saveType
     });
 
+    if (originalFile.path !== savePath) {
+      await this.migrateConfigForFile(originalFile, file);
+    }
+
+    return file;
+  }
+
+  /**
+   * Migrate configuration for file if file path changed and config exists.
+   *
+   * @param {File} oldFile - Old file with old path
+   * @param {File} newFile - New file with new path
+   */
+  async migrateConfigForFile(oldFile, newFile) {
+    if (!newFile?.path || !oldFile?.path) {
+      return;
+    }
+
+    const config = this.getGlobal('config');
+
+    const configForFile = await config.getForFile(oldFile);
+
+    if (configForFile && Object.keys(configForFile).length > 0) {
+      await config.setForFile(newFile, undefined, configForFile);
+    }
   }
 
   /**
@@ -1461,7 +1486,7 @@ export class App extends PureComponent {
       type: fileType
     } = tab;
 
-    let {
+    const {
       saveAs
     } = options;
 
@@ -1470,9 +1495,7 @@ export class App extends PureComponent {
 
     let savePath;
 
-    saveAs = saveAs || this.isUnsaved(tab);
-
-    if (saveAs) {
+    if (saveAs || this.isUnsaved(tab)) {
       const filters = getSaveFileDialogFilters(provider);
 
       savePath = await this.showSaveFileDialog(file, {
