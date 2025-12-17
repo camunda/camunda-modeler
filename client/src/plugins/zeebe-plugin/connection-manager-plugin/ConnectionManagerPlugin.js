@@ -208,11 +208,11 @@ export default function ConnectionManagerPlugin(props) {
   const statusBarText = activeConnection ? activeConnection.name || 'Unnamed connection' : 'No connection';
   return <>
     { tabNeedsConnection(activeTab) &&
-      <Fill name="connection-manager" className slot="status-bar__file" group="8_deploy" priority={ 2 }>
+      <Fill name="connection-manager" slot="status-bar__file" group="8_deploy" priority={ 2 }>
         <button
           onClick={ () => setOverlayOpen(!overlayOpen) }
           title="Configure Camunda 8 connection"
-          className={ classNames('btn', { 'btn--active': overlayOpen }) }
+          className={ classNames(css.ConnectionSelector, 'btn', { 'btn--active': overlayOpen }) }
           ref={ statusBarButtonRef }
         >
           <StatusIndicator status={ statusBarConnectionStatus } text={ statusBarText }></StatusIndicator>
