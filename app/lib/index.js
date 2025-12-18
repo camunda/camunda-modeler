@@ -584,6 +584,12 @@ app.createEditorWindow = function() {
     renderer.send('client:window-focused');
   });
 
+  mainWindow.on('blur', function() {
+    log.info('window blurred');
+
+    renderer.send('client:window-blurred');
+  });
+
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });

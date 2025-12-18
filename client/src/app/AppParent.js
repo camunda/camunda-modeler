@@ -255,6 +255,13 @@ export default class AppParent extends PureComponent {
     this.triggerAction('notify-focus-change');
   };
 
+  /**
+   * Handle window blur event to trigger auto-save.
+   */
+  handleBlur = () => {
+    this.triggerAction('auto-save');
+  };
+
   handleStarted = async () => {
 
     log('received <started>');
@@ -346,6 +353,7 @@ export default class AppParent extends PureComponent {
       backend.on('menu:action', (_, action, options) => this.triggerAction(action, options)),
       backend.on('client:open-files', this.handleOpenFiles),
       backend.on('client:window-focused', this.handleFocus),
+      backend.on('client:window-blurred', this.handleBlur),
       backend.on('backend:error', this.handleBackendError)
     ];
 
