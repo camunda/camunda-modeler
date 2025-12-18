@@ -40,7 +40,6 @@ export default class StartInstance extends EventEmitter {
    * Start instance of process with given process ID and configuration.
    *
    * @param {string} processId
-   * @param {string} processId
    * @param {StartInstanceConfig} config
    *
    * * @returns {Promise<StartInstanceResult>}
