@@ -240,6 +240,7 @@ class ZeebeAPI {
     const {
       endpoint,
       variables,
+      processDefinitionKey,
       processId,
       startInstructions,
       runtimeInstructions,
@@ -279,13 +280,21 @@ class ZeebeAPI {
       }
 
       if (camundaRestClient) {
-        const response = await camundaRestClient.createProcessInstance({
-          processDefinitionId: processId,
+
+        const requestBody = {
           variables,
           startInstructions,
           runtimeInstructions,
           tenantId
-        });
+        };
+
+        if (processDefinitionKey) {
+          requestBody.processDefinitionKey = processDefinitionKey;
+        } else {
+          requestBody.processDefinitionId = processId;
+        }
+
+        const response = await camundaRestClient.createProcessInstance(requestBody);
 
         return {
           success: true,

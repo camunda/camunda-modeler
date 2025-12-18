@@ -44,10 +44,12 @@ export default class StartInstance extends EventEmitter {
    *
    * * @returns {Promise<StartInstanceResult>}
    */
-  async startInstance(processId, config) {
+  async startInstance(config) {
     const {
       deployment,
       endpoint,
+      processDefinitionKey,
+      processId,
       variables = '{}',
       startInstructions,
       runtimeInstructions
@@ -57,6 +59,7 @@ export default class StartInstance extends EventEmitter {
 
     const startInstanceResult = await this._zeebeAPI.startInstance({
       endpoint,
+      processDefinitionKey,
       processId,
       tenantId,
       variables: parseVariables(variables),
@@ -67,6 +70,7 @@ export default class StartInstance extends EventEmitter {
     this.emit('instanceStarted', {
       startInstanceResult,
       endpoint,
+      processDefinitionKey,
       processId,
       tenantId,
       variables: parseVariables(variables)

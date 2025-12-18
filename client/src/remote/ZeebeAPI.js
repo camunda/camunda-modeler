@@ -58,6 +58,7 @@ export default class ZeebeAPI {
   startInstance(options) {
     let {
       endpoint,
+      processDefinitionKey,
       processId,
       tenantId,
       variables,
@@ -69,6 +70,7 @@ export default class ZeebeAPI {
 
     return this._backend.send('zeebe:startInstance', {
       endpoint,
+      processDefinitionKey,
       processId,
       tenantId,
       variables,

@@ -414,7 +414,7 @@ describe('StartInstancePluginOverlay', function() {
           expect(startInstance.startInstance).to.have.been.calledOnce;
         });
 
-        expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+        expect(startInstance.startInstance).to.have.been.calledWith({
           ...deploymentConfig,
           ...startInstanceConfig
         });
@@ -472,7 +472,7 @@ describe('StartInstancePluginOverlay', function() {
           expect(startInstance.startInstance).to.have.been.calledOnce;
         });
 
-        expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+        expect(startInstance.startInstance).to.have.been.calledWith({
           ...deploymentConfig,
           ...startInstanceConfig
         });
@@ -563,7 +563,7 @@ describe('StartInstancePluginOverlay', function() {
           }
         ], newDeploymentConfig);
 
-        expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+        expect(startInstance.startInstance).to.have.been.calledWith({
           ...newDeploymentConfig,
           ...startInstanceConfig
         });
@@ -655,7 +655,7 @@ describe('StartInstancePluginOverlay', function() {
           }
         ], newDeploymentConfig);
 
-        expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+        expect(startInstance.startInstance).to.have.been.calledWith({
           ...newDeploymentConfig,
           ...startInstanceConfig
         });
@@ -1023,7 +1023,7 @@ describe('StartInstancePluginOverlay', function() {
         }
       ], deploymentConfig);
 
-      expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+      expect(startInstance.startInstance).to.have.been.calledWith({
         ...deploymentConfig,
         ...startInstanceConfig
       });
@@ -1080,7 +1080,7 @@ describe('StartInstancePluginOverlay', function() {
         expect(startInstance.startInstance).to.have.been.calledOnce;
       });
 
-      expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+      expect(startInstance.startInstance).to.have.been.calledWith({
         ...deploymentConfig,
         ...startInstanceConfig
       });
@@ -1142,7 +1142,7 @@ describe('StartInstancePluginOverlay', function() {
         expect(startInstance.startInstance).to.have.been.calledOnce;
       });
 
-      expect(startInstance.startInstance).to.have.been.calledWith('foo', {
+      expect(startInstance.startInstance).to.have.been.calledWith({
         ...deploymentConfig,
         ...startInstanceConfig
       });
@@ -1351,6 +1351,7 @@ function createMockDeploymentConfig(overrides = {}) {
 
 function createMockStartInstanceConfig(overrides = {}) {
   return {
+    processId: 'foo',
     variables: '{}',
     ...overrides
   };

@@ -133,7 +133,8 @@ export default function StartInstancePluginOverlay(props) {
         return;
       }
 
-      const startInstanceResult = await startInstance.startInstance(processId, {
+      const startInstanceResult = await startInstance.startInstance({
+        processId,
         ...deploymentConfig,
         ...values
       });

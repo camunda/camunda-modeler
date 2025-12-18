@@ -262,6 +262,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processDefinitionKey: undefined,
         processId,
         endpoint: {
           authType: AUTH_TYPES.NONE,
@@ -307,6 +308,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processDefinitionKey: undefined,
         processId,
         endpoint: {
           authType: AUTH_TYPES.NONE,
@@ -354,6 +356,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processDefinitionKey: undefined,
         processId,
         endpoint: {
           authType: AUTH_TYPES.BASIC,
@@ -406,6 +409,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processDefinitionKey: undefined,
         processId,
         endpoint: {
           authType: AUTH_TYPES.BASIC,
@@ -458,6 +462,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processDefinitionKey: undefined,
         processId,
         endpoint: {
           authType: AUTH_TYPES.OAUTH,
@@ -513,6 +518,7 @@ describe('<ZeebeAPI>', function() {
       // then
       expect(backend.send).to.have.been.calledOnce;
       expect(backend.send).to.have.been.calledWith('zeebe:startInstance', {
+        processDefinitionKey: undefined,
         processId,
         endpoint: {
           authType: AUTH_TYPES.OAUTH,
