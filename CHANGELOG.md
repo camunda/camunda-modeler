@@ -6,7 +6,41 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.43.0
+
+* `DEPS`: update to `@bpmn-io/properties-panel@3.35.1`
+* `DEPS`: update to `@bpmn-io/variable-resolver@1.3.7`
+* `DEPS`: update to `@camunda/rpa-integration@1.3.2`
+* `DEPS`: update to `@camunda/task-testing@2.0.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.18.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.45.0`
+* `DEPS`: update to `camunda-bpmn-js@5.16.0`
+* `DEPS`: update to `camunda-dmn-js@3.6.0`
+* `DEPS`: update to `dmn-js@17.5.0`
+* `DEPS`: update to `dmn-js-properties-panel@3.9.0`
+* `DEPS`: update to `dmn-js-shared@17.5.0`
+* `DEPS`: update to `min-dom@5.1.2`
+
+### General
+
+* `FEAT`: provide incident data in readable format ([#5428](https://github.com/camunda/camunda-modeler/issues/5428))
+* `FIX`: make task testing work in process applications ([#5460](https://github.com/camunda/camunda-modeler/issues/5460))
 * `FIX`: migrate configs when file path changes ([#5464](https://github.com/camunda/camunda-modeler/pull/5464/))
+
+### BPMN
+
+* `FEAT`: support timer event templates ([#5380](https://github.com/camunda/camunda-modeler/issues/5380))
+* `FEAT`: display `id` and `version` for unknown element templates ([bpmn-io/bpmn-js-element-templates#203](https://github.com/bpmn-io/bpmn-js-element-templates/pull/203))
+* `FEAT`: make outputs and child variables propagation mutually exclusive ([#5402](https://github.com/camunda/camunda-modeler/issues/5402))
+* `FEAT`: propagate variables before mapping in Camunda 7 ([#5396](https://github.com/camunda/camunda-modeler/issues/5396))
+* `FEAT`: hide `<bpmn:CallActivity>` Output group if `zeebe:propagateAllChildVariables` is true ([bpmn-io/bpmn-js-properties-panel#1173](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1173))
+* `FIX`: update on `import.done` instead of `root.added` to prevent stale element ([bpmn-io/bpmn-js-properties-panel#1169](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1169))
+* `FIX`: keep focus when pasting expression into FEEL-optional field ([#5421](https://github.com/camunda/camunda-modeler/issues/5421))
+* `FIX`: remove properties instead of replacing element on template removal ([#5336](https://github.com/camunda/camunda-modeler/issues/5336))
+
+### RPA
+
+* `FEAT`: align rpa status colors with modeler theme ([#5510](https://github.com/camunda/camunda-modeler/pull/5510))
 
 ## 5.42.0
 
