@@ -67,6 +67,7 @@ export default function ProcessApplicationsPlugin(props) {
       const dialog = _getGlobal('dialog');
 
       const [ directoryPath ] = await dialog.showOpenFilesDialog({
+        activeFile: activeTab?.file,
         properties: [
           'createDirectory', // Allow creating new directories from dialog on macOS
           'openDirectory'
@@ -94,7 +95,7 @@ export default function ProcessApplicationsPlugin(props) {
     });
 
     return () => subscription.cancel();
-  }, [ subscribe, _getGlobal, triggerAction ]);
+  }, [ subscribe, _getGlobal, triggerAction, activeTab ]);
 
   useEffect(() => {
     const backend = _getGlobal('backend');
