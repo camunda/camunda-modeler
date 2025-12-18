@@ -268,6 +268,31 @@ describe('<AppParent>', function() {
   });
 
 
+  describe('blur handling', function() {
+
+    it('should fire auto-save action on window blur', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        appParent
+      } = createAppParent({ globals: { backend } });
+
+      const app = appParent.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+
+      // when
+      backend.receive('client:window-blurred');
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('auto-save');
+
+    });
+
+  });
+
+
   describe('trigger action', function() {
 
     describe('quit', function() {
