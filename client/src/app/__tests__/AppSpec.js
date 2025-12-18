@@ -1337,6 +1337,195 @@ describe('<App>', function() {
   });
 
 
+  describe('auto-save', function() {
+
+    let app,
+        dialog,
+        fileSystem,
+        writeFileSpy;
+
+    beforeEach(function() {
+
+      // given
+      dialog = new Dialog();
+      fileSystem = new FileSystem();
+
+      writeFileSpy = spy(fileSystem, 'writeFile');
+
+      app = (createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      })).app;
+    });
+
+    afterEach(sinon.restore);
+
+
+    it('should auto-save dirty tab with existing path on window blur', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+      const [ tab ] = await app.openFiles([ file ]);
+
+      // mark as dirty
+      app.setState({
+        ...app.setDirty(tab)
+      });
+
+      // when
+      await app.autoSave(tab);
+
+      // then
+      expect(writeFileSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should NOT auto-save clean tab', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+      await app.openFiles([ file ]);
+
+      const { activeTab } = app.state;
+
+      // when
+      await app.autoSave(activeTab);
+
+      // then
+      expect(writeFileSpy).not.to.have.been.called;
+    });
+
+
+    it('should NOT auto-save new tab without path', async function() {
+
+      // given
+      const tab = await app.createDiagram('bpmn');
+
+      // mark as dirty
+      app.setState({
+        ...app.setDirty(tab)
+      });
+
+      // when
+      await app.autoSave(tab);
+
+      // then
+      // Should NOT write file because new files haven't been saved yet
+      expect(writeFileSpy).not.to.have.been.called;
+    });
+
+
+    it('should NOT auto-save empty tab', async function() {
+
+      // given
+      const { activeTab } = app.state;
+
+      // assume
+      expect(app.isEmptyTab(activeTab)).to.be.true;
+
+      // when
+      await app.autoSave(activeTab);
+
+      // then
+      expect(writeFileSpy).not.to.have.been.called;
+    });
+
+
+    it('should auto-save previous tab on tab switch', async function() {
+
+      // given
+      const file1 = createFile('diagram_1.bpmn');
+      const file2 = createFile('diagram_2.bpmn');
+
+      const [ tab1, tab2 ] = await app.openFiles([ file1, file2 ]);
+
+      // switch to tab1 and mark it as dirty
+      await app.selectTab(tab1);
+      app.setState({
+        ...app.setDirty(tab1)
+      });
+
+      // when: switch to tab2
+      await app.selectTab(tab2);
+
+      // then: should have auto-saved tab1
+      expect(writeFileSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should NOT auto-save unsaved tab on tab switch', async function() {
+
+      // given
+      const file1 = createFile('diagram_1.bpmn');
+
+      await app.openFiles([ file1 ]);
+
+      const newTab = await app.createDiagram('bpmn');
+
+      // mark new tab as dirty
+      app.setState({
+        ...app.setDirty(newTab)
+      });
+
+      // when: switch to another tab
+      await app.selectTab(app.state.tabs[0]);
+
+      // then: should NOT have auto-saved new tab
+      expect(writeFileSpy).not.to.have.been.called;
+    });
+
+
+    it('should handle auto-save via triggerAction', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+      const [ tab ] = await app.openFiles([ file ]);
+
+      // mark as dirty
+      app.setState({
+        ...app.setDirty(tab)
+      });
+
+      // when
+      await app.triggerAction('auto-save');
+
+      // then
+      expect(writeFileSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should show notification on auto-save error', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+      const [ tab ] = await app.openFiles([ file ]);
+
+      // mark as dirty
+      app.setState({
+        ...app.setDirty(tab)
+      });
+
+      const err = new Error('write failed');
+      fileSystem.setWriteFileResponse(Promise.reject(err));
+
+      const displayNotificationSpy = spy(app, 'displayNotification');
+
+      // when
+      await app.autoSave(tab);
+
+      // then
+      expect(displayNotificationSpy).to.have.been.calledOnce;
+      expect(displayNotificationSpy).to.have.been.calledWithMatch({
+        type: 'error',
+        title: 'Auto-save failed'
+      });
+    });
+
+  });
+
+
   describe('tab exporting', function() {
 
     let app,
