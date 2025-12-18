@@ -104,11 +104,12 @@ export default class TaskTestingApi {
     return result;
   }
 
-  async startInstance(processId, elementId, variables) {
+  async startInstance(processDefinitionKey, elementId, variables) {
     const config = await this.getDeploymentConfig();
 
-    const response = await this._startInstance.startInstance(processId, {
+    const response = await this._startInstance.startInstance({
       ...config,
+      processDefinitionKey,
       variables,
       startInstructions:[
         {

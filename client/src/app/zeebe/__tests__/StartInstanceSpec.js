@@ -39,13 +39,14 @@ describe('StartInstance', function() {
       startInstance.on('instanceStarted', instanceStartedSpy);
 
       // when
-      const result = await startInstance.startInstance('foo', config);
+      const result = await startInstance.startInstance(config);
 
       // then
       expect(result).to.eql(startInstanceResult);
 
       expect(zeebeAPI.startInstance).to.have.been.calledOnce;
       expect(zeebeAPI.startInstance).to.have.been.calledWith({
+        processDefinitionKey: undefined,
         processId: 'foo',
         tenantId: undefined,
         endpoint,
@@ -60,6 +61,7 @@ describe('StartInstance', function() {
       expect(instanceStartedSpy).to.have.been.calledWith({
         startInstanceResult,
         endpoint,
+        processDefinitionKey: undefined,
         processId: 'foo',
         tenantId: undefined,
         variables: {
@@ -239,6 +241,7 @@ function createMockEndpoint(overrides = {}) {
 
 function createMockConfig(overrides = {}) {
   return {
+    processId: 'foo',
     deployment: {},
     endpoint: createMockEndpoint(),
     variables: JSON.stringify({
