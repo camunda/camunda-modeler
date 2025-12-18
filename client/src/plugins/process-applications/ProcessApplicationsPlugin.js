@@ -45,17 +45,25 @@ export default function ProcessApplicationsPlugin(props) {
   const connectionCheckResult = useConnectionStatus(subscribe);
 
   useEffect(() => {
-    subscribe('app.activeTabChanged', (event) => {
+    const subscription = subscribe('app.activeTabChanged', (event) => {
       setActiveTab(event.activeTab);
 
       processApplications.emit('activeTab-changed', event.activeTab);
     });
 
-    subscribe('app.tabsChanged', (event) => {
+    return () => subscription.cancel();
+  }, [ subscribe ]);
+
+  useEffect(() => {
+    const subscription = subscribe('app.tabsChanged', (event) => {
       setTabs(event.tabs);
     });
 
-    subscribe('create-process-application', async () => {
+    return () => subscription.cancel();
+  }, [ subscribe ]);
+
+  useEffect(() => {
+    const subscription = subscribe('create-process-application', async () => {
       const dialog = _getGlobal('dialog');
 
       const [ directoryPath ] = await dialog.showOpenFilesDialog({
@@ -85,13 +93,25 @@ export default function ProcessApplicationsPlugin(props) {
       });
     });
 
-    _getGlobal('backend').on('file-context:changed', (_, items) => {
+    return () => subscription.cancel();
+  }, [ subscribe, _getGlobal, triggerAction ]);
+
+  useEffect(() => {
+    const backend = _getGlobal('backend');
+
+    const onItemsChanged = (_, items) => {
       processApplications.emit('items-changed', items);
 
       setItems(items);
-    });
+    };
 
-    processApplications.on('changed', () => {
+    const subscription = backend.on('file-context:changed', onItemsChanged);
+
+    return () => subscription.cancel();
+  }, [ _getGlobal ]);
+
+  useEffect(() => {
+    const handleProcessApplicationsChanged = () => {
       const hasOpen = processApplications.hasOpen();
 
       if (hasOpen) {
@@ -104,9 +124,16 @@ export default function ProcessApplicationsPlugin(props) {
         setProcessApplication(null);
         setProcessApplicationItems([]);
       }
-    });
+    };
 
-    subscribe('bpmn.modeler.configure', ({ middlewares, tab }) => {
+    processApplications.on('changed', handleProcessApplicationsChanged);
+
+    return () => processApplications.off('changed', handleProcessApplicationsChanged);
+  }, []);
+
+  useEffect(() => {
+
+    const subscription = subscribe('bpmn.modeler.configure', ({ middlewares, tab }) => {
 
       if (tab.type !== 'cloud-bpmn') {
         return;
@@ -132,13 +159,15 @@ export default function ProcessApplicationsPlugin(props) {
       });
 
     });
-  }, []);
+
+    return () => subscription.cancel();
+  }, [ subscribe ]);
 
   useEffect(() => {
     if (activeTab?.type === 'cloud-bpmn') {
       triggerAction('resources.reload');
     }
-  }, [ activeTab, processApplicationItems ]);
+  }, [ activeTab, processApplicationItems, triggerAction ]);
 
   useEffect(() => {
     const tabGroups = tabs.reduce((tabGroups, tab) => {
@@ -179,7 +208,7 @@ export default function ProcessApplicationsPlugin(props) {
         group
       });
     }
-  }, [ items, tabs ]);
+  }, [ items, tabs, triggerAction ]);
 
   return <>
     <ProcessApplicationsStatusBar
