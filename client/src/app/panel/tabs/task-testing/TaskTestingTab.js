@@ -152,6 +152,17 @@ export default function TaskTestingTab(props) {
     response: connectionError
   };
 
+  const isConnectionConfigured = canConnectToCluster(connectionCheckResult);
+
+  const handleTestTask = useCallback(() => {
+    if (!isConnectionConfigured) {
+      handleConfigureConnection();
+      return false;
+    }
+
+    return true;
+  }, [ isConnectionConfigured, handleConfigureConnection ]);
+
   const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult);
   const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult);
 
@@ -165,13 +176,13 @@ export default function TaskTestingTab(props) {
         <TaskTesting
           injector={ injector }
           config={ taskTestingConfig }
-          isConnectionConfigured={ canConnectToCluster(connectionCheckResult) }
-          onConfigureConnection={ handleConfigureConnection }
+          isConnectionConfigured={ isConnectionConfigured }
           onConfigChanged={ setTaskTestingConfig }
           operateBaseUrl={ operateUrl }
           onTaskExecutionStarted={ handleTaskExecutionStarted }
           onTaskExecutionFinished={ handleTaskExecutionFinished }
           onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
+          onTestTask={ handleTestTask }
           configureConnectionBannerTitle={ configureConnectionBannerTitle }
           configureConnectionBannerDescription={ configureConnectionBannerDescription }
           api={ taskTestingApi }
