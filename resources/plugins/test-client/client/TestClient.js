@@ -157,6 +157,49 @@ export default class TestClient extends Component {
               { property: 'radio', oneOf: [ 'first', 'third' ] }
             ]
           }
+        },
+        'testClientPlugin.complexArray':{
+          type: 'expandableTable',
+          label: 'Complex Array',
+          description: 'Table (array) of objects. Adding and deleting elements is supported.',
+          formConfig:{
+            emptyPlaceholder: "I'm empty",
+            addLabel: 'Create something complex',
+            removeTooltip: 'Remove the complex thing'
+          },
+          condition: { property: 'showAllFields', equals: true },
+          rowProperties:{
+            'name': {
+              hint: 'Name',
+              type: 'text',
+              default: 'A new name'
+            },
+          },
+          childProperties: {
+            'fieldSwitch': {
+              label: 'Switch Fields',
+              type: 'select',
+              default: 'text',
+              options:[
+                { label: 'Text field', value: 'text' },
+                { label: 'Password field', value:  'password' }
+              ]
+            },
+            'textField': {
+              label: 'Text Field',
+              type: 'text',
+              default: 'Hello world',
+              condition: { property: 'fieldSwitch', equals: 'text' },
+              constraints: {
+                notEmpty: 'This field must be filled'
+              }
+            },
+            'passwordField': {
+              label: 'Password Field',
+              type: 'password',
+              condition: { property: 'fieldSwitch', equals: 'password' }
+            }
+          }
         }
       }
     };
