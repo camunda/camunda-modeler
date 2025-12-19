@@ -443,18 +443,28 @@ export class App extends PureComponent {
 
     const { name } = file;
 
-    if (this.isDirty(tab)) {
-      const { button } = await this.showCloseFileDialog({ name });
+    try {
 
-      if (button === 'save') {
-        const saved = await this.saveTab(tab);
+      // disable auto-save during <save-all>
+      this.off('app.blurred', this.triggerAutoSave);
 
-        if (!saved) {
+      if (this.isDirty(tab)) {
+        const { button } = await this.showCloseFileDialog({ name });
+
+        if (button === 'save') {
+          const saved = await this.saveTab(tab);
+
+          if (!saved) {
+            return false;
+          }
+        } else if (button === 'cancel') {
           return false;
         }
-      } else if (button === 'cancel') {
-        return false;
       }
+    } finally {
+
+      // restore auto-save
+      this.on('app.blurred', this.triggerAutoSave);
     }
 
     return true;
