@@ -23,10 +23,11 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: add connection manager ([#4972](https://github.com/camunda/camunda-modeler/issues/4972))
 * `FEAT`: provide incident data in readable format ([#5428](https://github.com/camunda/camunda-modeler/issues/5428))
 * `FIX`: make task testing work in process applications ([#5460](https://github.com/camunda/camunda-modeler/issues/5460))
 * `FIX`: migrate configs when file path changes ([#5464](https://github.com/camunda/camunda-modeler/pull/5464/))
-* `FEAT`: new connection manager to store multiple Camunda 8 Orchestration Cluster connections and easily switch between them ([#4972](https://github.com/camunda/camunda-modeler/issues/4972))
+* `FIX`: configured tenantId is also used for task testing API calls ([#5422](https://github.com/camunda/camunda-modeler/pull/5422))
 
 ### BPMN
 
@@ -59,7 +60,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: remove title attribute when unnecessary ([bpmn-io/properties-panel#455](https://github.com/bpmn-io/properties-panel/pull/455))
 * `FIX`: improve tooltip behavior ([#5217](https://github.com/camunda/camunda-modeler/issues/5217), [#4857](https://github.com/camunda/camunda-modeler/issues/4857))
 * `FIX`: correctly handle trimming and debouncing ([#5389](https://github.com/camunda/camunda-modeler/issues/5389), [#4967](https://github.com/camunda/camunda-modeler/issues/4967), [#5392](https://github.com/camunda/camunda-modeler/issues/5392))
-* `FIX`: configured tenantId is also used for task testing API calls ([#5422](https://github.com/camunda/camunda-modeler/pull/5422))
 
 ### BPMN
 
