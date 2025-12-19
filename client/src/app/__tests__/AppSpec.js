@@ -1363,7 +1363,7 @@ describe('<App>', function() {
     afterEach(sinon.restore);
 
 
-    it('should auto-save dirty tab with existing path on window blur', async function() {
+    it('should auto-save dirty tab with existing path', async function() {
 
       // given
       const file = createFile('diagram_1.bpmn');
@@ -1477,7 +1477,7 @@ describe('<App>', function() {
     });
 
 
-    it('should handle auto-save via triggerAction', async function() {
+    it('should handle auto-save on window blur', async function() {
 
       // given
       const file = createFile('diagram_1.bpmn');
@@ -1489,7 +1489,7 @@ describe('<App>', function() {
       });
 
       // when
-      await app.triggerAction('auto-save');
+      await app.triggerAction('window-blurred');
 
       // then
       expect(writeFileSpy).to.have.been.calledOnce;

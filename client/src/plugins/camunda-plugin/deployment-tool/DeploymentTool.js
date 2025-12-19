@@ -71,7 +71,7 @@ export default class DeploymentTool extends PureComponent {
       });
     });
 
-    this.props.subscribe('app.focus-changed', () => {
+    this.props.subscribe('app.focused', () => {
       if (this.focusChangeCallback) {
         this.focusChangeCallback();
       }
