@@ -224,7 +224,7 @@ describe('<AppParent>', function() {
 
   describe('focus handling', function() {
 
-    it('should fire check-file-changed action', function() {
+    it('should trigger <window-focused> action', function() {
 
       // given
       const backend = new Backend();
@@ -240,29 +240,7 @@ describe('<AppParent>', function() {
       backend.receive('client:window-focused');
 
       // then
-      expect(actionSpy).to.have.been.calledWith('check-file-changed');
-
-    });
-
-
-    it('should fire notify-focus-change action', function() {
-
-      // given
-      const backend = new Backend();
-
-      const {
-        instance
-      } = createAppParent({ globals: { backend } });
-
-      const app = instance.getApp();
-      const actionSpy = spy(app, 'triggerAction');
-
-      // when
-      backend.receive('client:window-focused');
-
-      // then
-      expect(actionSpy).to.have.been.calledWith('notify-focus-change');
-
+      expect(actionSpy).to.have.been.calledWith('window-focused');
     });
 
   });
@@ -270,24 +248,23 @@ describe('<AppParent>', function() {
 
   describe('blur handling', function() {
 
-    it('should fire auto-save action on window blur', function() {
+    it('should trigger <window-blurred> action', function() {
 
       // given
       const backend = new Backend();
 
       const {
-        appParent
+        instance
       } = createAppParent({ globals: { backend } });
 
-      const app = appParent.getApp();
+      const app = instance.getApp();
       const actionSpy = spy(app, 'triggerAction');
 
       // when
       backend.receive('client:window-blurred');
 
       // then
-      expect(actionSpy).to.have.been.calledWith('auto-save');
-
+      expect(actionSpy).to.have.been.calledWith('window-blurred');
     });
 
   });

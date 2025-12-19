@@ -179,6 +179,12 @@ export class App extends PureComponent {
       this.resizeTab = debounce(this.resizeTab, 50);
     }
 
+    this.on('app.blurred', this.triggerAutoSave);
+
+    this.on('app.focused', () => {
+      this.triggerAction('check-file-changed');
+    });
+
     this.currentNotificationId = 0;
   }
 
@@ -595,6 +601,12 @@ export class App extends PureComponent {
       this.props.cache.destroy(tab.id);
     });
   }
+
+  triggerAutoSave = () => {
+    const { activeTab } = this.state;
+
+    activeTab && this.autoSave(activeTab);
+  };
 
   /**
    * Select a tab, de-selecting the previous tab.
@@ -2044,9 +2056,12 @@ export class App extends PureComponent {
       return this.saveTab(activeTab, { saveAs: true });
     }
 
-    // auto-save on focus loss (window blur, tab switch)
-    if (action === 'auto-save') {
-      return this.autoSave(activeTab);
+    if (action === 'window-focused') {
+      return this.emit('app.focused');
+    }
+
+    if (action === 'window-blurred') {
+      return this.emit('app.blurred');
     }
 
     if (action === 'quit') {
@@ -2111,10 +2126,6 @@ export class App extends PureComponent {
 
     if (action === 'check-file-changed') {
       return this.checkFileChanged(activeTab);
-    }
-
-    if (action === 'notify-focus-change') {
-      return this.emit('app.focus-changed');
     }
 
     if (action === 'resize') {
