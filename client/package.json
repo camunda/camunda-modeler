@@ -71,7 +71,7 @@
     "sourcemapped-stacktrace": "^1.1.11",
     "tiny-svg": "^4.1.3",
     "ua-parser-js": "^1.0.39",
-    "zeebe-bpmn-moddle": "^1.11.0"
+    "zeebe-bpmn-moddle": "^1.12.0"
   },
   "homepage": ".",
   "devDependencies": {
