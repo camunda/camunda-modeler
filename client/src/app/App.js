@@ -1612,7 +1612,7 @@ export class App extends PureComponent {
 
   async saveTab(tab, options) {
 
-    this.triggerAction('saveTab.start');
+    await this.triggerAction('saveTab.start');
 
     options = options || {};
 
