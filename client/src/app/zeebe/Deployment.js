@@ -60,6 +60,7 @@ const log = debug('Deployment');
 export default class Deployment extends EventEmitter {
 
   /**
+   * @param {import('../../app/TabStorage.js').default} tabStorage
    * @param {import('../../remote/Config').default} config
    * @param {import('../../remote/ZeebeAPI').default} zeebeAPI
    * @param {import('../../app/Settings').default} settings
@@ -200,9 +201,8 @@ export default class Deployment extends EventEmitter {
 
     if (tab.file?.path) {
       await this._config.setForFile(tab.file, CONFIG_KEYS.CONNECTION_MANAGER, { connectionId });
-    } else {
-      this._tabStorage.set(tab, STORAGE_KEY, connectionId);
     }
+    this._tabStorage.set(tab, STORAGE_KEY, connectionId);
 
     if (connectionId) {
       await this._config.set(CONFIG_KEYS.LAST_USED_CONNECTION, connectionId);
