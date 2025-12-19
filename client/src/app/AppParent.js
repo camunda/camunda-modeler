@@ -250,16 +250,12 @@ export default class AppParent extends PureComponent {
 
   handleResize = () => this.triggerAction('resize');
 
-  handleFocus = () => {
-    this.triggerAction('check-file-changed');
-    this.triggerAction('notify-focus-change');
+  handleFocused = () => {
+    this.triggerAction('window-focused');
   };
 
-  /**
-   * Handle window blur event to trigger auto-save.
-   */
-  handleBlur = () => {
-    this.triggerAction('auto-save');
+  handleBlurred = () => {
+    this.triggerAction('window-blurred');
   };
 
   handleStarted = async () => {
@@ -352,8 +348,8 @@ export default class AppParent extends PureComponent {
     this.subscriptions = [
       backend.on('menu:action', (_, action, options) => this.triggerAction(action, options)),
       backend.on('client:open-files', this.handleOpenFiles),
-      backend.on('client:window-focused', this.handleFocus),
-      backend.on('client:window-blurred', this.handleBlur),
+      backend.on('client:window-focused', this.handleFocused),
+      backend.on('client:window-blurred', this.handleBlurred),
       backend.on('backend:error', this.handleBackendError)
     ];
 
