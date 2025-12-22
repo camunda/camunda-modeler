@@ -224,7 +224,7 @@ describe('<AppParent>', function() {
 
   describe('focus handling', function() {
 
-    it('should fire check-file-changed action', function() {
+    it('should trigger <window-focused> action', function() {
 
       // given
       const backend = new Backend();
@@ -240,12 +240,15 @@ describe('<AppParent>', function() {
       backend.receive('client:window-focused');
 
       // then
-      expect(actionSpy).to.have.been.calledWith('check-file-changed');
-
+      expect(actionSpy).to.have.been.calledWith('window-focused');
     });
 
+  });
 
-    it('should fire notify-focus-change action', function() {
+
+  describe('blur handling', function() {
+
+    it('should trigger <window-blurred> action', function() {
 
       // given
       const backend = new Backend();
@@ -258,11 +261,10 @@ describe('<AppParent>', function() {
       const actionSpy = spy(app, 'triggerAction');
 
       // when
-      backend.receive('client:window-focused');
+      backend.receive('client:window-blurred');
 
       // then
-      expect(actionSpy).to.have.been.calledWith('notify-focus-change');
-
+      expect(actionSpy).to.have.been.calledWith('window-blurred');
     });
 
   });
