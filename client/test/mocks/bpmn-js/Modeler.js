@@ -245,14 +245,18 @@ export default class Modeler {
     }
   }
 
-  get(moduleName) {
+  get(moduleName, strict) {
     const module = this.modules[moduleName];
 
     if (module) {
       return module;
     }
 
-    throw new Error(`service not provided: <${moduleName}>`);
+    if (strict !== false) {
+      throw new Error(`service not provided: <${moduleName}>`);
+    }
+
+    return null;
   }
 
   getDefinitions() {
