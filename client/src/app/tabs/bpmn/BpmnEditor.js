@@ -976,8 +976,8 @@ function isPropertiesPanelLayoutChanged(prevProps, props) {
 /**
  * Check whether grid layout changed since last open
  *
- * @param {Object} props
  * @param {Object} prevProps
+ * @param {Object} props
  *
  * @returns {boolean}
  */
