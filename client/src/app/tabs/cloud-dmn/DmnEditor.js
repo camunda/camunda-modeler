@@ -175,13 +175,13 @@ export class DmnEditor extends CachedComponent {
 
     // We can only notify interested parties about overview open once its parent component was
     // rendered
-    if (isOverviewOpened(this.props, prevProps)) {
+    if (isOverviewOpened(prevProps, this.props)) {
       const modeler = this.getModeler();
 
       modeler._emit('overviewOpen');
     }
 
-    if (isGridLayoutChange(this.props, prevProps)) {
+    if (isGridLayoutChange(prevProps, this.props)) {
       const activeViewer = this.getModeler().getActiveViewer();
 
       // grid may not be available, depending on the editor
@@ -1104,12 +1104,12 @@ function isOverviewOpen(props) {
 /**
  * Check layout whether overview was opened.
  *
- * @param {Object} props
  * @param {Object} prevProps
+ * @param {Object} props
  *
  * @returns {boolean}
  */
-function isOverviewOpened(props, prevProps) {
+function isOverviewOpened(prevProps, props) {
   return isOverviewOpen(prevProps) === false && isOverviewOpen(props) === true;
 }
 
