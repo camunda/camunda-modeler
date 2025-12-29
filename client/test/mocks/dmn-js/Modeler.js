@@ -117,7 +117,7 @@ class Viewer {
       return module;
     }
 
-    if (strict === false) {
+    if (strict !== false) {
       throw new Error(`service not provided: <${moduleName}>`);
     }
 
