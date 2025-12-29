@@ -11,7 +11,8 @@
 export default function getBpmnWindowMenu(state) {
   return [
     ...getZoomEntries(state),
-    ...getPropertiesPanelEntries(state)
+    ...getPropertiesPanelEntries(state),
+    ...getGridEntries(state)
   ];
 }
 
@@ -45,5 +46,13 @@ function getPropertiesPanelEntries({ propertiesPanel }) {
     label: 'Toggle Properties Panel',
     accelerator: 'CommandOrControl+P',
     action: 'toggleProperties'
+  } ] : [];
+}
+
+function getGridEntries({ grid }) {
+  return grid ? [ {
+    label: 'Toggle Grid',
+    accelerator: 'CommandOrControl+G',
+    action: 'toggleGrid'
   } ] : [];
 }
