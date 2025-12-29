@@ -143,6 +143,9 @@ export default class Modeler {
       minimap: {
         toggle() {}
       },
+      grid: {
+        toggle() {}
+      },
       modeling: {
         updateModdleProperties() {}
       },
