@@ -154,6 +154,9 @@ export class DmnEditor extends CachedComponent {
       }
     }
 
+    // grid may not be available, depending on the editor
+    activeViewer && activeViewer.get('grid', false)?.toggle(this.props.layout?.grid?.visible !== false);
+
     this.checkImport();
   }
 
@@ -176,6 +179,13 @@ export class DmnEditor extends CachedComponent {
       const modeler = this.getModeler();
 
       modeler._emit('overviewOpen');
+    }
+
+    if (isGridLayoutChange(prevProps, this.props)) {
+      const activeViewer = this.getModeler().getActiveViewer();
+
+      // grid may not be available, depending on the editor
+      activeViewer.get('grid', false)?.toggle(this.props.layout?.grid?.visible !== false);
     }
 
     if (isCachedStateChange(prevProps, this.props)) {
@@ -320,6 +330,9 @@ export class DmnEditor extends CachedComponent {
       }
     }
 
+    // grid may not be available, depending on the editor
+    activeViewer && activeViewer.get('grid', false)?.toggle(this.props.layout?.grid?.visible !== false);
+
     // attach or detach overview
     if (activeView.type === 'drd') {
       modeler.detachOverview();
@@ -371,6 +384,7 @@ export class DmnEditor extends CachedComponent {
     const commandStack = activeViewer.get('commandStack');
 
     const hasPropertiesPanel = !!activeViewer.get('propertiesPanel', false);
+    const hasGrid = !!activeViewer.get('grid', false);
 
     const hasOverview = activeView.type !== 'drd';
 
@@ -385,6 +399,7 @@ export class DmnEditor extends CachedComponent {
       inputActive,
       overview: hasOverview,
       paste: false,
+      grid: hasGrid,
       platform: 'platform',
       propertiesPanel: hasPropertiesPanel,
       redo: commandStack.canRedo(),
@@ -688,6 +703,16 @@ export class DmnEditor extends CachedComponent {
 
     if (action === 'resize') {
       return this.handleResize();
+    }
+
+    if (action === 'toggleGrid') {
+      const newLayout = {
+        grid: {
+          visible: layout.grid?.visible === false
+        }
+      };
+
+      return handleLayoutChange(newLayout);
     }
 
     if (action === 'toggleProperties') {
@@ -1086,4 +1111,17 @@ function isOverviewOpen(props) {
  */
 function isOverviewOpened(props, prevProps) {
   return isOverviewOpen(prevProps) === false && isOverviewOpen(props) === true;
+}
+
+
+/**
+ * Check whether grid layout changed since last open
+ *
+ * @param {Object} prevProps
+ * @param {Object} props
+ *
+ * @returns {boolean}
+ */
+function isGridLayoutChange(prevProps, props) {
+  return props.layout?.grid?.visible !== prevProps.layout?.grid?.visible;
 }

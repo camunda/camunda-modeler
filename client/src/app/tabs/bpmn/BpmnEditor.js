@@ -144,9 +144,11 @@ export class BpmnEditor extends CachedComponent {
 
     const minimap = modeler.get('minimap');
 
-    if (layout.minimap) {
-      minimap.toggle(layout.minimap && !!layout.minimap.open);
-    }
+    minimap.toggle(layout.minimap?.open === true);
+
+    const grid = modeler.get('grid');
+
+    grid.toggle(layout.grid?.visible !== false);
 
     const propertiesPanel = modeler.get('propertiesPanel');
 
@@ -210,6 +212,13 @@ export class BpmnEditor extends CachedComponent {
       const propertiesPanel = modeler.get('propertiesPanel');
 
       propertiesPanel.setLayout(this.props.layout.propertiesPanel);
+    }
+
+    if (isGridLayoutChange(prevProps, this.props)) {
+      const modeler = this.getModeler();
+      const grid = modeler.get('grid');
+
+      grid.toggle(this.props.layout?.grid?.visible !== false);
     }
   }
 
@@ -463,6 +472,7 @@ export class BpmnEditor extends CachedComponent {
       paste: !modeler.get('clipboard').isEmpty(),
       platform: 'platform',
       propertiesPanel: true,
+      grid: true,
       redo: canvasFocused && commandStack.canRedo(),
       removeSelected: canvasFocused && !!selectionLength,
       replaceElement: canvasFocused && selectionLength == 1,
@@ -682,6 +692,16 @@ export class BpmnEditor extends CachedComponent {
 
     if (action === 'resize') {
       return this.handleResize();
+    }
+
+    if (action === 'toggleGrid') {
+      const newLayout = {
+        grid: {
+          visible: layout.grid?.visible === false
+        }
+      };
+
+      return this.handleLayoutChange(newLayout);
     }
 
     if (action === 'toggleProperties') {
@@ -951,4 +971,16 @@ function isPropertiesPanelLayoutChanged(prevProps, props) {
 
   // check JSON equality
   return JSON.stringify(prevProps.layout.propertiesPanel) !== JSON.stringify(props.layout.propertiesPanel);
+}
+
+/**
+ * Check whether grid layout changed since last open
+ *
+ * @param {Object} props
+ * @param {Object} prevProps
+ *
+ * @returns {boolean}
+ */
+function isGridLayoutChange(prevProps, props) {
+  return props.layout?.grid?.visible !== prevProps.layout?.grid?.visible;
 }
