@@ -463,9 +463,6 @@ function selectVersion(select, version) {
   if (select.value !== version) {
     fireEvent.change(select, { target: { value: toSemverMinor(version) || '' } });
   }
-
-  const form = select.closest('form');
-  fireEvent.submit(form);
 }
 
 function expectVersion(select, version) {

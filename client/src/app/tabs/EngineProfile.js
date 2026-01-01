@@ -113,7 +113,7 @@ function EngineProfileOverlay(props) {
 function EditableVersionSection(props) {
 
   const {
-    engineProfile: _engineProfile,
+    engineProfile,
     engineProfileVersions,
     onChange
   } = props;
@@ -122,7 +122,7 @@ function EditableVersionSection(props) {
     throw new Error('<onChange> required');
   }
 
-  if (!_engineProfile) {
+  if (!engineProfile) {
     throw new Error('<engineProfile> required');
   }
 
@@ -130,21 +130,13 @@ function EditableVersionSection(props) {
     throw new Error('<engineProfileVersions> required');
   }
 
-  const [ engineProfile, setEngineProfile ] = useState(_engineProfile);
-
   const handleVersionChanged = event => {
     const executionPlatformVersion = toSemver(event.target.value);
 
-    setEngineProfile({
+    onChange({
       executionPlatform: engineProfile.executionPlatform,
       executionPlatformVersion: executionPlatformVersion || undefined
     });
-  };
-
-  const handleApply = (e) => {
-    onChange(engineProfile);
-
-    e.preventDefault();
   };
 
   const {
@@ -165,7 +157,7 @@ function EditableVersionSection(props) {
         Select the { engineLabel } version
       </Section.Header>
       <Section.Body>
-        <form onSubmit={ handleApply } className="fields">
+        <form className="fields">
           <div className="form-group">
             <label htmlFor={ name }>Version</label>
 
@@ -196,10 +188,6 @@ function EditableVersionSection(props) {
             <PlatformHint className="form-group form-description" executionPlatform={ executionPlatform } displayLabel={ engineLabel } /> :
             <UnknownVersionHint className="form-group form-description" executionPlatform={ executionPlatform } executionPlatformVersion={ engineProfile.executionPlatformVersion } displayLabel={ engineLabel } />
           }
-
-          <Section.Actions>
-            <button className="btn btn-primary" type="submit">Apply</button>
-          </Section.Actions>
         </form>
       </Section.Body>
     </Section>
