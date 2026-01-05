@@ -148,7 +148,7 @@ export default class Modeler {
 
     this.xml = xml;
 
-    this.viewer = new Viewer(this.xml, this.modules, this.activeView);
+    this.viewer = this._createViewer();
 
     const error = xml === 'import-error' ? new Error('error') : null;
     const warnings = xml === 'import-warnings' ? [ 'warning' ] : [];
@@ -157,7 +157,7 @@ export default class Modeler {
       const engineProfile = parseExecutionPlatform(xml);
 
       if (engineProfile) {
-        this.viewer.get('executionPlatform').setExecutionPlatform({
+        this._getViewer().get('executionPlatform').setExecutionPlatform({
           name: engineProfile.executionPlatform,
           version: engineProfile.executionPlatformVersion
         });
@@ -181,11 +181,17 @@ export default class Modeler {
   }
 
   getActiveViewer() {
-    return this.viewer || new Viewer(this.xml, this.modules, this.activeView);
+    return this._getViewer();
+  }
+
+  _createViewer() {
+    this.viewer = new Viewer(this.xml, this.modules, this.activeView);
+
+    return this.viewer;
   }
 
   _getViewer() {
-    return this.viewer || new Viewer(this.xml, this.modules, this.activeView);
+    return (this.viewer = this.viewer || this._createViewer());
   }
 
   async saveXML(options) {
@@ -193,7 +199,7 @@ export default class Modeler {
     const xml = this.xml;
 
     // commands may be executed during export
-    this.viewer.get('commandStack').execute(1);
+    this._getViewer().get('commandStack').execute(1);
 
     if (xml === 'export-error') {
       throw new Error('failed to save xml');
@@ -251,9 +257,7 @@ export default class Modeler {
   }
 
   getStackIdx() {
-    const viewer = this.viewer || new Viewer(this.xml, this.modules, this.activeView);
-
-    const commandStack = viewer.get('commandStack', false);
+    const commandStack = this._getViewer().get('commandStack', false);
 
     return commandStack._stackIdx;
   }
