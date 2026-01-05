@@ -8,6 +8,11 @@
  * except in compliance with the MIT License.
  */
 
+import {
+  getGridMenuEntries as getGridEntries
+} from '../util/grid';
+
+
 export default function getBpmnWindowMenu(state) {
   return [
     ...getZoomEntries(state),
@@ -46,13 +51,5 @@ function getPropertiesPanelEntries({ propertiesPanel }) {
     label: 'Toggle Properties Panel',
     accelerator: 'CommandOrControl+P',
     action: 'toggleProperties'
-  } ] : [];
-}
-
-function getGridEntries({ grid }) {
-  return grid ? [ {
-    label: 'Toggle Grid',
-    accelerator: 'CommandOrControl+G',
-    action: 'toggleGrid'
   } ] : [];
 }

@@ -68,6 +68,8 @@ import EngineProfileHelper from '../EngineProfileHelper';
 
 import { ENGINES } from '../../../util/Engines';
 
+import { GridBehavior } from '../util/grid';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 const NAMESPACE_URL_DMN11 = 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
@@ -93,6 +95,10 @@ export class DmnEditor extends CachedComponent {
     this.propertiesPanelRef = React.createRef();
 
     this.handleResize = debounce(this.handleResize);
+
+    this.gridBehavior = new GridBehavior({
+      getDiagram: () => this.getModeler()?.getActiveViewer()
+    });
 
     this.engineProfile = new EngineProfileHelper({
       get: () => {
@@ -154,8 +160,7 @@ export class DmnEditor extends CachedComponent {
       }
     }
 
-    // grid may not be available, depending on the editor
-    activeViewer && activeViewer.get('grid', false)?.toggle(this.props.layout?.grid?.visible !== false);
+    this.gridBehavior.update(this.props.layout);
 
     this.checkImport();
   }
@@ -181,12 +186,7 @@ export class DmnEditor extends CachedComponent {
       modeler._emit('overviewOpen');
     }
 
-    if (isGridLayoutChange(prevProps, this.props)) {
-      const activeViewer = this.getModeler().getActiveViewer();
-
-      // grid may not be available, depending on the editor
-      activeViewer.get('grid', false)?.toggle(this.props.layout?.grid?.visible !== false);
-    }
+    this.gridBehavior.checkUpdate(prevProps.layout, this.props.layout);
 
     if (isCachedStateChange(prevProps, this.props)) {
       this.handleChanged();
@@ -330,8 +330,7 @@ export class DmnEditor extends CachedComponent {
       }
     }
 
-    // grid may not be available, depending on the editor
-    activeViewer && activeViewer.get('grid', false)?.toggle(this.props.layout?.grid?.visible !== false);
+    this.gridBehavior.update(this.props.layout);
 
     // attach or detach overview
     if (activeView.type === 'drd') {
@@ -384,7 +383,6 @@ export class DmnEditor extends CachedComponent {
     const commandStack = activeViewer.get('commandStack');
 
     const hasPropertiesPanel = !!activeViewer.get('propertiesPanel', false);
-    const hasGrid = !!activeViewer.get('grid', false);
 
     const hasOverview = activeView.type !== 'drd';
 
@@ -401,7 +399,7 @@ export class DmnEditor extends CachedComponent {
       paste: false,
       platform: 'cloud',
       propertiesPanel: hasPropertiesPanel,
-      grid: hasGrid,
+      grid: this.gridBehavior.hasGrid(),
       redo: commandStack.canRedo(),
       save: true,
       undo: commandStack.canUndo()
@@ -705,13 +703,7 @@ export class DmnEditor extends CachedComponent {
     }
 
     if (action === 'toggleGrid') {
-      const newLayout = {
-        grid: {
-          visible: layout.grid?.visible === false
-        }
-      };
-
-      return handleLayoutChange(newLayout);
+      return this.gridBehavior.toggleGrid(layout, handleLayoutChange);
     }
 
     if (action === 'toggleProperties') {
@@ -1111,16 +1103,4 @@ function isOverviewOpen(props) {
  */
 function isOverviewOpened(prevProps, props) {
   return isOverviewOpen(prevProps) === false && isOverviewOpen(props) === true;
-}
-
-/**
- * Check whether grid layout changed since last open
- *
- * @param {Object} prevProps
- * @param {Object} props
- *
- * @returns {boolean}
- */
-function isGridLayoutChange(prevProps, props) {
-  return props.layout?.grid?.visible !== prevProps.layout?.grid?.visible;
 }
