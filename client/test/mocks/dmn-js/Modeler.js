@@ -78,6 +78,9 @@ class Viewer {
         isFocused() { return true; },
         restoreFocus() {},
       },
+      grid: {
+        toggle() {}
+      },
       commandStack: new CommandStack(),
       executionPlatform: new ExecutionPlatform(),
       propertiesPanel: new PropertiesPanel(),
@@ -110,6 +113,10 @@ class Viewer {
     const module = this.modules[moduleName];
 
     if (this.type !== 'drd' && moduleName === 'propertiesPanel' && strict === false) {
+      return null;
+    }
+
+    if (this.type !== 'drd' && moduleName === 'grid' && strict === false) {
       return null;
     }
 
