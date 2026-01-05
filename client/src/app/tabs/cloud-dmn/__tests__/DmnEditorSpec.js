@@ -1376,7 +1376,7 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should open properties panel (no layout)', async function() {
+    it('should close properties panel (default is open, no layout)', async function() {
 
       // given
       const layout = {};
@@ -1399,7 +1399,7 @@ describe('<DmnEditor>', function() {
         expect(onLayoutChanged).to.have.been.calledOnce;
         expect(onLayoutChanged).to.have.been.calledWithExactly({
           propertiesPanel: {
-            open: true,
+            open: false,
             width: 280
           }
         });
