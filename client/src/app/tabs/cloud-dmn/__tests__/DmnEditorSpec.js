@@ -1294,187 +1294,272 @@ describe('<DmnEditor>', function() {
 
   describe('layout', function() {
 
-    it('should open overview', async function() {
+    describe('overview', function() {
 
-      // given
-      const layout = {
-        dmnOverview: {
-          open: false
-        }
-      };
+      it('should open', async function() {
 
-      const onLayoutChanged = sinon.spy();
-
-      const {
-        container,
-        instance
-      } = await renderEditor(diagramXML, {
-        layout,
-        onLayoutChanged
-      });
-
-      const modeler = instance.getModeler();
-
-      modeler.open({ type: 'decisionTable' });
-
-      instance.handleChanged();
-
-      // when
-      const toggle = container.querySelector('#button-toggle-overview');
-      fireEvent.click(toggle);
-
-      // then
-      await waitFor(() => {
-        expect(onLayoutChanged).to.have.been.calledOnce;
-        expect(onLayoutChanged).to.have.been.calledWithExactly({
-          dmnOverview: {
-            open: true
-          }
-        });
-      });
-    });
-
-
-    it('should close overview', async function() {
-
-      // given
-      const layout = {
-        dmnOverview: {
-          open: true
-        }
-      };
-
-      const onLayoutChanged = sinon.spy();
-
-      const {
-        container,
-        instance
-      } = await renderEditor(diagramXML, {
-        layout,
-        onLayoutChanged
-      });
-
-      const modeler = instance.getModeler();
-
-      modeler.open({ type: 'decisionTable' });
-
-      instance.handleChanged();
-
-      // when
-      const toggle = container.querySelector('#button-toggle-overview');
-      fireEvent.click(toggle);
-
-      // then
-      await waitFor(() => {
-        expect(onLayoutChanged).to.have.been.calledOnce;
-        expect(onLayoutChanged).to.have.been.calledWithExactly({
+        // given
+        const layout = {
           dmnOverview: {
             open: false
           }
+        };
+
+        const onLayoutChanged = sinon.spy();
+
+        const {
+          container,
+          instance
+        } = await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
+
+        const modeler = instance.getModeler();
+
+        modeler.open({ type: 'decisionTable' });
+
+        instance.handleChanged();
+
+        // when
+        const toggle = container.querySelector('#button-toggle-overview');
+        fireEvent.click(toggle);
+
+        // then
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+          expect(onLayoutChanged).to.have.been.calledWithExactly({
+            dmnOverview: {
+              open: true
+            }
+          });
         });
       });
-    });
 
 
-    it('should close properties panel (default is open, no layout)', async function() {
+      it('should close', async function() {
 
-      // given
-      const layout = {};
-
-      const onLayoutChanged = sinon.spy();
-
-      const { container } = await renderEditor(diagramXML, {
-        layout,
-        onLayoutChanged
-      });
-
-      // when
-      const toggle = container.querySelector('.resizer');
-
-      fireEvent.mouseDown(toggle);
-      fireEvent.mouseUp(toggle);
-
-      // then
-      await waitFor(() => {
-        expect(onLayoutChanged).to.have.been.calledOnce;
-        expect(onLayoutChanged).to.have.been.calledWithExactly({
-          propertiesPanel: {
-            open: false,
-            width: 280
+        // given
+        const layout = {
+          dmnOverview: {
+            open: true
           }
+        };
+
+        const onLayoutChanged = sinon.spy();
+
+        const {
+          container,
+          instance
+        } = await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
+
+        const modeler = instance.getModeler();
+
+        modeler.open({ type: 'decisionTable' });
+
+        instance.handleChanged();
+
+        // when
+        const toggle = container.querySelector('#button-toggle-overview');
+        fireEvent.click(toggle);
+
+        // then
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+          expect(onLayoutChanged).to.have.been.calledWithExactly({
+            dmnOverview: {
+              open: false
+            }
+          });
         });
       });
+
     });
 
 
-    it('should open properties panel', async function() {
+    describe('properties panel', function() {
 
-      // given
-      const layout = {
-        propertiesPanel: {
-          open: false
-        }
-      };
+      it('should close (default is open, no layout)', async function() {
 
-      const onLayoutChanged = sinon.spy();
+        // given
+        const layout = {};
 
-      const { container } = await renderEditor(diagramXML, {
-        layout,
-        onLayoutChanged
+        const onLayoutChanged = sinon.spy();
+
+        const { container } = await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
+
+        // when
+        const toggle = container.querySelector('.resizer');
+
+        fireEvent.mouseDown(toggle);
+        fireEvent.mouseUp(toggle);
+
+        // then
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+          expect(onLayoutChanged).to.have.been.calledWithExactly({
+            propertiesPanel: {
+              open: false,
+              width: 280
+            }
+          });
+        });
       });
 
-      // when
-      const toggle = container.querySelector('.resizer');
 
-      fireEvent.mouseDown(toggle);
-      fireEvent.mouseUp(toggle);
+      it('should open', async function() {
 
-      // then
-      await waitFor(() => {
-        expect(onLayoutChanged).to.have.been.calledOnce;
-        expect(onLayoutChanged).to.have.been.calledWithExactly({
+        // given
+        const layout = {
+          propertiesPanel: {
+            open: false
+          }
+        };
+
+        const onLayoutChanged = sinon.spy();
+
+        const { container } = await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
+
+        // when
+        const toggle = container.querySelector('.resizer');
+
+        fireEvent.mouseDown(toggle);
+        fireEvent.mouseUp(toggle);
+
+        // then
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+          expect(onLayoutChanged).to.have.been.calledWithExactly({
+            propertiesPanel: {
+              open: true,
+              width: 280
+            }
+          });
+        });
+      });
+
+
+      it('should close', async function() {
+
+        // given
+        const layout = {
           propertiesPanel: {
             open: true,
             width: 280
           }
+        };
+
+        const onLayoutChanged = sinon.spy();
+
+        const { container } = await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
+
+        // when
+        const toggle = container.querySelector('.resizer');
+
+        fireEvent.mouseDown(toggle);
+        fireEvent.mouseUp(toggle);
+
+        // then
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+          expect(onLayoutChanged).to.have.been.calledWithExactly({
+            propertiesPanel: {
+              open: false,
+              width: 280
+            }
+          });
         });
       });
+
     });
 
 
-    it('should close properties panel', async function() {
+    describe('grid', function() {
 
-      // given
-      const layout = {
-        propertiesPanel: {
-          open: true,
-          width: 280
-        }
-      };
+      it('should react to new layout', async function() {
 
-      const onLayoutChanged = sinon.spy();
+        // given
+        const { instance, rerender } = await renderEditor(diagramXML);
 
-      const { container } = await renderEditor(diagramXML, {
-        layout,
-        onLayoutChanged
-      });
+        const toggleGridSpy = spy(instance.getModeler().getActiveViewer().get('grid'), 'toggle');
 
-      // when
-      const toggle = container.querySelector('.resizer');
-
-      fireEvent.mouseDown(toggle);
-      fireEvent.mouseUp(toggle);
-
-      // then
-      await waitFor(() => {
-        expect(onLayoutChanged).to.have.been.calledOnce;
-        expect(onLayoutChanged).to.have.been.calledWithExactly({
-          propertiesPanel: {
-            open: false,
-            width: 280
+        // when
+        rerender(diagramXML, {
+          layout: {
+            grid: {
+              visible: false
+            }
           }
         });
+
+        // then
+        expect(toggleGridSpy).to.have.been.calledOnceWith(false);
+
       });
+
+
+      it('should not react to new layout if no changes', async function() {
+
+        // given
+        const { instance, rerender } = await renderEditor(diagramXML);
+
+        const toggleGridSpy = spy(instance.getModeler().getActiveViewer().get('grid'), 'toggle');
+
+        // when
+        rerender(diagramXML, {
+          layout: { }
+        });
+
+        // then
+        expect(toggleGridSpy).to.have.not.been.called;
+
+      });
+
+
+      it('should update cached layout', async function() {
+
+        // given
+        const cache = new Cache();
+
+        const modeler = new DmnModeler({});
+
+        cache.add('editor', {
+          cached: {
+            modeler: modeler
+          },
+          __destroy: () => {}
+        });
+
+        const grid = modeler.getActiveViewer().get('grid');
+
+        const toggleSpy = spy(grid, 'toggle');
+
+        // when
+        await renderEditor(diagramXML, {
+          cache,
+          layout: {
+            grid: {
+              visible: false
+            }
+          }
+        });
+
+        // then
+        expect(toggleSpy).to.have.been.calledOnceWith(false);
+      });
+
     });
 
 
@@ -1863,6 +1948,37 @@ describe('<DmnEditor>', function() {
   });
 
 
+  describe('grid actions', function() {
+
+    it('should toggle grid', async function() {
+
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        layout: {
+          grid: {
+            visible: false
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.triggerAction('toggleGrid');
+
+      // then
+      expect(onLayoutChangedSpy).to.be.calledOnceWith({
+        grid: {
+          visible: true
+        }
+      });
+    });
+
+  });
+
+
   describe('overview actions', function() {
 
     it('should toggle overview', async function() {
@@ -2081,7 +2197,6 @@ describe('<DmnEditor>', function() {
       expect(onActionSpy).to.have.been.calledOnce;
       expect(onActionSpy.firstCall.args[ 0 ]).to.eql('show-dialog');
 
-      expect(onContentUpdatedSpy).to.have.been.calledOnce;
       expect(onContentUpdatedSpy).to.have.been.calledOnceWith(sinon.match('dmndi:DMNDI'));
     });
 

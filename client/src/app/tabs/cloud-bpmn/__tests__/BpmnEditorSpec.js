@@ -886,163 +886,317 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   describe('layout', function() {
 
-    it('should react to new layout', async function() {
+    describe('properties panel', function() {
 
-      // given
-      const { instance, rerender } = await renderEditor(diagramXML);
+      it('should react to new layout', async function() {
 
-      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+        // given
+        const { instance, rerender } = await renderEditor(diagramXML);
 
-      // when
-      rerender(diagramXML, {
-        layout: {
+        const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+        // when
+        rerender(diagramXML, {
+          layout: {
+            propertiesPanel: {
+              open: false
+            }
+          }
+        });
+
+        // then
+        expect(setLayoutSpy).to.have.been.calledOnce;
+        expect(setLayoutSpy).to.have.been.calledWith({
+          open: false
+        });
+
+      });
+
+
+      it('should not react to new layout if no changes', async function() {
+
+        // given
+        const { instance, rerender } = await renderEditor(diagramXML);
+
+        const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+        // when
+        rerender(diagramXML, {
+          layout: {
+            propertiesPanel: {
+              open: true
+            }
+          }
+        });
+
+        // then
+        expect(setLayoutSpy).to.have.not.been.called;
+
+      });
+
+
+      it('should close (default is open, no layout)', async function() {
+
+        // given
+        const layout = {};
+
+        const onLayoutChanged = sinon.spy();
+
+        await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
+
+        // when
+        const toggle = document.querySelector('.resizer');
+
+        fireEvent.mouseDown(toggle);
+        fireEvent.mouseUp(toggle);
+
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+        });
+
+        // then
+        expect(onLayoutChanged).to.have.been.calledOnce;
+
+        const callArg = onLayoutChanged.getCall(0).args[0];
+        expect(callArg).to.deep.include({
+          propertiesPanel: {
+            open: false,
+            width: 280
+          }
+        });
+      });
+
+
+      it('should open', async function() {
+
+        // given
+        let layout = {
           propertiesPanel: {
             open: false
           }
-        }
+        };
+
+        const onLayoutChanged = sinon.spy();
+
+        await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
+
+        // when
+        const toggle = document.querySelector('.resizer');
+
+        fireEvent.mouseDown(toggle);
+        fireEvent.mouseUp(toggle);
+
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+        });
+
+        // then
+        expect(onLayoutChanged).to.have.been.calledOnce;
+
+        const callArg = onLayoutChanged.getCall(0).args[0];
+        expect(callArg).to.deep.include({
+          propertiesPanel: {
+            open: true,
+            width: 280
+          }
+        });
       });
 
-      // then
-      expect(setLayoutSpy).to.have.been.calledOnce;
-      expect(setLayoutSpy).to.have.been.calledWith({
-        open: false
-      });
 
-    });
+      it('should close', async function() {
 
-
-    it('should not react to new layout if no changes', async function() {
-
-      // given
-      const { instance, rerender } = await renderEditor(diagramXML);
-
-      const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
-
-      // when
-      rerender(diagramXML, {
-        layout: {
+        // given
+        let layout = {
           propertiesPanel: {
             open: true
           }
-        }
-      });
+        };
 
-      // then
-      expect(setLayoutSpy).to.have.not.been.called;
+        const onLayoutChanged = sinon.spy();
 
-    });
+        await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
 
+        // when
+        const toggle = document.querySelector('.resizer');
 
-    it('should close properties panel (default is open, no layout)', async function() {
+        fireEvent.mouseDown(toggle);
+        fireEvent.mouseUp(toggle);
 
-      // given
-      const layout = {};
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+        });
 
-      const onLayoutChanged = sinon.spy();
-
-      await renderEditor(diagramXML, {
-        layout,
-        onLayoutChanged
-      });
-
-      // when
-      const toggle = document.querySelector('.resizer');
-
-      fireEvent.mouseDown(toggle);
-      fireEvent.mouseUp(toggle);
-
-      await waitFor(() => {
+        // then
         expect(onLayoutChanged).to.have.been.calledOnce;
+
+        const callArg = onLayoutChanged.getCall(0).args[0];
+        expect(callArg).to.deep.include({
+          propertiesPanel: {
+            open: false,
+            width: 280
+          }
+        });
       });
 
-      // then
-      expect(onLayoutChanged).to.have.been.calledOnce;
 
-      const callArg = onLayoutChanged.getCall(0).args[0];
-      expect(callArg).to.deep.include({
-        propertiesPanel: {
-          open: false,
-          width: 280
-        }
-      });
-    });
+      it('should supply layout to properties panel', async function() {
 
-
-    it('should open properties panel', async function() {
-
-      // given
-      let layout = {
-        propertiesPanel: {
-          open: false
-        }
-      };
-
-      const onLayoutChanged = sinon.spy();
-
-      await renderEditor(diagramXML, {
-        layout,
-        onLayoutChanged
-      });
-
-      // when
-      const toggle = document.querySelector('.resizer');
-
-      fireEvent.mouseDown(toggle);
-      fireEvent.mouseUp(toggle);
-
-      await waitFor(() => {
-        expect(onLayoutChanged).to.have.been.calledOnce;
-      });
-
-      // then
-      expect(onLayoutChanged).to.have.been.calledOnce;
-
-      const callArg = onLayoutChanged.getCall(0).args[0];
-      expect(callArg).to.deep.include({
-        propertiesPanel: {
+        // given
+        const propertiesPanelLayout = {
           open: true,
-          width: 280
-        }
+          groups: {
+            customGroup: {
+              open: true
+            }
+          }
+        };
+
+        const layout = {
+          propertiesPanel: propertiesPanelLayout
+        };
+
+        // when
+        const { instance } = await renderEditor(diagramXML, {
+          layout
+        });
+
+
+        // then
+        const modeler = instance.getModeler();
+
+        expect(modeler.options.propertiesPanel.layout).to.exist;
+        expect(modeler.options.propertiesPanel.layout).to.eql(propertiesPanelLayout);
       });
+
+
+      it('should update cached layout', async function() {
+
+        // given
+        const cache = new Cache();
+
+        const modeler = new BpmnModeler({
+          propertiesPanel: {
+            layout: { }
+          }
+        });
+
+        cache.add('editor', {
+          cached: {
+            modeler: modeler
+          },
+          __destroy: () => {}
+        });
+
+        const propertiesPanel = modeler.get('propertiesPanel');
+
+        const layoutSpy = spy(propertiesPanel, 'setLayout');
+
+        // when
+        await renderEditor(diagramXML, {
+          id: 'editor',
+          cache,
+          layout: {
+            propertiesPanel: {
+              groups: {
+                general: {
+                  open: true
+                }
+              }
+            }
+          }
+        });
+
+        // then
+        expect(layoutSpy).to.have.been.called;
+      });
+
     });
 
 
-    it('should close properties panel', async function() {
+    describe('grid', function() {
 
-      // given
-      let layout = {
-        propertiesPanel: {
-          open: true
-        }
-      };
+      it('should react to new layout', async function() {
 
-      const onLayoutChanged = sinon.spy();
+        // given
+        const { instance, rerender } = await renderEditor(diagramXML);
 
-      await renderEditor(diagramXML, {
-        layout,
-        onLayoutChanged
+        const toggleGridSpy = spy(instance.getModeler().get('grid'), 'toggle');
+
+        // when
+        rerender(diagramXML, {
+          layout: {
+            grid: {
+              visible: false
+            }
+          }
+        });
+
+        // then
+        expect(toggleGridSpy).to.have.been.calledOnceWith(false);
+
       });
 
-      // when
-      const toggle = document.querySelector('.resizer');
 
-      fireEvent.mouseDown(toggle);
-      fireEvent.mouseUp(toggle);
+      it('should not react to new layout if no changes', async function() {
 
-      await waitFor(() => {
-        expect(onLayoutChanged).to.have.been.calledOnce;
+        // given
+        const { instance, rerender } = await renderEditor(diagramXML);
+
+        const toggleGridSpy = spy(instance.getModeler().get('grid'), 'toggle');
+
+        // when
+        rerender(diagramXML, {
+          layout: { }
+        });
+
+        // then
+        expect(toggleGridSpy).to.have.not.been.called;
+
       });
 
-      // then
-      expect(onLayoutChanged).to.have.been.calledOnce;
 
-      const callArg = onLayoutChanged.getCall(0).args[0];
-      expect(callArg).to.deep.include({
-        propertiesPanel: {
-          open: false,
-          width: 280
-        }
+      it('should update cached layout', async function() {
+
+        // given
+        const cache = new Cache();
+
+        const modeler = new BpmnModeler({});
+
+        cache.add('editor', {
+          cached: {
+            modeler: modeler
+          },
+          __destroy: () => {}
+        });
+
+        const grid = modeler.get('grid');
+
+        const toggleSpy = spy(grid, 'toggle');
+
+        // when
+        await renderEditor(diagramXML, {
+          id: 'editor',
+          cache,
+          layout: {
+            grid: {
+              visible: false
+            }
+          }
+        });
+
+        // then
+        expect(toggleSpy).to.have.been.called;
       });
+
     });
 
 
@@ -1056,79 +1210,6 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         layout
       });
 
-    });
-
-
-    it('should supply layout to properties panel', async function() {
-
-      // given
-      const propertiesPanelLayout = {
-        open: true,
-        groups: {
-          customGroup: {
-            open: true
-          }
-        }
-      };
-
-      const layout = {
-        propertiesPanel: propertiesPanelLayout
-      };
-
-      // when
-      const { instance } = await renderEditor(diagramXML, {
-        layout
-      });
-
-
-      // then
-      const modeler = instance.getModeler();
-
-      expect(modeler.options.propertiesPanel.layout).to.exist;
-      expect(modeler.options.propertiesPanel.layout).to.eql(propertiesPanelLayout);
-
-    });
-
-
-    it('should update cached layout', async function() {
-
-      // given
-      const cache = new Cache();
-
-      const modeler = new BpmnModeler({
-        propertiesPanel: {
-          layout: { }
-        }
-      });
-
-      cache.add('editor', {
-        cached: {
-          modeler: modeler
-        },
-        __destroy: () => {}
-      });
-
-      const propertiesPanel = modeler.get('propertiesPanel');
-
-      const layoutSpy = spy(propertiesPanel, 'setLayout');
-
-      // when
-      await renderEditor(diagramXML, {
-        id: 'editor',
-        cache,
-        layout: {
-          propertiesPanel: {
-            groups: {
-              general: {
-                open: true
-              }
-            }
-          }
-        }
-      });
-
-      // then
-      expect(layoutSpy).to.have.been.called;
     });
 
   });
@@ -1809,6 +1890,37 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         propertiesPanel: {
           open: true,
           width: 280
+        }
+      });
+    });
+
+  });
+
+
+  describe('grid actions', function() {
+
+    it('should toggle grid', async function() {
+
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        layout: {
+          grid: {
+            visible: false
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.triggerAction('toggleGrid');
+
+      // then
+      expect(onLayoutChangedSpy).to.be.calledOnceWith({
+        grid: {
+          visible: true
         }
       });
     });
