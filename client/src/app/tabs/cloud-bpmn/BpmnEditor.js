@@ -806,7 +806,7 @@ export class BpmnEditor extends CachedComponent {
     } = this.state;
 
     return (
-      <div className={ css.BpmnEditor }>
+      <div className={ css.BpmnEditor } onContextMenu={ this.handleContextMenu }>
 
         <Loader hidden={ imported && !importing } />
 
@@ -815,7 +815,6 @@ export class BpmnEditor extends CachedComponent {
             className="diagram"
             ref={ this.ref }
             onFocus={ this.handleChanged }
-            onContextMenu={ this.handleContextMenu }
           ></div>
 
           <PropertiesPanelContainer
