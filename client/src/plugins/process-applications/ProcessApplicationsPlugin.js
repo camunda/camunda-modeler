@@ -218,6 +218,7 @@ export default function ProcessApplicationsPlugin(props) {
       processApplicationItems={ processApplicationItems }
       onOpen={ (path) => triggerAction('open-diagram', { path }) }
       onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }
+      onCreateProcessApplication={ () => triggerAction('emit-event', { type: 'create-process-application' }) }
       tabsProvider={ _getFromApp('props').tabsProvider }
     />
     <ProcessApplicationsDeploymentPlugin
