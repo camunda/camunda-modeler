@@ -23,40 +23,165 @@ import ProcessApplicationsStatusBar from '../ProcessApplicationsStatusBar';
 
 describe('<ProcessApplicationsStatusBar>', function() {
 
-  it('should render', function() {
-    createProcessApplicationsStatusBar();
+  describe('process application', function() {
+
+    it('should render and indicate process application', function() {
+
+      // when
+      const { wrapper } = createProcessApplicationsStatusBar();
+
+      // then
+      expect(wrapper.find('.btn')).to.have.length(1);
+      expect(wrapper.find('.btn').hasClass('has-process-application')).to.be.true;
+    });
+
+
+    it('should open overlay on click', function() {
+
+      // given
+      const { wrapper } = createProcessApplicationsStatusBar();
+
+      // when
+      wrapper.find('.btn').simulate('click');
+
+      // then
+      expect(wrapper.find(Overlay)).to.have.length(1);
+      expect(wrapper.find(Overlay).hasClass('process-application')).to.be.true;
+    });
+
+
+    it('should close overlay on click', function() {
+
+      // given
+      const { wrapper } = createProcessApplicationsStatusBar();
+
+      // when
+      wrapper.find('.btn').simulate('click');
+
+      // then
+      expect(wrapper.find(Overlay)).to.have.length(1);
+
+      // when
+      wrapper.find('.btn').simulate('click');
+
+      // then
+      expect(wrapper.find(Overlay)).to.have.length(0);
+    });
+
+
+    it('should open file on clicking file', function() {
+
+
+      // given
+      const onOpenSpy = sinon.spy();
+
+      const { wrapper } = createProcessApplicationsStatusBar({
+        onOpen: onOpenSpy
+      });
+
+      wrapper.find('.btn').simulate('click');
+
+      // when
+      wrapper.find('.process-application-files .file').at(0).find('button').simulate('click');
+
+      // then
+      expect(onOpenSpy).to.have.been.calledOnce;
+    });
+
   });
 
 
-  it('should open overlay on click', function() {
+  describe('no process application', function() {
 
-    // given
-    const { wrapper } = createProcessApplicationsStatusBar();
+    it('should render and indicate no process application', function() {
 
-    // when
-    wrapper.find('.btn').simulate('click');
+      // when
+      const { wrapper } = createProcessApplicationsStatusBar({
+        processApplication: null,
+        processApplicationItems: []
+      });
 
-    // then
-    expect(wrapper.find(Overlay)).to.have.length(1);
+      // then
+      expect(wrapper.find('.btn')).to.have.length(1);
+      expect(wrapper.find('.btn').hasClass('has-process-application')).to.be.false;
+    });
+
+
+    it('should open overlay on click', function() {
+
+      // given
+      const { wrapper } = createProcessApplicationsStatusBar({
+        processApplication: null,
+        processApplicationItems: []
+      });
+
+      // when
+      wrapper.find('.btn').simulate('click');
+
+      // then
+      expect(wrapper.find('.create-process-application-btn')).to.have.length(1);
+    });
+
+
+    it('should close overlay on click', function() {
+
+      // given
+      const { wrapper } = createProcessApplicationsStatusBar({
+        processApplication: null,
+        processApplicationItems: []
+      });
+
+      // when
+      wrapper.find('.btn').simulate('click');
+
+      // then
+      expect(wrapper.find(Overlay)).to.have.length(1);
+
+      // when
+      wrapper.find('.btn:not(.create-process-application-btn)').simulate('click');
+
+      // then
+      expect(wrapper.find(Overlay)).to.have.length(0);
+    });
+
+
+    it('should trigger process application creation on click', function() {
+
+      // given
+      const onCreateProcessApplicationSpy = sinon.spy();
+
+      const wrapper = createProcessApplicationsStatusBar({
+        processApplication: null,
+        processApplicationItems: [],
+        onCreateProcessApplication: onCreateProcessApplicationSpy
+      }).wrapper;
+
+      wrapper.find('.btn').simulate('click');
+
+      // when
+      wrapper.find('.create-process-application-btn').simulate('click');
+
+      // then
+      expect(onCreateProcessApplicationSpy).to.have.been.calledOnce;
+    });
+
   });
 
 
-  it('should close overlay on click', function() {
-
-    // given
-    const { wrapper } = createProcessApplicationsStatusBar();
+  it('should not render for Camunda 7 files', function() {
 
     // when
-    wrapper.find('.btn').simulate('click');
+    const { wrapper } = createProcessApplicationsStatusBar({
+      processApplication: null,
+      processApplicationItems: [],
+      activeTab: {
+        ...DEFAULT_OPEN_TAB,
+        type: 'bpmn'
+      }
+    });
 
     // then
-    expect(wrapper.find(Overlay)).to.have.length(1);
-
-    // when
-    wrapper.find('.btn').simulate('click');
-
-    // then
-    expect(wrapper.find(Overlay)).to.have.length(0);
+    expect(wrapper.find('.btn')).to.have.length(0);
   });
 
 
@@ -180,7 +305,8 @@ describe('<ProcessApplicationsStatusBar>', function() {
 const DEFAULT_OPEN_TAB = {
   file: {
     path: 'diagram_1.bpmn'
-  }
+  },
+  type: 'cloud-bpmn'
 };
 
 const DEFAULT_PROCESS_APPLICATION = {
@@ -257,6 +383,7 @@ function createProcessApplicationsStatusBar(props = {}, render = mount) {
   const {
     activeTab = DEFAULT_OPEN_TAB,
     onOpen = () => {},
+    onCreateProcessApplication = () => {},
     onRevealInFileExplorer = () => {},
     processApplication = DEFAULT_PROCESS_APPLICATION,
     processApplicationItems = DEFAULT_PROCESS_APPLICATION_ITEMS,
@@ -268,6 +395,7 @@ function createProcessApplicationsStatusBar(props = {}, render = mount) {
     <ProcessApplicationsStatusBar
       activeTab={ activeTab }
       onOpen={ onOpen }
+      onCreateProcessApplication={ onCreateProcessApplication }
       onRevealInFileExplorer={ onRevealInFileExplorer }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }
