@@ -47,16 +47,17 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
+          <h4>Connection manager</h4>
+          You can now store multiple connections and easily switch between them using the new connection manager in the status bar.
+        </li>
+        <li>
           <h4>Enhanced element template support</h4>
-          Element templates now support templating signal events, enabling reusable signals across processes.
+          Element templates now support templating timer events, enabling reusable timer configuration across processes.
+          If an applied template is missing in the current configuration, its ID and version are displayed.
         </li>
         <li>
-          <h4>Enhanced label visibility</h4>
-          External labels are now visually connected to their target elements, making it easier to understand diagram relationships.
-        </li>
-        <li>
-          <h4>Improved properties panel usability</h4>
-          We addressed several issues related to input handling and made it easier to interact with the tooltips.
+          <h4>Task testing improvements</h4>
+          The incident error message is now displayed in a readable format. Task testing supports process applications, and uses the configured tenant ID if provided.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
