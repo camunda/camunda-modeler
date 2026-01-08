@@ -53,7 +53,7 @@ export function ReleaseInfo(props) {
         <li>
           <h4>Enhanced element template support</h4>
           Element templates now support templating timer events, enabling reusable timer configuration across processes.
-          If an applied template is missing in the current configuration, its ID and version are displayed.
+          If an applied template is missing in the current configuration, its ID and version are displayed in the Template section of the properties panel for easier troubleshooting.
         </li>
         <li>
           <h4>Task testing improvements</h4>
