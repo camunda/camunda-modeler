@@ -101,7 +101,26 @@ const INITIAL_STATE = {
   currentModal: null
 };
 
+/**
+ * @typedef { {
+ *   contents: string,
+ *   path?: string
+ * } } File
+ */
 
+/**
+ * @typedef { {
+ *   encoding: string,
+ *   originalFile: File,
+ *   savePath: string,
+ *   saveType: string
+ * } } SaveFileOptions
+ */
+
+
+/**
+ * The main application component, manages tabs, navigation and event routing.
+ */
 export class App extends PureComponent {
 
   constructor(props) {
@@ -159,6 +178,12 @@ export class App extends PureComponent {
       this.updateMenu = debounce(this.updateMenu, 50);
       this.resizeTab = debounce(this.resizeTab, 50);
     }
+
+    this.on('app.blurred', this.triggerAutoSave);
+
+    this.on('app.focused', () => {
+      this.triggerAction('check-file-changed');
+    });
 
     this.currentNotificationId = 0;
   }
@@ -418,18 +443,28 @@ export class App extends PureComponent {
 
     const { name } = file;
 
-    if (this.isDirty(tab)) {
-      const { button } = await this.showCloseFileDialog({ name });
+    try {
 
-      if (button === 'save') {
-        const saved = await this.saveTab(tab);
+      // disable auto-save during <save-all>
+      this.off('app.blurred', this.triggerAutoSave);
 
-        if (!saved) {
+      if (this.isDirty(tab)) {
+        const { button } = await this.showCloseFileDialog({ name });
+
+        if (button === 'save') {
+          const saved = await this.saveTab(tab);
+
+          if (!saved) {
+            return false;
+          }
+        } else if (button === 'cancel') {
           return false;
         }
-      } else if (button === 'cancel') {
-        return false;
       }
+    } finally {
+
+      // restore auto-save
+      this.on('app.blurred', this.triggerAutoSave);
     }
 
     return true;
@@ -577,7 +612,31 @@ export class App extends PureComponent {
     });
   }
 
+  triggerAutoSave = () => {
+    const { activeTab } = this.state;
+
+    activeTab && this.autoSave(activeTab);
+  };
+
+  /**
+   * Select a tab, de-selecting the previous tab.
+   */
   selectTab = async tab => {
+    const { activeTab } = this.state;
+
+    // auto-save the previously active tab when switching (async, non-blocking)
+    if (activeTab !== tab && this.shouldAutoSave(activeTab)) {
+
+      const contents = await this.getActiveTabContents();
+
+      // asynchronously invoke save
+      this.autoSaveWithContents(activeTab, contents).catch(err => {
+
+        // should never happen; auto-safe is fail-safe
+        this.handleError(err);
+      });
+    }
+
     const updatedTab = await this.checkFileChanged(tab);
     return this.showTab(updatedTab || tab);
   };
@@ -1423,15 +1482,31 @@ export class App extends PureComponent {
   }
 
   /**
+   * Return contents of active tab.
+   *
+   * @return {Promise<string>} - tab contents
+   */
+  getActiveTabContents() {
+
+    if (!this.tabRef.current) {
+      throw new Error('no active tab reference');
+    }
+
+    return this.tabRef.current.triggerAction('save');
+  }
+
+  /**
    * Saves current tab to given location
+   *
    * @param {string} options.encoding
    * @param {File} options.originalFile
    * @param {string} options.savePath
    * @param {string} options.saveType
+   * @param {string} contents
    *
    * @returns {Promise<File>} saved file.
    */
-  async saveTabAsFile(options) {
+  async saveTabAsFile(options, contents) {
 
     const {
       encoding,
@@ -1441,9 +1516,6 @@ export class App extends PureComponent {
     } = options;
 
     const fileSystem = this.getGlobal('fileSystem');
-
-
-    const contents = await this.tabRef.current.triggerAction('save');
 
     const file = await fileSystem.writeFile(savePath, {
       ...originalFile,
@@ -1480,11 +1552,19 @@ export class App extends PureComponent {
     }
   }
 
+
   /**
    * Asks the user for file path to save.
-   * @param {Tab} tab
+   *
+   * @param { Tab} tab
+   *
+   * @param { object } options
+   * @param { boolean } [options.saveAs=false]
+   *
+   * @return { Promise<SaveFileOptions|false> }
    */
   async askForSave(tab, options) {
+
     const {
       tabsProvider
     } = this.props;
@@ -1532,7 +1612,7 @@ export class App extends PureComponent {
 
   async saveTab(tab, options) {
 
-    this.triggerAction('saveTab.start');
+    await this.triggerAction('saveTab.start');
 
     options = options || {};
 
@@ -1550,7 +1630,9 @@ export class App extends PureComponent {
           return false;
         }
 
-        const savedFile = await this.saveTabAsFile(saveOptions);
+        const contents = await this.getActiveTabContents();
+
+        const savedFile = await this.saveTabAsFile(saveOptions, contents);
 
         return this.tabSaved(tab, savedFile);
       } catch (err) {
@@ -1567,6 +1649,105 @@ export class App extends PureComponent {
 
     }
 
+  }
+
+  /**
+   * Check if a tab should be auto-saved.
+   *
+   * A tab should be auto-saved if it is:
+   * - Not an empty tab
+   * - Dirty (has unsaved changes)
+   * - Previously saved (has a file path)
+   *
+   * @param {Tab} [tab] - the tab to check
+   *
+   * @returns {boolean} - whether the tab should be auto-saved
+   */
+  shouldAutoSave(tab) {
+    return tab && !this.isEmptyTab(tab) && this.isDirty(tab) && !this.isUnsaved(tab);
+  }
+
+  /**
+   * Auto-save a previously saved tab, if needed.
+   *
+   * Does NOT prompt the user for a save location.
+   *
+   * @param {Tab} tab - The tab to auto-save
+   *
+   * @returns {Promise<Tab|false>} - The saved tab or false if not saved
+   */
+  async autoSave(tab) {
+
+    if (!this.shouldAutoSave(tab)) {
+      return false;
+    }
+
+    if (tab !== this.state.activeTab) {
+      throw new Error('cannot auto-save non-active tab');
+    }
+
+    const contents = await this.getActiveTabContents();
+
+    return this.autoSaveWithContents(tab, contents);
+  }
+
+  /**
+   * Auto-saves the given tab with contents.
+   *
+   * Does NOT prompt the user for a save location.
+   *
+   * @param {Tab} tab - the tab to auto-save
+   * @param {string} contents - the tab contents
+   *
+   * @returns {Promise<Tab|false>} - The saved tab or false if not saved
+   */
+  async autoSaveWithContents(tab, contents) {
+
+    const {
+      tabsProvider
+    } = this.props;
+
+    const {
+      file,
+      type: fileType
+    } = tab;
+
+    const provider = tabsProvider.getProvider(fileType);
+    const saveType = provider.extensions[0];
+    const encoding = provider.encoding || ENCODING_UTF8;
+
+    try {
+      const savedFile = await this.saveTabAsFile({
+        encoding,
+        originalFile: file,
+        savePath: file.path,
+        saveType
+      }, contents);
+
+      return this.tabSaved(tab, savedFile);
+    } catch (err) {
+      this.handleAutoSaveError(tab, err);
+
+      return false;
+    }
+  }
+
+  /**
+   * Handle error during auto-save.
+   *
+   * @param {Tab} tab - the tab that failed to save
+   * @param {Error} err - the error that occurred
+   */
+  handleAutoSaveError(tab, err) {
+
+    console.error(`failed to auto-save tab ${tab.name}`, err);
+
+    this.displayNotification({
+      type: 'error',
+      title: 'Auto-save failed',
+      content: `Could not auto-save "${tab.name}": ${err.message}`,
+      duration: 4000
+    });
   }
 
   saveAllTabs = () => {
@@ -1885,6 +2066,14 @@ export class App extends PureComponent {
       return this.saveTab(activeTab, { saveAs: true });
     }
 
+    if (action === 'window-focused') {
+      return this.emit('app.focused');
+    }
+
+    if (action === 'window-blurred') {
+      return this.emit('app.blurred');
+    }
+
     if (action === 'quit') {
       return this.quit();
     }
@@ -1947,10 +2136,6 @@ export class App extends PureComponent {
 
     if (action === 'check-file-changed') {
       return this.checkFileChanged(activeTab);
-    }
-
-    if (action === 'notify-focus-change') {
-      return this.emit('app.focus-changed');
     }
 
     if (action === 'resize') {
