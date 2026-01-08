@@ -59,10 +59,6 @@ export function ReleaseInfo(props) {
           <h4>Task testing improvements</h4>
           The incident error message is now displayed in a readable format. Task testing supports process applications, and uses the configured tenant ID if provided.
         </li>
-        <li>
-          <h4>Bug fixes and more</h4>
-          As always, this release incorporates bug fixes and additional minor improvements.
-        </li>
       </ul>
     </div>
   );
