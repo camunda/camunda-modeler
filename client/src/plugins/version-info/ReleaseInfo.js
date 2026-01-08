@@ -48,7 +48,7 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Connection manager</h4>
-          You can now store multiple connections and easily switch between them using the new connection manager in the status bar.
+          You can now create and store multiple connections using the settings, and easily switch between connections from the status bar.
         </li>
         <li>
           <h4>Enhanced element template support</h4>
