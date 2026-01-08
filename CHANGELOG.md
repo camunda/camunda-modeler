@@ -25,6 +25,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: add connection manager ([#4972](https://github.com/camunda/camunda-modeler/issues/4972))
 * `FEAT`: provide incident data in readable format ([#5428](https://github.com/camunda/camunda-modeler/issues/5428))
+* `FEAT`: make the properties panel open per default ([#5514](https://github.com/camunda/camunda-modeler/issues/5514))
 * `FIX`: make task testing work in process applications ([#5460](https://github.com/camunda/camunda-modeler/issues/5460))
 * `FIX`: migrate configs when file path changes ([#5464](https://github.com/camunda/camunda-modeler/pull/5464/))
 * `FIX`: configured tenantId is also used for task testing API calls ([#5422](https://github.com/camunda/camunda-modeler/pull/5422))
