@@ -1,6 +1,6 @@
 {
   "name": "camunda-modeler-client",
-  "version": "5.43.0-rc.0",
+  "version": "5.43.0",
   "description": "Camunda Modeler client application",
   "private": true,
   "license": "MIT",
