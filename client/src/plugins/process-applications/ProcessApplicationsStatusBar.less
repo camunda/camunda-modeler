@@ -1,8 +1,18 @@
 :local(.ProcessApplicationsButton) {
-  background: hsl(205, 100%, 45%) !important;
+  &.has-process-application {
+    background: hsl(205, 100%, 45%) !important;
+  
+    svg {
+      fill: white;
+    }
 
-  svg {
-    fill: white;
+    &:hover {
+      background: hsl(205, 100%, 40%) !important;
+  
+      svg {
+        fill: white;
+      }
+    }
   }
 }
   
@@ -11,6 +21,16 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+  }
+
+  .section__body {
+    a {
+      cursor: pointer;
+    }
+
+    .create-process-application-btn {
+      width: 100%;
+    }
   }
 
   ul.files {
