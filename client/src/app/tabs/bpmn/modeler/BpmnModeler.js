@@ -12,6 +12,7 @@ import BpmnModeler from 'camunda-bpmn-js/lib/camunda-platform/Modeler';
 
 import addExporterModule from '@bpmn-io/add-exporter';
 
+import nativeCopyPasteModule from 'bpmn-js-native-copy-paste';
 import completeDirectEditingModule from './features/complete-direct-editing';
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from './features/hand-tool-on-space';
@@ -81,7 +82,8 @@ const extensionModules = [
   elementTemplatesTracking,
   modelingTracking,
   popupMenuTracking,
-  paletteTracking
+  paletteTracking,
+  nativeCopyPasteModule
 ];
 
 PlatformBpmnModeler.prototype._modules = [
