@@ -469,7 +469,7 @@ export class BpmnEditor extends CachedComponent {
       moveCanvas: canvasFocused,
       moveToOrigin: canvasFocused,
       moveSelection: canvasFocused && !!selectionLength,
-      paste: !modeler.get('clipboard').isEmpty(),
+      paste: true,
       platform: 'platform',
       propertiesPanel: true,
       grid: true,
