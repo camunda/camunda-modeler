@@ -622,7 +622,7 @@ describe('<BpmnEditor>', function() {
           lassoTool: true,
           moveCanvas: true,
           moveToOrigin: true,
-          paste: false,
+          paste: true,
           redo: true,
           removeSelected: false,
           replaceElement: false,
