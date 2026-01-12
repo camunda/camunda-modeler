@@ -6,6 +6,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.43.1
+
+* `DEPS`: update to `camunda-bpmn-js-behaviors@1.12.1`
+
+### BPMN
+
+* `FIX`: fix crash when call activity without extension elements is used in Camunda 7 ([#5541](https://github.com/camunda/camunda-modeler/issues/5541))
+
 ## 5.43.0
 
 * `DEPS`: update to `@bpmn-io/properties-panel@3.35.1`
