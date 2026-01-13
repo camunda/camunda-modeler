@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `FIX`: make tab switch work on macOS again ([#5479](https://github.com/camunda/camunda-modeler/issues/5479))
+
 ## 5.43.1
 
 * `DEPS`: update to `camunda-bpmn-js-behaviors@1.12.1`
