@@ -81,7 +81,7 @@ export default function ProcessApplicationsStatusBar(props) {
             ? <>
               <Section>
                 <Section.Body>
-                  <p>Turn your project into a <a href={ utmTag('https://docs.camunda.io/docs/components/concepts/process-applications/') }>process application</a>:</p>
+                  <p>Turn your project into a <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/process-applications/') }>process application</a>:</p>
                   <ul>
                     <li>Deploy and test resources (BPMN, DMN, forms) as a single unit</li>
                     <li>Benefit from cross-file editor intelligence and improved discovery</li>
