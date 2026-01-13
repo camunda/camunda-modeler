@@ -164,5 +164,5 @@ class MacMenuBuilder extends MenuBuilder {
 module.exports = MacMenuBuilder;
 
 function canSwitchTab(state) {
-  return state.tabsCount > 1;
+  return state.tabs.length > 1;
 }
