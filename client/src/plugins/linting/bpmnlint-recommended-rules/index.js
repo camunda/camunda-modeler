@@ -8,11 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-import {
-  registerClientPlugin
-} from 'camunda-modeler-plugin-helpers';
-
-import recommendedRules from './.bpmnlintrc';
-
-registerClientPlugin(recommendedRules, 'lintRules.bpmn');
-registerClientPlugin(recommendedRules, 'lintRules.cloud-bpmn');
+export { default } from './BpmnlintRecommendedRules';
