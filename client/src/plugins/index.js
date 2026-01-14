@@ -13,6 +13,7 @@ import ContextAction from './tab-context-action';
 import CreateNewAction from './create-new-action';
 import ElementTemplatesModal from './element-templates-modal';
 import ErrorTracking from './error-tracking';
+import BpmnlintRecommendedRules from './linting/bpmnlint-recommended-rules';
 import PrivacyPreferences from './privacy-preferences';
 import ReportFeedback from './report-feedback';
 import UpdateChecks from './update-checks';
@@ -27,6 +28,7 @@ export default [
   CreateNewAction,
   ElementTemplatesModal,
   ErrorTracking,
+  BpmnlintRecommendedRules,
   PrivacyPreferences,
   ReportFeedback,
   UpdateChecks,
