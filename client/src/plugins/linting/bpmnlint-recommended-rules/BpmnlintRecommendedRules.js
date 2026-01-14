@@ -42,31 +42,6 @@ export default class BpmnlintRecommendedRules extends PureComponent {
     if (bpmnlintEnabled) {
       this.registerLintRules();
     }
-
-    // Subscribe to config changes to allow toggling at runtime
-    const { subscribe } = this.props;
-
-    if (subscribe) {
-      subscribe('config.changed', ({ key }) => {
-        if (key === CONFIG_KEY) {
-          this.handleConfigChange();
-        }
-      });
-    }
-  }
-
-  async handleConfigChange() {
-    const {
-      config
-    } = this.props;
-
-    const bpmnlintEnabled = await config.get(CONFIG_KEY, true);
-
-    if (bpmnlintEnabled && !this.state.registered) {
-      this.registerLintRules();
-    }
-    // Note: We don't unregister rules if disabled because that would require
-    // re-initializing the modeler. The setting takes effect on next app restart.
   }
 
   registerLintRules() {
