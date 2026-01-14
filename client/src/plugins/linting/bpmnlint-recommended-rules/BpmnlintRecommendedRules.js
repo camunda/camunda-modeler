@@ -23,14 +23,6 @@ const CONFIG_KEY = 'editor.bpmnlintEnabled';
  */
 export default class BpmnlintRecommendedRules extends PureComponent {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      registered: false
-    };
-  }
-
   async componentDidMount() {
     const {
       config
@@ -45,10 +37,19 @@ export default class BpmnlintRecommendedRules extends PureComponent {
   }
 
   registerLintRules() {
-    registerClientPlugin(recommendedRules, 'lintRules.bpmn');
-    registerClientPlugin(recommendedRules, 'lintRules.cloud-bpmn');
+    try {
+      registerClientPlugin(recommendedRules, 'lintRules.bpmn');
+      registerClientPlugin(recommendedRules, 'lintRules.cloud-bpmn');
+    } catch (error) {
+      const { log } = this.props;
 
-    this.setState({ registered: true });
+      if (log) {
+        log({
+          category: 'linting',
+          message: 'Failed to register bpmnlint recommended rules: ' + error.message
+        });
+      }
+    }
   }
 
   render() {
