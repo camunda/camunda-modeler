@@ -1376,6 +1376,7 @@ describe('<App>', function() {
 
       // when
       await app.autoSave(tab);
+      await waitSaved();
 
       // then
       expect(writeFileSpy).to.have.been.calledOnce;
@@ -1392,6 +1393,7 @@ describe('<App>', function() {
 
       // when
       await app.autoSave(activeTab);
+      await waitSaved();
 
       // then
       expect(writeFileSpy).not.to.have.been.called;
@@ -1410,6 +1412,7 @@ describe('<App>', function() {
 
       // when
       await app.autoSave(tab);
+      await waitSaved();
 
       // then
       // Should NOT write file because new files haven't been saved yet
@@ -1427,6 +1430,7 @@ describe('<App>', function() {
 
       // when
       await app.autoSave(activeTab);
+      await waitSaved();
 
       // then
       expect(writeFileSpy).not.to.have.been.called;
@@ -1449,6 +1453,7 @@ describe('<App>', function() {
 
       // when: switch to tab2
       await app.selectTab(tab2);
+      await waitSaved();
 
       // then: should have auto-saved tab1
       expect(writeFileSpy).to.have.been.calledOnce;
@@ -1470,6 +1475,7 @@ describe('<App>', function() {
 
       // when: switch to new tab
       await app.createDiagram('bpmn');
+      await waitSaved();
 
       // then: should have auto-saved tab1
       expect(writeFileSpy).to.have.been.calledOnce;
@@ -1492,6 +1498,7 @@ describe('<App>', function() {
 
       // when: navigating
       await app.navigate(-1);
+      await waitSaved();
 
       // then: should have auto-saved tab1
       expect(writeFileSpy).to.have.been.calledOnce;
@@ -1514,6 +1521,7 @@ describe('<App>', function() {
 
       // when: show tab2
       await app.showTab(tab2);
+      await waitSaved();
 
       // then: should have auto-saved tab1
       expect(writeFileSpy).to.have.been.calledOnce;
@@ -1536,6 +1544,7 @@ describe('<App>', function() {
 
       // when: switch to another tab
       await app.selectTab(app.state.tabs[0]);
+      await waitSaved();
 
       // then: should NOT have auto-saved new tab
       expect(writeFileSpy).not.to.have.been.called;
@@ -4181,4 +4190,15 @@ function updateFileStats(file, newAttrs, fileSystem) {
 
   fileSystem.setReadFileStatsResponse(newFileStats);
 
+}
+
+
+/**
+ * @return {Promise<any>} promise for the timeout
+ */
+function waitSaved() {
+
+  return new Promise((resolve) => {
+    setTimeout(resolve, 300);
+  });
 }
