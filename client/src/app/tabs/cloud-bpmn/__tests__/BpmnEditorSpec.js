@@ -597,6 +597,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
           align: false,
           canvasFocused: true,
           copy: false,
+          duplicate: false,
           defaultCopyCutPaste: false,
           defaultUndoRedo: false,
           dirty: true,
