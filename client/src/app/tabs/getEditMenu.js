@@ -234,7 +234,6 @@ export function getSelectionEntries({
   replaceElement,
   createElement,
   appendElement
-
 }) {
   const menuEntries = [];
 
