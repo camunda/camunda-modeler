@@ -233,7 +233,8 @@ export function getSelectionEntries({
   selectAll,
   replaceElement,
   createElement,
-  appendElement
+  appendElement,
+  duplicate
 }) {
   const menuEntries = [];
 
@@ -244,6 +245,15 @@ export function getSelectionEntries({
       enabled: selectAll,
       action: 'selectElements',
       role: inputActive && 'selectAll'
+    });
+  }
+
+  if (isDefined(duplicate)) {
+    menuEntries.push({
+      label: 'Duplicate',
+      accelerator: 'CommandOrControl + D',
+      enabled: duplicate,
+      action: 'duplicate'
     });
   }
 

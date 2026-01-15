@@ -459,6 +459,7 @@ export class BpmnEditor extends CachedComponent {
       close: true,
       copy: !!selectionLength,
       cut: false,
+      duplicate: canvasFocused && !!selectionLength,
       createElement: canvasFocused,
       defaultCopyCutPaste: !canvasFocused,
       defaultUndoRedo: !canvasFocused,
