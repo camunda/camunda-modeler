@@ -10,6 +10,22 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: auto-save tab when switched ([#5450](https://github.com/camunda/camunda-modeler/issues/5450), [#695](https://github.com/camunda/camunda-modeler/issues/695), [#1547](https://github.com/camunda/camunda-modeler/issues/1547), [#5458](https://github.com/camunda/camunda-modeler/issues/5458), [#2738](https://github.com/camunda/camunda-modeler/issues/2738))
 * `FIX`: make tab switch work on macOS again ([#5479](https://github.com/camunda/camunda-modeler/issues/5479))
+* `DEPS`: update to `@bpmn-io/properties-panel@3.36.0`
+* `DEPS`: update to `bpmn-js@18.10.1`
+* `DEPS`: update to `bpmn-js-properties-panel@5.46.0`
+* `DEPS`: update to `camunda-bpmn-js@5.17.0`
+* `DEPS`: update to `diagram-js@15.5.0`
+* `DEPS`: update to `tiny-svg@4.1.4`
+
+### BPMN
+
+* `FEAT`: add shared, global clipboard ([#https://github.com/camunda/camunda-modeler/issues/2124](https://github.com/camunda/camunda-modeler/issues/2124))
+* `FEAT`: be able to copy/paste across C7 and C8 diagrams ([#2283](https://github.com/camunda/camunda-modeler/issues/2283))
+* `FEAT`: integrate cross browser/application copy and paste of BPMN elements ([#437](https://github.com/camunda/camunda-bpmn-js/pull/437))
+* `FEAT`: add ability to duplicate elements ([#4142](https://github.com/camunda/camunda-modeler/issues/4142), [bpmn-io/diagram-js#998](https://github.com/bpmn-io/diagram-js/pull/998))
+* `FEAT`: allow to provide static value as input source ([#3333](https://github.com/camunda/camunda-modeler/issues/3333), [bpmn-io/bpmn-js-properties-panel#1178](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1178))
+* `FEAT`: rename _Inputs_ and _Outputs_ to _Input mapping_ and _Output mapping_ ([bpmn-io/bpmn-js-properties-panel#1177](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1177))
+* `FIX`: fix crash when call activity without extension elements is used in Camunda 7 ([camunda/camunda-bpmn-js-behaviors#114](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/114))
 
 ## 5.43.1
 
