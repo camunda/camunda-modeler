@@ -1455,6 +1455,49 @@ describe('<App>', function() {
     });
 
 
+    it('should auto-save on new tab creation', async function() {
+
+      // given
+      const file1 = createFile('diagram_1.bpmn');
+
+      const [ tab1 ] = await app.openFiles([ file1 ]);
+
+      // switch to tab1 and mark it as dirty
+      await app.selectTab(tab1);
+      app.setState({
+        ...app.setDirty(tab1)
+      });
+
+      // when: switch to new tab
+      await app.createDiagram('bpmn');
+
+      // then: should have auto-saved tab1
+      expect(writeFileSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should auto-save previous tab on navigation', async function() {
+
+      // given
+      const file1 = createFile('diagram_1.bpmn');
+      const file2 = createFile('diagram_2.bpmn');
+
+      const [ tab1, _ ] = await app.openFiles([ file1, file2 ]);
+
+      // show tab1 and mark it as dirty
+      await app.showTab(tab1);
+      app.setState({
+        ...app.setDirty(tab1)
+      });
+
+      // when: navigating
+      await app.navigate(-1);
+
+      // then: should have auto-saved tab1
+      expect(writeFileSpy).to.have.been.calledOnce;
+    });
+
+
     it('should auto-save previous tab on tab show', async function() {
 
       // given
