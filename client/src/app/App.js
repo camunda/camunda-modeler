@@ -417,7 +417,7 @@ export class App extends PureComponent {
       // asynchronously invoke save
       this.autoSaveWithContents(activeTab, contents).catch(err => {
 
-        // should never happen; auto-safe is fail-safe
+        // should never happen; auto-save is fail-safe
         this.handleError(err);
       });
     }
@@ -461,7 +461,8 @@ export class App extends PureComponent {
 
     try {
 
-      // disable auto-save during <save-all>
+      // disable auto-save during <save-all> to prevent
+      // interferring with user save decisions
       this.off('app.blurred', this.triggerAutoSave);
 
       if (this.isDirty(tab)) {
