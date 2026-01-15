@@ -398,7 +398,7 @@ export class App extends PureComponent {
    *
    * @return {Promise<Void>} tab shown promise
    */
-  showTab(tab) {
+  async showTab(tab) {
 
     const {
       activeTab,
@@ -408,6 +408,22 @@ export class App extends PureComponent {
     if (activeTab === tab) {
       return tabShown.promise;
     }
+
+    // auto-save the previously active tab when switching (async, non-blocking)
+    if (activeTab !== tab && this.shouldAutoSave(activeTab)) {
+
+      const contents = await this.getActiveTabContents();
+
+      // asynchronously invoke save
+      this.autoSaveWithContents(activeTab, contents).catch(err => {
+
+        // should never happen; auto-safe is fail-safe
+        this.handleError(err);
+      });
+    }
+
+    // trigger file changed in background
+    tab = await this.checkFileChanged(tab);
 
     if (!this.isEmptyTab(tab)) {
       const navigationHistory = this.navigationHistory;
@@ -620,25 +636,11 @@ export class App extends PureComponent {
 
   /**
    * Select a tab, de-selecting the previous tab.
+   *
+   * This method is an alias of {@link App#showTab}, bound to the {@link App} instance.
    */
-  selectTab = async tab => {
-    const { activeTab } = this.state;
-
-    // auto-save the previously active tab when switching (async, non-blocking)
-    if (activeTab !== tab && this.shouldAutoSave(activeTab)) {
-
-      const contents = await this.getActiveTabContents();
-
-      // asynchronously invoke save
-      this.autoSaveWithContents(activeTab, contents).catch(err => {
-
-        // should never happen; auto-safe is fail-safe
-        this.handleError(err);
-      });
-    }
-
-    const updatedTab = await this.checkFileChanged(tab);
-    return this.showTab(updatedTab || tab);
+  selectTab = tab => {
+    return this.showTab(tab);
   };
 
   moveTab = (tab, newIndex) => {
@@ -747,7 +749,7 @@ export class App extends PureComponent {
         { unsaved: true }
       );
 
-      await this.selectTab(tab);
+      await this.showTab(tab);
 
       return tab;
     }
@@ -796,7 +798,7 @@ export class App extends PureComponent {
       const activeTab = activateFile && this.findOpenTab(activateFile) || openedTabs[openedTabs.length - 1];
 
       if (activeTab) {
-        await this.selectTab(activeTab);
+        await this.showTab(activeTab);
       }
     }
 
