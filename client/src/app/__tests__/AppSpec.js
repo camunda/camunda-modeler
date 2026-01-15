@@ -1725,6 +1725,7 @@ describe('<App>', function() {
 
       // then
       expect(events).to.eql([
+        [ 'tab-shown', EMPTY_TAB ],
         [ 'tab-changed', tab ],
         [ 'tab-shown', tab ]
       ]);
@@ -1754,6 +1755,7 @@ describe('<App>', function() {
 
       // then
       expect(events).to.eql([
+        [ 'tab-shown', EMPTY_TAB ],
         [ 'tab-changed', tab ],
         [ 'tab-shown', tab ]
       ]);
