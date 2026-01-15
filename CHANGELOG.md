@@ -8,6 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: auto-save tab when switched ([#5450](https://github.com/camunda/camunda-modeler/issues/5450), [#695](https://github.com/camunda/camunda-modeler/issues/695), [#1547](https://github.com/camunda/camunda-modeler/issues/1547), [#5458](https://github.com/camunda/camunda-modeler/issues/5458), [#2738](https://github.com/camunda/camunda-modeler/issues/2738))
 * `FIX`: make tab switch work on macOS again ([#5479](https://github.com/camunda/camunda-modeler/issues/5479))
 
 ## 5.43.1
