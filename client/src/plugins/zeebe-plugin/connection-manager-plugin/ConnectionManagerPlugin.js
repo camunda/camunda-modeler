@@ -142,6 +142,7 @@ export default function ConnectionManagerPlugin(props) {
   // load connection from tab on tab change
   useEffect(() => {
     if (!activeTab) {
+      setActiveConnection(null);
       return;
     }
 
