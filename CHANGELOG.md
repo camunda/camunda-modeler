@@ -19,7 +19,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
-* `FEAT`: add shared, global clipboard ([#https://github.com/camunda/camunda-modeler/issues/2124](https://github.com/camunda/camunda-modeler/issues/2124))
+* `FEAT`: add shared, global clipboard ([#2124](https://github.com/camunda/camunda-modeler/issues/2124))
 * `FEAT`: be able to copy/paste across C7 and C8 diagrams ([#2283](https://github.com/camunda/camunda-modeler/issues/2283))
 * `FEAT`: integrate cross browser/application copy and paste of BPMN elements ([#437](https://github.com/camunda/camunda-bpmn-js/pull/437))
 * `FEAT`: add ability to duplicate elements ([#4142](https://github.com/camunda/camunda-modeler/issues/4142), [bpmn-io/diagram-js#998](https://github.com/bpmn-io/diagram-js/pull/998))
