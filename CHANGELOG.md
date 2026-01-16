@@ -25,7 +25,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add ability to duplicate elements ([#4142](https://github.com/camunda/camunda-modeler/issues/4142), [bpmn-io/diagram-js#998](https://github.com/bpmn-io/diagram-js/pull/998))
 * `FEAT`: allow to provide static value as input source ([#3333](https://github.com/camunda/camunda-modeler/issues/3333), [bpmn-io/bpmn-js-properties-panel#1178](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1178))
 * `FEAT`: rename _Inputs_ and _Outputs_ to _Input mapping_ and _Output mapping_ ([bpmn-io/bpmn-js-properties-panel#1177](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1177))
-* `FIX`: fix crash when call activity without extension elements is used in Camunda 7 ([camunda/camunda-bpmn-js-behaviors#114](https://github.com/camunda/camunda-bpmn-js-behaviors/pull/114))
 
 ## 5.43.1
 
