@@ -28,6 +28,7 @@ import EventEmitter from 'events';
 import defaultPlugins from '../plugins';
 
 import executeOnce from './util/executeOnce';
+import { CachedEventManager } from './util/CachedEventManager';
 
 import { WithCache } from './cached';
 
@@ -137,14 +138,16 @@ export class App extends PureComponent {
     this.navigationHistory = new History();
 
     this.events = new EventEmitter();
-    this.eventsContext = {
-      subscribe: (event, listener) => {
-        this.on(event, listener);
-        return {
-          cancel: () => this.off(event, listener)
-        };
-      }
-    };
+
+    this.cachedEventManager = new CachedEventManager([
+      'connectionManager.connectionStatusChanged'
+    ]);
+
+    // Intercept emit to cache certain events
+    const originalEmit = this.emit.bind(this);
+    this.emit = this.cachedEventManager.createEmitWrapper(originalEmit);
+
+    this.eventsContext = this.cachedEventManager.createEventsContext(this.events);
 
     // TODO(nikku): make state
     this.closedTabs = new History();
