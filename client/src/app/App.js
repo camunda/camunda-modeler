@@ -2208,6 +2208,37 @@ export class App extends PureComponent {
       return this.emitWithTab('app.open-connection-selector', activeTab);
     }
 
+    if (action === 'paste-into-new-tab') {
+      // Read clipboard and open as new diagram tab
+      const systemClipboard = this.getGlobal('systemClipboard');
+      systemClipboard.readText().then(text => {
+        if (text && text.trim().startsWith('<?xml')) {
+          // Try to detect diagram type (bpmn, dmn, etc.)
+          const type = this.detectDiagramType(text);
+          if (type) {
+            const file = {
+              name: `Pasted Diagram.${type}`,
+              contents: text
+            };
+            this.openFiles([file]);
+          } else {
+            this.displayNotification({
+              type: 'error',
+              title: 'Paste into New Tab',
+              content: 'Clipboard does not contain a supported diagram type.'
+            });
+          }
+        } else {
+          this.displayNotification({
+            type: 'error',
+            title: 'Paste into New Tab',
+            content: 'Clipboard does not contain diagram XML.'
+          });
+        }
+      });
+      return;
+    }
+
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
@@ -2527,6 +2558,15 @@ export class App extends PureComponent {
 
     return tabsProvider.getTabIcon(type);
   };
+
+  // Add a helper to detect diagram type from XML
+  detectDiagramType(xml) {
+    if (/bpmn:definitions|<definitions[\s>]/.test(xml)) return 'bpmn';
+    if (/dmn:definitions|<dmn:definitions[\s>]/.test(xml)) return 'dmn';
+    if (/cmmn:definitions|<cmmn:definitions[\s>]/.test(xml)) return 'cmmn';
+    if (/form:form|<form[\s>]/.test(xml)) return 'form';
+    return null;
+  }
 }
 
 
