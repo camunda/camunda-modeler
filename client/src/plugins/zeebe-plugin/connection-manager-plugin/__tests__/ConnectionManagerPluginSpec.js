@@ -641,6 +641,123 @@ describe('ConnectionManagerPlugin', function() {
 
     });
 
+
+    it('should stop connection checker when tab is closed', async function() {
+
+      // given
+      let activeTabChangedCallback;
+      const subscribe = sinon.spy(function(event, callback) {
+        if (event === 'app.activeTabChanged') {
+          activeTabChangedCallback = callback;
+          callback({
+            activeTab: DEFAULT_ACTIVE_TAB
+          });
+          return { cancel: () => {} };
+        }
+        return { cancel: () => {} };
+      });
+
+      const settings = createMockSettings({
+        'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+      });
+
+      const connectionCheckResult = { success: true };
+
+      const ConnectionChecker = require('../../deployment-plugin/ConnectionChecker').default;
+      const stopCheckingSpy = sinon.spy(ConnectionChecker.prototype, 'stopChecking');
+
+      const { rerender } = createConnectionManagerPlugin({
+        subscribe,
+        settings,
+        connectionCheckResult
+      });
+
+      await waitFor(() => {
+        expect(activeTabChangedCallback).to.exist;
+      });
+
+      stopCheckingSpy.resetHistory();
+
+      // when
+      activeTabChangedCallback({
+        activeTab: null
+      });
+
+      const newProps = createPluginProps({ subscribe, settings, connectionCheckResult });
+      rerender(
+        <SlotFillRoot>
+          <Slot name="status-bar__file" />
+          <ConnectionManagerPlugin { ...newProps } />
+        </SlotFillRoot>
+      );
+
+      // then
+      await waitFor(() => {
+        expect(stopCheckingSpy).to.have.been.called;
+      });
+
+      stopCheckingSpy.restore();
+    });
+
+
+    it('should stop connection checker when switching to camunda7 tab', async function() {
+
+      // given
+      let activeTabChangedCallback;
+      const subscribe = sinon.spy(function(event, callback) {
+        if (event === 'app.activeTabChanged') {
+          activeTabChangedCallback = callback;
+          callback({
+            activeTab: DEFAULT_ACTIVE_TAB
+          });
+          return { cancel: () => {} };
+        }
+        return { cancel: () => {} };
+      });
+
+      const settings = createMockSettings({
+        'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+      });
+
+      const connectionCheckResult = { success: true };
+
+      const ConnectionChecker = require('../../deployment-plugin/ConnectionChecker').default;
+      const stopCheckingSpy = sinon.spy(ConnectionChecker.prototype, 'stopChecking');
+
+      const { rerender } = createConnectionManagerPlugin({
+        subscribe,
+        settings,
+        connectionCheckResult
+      });
+
+      // Wait for initial setup
+      await waitFor(() => {
+        expect(activeTabChangedCallback).to.exist;
+      });
+
+      stopCheckingSpy.resetHistory();
+
+      // when
+      activeTabChangedCallback({
+        activeTab: { ...DEFAULT_ACTIVE_TAB, type: 'bpmn' } // bpmn = c7, cloud-bpmn=c8
+      });
+
+      const newProps = createPluginProps({ subscribe, settings, connectionCheckResult });
+      rerender(
+        <SlotFillRoot>
+          <Slot name="status-bar__file" />
+          <ConnectionManagerPlugin { ...newProps } />
+        </SlotFillRoot>
+      );
+
+      // then
+      await waitFor(() => {
+        expect(stopCheckingSpy).to.have.been.called;
+      });
+
+      stopCheckingSpy.restore();
+    });
+
   });
 
 

@@ -18,7 +18,7 @@ export function useConnectionStatus(subscribe) {
     });
 
     return () => subscription.cancel();
-  });
+  }, [ subscribe ]);
 
   return connectionCheckResult;
 }
