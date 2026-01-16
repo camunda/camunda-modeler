@@ -399,6 +399,36 @@ describe('Deployment', function() {
     expect(gatewayVersion).to.equal('foo');
   });
 
+
+  describe('#getConnectionForTab', function() {
+
+    it('should return NO_CONNECTION without tab', async function() {
+
+      // given
+      const deployment = createDeployment();
+
+      // when
+      const result = await deployment.getConnectionForTab();
+
+      // then
+      expect(result.id).to.equal('NO_CONNECTION');
+    });
+
+
+    it('should return NO_CONNECTION without tab.file', async function() {
+
+      // given
+      const deployment = createDeployment();
+
+      // when
+      const result = await deployment.getConnectionForTab({ file: undefined });
+
+      // then
+      expect(result.id).to.equal('NO_CONNECTION');
+    });
+
+  });
+
 });
 
 class Mock {
