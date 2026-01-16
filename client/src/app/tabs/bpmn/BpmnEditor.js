@@ -51,6 +51,8 @@ import {
 
 import configureModeler from '../bpmn-shared/util/configure';
 
+import { GridBehavior } from '../util/grid';
+
 import Metadata from '../../../util/Metadata';
 
 import {
@@ -122,6 +124,10 @@ export class BpmnEditor extends CachedComponent {
       setCached: (state) => this.setCached(state)
     });
 
+    this.gridBehavior = new GridBehavior({
+      getDiagram: () => this.getModeler()
+    });
+
     this.handleResize = debounce(this.handleResize);
 
     this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
@@ -146,9 +152,7 @@ export class BpmnEditor extends CachedComponent {
 
     minimap.toggle(layout.minimap?.open === true);
 
-    const grid = modeler.get('grid');
-
-    grid.toggle(layout.grid?.visible !== false);
+    this.gridBehavior.update(layout);
 
     const propertiesPanel = modeler.get('propertiesPanel');
 
@@ -214,12 +218,7 @@ export class BpmnEditor extends CachedComponent {
       propertiesPanel.setLayout(this.props.layout.propertiesPanel);
     }
 
-    if (isGridLayoutChange(prevProps, this.props)) {
-      const modeler = this.getModeler();
-      const grid = modeler.get('grid');
-
-      grid.toggle(this.props.layout?.grid?.visible !== false);
-    }
+    this.gridBehavior.checkUpdate(prevProps.layout, layout);
   }
 
   listen(fn) {
@@ -473,7 +472,7 @@ export class BpmnEditor extends CachedComponent {
       paste: true,
       platform: 'platform',
       propertiesPanel: true,
-      grid: true,
+      grid: this.gridBehavior.hasGrid(),
       redo: canvasFocused && commandStack.canRedo(),
       removeSelected: canvasFocused && !!selectionLength,
       replaceElement: canvasFocused && selectionLength == 1,
@@ -696,13 +695,7 @@ export class BpmnEditor extends CachedComponent {
     }
 
     if (action === 'toggleGrid') {
-      const newLayout = {
-        grid: {
-          visible: layout.grid?.visible === false
-        }
-      };
-
-      return this.handleLayoutChange(newLayout);
+      return this.gridBehavior.toggleGrid(layout, this.handleLayoutChange);
     }
 
     if (action === 'toggleProperties') {
@@ -972,16 +965,4 @@ function isPropertiesPanelLayoutChanged(prevProps, props) {
 
   // check JSON equality
   return JSON.stringify(prevProps.layout.propertiesPanel) !== JSON.stringify(props.layout.propertiesPanel);
-}
-
-/**
- * Check whether grid layout changed since last open
- *
- * @param {Object} prevProps
- * @param {Object} props
- *
- * @returns {boolean}
- */
-function isGridLayoutChange(prevProps, props) {
-  return props.layout?.grid?.visible !== prevProps.layout?.grid?.visible;
 }
