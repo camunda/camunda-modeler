@@ -140,8 +140,6 @@ describe('layoutActions', function() {
       const newLayout = getToggledPropertiesPanelLayout(layout, DEFAULT_LAYOUT);
 
       // then
-      // With fresh config, undefined is treated as "open" (default state),
-      // so toggle closes it to false
       expect(newLayout).to.eql({
         propertiesPanel: {
           open: false,

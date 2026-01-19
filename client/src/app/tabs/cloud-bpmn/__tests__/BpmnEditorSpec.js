@@ -1909,8 +1909,6 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       instance.triggerAction('toggleProperties');
 
       // then
-      // With fresh config (no layout), the panel defaults to open (true)
-      // so the first toggle should close it (set to false)
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
         propertiesPanel: {
           open: false,
