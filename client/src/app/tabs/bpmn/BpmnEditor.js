@@ -710,7 +710,7 @@ export class BpmnEditor extends CachedComponent {
         propertiesPanel: {
           ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
           ...propertiesPanelLayout,
-          open: !propertiesPanelLayout.open
+          open: propertiesPanelLayout.open === false
         }
       };
 

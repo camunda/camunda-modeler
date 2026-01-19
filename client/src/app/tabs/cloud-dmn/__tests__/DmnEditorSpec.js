@@ -1945,6 +1945,32 @@ describe('<DmnEditor>', function() {
       });
     });
 
+
+    it('should toggle properties panel with fresh config (no layout)', async function() {
+
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        layout: {},
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.triggerAction('toggleProperties');
+
+      // then
+      // With fresh config (no layout), the panel defaults to open (true)
+      // so the first toggle should close it (set to false)
+      expect(onLayoutChangedSpy).to.be.calledOnceWith({
+        propertiesPanel: {
+          open: false,
+          width: 280
+        }
+      });
+    });
+
   });
 
 
