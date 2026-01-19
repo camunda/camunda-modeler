@@ -6,10 +6,17 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.44.0
+
 ### General
 
-* `FEAT`: auto-save tab when switched ([#5450](https://github.com/camunda/camunda-modeler/issues/5450), [#695](https://github.com/camunda/camunda-modeler/issues/695), [#1547](https://github.com/camunda/camunda-modeler/issues/1547), [#5458](https://github.com/camunda/camunda-modeler/issues/5458), [#2738](https://github.com/camunda/camunda-modeler/issues/2738))
+* `FEAT`: auto-save active tab ([#5459](https://github.com/camunda/camunda-modeler/issues/5459), [#5450](https://github.com/camunda/camunda-modeler/issues/5450), [#695](https://github.com/camunda/camunda-modeler/issues/695), [#1547](https://github.com/camunda/camunda-modeler/issues/1547), [#5458](https://github.com/camunda/camunda-modeler/issues/5458), [#2738](https://github.com/camunda/camunda-modeler/issues/2738))
+* `FEAT`: be able to toggle grid via keyboard shortcut ([#5522](https://github.com/camunda/camunda-modeler/issues/5522), [#4573](https://github.com/camunda/camunda-modeler/issues/4573), [#3995](https://github.com/camunda/camunda-modeler/issues/3995))
+* `FEAT`: improve version selector ([#5211](https://github.com/camunda/camunda-modeler/issues/5211))
 * `FIX`: make tab switch work on macOS again ([#5479](https://github.com/camunda/camunda-modeler/issues/5479))
+* `FIX`: account for current file location when creating process application ([#5508](https://github.com/camunda/camunda-modeler/issues/5508))
+* `FIX`: keep task testing config for unsaved files ([#5468](https://github.com/camunda/camunda-modeler/issues/5468))
+* `FIX`: open properties panel per default ([#5516](https://github.com/camunda/camunda-modeler/issues/5516), [#5514](https://github.com/camunda/camunda-modeler/issues/5514))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.36.0`
 * `DEPS`: update to `bpmn-js@18.10.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.46.0`
