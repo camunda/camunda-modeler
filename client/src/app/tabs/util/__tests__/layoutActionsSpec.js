@@ -131,7 +131,7 @@ describe('layoutActions', function() {
     });
 
 
-    it('should default to false when properties panel is undefined (fresh config)', function() {
+    it('should close properties panel when undefined (fresh config)', function() {
 
       // given
       const layout = {};
@@ -140,6 +140,8 @@ describe('layoutActions', function() {
       const newLayout = getToggledPropertiesPanelLayout(layout, DEFAULT_LAYOUT);
 
       // then
+      // With fresh config, undefined is treated as "open" (default state),
+      // so toggle closes it to false
       expect(newLayout).to.eql({
         propertiesPanel: {
           open: false,
