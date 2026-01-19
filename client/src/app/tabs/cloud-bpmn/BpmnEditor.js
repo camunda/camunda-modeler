@@ -35,6 +35,8 @@ import BpmnModeler from './modeler';
 
 import { active as isInputActive } from '../../../util/dom/isInput';
 
+import { getToggledGridLayout, getToggledPropertiesPanelLayout } from '../util/layoutActions';
+
 import getBpmnContextMenu from '../bpmn/getBpmnContextMenu';
 
 import { getBpmnEditMenu } from '../bpmn/getBpmnEditMenu';
@@ -687,10 +689,6 @@ export class BpmnEditor extends CachedComponent {
       layout = {}
     } = this.props;
 
-    const {
-      propertiesPanel: propertiesPanelLayout = {}
-    } = layout;
-
     const modeler = this.getModeler();
 
     if (action === 'resize') {
@@ -698,25 +696,13 @@ export class BpmnEditor extends CachedComponent {
     }
 
     if (action === 'toggleGrid') {
-      const newLayout = {
-        grid: {
-          visible: layout.grid?.visible === false
-        }
-      };
-
-      return this.handleLayoutChange(newLayout);
+      return this.handleLayoutChange(getToggledGridLayout(layout));
     }
 
     if (action === 'toggleProperties') {
-      const newLayout = {
-        propertiesPanel: {
-          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
-          ...propertiesPanelLayout,
-          open: propertiesPanelLayout.open === false
-        }
-      };
-
-      return this.handleLayoutChange(newLayout);
+      return this.handleLayoutChange(
+        getToggledPropertiesPanelLayout(layout, PROPERTIES_PANEL_DEFAULT_LAYOUT)
+      );
     }
 
     if (action === 'zoomIn') {
