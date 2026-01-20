@@ -22,7 +22,7 @@ import debug from 'debug';
 import { generateId } from '../../util/index.js';
 
 import { AUTH_TYPES, TARGET_TYPES } from '../../remote/ZeebeAPI.js';
-import { validateConnection } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionValidator.js';
+import { cleanupConnections, validateConnection } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionValidator.js';
 import { SETTINGS_KEY_CONNECTIONS } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerSettings.js';
 import { NO_CONNECTION } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerPlugin.js';
 
@@ -226,7 +226,8 @@ export default class Deployment extends EventEmitter {
    * @returns {Array<Endpoint>}
    */
   getEndpoints() {
-    return this._settings.get(SETTINGS_KEY_CONNECTIONS);
+    const connections = this._settings.get(SETTINGS_KEY_CONNECTIONS);
+    return cleanupConnections(connections);
   }
 
   /**

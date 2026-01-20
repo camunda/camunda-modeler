@@ -28,6 +28,7 @@ export async function initializeSettings({ settings, connectionChecker }) {
         type: 'custom',
         component: (props) => ConnectionManagerSettingsComponent({ ...props, connectionChecker }),
         description: 'Manage Camunda 8 Orchestration Cluster connections.',
+        default: []
       },
 
     }
