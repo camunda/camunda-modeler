@@ -11,6 +11,8 @@
 import React from 'react';
 import * as css from './ReleaseInfo.less';
 
+import { isMac } from '../../globals';
+
 // If you add links to the release info, make sure to track them with UTM tags
 // import { utmTag } from '../../util/utmTag';
 
@@ -47,17 +49,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Connection manager</h4>
-          You can now create and store multiple connections using the settings, and easily switch between connections from the status bar.
+          <h4>Tabs autosave</h4>
+          The editor autosaves your changes on tab switch and blur (app switch, window focus loss), ensuring your work is saved to disk and visible to your IDE and other tools.
         </li>
         <li>
-          <h4>Enhanced element template support</h4>
-          Element templates now support templating timer events, enabling reusable timer configuration across processes.
-          If an applied template is missing in the current configuration, its ID and version are displayed in the Template section of the properties panel for easier troubleshooting.
+          <h4>Shared global clipboard</h4>
+          Copy and paste BPMN elements between Camunda 7 and Camunda 8 diagrams, and across other shared clipboard-enabled BPMN modeler applications and websites.
         </li>
         <li>
-          <h4>Task testing improvements</h4>
-          The incident error message is now displayed in a readable format. Task testing supports process applications, and uses the configured tenant ID if provided.
+          <h4>Duplicate elements</h4>
+          Quickly duplicate BPMN elements using <code>{isMac ? 'Cmd+D' : 'Ctrl+D'}</code> to speed up your modeling process.
         </li>
       </ul>
     </div>
