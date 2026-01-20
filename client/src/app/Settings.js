@@ -183,7 +183,7 @@ export default class Settings {
    * the value of the flag is returned.
    *
    * @param { string } [key]
-   * @returns { Record<string, string|boolean|Array>|string|boolean|Array }
+   * @returns { any } Could return any json value or even undefined as settings.json could be manipulated externally.
    */
   get(key) {
     if (key) {
