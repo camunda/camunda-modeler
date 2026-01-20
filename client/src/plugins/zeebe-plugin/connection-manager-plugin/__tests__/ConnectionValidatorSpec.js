@@ -11,6 +11,7 @@
 import { validateProperties } from '../../../settings/SettingsForm';
 import { properties as connectionProperties } from '../ConnectionManagerSettingsProperties';
 import { AUTH_TYPES, TARGET_TYPES } from '../../../../remote/ZeebeAPI';
+import { cleanupConnections } from '../ConnectionValidator';
 
 // Helper to validate connection config using the generic validator
 function validateConnectionConfig(connection) {
@@ -308,6 +309,94 @@ describe('ConnectionConfigValidator', function() {
         expect(errors).to.deep.equal({});
       });
 
+    });
+
+  });
+
+
+  describe('cleanupConnections', function() {
+
+    it('should return empty array when connections is null', function() {
+      const result = cleanupConnections(null);
+      expect(result).to.deep.equal([]);
+    });
+
+
+    it('should return empty array when connections is undefined', function() {
+      const result = cleanupConnections(undefined);
+      expect(result).to.deep.equal([]);
+    });
+
+
+    it('should return empty array when connections is not an array', function() {
+      expect(cleanupConnections('not an array')).to.deep.equal([]);
+      expect(cleanupConnections({})).to.deep.equal([]);
+      expect(cleanupConnections(123)).to.deep.equal([]);
+      expect(cleanupConnections(true)).to.deep.equal([]);
+    });
+
+
+    it('should return empty array when connections is empty array', function() {
+      const result = cleanupConnections([]);
+      expect(result).to.deep.equal([]);
+    });
+
+
+    it('should filter out connections without an id', function() {
+      const connections = [
+        { id: 'conn-1', name: 'Connection 1' },
+        { name: 'No ID Connection' },
+        { id: '', name: 'Empty ID' },
+        { id: 'conn-2', name: 'Connection 2' }
+      ];
+
+      const result = cleanupConnections(connections);
+      expect(result).to.deep.equal([
+        { id: 'conn-1', name: 'Connection 1' },
+        { id: 'conn-2', name: 'Connection 2' }
+      ]);
+    });
+
+
+    it('should return all connections when all have valid ids', function() {
+      const connections = [
+        { id: 'conn-1', name: 'Connection 1' },
+        { id: 'conn-2', name: 'Connection 2' },
+        { id: 'conn-3', name: 'Connection 3' }
+      ];
+
+      const result = cleanupConnections(connections);
+      expect(result).to.deep.equal(connections);
+    });
+
+
+    it('should filter out connections with null id', function() {
+      const connections = [
+        { id: 'conn-1', name: 'Connection 1' },
+        { id: null, name: 'Null ID' },
+        { id: 'conn-2', name: 'Connection 2' }
+      ];
+
+      const result = cleanupConnections(connections);
+      expect(result).to.deep.equal([
+        { id: 'conn-1', name: 'Connection 1' },
+        { id: 'conn-2', name: 'Connection 2' }
+      ]);
+    });
+
+
+    it('should filter out connections with undefined id', function() {
+      const connections = [
+        { id: 'conn-1', name: 'Connection 1' },
+        { id: undefined, name: 'Undefined ID' },
+        { id: 'conn-2', name: 'Connection 2' }
+      ];
+
+      const result = cleanupConnections(connections);
+      expect(result).to.deep.equal([
+        { id: 'conn-1', name: 'Connection 1' },
+        { id: 'conn-2', name: 'Connection 2' }
+      ]);
     });
 
   });
