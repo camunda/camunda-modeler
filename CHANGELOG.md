@@ -18,13 +18,15 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: keep task testing config for unsaved files ([#5468](https://github.com/camunda/camunda-modeler/issues/5468))
 * `FIX`: open properties panel per default ([#5516](https://github.com/camunda/camunda-modeler/issues/5516), [#5514](https://github.com/camunda/camunda-modeler/issues/5514))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.36.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.7.7`
+* `DEPS`: update to `@camunda/task-testing@2.1.0`
 * `DEPS`: update to `bpmn-js@18.10.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.46.0`
 * `DEPS`: update to `camunda-bpmn-js@5.17.0`
 * `DEPS`: update to `diagram-js@15.5.0`
 * `DEPS`: update to `electron@40.0.0`
 * `DEPS`: update to `tiny-svg@4.1.4`
-* `DEPS`: update to `@camunda/improved-canvas@1.7.7`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.12.0`
 
 ### BPMN
 
