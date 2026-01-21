@@ -15,12 +15,3 @@ import { properties } from './ConnectionManagerSettingsProperties';
 export function validateConnection(connection) {
   return validateProperties(connection, properties);
 }
-
-export function cleanupConnections(connections) {
-  if (!connections || !Array.isArray(connections)) {
-    return [];
-  }
-
-  // ensure connections have an id
-  return connections.filter(connection => connection && !!connection.id);
-}
