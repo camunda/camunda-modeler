@@ -34,7 +34,7 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 // configures browsers to run test against
 // any of [ 'ChromeHeadless', 'Chrome', 'Firefox', 'IE', 'PhantomJS' ]
-var browsers = (process.env.TEST_BROWSERS || 'ChromeHeadless').split(/,/g);
+var browsers = (process.env.TEST_BROWSERS || 'ChromeHeadless_with_mock_keychain').split(/,/g);
 
 var suite = 'test/suite.js';
 
@@ -71,7 +71,15 @@ module.exports = function(karma) {
     },
 
     browsers: browsers,
-
+    customLaunchers: {
+      ChromeHeadless_with_mock_keychain: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--use-mock-keychain',
+          '--password-store=basic'
+        ]
+      }
+    },
     browserNoActivityTimeout: 60000,
     browserDisconnectTolerance: 3,
     browserSocketTimeout: 60000,
