@@ -6,6 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### BPMN
+* `FIX`: change the tooltip content for the message property to be specific depends on the event/task type ([#4864](https://github.com/camunda/camunda-modeler/issues/4864))
+
 ## 5.44.0
 
 ### General
