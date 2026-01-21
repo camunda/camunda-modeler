@@ -885,6 +885,10 @@ function createPluginProps(props = {}, globals = {}) {
           async setConnectionForFile(file, connectionId) {
             return;
           },
+
+          getEndpoints() {
+            return props.settings ? props.settings.get('connectionManagerPlugin.c8connections') || [] : [];
+          },
           ...globals.deployment
         });
       } else if (name === 'zeebeAPI') {

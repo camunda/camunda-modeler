@@ -22,7 +22,7 @@ import debug from 'debug';
 import { generateId } from '../../util/index.js';
 
 import { AUTH_TYPES, TARGET_TYPES } from '../../remote/ZeebeAPI.js';
-import { cleanupConnections, validateConnection } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionValidator.js';
+import { validateConnection } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionValidator.js';
 import { SETTINGS_KEY_CONNECTIONS } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerSettings.js';
 import { NO_CONNECTION } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerPlugin.js';
 
@@ -221,13 +221,19 @@ export default class Deployment extends EventEmitter {
   }
 
   /**
-   * Get all endpoints.
+   * Get all endpoints. Ensures that endpoints saved on disk are valid and have
+   * an ID.
    *
    * @returns {Array<Endpoint>}
    */
   getEndpoints() {
     const connections = this._settings.get(SETTINGS_KEY_CONNECTIONS);
-    return cleanupConnections(connections);
+
+    if (!connections || !Array.isArray(connections)) {
+      return [];
+    }
+
+    return connections.filter(connection => connection && !!connection.id);
   }
 
   /**

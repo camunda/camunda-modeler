@@ -22,7 +22,6 @@ import { StatusIndicator } from '../shared/StatusIndicator';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 
 import * as css from './ConnectionManagerPlugin.less';
-import { cleanupConnections } from './ConnectionValidator';
 
 export const NO_CONNECTION = {
   id: 'NO_CONNECTION',
@@ -69,9 +68,9 @@ export default function ConnectionManagerPlugin(props) {
       connectionChecker: settingsConnectionChecker,
     }).then(() => {
       settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
-        setConnections(cleanupConnections(connections.value));
+        setConnections(connections.value);
       });
-      setConnections(cleanupConnections(settings.get(SETTINGS_KEY_CONNECTIONS)));
+      setConnections(deployment.getEndpoints());
     });
   }, [ settings ]);
 
