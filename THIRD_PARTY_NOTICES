@@ -171,7 +171,7 @@ This project incorporates components from the projects listed below. The origina
 164.  call-bind-apply-helpers@1.0.2 (git+https://github.com/ljharb/call-bind-apply-helpers.git)
 165.  has-tostringtag@1.0.2 (git+https://github.com/inspect-js/has-tostringtag.git)
 166.  mri@1.2.0 (lukeed/mri)
-167.  min-dash@4.2.1 (git+https://github.com/bpmn-io/min-dash.git)
+167.  min-dash@5.0.0 (git+https://github.com/bpmn-io/min-dash.git)
 168.  parents@1.0.1 (git://github.com/substack/node-parents.git)
 169.  path-platform@0.11.15 (http://github.com/tjfontaine/node-path-platform.git)
 170.  fast-glob@3.3.2 (mrmlnc/fast-glob)
@@ -195,10 +195,10 @@ This project incorporates components from the projects listed below. The origina
 188.  chokidar@5.0.0 (git+https://github.com/paulmillr/chokidar.git)
 189.  readdirp@5.0.0 (https://github.com/paulmillr/readdirp.git)
 190.  bpmn-moddle@9.0.4 (https://github.com/bpmn-io/bpmn-moddle)
-191.  moddle@7.0.0 (https://github.com/bpmn-io/moddle)
+191.  moddle@7.2.0 (https://github.com/bpmn-io/moddle)
 192.  moddle-xml@11.0.0 (https://github.com/bpmn-io/moddle-xml)
 193.  saxen@10.0.0 (https://github.com/nikku/saxen)
-194.  zeebe-bpmn-moddle@1.11.0 (https://github.com/camunda/zeebe-bpmn-moddle)
+194.  zeebe-bpmn-moddle@1.12.0 (https://github.com/camunda/zeebe-bpmn-moddle)
 195.  dmn-moddle@11.0.0 (https://github.com/bpmn-io/dmn-moddle)
 196.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
 197.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
@@ -209,7 +209,7 @@ This project incorporates components from the projects listed below. The origina
 202.  css-loader@7.1.2 (webpack-contrib/css-loader)
 203.  @carbon/styles@1.76.0 (https://github.com/carbon-design-system/carbon.git)
 204.  @camunda/form-playground@0.23.0 (git+https://github.com/camunda/form-playground.git)
-205.  camunda-bpmn-js@5.16.0 (https://github.com/camunda/camunda-bpmn-js)
+205.  camunda-bpmn-js@5.17.0 (https://github.com/camunda/camunda-bpmn-js)
 206.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
 207.  camunda-dmn-js@3.6.0 (https://github.com/camunda/camunda-dmn-js)
 208.  @camunda/linting@3.45.0 (https://github.com/camunda/linting)
@@ -273,7 +273,7 @@ This project incorporates components from the projects listed below. The origina
 266.  drag-tabs@2.3.1 (git+ssh://git@github.com/bpmn-io/drag-tabs.git)
 267.  min-dom@4.1.0 (https://github.com/bpmn-io/min-dom)
 268.  mitt@3.0.1 (developit/mitt)
-269.  @bpmn-io/properties-panel@3.35.1 (git+https://github.com/bpmn-io/properties-panel.git)
+269.  @bpmn-io/properties-panel@3.36.0 (git+https://github.com/bpmn-io/properties-panel.git)
 270.  preact-hooks@0.1.0
 271.  preact@10.19.3 (preactjs/preact)
 272.  preact-compat@4.0.0
@@ -290,9 +290,9 @@ This project incorporates components from the projects listed below. The origina
 283.  @bpmn-io/lang-feel@3.0.0 (https://github.com/bpmn-io/lang-feel.git)
 284.  @camunda/feel-builtins@0.2.0 (git+https://github.com/camunda/feel-builtins.git)
 285.  focus-trap@7.5.2 (git+https://github.com/focus-trap/focus-trap.git)
-286.  bpmn-js-properties-panel@5.45.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-287.  bpmn-js@18.9.1 (https://github.com/bpmn-io/bpmn-js)
-288.  diagram-js@15.4.0 (https://github.com/bpmn-io/diagram-js)
+286.  bpmn-js-properties-panel@5.46.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+287.  bpmn-js@18.10.1 (https://github.com/bpmn-io/bpmn-js)
+288.  diagram-js@15.5.0 (https://github.com/bpmn-io/diagram-js)
 289.  domify@2.0.0 (sindresorhus/domify)
 290.  ids@1.0.5 (https://github.com/bpmn-io/ids)
 291.  @bpmn-io/extract-process-variables@1.0.1 (git+https://github.com/bpmn-io/extract-process-variables.git)
@@ -300,11 +300,11 @@ This project incorporates components from the projects listed below. The origina
 293.  dmn-js-properties-panel@3.9.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
 294.  lodash@4.17.21 (lodash/lodash)
 295.  bpmn-moddle@9.0.4 (https://github.com/bpmn-io/bpmn-moddle)
-296.  moddle@7.0.0 (https://github.com/bpmn-io/moddle)
+296.  moddle@7.2.0 (https://github.com/bpmn-io/moddle)
 297.  moddle-xml@11.0.0 (https://github.com/bpmn-io/moddle-xml)
 298.  saxen@10.0.0 (https://github.com/nikku/saxen)
 299.  camunda-bpmn-moddle@7.0.1 (https://github.com/camunda/camunda-bpmn-moddle)
-300.  zeebe-bpmn-moddle@1.11.0 (https://github.com/camunda/zeebe-bpmn-moddle)
+300.  zeebe-bpmn-moddle@1.12.0 (https://github.com/camunda/zeebe-bpmn-moddle)
 301.  modeler-moddle@0.2.0 (https://github.com/camunda/modeler-moddle)
 302.  debug@4.3.7 (git://github.com/debug-js/debug.git)
 303.  ms@2.1.3 (vercel/ms)
@@ -344,58 +344,59 @@ This project incorporates components from the projects listed below. The origina
 337.  @bpmn-io/form-variable-provider@1.3.0 (git+https://github.com/bpmn-io/form-variable-provider.git)
 338.  @bpmn-io/variable-outline@2.0.1
 339.  @camunda/example-data-properties-provider@1.2.1
-340.  @camunda/task-testing@2.0.1
+340.  @camunda/task-testing@2.1.0
 341.  camunda-bpmn-js-behaviors@1.12.1 (https://github.com/camunda/camunda-bpmn-js-behaviors)
 342.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
 343.  @bpmn-io/variable-resolver@1.3.7
 344.  bpmn-js-color-picker@0.7.2 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
 345.  bpmn-js-create-append-anything@1.1.0 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
 346.  bpmn-js-executable-fix@0.2.1 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
-347.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
-348.  diagram-js-minimap@5.2.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
-349.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
-350.  @camunda/improved-canvas@1.7.6 (git+https://github.com/camunda/improved-canvas.git)
-351.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
-352.  diagram-js-direct-editing@3.2.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
-353.  diagram-js-grid@1.1.0 (git@github.com:bpmn-io/diagram-js-grid.git)
-354.  diagram-js-origin@1.4.0 (https://github.com/bpmn-io/diagram-js-origin)
-355.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
-356.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
-357.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
-358.  @bpmn-io/form-js-viewer@1.18.0 (git+https://github.com/bpmn-io/form-js.git)
-359.  @bpmn-io/dmn-variable-resolver@0.7.0
-360.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
-361.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
-362.  dmn-js-boxed-expression@17.5.0 (https://github.com/bpmn-io/dmn-js)
-363.  dmn-js-decision-table@17.5.0 (https://github.com/bpmn-io/dmn-js)
-364.  dmn-js-drd@17.5.0 (https://github.com/bpmn-io/dmn-js)
-365.  dmn-js-literal-expression@17.5.0 (https://github.com/bpmn-io/dmn-js)
-366.  dmn-js-shared@17.5.0 (https://github.com/bpmn-io/dmn-js)
-367.  dmn-js@17.5.0 (https://github.com/bpmn-io/dmn-js)
-368.  escape-html@1.0.3 (component/escape-html)
-369.  inferno@5.6.3 (https://github.com/infernojs/inferno)
-370.  selection-ranges@3.0.3 (git+ssh://git@github.com/nikku/selection-ranges.git)
-371.  selection-update@0.1.2 (git+ssh://git@github.com/nikku/selection-update.git)
-372.  table-js@9.2.0 (https://github.com/bpmn-io/table-js)
-373.  @bpmn-io/form-js-editor@1.18.0 (git+https://github.com/bpmn-io/form-js.git)
-374.  @bpmn-io/form-js-playground@1.18.0 (git+https://github.com/bpmn-io/form-js.git)
-375.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
-376.  path-intersection@3.0.0 (https://github.com/bpmn-io/path-intersection)
-377.  clsx@2.1.0 (lukeed/clsx)
-378.  canvg@4.0.3 (https://github.com/canvg/canvg)
-379.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
-380.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
-381.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
-382.  dmn-moddle@11.0.0 (https://github.com/bpmn-io/dmn-moddle)
-383.  camunda-dmn-moddle@1.3.0 (https://github.com/camunda/camunda-dmn-moddle)
-384.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
-385.  @bpmn-io/dmn-migrate@0.6.0 (git+https://github.com/bpmn-io/dmn-migrate.git)
-386.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
-387.  dompurify@3.3.0 (git://github.com/cure53/DOMPurify.git)
-388.  marked@16.4.1 (git://github.com/markedjs/marked.git)
-389.  file-drops@0.6.2 (git+ssh://git@github.com/nikku/file-drops.git)
-390.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
-391.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
+347.  bpmn-js-native-copy-paste@0.1.0 (git+https://github.com/nikku/bpmn-js-native-copy-paste.git)
+348.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
+349.  diagram-js-minimap@5.2.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
+350.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
+351.  @camunda/improved-canvas@1.7.7 (git+https://github.com/camunda/improved-canvas.git)
+352.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
+353.  diagram-js-direct-editing@3.2.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
+354.  diagram-js-grid@1.1.0 (git@github.com:bpmn-io/diagram-js-grid.git)
+355.  diagram-js-origin@1.4.0 (https://github.com/bpmn-io/diagram-js-origin)
+356.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
+357.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
+358.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
+359.  @bpmn-io/form-js-viewer@1.18.0 (git+https://github.com/bpmn-io/form-js.git)
+360.  @bpmn-io/dmn-variable-resolver@0.7.0
+361.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
+362.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
+363.  dmn-js-boxed-expression@17.5.0 (https://github.com/bpmn-io/dmn-js)
+364.  dmn-js-decision-table@17.5.0 (https://github.com/bpmn-io/dmn-js)
+365.  dmn-js-drd@17.5.0 (https://github.com/bpmn-io/dmn-js)
+366.  dmn-js-literal-expression@17.5.0 (https://github.com/bpmn-io/dmn-js)
+367.  dmn-js-shared@17.5.0 (https://github.com/bpmn-io/dmn-js)
+368.  dmn-js@17.5.0 (https://github.com/bpmn-io/dmn-js)
+369.  escape-html@1.0.3 (component/escape-html)
+370.  inferno@5.6.3 (https://github.com/infernojs/inferno)
+371.  selection-ranges@3.0.3 (git+ssh://git@github.com/nikku/selection-ranges.git)
+372.  selection-update@0.1.2 (git+ssh://git@github.com/nikku/selection-update.git)
+373.  table-js@9.2.0 (https://github.com/bpmn-io/table-js)
+374.  @bpmn-io/form-js-editor@1.18.0 (git+https://github.com/bpmn-io/form-js.git)
+375.  @bpmn-io/form-js-playground@1.18.0 (git+https://github.com/bpmn-io/form-js.git)
+376.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
+377.  path-intersection@4.0.1 (https://github.com/bpmn-io/path-intersection)
+378.  clsx@2.1.0 (lukeed/clsx)
+379.  canvg@4.0.3 (https://github.com/canvg/canvg)
+380.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
+381.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
+382.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
+383.  dmn-moddle@11.0.0 (https://github.com/bpmn-io/dmn-moddle)
+384.  camunda-dmn-moddle@1.3.0 (https://github.com/camunda/camunda-dmn-moddle)
+385.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
+386.  @bpmn-io/dmn-migrate@0.6.0 (git+https://github.com/bpmn-io/dmn-migrate.git)
+387.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
+388.  dompurify@3.3.0 (git://github.com/cure53/DOMPurify.git)
+389.  marked@16.4.1 (git://github.com/markedjs/marked.git)
+390.  file-drops@0.6.2 (git+ssh://git@github.com/nikku/file-drops.git)
+391.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
+392.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
 
 
 %% @sentry/node@10.8.0 NOTICES AND INFORMATION BEGIN HERE
@@ -12083,7 +12084,7 @@ THE SOFTWARE.
 END OF mri@1.2.0 NOTICES AND INFORMATION
 
 
-%% min-dash@4.2.1 NOTICES AND INFORMATION BEGIN HERE
+%% min-dash@5.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12107,7 +12108,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF min-dash@4.2.1 NOTICES AND INFORMATION
+END OF min-dash@5.0.0 NOTICES AND INFORMATION
 
 
 %% parents@1.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -12717,7 +12718,7 @@ THE SOFTWARE.
 END OF bpmn-moddle@9.0.4 NOTICES AND INFORMATION
 
 
-%% moddle@7.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% moddle@7.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12741,7 +12742,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF moddle@7.0.0 NOTICES AND INFORMATION
+END OF moddle@7.2.0 NOTICES AND INFORMATION
 
 
 %% moddle-xml@11.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -12799,7 +12800,7 @@ SOFTWARE.
 END OF saxen@10.0.0 NOTICES AND INFORMATION
 
 
-%% zeebe-bpmn-moddle@1.11.0 NOTICES AND INFORMATION BEGIN HERE
+%% zeebe-bpmn-moddle@1.12.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12823,7 +12824,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF zeebe-bpmn-moddle@1.11.0 NOTICES AND INFORMATION
+END OF zeebe-bpmn-moddle@1.12.0 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@11.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -13432,7 +13433,7 @@ THE SOFTWARE.
 END OF @camunda/form-playground@0.23.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@5.16.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@5.17.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -13456,7 +13457,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@5.16.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@5.17.0 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.4.1 NOTICES AND INFORMATION BEGIN HERE
@@ -16148,7 +16149,7 @@ SOFTWARE.
 END OF mitt@3.0.1 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/properties-panel@3.35.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/properties-panel@3.36.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16172,7 +16173,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/properties-panel@3.35.1 NOTICES AND INFORMATION
+END OF @bpmn-io/properties-panel@3.36.0 NOTICES AND INFORMATION
 
 
 %% preact-hooks@0.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16596,7 +16597,7 @@ SOFTWARE.
 END OF focus-trap@7.5.2 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@5.45.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@5.46.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16620,10 +16621,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@5.45.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@5.46.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js@18.9.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@18.10.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -16650,10 +16651,10 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@18.9.1 NOTICES AND INFORMATION
+END OF bpmn-js@18.10.1 NOTICES AND INFORMATION
 
 
-%% diagram-js@15.4.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@15.5.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16677,7 +16678,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@15.4.0 NOTICES AND INFORMATION
+END OF diagram-js@15.5.0 NOTICES AND INFORMATION
 
 
 %% domify@2.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16875,7 +16876,7 @@ THE SOFTWARE.
 END OF bpmn-moddle@9.0.4 NOTICES AND INFORMATION
 
 
-%% moddle@7.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% moddle@7.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16899,7 +16900,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF moddle@7.0.0 NOTICES AND INFORMATION
+END OF moddle@7.2.0 NOTICES AND INFORMATION
 
 
 %% moddle-xml@11.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16984,7 +16985,7 @@ THE SOFTWARE.
 END OF camunda-bpmn-moddle@7.0.1 NOTICES AND INFORMATION
 
 
-%% zeebe-bpmn-moddle@1.11.0 NOTICES AND INFORMATION BEGIN HERE
+%% zeebe-bpmn-moddle@1.12.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17008,7 +17009,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF zeebe-bpmn-moddle@1.11.0 NOTICES AND INFORMATION
+END OF zeebe-bpmn-moddle@1.12.0 NOTICES AND INFORMATION
 
 
 %% modeler-moddle@0.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -18608,7 +18609,7 @@ THE SOFTWARE.
 END OF @camunda/example-data-properties-provider@1.2.1 NOTICES AND INFORMATION
 
 
-%% @camunda/task-testing@2.0.1 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/task-testing@2.1.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -18632,7 +18633,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/task-testing@2.0.1 NOTICES AND INFORMATION
+END OF @camunda/task-testing@2.1.0 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-js-behaviors@1.12.1 NOTICES AND INFORMATION BEGIN HERE
@@ -18799,6 +18800,33 @@ SOFTWARE.
 END OF bpmn-js-executable-fix@0.2.1 NOTICES AND INFORMATION
 
 
+%% bpmn-js-native-copy-paste@0.1.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2020-present Nico Rehwaldt
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF bpmn-js-native-copy-paste@0.1.0 NOTICES AND INFORMATION
+
+
 %% bpmn-js-tracking@0.6.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
@@ -18880,7 +18908,7 @@ THE SOFTWARE.
 END OF @bpmn-io/align-to-origin@0.7.0 NOTICES AND INFORMATION
 
 
-%% @camunda/improved-canvas@1.7.6 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/improved-canvas@1.7.7 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -18904,7 +18932,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @camunda/improved-canvas@1.7.6 NOTICES AND INFORMATION
+END OF @camunda/improved-canvas@1.7.7 NOTICES AND INFORMATION
 
 
 %% rgbcolor@1.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -19564,7 +19592,7 @@ SOFTWARE.
 END OF downloadjs@1.4.7 NOTICES AND INFORMATION
 
 
-%% path-intersection@3.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% path-intersection@4.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -19588,7 +19616,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF path-intersection@3.0.0 NOTICES AND INFORMATION
+END OF path-intersection@4.0.1 NOTICES AND INFORMATION
 
 
 %% clsx@2.1.0 NOTICES AND INFORMATION BEGIN HERE
