@@ -466,16 +466,29 @@ export class App extends PureComponent {
       this.off('app.blurred', this.triggerAutoSave);
 
       if (this.isDirty(tab)) {
-        const { button } = await this.showCloseFileDialog({ name });
 
-        if (button === 'save') {
+        // For tabs with existing file paths, auto-save without prompting
+        if (!this.isUnsaved(tab)) {
           const saved = await this.saveTab(tab);
 
           if (!saved) {
             return false;
           }
-        } else if (button === 'cancel') {
-          return false;
+
+        } else {
+
+          // For unsaved tabs (new files), show the save/discard/cancel dialog
+          const { button } = await this.showCloseFileDialog({ name });
+
+          if (button === 'save') {
+            const saved = await this.saveTab(tab);
+
+            if (!saved) {
+              return false;
+            }
+          } else if (button === 'cancel') {
+            return false;
+          }
         }
       }
     } finally {
