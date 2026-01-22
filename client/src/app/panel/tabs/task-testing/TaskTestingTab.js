@@ -53,6 +53,7 @@ const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modele
 export default function TaskTestingTab(props) {
   const {
     config,
+    connectionManager,
     deployment,
     injector,
     file,
@@ -76,7 +77,7 @@ export default function TaskTestingTab(props) {
 
   const taskTestingApi = useMemo(() => {
 
-    const api = new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction);
+    const api = new TaskTestingApi(connectionManager, deployment, startInstance, zeebeApi, tab, onAction);
 
     api.getOperateUrl().then(setOperateUrl);
 

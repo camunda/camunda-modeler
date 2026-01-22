@@ -12,7 +12,7 @@
 
 import TaskTestingApi from '../TaskTestingApi';
 
-import { Deployment } from '../../../../__tests__/mocks';
+import { ConnectionManager, Deployment } from '../../../../__tests__/mocks';
 
 
 describe('<TaskTestingApi>', function() {
@@ -23,7 +23,7 @@ describe('<TaskTestingApi>', function() {
 
       // given
       const api = new TaskTestingApi(
-        new Deployment({
+        new ConnectionManager({
           getConnectionForTab: async () => {
             return {
               targetType: 'camundaCloud',
@@ -31,6 +31,7 @@ describe('<TaskTestingApi>', function() {
             };
           }
         }),
+        null,
         null,
         null,
         {
@@ -52,7 +53,7 @@ describe('<TaskTestingApi>', function() {
 
       // given
       const api = new TaskTestingApi(
-        new Deployment({
+        new ConnectionManager({
           getConnectionForTab: async () => {
             return {
               targetType: 'selfHosted',
@@ -60,6 +61,7 @@ describe('<TaskTestingApi>', function() {
             };
           }
         }),
+        null,
         null,
         null,
         {
@@ -81,7 +83,7 @@ describe('<TaskTestingApi>', function() {
 
       // given
       const api = new TaskTestingApi(
-        new Deployment({
+        new ConnectionManager({
           getConnectionForTab: async () => {
             return {
               targetType: 'selfHosted',
@@ -89,6 +91,7 @@ describe('<TaskTestingApi>', function() {
             };
           }
         }),
+        null,
         null,
         null,
         {
@@ -119,14 +122,16 @@ describe('<TaskTestingApi>', function() {
         path: 'path/to/file.bpmn'
       };
       const api = new TaskTestingApi(
-        new Deployment({
-          deploy: deploySpy,
+        new ConnectionManager({
           getConnectionForTab: async file => {
             return {
               targetType: 'camundaCloud',
               camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
             };
-          },
+          }
+        }),
+        new Deployment({
+          deploy: deploySpy,
           once: () => {}
         }),
         null,
