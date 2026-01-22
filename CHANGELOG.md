@@ -25,7 +25,6 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-properties-panel@5.46.0`
 * `DEPS`: update to `camunda-bpmn-js@5.17.0`
 * `DEPS`: update to `diagram-js@15.5.0`
-* `DEPS`: update to `electron@40.0.0`
 * `DEPS`: update to `tiny-svg@4.1.4`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.12.0`
 
