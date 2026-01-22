@@ -17,6 +17,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: account for current file location when creating process application ([#5508](https://github.com/camunda/camunda-modeler/issues/5508))
 * `FIX`: keep task testing config for unsaved files ([#5468](https://github.com/camunda/camunda-modeler/issues/5468))
 * `FIX`: open properties panel per default ([#5516](https://github.com/camunda/camunda-modeler/issues/5516), [#5514](https://github.com/camunda/camunda-modeler/issues/5514))
+* `FIX`: validate connections read from disk ([#5566](https://github.com/camunda/camunda-modeler/pull/5566))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.36.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.7.7`
 * `DEPS`: update to `@camunda/task-testing@2.1.0`
