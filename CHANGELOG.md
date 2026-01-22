@@ -8,6 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 * `FIX`: change the tooltip content for the message property to be specific depending on the event/task type ([#4864](https://github.com/camunda/camunda-modeler/issues/4864))
+* `FEAT`: add support of FEEL expressions for 'Form ID' field ([#5231](https://github.com/camunda/camunda-modeler/issues/5231))
 
 ## 5.44.0
 
