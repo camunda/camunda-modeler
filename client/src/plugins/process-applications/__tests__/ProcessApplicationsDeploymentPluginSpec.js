@@ -302,9 +302,6 @@ function createProcessApplicationsDeploymentPlugin(props = {}) {
     _getGlobal = (name) => {
       if (name === 'deployment') {
         return new Deployment({
-          async getConnectionForTab(file) {
-            return DEFAULT_ENDPOINT;
-          },
           registerResourcesProvider() {},
           unregisterResourcesProvider() {}
         });

@@ -28,7 +28,7 @@ import TaskTestingTab, {
   UNSUPPORTED_PROTOCOL_TITLE
 } from '../TaskTestingTab';
 
-import { Config, Deployment, StartInstance, ZeebeAPI } from '../../../../__tests__/mocks';
+import { Config, ConnectionManager, Deployment, StartInstance, ZeebeAPI } from '../../../../__tests__/mocks';
 
 import { DELAYS } from '../../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
 
@@ -76,7 +76,7 @@ describe('<TaskTestingTab>', function() {
           }
         }
       }),
-      deployment: new Deployment({
+      connectionManager: new ConnectionManager({
         getConnectionForTab: async () => {
           return {
             targetType: 'camundaCloud',
@@ -134,7 +134,7 @@ describe('<TaskTestingTab>', function() {
             }
           }
         }),
-        deployment: new Deployment({
+        connectionManager: new ConnectionManager({
           getConnectionForTab: async () => {
             return {
               targetType: 'camundaCloud',
@@ -189,7 +189,7 @@ describe('<TaskTestingTab>', function() {
             }
           }
         }),
-        deployment: new Deployment({
+        connectionManager: new ConnectionManager({
           getConnectionForTab: async () => {
             return {
               targetType: 'camundaCloud',
@@ -241,7 +241,7 @@ describe('<TaskTestingTab>', function() {
             }
           }
         }),
-        deployment: new Deployment({
+        connectionManager: new ConnectionManager({
           getConnectionForTab: async () => {
             return {
               targetType: 'camundaCloud',
@@ -305,7 +305,7 @@ describe('<TaskTestingTab>', function() {
             }
           }
         }),
-        deployment: new Deployment({
+        connectionManager: new ConnectionManager({
           getConnectionForTab: async () => {
             return {
               targetType: 'camundaCloud',
@@ -336,7 +336,7 @@ describe('<TaskTestingTab>', function() {
     });
 
 
-    it('should  not display Operate link if connection is not successful', async function() {
+    it('should not display Operate link if connection is not successful', async function() {
 
       // given
       const { modeler, renderResult } = await renderTab({
@@ -366,7 +366,7 @@ describe('<TaskTestingTab>', function() {
             }
           }
         }),
-        deployment: new Deployment({
+        connectionManager: new ConnectionManager({
           getConnectionForTab: async () => {
             return {
               targetType: 'camundaCloud',
@@ -418,6 +418,7 @@ async function renderTab(options = {}) {
 
   const {
     config = new Config(),
+    connectionManager = new ConnectionManager(),
     deployment = new Deployment(),
     startInstance = new StartInstance(),
     zeebeApi = new ZeebeAPI(),
@@ -449,6 +450,7 @@ async function renderTab(options = {}) {
         <Panel
           layout={ layout }>
           <TaskTestingTab
+            connectionManager={ connectionManager }
             deployment={ deployment }
             startInstance={ startInstance }
             zeebeApi={ zeebeApi }

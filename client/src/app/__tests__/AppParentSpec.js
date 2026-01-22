@@ -19,6 +19,7 @@ import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../../util/Flags';
 import {
   Backend,
   Config,
+  ConnectionManager,
   Deployment,
   Dialog,
   FileSystem,
@@ -1017,6 +1018,7 @@ function createAppParent(options = {}) {
   const defaultGlobals = {
     backend: new Backend(),
     config: new Config(),
+    connectionManager: new ConnectionManager(),
     deployment: new Deployment(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),

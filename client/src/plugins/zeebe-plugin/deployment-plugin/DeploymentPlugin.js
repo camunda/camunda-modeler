@@ -95,6 +95,7 @@ export default function DeploymentPlugin(props) {
         activeTab={ activeTab }
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
+        connectionManager={ _getGlobal('connectionManager') }
         deployment={ _getGlobal('deployment') }
         displayNotification={ displayNotification }
         log={ log }

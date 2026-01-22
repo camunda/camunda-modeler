@@ -54,9 +54,9 @@ export default function ConnectionManagerPlugin(props) {
 
 
   /**
-   * @type {import('../../../app/zeebe/Deployment').default}
+   * @type {import('../../../app/zeebe/ConnectionManager').default}
    */
-  const deployment = _getGlobal('deployment');
+  const connectionManager = _getGlobal('connectionManager');
   const globalConnectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI'), 'plugin'));
   const settingsConnectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI'), 'settings'));
 
@@ -70,7 +70,7 @@ export default function ConnectionManagerPlugin(props) {
       settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
         setConnections(connections.value);
       });
-      setConnections(deployment.getEndpoints());
+      setConnections(connectionManager.getEndpoints());
     });
   }, [ settings ]);
 
@@ -101,13 +101,13 @@ export default function ConnectionManagerPlugin(props) {
   // handle tab saved event to persist connection
   useEffect(() => {
     const subscription = subscribe('tab.saved', ({ tab }) => {
-      deployment.onTabSaved(tab);
+      connectionManager.onTabSaved(tab);
     });
 
     return () => {
       subscription.cancel();
     };
-  }, [ subscribe, deployment ]);
+  }, [ subscribe, connectionManager ]);
 
   // pause connection checking when settings are opened
   useEffect(() => {
@@ -147,10 +147,10 @@ export default function ConnectionManagerPlugin(props) {
     }
 
     (async () => {
-      const connection = await deployment.getConnectionForTab(activeTab);
+      const connection = await connectionManager.getConnectionForTab(activeTab);
       setActiveConnection(connection);
     })();
-  }, [ activeTab, deployment, connections ]);
+  }, [ activeTab, connectionManager, connections ]);
 
   // update connection checker on connection change
   useEffect(() => {
@@ -183,7 +183,7 @@ export default function ConnectionManagerPlugin(props) {
       globalConnectionChecker.current.off('connectionCheck', connectionCheckListener);
       globalConnectionChecker.current.stopChecking();
     };
-  }, [ activeConnection, globalConnectionChecker, deployment, setConnectionCheckResult, paused, triggerAction ]);
+  }, [ activeConnection, globalConnectionChecker, connectionManager, setConnectionCheckResult, paused, triggerAction ]);
 
   function getStatus(connectionCheckResult, activeConnection) {
     if (activeConnection?.id === NO_CONNECTION.id || paused) {
@@ -230,7 +230,7 @@ export default function ConnectionManagerPlugin(props) {
           });
         } }
         handleConnectionChange={ async (connection) => {
-          await deployment.setConnectionIdForTab(activeTab, connection.id);
+          await connectionManager.setConnectionIdForTab(activeTab, connection.id);
           setActiveConnection(connection);
         }
         }
