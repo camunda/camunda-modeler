@@ -26,7 +26,7 @@ import {
   CachedComponent
 } from '../../cached';
 
-import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
+import SidePanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/SidePanelContainer';
 
 import TaskTestingTab from '../../panel/tabs/task-testing/TaskTestingTab';
 import VariableTab from '../../panel/tabs/variable-outline/VariableOutlineTab';
@@ -63,6 +63,7 @@ import {
 } from '../../../util/Engines';
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
+import { Slot } from '../../slot-fill';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -839,10 +840,32 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
-          <PropertiesPanelContainer
+          <SidePanelContainer
+            title="Variables"
+            minWidth={ 200 }
+            maxWidth={ 600 }
+            layout={ layout }
+            layoutKey="variables"
+            onLayoutChanged={ this.handleLayoutChange }>
+            <Slot name="sidePanel.variables" />
+          </SidePanelContainer>
+          <SidePanelContainer
+            title="Properties"
+            minWidth={ 200 }
+            maxWidth={ 600 }
             ref={ this.propertiesPanelRef }
             layout={ layout }
+            layoutKey="propertiesPanel"
             onLayoutChanged={ this.handleLayoutChange } />
+          <SidePanelContainer
+            title="Test"
+            minWidth={ 200 }
+            maxWidth={ 600 }
+            layout={ layout }
+            layoutKey="test"
+            onLayoutChanged={ this.handleLayoutChange }>
+            <Slot name="sidePanel.test" />
+          </SidePanelContainer>
         </div>
 
         { engineProfile && <EngineProfile

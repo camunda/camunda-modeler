@@ -12,53 +12,79 @@ import React, { forwardRef, useCallback } from 'react';
 
 import ResizableContainer from './ResizableContainer';
 
-import * as css from './PropertiesPanelContainer.less';
+import * as css from './SidePanelContainer.less';
+import { Minimize } from '@carbon/icons-react';
 
 export const MIN_WIDTH = 280;
 export const MAX_WIDTH = MIN_WIDTH * 3;
 
 export const DEFAULT_OPEN = true;
-export const DEFAULT_WIDTH = 280;
+export const DEFAULT_WIDTH = 150;
 
 export const DEFAULT_LAYOUT = {
   open: DEFAULT_OPEN,
   width: DEFAULT_WIDTH
 };
 
-export default forwardRef(function PropertiesPanelContainer(props, ref) {
+export default forwardRef(function SidePanelContainer(props, ref) {
   const {
     layout,
-    onLayoutChanged
+    onLayoutChanged,
+    children,
+    title = 'Side Panel',
+    layoutKey = 'sidePanel',
   } = props;
 
   const onResized = useCallback(({ open, width }) => {
     onLayoutChanged({
-      propertiesPanel: {
-        ...layout.propertiesPanel,
+      [layoutKey]: {
+        ...layout[layoutKey],
         open,
         width
       }
     });
   }, [ onLayoutChanged, layout ]);
 
-  const { propertiesPanel = DEFAULT_LAYOUT } = layout;
+  const onMinimize = useCallback(() => {
+    onLayoutChanged({
+      [layoutKey]: {
+        ...layout[layoutKey],
+        open: false
+      }
+    });
+  }, [ onLayoutChanged, layout, layoutKey ]);
+
+  const sidePanelLayout = layout?. [layoutKey] || {};
 
   const {
     open = DEFAULT_OPEN,
     width = DEFAULT_WIDTH
-  } = propertiesPanel;
+  } = sidePanelLayout;
 
   return (
     <ResizableContainer
-      className={ `${css.PropertiesPanelContainer} properties` }
+      className={ `${css.SidePanelContainer} side-panel` }
       direction="left"
       open={ open }
       width={ width }
       minWidth={ MIN_WIDTH }
       maxWidth={ MAX_WIDTH }
       onResized={ onResized }
+      title={ title }
     >
-      <div className="properties-container" ref={ ref } />
+      <div className="side-panel-container-header">
+        <span>
+          { title }
+        </span>
+        <button onClick={ onMinimize }>
+          <Minimize width={ 16 } height={ 16 } />
+        </button>
+      </div>
+      <div className="side-panel-container-body">
+        <div className="side-panel-container-body-inner" ref={ ref }>
+          { children }
+        </div>
+      </div>
     </ResizableContainer>
   );
 });

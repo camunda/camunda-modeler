@@ -37,7 +37,7 @@ export default function VariableTab(props) {
   };
 
   return <>
-    <Fill slot="bottom-panel"
+    <Fill slot="sidePanel.variables"
       id="variable-outline"
       label="Variables"
       layout={ layout }
@@ -47,8 +47,8 @@ export default function VariableTab(props) {
       </div>
     </Fill>
 
-    <VariableOutlineStatusBarItem
+    {/* <VariableOutlineStatusBarItem
       layout={ layout }
-      onToggle={ onToggle } />
+      onToggle={ onToggle } /> */}
   </>;
 }

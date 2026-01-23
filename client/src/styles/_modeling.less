@@ -27,3 +27,41 @@
 .djs-search-highlight {
   font-weight: bold;
 }
+
+.djs-palette {
+  border-radius: 0;
+  border-top: none;
+  border-right-color: var(--color-grey-225-10-75);
+  border-bottom: none;
+  border-left: none;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--color-grey-225-10-95);
+}
+
+.djs-minimap {
+  position: absolute;
+  top: initial;
+  right: 20px;
+  bottom: 20px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: solid 1px #CCC;
+  border-radius: 2px;
+  box-sizing: border-box;
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  border-radius: 0 !important;
+
+  .toggle {
+    border-color: var(--color-grey-225-10-75);
+    color: rgb(22, 22, 22) !important;
+  }
+  
+  &:not(.open) {
+    background-color: var(--color-grey-225-10-95);
+  }
+}

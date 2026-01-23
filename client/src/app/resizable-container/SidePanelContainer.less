@@ -1,0 +1,57 @@
+:local(.SidePanelContainer) {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+
+  &.open {
+    border-left: solid 1px var(--color-grey-225-10-75);
+  }
+
+  .side-panel-container-header {
+    padding: 12px;
+    border-bottom: 1px solid var(--color-grey-225-10-75);
+    background-color: var(--color-grey-225-10-95);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    button {
+      padding: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background-color: var(--color-grey-225-10-75);
+      }
+    }
+  }
+
+  .side-panel-container-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .side-panel-container-body-inner {
+    position: relative;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .bio-properties-panel {
+    --font-family: inherit;
+    --font-family-monospace: inherit;
+    background: var(--color-white);
+  }
+
+  // Tooltip text selectable
+  .bio-properties-panel [role="tooltip"] * {
+    user-select: text;
+  }
+}

@@ -12,6 +12,8 @@ import React, { useCallback, useRef } from 'react';
 
 import classNames from 'classnames';
 
+import { Maximize } from '@carbon/icons-react';
+
 import HandleBarX from '../../../resources/icons/HandleBarX.svg';
 import HandleBarY from '../../../resources/icons/HandleBarY.svg';
 
@@ -47,6 +49,7 @@ export const DEFAULT_MIN_WIDTH = 100;
 export const DEFAULT_MIN_HEIGHT = 100;
 
 export const CLOSED_THRESHOLD = 50;
+export const COLLAPSED_SIZE = 40;
 
 /**
  * Resizable container.
@@ -56,7 +59,8 @@ export default function ResizableContainer(props) {
     className = '',
     direction,
     open,
-    onResized
+    onResized,
+    title = 'Resizable Container'
   } = props;
 
   const {
@@ -156,7 +160,11 @@ export default function ResizableContainer(props) {
     <div
       className={ classNames(
         css.ResizableContainer,
-        { 'open': open },
+        {
+          'open': open,
+          'horizontal': isHorizontal(direction),
+          'vertical': isVertical(direction)
+        },
         className
       ) }
       ref={ ref }
@@ -168,6 +176,36 @@ export default function ResizableContainer(props) {
           'children',
         ) }>{props.children}</div>
       <Resizer direction={ direction } onMouseDown={ onMouseDown } />
+      <ClosedIndicator direction={ direction } open={ open } title={ title } onToggle={ onToggle } />
+    </div>
+  );
+}
+
+function ClosedIndicator(props) {
+  const {
+    direction,
+    open,
+    title,
+    onToggle
+  } = props;
+
+  return (
+    <div
+      className={ classNames(
+        'closed-indicator',
+        {
+          'open': open,
+          'horizontal': isHorizontal(direction),
+          'vertical': isVertical(direction)
+        }
+      )
+      }
+      onClick={ onToggle }
+      role="button"
+      tabIndex={ open ? -1 : 0 }
+    >
+      <Maximize width={ 16 } height={ 16 } />
+      <span className="title">{ title }</span>
     </div>
   );
 }
@@ -186,9 +224,9 @@ function Resizer(props) {
       aria-orientation={ isHorizontal(direction) ? 'horizontal' : 'vertical' }
     >
       {
-        isHorizontal(direction)
-          ? <HandleBarX tabIndex="0" className="handlebar" />
-          : <HandleBarY tabIndex="0" className="handlebar" />
+        // isHorizontal(direction)
+        //   ? <HandleBarX tabIndex="0" className="handlebar" />
+        //   : <HandleBarY tabIndex="0" className="handlebar" />
       }
       <div className="resizer-border"></div>
     </div>
@@ -212,18 +250,18 @@ export function getCSSFromProps(props) {
 
   if (isHorizontal(direction)) {
     return {
-      width: open ? getCSSWidth(width, minWidth, maxWidth) : '0px'
+      width: open ? getCSSWidth(width, minWidth, maxWidth) : `${COLLAPSED_SIZE}px`
     };
   } else if (isVertical(direction)) {
     return {
-      height: open ? getCSSHeight(height, minHeight, maxHeight) : '0px'
+      height: open ? getCSSHeight(height, minHeight, maxHeight) : `${COLLAPSED_SIZE}px`
     };
   }
 }
 
 function getWidth(width, minWidth, maxWidth) {
   if (width < CLOSED_THRESHOLD) {
-    return 0;
+    return COLLAPSED_SIZE;
   } else if (width < minWidth) {
     return minWidth;
   } else if (maxWidth && width > maxWidth) {
@@ -235,7 +273,7 @@ function getWidth(width, minWidth, maxWidth) {
 
 function getHeight(height, minHeight, maxHeight) {
   if (height < CLOSED_THRESHOLD) {
-    return 0;
+    return COLLAPSED_SIZE;
   } else if (height < minHeight) {
     return minHeight;
   } else if (maxHeight && height > maxHeight) {

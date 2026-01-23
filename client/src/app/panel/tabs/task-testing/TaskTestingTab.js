@@ -168,7 +168,7 @@ export default function TaskTestingTab(props) {
   const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult);
 
   return <>
-    <Fill slot="bottom-panel"
+    <Fill slot="sidePanel.test"
       id="task-testing"
       label="Task testing"
       layout={ layout }
@@ -191,9 +191,9 @@ export default function TaskTestingTab(props) {
         />
       </div>
     </Fill>
-    <TaskTestingStatusBarItem
+    {/* <TaskTestingStatusBarItem
       layout={ layout }
-      onToggle={ onToggle } />
+      onToggle={ onToggle } /> */}
   </>;
 }
 

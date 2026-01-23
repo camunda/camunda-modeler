@@ -35,7 +35,7 @@ import {
 
 import OverviewContainer from '../dmn/OverviewContainer';
 
-import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
+import SidePanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/SidePanelContainer';
 
 import CamundaDmnModeler from './modeler';
 
@@ -967,7 +967,7 @@ export class DmnEditor extends CachedComponent {
 
           {
             hasPropertiesPanel && (
-              <PropertiesPanelContainer
+              <SidePanelContainer
                 ref={ this.propertiesPanelRef }
                 layout={ layout }
                 onLayoutChanged={ onLayoutChanged } />

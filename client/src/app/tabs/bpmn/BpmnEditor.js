@@ -26,7 +26,7 @@ import {
   CachedComponent
 } from '../../cached';
 
-import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
+import SidePanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/SidePanelContainer';
 
 import BpmnModeler from './modeler';
 
@@ -831,7 +831,7 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
-          <PropertiesPanelContainer
+          <SidePanelContainer
             ref={ this.propertiesPanelRef }
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange } />

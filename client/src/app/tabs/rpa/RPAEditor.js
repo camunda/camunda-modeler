@@ -25,7 +25,7 @@ import {
 } from 'min-dash';
 
 import { RPAEditor as RPACodeEditor, DebugInfo } from '@camunda/rpa-integration';
-import PropertiesPanelContainer from '../../resizable-container/PropertiesPanelContainer';
+import SidePanelContainer from '../../resizable-container/SidePanelContainer';
 import { getRPAEditMenu } from './getRobotEditMenu';
 import { Fill } from '../../slot-fill';
 import RunButton from './RunButton';
@@ -429,7 +429,7 @@ export class RPAEditor extends CachedComponent {
               className="content">
             </div>
 
-            <PropertiesPanelContainer
+            <SidePanelContainer
               ref={ this.propertiesPanelRef }
               layout={ this.props.layout }
               onLayoutChanged={ this.handleLayoutChange } />

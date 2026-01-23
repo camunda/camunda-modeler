@@ -100,4 +100,41 @@
   .no-display {
     display: none;
   }
+
+  &.open .closed-indicator {
+    display: none;
+  }
+
+  &:not(.open) .closed-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px; // 12px padding + (24px button height - 16px icon height) / 2 for non-closed
+    background-color: var(--color-grey-225-10-95);
+    cursor: pointer;
+    padding-top: 16px; // 12px padding + (24px button height - 16px icon height) / 2 for non-closed
+    
+    &.horizontal {
+      width: 40px;
+      
+      .title {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+      }
+
+      border-left: solid 1px var(--color-grey-225-10-75);
+    }
+    
+    &.vertical {
+      height: 40px;
+
+      border-top: solid 1px var(--color-grey-225-10-75);
+    }
+  }
 }
