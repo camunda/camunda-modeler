@@ -12,7 +12,7 @@ import React, { useCallback, useRef } from 'react';
 
 import classNames from 'classnames';
 
-import { Maximize } from '@carbon/icons-react';
+import { ChevronRight, Maximize } from '@carbon/icons-react';
 
 import HandleBarX from '../../../resources/icons/HandleBarX.svg';
 import HandleBarY from '../../../resources/icons/HandleBarY.svg';
@@ -49,7 +49,7 @@ export const DEFAULT_MIN_WIDTH = 100;
 export const DEFAULT_MIN_HEIGHT = 100;
 
 export const CLOSED_THRESHOLD = 50;
-export const COLLAPSED_SIZE = 40;
+export const COLLAPSED_SIZE = 32;
 
 /**
  * Resizable container.
@@ -60,7 +60,8 @@ export default function ResizableContainer(props) {
     direction,
     open,
     onResized,
-    title = 'Resizable Container'
+    title = 'Resizable Container',
+    icon = null
   } = props;
 
   const {
@@ -176,7 +177,7 @@ export default function ResizableContainer(props) {
           'children',
         ) }>{props.children}</div>
       <Resizer direction={ direction } onMouseDown={ onMouseDown } />
-      <ClosedIndicator direction={ direction } open={ open } title={ title } onToggle={ onToggle } />
+      <ClosedIndicator direction={ direction } open={ open } title={ title } icon={ icon } onToggle={ onToggle } />
     </div>
   );
 }
@@ -186,6 +187,7 @@ function ClosedIndicator(props) {
     direction,
     open,
     title,
+    icon,
     onToggle
   } = props;
 
@@ -204,8 +206,9 @@ function ClosedIndicator(props) {
       role="button"
       tabIndex={ open ? -1 : 0 }
     >
-      <Maximize width={ 16 } height={ 16 } />
+      <ChevronRight width={ 16 } height={ 16 } />
       <span className="title">{ title }</span>
+      { icon && <span className="icon">{ icon }</span> }
     </div>
   );
 }
@@ -236,8 +239,17 @@ function Resizer(props) {
 export function getCSSFromProps(props) {
   const {
     direction,
-    open
+    open,
+    resizable = true
   } = props;
+
+  // skip calculation if not resizable
+  if (!resizable) {
+    return {
+      width: props.width,
+      height: props.height
+    };
+  }
 
   const {
     width,

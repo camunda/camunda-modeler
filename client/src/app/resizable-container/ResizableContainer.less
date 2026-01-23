@@ -119,9 +119,14 @@
     background-color: var(--color-grey-225-10-95);
     cursor: pointer;
     padding-top: 16px; // 12px padding + (24px button height - 16px icon height) / 2 for non-closed
-    
+    user-select: none;
+
+    &:hover {
+      background-color: var(--color-grey-225-10-85);
+    }
+
     &.horizontal {
-      width: 40px;
+      width: 32px;
       
       .title {
         writing-mode: vertical-rl;
@@ -132,7 +137,7 @@
     }
     
     &.vertical {
-      height: 40px;
+      height: 32px;
 
       border-top: solid 1px var(--color-grey-225-10-75);
     }

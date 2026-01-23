@@ -10,6 +10,8 @@
 
 import React from 'react';
 
+import { Db2Database, SettingsAdjust, Chemistry, Flow, RightPanelOpen, ChevronRight } from '@carbon/icons-react';
+
 import { isFunction } from 'min-dash';
 
 import {
@@ -814,6 +816,12 @@ export class BpmnEditor extends CachedComponent {
     eventBus.fire('propertiesPanel.resized');
   };
 
+  toggleMaxSidePanels = () => {
+    this.setState({
+      maxSidePanels: !this.state.maxSidePanels
+    });
+  };
+
   render() {
     const engineProfile = this.engineProfile.getCached();
 
@@ -824,7 +832,8 @@ export class BpmnEditor extends CachedComponent {
     const injector = modeler.get('injector');
 
     const {
-      importing
+      importing,
+      maxSidePanels
     } = this.state;
 
     return (
@@ -833,36 +842,62 @@ export class BpmnEditor extends CachedComponent {
         <Loader hidden={ imported && !importing } />
 
         <div className="editor">
+          {
+            maxSidePanels && (
+              <div className="canvas-restore-bar" onClick={ this.toggleMaxSidePanels } role="button" tabIndex={ 0 }>
+                <ChevronRight width={ 16 } height={ 16 } />
+                <span className="title">Diagram</span>
+                <span className="icon"><Flow /></span>
+              </div>
+            )
+          }
           <div
             className="diagram"
+            style={ { display: maxSidePanels ? 'none' : 'block' } }
             ref={ this.ref }
             onFocus={ this.handleChanged }
             onContextMenu={ this.handleContextMenu }
           ></div>
-
+          <div className="side-panel-buttons">
+            <div className="side-panel-buttons-inner">
+              {
+                !maxSidePanels && (
+                  <button className="side-panel-button" onClick={ this.toggleMaxSidePanels }>
+                    <RightPanelOpen width={ 24 } height={ 24 } />
+                  </button>
+                )
+              }
+            </div>
+          </div>
           <SidePanelContainer
             title="Variables"
+            icon={ <Db2Database />}
             minWidth={ 200 }
             maxWidth={ 600 }
             layout={ layout }
             layoutKey="variables"
+            maxSidePanels={ maxSidePanels }
             onLayoutChanged={ this.handleLayoutChange }>
             <Slot name="sidePanel.variables" />
           </SidePanelContainer>
           <SidePanelContainer
             title="Properties"
+            icon={ <SettingsAdjust /> }
             minWidth={ 200 }
             maxWidth={ 600 }
             ref={ this.propertiesPanelRef }
             layout={ layout }
             layoutKey="propertiesPanel"
+            maxSidePanels={ maxSidePanels }
             onLayoutChanged={ this.handleLayoutChange } />
           <SidePanelContainer
             title="Test"
+            icon={ <Chemistry /> }
             minWidth={ 200 }
             maxWidth={ 600 }
             layout={ layout }
             layoutKey="test"
+            maxSidePanels={ maxSidePanels }
             onLayoutChanged={ this.handleLayoutChange }>
             <Slot name="sidePanel.test" />
           </SidePanelContainer>

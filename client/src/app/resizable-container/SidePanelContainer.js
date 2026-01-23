@@ -13,7 +13,7 @@ import React, { forwardRef, useCallback } from 'react';
 import ResizableContainer from './ResizableContainer';
 
 import * as css from './SidePanelContainer.less';
-import { Minimize } from '@carbon/icons-react';
+import { Close, Minimize } from '@carbon/icons-react';
 
 export const MIN_WIDTH = 280;
 export const MAX_WIDTH = MIN_WIDTH * 3;
@@ -32,7 +32,11 @@ export default forwardRef(function SidePanelContainer(props, ref) {
     onLayoutChanged,
     children,
     title = 'Side Panel',
+    icon = null,
     layoutKey = 'sidePanel',
+    maxSidePanels = false,
+    minWidth,
+    maxWidth
   } = props;
 
   const onResized = useCallback(({ open, width }) => {
@@ -63,22 +67,29 @@ export default forwardRef(function SidePanelContainer(props, ref) {
 
   return (
     <ResizableContainer
-      className={ `${css.SidePanelContainer} side-panel` }
+      className={ `${css.SidePanelContainer} side-panel ${ maxSidePanels ? 'max-side-panels' : '' }` }
       direction="left"
-      open={ open }
-      width={ width }
-      minWidth={ MIN_WIDTH }
-      maxWidth={ MAX_WIDTH }
+      open={ maxSidePanels || open }
+      width={ maxSidePanels ? 'calc((100% - 48px) / 3)' : width }
+      minWidth={ minWidth || MIN_WIDTH }
+      maxWidth={ maxWidth || MAX_WIDTH }
       onResized={ onResized }
+      resizable={ !maxSidePanels }
       title={ title }
+      icon={ icon }
     >
       <div className="side-panel-container-header">
-        <span>
+        <span className="side-panel-container-header-title">
+          { icon }
           { title }
         </span>
-        <button onClick={ onMinimize }>
-          <Minimize width={ 16 } height={ 16 } />
-        </button>
+        {
+          !maxSidePanels && (
+            <button onClick={ onMinimize }>
+              <Close width={ 18 } height={ 18 } />
+            </button>
+          )
+        }
       </div>
       <div className="side-panel-container-body">
         <div className="side-panel-container-body-inner" ref={ ref }>

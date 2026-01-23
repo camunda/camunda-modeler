@@ -71,6 +71,60 @@
       }
     }
   }
+
+  .side-panel-buttons {
+    width: 0;
+    position: relative;
+
+    .side-panel-buttons-inner {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .side-panel-button {
+        width: 42px;
+        height: 42px;
+        background-color: var(--color-grey-225-10-95);
+        border: solid 1px var(--color-grey-225-10-75);
+        border-radius: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--color-grey-225-10-75);
+        }
+      }
+    }
+  }
+
+  .canvas-restore-bar {
+    width: 48px;
+    background-color: var(--color-grey-225-10-95);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    background-color: var(--color-grey-225-10-95);
+    padding-top: 16px;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color-grey-225-10-85);
+    }
+
+    .title {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+  }
 }
 
 :local(.Color) {

@@ -7,6 +7,12 @@
     border-left: solid 1px var(--color-grey-225-10-75);
   }
 
+  &.max-side-panels {
+    .resizer {
+      display: none;
+    }
+  }
+
   .side-panel-container-header {
     padding: 12px;
     border-bottom: 1px solid var(--color-grey-225-10-75);
@@ -15,19 +21,26 @@
     justify-content: space-between;
     align-items: center;
 
+    .side-panel-container-header-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     button {
       padding: 0;
       background: none;
       border: none;
       cursor: pointer;
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 100%;
 
       &:hover {
-        background-color: var(--color-grey-225-10-75);
+        background-color: var(--color-grey-225-10-85);
       }
     }
   }
