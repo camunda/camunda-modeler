@@ -43,27 +43,36 @@
 .djs-minimap {
   position: absolute;
   top: initial;
-  right: 20px;
-  bottom: 20px;
+  right: 12px;
+  bottom: 12px;
   overflow: hidden;
   background-color: rgba(255, 255, 255, 0.9);
-  border: solid 1px #CCC;
-  border-radius: 2px;
+  border: solid 1px var(--color-grey-225-10-75);
+  border-radius: 0px;
   box-sizing: border-box;
   user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
-  border-radius: 0 !important;
 
   .toggle {
     border-color: var(--color-grey-225-10-75);
-    color: rgb(22, 22, 22) !important;
-    width: 42px;
-    height: 42px;
+    color: rgb(19, 10, 10) !important;
+    width: 24px;
+    height: 24px;
+    padding: 0;
   }
-  
+
   &:not(.open) {
     background-color: var(--color-grey-225-10-95);
+
+    .toggle {
+      padding: 0;
+
+      &:before {
+        font-size: 12px !important;
+        line-height: 25px !important;
+      }
+    }
   }
 }

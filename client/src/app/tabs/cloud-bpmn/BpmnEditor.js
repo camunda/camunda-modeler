@@ -863,7 +863,7 @@ export class BpmnEditor extends CachedComponent {
               {
                 !maxSidePanels && (
                   <button className="side-panel-button" onClick={ this.toggleMaxSidePanels }>
-                    <RightPanelOpen width={ 24 } height={ 24 } />
+                    <RightPanelOpen width={ 16 } height={ 16 } />
                   </button>
                 )
               }
