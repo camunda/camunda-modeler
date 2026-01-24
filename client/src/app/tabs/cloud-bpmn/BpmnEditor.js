@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { Db2Database, SettingsAdjust, Chemistry, Flow, RightPanelOpen, ChevronRight } from '@carbon/icons-react';
+import { Db2Database, SettingsAdjust, Chemistry, Flow, RightPanelOpen, ChevronRight, ChevronLeft, RightPanelClose } from '@carbon/icons-react';
 
 import { isFunction } from 'min-dash';
 
@@ -66,6 +66,7 @@ import {
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
 import { Slot } from '../../slot-fill';
+import classNames from 'classnames';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -822,6 +823,12 @@ export class BpmnEditor extends CachedComponent {
     });
   };
 
+  toggleHideAllPanels = () => {
+    this.setState({
+      hideAllPanels: !this.state.hideAllPanels
+    });
+  };
+
   render() {
     const engineProfile = this.engineProfile.getCached();
 
@@ -833,7 +840,8 @@ export class BpmnEditor extends CachedComponent {
 
     const {
       importing,
-      maxSidePanels
+      maxSidePanels,
+      hideAllPanels
     } = this.state;
 
     return (
@@ -862,14 +870,26 @@ export class BpmnEditor extends CachedComponent {
             <div className="side-panel-buttons-inner">
               {
                 !maxSidePanels && (
-                  <button className="side-panel-button" onClick={ this.toggleMaxSidePanels }>
-                    <RightPanelOpen width={ 16 } height={ 16 } />
-                  </button>
+                  <>
+                    {
+                      !hideAllPanels && <button className="side-panel-button" onClick={ this.toggleMaxSidePanels }>
+                        <RightPanelOpen width={ 16 } height={ 16 } />
+                      </button>
+                    }
+                    <button className="side-panel-button" onClick={ this.toggleHideAllPanels }>
+                      {
+                        hideAllPanels
+                          ? <RightPanelOpen width={ 16 } height={ 16 } />
+                          : <RightPanelClose width={ 16 } height={ 16 } />
+                      }
+                    </button>
+                  </>
                 )
               }
             </div>
           </div>
           <SidePanelContainer
+            className={ classNames({ 'hidden': hideAllPanels }) }
             title="Variables"
             icon={ <Db2Database />}
             minWidth={ 200 }
@@ -877,10 +897,12 @@ export class BpmnEditor extends CachedComponent {
             layout={ layout }
             layoutKey="variables"
             maxSidePanels={ maxSidePanels }
+            hideAllPanels={ hideAllPanels }
             onLayoutChanged={ this.handleLayoutChange }>
             <Slot name="sidePanel.variables" />
           </SidePanelContainer>
           <SidePanelContainer
+            className={ classNames({ 'hidden': hideAllPanels }) }
             title="Properties"
             icon={ <SettingsAdjust /> }
             minWidth={ 200 }
@@ -889,8 +911,10 @@ export class BpmnEditor extends CachedComponent {
             layout={ layout }
             layoutKey="propertiesPanel"
             maxSidePanels={ maxSidePanels }
+            hideAllPanels={ hideAllPanels }
             onLayoutChanged={ this.handleLayoutChange } />
           <SidePanelContainer
+            className={ classNames({ 'hidden': hideAllPanels }) }
             title="Test"
             icon={ <Chemistry /> }
             minWidth={ 200 }
@@ -898,6 +922,7 @@ export class BpmnEditor extends CachedComponent {
             layout={ layout }
             layoutKey="test"
             maxSidePanels={ maxSidePanels }
+            hideAllPanels={ hideAllPanels }
             onLayoutChanged={ this.handleLayoutChange }>
             <Slot name="sidePanel.test" />
           </SidePanelContainer>

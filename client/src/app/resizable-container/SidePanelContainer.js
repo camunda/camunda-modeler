@@ -14,6 +14,7 @@ import ResizableContainer from './ResizableContainer';
 
 import * as css from './SidePanelContainer.less';
 import { Close, Minimize } from '@carbon/icons-react';
+import classNames from 'classnames';
 
 export const MIN_WIDTH = 280;
 export const MAX_WIDTH = MIN_WIDTH * 3;
@@ -28,6 +29,7 @@ export const DEFAULT_LAYOUT = {
 
 export default forwardRef(function SidePanelContainer(props, ref) {
   const {
+    className = '',
     layout,
     onLayoutChanged,
     children,
@@ -35,6 +37,7 @@ export default forwardRef(function SidePanelContainer(props, ref) {
     icon = null,
     layoutKey = 'sidePanel',
     maxSidePanels = false,
+    hideAllPanels = false,
     minWidth,
     maxWidth
   } = props;
@@ -67,9 +70,16 @@ export default forwardRef(function SidePanelContainer(props, ref) {
 
   return (
     <ResizableContainer
-      className={ `${css.SidePanelContainer} side-panel ${ maxSidePanels ? 'max-side-panels' : '' }` }
+      className={ classNames(
+        css.SidePanelContainer,
+        className,
+        'side-panel',
+        {
+          'max-side-panels': maxSidePanels,
+        }
+      ) }
       direction="left"
-      open={ maxSidePanels || open }
+      open={ hideAllPanels ? false : (maxSidePanels || open) }
       width={ maxSidePanels ? 'calc((100% - 48px) / 3)' : width }
       minWidth={ minWidth || MIN_WIDTH }
       maxWidth={ maxWidth || MAX_WIDTH }
