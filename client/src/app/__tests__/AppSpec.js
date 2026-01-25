@@ -24,6 +24,7 @@ import {
   Backend,
   Cache,
   Config,
+  ConnectionManager,
   Deployment,
   Dialog,
   FileSystem,
@@ -4114,6 +4115,7 @@ function createApp(options = {}) {
   const defaultGlobals = {
     backend: new Backend(),
     config: new Config(),
+    connectionManager: new ConnectionManager(),
     deployment: new Deployment(),
     dialog: new Dialog(),
     fileSystem: new FileSystem(),

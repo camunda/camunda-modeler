@@ -21,6 +21,7 @@ import Settings from './app/Settings';
 import TabStorage from './app/TabStorage';
 import StartInstance from './app/zeebe/StartInstance';
 import Deployment from './app/zeebe/Deployment';
+import ConnectionManager from './app/zeebe/ConnectionManager';
 
 const {
   metadata,
@@ -53,6 +54,8 @@ export const zeebeAPI = new ZeebeAPI(backend);
 
 export const tabStorage = new TabStorage();
 
+export const connectionManager = new ConnectionManager(tabStorage, config, settings);
+
 export const deployment = new Deployment(tabStorage, config, zeebeAPI, settings);
 
 export const startInstance = new StartInstance(config, zeebeAPI);
@@ -67,6 +70,7 @@ export {
 export const globals = {
   backend,
   config,
+  connectionManager,
   deployment,
   dialog,
   fileSystem,
