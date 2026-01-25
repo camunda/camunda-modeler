@@ -8,23 +8,71 @@
  * except in compliance with the MIT License.
  */
 
-function getCopyPasteEntries({
-  copy,
-  paste
-}) {
-  return [ {
-    label: 'Copy',
-    accelerator: 'CommandOrControl+C',
-    enabled: copy,
-    action: 'copy'
-  }, {
-    label: 'Paste',
-    accelerator: 'CommandOrControl+V',
-    enabled: paste,
-    action: 'paste'
-  } ];
-}
+import { getCopyCutPasteEntries, getDefaultCopyCutPasteEntries } from '../getEditMenu';
+
 
 export default function getBpmnContextMenu(state) {
-  return getCopyPasteEntries(state);
+
+  console.log('GET MENU', state);
+
+  const {
+    inputActive,
+    selectAll,
+    removeSelected,
+    elementsSelected,
+    defaultCopyCutPaste
+  } = state;
+
+  const menuEntries = [];
+
+  menuEntries.push(
+    (defaultCopyCutPaste
+      ? getDefaultCopyCutPasteEntries(true)
+      : getCopyCutPasteEntries(state)).filter(e => e.enabled)
+  );
+
+  menuEntries.push([
+    {
+      label: 'Select all',
+      accelerator: 'CommandOrControl + A',
+      enabled: selectAll,
+      action: 'selectElements',
+      role: inputActive && 'selectAll'
+    }
+  ]);
+
+  if (removeSelected) {
+    menuEntries.push([
+      {
+        label: 'Delete',
+        accelerator: 'Delete',
+        enabled: true,
+        action: 'removeSelection',
+        role: inputActive && 'delete'
+      }
+    ]);
+  }
+
+  if (!inputActive && !elementsSelected) {
+    menuEntries.push([
+      {
+        label: 'Toggle grid',
+        accelerator: 'CommandOrControl+G',
+        action: 'toggleGrid',
+        enabled: true
+      }, {
+        label: 'Toggle properties panel',
+        accelerator: 'CommandOrControl+P',
+        action: 'toggleProperties',
+        enabled: true
+      }
+    ]);
+  }
+
+  console.log('get context menu', {
+    state,
+    menuEntries
+  });
+
+  return menuEntries;
 }
