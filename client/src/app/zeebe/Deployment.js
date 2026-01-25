@@ -162,9 +162,11 @@ export default class Deployment extends EventEmitter {
    * @returns {Promise<{endpoint: Endpoint, connectionId: string}|null>}
    */
   async getConnectionForTab(tab) {
+    if (!tab || !tab.file) {
+      return NO_CONNECTION;
+    }
+
     let connectionId = null;
-
-
 
     if (tab.file.path) {
       const fileConfig = await this._config.getForFile(tab.file, CONFIG_KEYS.CONNECTION_MANAGER, {});
