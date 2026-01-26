@@ -714,9 +714,11 @@ function bootstrap() {
   setUserPath(flagOverrides['user-data-dir']);
 
   const userPath = app.getPath('userData');
+  const resourcesDir = flagOverrides['resources-dir'];
 
   let resourcesPaths = [
     path.join(appPath, 'resources'),
+    ...(resourcesDir ? [resourcesDir] : []),
     path.join(userPath, 'resources')
   ];
 
