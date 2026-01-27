@@ -26,7 +26,7 @@ import feelPopupTracking from 'bpmn-js-tracking/lib/features/feel-popup';
 import modelingTracking from 'bpmn-js-tracking/lib/features/modeling';
 import popupMenuTracking from 'bpmn-js-tracking/lib/features/popup-menu';
 import paletteTracking from 'bpmn-js-tracking/lib/features/palette';
-
+import jumpConnectionRenderer from '../../../../plugins/jump-effect-plugin/JumpConnectionRenderer';
 import { BpmnImprovedCanvasModule } from '../../bpmn/modeler/features/improved-canvas';
 
 import Flags, {
@@ -84,5 +84,6 @@ CloudBpmnModeler.prototype._modules = [
   feelPopupTracking,
   modelingTracking,
   popupMenuTracking,
-  paletteTracking
+  paletteTracking,
+  jumpConnectionRenderer
 ];
