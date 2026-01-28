@@ -52,7 +52,7 @@ const GET_CURRENT_BPMN_XML_SCHEMA = {
 const CREATE_BPMN_DIAGRAM_CAMUNDA_8_SCHEMA = {
   name: 'create_bpmn_diagram_camunda_8',
   description:
-    'Creates a new BPMN diagram for Camunda 8 (Zeebe). This opens a new tab with an empty BPMN diagram configured for Camunda 8 execution platform. Use this when the user wants to create a new process or workflow for Camunda 8.',
+    'Creates a new BPMN diagram for Camunda 8 (Zeebe). This opens a new tab with an empty BPMN diagram configured for Camunda 8 execution platform. Use this when the user wants to create a new file/process/workflow for Camunda 8.',
   parametersSchema: '{}',
 };
 
@@ -66,7 +66,7 @@ const GET_CURRENT_FILE_INFO_SCHEMA = {
 const SAVE_CURRENT_FILE_SCHEMA = {
   name: 'save_current_file',
   description:
-    'Saves the currently active file. If the file has never been saved, it will prompt the user to choose a save location. Use this before git operations to ensure the file is saved to disk.',
+    'Saves the currently active file. If the file has never been saved.',
   parametersSchema: '{}',
 };
 
