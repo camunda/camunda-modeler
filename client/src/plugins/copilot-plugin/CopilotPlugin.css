@@ -6,3 +6,7 @@
 .copilot-launcher {
   visibility: hidden;
 }
+
+.copilot-chat-panel * {
+  white-space: wrap !important;
+}

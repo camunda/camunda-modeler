@@ -34,6 +34,7 @@
     "@sentry/browser": "^10.0.0",
     "@sentry/integrations": "^7.108.0",
     "@uiw/codemirror-theme-vscode": "^4.23.12",
+    "bpmn-auto-layout": "1.1.1",
     "bpmn-js": "^18.10.1",
     "bpmn-js-element-templates": "^2.18.0",
     "bpmn-js-properties-panel": "^5.46.0",

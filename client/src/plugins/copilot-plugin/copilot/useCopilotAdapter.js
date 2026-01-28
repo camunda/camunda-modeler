@@ -12,6 +12,7 @@ import { useMemo } from 'react';
 import { useAgentAdapter } from '@camunda/copilot-chat';
 
 import CopilotAgentService from './CopilotAgentService';
+import { applyLayoutAndImport } from './bpmnLayoutUtils';
 
 const createTransport = (mcpServers) => ({
   subscribe: (conversationId, onEvent) => {
@@ -69,16 +70,12 @@ const SAVE_CURRENT_FILE_SCHEMA = {
   parametersSchema: '{}',
 };
 
-export const createLayoutBpmnTool = (modeler, onDiagramChange) => ({
+export const createLayoutBpmnTool = (modeler) => ({
   ...LAYOUT_BPMN_TOOL_SCHEMA,
   handler: async (args, onError) => {
     try {
-
-      // const xml = args.bpmnXml;
-      // return await applyLayoutAndImport(xml, modeler, onDiagramChange);
-
-      // above is web modeler implementation
-
+      const xml = args.bpmnXml;
+      return await applyLayoutAndImport(xml, modeler);
     } catch (error) {
       console.error('[createLayoutBpmnTool] Layout error:', error);
       onError(LAYOUT_BPMN_TOOL_SCHEMA.name, error);
@@ -163,12 +160,10 @@ export const createGetCurrentFileInfoTool = (activeTab) => ({
   },
 });
 
-export const createSaveCurrentFileTool = (triggerAction, getActiveTab) => ({
+export const createSaveCurrentFileTool = (triggerAction, activeTab) => ({
   ...SAVE_CURRENT_FILE_SCHEMA,
   handler: async (_, onError) => {
     try {
-      const activeTab = getActiveTab();
-
       if (!activeTab) {
         return JSON.stringify({
           success: false,
@@ -181,8 +176,7 @@ export const createSaveCurrentFileTool = (triggerAction, getActiveTab) => ({
       if (saved) {
 
         // Get updated tab info after save
-        const updatedTab = getActiveTab();
-        const filePath = updatedTab?.file?.path || null;
+        const filePath = saved?.file?.path || null;
 
         return JSON.stringify({
           success: true,
@@ -237,21 +231,12 @@ export const useCopilotAdapter = ({ triggerAction, activeTab, mcpServers, modele
     }
 
     if (modeler) {
+      tools.push(createLayoutBpmnTool(modeler));
       tools.push(getCurrentBpmnXmlTool(modeler));
     }
 
     return tools;
   }, [ triggerAction, activeTab, modeler ]);
-
-  // const frontendTools = useMemo(() => {
-  //   const layoutTool = modeler
-  //     ? createLayoutBpmnTool(modeler, onDiagramChange)
-  //     : null;
-  //   const getBpmnXmlTool = modeler ? getCurrentBpmnXmlTool(modeler) : null;
-  //   return [ layoutTool, getBpmnXmlTool ].filter((tool) => tool !== null);
-  // }, [ modeler, onDiagramChange ]);
-
-  // above is web modeler implementation
 
   return useAgentAdapter({
     transport,
