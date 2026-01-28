@@ -22,14 +22,15 @@ function MacOSPlatform(app) {
   });
 
   /**
-   * Do not open URLs.
+   * Handle protocol URLs on macOS.
    * Please see "https://github.com/atom/electron/blob/master/docs/api/app.md#event-open-url-os-x"
    * for more info.
    */
-  app.on('open-url', function(e) {
+  app.on('open-url', function(e, url) {
     e.preventDefault();
 
-    log.info('application does not support opening URLs');
+    log.info('received protocol URL:', url);
+    console.log('Camunda Modeler Protocol URL received:', url);
   });
 
   /**

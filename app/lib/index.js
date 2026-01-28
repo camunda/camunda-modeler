@@ -103,6 +103,17 @@ app.plugins = plugins;
 
 Platform.create(platform, app, config);
 
+// register custom protocol
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [path.resolve(process.argv[1])]);
+  }
+} else {
+  app.setAsDefaultProtocolClient('camunda-modeler');
+}
+
+log.info('registered camunda-modeler:// protocol');
+
 // only allow single instance if not disabled via `--no-single-instance` flag
 if (flags.get('single-instance') === false) {
   log.info('single instance disabled via flag');
@@ -112,6 +123,14 @@ if (flags.get('single-instance') === false) {
   if (gotLock) {
 
     app.on('second-instance', (event, argv, cwd) => {
+
+      // check for protocol URL in argv
+      const protocolUrl = argv.find(arg => arg.startsWith('camunda-modeler://'));
+      
+      if (protocolUrl) {
+        log.info('received protocol URL on second-instance:', protocolUrl);
+        console.log('Camunda Modeler Protocol URL received:', protocolUrl);
+      }
 
       const {
         files
@@ -131,6 +150,13 @@ if (flags.get('single-instance') === false) {
   } else {
     app.quit();
   }
+}
+
+// handle protocol URLs on Windows and Linux (first instance)
+const protocolUrl = process.argv.find(arg => arg.startsWith('camunda-modeler://'));
+if (protocolUrl) {
+  log.info('received protocol URL on first instance:', protocolUrl);
+  console.log('Camunda Modeler Protocol URL received:', protocolUrl);
 }
 
 // preload script
