@@ -6,7 +6,6 @@
   "license": "MIT",
   "main": "src/index.js",
   "dependencies": {
-    "@camunda/copilot-chat": "0.0.1-hack",
     "@bpmn-io/add-exporter": "^0.2.0",
     "@bpmn-io/align-to-origin": "^0.7.0",
     "@bpmn-io/dmn-migrate": "^0.6.0",
@@ -15,6 +14,7 @@
     "@bpmn-io/properties-panel": "^3.36.0",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@bpmn-io/variable-outline": "^2.0.1",
+    "@camunda/copilot-chat": "0.0.1-hack",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.23.0",
     "@camunda/form-playground": "^0.23.0",
@@ -54,6 +54,7 @@
     "dmn-js-properties-panel": "^3.9.0",
     "dmn-js-shared": "^17.5.0",
     "drag-tabs": "^2.3.1",
+    "event-source-polyfill": "^1.0.31",
     "events": "^3.0.0",
     "formik": "2.0.4",
     "ids": "^1.0.0",
