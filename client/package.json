@@ -6,6 +6,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "dependencies": {
+    "@camunda/copilot-chat": "0.0.1-hack",
     "@bpmn-io/add-exporter": "^0.2.0",
     "@bpmn-io/align-to-origin": "^0.7.0",
     "@bpmn-io/dmn-migrate": "^0.6.0",
