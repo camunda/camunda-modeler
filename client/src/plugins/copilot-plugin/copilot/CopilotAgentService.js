@@ -11,7 +11,6 @@
 import { EventSourcePolyfill } from 'event-source-polyfill';
 
 
-
 /**
  * CopilotAgentService using Server-Sent Events (SSE) for real-time communication.
  */
@@ -57,7 +56,11 @@ class CopilotAgentService {
         const eventType = (data.type || '').toUpperCase();
         const eventStatus = (data.status || '').toUpperCase();
 
-        console.log('[CopilotAgent] SSE event:', { type: eventType, status: eventStatus, content: data.content?.substring(0, 50) });
+        console.log('[CopilotAgent] SSE event:', {
+          type: eventType,
+          status: eventStatus,
+          content: data.content?.substring(0, 50),
+        });
 
         // CONNECTED is a connection handshake, not a chat event
         if (eventType === 'CONNECTED') {
@@ -135,29 +138,43 @@ class CopilotAgentService {
     this.haltConversation(conversationId);
   }
 
-  async sendMessage(payload) {
-    const response = await fetch(`${this.baseUrl}/api/internal/copilot/converse`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.#getToken()}`
+  async sendMessage(payload, mcpServers) {
+
+    const isEmpty = Object.keys(mcpServers).length === 0;
+
+    const mcpToolsJsonString = isEmpty ? undefined : JSON.stringify(mcpServers);
+
+    const response = await fetch(
+      `${this.baseUrl}/api/internal/copilot/converse`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.#getToken()}`,
+        },
+        body: JSON.stringify({
+          ...payload,
+          mcpToolsJsonString
+        }),
       },
-      body: JSON.stringify(payload)
-    });
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
   }
 
   async sendToolResult(payload) {
-    const response = await fetch(`${this.baseUrl}/api/internal/copilot/continueWithToolResult`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.#getToken()}`
+    const response = await fetch(
+      `${this.baseUrl}/api/internal/copilot/continueWithToolResult`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.#getToken()}`,
+        },
+        body: JSON.stringify(payload),
       },
-      body: JSON.stringify(payload)
-    });
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -165,14 +182,17 @@ class CopilotAgentService {
 
   async haltConversation(conversationId, signal) {
     console.log('[CopilotAgent] Halting conversation for:', conversationId);
-    const response = await fetch(`${this.baseUrl}/api/internal/copilot/haltConversation/${conversationId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.#getToken()}`
+    const response = await fetch(
+      `${this.baseUrl}/api/internal/copilot/haltConversation/${conversationId}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.#getToken()}`,
+        },
+        signal,
       },
-      signal
-    });
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

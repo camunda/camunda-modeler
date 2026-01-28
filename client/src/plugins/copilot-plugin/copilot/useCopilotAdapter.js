@@ -20,7 +20,8 @@ const createTransport = (mcpServers) => ({
   unsubscribe: (conversationId) => {
     CopilotAgentService.unsubscribe(conversationId);
   },
-  sendMessage: (payload) => CopilotAgentService.sendMessage(payload),
+  sendMessage: (payload) =>
+    CopilotAgentService.sendMessage(payload, mcpServers),
   sendToolResult: (payload) => CopilotAgentService.sendToolResult(payload),
 });
 
@@ -180,6 +181,7 @@ export const createSaveCurrentFileTool = (triggerAction, getActiveTab) => ({
       const saved = await triggerAction('save-tab', { tab: activeTab });
 
       if (saved) {
+
         // Get updated tab info after save
         const updatedTab = getActiveTab();
         const filePath = updatedTab?.file?.path || null;
@@ -218,8 +220,8 @@ const getStatusLabel = (eventType, toolName) => {
   return labels[eventType] || 'Thinking...';
 };
 
-export const useCopilotAdapter = ({triggerAction, getActiveTab, mcpServers}) => {
-  const transport = useMemo(() => createTransport(mcpServers), []);
+export const useCopilotAdapter = ({ triggerAction, getActiveTab, mcpServers }) => {
+  const transport = createTransport(mcpServers);
 
   const frontendTools = useMemo(() => {
     const tools = [];
