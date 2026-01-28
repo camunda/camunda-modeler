@@ -16,6 +16,12 @@ import AiIcon from 'icons/Ai.svg';
 
 import * as css from './CopilotPlugin.less';
 
+/**
+ * @param {Object} props - Component properties
+ * @param {import('../../app/Settings').default} props.settings
+ *
+ * @returns {JSX.Element}
+ */
 export default function CopilotPlugin(props) {
 
   const {
@@ -31,6 +37,22 @@ export default function CopilotPlugin(props) {
   const toggleCopilot = () => {
     console.log('Copilot');
   };
+
+  settings.register({
+    id: 'copilotPlugin',
+    title: 'Copilot Plugin',
+    properties:{
+      'copilotPlugin.mcpServers': {
+        type: 'json',
+        label: 'MCP Servers',
+        default: '{}',
+        hiddenPaths: [
+          '*Authorization*'
+        ]
+      }
+    }
+  });
+
 
   return (
     <Fragment>
