@@ -34,6 +34,8 @@ class CopilotAgentService {
 
     console.log('[CopilotAgent] Creating SSE connection:', url);
 
+    let intentionallyClosed = false;
+
     const eventSource = new EventSourcePolyfill(url, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -41,29 +43,30 @@ class CopilotAgentService {
       heartbeatTimeout: 30 * 60 * 1000, // 30 minutes timeout
     });
 
+    // Helper to close the connection gracefully
+    const closeConnection = () => {
+      intentionallyClosed = true;
+      eventSource.close();
+      this.activeConnections.delete(conversationId);
+    };
+
     // Handle all events via onmessage (like ClusterService does)
     eventSource.onmessage = (event) => {
       try {
-        console.log('[CopilotAgent] SSE event received:', event.data);
         const data = JSON.parse(event.data);
-        onEvent(data);
-
-        // Close connection on execution_complete event (case-insensitive)
         const eventType = (data.type || '').toUpperCase();
-        if (eventType === 'EXECUTION_COMPLETE') {
-          console.log(
-            '[CopilotAgent] Received EXECUTION_COMPLETE event, closing SSE connection',
-          );
-          eventSource.close();
-          this.activeConnections.delete(conversationId);
+        const eventStatus = (data.status || '').toUpperCase();
+
+        console.log('[CopilotAgent] SSE event:', { type: eventType, status: eventStatus, content: data.content?.substring(0, 50) });
+
+        // CONNECTED is a connection handshake, not a chat event
+        if (eventType === 'CONNECTED') {
+          return;
         }
+
+        onEvent(data);
       } catch (e) {
-        console.error(
-          '[CopilotAgent] Failed to parse SSE event:',
-          e,
-          'Raw data:',
-          event.data,
-        );
+        console.error('[CopilotAgent] Failed to parse SSE event:', e);
       }
     };
 
@@ -79,23 +82,19 @@ class CopilotAgentService {
 
     // Handle connection errors
     eventSource.onerror = (error) => {
-      console.error(
-        '[CopilotAgent] SSE connection error:',
-        error,
+
+      // Don't log error if connection was intentionally closed
+      if (intentionallyClosed) {
+        return;
+      }
+
+      // SSE connections commonly trigger error events during reconnection attempts.
+      // Only log for debugging - don't emit ERROR events to the UI for transient errors.
+      console.warn(
+        '[CopilotAgent] SSE connection error (will retry):',
         'readyState:',
         eventSource.readyState,
       );
-
-      // Check if the connection is closed
-      if (eventSource.readyState === EventSource.CLOSED) {
-        console.log('[CopilotAgent] SSE connection closed');
-        this.activeConnections.delete(conversationId);
-        onEvent({
-          type: 'ERROR',
-          status: 'ERROR',
-          content: 'Connection closed unexpectedly',
-        });
-      }
     };
 
     return {
@@ -105,8 +104,7 @@ class CopilotAgentService {
           '[CopilotAgent] Closing SSE connection for conversation:',
           conversationId,
         );
-        eventSource.close();
-        this.activeConnections.delete(conversationId);
+        closeConnection();
       },
     };
   }
@@ -137,38 +135,32 @@ class CopilotAgentService {
     this.haltConversation(conversationId);
   }
 
-  async sendMessage(payload, signal) {
-    console.log('[CopilotAgent] Sending message:', payload.content);
+  async sendMessage(payload) {
     const response = await fetch(`${this.baseUrl}/api/internal/copilot/converse`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.#getToken()}`
       },
-      body: JSON.stringify(payload),
-      signal
+      body: JSON.stringify(payload)
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json();
   }
 
-  async sendToolResult(payload, signal) {
-    console.log('[CopilotAgent] Sending tool result for:', payload.toolName);
+  async sendToolResult(payload) {
     const response = await fetch(`${this.baseUrl}/api/internal/copilot/continueWithToolResult`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.#getToken()}`
       },
-      body: JSON.stringify(payload),
-      signal
+      body: JSON.stringify(payload)
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json();
   }
 
   async haltConversation(conversationId, signal) {
@@ -184,7 +176,10 @@ class CopilotAgentService {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json();
+
+    // Handle empty response body gracefully
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
   }
 
   #getToken() {

@@ -15,10 +15,11 @@ import '@camunda/copilot-chat/style.css';
 
 import { useCopilotAdapter } from './useCopilotAdapter';
 
-export function CopilotChatPanel() {
+export function CopilotChatPanel({ triggerAction, getActiveTab, mcpServers }) {
   const { sendMessage, isBusy, stopGeneration, resetConversation } =
-    useCopilotAdapter();
+    useCopilotAdapter({ triggerAction, getActiveTab, mcpServers });
 
+  console.log('mcpServers in CopilotChatPanel:', mcpServers);
   return (
     <CopilotChat
       onSendMessage={ sendMessage }

@@ -13,7 +13,7 @@ import { useAgentAdapter } from '@camunda/copilot-chat';
 
 import CopilotAgentService from './CopilotAgentService';
 
-const createTransport = () => ({
+const createTransport = (mcpServers) => ({
   subscribe: (conversationId, onEvent) => {
     CopilotAgentService.subscribe(conversationId, onEvent);
   },
@@ -44,6 +44,27 @@ const GET_CURRENT_BPMN_XML_SCHEMA = {
   name: 'get_current_bpmn_xml',
   description:
     'Retrieves the current BPMN XML from the modeler. This tool takes no parameters and returns the BPMN XML content of the current diagram.',
+  parametersSchema: '{}',
+};
+
+const CREATE_BPMN_DIAGRAM_CAMUNDA_8_SCHEMA = {
+  name: 'create_bpmn_diagram_camunda_8',
+  description:
+    'Creates a new BPMN diagram for Camunda 8 (Zeebe). This opens a new tab with an empty BPMN diagram configured for Camunda 8 execution platform. Use this when the user wants to create a new process or workflow for Camunda 8.',
+  parametersSchema: '{}',
+};
+
+const GET_CURRENT_FILE_INFO_SCHEMA = {
+  name: 'get_current_file_info',
+  description:
+    'Gets information about the currently active file in the modeler. Returns the file path, file name, and directory path. Use this to get the folder location for git operations or when you need to know where the current diagram is saved. Returns null values if the file has not been saved yet.',
+  parametersSchema: '{}',
+};
+
+const SAVE_CURRENT_FILE_SCHEMA = {
+  name: 'save_current_file',
+  description:
+    'Saves the currently active file. If the file has never been saved, it will prompt the user to choose a save location. Use this before git operations to ensure the file is saved to disk.',
   parametersSchema: '{}',
 };
 
@@ -82,6 +103,108 @@ export const getCurrentBpmnXmlTool = (modeler) => ({
   },
 });
 
+export const createBpmnDiagramCamunda8Tool = (triggerAction) => ({
+  ...CREATE_BPMN_DIAGRAM_CAMUNDA_8_SCHEMA,
+  handler: async (_, onError) => {
+    try {
+      await triggerAction('create-cloud-bpmn-diagram');
+      return 'Successfully created a new BPMN diagram for Camunda 8. The diagram is now open in a new tab.';
+    } catch (error) {
+      console.error('[createBpmnDiagramCamunda8Tool] Creation error:', error);
+      onError(CREATE_BPMN_DIAGRAM_CAMUNDA_8_SCHEMA.name, error);
+      throw new Error(`Failed to create BPMN diagram: ${error.message}`);
+    }
+  },
+});
+
+export const createGetCurrentFileInfoTool = (getActiveTab) => ({
+  ...GET_CURRENT_FILE_INFO_SCHEMA,
+  handler: async (_, onError) => {
+    try {
+      const activeTab = getActiveTab();
+
+      if (!activeTab || !activeTab.file) {
+        return JSON.stringify({
+          filePath: null,
+          fileName: null,
+          directoryPath: null,
+          isSaved: false,
+          message: 'No file is currently open in the modeler.'
+        });
+      }
+
+      const { file } = activeTab;
+      const filePath = file.path || null;
+      const fileName = file.name || null;
+
+      // Extract directory path from file path
+      let directoryPath = null;
+      if (filePath) {
+        const lastSeparatorIndex = Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\'));
+        if (lastSeparatorIndex > 0) {
+          directoryPath = filePath.substring(0, lastSeparatorIndex);
+        }
+      }
+
+      return JSON.stringify({
+        filePath,
+        fileName,
+        directoryPath,
+        isSaved: !!filePath,
+        fileType: activeTab.type || null,
+        message: filePath
+          ? `File is saved at: ${filePath}`
+          : 'File has not been saved yet. Use save_current_file tool to save it first.'
+      });
+    } catch (error) {
+      console.error('[createGetCurrentFileInfoTool] Error:', error);
+      onError(GET_CURRENT_FILE_INFO_SCHEMA.name, error);
+      throw new Error(`Failed to get file info: ${error.message}`);
+    }
+  },
+});
+
+export const createSaveCurrentFileTool = (triggerAction, getActiveTab) => ({
+  ...SAVE_CURRENT_FILE_SCHEMA,
+  handler: async (_, onError) => {
+    try {
+      const activeTab = getActiveTab();
+
+      if (!activeTab) {
+        return JSON.stringify({
+          success: false,
+          message: 'No file is currently open to save.'
+        });
+      }
+
+      const saved = await triggerAction('save-tab', { tab: activeTab });
+
+      if (saved) {
+        // Get updated tab info after save
+        const updatedTab = getActiveTab();
+        const filePath = updatedTab?.file?.path || null;
+
+        return JSON.stringify({
+          success: true,
+          filePath,
+          message: filePath
+            ? `File saved successfully at: ${filePath}`
+            : 'Save was cancelled by user.'
+        });
+      } else {
+        return JSON.stringify({
+          success: false,
+          message: 'Save was cancelled or failed.'
+        });
+      }
+    } catch (error) {
+      console.error('[createSaveCurrentFileTool] Error:', error);
+      onError(SAVE_CURRENT_FILE_SCHEMA.name, error);
+      throw new Error(`Failed to save file: ${error.message}`);
+    }
+  },
+});
+
 const getStatusLabel = (eventType, toolName) => {
   const labels = {
     THINKING: 'Thinking...',
@@ -95,8 +218,26 @@ const getStatusLabel = (eventType, toolName) => {
   return labels[eventType] || 'Thinking...';
 };
 
-export const useCopilotAdapter = () => {
-  const transport = useMemo(() => createTransport(), []);
+export const useCopilotAdapter = ({triggerAction, getActiveTab, mcpServers}) => {
+  const transport = useMemo(() => createTransport(mcpServers), []);
+
+  const frontendTools = useMemo(() => {
+    const tools = [];
+
+    if (triggerAction) {
+      tools.push(createBpmnDiagramCamunda8Tool(triggerAction));
+    }
+
+    if (getActiveTab) {
+      tools.push(createGetCurrentFileInfoTool(getActiveTab));
+    }
+
+    if (triggerAction && getActiveTab) {
+      tools.push(createSaveCurrentFileTool(triggerAction, getActiveTab));
+    }
+
+    return tools;
+  }, [ triggerAction, getActiveTab ]);
 
   // const frontendTools = useMemo(() => {
   //   const layoutTool = modeler
@@ -110,7 +251,8 @@ export const useCopilotAdapter = () => {
 
   return useAgentAdapter({
     transport,
-    frontendTools: [],
+    frontendTools,
     getStatusLabel,
+
   });
 };

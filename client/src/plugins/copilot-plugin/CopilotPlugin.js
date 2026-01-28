@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 
 import { Fill } from '../../app/slot-fill';
 
@@ -28,8 +28,21 @@ export default function CopilotPlugin(props) {
 
   const {
     subscribe,
-    settings
+    settings,
+    triggerAction
   } = props;
+
+  const [ activeTab, setActiveTab ] = useState(null);
+
+  useEffect(() => {
+    const subscription = subscribe('app.activeTabChanged', ({ activeTab }) => {
+      setActiveTab(activeTab);
+    });
+
+    return () => subscription.cancel();
+  }, [ subscribe ]);
+
+  const getActiveTab = useCallback(() => activeTab, [ activeTab ]);
 
   const toggleKapa = () => {
     window.Kapa.open();
@@ -39,21 +52,44 @@ export default function CopilotPlugin(props) {
     document.getElementsByClassName('copilot-launcher')[0]?.click();
   };
 
-  settings.register({
-    id: 'copilotPlugin',
-    title: 'Copilot Plugin',
-    properties:{
-      'copilotPlugin.mcpServers': {
-        type: 'json',
-        label: 'mcp json config',
-        default: '{\n  "mcpServers": []\n}',
-        hiddenPaths: [
-          '*Authorization*'
-        ]
+  const [ mcpServers, setMcpServers ] = useState({});
+
+  useEffect(() => {
+
+    settings.register({
+      id: 'copilotPlugin',
+      title: 'Copilot Plugin',
+      properties:{
+        'copilotPlugin.mcpServers': {
+          type: 'json',
+          label: 'MCP JSON Configuration',
+          default: '{\n  "mcpServers": {}\n}',
+          hiddenPaths: [
+            '*Authorization*'
+          ]
+        }
       }
+    });
+
+    const raw = settings.get('copilotPlugin.mcpServers',{});
+    try {
+      setMcpServers(JSON.parse(raw));
+    } catch (e) {
+      console.log(e);
+      console.log({ raw });
+      setMcpServers({});
+    }
+  }, []);
+
+  settings.subscribe('copilotPlugin.mcpServers', (raw) => {
+    try {
+      setMcpServers(JSON.parse(raw.value));
+    } catch (e) {
+      console.log(e);
+      console.log({ raw });
+      setMcpServers({});
     }
   });
-
 
   return (
     <Fragment>
@@ -75,7 +111,7 @@ export default function CopilotPlugin(props) {
         >
           <AiIcon className="icon" />
         </button>
-        <CopilotChatPanel />
+        <CopilotChatPanel triggerAction={ triggerAction } getActiveTab={ getActiveTab } mcpServers={ mcpServers } />
       </Fill>
     </Fragment>
   );
