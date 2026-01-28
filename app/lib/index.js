@@ -554,14 +554,21 @@ app.createEditorWindow = function() {
       url = 'http://localhost:3000';
       mainWindow.loadURL(url);
     }).catch((err) => {
-      log.error('failed to start dev server', err);
-
-      // fallback to file protocol if dev server fails
-      mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../client/build/index.html'));
+      log.error('Failed to start dev server', err);
+      throw err;
     });
   } else {
     mainWindow.loadURL(url);
   }
+
+  // Log URL load errors
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    log.error('failed to load URL', { errorCode, errorDescription, validatedURL });
+  });
+
+  mainWindow.webContents.on('crashed', () => {
+    log.error('renderer process crashed');
+  });
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {
