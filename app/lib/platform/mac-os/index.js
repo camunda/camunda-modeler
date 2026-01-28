@@ -30,6 +30,11 @@ function MacOSPlatform(app) {
     e.preventDefault();
 
     log.info('received protocol URL:', url);
+    
+    // Handle auth protocol if available
+    if (app.handleAuthProtocolUrl) {
+      app.handleAuthProtocolUrl(url);
+    }
   });
 
   /**

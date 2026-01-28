@@ -101,8 +101,6 @@ app.metadata = {
 };
 app.plugins = plugins;
 
-Platform.create(platform, app, config);
-
 // register custom protocol
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -113,6 +111,67 @@ if (process.defaultApp) {
 }
 
 log.info('registered camunda-modeler:// protocol');
+
+/**
+ * Handle auth protocol URLs and store connection configuration
+ * Format: camunda-modeler://auth?token=XXX&url=YYY
+ */
+function handleAuthProtocolUrl(protocolUrl) {
+  try {
+    const url = new URL(protocolUrl);
+    
+    if (url.pathname !== '//auth' && url.pathname !== '/auth') {
+      return;
+    }
+    
+    const token = url.searchParams.get('token');
+    const endpointUrl = url.searchParams.get('url');
+    
+    if (!token || !endpointUrl) {
+      log.error('auth protocol URL missing required parameters (token, url)');
+      return;
+    }
+    
+    // Get existing connections
+    const settings = config.get('settings') || {};
+    const existingConnections = settings['connectionManagerPlugin.c8connections'] || [];
+    
+    // Create new OAuth connection
+    const newConnection = {
+      id: `auth-${Date.now()}`,
+      name: `OAuth Connection - ${new Date().toLocaleString()}`,
+      url: endpointUrl,
+      type: 'oauth',
+      audience: endpointUrl,
+      clientId: 'modeler',
+      clientSecret: token,
+      scope: 'openid profile email'
+    };
+    
+    // Add to connections
+    const updatedConnections = [ ...existingConnections, newConnection ];
+    
+    // Save to settings
+    config.set('settings', {
+      ...settings,
+      'connectionManagerPlugin.c8connections': updatedConnections
+    });
+    
+    log.info('stored OAuth connection from auth protocol:', {
+      id: newConnection.id,
+      name: newConnection.name,
+      url: endpointUrl
+    });
+    
+  } catch (error) {
+    log.error('failed to parse auth protocol URL:', error);
+  }
+}
+
+// make handler available to platform modules
+app.handleAuthProtocolUrl = handleAuthProtocolUrl;
+
+Platform.create(platform, app, config);
 
 // only allow single instance if not disabled via `--no-single-instance` flag
 if (flags.get('single-instance') === false) {
@@ -129,6 +188,7 @@ if (flags.get('single-instance') === false) {
 
       if (protocolUrl) {
         log.info('received protocol URL on second-instance:', protocolUrl);
+        handleAuthProtocolUrl(protocolUrl);
       }
 
       // filter out protocol URLs from argv to avoid treating them as file paths
@@ -158,6 +218,7 @@ if (flags.get('single-instance') === false) {
 const protocolUrl = process.argv.find(arg => arg.startsWith('camunda-modeler://'));
 if (protocolUrl) {
   log.info('received protocol URL on first instance:', protocolUrl);
+  handleAuthProtocolUrl(protocolUrl);
 }
 
 // preload script

@@ -141,6 +141,7 @@
             <button onclick="testNewDiagram()">New BPMN Diagram</button>
             <button onclick="testNewDMN()">New DMN Table</button>
             <button onclick="testMultiParams()">Multiple Parameters</button>
+            <button onclick="testAuthProtocol()">Test Auth Protocol</button>
         </div>
 
         <div class="info">
@@ -149,6 +150,7 @@
             <p>2. Click "Open Camunda Modeler" to trigger the protocol</p>
             <p>3. Check the Camunda Modeler logs to see the received URL</p>
             <p>4. Try the preset buttons for quick tests</p>
+            <p>5. Use "Test Auth Protocol" to save an OAuth connection (token=XXX&url=YYY)</p>
         </div>
     </div>
 
@@ -252,6 +254,17 @@
             document.getElementById('param2Value').value = 'edit';
             document.getElementById('param3Key').value = 'version';
             document.getElementById('param3Value').value = '1.0';
+            openProtocol();
+        }
+
+        function testAuthProtocol() {
+            document.getElementById('path').value = 'auth';
+            document.getElementById('param1Key').value = 'token';
+            document.getElementById('param1Value').value = 'example-oauth-token-12345';
+            document.getElementById('param2Key').value = 'url';
+            document.getElementById('param2Value').value = 'https://example.camunda.io';
+            document.getElementById('param3Key').value = '';
+            document.getElementById('param3Value').value = '';
             openProtocol();
         }
     </script>

@@ -50,8 +50,39 @@ The protocol scheme is configured in `electron-builder.json`:
 
 ## Current Functionality
 
-When a `camunda-modeler://` URL is opened:
-- The URL is logged using the structured logging system
+### Auth Protocol Handler
+
+The modeler includes a built-in handler for OAuth connection configuration via the `auth` path:
+
+**Format**: `camunda-modeler://auth?token=XXX&url=YYY`
+
+**Parameters**:
+- `token` (required): OAuth client secret or token
+- `url` (required): The endpoint URL for the Camunda cluster
+
+**Behavior**:
+When an auth protocol URL is opened, the modeler automatically:
+1. Parses the token and URL from the query parameters
+2. Creates a new OAuth connection configuration
+3. Saves it to the connection manager settings
+4. Logs the operation
+
+**Example**:
+```bash
+camunda-modeler://auth?token=my-oauth-token-12345&url=https://my-cluster.camunda.io
+```
+
+This will create a connection entry in the connection manager with:
+- **Type**: OAuth
+- **URL**: `https://my-cluster.camunda.io`
+- **Client ID**: `modeler`
+- **Client Secret**: `my-oauth-token-12345`
+- **Audience**: Same as URL
+- **Scope**: `openid profile email`
+
+### General Protocol Logging
+
+For other protocol paths, the URL is logged using the structured logging system:
 - The log message includes the full URL
 - Console output: `log.info('received protocol URL:', url)`
 
