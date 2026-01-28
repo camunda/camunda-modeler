@@ -531,7 +531,8 @@ app.createEditorWindow = function() {
       preload: path.resolve(__dirname, '../preload/preload.js'),
       contextIsolation: true,
       nodeIntegration,
-      sandbox: !nodeIntegration // sandbox needs to be disabled for nodeIntegration=true
+      sandbox: !nodeIntegration, // sandbox needs to be disabled for nodeIntegration=true
+      webSecurity: false
     }
   };
 
@@ -552,6 +553,12 @@ app.createEditorWindow = function() {
   }
 
   mainWindow.loadURL(url);
+
+  // const express = require('express');
+  // const server = express();
+
+  // server.use('/', express.static(__dirname));
+  // const infos = server.listen(0, 'localhost', () => mainWindow.loadURL(url.replace('file://', 'http://')));
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {
