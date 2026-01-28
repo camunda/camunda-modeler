@@ -15,9 +15,9 @@ import '@camunda/copilot-chat/style.css';
 
 import { useCopilotAdapter } from './useCopilotAdapter';
 
-export function CopilotChatPanel({ triggerAction, getActiveTab, mcpServers }) {
+export function CopilotChatPanel({ triggerAction, activeTab, mcpServers, modeler }) {
   const { sendMessage, isBusy, stopGeneration, resetConversation } =
-    useCopilotAdapter({ triggerAction, getActiveTab, mcpServers });
+    useCopilotAdapter({ triggerAction, activeTab, mcpServers, modeler });
 
   console.log('mcpServers in CopilotChatPanel:', mcpServers);
   return (

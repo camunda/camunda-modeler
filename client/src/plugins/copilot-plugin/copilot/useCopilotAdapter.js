@@ -118,12 +118,10 @@ export const createBpmnDiagramCamunda8Tool = (triggerAction) => ({
   },
 });
 
-export const createGetCurrentFileInfoTool = (getActiveTab) => ({
+export const createGetCurrentFileInfoTool = (activeTab) => ({
   ...GET_CURRENT_FILE_INFO_SCHEMA,
   handler: async (_, onError) => {
     try {
-      const activeTab = getActiveTab();
-
       if (!activeTab || !activeTab.file) {
         return JSON.stringify({
           filePath: null,
@@ -220,7 +218,7 @@ const getStatusLabel = (eventType, toolName) => {
   return labels[eventType] || 'Thinking...';
 };
 
-export const useCopilotAdapter = ({ triggerAction, getActiveTab, mcpServers }) => {
+export const useCopilotAdapter = ({ triggerAction, activeTab, mcpServers, modeler }) => {
   const transport = createTransport(mcpServers);
 
   const frontendTools = useMemo(() => {
@@ -230,16 +228,20 @@ export const useCopilotAdapter = ({ triggerAction, getActiveTab, mcpServers }) =
       tools.push(createBpmnDiagramCamunda8Tool(triggerAction));
     }
 
-    if (getActiveTab) {
-      tools.push(createGetCurrentFileInfoTool(getActiveTab));
+    if (activeTab) {
+      tools.push(createGetCurrentFileInfoTool(activeTab));
     }
 
-    if (triggerAction && getActiveTab) {
-      tools.push(createSaveCurrentFileTool(triggerAction, getActiveTab));
+    if (triggerAction && activeTab) {
+      tools.push(createSaveCurrentFileTool(triggerAction, activeTab));
+    }
+
+    if (modeler) {
+      tools.push(getCurrentBpmnXmlTool(modeler));
     }
 
     return tools;
-  }, [ triggerAction, getActiveTab ]);
+  }, [ triggerAction, activeTab, modeler ]);
 
   // const frontendTools = useMemo(() => {
   //   const layoutTool = modeler

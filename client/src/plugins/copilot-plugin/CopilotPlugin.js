@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 
 import { Fill } from '../../app/slot-fill';
 
@@ -33,6 +33,7 @@ export default function CopilotPlugin(props) {
   } = props;
 
   const [ activeTab, setActiveTab ] = useState(null);
+  const [ modeler, setModeler ] = useState(null);
 
   useEffect(() => {
     const subscription = subscribe('app.activeTabChanged', ({ activeTab }) => {
@@ -42,7 +43,13 @@ export default function CopilotPlugin(props) {
     return () => subscription.cancel();
   }, [ subscribe ]);
 
-  const getActiveTab = useCallback(() => activeTab, [ activeTab ]);
+  useEffect(() => {
+    const subscription = subscribe('bpmn.modeler.created', ({ modeler: newModeler }) => {
+      setModeler(newModeler);
+    });
+
+    return () => subscription.cancel();
+  }, [ subscribe ]);
 
   const toggleKapa = () => {
     window.Kapa.open();
@@ -111,7 +118,11 @@ export default function CopilotPlugin(props) {
         >
           <AiIcon className="icon" />
         </button>
-        <CopilotChatPanel triggerAction={ triggerAction } getActiveTab={ getActiveTab } mcpServers={ mcpServers } />
+        <CopilotChatPanel
+          triggerAction={ triggerAction }
+          activeTab={ activeTab }
+          mcpServers={ mcpServers }
+          modeler={ modeler } />
       </Fill>
     </Fragment>
   );
