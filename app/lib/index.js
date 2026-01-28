@@ -549,16 +549,19 @@ app.createEditorWindow = function() {
   let url = 'file://' + path.resolve(__dirname + '/../public/index.html');
 
   if (process.env.NODE_ENV === 'development') {
-    url = 'file://' + path.resolve(__dirname + '/../../client/build/index.html');
+    const { startDevServer } = require('./dev-server');
+    startDevServer().then(() => {
+      url = 'http://localhost:3000';
+      mainWindow.loadURL(url);
+    }).catch((err) => {
+      log.error('failed to start dev server', err);
+
+      // fallback to file protocol if dev server fails
+      mainWindow.loadURL('file://' + path.resolve(__dirname + '/../../client/build/index.html'));
+    });
+  } else {
+    mainWindow.loadURL(url);
   }
-
-  mainWindow.loadURL(url);
-
-  // const express = require('express');
-  // const server = express();
-
-  // server.use('/', express.static(__dirname));
-  // const infos = server.listen(0, 'localhost', () => mainWindow.loadURL(url.replace('file://', 'http://')));
 
   // handling case when user clicks on window close button
   mainWindow.on('close', function(e) {
