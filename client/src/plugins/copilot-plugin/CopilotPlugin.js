@@ -16,6 +16,8 @@ import AiIcon from 'icons/Ai.svg';
 
 import * as css from './CopilotPlugin.less';
 
+import { CopilotChatPanel } from './copilot/CopilotChatPanel';
+
 /**
  * @param {Object} props - Component properties
  * @param {import('../../app/Settings').default} props.settings
@@ -74,6 +76,7 @@ export default function CopilotPlugin(props) {
         >
           <AiIcon className="icon" />
         </button>
+        <CopilotChatPanel />
       </Fill>
     </Fragment>
   );

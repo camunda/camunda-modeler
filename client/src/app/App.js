@@ -57,8 +57,6 @@ import History from './History';
 
 import { PluginsRoot } from './plugins';
 
-import { CopilotChatPanel } from './copilot/CopilotChatPanel';
-
 import * as css from './App.less';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
@@ -2304,7 +2302,6 @@ export class App extends PureComponent {
 
         <Notifications notifications={ this.state.notifications } />
 
-        <CopilotChatPanel />
       </DropZone>
     );
   }
