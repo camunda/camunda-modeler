@@ -136,19 +136,14 @@ function handleAuthProtocolUrl(protocolUrl) {
     const settings = config.get('settings') || {};
     const existingConnections = settings['connectionManagerPlugin.c8connections'] || [];
     
-    // Create new bearer token connection using OAuth type
-    // Note: Using OAuth type as bearer token auth since that's what the UI supports
+    // Create new bearer token connection
     const newConnection = {
       id: `auth-${Date.now()}`,
       name: `Bearer Token Connection - ${new Date().toLocaleString()}`,
       targetType: 'selfHosted',
       contactPoint: endpointUrl,
-      authType: 'oauth',
-      oauthURL: endpointUrl,
-      audience: endpointUrl,
-      clientId: 'bearer',
-      clientSecret: token,
-      scope: ''
+      authType: 'bearer',
+      token: token
     };
     
     // Add to connections

@@ -75,14 +75,10 @@ camunda-modeler://auth?token=my-bearer-token-12345&url=https://my-cluster.camund
 This will create a connection entry in the connection manager with:
 - **Target Type**: Self-Managed
 - **Cluster URL**: `https://my-cluster.camunda.io`
-- **Auth Type**: OAuth (used for bearer token)
-- **OAuth URL**: Same as cluster URL
-- **Client ID**: `bearer`
-- **Client Secret**: `my-bearer-token-12345` (bearer token)
-- **Audience**: Same as cluster URL
-- **Scope**: Empty
+- **Auth Type**: `bearer` (internal, not shown in UI)
+- **Token**: `my-bearer-token-12345`
 
-**Note**: Although the UI shows "OAuth" as the authentication type, the configuration uses the token as a bearer token for API authentication.
+**Note**: The `bearer` auth type is used internally and will not appear in the UI connection manager dropdown. It configures the connection to use bearer token authentication with the Camunda SDK by setting custom Authorization headers.
 
 ### General Protocol Logging
 

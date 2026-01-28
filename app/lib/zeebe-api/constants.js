@@ -11,7 +11,8 @@
 module.exports.AUTH_TYPES = {
   NONE: 'none',
   BASIC: 'basic',
-  OAUTH: 'oauth'
+  OAUTH: 'oauth',
+  BEARER: 'bearer'
 };
 
 module.exports.ENDPOINT_TYPES = {
