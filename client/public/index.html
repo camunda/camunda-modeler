@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
+  <meta http-equiv="Content-Security-Policy" content="
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://widget.kapa.ai https://www.google.com https://hcaptcha.com https://*.hcaptcha.com;
+    connect-src 'self' 'unsafe-eval' https://proxy.kapa.ai kapa-widget-proxy-la7dkmplpq-uc.a.run.app metrics.kapa.ai https://hcaptcha.com https://*.hcaptcha.com https://camunda-modeler-update-server-staging.camunda.com;
+    frame-src 'self' 'unsafe-eval' https://www.google.com https://hcaptcha.com https://*.hcaptcha.com;
+    style-src 'self' 'unsafe-inline' 'unsafe-eval' https://hcaptcha.com https://*.hcaptcha.com
+  " />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Camunda Modeler</title>
 
@@ -62,6 +67,16 @@
       z-index: 201;
     }
   </style>
+
+  <script async src="https://widget.kapa.ai/kapa-widget.bundle.js" 
+    data-website-id="WEBSIDE_ID"
+    data-project-name="kapa-in-dm" 
+    data-project-color="#fc5d0d"
+    data-project-logo="https://camunda.com/wp-content/uploads/2020/05/logo-camunda-black.svg"
+    data-button-hide="true"
+  >
+  </script>
+
 </head>
 <body>
 

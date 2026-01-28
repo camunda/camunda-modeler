@@ -12,7 +12,9 @@ import React, { Fragment, useState } from 'react';
 
 import { Fill } from '../../app/slot-fill';
 
-import FeedbackIcon from 'icons/Feedback.svg';
+import AiIcon from 'icons/Ai.svg';
+
+import * as css from './CopilotPlugin.less';
 
 export default function CopilotPlugin(props) {
 
@@ -23,6 +25,7 @@ export default function CopilotPlugin(props) {
 
   const toggleKapa = () => {
     console.log('Kapa AI');
+    window.Kapa.open();
   };
 
   const toggleCopilot = () => {
@@ -37,14 +40,17 @@ export default function CopilotPlugin(props) {
           title="Copilot"
           onClick={ toggleKapa }
         >
-          <FeedbackIcon className="icon" />
+          <img
+            src="https://avatars.githubusercontent.com/u/122976076?s=200&v=4"
+            className="kapa-icon"
+          />
         </button>
         <button
           className="btn"
           title="Copilot"
           onClick={ toggleCopilot }
         >
-          <FeedbackIcon className="icon" />
+          <AiIcon className="icon" />
         </button>
       </Fill>
     </Fragment>
