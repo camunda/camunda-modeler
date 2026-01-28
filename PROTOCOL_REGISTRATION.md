@@ -78,7 +78,7 @@ This will create a connection entry in the connection manager with:
 - **Auth Type**: `bearer` (internal, not shown in UI)
 - **Token**: `my-bearer-token-12345`
 
-**Note**: The `bearer` auth type is used internally and will not appear in the UI connection manager dropdown. It configures the connection to use bearer token authentication with the Camunda SDK by setting custom Authorization headers.
+**Note**: The `bearer` auth type is used internally and will not appear in the UI connection manager dropdown. It configures the connection to use bearer token authentication with the Camunda SDK by setting `CAMUNDA_AUTH_STRATEGY: 'BEARER'` and `CAMUNDA_TOKEN_VALUE` with the provided token.
 
 ### General Protocol Logging
 
