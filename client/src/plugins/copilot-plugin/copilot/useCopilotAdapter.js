@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { useMemo } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { useAgentAdapter } from '@camunda/copilot-chat';
 
 import CopilotAgentService from './CopilotAgentService';
@@ -70,10 +70,14 @@ const SAVE_CURRENT_FILE_SCHEMA = {
   parametersSchema: '{}',
 };
 
-export const createLayoutBpmnTool = (modeler) => ({
+export const createLayoutBpmnTool = (modelerRef) => ({
   ...LAYOUT_BPMN_TOOL_SCHEMA,
   handler: async (args, onError) => {
     try {
+      const modeler = modelerRef.current;
+      if (!modeler) {
+        throw new Error('Modeler is not available yet. Please wait for the diagram to load.');
+      }
       const xml = args.bpmnXml;
       return await applyLayoutAndImport(xml, modeler);
     } catch (error) {
@@ -84,10 +88,14 @@ export const createLayoutBpmnTool = (modeler) => ({
   },
 });
 
-export const getCurrentBpmnXmlTool = (modeler) => ({
+export const getCurrentBpmnXmlTool = (modelerRef) => ({
   ...GET_CURRENT_BPMN_XML_SCHEMA,
   handler: async (_, onError) => {
     try {
+      const modeler = modelerRef.current;
+      if (!modeler) {
+        throw new Error('Modeler is not available yet. Please wait for the diagram to load.');
+      }
       const { xml } = await modeler.saveXML({ format: false });
       return xml;
 
@@ -101,10 +109,14 @@ export const getCurrentBpmnXmlTool = (modeler) => ({
   },
 });
 
-export const createBpmnDiagramCamunda8Tool = (triggerAction) => ({
+export const createBpmnDiagramCamunda8Tool = (triggerActionRef) => ({
   ...CREATE_BPMN_DIAGRAM_CAMUNDA_8_SCHEMA,
   handler: async (_, onError) => {
     try {
+      const triggerAction = triggerActionRef.current;
+      if (!triggerAction) {
+        throw new Error('triggerAction is not available yet.');
+      }
       await triggerAction('create-cloud-bpmn-diagram');
       return 'Successfully created a new BPMN diagram for Camunda 8. The diagram is now open in a new tab.';
     } catch (error) {
@@ -115,10 +127,11 @@ export const createBpmnDiagramCamunda8Tool = (triggerAction) => ({
   },
 });
 
-export const createGetCurrentFileInfoTool = (activeTab) => ({
+export const createGetCurrentFileInfoTool = (activeTabRef) => ({
   ...GET_CURRENT_FILE_INFO_SCHEMA,
   handler: async (_, onError) => {
     try {
+      const activeTab = activeTabRef.current;
       if (!activeTab || !activeTab.file) {
         return JSON.stringify({
           filePath: null,
@@ -160,15 +173,22 @@ export const createGetCurrentFileInfoTool = (activeTab) => ({
   },
 });
 
-export const createSaveCurrentFileTool = (triggerAction, activeTab) => ({
+export const createSaveCurrentFileTool = (triggerActionRef, activeTabRef) => ({
   ...SAVE_CURRENT_FILE_SCHEMA,
   handler: async (_, onError) => {
     try {
+      const activeTab = activeTabRef.current;
+      const triggerAction = triggerActionRef.current;
+
       if (!activeTab) {
         return JSON.stringify({
           success: false,
           message: 'No file is currently open to save.'
         });
+      }
+
+      if (!triggerAction) {
+        throw new Error('triggerAction is not available yet.');
       }
 
       const saved = await triggerAction('save-tab', { tab: activeTab });
@@ -215,28 +235,41 @@ const getStatusLabel = (eventType, toolName) => {
 export const useCopilotAdapter = ({ triggerAction, activeTab, mcpServers, modeler }) => {
   const transport = createTransport(mcpServers);
 
+  // Use refs to always have access to the latest values
+  const modelerRef = useRef(modeler);
+  const triggerActionRef = useRef(triggerAction);
+  const activeTabRef = useRef(activeTab);
+
+  // Keep refs up to date
+  useEffect(() => {
+    modelerRef.current = modeler;
+    console.log('[useCopilotAdapter] modelerRef updated:', modeler ? 'available' : 'null');
+  }, [ modeler ]);
+
+  useEffect(() => {
+    triggerActionRef.current = triggerAction;
+  }, [ triggerAction ]);
+
+  useEffect(() => {
+    activeTabRef.current = activeTab;
+  }, [ activeTab ]);
+
+  // Create tools that use refs - they will always have access to the latest values
+  // We create these once and they remain stable
   const frontendTools = useMemo(() => {
     const tools = [];
 
-    if (triggerAction) {
-      tools.push(createBpmnDiagramCamunda8Tool(triggerAction));
-    }
+    // Always include these tools - they use refs so they'll work when values become available
+    tools.push(createBpmnDiagramCamunda8Tool(triggerActionRef));
+    tools.push(createGetCurrentFileInfoTool(activeTabRef));
+    tools.push(createSaveCurrentFileTool(triggerActionRef, activeTabRef));
+    tools.push(createLayoutBpmnTool(modelerRef));
+    tools.push(getCurrentBpmnXmlTool(modelerRef));
 
-    if (activeTab) {
-      tools.push(createGetCurrentFileInfoTool(activeTab));
-    }
-
-    if (triggerAction && activeTab) {
-      tools.push(createSaveCurrentFileTool(triggerAction, activeTab));
-    }
-
-    if (modeler) {
-      tools.push(createLayoutBpmnTool(modeler));
-      tools.push(getCurrentBpmnXmlTool(modeler));
-    }
+    console.log('[useCopilotAdapter] Created frontend tools:', tools.map(t => t.name));
 
     return tools;
-  }, [ triggerAction, activeTab, modeler ]);
+  }, []); // Empty deps - tools are created once and use refs
 
   return useAgentAdapter({
     transport,

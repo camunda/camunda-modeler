@@ -35,6 +35,9 @@ class CopilotAgentService {
 
     let intentionallyClosed = false;
 
+    // Store callback in a mutable wrapper so it can be updated
+    let currentCallback = onEvent;
+
     const eventSource = new EventSourcePolyfill(url, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -60,6 +63,8 @@ class CopilotAgentService {
           type: eventType,
           status: eventStatus,
           content: data.content?.substring(0, 50),
+          toolName: data.toolName,
+          toolArguments: data.toolArguments ? 'present' : 'absent',
         });
 
         // CONNECTED is a connection handshake, not a chat event
@@ -67,7 +72,8 @@ class CopilotAgentService {
           return;
         }
 
-        onEvent(data);
+        // Use the current callback (which may have been updated)
+        currentCallback(data);
       } catch (e) {
         console.error('[CopilotAgent] Failed to parse SSE event:', e);
       }
@@ -84,7 +90,7 @@ class CopilotAgentService {
     };
 
     // Handle connection errors
-    eventSource.onerror = (error) => {
+    eventSource.onerror = (_) => {
 
       // Don't log error if connection was intentionally closed
       if (intentionallyClosed) {
@@ -109,6 +115,11 @@ class CopilotAgentService {
         );
         closeConnection();
       },
+
+      // Method to update the callback without recreating the connection
+      updateCallback: (newCallback) => {
+        currentCallback = newCallback;
+      },
     };
   }
 
@@ -119,13 +130,41 @@ class CopilotAgentService {
    * @returns {Promise<object>} - Object with unsubscribe method
    */
   async subscribe(conversationId, onEvent) {
+
+    // If connection already exists, update the callback and return existing connection
     if (this.activeConnections.has(conversationId)) {
-      return this.activeConnections.get(conversationId);
+      const existingConnection = this.activeConnections.get(conversationId);
+
+      // Update the callback wrapper to use the new onEvent
+      existingConnection.updateCallback(onEvent);
+      console.log('[CopilotAgent] Updated callback for existing connection:', conversationId);
+      return existingConnection;
     }
 
     const connection = await this.#createSseConnection(conversationId, onEvent);
     this.activeConnections.set(conversationId, connection);
     return connection;
+  }
+
+  /**
+   * Update the callback for an existing connection.
+   * @param {string} conversationId - The conversation ID
+   * @param {function} onEvent - New callback for events
+   */
+  updateCallback(conversationId, onEvent) {
+    const connection = this.activeConnections.get(conversationId);
+    if (connection) {
+      connection.updateCallback(onEvent);
+      console.log('[CopilotAgent] Updated callback for connection:', conversationId);
+    }
+  }
+
+  /**
+   * Get all active conversation IDs.
+   * @returns {string[]} - Array of active conversation IDs
+   */
+  getActiveConversationIds() {
+    return Array.from(this.activeConnections.keys());
   }
 
   /**
