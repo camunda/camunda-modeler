@@ -45,8 +45,8 @@ export default function CopilotPlugin(props) {
     properties:{
       'copilotPlugin.mcpServers': {
         type: 'json',
-        label: 'MCP Servers',
-        default: '{}',
+        label: 'mcp json config',
+        default: '{\n  "mcpServers": []\n}',
         hiddenPaths: [
           '*Authorization*'
         ]
