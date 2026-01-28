@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camunda Modeler Protocol Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #fc5d0d;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            background-color: #fc5d0d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #e54d00;
+        }
+        .preset-buttons {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .preset-buttons h3 {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .url-display {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            border-left: 4px solid #fc5d0d;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+            color: #333;
+        }
+        .info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border-left: 4px solid #2196F3;
+        }
+        .info p {
+            margin: 5px 0;
+            color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Camunda Modeler Protocol Tester</h1>
+        
+        <div class="form-group">
+            <label for="path">Path (e.g., "open", "new", "test"):</label>
+            <input type="text" id="path" value="open" placeholder="open">
+        </div>
+
+        <div class="form-group">
+            <label for="param1">Parameter 1 - Key:</label>
+            <input type="text" id="param1Key" value="file" placeholder="file">
+        </div>
+        
+        <div class="form-group">
+            <label for="param1Value">Parameter 1 - Value:</label>
+            <input type="text" id="param1Value" value="diagram.bpmn" placeholder="diagram.bpmn">
+        </div>
+
+        <div class="form-group">
+            <label for="param2Key">Parameter 2 - Key:</label>
+            <input type="text" id="param2Key" value="type" placeholder="type">
+        </div>
+        
+        <div class="form-group">
+            <label for="param2Value">Parameter 2 - Value:</label>
+            <input type="text" id="param2Value" value="bpmn" placeholder="bpmn">
+        </div>
+
+        <div class="form-group">
+            <label for="param3Key">Parameter 3 - Key:</label>
+            <input type="text" id="param3Key" value="" placeholder="optional">
+        </div>
+        
+        <div class="form-group">
+            <label for="param3Value">Parameter 3 - Value:</label>
+            <input type="text" id="param3Value" value="" placeholder="optional">
+        </div>
+
+        <button onclick="openProtocol()">🔗 Open Camunda Modeler</button>
+        
+        <div id="urlDisplay" class="url-display" style="display: none;">
+            <strong>Generated URL:</strong><br>
+            <span id="generatedUrl"></span>
+        </div>
+
+        <div class="preset-buttons">
+            <h3>Quick Test Buttons:</h3>
+            <button onclick="testSimple()">Simple Test</button>
+            <button onclick="testOpenFile()">Open File</button>
+            <button onclick="testNewDiagram()">New BPMN Diagram</button>
+            <button onclick="testNewDMN()">New DMN Table</button>
+            <button onclick="testMultiParams()">Multiple Parameters</button>
+        </div>
+
+        <div class="info">
+            <p><strong>ℹ️ Instructions:</strong></p>
+            <p>1. Fill in the path and parameters you want to test</p>
+            <p>2. Click "Open Camunda Modeler" to trigger the protocol</p>
+            <p>3. Check the Camunda Modeler logs to see the received URL</p>
+            <p>4. Try the preset buttons for quick tests</p>
+        </div>
+    </div>
+
+    <script>
+        function buildUrl() {
+            const path = document.getElementById('path').value || '';
+            const params = [];
+
+            // Add parameter 1
+            const param1Key = document.getElementById('param1Key').value;
+            const param1Value = document.getElementById('param1Value').value;
+            if (param1Key && param1Value) {
+                params.push(`${encodeURIComponent(param1Key)}=${encodeURIComponent(param1Value)}`);
+            }
+
+            // Add parameter 2
+            const param2Key = document.getElementById('param2Key').value;
+            const param2Value = document.getElementById('param2Value').value;
+            if (param2Key && param2Value) {
+                params.push(`${encodeURIComponent(param2Key)}=${encodeURIComponent(param2Value)}`);
+            }
+
+            // Add parameter 3
+            const param3Key = document.getElementById('param3Key').value;
+            const param3Value = document.getElementById('param3Value').value;
+            if (param3Key && param3Value) {
+                params.push(`${encodeURIComponent(param3Key)}=${encodeURIComponent(param3Value)}`);
+            }
+
+            let url = 'camunda-modeler://';
+            if (path) {
+                url += path;
+            }
+            if (params.length > 0) {
+                url += '?' + params.join('&');
+            }
+
+            return url;
+        }
+
+        function openProtocol() {
+            const url = buildUrl();
+            
+            // Display the URL
+            document.getElementById('generatedUrl').textContent = url;
+            document.getElementById('urlDisplay').style.display = 'block';
+            
+            // Open the URL
+            window.location.href = url;
+        }
+
+        function testSimple() {
+            document.getElementById('path').value = 'test';
+            document.getElementById('param1Key').value = '';
+            document.getElementById('param1Value').value = '';
+            document.getElementById('param2Key').value = '';
+            document.getElementById('param2Value').value = '';
+            document.getElementById('param3Key').value = '';
+            document.getElementById('param3Value').value = '';
+            openProtocol();
+        }
+
+        function testOpenFile() {
+            document.getElementById('path').value = 'open';
+            document.getElementById('param1Key').value = 'file';
+            document.getElementById('param1Value').value = '/path/to/diagram.bpmn';
+            document.getElementById('param2Key').value = '';
+            document.getElementById('param2Value').value = '';
+            document.getElementById('param3Key').value = '';
+            document.getElementById('param3Value').value = '';
+            openProtocol();
+        }
+
+        function testNewDiagram() {
+            document.getElementById('path').value = 'new';
+            document.getElementById('param1Key').value = 'type';
+            document.getElementById('param1Value').value = 'bpmn';
+            document.getElementById('param2Key').value = 'template';
+            document.getElementById('param2Value').value = 'process';
+            document.getElementById('param3Key').value = '';
+            document.getElementById('param3Value').value = '';
+            openProtocol();
+        }
+
+        function testNewDMN() {
+            document.getElementById('path').value = 'new';
+            document.getElementById('param1Key').value = 'type';
+            document.getElementById('param1Value').value = 'dmn';
+            document.getElementById('param2Key').value = '';
+            document.getElementById('param2Value').value = '';
+            document.getElementById('param3Key').value = '';
+            document.getElementById('param3Value').value = '';
+            openProtocol();
+        }
+
+        function testMultiParams() {
+            document.getElementById('path').value = 'open';
+            document.getElementById('param1Key').value = 'file';
+            document.getElementById('param1Value').value = 'example.bpmn';
+            document.getElementById('param2Key').value = 'mode';
+            document.getElementById('param2Value').value = 'edit';
+            document.getElementById('param3Key').value = 'version';
+            document.getElementById('param3Value').value = '1.0';
+            openProtocol();
+        }
+    </script>
+</body>
+</html>
