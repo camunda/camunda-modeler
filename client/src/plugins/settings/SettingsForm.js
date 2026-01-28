@@ -14,7 +14,7 @@ import { Field, Form, useFormikContext, getIn } from 'formik';
 
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
-import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
+import { Section, TextInput, CheckBox, Select, Radio, JSONInput } from '../../shared/ui';
 
 import Flags from '../../util/Flags';
 
@@ -148,6 +148,10 @@ export function SettingsField(props) {
       return Radio;
     }
 
+    if (type === 'json') {
+      return JSONInput;
+    }
+
     return null;
   }, [ condition, name, type, values ]);
 
@@ -159,7 +163,7 @@ export function SettingsField(props) {
     return <FieldComponent { ...props } />;
   }
 
-  const { label, description, hint, options, documentationUrl, constraints } = props;
+  const { label, description, hint, options, documentationUrl, constraints, hiddenPaths } = props;
 
   let restProps = {
     fieldError: settingsFieldError
@@ -169,6 +173,9 @@ export function SettingsField(props) {
   }
   if (type === 'password') {
     restProps.type = 'password';
+  }
+  if (type === 'json' && hiddenPaths) {
+    restProps.hiddenPaths = hiddenPaths;
   }
 
   const disabledByFlag = flagValue !== undefined;
