@@ -285,6 +285,12 @@ class CamundaClientFactory {
         CAMUNDA_BASIC_AUTH_USERNAME: endpoint.basicAuthUsername,
         CAMUNDA_BASIC_AUTH_PASSWORD: endpoint.basicAuthPassword
       };
+    } else if (authType === AUTH_TYPES.BEARER) {
+      clientConfig = {
+        ...clientConfig,
+        CAMUNDA_AUTH_STRATEGY: 'BEARER',
+        CAMUNDA_TOKEN_VALUE: endpoint.token
+      };
     } else if (authType === AUTH_TYPES.OAUTH) {
       clientConfig = {
         ...clientConfig,
