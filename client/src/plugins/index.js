@@ -22,6 +22,7 @@ import VersionInfo from './version-info';
 import ZeebePlugin from './zeebe-plugin';
 import TemplateUpdater from './template-updater';
 import Settings from './settings';
+import CopilotPlugin from './copilot-plugin';
 
 export default [
   CamundaPlugin,
@@ -37,5 +38,6 @@ export default [
   ZeebePlugin,
   UserJourneyStatistics,
   TemplateUpdater,
-  Settings
+  Settings,
+  CopilotPlugin
 ];
