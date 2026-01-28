@@ -25,7 +25,7 @@ export function CopilotChatPanel() {
       isBusy={ isBusy }
       onStopGeneration={ stopGeneration }
       onResetConversation={ resetConversation }
-      workareaSelector="body"
+      workareaSelector=".copilot-container"
       emptyStateTitle="Welcome to Copilot"
       emptyStateDescription="Ask me anything about documentation"
     />

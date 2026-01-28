@@ -59,6 +59,7 @@ export default forwardRef(function PropertiesPanelContainer(props, ref) {
       onResized={ onResized }
     >
       <div className="properties-container" ref={ ref } />
+      <div className="copilot-container" />
     </ResizableContainer>
   );
 });
