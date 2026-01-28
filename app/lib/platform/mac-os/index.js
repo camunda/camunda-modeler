@@ -30,7 +30,6 @@ function MacOSPlatform(app) {
     e.preventDefault();
 
     log.info('received protocol URL:', url);
-    console.log('Camunda Modeler Protocol URL received:', url);
   });
 
   /**

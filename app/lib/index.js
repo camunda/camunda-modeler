@@ -129,12 +129,14 @@ if (flags.get('single-instance') === false) {
       
       if (protocolUrl) {
         log.info('received protocol URL on second-instance:', protocolUrl);
-        console.log('Camunda Modeler Protocol URL received:', protocolUrl);
       }
+
+      // filter out protocol URLs from argv to avoid treating them as file paths
+      const filteredArgv = argv.filter(arg => !arg.startsWith('camunda-modeler://'));
 
       const {
         files
-      } = Cli.parse(argv, cwd);
+      } = Cli.parse(filteredArgv, cwd);
 
       app.openFiles(files);
 
@@ -156,7 +158,6 @@ if (flags.get('single-instance') === false) {
 const protocolUrl = process.argv.find(arg => arg.startsWith('camunda-modeler://'));
 if (protocolUrl) {
   log.info('received protocol URL on first instance:', protocolUrl);
-  console.log('Camunda Modeler Protocol URL received:', protocolUrl);
 }
 
 // preload script
