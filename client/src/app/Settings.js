@@ -31,12 +31,13 @@ import { Flags } from '../util';
  *
  * @typedef {Object} SettingsProperty
  *
- * @property {'text' | 'password' | 'boolean' | 'select' | 'radio' | 'custom'} type - one of the supported types
- * @property {any} component - custom React component for 'custom' type
+ * @property {'text' | 'password' | 'boolean' | 'select' | 'radio' | 'json' | 'custom'} type - one of the supported types
+ * @property {any} [component] - custom React component for 'custom' type
  * @property {string} label - label on the settings page
  * @property {string} [hint] - hint/placeholder for input based fields
- * @property {string|boolean} [default] - the default value
+ * @property {string|boolean|object} [default] - the default value
  * @property {Array<{label: string, value: string}>} [options] - options for select/radio type
+ * @property {Array<string>} [hiddenPaths] - JSON paths to mask for 'json' type (e.g., ['credentials.password'])
  * @property {string} [flag] - indicates that the setting can be overridden by a flag
  * @property {string} [description] - description on the settings page
  * @property {boolean} [restartRequired] - is restart required to apply the setting
