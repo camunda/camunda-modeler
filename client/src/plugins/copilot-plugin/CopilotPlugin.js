@@ -8,13 +8,13 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 
 import { Fill } from '../../app/slot-fill';
 
 import AiIcon from 'icons/Ai.svg';
 
-import * as css from './CopilotPlugin.less';
+import './CopilotPlugin.css';
 
 import { CopilotChatPanel } from './copilot/CopilotChatPanel';
 
@@ -32,12 +32,11 @@ export default function CopilotPlugin(props) {
   } = props;
 
   const toggleKapa = () => {
-    console.log('Kapa AI');
     window.Kapa.open();
   };
 
   const toggleCopilot = () => {
-    console.log('Copilot');
+    document.getElementsByClassName('copilot-launcher')[0]?.click();
   };
 
   settings.register({
