@@ -106,7 +106,7 @@ Platform.create(platform, app, config);
 // register custom protocol
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [path.resolve(process.argv[1])]);
+    app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [ path.resolve(process.argv[1]) ]);
   }
 } else {
   app.setAsDefaultProtocolClient('camunda-modeler');
@@ -126,7 +126,7 @@ if (flags.get('single-instance') === false) {
 
       // check for protocol URL in argv
       const protocolUrl = argv.find(arg => arg.startsWith('camunda-modeler://'));
-      
+
       if (protocolUrl) {
         log.info('received protocol URL on second-instance:', protocolUrl);
       }
