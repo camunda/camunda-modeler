@@ -136,16 +136,19 @@ function handleAuthProtocolUrl(protocolUrl) {
     const settings = config.get('settings') || {};
     const existingConnections = settings['connectionManagerPlugin.c8connections'] || [];
     
-    // Create new OAuth connection
+    // Create new bearer token connection using OAuth type
+    // Note: Using OAuth type as bearer token auth since that's what the UI supports
     const newConnection = {
       id: `auth-${Date.now()}`,
-      name: `OAuth Connection - ${new Date().toLocaleString()}`,
-      url: endpointUrl,
-      type: 'oauth',
+      name: `Bearer Token Connection - ${new Date().toLocaleString()}`,
+      targetType: 'selfHosted',
+      contactPoint: endpointUrl,
+      authType: 'oauth',
+      oauthURL: endpointUrl,
       audience: endpointUrl,
-      clientId: 'modeler',
+      clientId: 'bearer',
       clientSecret: token,
-      scope: 'openid profile email'
+      scope: ''
     };
     
     // Add to connections
@@ -157,7 +160,7 @@ function handleAuthProtocolUrl(protocolUrl) {
       'connectionManagerPlugin.c8connections': updatedConnections
     });
     
-    log.info('stored OAuth connection from auth protocol:', {
+    log.info('stored bearer token connection from auth protocol:', {
       id: newConnection.id,
       name: newConnection.name,
       url: endpointUrl
