@@ -18,6 +18,7 @@
     "chokidar": "^5.0.0",
     "dmn-moddle": "^11.0.0",
     "epipebomb": "^1.0.0",
+    "express": "^5.2.1",
     "fast-glob": "^3.3.1",
     "ids": "^1.0.0",
     "min-dash": "^5.0.0",
