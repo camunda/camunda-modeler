@@ -9,12 +9,12 @@
  */
 
 const path = require('path');
-const { IgnorePlugin } = require('webpack');
+const { IgnorePlugin } = require('@rspack/core');
 const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
 const overrides = require('./tasks/license-book-handlers/license-book-overrides');
 
-/** @type {import('webpack').Configuration} */
+/** @type {import('@rspack/core').Configuration} */
 const config = {
   mode: 'development',
   devtool: false,

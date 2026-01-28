@@ -10,7 +10,7 @@
 
 const path = require('path');
 
-/** @type {import('webpack').Configuration} */
+/** @type {import('@rspack/core').Configuration} */
 const config = {
   mode: 'production',
   target: 'electron-preload',

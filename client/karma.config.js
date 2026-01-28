@@ -24,7 +24,7 @@ var os = require('os');
 var platform = os.platform();
 var windows = /^win/.test(platform);
 
-var { DefinePlugin } = require('webpack');
+var { DefinePlugin } = require('@rspack/core');
 var MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 var absoluteBasePath = path.resolve(__dirname);
@@ -51,7 +51,7 @@ module.exports = function(karma) {
     frameworks: [
       'mocha',
       'sinon-chai',
-      'webpack'
+      '@rspack'
     ],
 
     files: [
@@ -59,7 +59,7 @@ module.exports = function(karma) {
     ],
 
     preprocessors: {
-      [suite]: [ 'webpack', 'env' ]
+      [suite]: [ '@rspack', 'env' ]
     },
 
     reporters: [ 'progress' ].concat(coverage ? 'coverage' : []),
@@ -87,7 +87,7 @@ module.exports = function(karma) {
       }
     },
 
-    webpack: {
+    rspack: {
       mode: 'none',
       module: {
         rules: [

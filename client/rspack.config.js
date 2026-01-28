@@ -28,7 +28,7 @@ const licenseBookOverrides = require('../tasks/license-book-handlers/license-boo
 
 const {
   DefinePlugin
-} = require('webpack');
+} = require('@rspack/core');
 
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');

@@ -101,7 +101,6 @@
     "karma-env-preprocessor": "^0.1.1",
     "karma-mocha": "^2.0.1",
     "karma-sinon-chai": "^2.0.2",
-    "karma-webpack": "^5.0.1",
     "less": "^4.0.0",
     "less-loader": "^12.2.0",
     "license-webpack-plugin": "^4.0.0",
@@ -115,12 +114,12 @@
     "sinon": "^17.0.1",
     "sinon-chai": "^3.7.0",
     "style-loader": "^4.0.0",
-    "webpack": "^5.102.1",
-    "webpack-cli": "^6.0.1"
+    "@rspack/core": "^1.1.7",
+    "@rspack/cli": "^1.1.7"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development webpack --watch --config ./webpack.config.js",
-    "build": "cross-env NODE_ENV=production webpack",
+    "start": "cross-env NODE_ENV=development rspack --watch --config ./rspack.config.js",
+    "build": "cross-env NODE_ENV=production rspack build",
     "postbuild": "del-cli --force ../app/public && mv build ../app/public",
     "dev": "run-s start",
     "auto-test": "npm test -- --auto-watch --no-single-run",

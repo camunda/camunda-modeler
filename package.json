@@ -7,7 +7,7 @@
     "app:auto-test": "npm run app:test -- --watch",
     "app:dev": "electron ./dev.js --force-update-checks resources/diagram/simple.bpmn",
     "app:test": "nyc --reporter lcov --exclude \"app/test/**\" --exclude \"app/**/__tests__\" mocha --require ./app/test/expect \"app/**/*-spec.js\"",
-    "app:collect-licenses": "webpack -c webpack.config.license.js",
+    "app:collect-licenses": "rspack build -c rspack.config.license.js",
     "client:build": "npm run build --workspace=client",
     "client:auto-test": "npm run auto-test --workspace=client",
     "client:dev": "npm run dev --workspace=client",
@@ -24,7 +24,7 @@
     "build:test-distro": "node tasks/test-distro.js",
     "build": "run-s preload:build client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
     "lint": "eslint .",
-    "preload:build": "webpack -c webpack.config.js",
+    "preload:build": "rspack build -c rspack.config.js",
     "prerelease": "run-s update-license-book",
     "update-license-book": "node tasks/license-book.js -o THIRD_PARTY_NOTICES -c",
     "send-license-book-summary": "node tasks/send-license-book-summary.js -s",
@@ -77,8 +77,8 @@
     "sinon-chai": "^3.7.0",
     "tar-stream": "^3.1.7",
     "undici": "^7.0.0",
-    "webpack": "^5.102.1",
-    "webpack-cli": "^6.0.1",
+    "@rspack/core": "^1.1.7",
+    "@rspack/cli": "^1.1.7",
     "yauzl": "^3.2.0"
   },
   "remarkConfig": {
