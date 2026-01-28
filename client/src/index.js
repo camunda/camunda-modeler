@@ -15,11 +15,7 @@ import { flags, globals, metadata, plugins } from './globals';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {
-  AppParent,
-  KeyboardBindings,
-  TabsProvider,
-} from './app';
+import { AppParent, KeyboardBindings, TabsProvider } from './app';
 
 import Metadata from './util/Metadata';
 import Flags from './util/Flags';
@@ -39,14 +35,10 @@ Metadata.init(metadata);
 Flags.init(flags);
 
 const keyboardBindings = new KeyboardBindings({
-  isMac: globals.isMac
+  isMac: globals.isMac,
 });
 
-
-
-
 async function render() {
-
   if (process.env.NODE_ENV !== 'production') {
     const { loadA11yHelper } = await import('./util/a11y');
     await loadA11yHelper();
@@ -75,7 +67,8 @@ async function render() {
       globals={ globals }
       tabsProvider={ tabsProvider }
       onStarted={ onStarted }
-    />, rootElement
+    />,
+    rootElement,
   );
 }
 

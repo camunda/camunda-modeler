@@ -81,6 +81,10 @@
     "webpack-cli": "^6.0.1",
     "yauzl": "^3.2.0"
   },
+  "overrides": {
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  },
   "remarkConfig": {
     "plugins": [
       "preset-bpmn-io",
