@@ -109,6 +109,13 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
           return;
         }
 
+        // Skip connection check for OIDC connections (they need browser flow first)
+        if (connection?.targetType === 'selfHosted' && connection?.authType === 'oidc') {
+          connectionChecker.current.stopChecking();
+          setConnectionCheckResult({ success: true, reason: 'OIDC connection - use "Login with OIDC" button' });
+          return;
+        }
+
         connectionChecker.current.updateConfig({ endpoint: connection });
       }
       else {
@@ -257,6 +264,25 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
                               </button>
                               <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
                                 Opens OAuth provider in browser. After authentication, the connection will be saved automatically.
+                              </p>
+                            </div>
+                          )}
+                          {/* Show OIDC login button for OIDC connections */}
+                          {fieldValue[index]?.targetType === 'selfHosted' && fieldValue[index]?.authType === 'oidc' && fieldValue[index]?.oidcURL && (
+                            <div className="oidc-action-bar" style={{ marginTop: '20px', marginBottom: '10px' }}>
+                              <button 
+                                type="button" 
+                                className="btn btn-primary" 
+                                onClick={() => {
+                                  if (backend && backend.send) {
+                                    backend.send('external:open-url', { url: fieldValue[index].oidcURL });
+                                  }
+                                }}
+                              >
+                                Login with OIDC
+                              </button>
+                              <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+                                Opens OIDC provider in browser. After authentication, the connection will be saved automatically.
                               </p>
                             </div>
                           )}

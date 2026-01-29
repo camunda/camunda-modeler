@@ -135,7 +135,8 @@ export const properties = [
     options: [
       { value: AUTH_TYPES.NONE, label: LABELS.AUTH_TYPE_NONE },
       { value: AUTH_TYPES.BASIC, label: LABELS.AUTH_TYPE_BASIC_AUTH },
-      { value: AUTH_TYPES.OAUTH, label: LABELS.AUTH_TYPE_OAUTH }
+      { value: AUTH_TYPES.OAUTH, label: LABELS.AUTH_TYPE_OAUTH },
+      { value: 'oidc', label: 'OIDC' }
     ],
     default: AUTH_TYPES.NONE,
     condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED }
@@ -168,10 +169,35 @@ export const properties = [
     }
   },
 
+  { key: 'clientId',
+    type: 'text',
+    label: LABELS.CLIENT_ID,
+    condition: {
+      allMatch: [
+        { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+        { property: 'authType', equals: AUTH_TYPES.OAUTH }
+      ]
+    },
+    constraints: {
+      notEmpty: VALIDATION_ERROR_MESSAGES.CLIENT_ID_MUST_NOT_BE_EMPTY
+    }
+  },
+  { key: 'clientSecret',
+    type: 'password',
+    label: LABELS.CLIENT_SECRET,
+    condition: {
+      allMatch: [
+        { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+        { property: 'authType', equals: AUTH_TYPES.OAUTH },
+      ]
+    },
+    constraints: {
+      notEmpty: VALIDATION_ERROR_MESSAGES.CLIENT_SECRET_MUST_NOT_BE_EMPTY
+    }
+  },
   { key: 'oauthURL',
     type: 'text',
     label: LABELS.OAUTH_URL,
-    hint: 'OAuth provider URL that will be opened in browser',
     condition: {
       allMatch: [
         { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
@@ -180,6 +206,44 @@ export const properties = [
     },
     constraints: {
       notEmpty: VALIDATION_ERROR_MESSAGES.OAUTH_URL_MUST_NOT_BE_EMPTY
+    }
+  },
+  { key: 'audience',
+    type: 'text',
+    label: LABELS.OAUTH_AUDIENCE,
+    condition: {
+      allMatch: [
+        { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+        { property: 'authType', equals: AUTH_TYPES.OAUTH },
+      ]
+    },
+    constraints: {
+      notEmpty: VALIDATION_ERROR_MESSAGES.AUDIENCE_MUST_NOT_BE_EMPTY
+    }
+  },
+  { key: 'scope',
+    type: 'text',
+    label: LABELS.OAUTH_SCOPE,
+    condition: {
+      allMatch: [
+        { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+        { property: 'authType', equals: AUTH_TYPES.OAUTH },
+      ]
+    }
+  },
+
+  { key: 'oidcURL',
+    type: 'text',
+    label: 'OIDC Provider URL',
+    hint: 'OIDC provider URL that will be opened in browser',
+    condition: {
+      allMatch: [
+        { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+        { property: 'authType', equals: 'oidc' },
+      ]
+    },
+    constraints: {
+      notEmpty: 'OIDC Provider URL must not be empty.'
     }
   }
 ];

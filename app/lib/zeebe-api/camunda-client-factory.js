@@ -291,6 +291,13 @@ class CamundaClientFactory {
         CAMUNDA_AUTH_STRATEGY: 'BEARER',
         CAMUNDA_TOKEN_VALUE: endpoint.token
       };
+    } else if (authType === AUTH_TYPES.OIDC) {
+      // OIDC uses bearer token after protocol handler callback
+      clientConfig = {
+        ...clientConfig,
+        CAMUNDA_AUTH_STRATEGY: 'BEARER',
+        CAMUNDA_TOKEN_VALUE: endpoint.token
+      };
     } else if (authType === AUTH_TYPES.OAUTH) {
       clientConfig = {
         ...clientConfig,
