@@ -104,7 +104,18 @@ app.plugins = plugins;
 // register custom protocol
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [ path.resolve(process.argv[1]) ]);
+    // Filter out Electron-specific arguments (like --force-update-checks, --inspect, etc.)
+    // to avoid registration errors on Windows in dev mode
+    const args = process.argv.filter(arg => {
+      return !arg.startsWith('--') && arg.endsWith('.js');
+    });
+    
+    if (args.length > 0) {
+      app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [ path.resolve(args[0]) ]);
+    } else {
+      // Fallback: use argv[1] if no .js file found
+      app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [ path.resolve(process.argv[1]) ]);
+    }
   }
 } else {
   app.setAsDefaultProtocolClient('camunda-modeler');
