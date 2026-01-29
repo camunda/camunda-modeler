@@ -43,6 +43,10 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
   const { values, validateForm } = useFormikContext();
   const fieldValue = getIn(values, fieldName) || [];
 
+  // Get backend for opening URLs
+  const getGlobal = window.getGlobal || (() => ({}));
+  const backend = getGlobal('backend');
+
   const connectionIndex = useMemo(() =>
     fieldValue.findIndex(c => c.id === expandedRows[0]),
   [ fieldValue, expandedRows ]
@@ -215,7 +219,7 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
                       </TableCell>
                     </TableExpandRow>
 
-                    {isExpanded(row) && (
+                     {isExpanded(row) && (
                       <TableExpandedRow
                         { ...getExpandedRowProps({ row }) }
                         colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
@@ -230,6 +234,25 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
                               <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
                             )
                           }
+                          {/* Show OAuth login button for OAuth connections */}
+                          {fieldValue[index]?.targetType === 'selfHosted' && fieldValue[index]?.authType === 'oauth' && fieldValue[index]?.oauthURL && (
+                            <div className="oauth-action-bar" style={{ marginTop: '20px', marginBottom: '10px' }}>
+                              <button 
+                                type="button" 
+                                className="btn btn-primary" 
+                                onClick={() => {
+                                  if (backend && backend.send) {
+                                    backend.send('external:open-url', { url: fieldValue[index].oauthURL });
+                                  }
+                                }}
+                              >
+                                Login with OAuth
+                              </button>
+                              <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+                                Opens OAuth provider in browser. After authentication, the connection will be saved automatically.
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </TableExpandedRow>
                     )}
