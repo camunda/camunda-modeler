@@ -230,21 +230,6 @@ export const properties = [
         { property: 'authType', equals: AUTH_TYPES.OAUTH },
       ]
     }
-  },
-
-  { key: 'oidcURL',
-    type: 'text',
-    label: 'OIDC Provider URL',
-    hint: 'OIDC provider URL that will be opened in browser',
-    condition: {
-      allMatch: [
-        { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
-        { property: 'authType', equals: 'oidc' },
-      ]
-    },
-    constraints: {
-      notEmpty: 'OIDC Provider URL must not be empty.'
-    }
   }
 ];
 

@@ -268,14 +268,21 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
                             </div>
                           )}
                           {/* Show OIDC login button for OIDC connections */}
-                          {fieldValue[index]?.targetType === 'selfHosted' && fieldValue[index]?.authType === 'oidc' && fieldValue[index]?.oidcURL && (
+                          {fieldValue[index]?.targetType === 'selfHosted' && fieldValue[index]?.authType === 'oidc' && fieldValue[index]?.contactPoint && (
                             <div className="oidc-action-bar" style={{ marginTop: '20px', marginBottom: '10px' }}>
                               <button 
                                 type="button" 
                                 className="btn btn-primary" 
                                 onClick={() => {
                                   if (backend && backend.send) {
-                                    backend.send('external:open-url', { url: fieldValue[index].oidcURL });
+                                    const clusterURL = fieldValue[index].contactPoint;
+                                    // Construct the redirect URL: camunda-modeler://auth?url={clusterURL}
+                                    const redirectURL = `camunda-modeler://auth?url=${clusterURL}`;
+                                    // URL encode the redirect parameter
+                                    const encodedRedirect = encodeURIComponent(redirectURL);
+                                    // Construct the full OIDC URL: {clusterURL}/clientlogin?loginSuccessRedirect={encoded}
+                                    const oidcURL = `${clusterURL}/clientlogin?loginSuccessRedirect=${encodedRedirect}`;
+                                    backend.send('external:open-url', { url: oidcURL });
                                   }
                                 }}
                               >
