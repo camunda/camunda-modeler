@@ -190,9 +190,15 @@ function handleAuthProtocolUrl(protocolUrl) {
       'connectionManagerPlugin.c8connections': updatedConnections
     });
     
+    log.info('settings saved to disk, notifying frontend');
+    
     // Notify frontend to reload settings so UI updates
-    const renderer = require('./util/renderer');
-    renderer.send('client:settings-changed');
+    // Use setImmediate to ensure file write has completed
+    setImmediate(() => {
+      const renderer = require('./util/renderer');
+      renderer.send('client:settings-changed');
+      log.info('sent client:settings-changed IPC event');
+    });
     
   } catch (error) {
     log.error('failed to parse auth protocol URL:', error);
