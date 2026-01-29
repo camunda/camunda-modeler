@@ -230,6 +230,19 @@ export const properties = [
         { property: 'authType', equals: AUTH_TYPES.OAUTH },
       ]
     }
+  },
+
+  { key: 'token',
+    type: 'text',
+    label: 'Bearer Token',
+    hint: 'Token obtained from OIDC authentication (readonly)',
+    condition: {
+      allMatch: [
+        { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+        { property: 'authType', equals: 'oidc' },
+      ]
+    },
+    disabled: true
   }
 ];
 

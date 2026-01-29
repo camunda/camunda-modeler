@@ -136,29 +136,58 @@ function handleAuthProtocolUrl(protocolUrl) {
     const settings = config.get('settings') || {};
     const existingConnections = settings['connectionManagerPlugin.c8connections'] || [];
     
-    // Create new bearer token connection
-    const newConnection = {
-      id: `auth-${Date.now()}`,
-      name: `Bearer Token Connection - ${new Date().toLocaleString()}`,
-      targetType: 'selfHosted',
-      contactPoint: endpointUrl,
-      authType: 'bearer',
-      token: token
-    };
+    // Find existing OIDC connection with matching URL
+    const existingConnectionIndex = existingConnections.findIndex(
+      conn => conn.authType === 'oidc' && conn.contactPoint === endpointUrl
+    );
     
-    // Add to connections
-    const updatedConnections = [ ...existingConnections, newConnection ];
+    let updatedConnections;
+    let connectionId;
+    let connectionName;
+    
+    if (existingConnectionIndex >= 0) {
+      // Update existing OIDC connection with new token
+      const existingConnection = existingConnections[existingConnectionIndex];
+      updatedConnections = [...existingConnections];
+      updatedConnections[existingConnectionIndex] = {
+        ...existingConnection,
+        token: token,
+        authType: 'oidc' // Ensure authType remains oidc
+      };
+      connectionId = existingConnection.id;
+      connectionName = existingConnection.name;
+      
+      log.info('updated existing OIDC connection with new token:', {
+        id: connectionId,
+        name: connectionName,
+        url: endpointUrl
+      });
+    } else {
+      // Create new bearer token connection
+      const newConnection = {
+        id: `auth-${Date.now()}`,
+        name: `Bearer Token Connection - ${new Date().toLocaleString()}`,
+        targetType: 'selfHosted',
+        contactPoint: endpointUrl,
+        authType: 'bearer',
+        token: token
+      };
+      
+      updatedConnections = [ ...existingConnections, newConnection ];
+      connectionId = newConnection.id;
+      connectionName = newConnection.name;
+      
+      log.info('stored bearer token connection from auth protocol:', {
+        id: connectionId,
+        name: connectionName,
+        url: endpointUrl
+      });
+    }
     
     // Save to settings
     config.set('settings', {
       ...settings,
       'connectionManagerPlugin.c8connections': updatedConnections
-    });
-    
-    log.info('stored bearer token connection from auth protocol:', {
-      id: newConnection.id,
-      name: newConnection.name,
-      url: endpointUrl
     });
     
   } catch (error) {

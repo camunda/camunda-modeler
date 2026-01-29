@@ -286,10 +286,10 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
                                   }
                                 }}
                               >
-                                Login with OIDC
+                                {fieldValue[index]?.token ? 'Re-authenticate with OIDC' : 'Login with OIDC'}
                               </button>
                               <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
-                                Opens OIDC provider in browser. After authentication, the connection will be saved automatically.
+                                Opens OIDC provider in browser. After authentication, the {fieldValue[index]?.token ? 'token will be updated' : 'connection will be saved'} automatically.
                               </p>
                             </div>
                           )}
