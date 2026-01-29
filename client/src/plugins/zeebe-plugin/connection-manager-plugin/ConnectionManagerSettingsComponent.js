@@ -102,6 +102,13 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
           return;
         }
 
+        // Skip connection check for OAuth connections (they need browser flow first)
+        if (connection?.targetType === 'selfHosted' && connection?.authType === 'oauth') {
+          connectionChecker.current.stopChecking();
+          setConnectionCheckResult({ success: true, reason: 'OAuth connection - use "Login with OAuth" button' });
+          return;
+        }
+
         connectionChecker.current.updateConfig({ endpoint: connection });
       }
       else {
