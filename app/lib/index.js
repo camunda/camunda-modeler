@@ -120,14 +120,23 @@ if (process.defaultApp) {
  */
 function handleAuthProtocolUrl(protocolUrl) {
   try {
+    log.info('handleAuthProtocolUrl called with:', protocolUrl);
+    
     const url = new URL(protocolUrl);
     
     if (url.hostname !== 'auth') {
+      log.warn('ignoring non-auth protocol URL:', url.hostname);
       return;
     }
     
     const token = url.searchParams.get('token');
     const endpointUrl = url.searchParams.get('url');
+    
+    log.info('parsed protocol URL params:', {
+      hasToken: !!token,
+      tokenLength: token ? token.length : 0,
+      endpointUrl
+    });
     
     if (!token || !endpointUrl) {
       log.error('auth protocol URL missing required parameters (token, url)');
@@ -138,10 +147,14 @@ function handleAuthProtocolUrl(protocolUrl) {
     const settings = config.get('settings') || {};
     const existingConnections = settings['connectionManagerPlugin.c8connections'] || [];
     
+    log.info('existing connections count:', existingConnections.length);
+    
     // Find existing OIDC connection with matching URL
     const existingConnectionIndex = existingConnections.findIndex(
       conn => conn.authType === 'oidc' && conn.contactPoint === endpointUrl
     );
+    
+    log.info('existing OIDC connection index:', existingConnectionIndex);
     
     let updatedConnections;
     let connectionId;
@@ -162,7 +175,8 @@ function handleAuthProtocolUrl(protocolUrl) {
       log.info('updated existing OIDC connection with new token:', {
         id: connectionId,
         name: connectionName,
-        url: endpointUrl
+        url: endpointUrl,
+        tokenSet: !!updatedConnections[existingConnectionIndex].token
       });
     } else {
       // Create new bearer token connection
@@ -182,9 +196,12 @@ function handleAuthProtocolUrl(protocolUrl) {
       log.info('stored bearer token connection from auth protocol:', {
         id: connectionId,
         name: connectionName,
-        url: endpointUrl
+        url: endpointUrl,
+        tokenSet: !!newConnection.token
       });
     }
+    
+    log.info('about to save settings with', updatedConnections.length, 'connections');
     
     // Save to settings
     config.set('settings', {
@@ -197,8 +214,12 @@ function handleAuthProtocolUrl(protocolUrl) {
     // Notify frontend to reload settings so UI updates
     // Use setImmediate to ensure file write has completed
     setImmediate(() => {
-      renderer.send('client:settings-changed');
-      log.info('sent client:settings-changed IPC event');
+      try {
+        renderer.send('client:settings-changed');
+        log.info('sent client:settings-changed IPC event');
+      } catch (error) {
+        log.error('failed to send IPC notification:', error);
+      }
     });
     
   } catch (error) {
