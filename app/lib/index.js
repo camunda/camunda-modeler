@@ -190,6 +190,10 @@ function handleAuthProtocolUrl(protocolUrl) {
       'connectionManagerPlugin.c8connections': updatedConnections
     });
     
+    // Notify frontend to reload settings so UI updates
+    const renderer = require('./util/renderer');
+    renderer.send('client:settings-changed');
+    
   } catch (error) {
     log.error('failed to parse auth protocol URL:', error);
   }

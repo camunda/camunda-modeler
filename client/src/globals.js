@@ -34,7 +34,8 @@ export const backend = appBackend;
 export const config = new Config(backend);
 
 export const settings = new Settings({
-  config
+  config,
+  backend
 });
 
 export const dialog = new Dialog(backend);
