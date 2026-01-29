@@ -209,6 +209,7 @@ export function getEndpointForTargetType(endpoint) {
         type: TARGET_TYPES.SELF_HOSTED,
         authType: AUTH_TYPES.OIDC,
         url: contactPoint,
+        token: endpoint.token,
         tenantId
       };
     }
