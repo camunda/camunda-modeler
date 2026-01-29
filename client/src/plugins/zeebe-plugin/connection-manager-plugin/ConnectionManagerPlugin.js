@@ -69,7 +69,8 @@ export default function ConnectionManagerPlugin(props) {
       _getGlobal,
     }).then(() => {
       settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
-        setConnections(connections.value);
+        // Force new array reference to trigger React re-render
+        setConnections(connections.value ? [ ...connections.value ] : []);
       });
       setConnections(deployment.getEndpoints());
     });
