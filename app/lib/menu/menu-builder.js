@@ -764,11 +764,18 @@ function mapMenuEntryTemplate(entry) {
     return getSeparatorTemplate();
   }
 
-  return {
+  const menuItem = {
     label: entry.label,
     accelerator: entry.accelerator,
     enabled: entry.enabled !== undefined ? entry.enabled : true,
-    click: (...args) => {
+    role: entry.role,
+    icon: entry.icon ?
+      getIconImage(entry.icon)
+      : null
+  };
+
+  if (entry.action) {
+    menuItem.click = (...args) => {
       const event = args[2];
 
       const options = {
@@ -777,11 +784,10 @@ function mapMenuEntryTemplate(entry) {
       };
 
       app.emit('menu:action', entry.action, options);
-    },
-    icon: entry.icon ?
-      getIconImage(entry.icon)
-      : null
-  };
+    };
+  }
+
+  return menuItem;
 }
 
 function mapHelpMenuTemplate(menu) {
