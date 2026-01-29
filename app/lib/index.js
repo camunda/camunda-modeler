@@ -140,8 +140,13 @@ function handleAuthProtocolUrl(protocolUrl) {
       connectionId
     });
     
-    if (!token || !endpointUrl) {
-      log.error('auth protocol URL missing required parameters (token, url)');
+    if (!token) {
+      log.error('auth protocol URL missing required token parameter');
+      return;
+    }
+    
+    if (!connectionId && !endpointUrl) {
+      log.error('auth protocol URL missing connection identifier (need either id or url)');
       return;
     }
     
@@ -169,8 +174,8 @@ function handleAuthProtocolUrl(protocolUrl) {
     }
     
     let updatedConnections;
-    let connectionId;
-    let connectionName;
+    let foundConnectionId;
+    let foundConnectionName;
     
     if (existingConnectionIndex >= 0) {
       // Update existing OIDC connection with new token
@@ -181,12 +186,12 @@ function handleAuthProtocolUrl(protocolUrl) {
         token: token,
         authType: 'oidc' // Ensure authType remains oidc
       };
-      connectionId = existingConnection.id;
-      connectionName = existingConnection.name;
+      foundConnectionId = existingConnection.id;
+      foundConnectionName = existingConnection.name;
       
       log.info('updated existing OIDC connection with new token:', {
-        id: connectionId,
-        name: connectionName,
+        id: foundConnectionId,
+        name: foundConnectionName,
         url: endpointUrl,
         tokenSet: !!updatedConnections[existingConnectionIndex].token
       });
@@ -202,12 +207,12 @@ function handleAuthProtocolUrl(protocolUrl) {
       };
       
       updatedConnections = [ ...existingConnections, newConnection ];
-      connectionId = newConnection.id;
-      connectionName = newConnection.name;
+      foundConnectionId = newConnection.id;
+      foundConnectionName = newConnection.name;
       
       log.info('stored bearer token connection from auth protocol:', {
-        id: connectionId,
-        name: connectionName,
+        id: foundConnectionId,
+        name: foundConnectionName,
         url: endpointUrl,
         tokenSet: !!newConnection.token
       });
