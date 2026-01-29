@@ -103,12 +103,23 @@ app.plugins = plugins;
 
 // register custom protocol
 // Register protocol handler for camunda-modeler:// URLs
-// Only register in production mode to avoid dev mode parameter issues
-if (!process.defaultApp) {
-  app.setAsDefaultProtocolClient('camunda-modeler');
-  log.info('registered camunda-modeler:// protocol');
+if (process.defaultApp) {
+  // Dev mode: Find the main .js script file from argv
+  const mainScript = process.argv.find(arg => arg.endsWith('.js'));
+  
+  if (mainScript) {
+    // Found main script - use it
+    app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [ path.resolve(mainScript) ]);
+    log.info('registered protocol (dev mode) with main script:', mainScript);
+  } else {
+    // Fallback: Use current directory (standard Electron dev pattern)
+    app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [ '.' ]);
+    log.info('registered protocol (dev mode) with current directory');
+  }
 } else {
-  log.info('skipping protocol registration in dev mode');
+  // Production mode: Simple registration
+  app.setAsDefaultProtocolClient('camunda-modeler');
+  log.info('registered camunda-modeler:// protocol (production)');
 }
 
 /**
