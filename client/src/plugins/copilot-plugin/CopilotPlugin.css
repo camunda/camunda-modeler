@@ -9,4 +9,5 @@
 
 .copilot-chat-panel * {
   white-space: wrap !important;
+  user-select: text !important;
 }
