@@ -103,15 +103,14 @@ app.plugins = plugins;
 
 // register custom protocol
 // Register protocol handler for camunda-modeler:// URLs
-if (process.defaultApp) {
-  // Dev mode: Register with empty args array
-  // This works for npm start scenario where argv doesn't contain .js files
-  app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, []);
-  log.info('registered protocol (dev mode) with empty args');
-} else {
+if (!process.defaultApp) {
   // Production mode: Simple registration
   app.setAsDefaultProtocolClient('camunda-modeler');
   log.info('registered camunda-modeler:// protocol (production)');
+} else {
+  // Dev mode: Skip registration to avoid issues
+  // Protocol testing should be done in production builds
+  log.info('skipping protocol registration in dev mode (use production build for protocol testing)');
 }
 
 /**
@@ -197,8 +196,16 @@ function handleAuthProtocolUrl(protocolUrl) {
     // Notify frontend to reload settings so UI updates
     // Use setImmediate to ensure file write has completed
     setImmediate(() => {
-      renderer.send('client:settings-changed');
-      log.info('sent client:settings-changed IPC event');
+      try {
+        if (renderer && renderer.send) {
+          renderer.send('client:settings-changed');
+          log.info('sent client:settings-changed IPC event');
+        } else {
+          log.warn('renderer not available for IPC notification');
+        }
+      } catch (error) {
+        log.error('failed to send IPC notification:', error);
+      }
     });
     
   } catch (error) {
@@ -253,11 +260,17 @@ if (flags.get('single-instance') === false) {
 }
 
 // handle protocol URLs on Windows and Linux (first instance)
-const protocolUrl = process.argv.find(arg => arg.startsWith('camunda-modeler://'));
-if (protocolUrl) {
-  log.info('received protocol URL on first instance:', protocolUrl);
-  handleAuthProtocolUrl(protocolUrl);
-}
+// Defer until app is ready to ensure renderer and all systems are initialized
+app.whenReady().then(() => {
+  const protocolUrl = process.argv.find(arg => arg.startsWith('camunda-modeler://'));
+  if (protocolUrl) {
+    log.info('received protocol URL on first instance (after ready):', protocolUrl);
+    // Small delay to ensure renderer is fully ready
+    setTimeout(() => {
+      handleAuthProtocolUrl(protocolUrl);
+    }, 1000);
+  }
+});
 
 // preload script
 renderer.onSync('app:get-plugins', () => {
