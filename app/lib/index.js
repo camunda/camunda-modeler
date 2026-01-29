@@ -104,18 +104,10 @@ app.plugins = plugins;
 // register custom protocol
 // Register protocol handler for camunda-modeler:// URLs
 if (process.defaultApp) {
-  // Dev mode: Find the main .js script file from argv
-  const mainScript = process.argv.find(arg => arg.endsWith('.js'));
-  
-  if (mainScript) {
-    // Found main script - use it
-    app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [ path.resolve(mainScript) ]);
-    log.info('registered protocol (dev mode) with main script:', mainScript);
-  } else {
-    // Fallback: Use current directory (standard Electron dev pattern)
-    app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, [ '.' ]);
-    log.info('registered protocol (dev mode) with current directory');
-  }
+  // Dev mode: Register with empty args array
+  // This works for npm start scenario where argv doesn't contain .js files
+  app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, []);
+  log.info('registered protocol (dev mode) with empty args');
 } else {
   // Production mode: Simple registration
   app.setAsDefaultProtocolClient('camunda-modeler');
