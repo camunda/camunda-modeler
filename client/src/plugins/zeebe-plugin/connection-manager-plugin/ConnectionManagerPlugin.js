@@ -51,6 +51,7 @@ export default function ConnectionManagerPlugin(props) {
 
   const [ connections, setConnections ] = useState([]);
   const [ activeConnection, setActiveConnection ] = useState(null);
+  const [ updateCounter, setUpdateCounter ] = useState(0);
 
 
   /**
@@ -70,6 +71,8 @@ export default function ConnectionManagerPlugin(props) {
     }).then(() => {
       settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
         setConnections(connections.value);
+        // Increment counter to force React re-render even if array reference is same
+        setUpdateCounter(c => c + 1);
       });
       setConnections(deployment.getEndpoints());
     });
