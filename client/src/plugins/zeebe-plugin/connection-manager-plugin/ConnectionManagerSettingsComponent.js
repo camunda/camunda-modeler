@@ -31,8 +31,9 @@ import { StatusIndicator } from '../shared/StatusIndicator';
  * @param {string} props.name - Field name for the connection array
  * @param {string} props.targetElement - Element ID to scroll to and expand
  * @param {Object} props.connectionChecker - Connection checker instance ref
+ * @param {Function} props._getGlobal - Function to access global objects
  */
-export function ConnectionManagerSettingsComponent({ name: fieldName, targetElement, connectionChecker }) {
+export function ConnectionManagerSettingsComponent({ name: fieldName, targetElement, connectionChecker, _getGlobal }) {
 
   const [ expandedRows, setExpandedRows ] = useState([]);
   const [ newlyCreatedRowId, setNewlyCreatedRowId ] = useState(null);
@@ -44,8 +45,7 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
   const fieldValue = getIn(values, fieldName) || [];
 
   // Get backend for opening URLs
-  const getGlobal = window.getGlobal || (() => ({}));
-  const backend = getGlobal('backend');
+  const backend = _getGlobal && _getGlobal('backend');
 
   const connectionIndex = useMemo(() =>
     fieldValue.findIndex(c => c.id === expandedRows[0]),

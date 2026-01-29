@@ -66,6 +66,7 @@ export default function ConnectionManagerPlugin(props) {
     initializeSettings({
       settings,
       connectionChecker: settingsConnectionChecker,
+      _getGlobal,
     }).then(() => {
       settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
         setConnections(connections.value);
