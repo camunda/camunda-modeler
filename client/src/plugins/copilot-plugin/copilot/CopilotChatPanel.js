@@ -26,7 +26,7 @@ export function CopilotChatPanel({ triggerAction, activeTab, mcpServers, modeler
       isBusy={ isBusy }
       onStopGeneration={ stopGeneration }
       onResetConversation={ resetConversation }
-      workareaSelector=".copilot-container"
+      workareaSelector="body"
       emptyStateTitle="Welcome to Copilot"
       emptyStateDescription="Ask me anything about documentation"
     />

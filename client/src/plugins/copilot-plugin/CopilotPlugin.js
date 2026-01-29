@@ -57,7 +57,45 @@ export default function CopilotPlugin(props) {
 
   const toggleCopilot = () => {
     document.getElementsByClassName('copilot-launcher')[0]?.click();
+
+    const properties = document.querySelector('.properties');
+
+    if (properties) {
+      properties.classList.toggle('with-copilot');
+      document.querySelector('[aria-label="Minimize chat"]')
+        .addEventListener('click', () => {
+          properties.classList.remove('with-copilot');
+        });
+    }
+
+    const status = document.querySelector('.status-bar__app');
+
+    status.classList.toggle('with-copilot');
+    document.querySelector('[aria-label="Minimize chat"]')
+      .addEventListener('click', () => {
+        status.classList.remove('with-copilot');
+      });
   };
+
+  useEffect(() => {
+    const copilot = document.querySelector('.copilot-chat-wrapper--open');
+    const properties = document.querySelector('.properties');
+    const status = document.querySelector('.status-bar__app');
+
+    if (copilot) {
+      properties?.classList.add('with-copilot');
+      status.classList.add('with-copilot');
+      document.querySelector('[aria-label="Minimize chat"]')
+        .addEventListener('click', () => {
+          properties.classList.remove('with-copilot');
+          status.classList.remove('with-copilot');
+        });
+    } else {
+      properties?.classList?.remove('with-copilot');
+      status.classList?.remove('with-copilot');
+    }
+
+  });
 
   const [ mcpServers, setMcpServers ] = useState({});
 
