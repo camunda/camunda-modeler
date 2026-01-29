@@ -68,6 +68,7 @@ export default function ConnectionManagerPlugin(props) {
       settings,
       connectionChecker: settingsConnectionChecker,
       _getGlobal,
+      updateCounter,
     }).then(() => {
       settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
         setConnections(connections.value);
@@ -76,7 +77,7 @@ export default function ConnectionManagerPlugin(props) {
       });
       setConnections(deployment.getEndpoints());
     });
-  }, [ settings ]);
+  }, [ settings, updateCounter ]);
 
 
   // close overlay on tab change
