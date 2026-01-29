@@ -120,7 +120,7 @@ function handleAuthProtocolUrl(protocolUrl) {
   try {
     const url = new URL(protocolUrl);
     
-    if (url.pathname !== '//auth' && url.pathname !== '/auth') {
+    if (url.hostname !== 'auth') {
       return;
     }
     
