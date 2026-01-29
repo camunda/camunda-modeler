@@ -195,7 +195,6 @@ function handleAuthProtocolUrl(protocolUrl) {
     // Notify frontend to reload settings so UI updates
     // Use setImmediate to ensure file write has completed
     setImmediate(() => {
-      const renderer = require('./util/renderer');
       renderer.send('client:settings-changed');
       log.info('sent client:settings-changed IPC event');
     });
