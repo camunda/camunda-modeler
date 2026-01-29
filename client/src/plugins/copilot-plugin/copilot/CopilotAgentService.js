@@ -177,11 +177,13 @@ class CopilotAgentService {
     this.haltConversation(conversationId);
   }
 
-  async sendMessage(payload, mcpServers) {
+  async sendMessage(payload, mcpServers, modeler) {
 
     const isEmpty = Object.keys(mcpServers).length === 0;
 
     const mcpToolsJsonString = isEmpty ? undefined : JSON.stringify(mcpServers);
+
+    const { xml } = await modeler.saveXML({ format: false });
 
     const response = await fetch(
       `${this.baseUrl}/api/internal/copilot/converse`,
@@ -193,6 +195,9 @@ class CopilotAgentService {
         },
         body: JSON.stringify({
           ...payload,
+          context: {
+            'latest_bpmn_xml': xml
+          },
           mcpToolsJsonString
         }),
       },

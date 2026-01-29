@@ -14,7 +14,7 @@ import { useAgentAdapter } from '@camunda/copilot-chat';
 import CopilotAgentService from './CopilotAgentService';
 import { applyLayoutAndImport } from './bpmnLayoutUtils';
 
-const createTransport = (mcpServers) => ({
+const createTransport = (modeler, mcpServers) => ({
   subscribe: (conversationId, onEvent) => {
     CopilotAgentService.subscribe(conversationId, onEvent);
   },
@@ -22,7 +22,7 @@ const createTransport = (mcpServers) => ({
     CopilotAgentService.unsubscribe(conversationId);
   },
   sendMessage: (payload) =>
-    CopilotAgentService.sendMessage(payload, mcpServers),
+    CopilotAgentService.sendMessage(payload, mcpServers, modeler),
   sendToolResult: (payload) => CopilotAgentService.sendToolResult(payload),
 });
 
@@ -233,7 +233,7 @@ const getStatusLabel = (eventType, toolName) => {
 };
 
 export const useCopilotAdapter = ({ triggerAction, activeTab, mcpServers, modeler }) => {
-  const transport = createTransport(mcpServers);
+  const transport = createTransport(modeler, mcpServers);
 
   // Use refs to always have access to the latest values
   const modelerRef = useRef(modeler);
