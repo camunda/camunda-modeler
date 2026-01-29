@@ -44,6 +44,14 @@
       }
     ]
   },
+  "protocols": [
+    {
+      "name": "Camunda Modeler Protocol",
+      "schemes": [
+        "camunda-modeler"
+      ]
+    }
+  ],
   "fileAssociations": [
     {
       "ext": "bpmn",

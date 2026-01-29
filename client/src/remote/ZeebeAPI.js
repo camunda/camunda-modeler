@@ -15,7 +15,9 @@
 export const AUTH_TYPES = {
   NONE: 'none',
   BASIC: 'basic',
-  OAUTH: 'oauth'
+  OAUTH: 'oauth',
+  BEARER: 'bearer',
+  OIDC: 'oidc'
 };
 
 export const TARGET_TYPES = {
@@ -190,6 +192,24 @@ export function getEndpointForTargetType(endpoint) {
         scope,
         clientId,
         clientSecret,
+        tenantId
+      };
+
+    case AUTH_TYPES.BEARER:
+      return {
+        type: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.BEARER,
+        url: contactPoint,
+        token: endpoint.token,
+        tenantId
+      };
+
+    case AUTH_TYPES.OIDC:
+      return {
+        type: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OIDC,
+        url: contactPoint,
+        token: endpoint.token,
         tenantId
       };
     }

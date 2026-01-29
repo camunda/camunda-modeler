@@ -51,6 +51,7 @@ export default function ConnectionManagerPlugin(props) {
 
   const [ connections, setConnections ] = useState([]);
   const [ activeConnection, setActiveConnection ] = useState(null);
+  const [ updateCounter, setUpdateCounter ] = useState(0);
 
 
   /**
@@ -66,9 +67,13 @@ export default function ConnectionManagerPlugin(props) {
     initializeSettings({
       settings,
       connectionChecker: settingsConnectionChecker,
+      _getGlobal,
     }).then(() => {
       settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
-        setConnections(connections.value);
+        // Create new array reference to force Formik/React to detect change
+        setConnections(connections.value ? [ ...connections.value ] : []);
+        // Increment counter to trigger any other updates
+        setUpdateCounter(c => c + 1);
       });
       setConnections(deployment.getEndpoints());
     });

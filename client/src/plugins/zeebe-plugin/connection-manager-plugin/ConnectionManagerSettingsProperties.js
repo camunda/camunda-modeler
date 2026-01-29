@@ -135,7 +135,8 @@ export const properties = [
     options: [
       { value: AUTH_TYPES.NONE, label: LABELS.AUTH_TYPE_NONE },
       { value: AUTH_TYPES.BASIC, label: LABELS.AUTH_TYPE_BASIC_AUTH },
-      { value: AUTH_TYPES.OAUTH, label: LABELS.AUTH_TYPE_OAUTH }
+      { value: AUTH_TYPES.OAUTH, label: LABELS.AUTH_TYPE_OAUTH },
+      { value: 'oidc', label: 'OIDC' }
     ],
     default: AUTH_TYPES.NONE,
     condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED }
@@ -229,6 +230,19 @@ export const properties = [
         { property: 'authType', equals: AUTH_TYPES.OAUTH },
       ]
     }
+  },
+
+  { key: 'token',
+    type: 'text',
+    label: 'Bearer Token',
+    hint: 'Token obtained from OIDC authentication (readonly)',
+    condition: {
+      allMatch: [
+        { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+        { property: 'authType', equals: 'oidc' },
+      ]
+    },
+    disabled: true
   }
 ];
 

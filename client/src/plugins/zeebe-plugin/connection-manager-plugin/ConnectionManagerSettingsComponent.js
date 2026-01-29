@@ -31,8 +31,9 @@ import { StatusIndicator } from '../shared/StatusIndicator';
  * @param {string} props.name - Field name for the connection array
  * @param {string} props.targetElement - Element ID to scroll to and expand
  * @param {Object} props.connectionChecker - Connection checker instance ref
+ * @param {Function} props._getGlobal - Function to access global objects
  */
-export function ConnectionManagerSettingsComponent({ name: fieldName, targetElement, connectionChecker }) {
+export function ConnectionManagerSettingsComponent({ name: fieldName, targetElement, connectionChecker, _getGlobal }) {
 
   const [ expandedRows, setExpandedRows ] = useState([]);
   const [ newlyCreatedRowId, setNewlyCreatedRowId ] = useState(null);
@@ -42,6 +43,9 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
 
   const { values, validateForm } = useFormikContext();
   const fieldValue = getIn(values, fieldName) || [];
+
+  // Get backend for opening URLs
+  const backend = _getGlobal && _getGlobal('backend');
 
   const connectionIndex = useMemo(() =>
     fieldValue.findIndex(c => c.id === expandedRows[0]),
@@ -95,6 +99,20 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
         if (Object.keys(validationErrors).length > 0) {
           connectionChecker.current.stopChecking();
           setConnectionCheckResult({ success: false, reason: CONNECTION_CHECK_ERROR_REASONS.INVALID_CONFIGURATION });
+          return;
+        }
+
+        // Skip connection check for OAuth connections (they need browser flow first)
+        if (connection?.targetType === 'selfHosted' && connection?.authType === 'oauth') {
+          connectionChecker.current.stopChecking();
+          setConnectionCheckResult({ success: true, reason: 'OAuth connection - use "Login with OAuth" button' });
+          return;
+        }
+
+        // Skip connection check for OIDC connections (they need browser flow first)
+        if (connection?.targetType === 'selfHosted' && connection?.authType === 'oidc') {
+          connectionChecker.current.stopChecking();
+          setConnectionCheckResult({ success: true, reason: 'OIDC connection - use "Login with OIDC" button' });
           return;
         }
 
@@ -215,7 +233,7 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
                       </TableCell>
                     </TableExpandRow>
 
-                    {isExpanded(row) && (
+                     {isExpanded(row) && (
                       <TableExpandedRow
                         { ...getExpandedRowProps({ row }) }
                         colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
@@ -230,6 +248,52 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
                               <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
                             )
                           }
+                          {/* Show OAuth login button for OAuth connections */}
+                          {fieldValue[index]?.targetType === 'selfHosted' && fieldValue[index]?.authType === 'oauth' && fieldValue[index]?.oauthURL && (
+                            <div className="oauth-action-bar" style={{ marginTop: '20px', marginBottom: '10px' }}>
+                              <button 
+                                type="button" 
+                                className="btn btn-primary" 
+                                onClick={() => {
+                                  if (backend && backend.send) {
+                                    backend.send('external:open-url', { url: fieldValue[index].oauthURL });
+                                  }
+                                }}
+                              >
+                                Login with OAuth
+                              </button>
+                              <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+                                Opens OAuth provider in browser. After authentication, the connection will be saved automatically.
+                              </p>
+                            </div>
+                          )}
+                          {/* Show OIDC login button for OIDC connections */}
+                          {fieldValue[index]?.targetType === 'selfHosted' && fieldValue[index]?.authType === 'oidc' && fieldValue[index]?.contactPoint && (
+                            <div className="oidc-action-bar" style={{ marginTop: '20px', marginBottom: '10px' }}>
+                              <button 
+                                type="button" 
+                                className="btn btn-primary" 
+                                onClick={() => {
+                                  if (backend && backend.send) {
+                                    const connectionId = fieldValue[index].id;
+                                    const clusterURL = fieldValue[index].contactPoint;
+                                    // Construct the redirect URL with just ID (connection has the URL already)
+                                    const redirectURL = `camunda-modeler://auth?id=${connectionId}`;
+                                    // URL encode the redirect parameter
+                                    const encodedRedirect = encodeURIComponent(redirectURL);
+                                    // Construct the full OIDC URL: {clusterURL}/clientlogin?loginSuccessRedirect={encoded}
+                                    const oidcURL = `${clusterURL}/clientlogin?loginSuccessRedirect=${encodedRedirect}`;
+                                    backend.send('external:open-url', { url: oidcURL });
+                                  }
+                                }}
+                              >
+                                {fieldValue[index]?.token ? 'Re-authenticate with OIDC' : 'Login with OIDC'}
+                              </button>
+                              <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+                                Opens OIDC provider in browser. After authentication, the {fieldValue[index]?.token ? 'token will be updated' : 'connection will be saved'} automatically.
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </TableExpandedRow>
                     )}

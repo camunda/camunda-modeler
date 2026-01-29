@@ -61,7 +61,8 @@ export default class Settings {
   constructor(props) {
 
     const {
-      config
+      config,
+      backend
     } = props;
 
     /**
@@ -101,6 +102,13 @@ export default class Settings {
     this._listeners = {};
 
     this._load();
+
+    // Listen for backend notifications to reload settings
+    if (backend) {
+      backend.on('client:settings-changed', () => {
+        this._load();
+      });
+    }
   }
 
   /**

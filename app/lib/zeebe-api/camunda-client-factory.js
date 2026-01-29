@@ -285,6 +285,13 @@ class CamundaClientFactory {
         CAMUNDA_BASIC_AUTH_USERNAME: endpoint.basicAuthUsername,
         CAMUNDA_BASIC_AUTH_PASSWORD: endpoint.basicAuthPassword
       };
+    } else if (authType === AUTH_TYPES.OIDC) {
+      // OIDC uses bearer token after protocol handler callback
+      clientConfig = {
+        ...clientConfig,
+        CAMUNDA_AUTH_STRATEGY: 'BEARER',
+        CAMUNDA_OAUTH_TOKEN: endpoint.token
+      };
     } else if (authType === AUTH_TYPES.OAUTH) {
       clientConfig = {
         ...clientConfig,

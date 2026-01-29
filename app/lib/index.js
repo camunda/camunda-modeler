@@ -101,6 +101,152 @@ app.metadata = {
 };
 app.plugins = plugins;
 
+// register custom protocol
+// Register protocol handler for camunda-modeler:// URLs
+if (process.defaultApp) {
+  // Dev mode: Register with empty args array
+  // This works for npm start scenario where argv doesn't contain .js files
+  app.setAsDefaultProtocolClient('camunda-modeler', process.execPath, []);
+  log.info('registered protocol (dev mode) with empty args');
+} else {
+  // Production mode: Simple registration
+  app.setAsDefaultProtocolClient('camunda-modeler');
+  log.info('registered camunda-modeler:// protocol (production)');
+}
+
+/**
+ * Handle auth protocol URLs and store connection configuration
+ * Format: camunda-modeler://auth?token=XXX&url=YYY
+ */
+function handleAuthProtocolUrl(protocolUrl) {
+  try {
+    log.info('handleAuthProtocolUrl called with:', protocolUrl);
+    
+    const url = new URL(protocolUrl);
+    
+    if (url.hostname !== 'auth') {
+      log.warn('ignoring non-auth protocol URL:', url.hostname);
+      return;
+    }
+    
+    const token = url.searchParams.get('token');
+    const endpointUrl = url.searchParams.get('url');
+    const connectionId = url.searchParams.get('id');
+    
+    log.info('parsed protocol URL params:', {
+      hasToken: !!token,
+      tokenLength: token ? token.length : 0,
+      endpointUrl,
+      connectionId
+    });
+    
+    if (!token) {
+      log.error('auth protocol URL missing required token parameter');
+      return;
+    }
+    
+    if (!connectionId && !endpointUrl) {
+      log.error('auth protocol URL missing connection identifier (need either id or url)');
+      return;
+    }
+    
+    // Get existing connections
+    const settings = config.get('settings') || {};
+    const existingConnections = settings['connectionManagerPlugin.c8connections'] || [];
+    
+    log.info('existing connections count:', existingConnections.length);
+    
+    // Find existing connection by ID first (preferred method)
+    let existingConnectionIndex = -1;
+    if (connectionId) {
+      existingConnectionIndex = existingConnections.findIndex(
+        conn => conn.id === connectionId
+      );
+      log.info('searched by ID:', connectionId, 'found at index:', existingConnectionIndex);
+    }
+    
+    // Fallback: Find by URL if ID not found (backward compatibility)
+    if (existingConnectionIndex === -1 && endpointUrl) {
+      existingConnectionIndex = existingConnections.findIndex(
+        conn => conn.authType === 'oidc' && conn.contactPoint === endpointUrl
+      );
+      log.info('fallback search by contactPoint, found at index:', existingConnectionIndex);
+    }
+    
+    let updatedConnections;
+    let foundConnectionId;
+    let foundConnectionName;
+    
+    if (existingConnectionIndex >= 0) {
+      // Update existing OIDC connection with new token
+      const existingConnection = existingConnections[existingConnectionIndex];
+      updatedConnections = [...existingConnections];
+      updatedConnections[existingConnectionIndex] = {
+        ...existingConnection,
+        token: token,
+        authType: 'oidc' // Ensure authType remains oidc
+      };
+      foundConnectionId = existingConnection.id;
+      foundConnectionName = existingConnection.name;
+      
+      log.info('updated existing OIDC connection with new token:', {
+        id: foundConnectionId,
+        name: foundConnectionName,
+        url: endpointUrl,
+        tokenSet: !!updatedConnections[existingConnectionIndex].token
+      });
+    } else {
+      // Create new bearer token connection
+      const newConnection = {
+        id: `auth-${Date.now()}`,
+        name: `Bearer Token Connection - ${new Date().toLocaleString()}`,
+        targetType: 'selfHosted',
+        contactPoint: endpointUrl,
+        authType: 'bearer',
+        token: token
+      };
+      
+      updatedConnections = [ ...existingConnections, newConnection ];
+      foundConnectionId = newConnection.id;
+      foundConnectionName = newConnection.name;
+      
+      log.info('stored bearer token connection from auth protocol:', {
+        id: foundConnectionId,
+        name: foundConnectionName,
+        url: endpointUrl,
+        tokenSet: !!newConnection.token
+      });
+    }
+    
+    log.info('about to save settings with', updatedConnections.length, 'connections');
+    
+    // Save to settings
+    config.set('settings', {
+      ...settings,
+      'connectionManagerPlugin.c8connections': updatedConnections
+    });
+    
+    log.info('settings saved to disk, notifying frontend');
+    
+    // Notify frontend to reload settings so UI updates
+    // Use setImmediate to ensure file write has completed
+    setImmediate(() => {
+      try {
+        renderer.send('client:settings-changed');
+        log.info('sent client:settings-changed IPC event');
+      } catch (error) {
+        log.error('failed to send IPC notification:', error);
+      }
+    });
+    
+  } catch (error) {
+    log.error('failed to parse auth protocol URL:', error);
+  }
+}
+
+// make handler available to platform modules
+app.handleAuthProtocolUrl = handleAuthProtocolUrl;
+
 Platform.create(platform, app, config);
 
 // only allow single instance if not disabled via `--no-single-instance` flag
@@ -113,9 +259,20 @@ if (flags.get('single-instance') === false) {
 
     app.on('second-instance', (event, argv, cwd) => {
 
+      // check for protocol URL in argv
+      const protocolUrl = argv.find(arg => arg.startsWith('camunda-modeler://'));
+
+      if (protocolUrl) {
+        log.info('received protocol URL on second-instance:', protocolUrl);
+        handleAuthProtocolUrl(protocolUrl);
+      }
+
+      // filter out protocol URLs from argv to avoid treating them as file paths
+      const filteredArgv = argv.filter(arg => !arg.startsWith('camunda-modeler://'));
+
       const {
         files
-      } = Cli.parse(argv, cwd);
+      } = Cli.parse(filteredArgv, cwd);
 
       app.openFiles(files);
 
@@ -131,6 +288,13 @@ if (flags.get('single-instance') === false) {
   } else {
     app.quit();
   }
+}
+
+// handle protocol URLs on Windows and Linux (first instance)
+const protocolUrl = process.argv.find(arg => arg.startsWith('camunda-modeler://'));
+if (protocolUrl) {
+  log.info('received protocol URL on first instance:', protocolUrl);
+  handleAuthProtocolUrl(protocolUrl);
 }
 
 // preload script
