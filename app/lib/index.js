@@ -131,11 +131,13 @@ function handleAuthProtocolUrl(protocolUrl) {
     
     const token = url.searchParams.get('token');
     const endpointUrl = url.searchParams.get('url');
+    const connectionId = url.searchParams.get('id');
     
     log.info('parsed protocol URL params:', {
       hasToken: !!token,
       tokenLength: token ? token.length : 0,
-      endpointUrl
+      endpointUrl,
+      connectionId
     });
     
     if (!token || !endpointUrl) {
@@ -149,12 +151,22 @@ function handleAuthProtocolUrl(protocolUrl) {
     
     log.info('existing connections count:', existingConnections.length);
     
-    // Find existing OIDC connection with matching URL
-    const existingConnectionIndex = existingConnections.findIndex(
-      conn => conn.authType === 'oidc' && conn.contactPoint === endpointUrl
-    );
+    // Find existing connection by ID first (preferred method)
+    let existingConnectionIndex = -1;
+    if (connectionId) {
+      existingConnectionIndex = existingConnections.findIndex(
+        conn => conn.id === connectionId
+      );
+      log.info('searched by ID:', connectionId, 'found at index:', existingConnectionIndex);
+    }
     
-    log.info('existing OIDC connection index:', existingConnectionIndex);
+    // Fallback: Find by URL if ID not found (backward compatibility)
+    if (existingConnectionIndex === -1 && endpointUrl) {
+      existingConnectionIndex = existingConnections.findIndex(
+        conn => conn.authType === 'oidc' && conn.contactPoint === endpointUrl
+      );
+      log.info('fallback search by contactPoint, found at index:', existingConnectionIndex);
+    }
     
     let updatedConnections;
     let connectionId;

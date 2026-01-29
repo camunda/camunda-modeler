@@ -275,9 +275,10 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
                                 className="btn btn-primary" 
                                 onClick={() => {
                                   if (backend && backend.send) {
+                                    const connectionId = fieldValue[index].id;
                                     const clusterURL = fieldValue[index].contactPoint;
-                                    // Construct the redirect URL: camunda-modeler://auth?url={clusterURL}
-                                    const redirectURL = `camunda-modeler://auth?url=${clusterURL}`;
+                                    // Construct the redirect URL: camunda-modeler://auth?url={clusterURL}&id={connectionId}
+                                    const redirectURL = `camunda-modeler://auth?url=${clusterURL}&id=${connectionId}`;
                                     // URL encode the redirect parameter
                                     const encodedRedirect = encodeURIComponent(redirectURL);
                                     // Construct the full OIDC URL: {clusterURL}/clientlogin?loginSuccessRedirect={encoded}
