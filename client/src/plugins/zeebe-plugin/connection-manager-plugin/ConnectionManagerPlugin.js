@@ -68,16 +68,16 @@ export default function ConnectionManagerPlugin(props) {
       settings,
       connectionChecker: settingsConnectionChecker,
       _getGlobal,
-      updateCounter,
     }).then(() => {
       settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
-        setConnections(connections.value);
-        // Increment counter to force React re-render even if array reference is same
+        // Create new array reference to force Formik/React to detect change
+        setConnections(connections.value ? [ ...connections.value ] : []);
+        // Increment counter to trigger any other updates
         setUpdateCounter(c => c + 1);
       });
       setConnections(deployment.getEndpoints());
     });
-  }, [ settings, updateCounter ]);
+  }, [ settings ]);
 
 
   // close overlay on tab change

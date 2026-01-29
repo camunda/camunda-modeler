@@ -16,7 +16,7 @@ export const SETTINGS_KEY_CONNECTIONS = `${CONNECTION_MANAGER_PLUGIN_ID}.c8conne
 /**
  * Registers plugin settings
  */
-export async function initializeSettings({ settings, connectionChecker, _getGlobal, updateCounter }) {
+export async function initializeSettings({ settings, connectionChecker, _getGlobal }) {
 
   /** @type import("../../../app/Settings").SettingsGroup */
   const pluginSettings = {
@@ -26,7 +26,7 @@ export async function initializeSettings({ settings, connectionChecker, _getGlob
     properties: {
       [SETTINGS_KEY_CONNECTIONS]: {
         type: 'custom',
-        component: (props) => ConnectionManagerSettingsComponent({ ...props, connectionChecker, _getGlobal, key: updateCounter }),
+        component: (props) => ConnectionManagerSettingsComponent({ ...props, connectionChecker, _getGlobal }),
         description: 'Manage Camunda 8 Orchestration Cluster connections.',
         default: []
       },
