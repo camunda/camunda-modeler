@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Camunda Modeler</title>
+
+  <style>
+    body, html {
+      --color-grey-225-10-15: hsl(225, 10%, 15%);
+      height: 100%;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    #root {
+      width: 100%;
+      height: 100%;
+    }
+
+    .spinner-border {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: white;
+      z-index: 200;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner-border.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes spinner-keyframe {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spinner-border:after {
+      width: 22px;
+      height: 22px;
+      border: 4px solid var(--color-grey-225-10-15);
+      content: " ";
+      display: block;
+      border-radius: 50%;
+      border-color: var(--color-grey-225-10-15) var(--color-grey-225-10-15) var(--color-grey-225-10-15) transparent;
+      animation: spinner-keyframe 0.7s linear infinite;
+    }
+
+    .spinner-border-global {
+      z-index: 201;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="spinner-border spinner-border-global"></div>
+
+  <div id="root"></div>
+
+  <script src="bundle.js"></script>
+</body>
+
+</html>
