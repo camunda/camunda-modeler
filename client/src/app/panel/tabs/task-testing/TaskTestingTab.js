@@ -149,6 +149,42 @@ export default function TaskTestingTab(props) {
     });
   }, [ onAction ]);
 
+  const handleTaskExecutionUpdated = useCallback((event) => {
+    const { elementInstances } = event;
+    const { items } = elementInstances;
+
+    const active = [], completed = [];
+
+    items.forEach(item => {
+      if (item.state === 'COMPLETED') {
+        completed.push(item.elementId);
+      } else if (item.state === 'ACTIVE') {
+        active.push(item.elementId);
+      }
+    });
+
+    // figure out what sequence flows where taken, if source and target are both in active or completed then the flow was taken
+    const elementRegistry = injector.get('elementRegistry');
+
+    const sequenceFlows = elementRegistry.filter(element => element.type === 'bpmn:SequenceFlow');
+
+    sequenceFlows.forEach(flow => {
+      const { source, target, id } = flow;
+
+      if (([ ...active, ...completed ].includes(source.id) && [ ...active, ...completed ].includes(target.id)) ||
+          (completed.includes(source.id) && completed.includes(target.id))) {
+        completed.push(id);
+      }
+    });
+
+    console.log('Task execution updated, setting execution state', { event, active, completed });
+
+    injector.get('executionVisualizer').setExecutionState({
+      completed,
+      active
+    });
+  }, [ onAction ]);
+
   const handleConfigureConnection = useCallback(() => {
     onAction('open-connection-selector');
   }, [ onAction ]);
@@ -183,6 +219,7 @@ export default function TaskTestingTab(props) {
           onTaskExecutionStarted={ handleTaskExecutionStarted }
           onTaskExecutionFinished={ handleTaskExecutionFinished }
           onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
+          onTaskExecutionUpdated={ handleTaskExecutionUpdated }
           onTestTask={ handleTestTask }
           configureConnectionBannerTitle={ configureConnectionBannerTitle }
           configureConnectionBannerDescription={ configureConnectionBannerDescription }

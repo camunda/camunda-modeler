@@ -64,6 +64,10 @@ import {
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
 
+import TokenSimulationVisualizerModule from 'bpmn-js-token-simulation/lib/visualizer';
+
+import 'bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 export const DEFAULT_ENGINE_PROFILE = {
@@ -917,6 +921,10 @@ export class BpmnEditor extends CachedComponent {
 
     const modeler = new BpmnModeler({
       ...options,
+      additionalModules: [
+        ...(options.additionalModules || []),
+        TokenSimulationVisualizerModule
+      ],
       position: 'absolute',
       changeTemplateCommand: 'propertiesPanel.zeebe.changeTemplate',
       linting: {
@@ -937,6 +945,8 @@ export class BpmnEditor extends CachedComponent {
         }
       }
     });
+
+    window.modeler = modeler;
 
     modeler.on('elementTemplates.errors', (event) => {
       console.warn('Element templates errors', event.errors);
