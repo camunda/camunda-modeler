@@ -1,0 +1,22 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunkcamunda_modeler_client"] = self["webpackChunkcamunda_modeler_client"] || []).push([["src_util_a11y_js"],{
+
+/***/ "./src/util/a11y.js":
+/*!**************************!*\
+  !*** ./src/util/a11y.js ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("{__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   loadA11yHelper: () => (/* binding */ loadA11yHelper)\n/* harmony export */ });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"../node_modules/react/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"../node_modules/react-dom/index.js\");\n/**\r\n * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH\r\n * under one or more contributor license agreements. See the NOTICE file\r\n * distributed with this work for additional information regarding copyright\r\n * ownership.\r\n *\r\n * Camunda licenses this file to you under the MIT; you may not use this file\r\n * except in compliance with the MIT License.\r\n */\n\n\n\nconst DEFAULT_TAGS = ['wcag2a', 'wcag21a'];\nasync function loadA11yHelper() {\n  // TODO(@barmac): remove or replace when upgraded to React 18\n  const axe = await __webpack_require__.e(/*! import() */ \"vendors-node_modules_axe-core_react_dist_index_mjs\").then(__webpack_require__.bind(__webpack_require__, /*! @axe-core/react */ \"../node_modules/@axe-core/react/dist/index.mjs\"));\n  axe.default(react__WEBPACK_IMPORTED_MODULE_0__, react_dom__WEBPACK_IMPORTED_MODULE_1__, 1000, {\n    runOnly: DEFAULT_TAGS\n  });\n}//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvdXRpbC9hMTF5LmpzIiwibWFwcGluZ3MiOiI7Ozs7OztBQUFBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFMEI7QUFDTztBQUVqQyxNQUFNRSxZQUFZLEdBQUcsQ0FBRSxRQUFRLEVBQUUsU0FBUyxDQUFFO0FBRXJDLGVBQWVDLGNBQWNBLENBQUEsRUFBRztFQUVyQztFQUNBLE1BQU1DLEdBQUcsR0FBRyxNQUFNLHdOQUF5QjtFQUMzQ0EsR0FBRyxDQUFDQyxPQUFPLENBQUNMLGtDQUFLLEVBQUVDLHNDQUFRLEVBQUUsSUFBSSxFQUFFO0lBQ2pDSyxPQUFPLEVBQUVKO0VBQ1gsQ0FBQyxDQUFDO0FBQ0oiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9jYW11bmRhLW1vZGVsZXItY2xpZW50Ly4vc3JjL3V0aWwvYTExeS5qcz9iODk0Il0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxyXG4gKiBDb3B5cmlnaHQgQ2FtdW5kYSBTZXJ2aWNlcyBHbWJIIGFuZC9vciBsaWNlbnNlZCB0byBDYW11bmRhIFNlcnZpY2VzIEdtYkhcclxuICogdW5kZXIgb25lIG9yIG1vcmUgY29udHJpYnV0b3IgbGljZW5zZSBhZ3JlZW1lbnRzLiBTZWUgdGhlIE5PVElDRSBmaWxlXHJcbiAqIGRpc3RyaWJ1dGVkIHdpdGggdGhpcyB3b3JrIGZvciBhZGRpdGlvbmFsIGluZm9ybWF0aW9uIHJlZ2FyZGluZyBjb3B5cmlnaHRcclxuICogb3duZXJzaGlwLlxyXG4gKlxyXG4gKiBDYW11bmRhIGxpY2Vuc2VzIHRoaXMgZmlsZSB0byB5b3UgdW5kZXIgdGhlIE1JVDsgeW91IG1heSBub3QgdXNlIHRoaXMgZmlsZVxyXG4gKiBleGNlcHQgaW4gY29tcGxpYW5jZSB3aXRoIHRoZSBNSVQgTGljZW5zZS5cclxuICovXHJcblxyXG5pbXBvcnQgUmVhY3QgZnJvbSAncmVhY3QnO1xyXG5pbXBvcnQgUmVhY3RET00gZnJvbSAncmVhY3QtZG9tJztcclxuXHJcbmNvbnN0IERFRkFVTFRfVEFHUyA9IFsgJ3djYWcyYScsICd3Y2FnMjFhJyBdO1xyXG5cclxuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGxvYWRBMTF5SGVscGVyKCkge1xyXG5cclxuICAvLyBUT0RPKEBiYXJtYWMpOiByZW1vdmUgb3IgcmVwbGFjZSB3aGVuIHVwZ3JhZGVkIHRvIFJlYWN0IDE4XHJcbiAgY29uc3QgYXhlID0gYXdhaXQgaW1wb3J0KCdAYXhlLWNvcmUvcmVhY3QnKTtcclxuICBheGUuZGVmYXVsdChSZWFjdCwgUmVhY3RET00sIDEwMDAsIHtcclxuICAgIHJ1bk9ubHk6IERFRkFVTFRfVEFHU1xyXG4gIH0pO1xyXG59XHJcbiJdLCJuYW1lcyI6WyJSZWFjdCIsIlJlYWN0RE9NIiwiREVGQVVMVF9UQUdTIiwibG9hZEExMXlIZWxwZXIiLCJheGUiLCJkZWZhdWx0IiwicnVuT25seSJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./src/util/a11y.js\n\n}");
+
+/***/ })
+
+}]);
