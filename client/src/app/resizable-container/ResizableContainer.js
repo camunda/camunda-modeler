@@ -12,7 +12,7 @@ import React, { useCallback, useRef } from 'react';
 
 import classNames from 'classnames';
 
-import { ChevronRight, Maximize } from '@carbon/icons-react';
+import { ChevronRight, ChevronDown, Maximize } from '@carbon/icons-react';
 
 import HandleBarX from '../../../resources/icons/HandleBarX.svg';
 import HandleBarY from '../../../resources/icons/HandleBarY.svg';
@@ -206,7 +206,10 @@ function ClosedIndicator(props) {
       role="button"
       tabIndex={ open ? -1 : 0 }
     >
-      <ChevronRight width={ 16 } height={ 16 } />
+      { isVertical(direction) 
+        ? <ChevronDown width={ 16 } height={ 16 } />
+        : <ChevronRight width={ 16 } height={ 16 } />
+      }
       <span className="title">{ title }</span>
       { icon && <span className="icon">{ icon }</span> }
     </div>

@@ -26,7 +26,9 @@ export const DEFAULT_LAYOUT = {
 export default function PanelContainer(props) {
   const {
     layout,
-    onLayoutChanged
+    onLayoutChanged,
+    title = 'Panel',
+    icon = null
   } = props;
 
   const onResized = useCallback(({ open, height }) => {
@@ -48,6 +50,8 @@ export default function PanelContainer(props) {
 
   return (
     <ResizableContainer
+      title={ title }
+      icon={ icon }
       direction="top"
       open={ open }
       height={ height }

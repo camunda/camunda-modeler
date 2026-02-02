@@ -2431,6 +2431,7 @@ export class App extends PureComponent {
                 </div>
 
                 <PanelContainer
+                  title={ getActivePanelTitle(layout) }
                   layout={ layout }
                   onLayoutChanged={ this.handleLayoutChanged }>
                   <Panel
@@ -2790,4 +2791,22 @@ function getProcessor(type) {
   }
 
   return null;
+}
+
+function getActivePanelTitle(layout) {
+  const { panel = {} } = layout;
+
+  if (!panel.open) {
+    return 'Output';
+  }
+
+  if (panel.tab === 'log') {
+    return 'Log';
+  }
+
+  if (panel.tab === 'linting') {
+    return 'Problems';
+  }
+
+  return 'Output';
 }
