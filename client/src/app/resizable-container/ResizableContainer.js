@@ -61,7 +61,8 @@ export default function ResizableContainer(props) {
     open,
     onResized,
     title = 'Resizable Container',
-    icon = null
+    icon = null,
+    showClosedIndicator = false
   } = props;
 
   const {
@@ -177,7 +178,7 @@ export default function ResizableContainer(props) {
           'children',
         ) }>{props.children}</div>
       <Resizer direction={ direction } onMouseDown={ onMouseDown } />
-      <ClosedIndicator direction={ direction } open={ open } title={ title } icon={ icon } onToggle={ onToggle } />
+      {showClosedIndicator && <ClosedIndicator direction={ direction } open={ open } title={ title } icon={ icon } onToggle={ onToggle } />}
     </div>
   );
 }

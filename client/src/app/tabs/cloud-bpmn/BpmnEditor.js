@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { Db2Database, SettingsAdjust, Chemistry, Flow, RightPanelOpen, ChevronRight, ChevronLeft, RightPanelClose } from '@carbon/icons-react';
+import { Db2Database, SettingsAdjust, Chemistry, Flow, RightPanelOpen, ChevronRight, ChevronLeft, RightPanelClose, Maximize, Minimize } from '@carbon/icons-react';
 
 import { isFunction } from 'min-dash';
 
@@ -30,6 +30,7 @@ import {
 
 import SidePanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/SidePanelContainer';
 
+import PanelToggleButtons from '../../status-bar/PanelToggleButtons';
 import TaskTestingTab from '../../panel/tabs/task-testing/TaskTestingTab';
 import VariableTab from '../../panel/tabs/variable-outline/VariableOutlineTab';
 
@@ -819,13 +820,24 @@ export class BpmnEditor extends CachedComponent {
 
   toggleMaxSidePanels = () => {
     this.setState({
-      maxSidePanels: !this.state.maxSidePanels
+      maxSidePanels: !this.state.maxSidePanels,
+      hideAllPanels: false
     });
   };
 
   toggleHideAllPanels = () => {
     this.setState({
       hideAllPanels: !this.state.hideAllPanels
+    });
+  };
+
+  togglePanel = (panelKey) => {
+    const currentOpen = this.props.layout?.[panelKey]?.open !== false;
+    this.handleLayoutChange({
+      [panelKey]: {
+        ...this.props.layout?.[panelKey],
+        open: !currentOpen
+      }
     });
   };
 
@@ -866,28 +878,6 @@ export class BpmnEditor extends CachedComponent {
             onFocus={ this.handleChanged }
             onContextMenu={ this.handleContextMenu }
           ></div>
-          <div className="side-panel-buttons">
-            <div className="side-panel-buttons-inner">
-              {
-                !maxSidePanels && (
-                  <>
-                    {
-                      !hideAllPanels && <button className="side-panel-button" onClick={ this.toggleMaxSidePanels }>
-                        <RightPanelOpen width={ 16 } height={ 16 } />
-                      </button>
-                    }
-                    <button className="side-panel-button" onClick={ this.toggleHideAllPanels }>
-                      {
-                        hideAllPanels
-                          ? <RightPanelOpen width={ 16 } height={ 16 } />
-                          : <RightPanelClose width={ 16 } height={ 16 } />
-                      }
-                    </button>
-                  </>
-                )
-              }
-            </div>
-          </div>
           <SidePanelContainer
             className={ classNames({ 'hidden': hideAllPanels }) }
             title="Variables"
@@ -950,6 +940,15 @@ export class BpmnEditor extends CachedComponent {
           injector={ injector }
           layout={ layout }
           onAction={ onAction } />
+
+        <PanelToggleButtons
+          layout={ layout }
+          maxSidePanels={ maxSidePanels }
+          hideAllPanels={ hideAllPanels }
+          onToggleMaxSidePanels={ this.toggleMaxSidePanels }
+          onToggleHideAllPanels={ this.toggleHideAllPanels }
+          onTogglePanel={ this.togglePanel } />
+
       </div>
     );
   }

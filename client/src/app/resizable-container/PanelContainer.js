@@ -58,6 +58,7 @@ export default function PanelContainer(props) {
       minHeight={ MIN_HEIGHT }
       maxHeight={ MAX_HEIGHT }
       onResized={ onResized }
+      showClosedIndicator={ true }
     >
       {props.children}
     </ResizableContainer>
