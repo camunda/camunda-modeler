@@ -42,7 +42,7 @@ export default function PanelToggleButtons(props) {
     <Fill slot="status-bar__app" group="8_panels">
       <div className={ css.PanelToggleButtons }>
         <button
-          className="btn"
+          className={ classnames('btn', { 'btn--active': maxSidePanels }) }
           onClick={ onToggleMaxSidePanels }
           title="Maximize all panels"
         >
@@ -77,7 +77,7 @@ export default function PanelToggleButtons(props) {
         </button>
 
         <button
-          className="btn"
+          className={ classnames('btn', { 'btn--active': hideAllPanels }) }
           onClick={ onToggleHideAllPanels }
           title={ hideAllPanels ? 'Show all panels' : 'Hide all panels' }
         >

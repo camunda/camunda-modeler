@@ -827,7 +827,8 @@ export class BpmnEditor extends CachedComponent {
 
   toggleHideAllPanels = () => {
     this.setState({
-      hideAllPanels: !this.state.hideAllPanels
+      hideAllPanels: !this.state.hideAllPanels,
+      maxSidePanels: false
     });
   };
 
