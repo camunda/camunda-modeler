@@ -16,8 +16,8 @@ import {
   Db2Database,
   SettingsAdjust,
   Chemistry,
-  Maximize,
-  Minimize
+  SidePanelClose,
+  RightPanelClose
 } from '@carbon/icons-react';
 
 import classnames from 'classnames';
@@ -39,14 +39,14 @@ export default function PanelToggleButtons(props) {
   const testOpen = layout?.test?.open !== false;
 
   return (
-    <Fill slot="status-bar__file" group="8_panels">
+    <Fill slot="status-bar__app" group="8_panels">
       <div className={ css.PanelToggleButtons }>
         <button
           className="btn"
           onClick={ onToggleMaxSidePanels }
           title="Maximize all panels"
         >
-          <Maximize width={ 16 } height={ 16 } />
+          <SidePanelClose width={ 16 } height={ 16 } />
         </button>
         
         <button
@@ -81,7 +81,7 @@ export default function PanelToggleButtons(props) {
           onClick={ onToggleHideAllPanels }
           title={ hideAllPanels ? 'Show all panels' : 'Hide all panels' }
         >
-          <Minimize width={ 16 } height={ 16 } />
+          <RightPanelClose width={ 16 } height={ 16 } />
         </button>
       </div>
     </Fill>
