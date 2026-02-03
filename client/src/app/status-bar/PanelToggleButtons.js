@@ -50,28 +50,28 @@ export default function PanelToggleButtons(props) {
         </button>
         
         <button
-          className={ classnames('btn', { 'btn--active': variablesOpen && !hideAllPanels }) }
+          className={ classnames('btn', { 'btn--active': maxSidePanels || (variablesOpen && !hideAllPanels) }) }
           onClick={ () => onTogglePanel('variables') }
           title="Toggle variables panel"
-          disabled={ hideAllPanels }
+          disabled={ maxSidePanels }
         >
           <Db2Database width={ 16 } height={ 16 } />
         </button>
 
         <button
-          className={ classnames('btn', { 'btn--active': propertiesOpen && !hideAllPanels }) }
+          className={ classnames('btn', { 'btn--active': maxSidePanels || (propertiesOpen && !hideAllPanels) }) }
           onClick={ () => onTogglePanel('propertiesPanel') }
           title="Toggle properties panel"
-          disabled={ hideAllPanels }
+          disabled={ maxSidePanels }
         >
           <SettingsAdjust width={ 16 } height={ 16 } />
         </button>
 
         <button
-          className={ classnames('btn', { 'btn--active': testOpen && !hideAllPanels }) }
+          className={ classnames('btn', { 'btn--active': maxSidePanels || (testOpen && !hideAllPanels) }) }
           onClick={ () => onTogglePanel('test') }
           title="Toggle test panel"
-          disabled={ hideAllPanels }
+          disabled={ maxSidePanels }
         >
           <Chemistry width={ 16 } height={ 16 } />
         </button>

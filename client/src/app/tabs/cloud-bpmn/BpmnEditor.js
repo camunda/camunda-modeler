@@ -834,12 +834,25 @@ export class BpmnEditor extends CachedComponent {
 
   togglePanel = (panelKey) => {
     const currentOpen = this.props.layout?.[panelKey]?.open !== false;
-    this.handleLayoutChange({
-      [panelKey]: {
-        ...this.props.layout?.[panelKey],
-        open: !currentOpen
-      }
-    });
+    
+    // If panels are minimized, un-minimize them and always open the clicked panel
+    if (this.state.hideAllPanels) {
+      this.setState({ hideAllPanels: false });
+      this.handleLayoutChange({
+        [panelKey]: {
+          ...this.props.layout?.[panelKey],
+          open: true
+        }
+      });
+    } else {
+      // Normal toggle behavior when not minimized
+      this.handleLayoutChange({
+        [panelKey]: {
+          ...this.props.layout?.[panelKey],
+          open: !currentOpen
+        }
+      });
+    }
   };
 
   render() {
