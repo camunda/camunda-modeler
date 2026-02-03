@@ -3,6 +3,10 @@
   grid-template-rows: auto 1fr;
   height: 100%;
 
+  &:not(.open) {
+    display: none;
+  }
+
   &.open {
     border-left: solid 1px var(--color-grey-225-10-75);
   }
