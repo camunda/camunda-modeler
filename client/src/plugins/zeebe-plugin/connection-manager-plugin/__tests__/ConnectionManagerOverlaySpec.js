@@ -15,6 +15,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import { ConnectionManagerOverlay } from '../ConnectionManagerOverlay';
+import { C8RUN_DOCUMENTATION_URL } from '../constants';
 
 describe('ConnectionManagerOverlay', function() {
 
@@ -214,6 +215,69 @@ describe('ConnectionManagerOverlay', function() {
 
       // then
       expect(queryByText(/Cannot connect to the endpoint/)).to.not.exist;
+    });
+
+
+    it('should display Camunda 8 Run link when predefined connection fails', function() {
+
+      // given
+      const connections = [
+        {
+          id: 'C8RUN_LOCAL',
+          name: 'c8run (local)',
+          targetType: 'selfHosted',
+          contactPoint: 'http://localhost:8080/v2'
+        }
+      ];
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE'
+      };
+
+      // when
+      const { container, getByTestId } = createConnectionManagerOverlay({
+        connections,
+        connectionCheckResult,
+        activeConnection
+      });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(getByTestId('c8run-nudge-link')).to.exist;
+      expect(getByTestId('c8run-nudge-link').getAttribute('href')).to.equal(C8RUN_DOCUMENTATION_URL);
+    });
+
+
+    it('should NOT display Camunda 8 Run link when non-predefined connection fails', function() {
+
+      // given
+      const connections = [
+        {
+          id: 'custom-connection',
+          name: 'My Custom Connection',
+          targetType: 'selfHosted',
+          contactPoint: 'http://localhost:26500'
+        }
+      ];
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE'
+      };
+
+      // when
+      const { container, queryByTestId } = createConnectionManagerOverlay({
+        connections,
+        connectionCheckResult,
+        activeConnection
+      });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(queryByTestId('c8run-nudge-link')).to.not.exist;
     });
 
   });

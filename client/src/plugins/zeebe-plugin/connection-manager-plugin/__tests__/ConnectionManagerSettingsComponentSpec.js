@@ -21,6 +21,7 @@ import {
 import { Formik } from 'formik';
 
 import { ConnectionManagerSettingsComponent } from '../ConnectionManagerSettingsComponent';
+import { C8RUN_DOCUMENTATION_URL } from '../constants';
 
 describe('ConnectionManagerSettingsComponent', function() {
 
@@ -531,6 +532,82 @@ describe('ConnectionManagerSettingsComponent', function() {
       await waitFor(() => {
         expect(getByLabelText('Error')).to.exist;
       });
+    });
+
+
+    it('should display Camunda 8 Run link when predefined connection fails', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'C8RUN_LOCAL',
+          name: 'c8run (local)',
+          targetType: 'selfHosted',
+          contactPoint: 'http://localhost:8080/v2'
+        }
+      ];
+
+      const connectionChecker = createMockConnectionChecker();
+
+      const { container, getByTestId } = createComponent({
+        initialValues: connections,
+        connectionChecker
+      });
+
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // when - trigger failure
+      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
+      connectionCheckListener({
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE',
+        name: 'settings'
+      });
+
+      // then
+      await waitFor(() => {
+        expect(getByTestId('c8run-nudge-link')).to.exist;
+        expect(getByTestId('c8run-nudge-link').getAttribute('href')).to.equal(C8RUN_DOCUMENTATION_URL);
+      });
+    });
+
+
+    it('should NOT display Camunda 8 Run link when non-predefined connection fails', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'custom-connection',
+          name: 'My Custom Connection',
+          targetType: 'selfHosted',
+          contactPoint: 'http://localhost:26500'
+        }
+      ];
+
+      const connectionChecker = createMockConnectionChecker();
+
+      const { container, queryByTestId } = createComponent({
+        initialValues: connections,
+        connectionChecker
+      });
+
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // when - trigger failure
+      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
+      connectionCheckListener({
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE',
+        name: 'settings'
+      });
+
+      // then
+      await waitFor(() => {
+        expect(container.querySelector('[aria-label="Error"]')).to.exist;
+      });
+      expect(queryByTestId('c8run-nudge-link')).to.not.exist;
     });
 
 
