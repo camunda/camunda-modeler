@@ -145,7 +145,8 @@ export function getConnectionCheckFieldErrors(connectionCheckResult) {
   case CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE:
     return {
       _mainError: errorMessageWithTroubleshootLink,
-      contactPoint: errorMessageWithTroubleshootLink
+      contactPoint: errorMessageWithTroubleshootLink,
+      plainError: errorMessage,
     };
 
   case CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE:
