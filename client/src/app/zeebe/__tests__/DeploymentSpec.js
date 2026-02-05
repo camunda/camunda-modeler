@@ -682,6 +682,78 @@ describe('Deployment', function() {
       expect(result.id).to.equal('NO_CONNECTION');
     });
 
+
+    it('should fall back to c8run and persist connection ID when no endpoint is found', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'c8run-local',
+          name: 'c8run (local)',
+          contactPoint: 'http://localhost:8080'
+        }
+      ];
+
+      const settings = {
+        get: sinon.stub().returns(connections)
+      };
+
+      const config = new MockConfig();
+      config.getForFile = sinon.stub().resolves({});
+      config.get = sinon.stub().resolves(null);
+
+      const deployment = createDeployment({ settings, config });
+      sinon.spy(deployment, 'setConnectionIdForTab');
+
+      const tab = {
+        id: 'tab-1',
+        file: createMockFile()
+      };
+
+      // when
+      const result = await deployment.getConnectionForTab(tab);
+
+      // then
+      expect(result.id).to.equal('c8run-local');
+      expect(deployment.setConnectionIdForTab).to.have.been.calledWith(tab, 'c8run-local');
+    });
+
+
+    it('should return NO_CONNECTION when no endpoint and no c8run exists', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'prod-1',
+          name: 'Production',
+          contactPoint: 'https://example.com'
+        }
+      ];
+
+      const settings = {
+        get: sinon.stub().returns(connections)
+      };
+
+      const config = new MockConfig();
+      config.getForFile = sinon.stub().resolves({});
+      config.get = sinon.stub().resolves(null);
+
+      const deployment = createDeployment({ settings, config });
+      sinon.spy(deployment, 'setConnectionIdForTab');
+
+      const tab = {
+        id: 'tab-1',
+        file: createMockFile()
+      };
+
+      // when
+      const result = await deployment.getConnectionForTab(tab);
+
+      // then
+      expect(result.id).to.equal('NO_CONNECTION');
+      expect(deployment.setConnectionIdForTab).to.not.have.been.called;
+    });
+
   });
 
 });
