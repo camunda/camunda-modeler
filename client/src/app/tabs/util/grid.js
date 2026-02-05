@@ -23,7 +23,7 @@ export class GridBehavior {
    *   getDiagram: () => any
    * } adapter
    */
-  constructor(adapter, defaultVisible = false) {
+  constructor(adapter, defaultVisible = true) {
 
     /**
      * @private
