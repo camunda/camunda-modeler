@@ -12,6 +12,4 @@ import { utmTag } from '../../../util/utmTag';
 
 export const NO_CONNECTION_ID = 'NO_CONNECTION';
 
-export const PREDEFINED_CONNECTION_ID = 'C8RUN_LOCAL';
-
 export const C8RUN_DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/self-managed/quickstart/developer-quickstart/c8run/');

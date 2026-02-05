@@ -13,11 +13,11 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { Section, Select } from '../../../shared/ui';
-import { getMessageForReason } from '../../zeebe-plugin/shared/util';
+import { getMessageForReason, isC8RunConnection } from '../../zeebe-plugin/shared/util';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 import { utmTag } from '../../../util/utmTag';
 import { NO_CONNECTION } from './ConnectionManagerPlugin';
-import { PREDEFINED_CONNECTION_ID, C8RUN_DOCUMENTATION_URL } from './constants';
+import { C8RUN_DOCUMENTATION_URL } from './constants';
 
 export function ConnectionManagerOverlay({
   connections = [],
@@ -67,10 +67,9 @@ export function ConnectionManagerOverlay({
   };
 
   const getConnectionDescription = () => {
-    const isPredefinedConnection = activeConnection?.id === PREDEFINED_CONNECTION_ID;
     const hasConnectionError = connectionCheckResult?.success === false && connectionCheckResult.reason !== CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG;
 
-    if (isPredefinedConnection && hasConnectionError) {
+    if (isC8RunConnection(activeConnection) && hasConnectionError) {
       return (
         <>
           Get started with <a data-testid="c8run-nudge-link" href={ C8RUN_DOCUMENTATION_URL }>Camunda 8 Run</a> to run Camunda locally.

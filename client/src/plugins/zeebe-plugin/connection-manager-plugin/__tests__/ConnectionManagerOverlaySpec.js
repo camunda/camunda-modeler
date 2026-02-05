@@ -218,12 +218,12 @@ describe('ConnectionManagerOverlay', function() {
     });
 
 
-    it('should display Camunda 8 Run link when predefined connection fails', function() {
+    it('should display Camunda 8 Run link when c8run connection fails', function() {
 
       // given
       const connections = [
         {
-          id: 'C8RUN_LOCAL',
+          id: 'conn-1',
           name: 'c8run (local)',
           targetType: 'selfHosted',
           contactPoint: 'http://localhost:8080/v2'
@@ -250,7 +250,7 @@ describe('ConnectionManagerOverlay', function() {
     });
 
 
-    it('should NOT display Camunda 8 Run link when non-predefined connection fails', function() {
+    it('should NOT display Camunda 8 Run link when non-c8run connection fails', function() {
 
       // given
       const connections = [

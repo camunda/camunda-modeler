@@ -22,7 +22,8 @@ import * as css from './ConnectionManagerSettingsComponent.less';
 
 import { CONNECTION_CHECK_ERROR_REASONS, getConnectionCheckFieldErrors, TROUBLESHOOTING_URL } from '../deployment-plugin/ConnectionCheckErrors';
 import { StatusIndicator } from '../shared/StatusIndicator';
-import { PREDEFINED_CONNECTION_ID, C8RUN_DOCUMENTATION_URL } from './constants';
+import { isC8RunConnection } from '../shared/util';
+import { C8RUN_DOCUMENTATION_URL } from './constants';
 
 
 /**
@@ -156,9 +157,7 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
         return 'Connected';
       }
 
-      const isPredefinedConnection = connection?.id === PREDEFINED_CONNECTION_ID;
-
-      if (isPredefinedConnection) {
+      if (isC8RunConnection(connection)) {
         const plainError = errorMessages?.plainError || 'Failed to connect';
 
         return (
