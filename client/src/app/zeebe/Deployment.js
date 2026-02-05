@@ -25,7 +25,7 @@ import { AUTH_TYPES, TARGET_TYPES } from '../../remote/ZeebeAPI.js';
 import { validateConnection } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionValidator.js';
 import { SETTINGS_KEY_CONNECTIONS } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerSettings.js';
 import { NO_CONNECTION } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerPlugin.js';
-import { PREDEFINED_CONNECTION_ID } from '../../plugins/zeebe-plugin/connection-manager-plugin/constants.js';
+import { isC8RunConnection } from '../../plugins/zeebe-plugin/shared/util.js';
 
 const STORAGE_KEY = 'connectionId';
 
@@ -233,12 +233,13 @@ export default class Deployment extends EventEmitter {
   }
 
   /**
-   * Get the default endpoint (the predefined c8run connection).
+   * Get the default endpoint (the c8run connection).
    *
    * @returns {Endpoint|null}
    */
   getDefaultEndpoint() {
-    return this.getEndpoint(PREDEFINED_CONNECTION_ID);
+    const endpoints = this.getEndpoints();
+    return endpoints.find(isC8RunConnection) || null;
   }
 
   /**
