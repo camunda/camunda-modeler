@@ -13,7 +13,8 @@ import {
   getOperateUrl,
   getDeploymentUrls,
   getProcessId,
-  getStartInstanceUrl
+  getStartInstanceUrl,
+  isC8RunConnection
 } from '../util';
 
 import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
@@ -256,6 +257,140 @@ describe('util', function() {
 
       // then
       expect(code).to.eql('UNKNOWN');
+    });
+
+  });
+
+
+  describe('isC8RunConnection', function() {
+
+    it('should return true for valid c8run connection', function() {
+
+      // given
+      const connection = {
+        id: 'test-id',
+        name: 'c8run (local)',
+        contactPoint: 'http://localhost:8080/v2'
+      };
+
+      // when
+      const result = isC8RunConnection(connection);
+
+      // then
+      expect(result).to.be.true;
+    });
+
+
+    it('should match case-insensitively', function() {
+
+      // given
+      const connection = {
+        name: 'C8RUN (Local)',
+        contactPoint: 'HTTP://LOCALHOST:8080/v2'
+      };
+
+      // when
+      const result = isC8RunConnection(connection);
+
+      // then
+      expect(result).to.be.true;
+    });
+
+
+    it('should NOT match HTTPS URLs', function() {
+
+      // given
+      const connection = {
+        name: 'c8run (local)',
+        contactPoint: 'https://localhost:8080/v2'
+      };
+
+      // when
+      const result = isC8RunConnection(connection);
+
+      // then
+      expect(result).to.be.false;
+    });
+
+
+    it('should NOT match different ports', function() {
+
+      // given
+      const connection = {
+        name: 'c8run (local)',
+        contactPoint: 'http://localhost:8081/v2'
+      };
+
+      // when
+      const result = isC8RunConnection(connection);
+
+      // then
+      expect(result).to.be.false;
+    });
+
+
+    it('should NOT match different hosts', function() {
+
+      // given
+      const connection = {
+        name: 'c8run (local)',
+        contactPoint: 'http://example.com:8080/v2'
+      };
+
+      // when
+      const result = isC8RunConnection(connection);
+
+      // then
+      expect(result).to.be.false;
+    });
+
+
+    it('should NOT match when name does not start with c8run', function() {
+
+      // given
+      const connection = {
+        name: 'my c8run setup',
+        contactPoint: 'http://localhost:8080/v2'
+      };
+
+      // when
+      const result = isC8RunConnection(connection);
+
+      // then
+      expect(result).to.be.false;
+    });
+
+
+    it('should require BOTH URL and name to match', function() {
+
+      // when - only URL matches
+      const urlOnlyResult = isC8RunConnection({
+        name: 'Production',
+        contactPoint: 'http://localhost:8080/v2'
+      });
+
+      // then
+      expect(urlOnlyResult).to.be.false;
+
+      // when - only name matches
+      const nameOnlyResult = isC8RunConnection({
+        name: 'c8run (local)',
+        contactPoint: 'https://example.com'
+      });
+
+      // then
+      expect(nameOnlyResult).to.be.false;
+    });
+
+
+    it('should handle invalid inputs gracefully', function() {
+
+      // then
+      expect(isC8RunConnection(null)).to.be.false;
+      expect(isC8RunConnection(undefined)).to.be.false;
+      expect(isC8RunConnection({})).to.be.false;
+      expect(isC8RunConnection({ name: 'c8run' })).to.be.false;
+      expect(isC8RunConnection({ contactPoint: 'http://localhost:8080' })).to.be.false;
     });
 
   });
