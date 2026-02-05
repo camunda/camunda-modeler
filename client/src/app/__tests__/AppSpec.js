@@ -983,6 +983,73 @@ describe('<App>', function() {
       expect(eventSpy).to.have.been.calledOnce;
     });
 
+
+    it('should auto-save dirty tab with existing file without prompting', async function() {
+
+      // given
+      const dialog = new Dialog();
+      const fileSystem = new FileSystem();
+
+      const { app } = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      });
+
+      const showCloseFileDialogSpy = spy(dialog, 'showCloseFileDialog');
+      const saveTabSpy = spy(app, 'saveTab');
+
+      const file = createFile('diagram.bpmn');
+      const [ tab ] = await app.openFiles([ file ]);
+
+      // Make the tab dirty
+      app.state.dirtyTabs = { ...app.setDirty(tab).dirtyTabs };
+
+      // when
+      await app.closeTab(tab);
+
+      // then
+      // Should not show the close file dialog for existing files
+      expect(showCloseFileDialogSpy).not.to.have.been.called;
+
+      // Should auto-save the file
+      expect(saveTabSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should prompt for unsaved dirty tab (new file)', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        }
+      });
+
+      const showCloseFileDialogSpy = spy(dialog, 'showCloseFileDialog');
+      const saveTabSpy = spy(app, 'saveTab');
+
+      const tab = await app.createDiagram();
+
+      // Make the tab dirty
+      app.state.dirtyTabs = { ...app.setDirty(tab).dirtyTabs };
+
+      dialog.setShowCloseFileDialogResponse({ button: 'discard' });
+
+      // when
+      await app.closeTab(tab);
+
+      // then
+      // Should show the close file dialog for new unsaved files
+      expect(showCloseFileDialogSpy).to.have.been.calledOnce;
+
+      // Should not save when user chooses discard
+      expect(saveTabSpy).not.to.have.been.called;
+    });
+
   });
 
 
