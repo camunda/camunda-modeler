@@ -20,8 +20,10 @@ import { generateNewElement, properties } from './ConnectionManagerSettingsPrope
 
 import * as css from './ConnectionManagerSettingsComponent.less';
 
-import { CONNECTION_CHECK_ERROR_REASONS, getConnectionCheckFieldErrors } from '../deployment-plugin/ConnectionCheckErrors';
+import { CONNECTION_CHECK_ERROR_REASONS, getConnectionCheckFieldErrors, TROUBLESHOOTING_URL } from '../deployment-plugin/ConnectionCheckErrors';
 import { StatusIndicator } from '../shared/StatusIndicator';
+import { isC8RunConnection } from '../shared/util';
+import { C8RUN_DOCUMENTATION_URL } from './constants';
 
 
 /**
@@ -151,7 +153,23 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
 
   function getText(connectionCheckResult) {
     if (connectionCheckResult) {
-      return connectionCheckResult.success ? 'Connected' : errorMessages?._mainError || 'Failed to connect';
+      if (connectionCheckResult.success) {
+        return 'Connected';
+      }
+
+      if (isC8RunConnection(connection)) {
+        const plainError = errorMessages?.plainError || 'Failed to connect';
+
+        return (
+          <>
+            {plainError} Get started with <a data-testid="c8run-nudge-link" href={ C8RUN_DOCUMENTATION_URL }>Camunda 8 Run</a> to run Camunda locally or <a href={ TROUBLESHOOTING_URL }>troubleshoot</a>.
+          </>
+        );
+      }
+
+      const errorText = errorMessages?._mainError || 'Failed to connect';
+
+      return errorText;
     }
     return 'Connecting...';
   }

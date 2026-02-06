@@ -13,10 +13,11 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { Section, Select } from '../../../shared/ui';
-import { getMessageForReason } from '../../zeebe-plugin/shared/util';
+import { getMessageForReason, isC8RunConnection } from '../../zeebe-plugin/shared/util';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 import { utmTag } from '../../../util/utmTag';
 import { NO_CONNECTION } from './ConnectionManagerPlugin';
+import { C8RUN_DOCUMENTATION_URL } from './constants';
 
 export function ConnectionManagerOverlay({
   connections = [],
@@ -65,6 +66,19 @@ export function ConnectionManagerOverlay({
     return undefined;
   };
 
+  const getConnectionDescription = () => {
+    const hasConnectionError = connectionCheckResult?.success === false && connectionCheckResult.reason !== CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG;
+
+    if (isC8RunConnection(activeConnection) && hasConnectionError) {
+      return (
+        <>
+          Get started with <a data-testid="c8run-nudge-link" href={ C8RUN_DOCUMENTATION_URL }>Camunda 8 Run</a> to run Camunda locally.
+        </>
+      );
+    }
+    return null;
+  };
+
   function handleConnectionIdChange(connectionId) {
     const connection = connections.find(c => c.id === connectionId) || NO_CONNECTION;
     handleConnectionChange(connection);
@@ -90,6 +104,7 @@ export function ConnectionManagerOverlay({
                 options={ connectionOptions }
                 value={ activeConnection?.id }
                 fieldError={ getConnectionFieldError }
+                description={ getConnectionDescription() }
               />
             </div>
           </div>

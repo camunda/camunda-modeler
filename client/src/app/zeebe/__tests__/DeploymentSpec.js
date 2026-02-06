@@ -542,6 +542,119 @@ describe('Deployment', function() {
   });
 
 
+  describe('#getDefaultEndpoint', function() {
+
+    it('should return c8run connection when it exists', function() {
+
+      // given
+      const connections = [
+        {
+          id: 'other-connection',
+          name: 'Production',
+          contactPoint: 'https://example.com'
+        },
+        {
+          id: 'c8run-test-id',
+          name: 'c8run (local)',
+          contactPoint: 'http://localhost:8080/v2'
+        }
+      ];
+
+      const settings = {
+        get: sinon.stub().returns(connections)
+      };
+
+      const deployment = createDeployment({ settings });
+
+      // when
+      const result = deployment.getDefaultEndpoint();
+
+      // then
+      expect(result).to.exist;
+      expect(result.id).to.equal('c8run-test-id');
+      expect(result.name).to.equal('c8run (local)');
+    });
+
+
+    it('should return first c8run if multiple exist', function() {
+
+      // given
+      const connections = [
+        {
+          id: 'c8run-1',
+          name: 'c8run (local)',
+          contactPoint: 'http://localhost:8080/v2'
+        },
+        {
+          id: 'c8run-2',
+          name: 'c8run - dev',
+          contactPoint: 'http://localhost:8080/operate'
+        }
+      ];
+
+      const settings = {
+        get: sinon.stub().returns(connections)
+      };
+
+      const deployment = createDeployment({ settings });
+
+      // when
+      const result = deployment.getDefaultEndpoint();
+
+      // then
+      expect(result).to.exist;
+      expect(result.id).to.equal('c8run-1');
+    });
+
+
+    it('should return null when no connections exist', function() {
+
+      // given
+      const settings = {
+        get: sinon.stub().returns([])
+      };
+
+      const deployment = createDeployment({ settings });
+
+      // when
+      const result = deployment.getDefaultEndpoint();
+
+      // then
+      expect(result).to.be.null;
+    });
+
+
+    it('should return null when no c8run connection exists', function() {
+
+      // given
+      const connections = [
+        {
+          id: 'prod-1',
+          name: 'Production',
+          contactPoint: 'https://example.com'
+        },
+        {
+          id: 'staging-1',
+          name: 'Staging',
+          contactPoint: 'https://staging.example.com'
+        }
+      ];
+
+      const settings = {
+        get: sinon.stub().returns(connections)
+      };
+
+      const deployment = createDeployment({ settings });
+
+      // when
+      const result = deployment.getDefaultEndpoint();
+
+      // then
+      expect(result).to.be.null;
+    });
+  });
+
+
   describe('#getConnectionForTab', function() {
 
     it('should return NO_CONNECTION without tab', async function() {
@@ -567,6 +680,78 @@ describe('Deployment', function() {
 
       // then
       expect(result.id).to.equal('NO_CONNECTION');
+    });
+
+
+    it('should fall back to c8run and persist connection ID when no endpoint is found', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'c8run-local',
+          name: 'c8run (local)',
+          contactPoint: 'http://localhost:8080'
+        }
+      ];
+
+      const settings = {
+        get: sinon.stub().returns(connections)
+      };
+
+      const config = new MockConfig();
+      config.getForFile = sinon.stub().resolves({});
+      config.get = sinon.stub().resolves(null);
+
+      const deployment = createDeployment({ settings, config });
+      sinon.spy(deployment, 'setConnectionIdForTab');
+
+      const tab = {
+        id: 'tab-1',
+        file: createMockFile()
+      };
+
+      // when
+      const result = await deployment.getConnectionForTab(tab);
+
+      // then
+      expect(result.id).to.equal('c8run-local');
+      expect(deployment.setConnectionIdForTab).to.have.been.calledWith(tab, 'c8run-local');
+    });
+
+
+    it('should return NO_CONNECTION when no endpoint and no c8run exists', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'prod-1',
+          name: 'Production',
+          contactPoint: 'https://example.com'
+        }
+      ];
+
+      const settings = {
+        get: sinon.stub().returns(connections)
+      };
+
+      const config = new MockConfig();
+      config.getForFile = sinon.stub().resolves({});
+      config.get = sinon.stub().resolves(null);
+
+      const deployment = createDeployment({ settings, config });
+      sinon.spy(deployment, 'setConnectionIdForTab');
+
+      const tab = {
+        id: 'tab-1',
+        file: createMockFile()
+      };
+
+      // when
+      const result = await deployment.getConnectionForTab(tab);
+
+      // then
+      expect(result.id).to.equal('NO_CONNECTION');
+      expect(deployment.setConnectionIdForTab).to.not.have.been.called;
     });
 
   });
