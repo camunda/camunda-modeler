@@ -28,3 +28,7 @@ export function insertCSS(name, css) {
 
   head.appendChild(style);
 }
+
+export function isMac() {
+  return /mac/i.test(navigator.userAgent);
+}
