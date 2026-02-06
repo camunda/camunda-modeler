@@ -17,9 +17,9 @@ import { render, waitFor } from '@testing-library/react';
 import ConnectionManagerPlugin from '../ConnectionManagerPlugin';
 
 import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
-import { DEFAULT_ENDPOINT } from '../../../../app/zeebe/Deployment';
+import { DEFAULT_ENDPOINT } from '../../../../app/zeebe/ConnectionManager';
 
-import { Deployment, ZeebeAPI } from '../../../../app/__tests__/mocks';
+import { ConnectionManager, ZeebeAPI } from '../../../../app/__tests__/mocks';
 
 describe('ConnectionManagerPlugin', function() {
   it('should not render status bar item by default', function() {
@@ -188,7 +188,7 @@ describe('ConnectionManagerPlugin', function() {
     });
 
     const globals = {
-      deployment: {
+      connectionManager: {
         async getConnectionForTab(tab) {
           return DEFAULT_CONNECTIONS[0];
         }
@@ -825,7 +825,7 @@ describe('ConnectionManagerPlugin', function() {
       const triggerAction = sinon.spy();
 
       const globals = {
-        deployment: {
+        connectionManager: {
           async getConnectionForTab(tab) {
             return DEFAULT_CONNECTIONS[1];
           }
@@ -993,8 +993,8 @@ function createPluginProps(props = {}, globals = {}) {
   const {
     _getFromApp = DEFAULT_GET_FROM_APP,
     _getGlobal = (name) => {
-      if (name === 'deployment') {
-        return new Deployment({
+      if (name === 'connectionManager') {
+        return new ConnectionManager({
           async getConnectionForTab(file) {
             return DEFAULT_ENDPOINT;
           },
@@ -1006,7 +1006,7 @@ function createPluginProps(props = {}, globals = {}) {
           getEndpoints() {
             return props.settings ? props.settings.get('connectionManagerPlugin.c8connections') || [] : [];
           },
-          ...globals.deployment
+          ...globals.connectionManager
         });
       } else if (name === 'zeebeAPI') {
         return new ZeebeAPI();

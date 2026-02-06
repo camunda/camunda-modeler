@@ -597,8 +597,6 @@ export class SystemClipboard extends Mock {
 }
 
 export class Deployment extends Mock {
-  getConnectionForTab() {}
-
   deploy() {
     return { success: true };
   }
@@ -607,11 +605,15 @@ export class Deployment extends Mock {
 
   off() {}
 
-  onTabSaved() {}
-
   registerResourcesProvider() {}
 
   unregisterResourcesProvider() {}
+}
+
+export class ConnectionManager extends Mock {
+  getConnectionForTab() {}
+
+  onTabSaved() {}
 }
 
 export class StartInstance extends Mock {}

@@ -15,7 +15,8 @@ import { getOperateUrl } from '../../../../plugins/zeebe-plugin/shared/util';
 const log = debug('TaskTestingApi');
 
 export default class TaskTestingApi {
-  constructor(deployment, startInstance, zeebeApi, tab, onAction) {
+  constructor(connectionManager, deployment, startInstance, zeebeApi, tab, onAction) {
+    this._connectionManager = connectionManager;
     this._deployment = deployment;
     this._startInstance = startInstance;
     this._zeebeApi = zeebeApi;
@@ -40,7 +41,7 @@ export default class TaskTestingApi {
       return {};
     }
 
-    const connection = await this._deployment.getConnectionForTab(this._tab);
+    const connection = await this._connectionManager.getConnectionForTab(this._tab);
     return {
       endpoint: connection,
       context: 'taskTesting'

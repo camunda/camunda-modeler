@@ -93,6 +93,7 @@ export default function StartInstancePlugin(props) {
         activeTab={ activeTab }
         anchor={ anchorRef.current }
         connectionChecker={ connectionChecker.current }
+        connectionManager={ _getGlobal('connectionManager') }
         deployment={ _getGlobal('deployment') }
         displayNotification={ displayNotification }
         log={ log }
