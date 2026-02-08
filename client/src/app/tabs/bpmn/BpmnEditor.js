@@ -27,6 +27,7 @@ import {
 } from '../../cached';
 
 import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
+import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
 
 import BpmnModeler from './modeler';
 
@@ -688,7 +689,7 @@ export class BpmnEditor extends CachedComponent {
     } = this.props;
 
     const {
-      propertiesPanel: propertiesPanelLayout = {}
+      sidePanel: sidePanelLayout = {}
     } = layout;
 
     const modeler = this.getModeler();
@@ -703,10 +704,10 @@ export class BpmnEditor extends CachedComponent {
 
     if (action === 'toggleProperties') {
       const newLayout = {
-        propertiesPanel: {
+        sidePanel: {
           ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
-          ...propertiesPanelLayout,
-          open: !propertiesPanelLayout.open
+          ...sidePanelLayout,
+          open: !sidePanelLayout.open
         }
       };
 
@@ -832,6 +833,11 @@ export class BpmnEditor extends CachedComponent {
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange } />
         </div>
+
+        <PropertiesPanelStatusBarItem
+          layout={ layout }
+          onLayoutChanged={ this.handleLayoutChange }
+        />
 
         { engineProfile && <EngineProfile
           type="bpmn"

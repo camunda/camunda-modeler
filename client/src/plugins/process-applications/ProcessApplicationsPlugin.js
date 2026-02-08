@@ -17,7 +17,7 @@ import ProcessApplicationsStartInstancePlugin from './ProcessApplicationsStartIn
 import { ResourcesProviderModule } from './ResourcesProvider';
 
 import { utmTag } from '../../util/utmTag';
-import { useConnectionStatus } from '../../app/panel/tabs/task-testing/hooks/useConnectionStatus';
+import { useConnectionStatus } from '../../app/hooks/useConnectionStatus';
 
 
 const processApplications = new ProcessApplications();
