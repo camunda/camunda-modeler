@@ -126,7 +126,43 @@
   .bio-properties-panel {
     --font-family: inherit;
     --font-family-monospace: inherit;
+    --input-background-color: var(--color-grey-225-10-95);
+    --input-border-color: transparent;
+    --input-focus-background-color: var(--color-grey-225-10-95);
+    --input-focus-border-color: var(--cds-focus, #0f62fe);
+    --input-error-background-color: var(--color-grey-225-10-95);
+    --input-error-border-color: var(--cds-support-error, #da1e28);
+    --input-error-focus-border-color: var(--cds-support-error, #da1e28);
     background: var(--color-white);
+  }
+
+  .bio-properties-panel-header {
+    display: none;
+  }
+
+  .bio-properties-panel-input {
+    border-radius: 0;
+
+    &:focus {
+      border-radius: 0;
+      outline: 2px solid var(--cds-focus, #0f62fe);
+      outline-offset: -2px;
+    }
+  }
+
+  .bio-properties-panel-entry.has-error .bio-properties-panel-input {
+    outline: 2px solid var(--cds-support-error, #da1e28);
+    outline-offset: -2px;
+
+    &:focus {
+      outline: 2px solid var(--cds-support-error, #da1e28);
+      outline-offset: -2px;
+    }
+  }
+
+  .bio-properties-panel-feel-editor-container .bio-properties-panel-input,
+  .bio-properties-panel-feelers-editor.bio-properties-panel-input {
+    border-radius: 0;
   }
 
   // This makes the text inside of a tooltip selectable
