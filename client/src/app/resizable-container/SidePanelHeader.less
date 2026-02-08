@@ -1,0 +1,57 @@
+:local(.SidePanelHeader) {
+  padding: 12px;
+  border-bottom: solid 1px var(--color-grey-225-10-75);
+  background-color: var(--color-grey-225-10-95);
+  flex: none;
+
+  .side-panel-header__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .side-panel-header__pill {
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-family);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    padding: 1px 8px;
+    border-radius: 0;
+    background-color: var(--color-grey-225-10-90);
+    color: var(--color-grey-225-10-25);
+
+    .side-panel-header__pill-icon {
+      flex-shrink: 0;
+      border-radius: 2px;
+    }
+  }
+
+  .side-panel-header__name {
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-grey-225-10-15);
+    line-height: 20px;
+    word-break: break-word;
+
+    &.side-panel-header__name--empty {
+      font-weight: 400;
+      font-style: italic;
+      color: var(--color-grey-225-10-55);
+    }
+  }
+
+  .side-panel-header__id {
+    font-family: 'IBM Plex Mono', var(--font-family-monospace, monospace);
+    font-size: 12px;
+    color: var(--color-grey-225-10-45);
+    line-height: 18px;
+    word-break: break-all;
+  }
+
+}
