@@ -33,8 +33,10 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
     minimap: {
       open: false
     },
-    propertiesPanel: {
-      open: true
+    propertiesPanel: {},
+    sidePanel: {
+      open: true,
+      tab: 'properties'
     }
   };
 

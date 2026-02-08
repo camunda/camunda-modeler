@@ -1805,6 +1805,33 @@ export class App extends PureComponent {
     });
   }
 
+  openSidePanel = (tab = 'properties') => {
+    const { layout = {} } = this.state;
+
+    const { sidePanel = {} } = layout;
+
+    this.handleLayoutChanged({
+      sidePanel: {
+        ...sidePanel,
+        open: true,
+        tab
+      }
+    });
+  };
+
+  closeSidePanel() {
+    const { layout = {} } = this.state;
+
+    const { sidePanel = {} } = layout;
+
+    this.handleLayoutChanged({
+      sidePanel: {
+        ...sidePanel,
+        open: false
+      }
+    });
+  }
+
   closeTabs = (matcher) => {
 
     const {

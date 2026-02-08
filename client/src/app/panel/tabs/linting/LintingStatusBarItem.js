@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import { Fill } from '../../../slot-fill';
 
@@ -36,7 +36,7 @@ export default function LintingStatusBarItem(props) {
 
   return <Fill slot="status-bar__file" group="9_linting">
     <button
-      className={ classnames(
+      className={ classNames(
         css.LintingStatusBarItem,
         'btn',
         { 'btn--active': panel.open && panel.tab === 'linting',

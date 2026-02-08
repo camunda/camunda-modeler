@@ -153,6 +153,65 @@ describe('<AppParent>', function() {
     });
 
 
+    it('should migrate properties panel layout to side panel layout', function(done) {
+
+      // given
+      const backend = new Backend({
+        async sendReady() {
+          try {
+            await waitFor(() => {
+              expect(instance.getApp().state.layout).to.eql({
+                propertiesPanel: {
+                  groups: {
+                    foo: {
+                      open: true
+                    }
+                  }
+                },
+                sidePanel: {
+                  open: true,
+                  tab: 'properties',
+                  width: 300
+                }
+              });
+            });
+
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      });
+
+      const workspace = new Workspace({
+        restore(defaultConfig) {
+          return Promise.resolve({
+            ...defaultConfig,
+            layout: {
+              propertiesPanel: {
+                open: true,
+                width: 300,
+                groups: {
+                  foo: {
+                    open: true
+                  }
+                }
+              }
+            }
+          });
+        }
+      });
+
+      // when
+      const { instance } = createAppParent({
+        globals: {
+          backend,
+          workspace
+        }
+      });
+    });
+
+
     it('should set log closed by default', function(done) {
 
       // given
