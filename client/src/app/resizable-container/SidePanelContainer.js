@@ -19,6 +19,8 @@ import ResizableContainer from './ResizableContainer';
 import TaskTestingIcon from '../../../resources/icons/TaskTesting.svg';
 import CloseIcon from '../../../resources/icons/Close.svg';
 
+import SidePanelHeader from './SidePanelHeader';
+
 import * as css from './SidePanelContainer.less';
 
 export const SIDE_PANEL_TABS = {
@@ -57,7 +59,8 @@ export default forwardRef(function SidePanelContainer(props, ref) {
     layout,
     onLayoutChanged,
     variablesContent,
-    testContent
+    testContent,
+    injector
   } = props;
 
   const { sidePanel = DEFAULT_LAYOUT } = layout;
@@ -147,6 +150,9 @@ export default forwardRef(function SidePanelContainer(props, ref) {
           </button>
         </div>
       </div>
+
+      <SidePanelHeader
+        injector={ injector } />
 
       <div className="side-panel__body">
         <div

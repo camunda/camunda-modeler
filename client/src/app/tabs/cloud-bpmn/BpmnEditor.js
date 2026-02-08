@@ -867,7 +867,8 @@ export class BpmnEditor extends CachedComponent {
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange }
             variablesContent={ variablesContent }
-            testContent={ testContent } />
+            testContent={ testContent }
+            injector={ injector } />
         </div>
 
         { engineProfile && <EngineProfile
