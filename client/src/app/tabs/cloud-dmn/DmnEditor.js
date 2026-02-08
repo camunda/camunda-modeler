@@ -36,6 +36,7 @@ import {
 import OverviewContainer from '../dmn/OverviewContainer';
 
 import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
+import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
 
 import CamundaDmnModeler from './modeler';
 
@@ -718,7 +719,7 @@ export class DmnEditor extends CachedComponent {
     } = this.props;
 
     const {
-      propertiesPanel: propertiesPanelLayout = {}
+      sidePanel: sidePanelLayout = {}
     } = layout;
 
     const modeler = this.getModeler();
@@ -733,10 +734,10 @@ export class DmnEditor extends CachedComponent {
 
     if (action === 'toggleProperties') {
       const newLayout = {
-        propertiesPanel: {
+        sidePanel: {
           ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
-          ...propertiesPanelLayout,
-          open: !propertiesPanelLayout.open
+          ...sidePanelLayout,
+          open: !sidePanelLayout.open
         }
       };
 
@@ -984,10 +985,15 @@ export class DmnEditor extends CachedComponent {
 
           {
             hasPropertiesPanel && (
-              <PropertiesPanelContainer
-                ref={ this.propertiesPanelRef }
-                layout={ layout }
-                onLayoutChanged={ onLayoutChanged } />
+              <>
+                <PropertiesPanelContainer
+                  ref={ this.propertiesPanelRef }
+                  layout={ layout }
+                  onLayoutChanged={ onLayoutChanged } />
+                <PropertiesPanelStatusBarItem
+                  layout={ layout }
+                  onLayoutChanged={ onLayoutChanged } />
+              </>
             )
           }
 
