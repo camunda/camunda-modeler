@@ -46,6 +46,7 @@ import {
 import Metadata from '../../../../util/Metadata';
 
 import renderEditorHelper from '../../../__tests__/helpers/renderEditor';
+import { Deployment, StartInstance, ZeebeAPI } from '../../../__tests__/mocks';
 
 const { spy } = sinon;
 
@@ -888,51 +889,131 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   describe('layout', function() {
 
-    describe('properties panel', function() {
+    describe('side panel', function() {
 
-      it('should react to new layout', async function() {
+      describe('properties panel', function() {
 
-        // given
-        const { instance, rerender } = await renderEditor(diagramXML);
+        it('should react to new layout', async function() {
 
-        const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+          // given
+          const { instance, rerender } = await renderEditor(diagramXML);
 
-        // when
-        rerender(diagramXML, {
-          layout: {
-            propertiesPanel: {
-              open: false
+          const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+          // when
+          rerender(diagramXML, {
+            layout: {
+              propertiesPanel: {
+                groups: {
+                  foo: {
+                    open: true
+                  }
+                }
+              }
             }
-          }
-        });
+          });
 
-        // then
-        expect(setLayoutSpy).to.have.been.calledOnce;
-        expect(setLayoutSpy).to.have.been.calledWith({
-          open: false
-        });
-
-      });
-
-
-      it('should not react to new layout if no changes', async function() {
-
-        // given
-        const { instance, rerender } = await renderEditor(diagramXML);
-
-        const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
-
-        // when
-        rerender(diagramXML, {
-          layout: {
-            propertiesPanel: {
-              open: true
+          // then
+          expect(setLayoutSpy).to.have.been.calledOnce;
+          expect(setLayoutSpy).to.have.been.calledWith({
+            groups: {
+              foo: {
+                open: true
+              }
             }
-          }
+          });
+
         });
 
-        // then
-        expect(setLayoutSpy).to.have.not.been.called;
+
+        it('should not react to new layout if no changes', async function() {
+
+          // given
+          const { instance, rerender } = await renderEditor(diagramXML);
+
+          const setLayoutSpy = spy(instance.getModeler().get('propertiesPanel'), 'setLayout');
+
+          // when
+          rerender(diagramXML, {
+            layout: {
+              propertiesPanel: {}
+            }
+          });
+
+          // then
+          expect(setLayoutSpy).to.have.not.been.called;
+        });
+
+
+        it('should supply layout to properties panel', async function() {
+
+          // given
+          const propertiesPanelLayout = {
+            groups: {
+              customGroup: {
+                open: true
+              }
+            }
+          };
+
+          const layout = {
+            propertiesPanel: propertiesPanelLayout
+          };
+
+          // when
+          const { instance } = await renderEditor(diagramXML, {
+            layout
+          });
+
+
+          // then
+          const modeler = instance.getModeler();
+
+          expect(modeler.options.propertiesPanel.layout).to.exist;
+          expect(modeler.options.propertiesPanel.layout).to.eql(propertiesPanelLayout);
+        });
+
+
+        it('should update cached layout', async function() {
+
+          // given
+          const cache = new Cache();
+
+          const modeler = new BpmnModeler({
+            propertiesPanel: {
+              layout: { }
+            }
+          });
+
+          cache.add('editor', {
+            cached: {
+              modeler: modeler
+            },
+            __destroy: () => {}
+          });
+
+          const propertiesPanel = modeler.get('propertiesPanel');
+
+          const layoutSpy = spy(propertiesPanel, 'setLayout');
+
+          // when
+          await renderEditor(diagramXML, {
+            id: 'editor',
+            cache,
+            layout: {
+              propertiesPanel: {
+                groups: {
+                  general: {
+                    open: true
+                  }
+                }
+              }
+            }
+          });
+
+          // then
+          expect(layoutSpy).to.have.been.called;
+        });
 
       });
 
@@ -950,7 +1031,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         });
 
         // when
-        const toggle = document.querySelector('.resizer');
+        const toggle = document.querySelector('.side-panel .resizer');
 
         fireEvent.mouseDown(toggle);
         fireEvent.mouseUp(toggle);
@@ -963,9 +1044,11 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         expect(onLayoutChanged).to.have.been.calledOnce;
 
         const callArg = onLayoutChanged.getCall(0).args[0];
+
         expect(callArg).to.deep.include({
-          propertiesPanel: {
+          sidePanel: {
             open: false,
+            tab: 'properties',
             width: 280
           }
         });
@@ -976,7 +1059,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         // given
         let layout = {
-          propertiesPanel: {
+          sidePanel: {
             open: false
           }
         };
@@ -989,7 +1072,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         });
 
         // when
-        const toggle = document.querySelector('.resizer');
+        const toggle = document.querySelector('.side-panel .resizer');
 
         fireEvent.mouseDown(toggle);
         fireEvent.mouseUp(toggle);
@@ -1003,8 +1086,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         const callArg = onLayoutChanged.getCall(0).args[0];
         expect(callArg).to.deep.include({
-          propertiesPanel: {
+          sidePanel: {
             open: true,
+            tab: 'properties',
             width: 280
           }
         });
@@ -1015,7 +1099,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         // given
         let layout = {
-          propertiesPanel: {
+          sidePanel: {
             open: true
           }
         };
@@ -1028,7 +1112,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         });
 
         // when
-        const toggle = document.querySelector('.resizer');
+        const toggle = document.querySelector('.side-panel .resizer');
 
         fireEvent.mouseDown(toggle);
         fireEvent.mouseUp(toggle);
@@ -1042,83 +1126,129 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         const callArg = onLayoutChanged.getCall(0).args[0];
         expect(callArg).to.deep.include({
-          propertiesPanel: {
+          sidePanel: {
             open: false,
+            tab: 'properties',
+            width: 280
+          }
+        });
+      });
+
+    });
+
+    describe('variables panel', function() {
+
+      it('should close (default is closed, no layout)', async function() {
+
+        // given
+        const layout = {};
+
+        const onLayoutChanged = sinon.spy();
+
+        await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
+
+        // when
+        const toggle = document.querySelector('.variables-side-panel .resizer');
+
+        fireEvent.mouseDown(toggle);
+        fireEvent.mouseUp(toggle);
+
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+        });
+
+        // then
+        expect(onLayoutChanged).to.have.been.calledOnce;
+
+        const callArg = onLayoutChanged.getCall(0).args[0];
+
+        expect(callArg).to.deep.include({
+          variablesSidePanel: {
+            open: true,
             width: 280
           }
         });
       });
 
 
-      it('should supply layout to properties panel', async function() {
+      it('should open', async function() {
 
         // given
-        const propertiesPanelLayout = {
-          open: true,
-          groups: {
-            customGroup: {
-              open: true
-            }
+        let layout = {
+          variablesSidePanel: {
+            open: false
           }
         };
 
-        const layout = {
-          propertiesPanel: propertiesPanelLayout
-        };
+        const onLayoutChanged = sinon.spy();
 
-        // when
-        const { instance } = await renderEditor(diagramXML, {
-          layout
+        await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
         });
 
+        // when
+        const toggle = document.querySelector('.variables-side-panel .resizer');
+
+        fireEvent.mouseDown(toggle);
+        fireEvent.mouseUp(toggle);
+
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+        });
 
         // then
-        const modeler = instance.getModeler();
+        expect(onLayoutChanged).to.have.been.calledOnce;
 
-        expect(modeler.options.propertiesPanel.layout).to.exist;
-        expect(modeler.options.propertiesPanel.layout).to.eql(propertiesPanelLayout);
+        const callArg = onLayoutChanged.getCall(0).args[0];
+        expect(callArg).to.deep.include({
+          variablesSidePanel: {
+            open: true,
+            width: 280
+          }
+        });
       });
 
 
-      it('should update cached layout', async function() {
+      it('should close', async function() {
 
         // given
-        const cache = new Cache();
-
-        const modeler = new BpmnModeler({
-          propertiesPanel: {
-            layout: { }
+        let layout = {
+          variablesSidePanel: {
+            open: true
           }
+        };
+
+        const onLayoutChanged = sinon.spy();
+
+        await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
         });
-
-        cache.add('editor', {
-          cached: {
-            modeler: modeler
-          },
-          __destroy: () => {}
-        });
-
-        const propertiesPanel = modeler.get('propertiesPanel');
-
-        const layoutSpy = spy(propertiesPanel, 'setLayout');
 
         // when
-        await renderEditor(diagramXML, {
-          id: 'editor',
-          cache,
-          layout: {
-            propertiesPanel: {
-              groups: {
-                general: {
-                  open: true
-                }
-              }
-            }
-          }
+        const toggle = document.querySelector('.variables-side-panel .resizer');
+
+        fireEvent.mouseDown(toggle);
+        fireEvent.mouseUp(toggle);
+
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
         });
 
         // then
-        expect(layoutSpy).to.have.been.called;
+        expect(onLayoutChanged).to.have.been.calledOnce;
+
+        const callArg = onLayoutChanged.getCall(0).args[0];
+        expect(callArg).to.deep.include({
+          variablesSidePanel: {
+            open: false,
+            width: 280
+          }
+        });
       });
 
     });
@@ -1880,7 +2010,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       const onLayoutChangedSpy = sinon.spy();
       const { instance } = await renderEditor(diagramXML, {
         layout: {
-          propertiesPanel: {
+          sidePanel: {
             open: false,
           }
         },
@@ -1892,8 +2022,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // then
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
-        propertiesPanel: {
+        sidePanel: {
           open: true,
+          tab: 'properties',
           width: 280
         }
       });
@@ -2231,7 +2362,12 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 // helpers //////////
 
 async function renderEditor(xml, options = {}) {
-  return await renderEditorHelper(BpmnEditor, xml, options);
+  return await renderEditorHelper(BpmnEditor, xml, {
+    deployment: new Deployment(),
+    startInstance: new StartInstance(),
+    zeebeApi: new ZeebeAPI(),
+    ...options
+  });
 }
 
 function getEvent(events, eventName) {

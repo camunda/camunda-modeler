@@ -33,15 +33,16 @@ export default forwardRef(function PropertiesPanelContainer(props, ref) {
 
   const onResized = useCallback(({ open, width }) => {
     onLayoutChanged({
-      propertiesPanel: {
-        ...layout.propertiesPanel,
+      sidePanel: {
+        ...DEFAULT_LAYOUT,
+        ...layout.sidePanel,
         open,
         width
       }
     });
   }, [ onLayoutChanged, layout ]);
 
-  const { propertiesPanel = DEFAULT_LAYOUT } = layout;
+  const { sidePanel: propertiesPanel = DEFAULT_LAYOUT } = layout;
 
   const {
     open = DEFAULT_OPEN,
