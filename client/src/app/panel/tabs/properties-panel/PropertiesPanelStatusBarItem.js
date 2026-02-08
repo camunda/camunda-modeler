@@ -14,11 +14,11 @@ import classnames from 'classnames';
 
 import { Fill } from '../../../slot-fill';
 
-import { ValueVariable } from '@carbon/icons-react';
+import { Settings } from '@carbon/icons-react';
 
 import { SIDE_PANEL_TABS } from '../../../resizable-container/SidePanelContainer';
 
-export default function VariableOutlineStatusBarItem(props) {
+export default function PropertiesPanelStatusBarItem(props) {
   const {
     onToggle,
     layout
@@ -26,16 +26,16 @@ export default function VariableOutlineStatusBarItem(props) {
 
   const { sidePanel = {} } = layout;
 
-  return <Fill slot="status-bar__app" group="7_1_side_panel_variables">
+  return <Fill slot="status-bar__app" group="7_2_side_panel_properties">
     <button
       className={ classnames(
         'btn',
-        { 'btn--active': sidePanel.open && sidePanel.tab === SIDE_PANEL_TABS.VARIABLES }
+        { 'btn--active': sidePanel.open && sidePanel.tab === SIDE_PANEL_TABS.PROPERTIES }
       ) }
       onClick={ onToggle }
-      title="Variables"
+      title="Properties"
     >
-      <ValueVariable />
+      <Settings />
     </button>
   </Fill>;
 }

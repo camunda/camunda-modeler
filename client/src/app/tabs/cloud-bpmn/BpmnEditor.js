@@ -26,10 +26,11 @@ import {
   CachedComponent
 } from '../../cached';
 
-import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
+import SidePanelContainer, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT, SIDE_PANEL_TABS } from '../../resizable-container/SidePanelContainer';
 
 import TaskTestingTab from '../../panel/tabs/task-testing/TaskTestingTab';
 import VariableTab from '../../panel/tabs/variable-outline/VariableOutlineTab';
+import PropertiesPanelStatusBarItem from '../../panel/tabs/properties-panel/PropertiesPanelStatusBarItem';
 
 import BpmnModeler from './modeler';
 
@@ -690,7 +691,7 @@ export class BpmnEditor extends CachedComponent {
     } = this.props;
 
     const {
-      propertiesPanel: propertiesPanelLayout = {}
+      sidePanel: sidePanelLayout = {}
     } = layout;
 
     const modeler = this.getModeler();
@@ -705,10 +706,11 @@ export class BpmnEditor extends CachedComponent {
 
     if (action === 'toggleProperties') {
       const newLayout = {
-        propertiesPanel: {
-          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
-          ...propertiesPanelLayout,
-          open: !propertiesPanelLayout.open
+        sidePanel: {
+          ...SIDE_PANEL_DEFAULT_LAYOUT,
+          ...sidePanelLayout,
+          open: !sidePanelLayout.open,
+          tab: SIDE_PANEL_TABS.PROPERTIES
         }
       };
 
@@ -822,6 +824,31 @@ export class BpmnEditor extends CachedComponent {
       importing
     } = this.state;
 
+    const onToggleProperties = () => {
+      onAction('toggle-side-panel', { tab: SIDE_PANEL_TABS.PROPERTIES });
+    };
+
+    const variablesContent = (
+      <VariableTab
+        id={ this.props.id }
+        injector={ injector }
+        layout={ layout }
+        onAction={ onAction } />
+    );
+
+    const testContent = (
+      <TaskTestingTab
+        config={ this.props.config }
+        deployment={ this.props.deployment }
+        file={ this.props.file }
+        id={ this.props.id }
+        injector={ injector }
+        layout={ layout }
+        onAction={ onAction }
+        startInstance={ this.props.startInstance }
+        zeebeApi={ this.props.zeebeApi } />
+    );
+
     return (
       <div className={ css.BpmnEditor }>
 
@@ -835,10 +862,12 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
-          <PropertiesPanelContainer
+          <SidePanelContainer
             ref={ this.propertiesPanelRef }
             layout={ layout }
-            onLayoutChanged={ this.handleLayoutChange } />
+            onLayoutChanged={ this.handleLayoutChange }
+            variablesContent={ variablesContent }
+            testContent={ testContent } />
         </div>
 
         { engineProfile && <EngineProfile
@@ -847,22 +876,9 @@ export class BpmnEditor extends CachedComponent {
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
         }
 
-        <TaskTestingTab
-          config={ this.props.config }
-          deployment={ this.props.deployment }
-          file={ this.props.file }
-          id={ this.props.id }
-          injector={ injector }
+        <PropertiesPanelStatusBarItem
           layout={ layout }
-          onAction={ onAction }
-          startInstance={ this.props.startInstance }
-          zeebeApi={ this.props.zeebeApi } />
-
-        <VariableTab
-          id={ this.props.id }
-          injector={ injector }
-          layout={ layout }
-          onAction={ onAction } />
+          onToggle={ onToggleProperties } />
       </div>
     );
   }

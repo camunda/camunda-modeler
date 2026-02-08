@@ -14,7 +14,7 @@ import semver from 'semver';
 
 import TaskTesting from '@camunda/task-testing';
 
-import { Fill } from '../../../slot-fill';
+import { SIDE_PANEL_TABS } from '../../../resizable-container/SidePanelContainer';
 
 import { debounce } from '../../../../util';
 
@@ -114,13 +114,7 @@ export default function TaskTestingTab(props) {
   }, [ taskTestingConfig ]);
 
   const onToggle = () => {
-    const { panel = {} } = layout;
-
-    if (!panel.open || panel.tab !== TAB_ID) {
-      onAction('open-panel', { tab: TAB_ID });
-    } else if (panel.tab === TAB_ID) {
-      onAction('close-panel');
-    }
+    onAction('toggle-side-panel', { tab: SIDE_PANEL_TABS.TEST });
   };
 
   const handleTaskExecutionStarted = useCallback((element) => {
@@ -168,29 +162,23 @@ export default function TaskTestingTab(props) {
   const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult);
 
   return <>
-    <Fill slot="bottom-panel"
-      id="task-testing"
-      label="Task testing"
-      layout={ layout }
-      priority={ 6 }>
-      <div className={ css.TaskTestingTab }>
-        <TaskTesting
-          injector={ injector }
-          config={ taskTestingConfig }
-          isConnectionConfigured={ isConnectionConfigured }
-          onConfigChanged={ setTaskTestingConfig }
-          operateBaseUrl={ operateUrl }
-          onTaskExecutionStarted={ handleTaskExecutionStarted }
-          onTaskExecutionFinished={ handleTaskExecutionFinished }
-          onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
-          onTestTask={ handleTestTask }
-          configureConnectionBannerTitle={ configureConnectionBannerTitle }
-          configureConnectionBannerDescription={ configureConnectionBannerDescription }
-          api={ taskTestingApi }
-          documentationUrl={ DOCUMENTATION_URL }
-        />
-      </div>
-    </Fill>
+    <div className={ css.TaskTestingTab }>
+      <TaskTesting
+        injector={ injector }
+        config={ taskTestingConfig }
+        isConnectionConfigured={ isConnectionConfigured }
+        onConfigChanged={ setTaskTestingConfig }
+        operateBaseUrl={ operateUrl }
+        onTaskExecutionStarted={ handleTaskExecutionStarted }
+        onTaskExecutionFinished={ handleTaskExecutionFinished }
+        onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
+        onTestTask={ handleTestTask }
+        configureConnectionBannerTitle={ configureConnectionBannerTitle }
+        configureConnectionBannerDescription={ configureConnectionBannerDescription }
+        api={ taskTestingApi }
+        documentationUrl={ DOCUMENTATION_URL }
+      />
+    </div>
     <TaskTestingStatusBarItem
       layout={ layout }
       onToggle={ onToggle } />
