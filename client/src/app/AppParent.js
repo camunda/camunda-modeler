@@ -166,9 +166,12 @@ export default class AppParent extends PureComponent {
 
     const { panel = { open: false } } = layout;
 
+    // migrate propertiesPanel to sidePanel for new tabbed layout
+    const migratedLayout = migratePropertiesPanelToSidePanel(layout);
+
     // set log closed by default
     app.setLayout({
-      ...layout,
+      ...migratedLayout,
       panel: {
         ...panel,
         open: panel.tab === 'log' ? false : panel.open
@@ -517,4 +520,36 @@ async function parseStackTrace(stack) {
   });
 
   return stackFrames.join('\n');
+}
+
+
+/**
+ * Migrate legacy `propertiesPanel` layout config to the new `sidePanel` config.
+ *
+ * Users upgrading from a previous version will have `propertiesPanel: { open, width }`
+ * but no `sidePanel`. We transfer their open state and width to the new side panel,
+ * defaulting the active tab to 'properties'.
+ *
+ * @param {Object} layout
+ * @returns {Object} layout with sidePanel migrated
+ */
+function migratePropertiesPanelToSidePanel(layout) {
+  if (layout.sidePanel) {
+    return layout;
+  }
+
+  const { propertiesPanel } = layout;
+
+  if (!propertiesPanel) {
+    return layout;
+  }
+
+  return {
+    ...layout,
+    sidePanel: {
+      open: propertiesPanel.open !== false,
+      width: propertiesPanel.width || 280,
+      tab: 'properties'
+    }
+  };
 }

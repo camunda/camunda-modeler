@@ -16,7 +16,7 @@ import { Fill } from '../../../slot-fill';
 
 import TaskTestingIcon from '../../../../../resources/icons/TaskTesting.svg';
 
-import { TAB_ID } from './TaskTestingTab';
+import { SIDE_PANEL_TABS } from '../../../resizable-container/SidePanelContainer';
 
 import * as css from './TaskTestingStatusBarItem.less';
 
@@ -26,19 +26,19 @@ export default function TestStatusBarItem(props) {
     onToggle
   } = props;
 
-  const { panel = {} } = layout;
+  const { sidePanel = {} } = layout;
 
-  return <Fill slot="status-bar__file" group="8_task_testing">
+  return <Fill slot="status-bar__app" group="7_3_side_panel_test">
     <button
       className={ classnames(
         css.TestStatusBarItem,
         'btn',
         {
-          'btn--active': panel.open && panel.tab === TAB_ID
+          'btn--active': sidePanel.open && sidePanel.tab === SIDE_PANEL_TABS.TEST
         }
       ) }
       onClick={ onToggle }
-      title="Toggle test view"
+      title="Test"
     >
       <TaskTestingIcon className="icon" />
     </button>

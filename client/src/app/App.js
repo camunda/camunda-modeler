@@ -1802,6 +1802,33 @@ export class App extends PureComponent {
     });
   }
 
+  openSidePanel = (tab = 'properties') => {
+    const { layout = {} } = this.state;
+
+    const { sidePanel = {} } = layout;
+
+    this.handleLayoutChanged({
+      sidePanel: {
+        ...sidePanel,
+        open: true,
+        tab
+      }
+    });
+  };
+
+  closeSidePanel() {
+    const { layout = {} } = this.state;
+
+    const { sidePanel = {} } = layout;
+
+    this.handleLayoutChanged({
+      sidePanel: {
+        ...sidePanel,
+        open: false
+      }
+    });
+  }
+
   closeTabs = (matcher) => {
 
     const {
@@ -2176,6 +2203,27 @@ export class App extends PureComponent {
 
     if (action === 'close-panel') {
       return this.closePanel();
+    }
+
+    if (action === 'open-side-panel') {
+      const { tab } = options;
+
+      return this.openSidePanel(tab);
+    }
+
+    if (action === 'close-side-panel') {
+      return this.closeSidePanel();
+    }
+
+    if (action === 'toggle-side-panel') {
+      const { sidePanel = {} } = this.state.layout;
+      const { tab } = options;
+
+      if (sidePanel.open && sidePanel.tab === tab) {
+        return this.closeSidePanel();
+      }
+
+      return this.openSidePanel(tab);
     }
 
     if (action === 'display-notification') {
