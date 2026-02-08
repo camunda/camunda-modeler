@@ -113,10 +113,15 @@ export default class Modeler {
   }
 
   _getDefaultModules(options = {}) {
+    const injector = options.injector || {
+      get: (moduleName, strict) => {
+        return this.get(moduleName, strict);
+      }
+    };
+
     return {
-      injector: {
-        get() {}
-      },
+      injector,
+      bpmnjs: this,
       eventBus: {
         on() {},
         off() {},
@@ -151,7 +156,8 @@ export default class Modeler {
       },
       propertiesPanel: new PropertiesPanel(),
       selection: new Selection(),
-      linting: new Linting(options.linting)
+      linting: new Linting(options.linting),
+      variableResolver: {}
     };
   }
 
