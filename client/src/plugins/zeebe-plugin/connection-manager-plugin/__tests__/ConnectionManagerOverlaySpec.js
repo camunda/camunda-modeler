@@ -15,7 +15,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import { ConnectionManagerOverlay } from '../ConnectionManagerOverlay';
-import { C8RUN_DOCUMENTATION_URL } from '../constants';
+import { C8RUN_DOWNLOAD_URL, C8RUN_TROUBLESHOOTING_URL } from '../constants';
 
 describe('ConnectionManagerOverlay', function() {
 
@@ -218,7 +218,7 @@ describe('ConnectionManagerOverlay', function() {
     });
 
 
-    it('should display Camunda 8 Run link when c8run connection fails', function() {
+    it('should display Camunda 8 Run download and troubleshooting links when c8run connection fails', function() {
 
       // given
       const connections = [
@@ -245,8 +245,23 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(getByTestId('c8run-nudge-link')).to.exist;
-      expect(getByTestId('c8run-nudge-link').getAttribute('href')).to.equal(C8RUN_DOCUMENTATION_URL);
+
+      // Get the description field and verify full text
+      const descriptionField = container.querySelector('.custom-control-description');
+      expect(descriptionField).to.exist;
+      expect(descriptionField.textContent).to.equal(
+        'Download or start Camunda 8 Run to connect. See troubleshooting information about C8 Run here.'
+      );
+
+      // Assert download link with correct text and URL
+      const downloadLink = getByTestId('c8run-download-link');
+      expect(downloadLink.textContent).to.equal('Download');
+      expect(downloadLink.getAttribute('href')).to.equal(C8RUN_DOWNLOAD_URL);
+
+      // Assert troubleshooting link with correct text and URL
+      const troubleshootLink = getByTestId('c8run-troubleshoot-link');
+      expect(troubleshootLink.textContent).to.equal('here');
+      expect(troubleshootLink.getAttribute('href')).to.equal(C8RUN_TROUBLESHOOTING_URL);
     });
 
 

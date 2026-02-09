@@ -17,7 +17,7 @@ import { getMessageForReason, isC8RunConnection } from '../../zeebe-plugin/share
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 import { utmTag } from '../../../util/utmTag';
 import { NO_CONNECTION } from './ConnectionManagerPlugin';
-import { C8RUN_DOCUMENTATION_URL } from './constants';
+import { C8RUN_DOWNLOAD_URL, C8RUN_TROUBLESHOOTING_URL } from './constants';
 
 export function ConnectionManagerOverlay({
   connections = [],
@@ -72,7 +72,7 @@ export function ConnectionManagerOverlay({
     if (isC8RunConnection(activeConnection) && hasConnectionError) {
       return (
         <>
-          Get started with <a data-testid="c8run-nudge-link" href={ C8RUN_DOCUMENTATION_URL }>Camunda 8 Run</a> to run Camunda locally.
+          <a data-testid="c8run-download-link" href={ C8RUN_DOWNLOAD_URL }>Download</a> or start Camunda 8 Run to connect. See troubleshooting information about C8 Run <a data-testid="c8run-troubleshoot-link" href={ C8RUN_TROUBLESHOOTING_URL }>here</a>.
         </>
       );
     }

@@ -20,10 +20,10 @@ import { generateNewElement, properties } from './ConnectionManagerSettingsPrope
 
 import * as css from './ConnectionManagerSettingsComponent.less';
 
-import { CONNECTION_CHECK_ERROR_REASONS, getConnectionCheckFieldErrors, TROUBLESHOOTING_URL } from '../deployment-plugin/ConnectionCheckErrors';
+import { CONNECTION_CHECK_ERROR_REASONS, getConnectionCheckFieldErrors } from '../deployment-plugin/ConnectionCheckErrors';
 import { StatusIndicator } from '../shared/StatusIndicator';
 import { isC8RunConnection } from '../shared/util';
-import { C8RUN_DOCUMENTATION_URL } from './constants';
+import { C8RUN_DOWNLOAD_URL, C8RUN_TROUBLESHOOTING_URL } from './constants';
 
 
 /**
@@ -158,11 +158,9 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
       }
 
       if (isC8RunConnection(connection)) {
-        const plainError = errorMessages?.plainError || 'Failed to connect';
-
         return (
           <>
-            {plainError} Get started with <a data-testid="c8run-nudge-link" href={ C8RUN_DOCUMENTATION_URL }>Camunda 8 Run</a> to run Camunda locally or <a href={ TROUBLESHOOTING_URL }>troubleshoot</a>.
+            Cannot connect to your local Orchestration Cluster. <a data-testid="c8run-download-link" href={ C8RUN_DOWNLOAD_URL }>Download</a> or start Camunda 8 Run to connect. See troubleshooting information about C8 Run <a data-testid="c8run-troubleshoot-link" href={ C8RUN_TROUBLESHOOTING_URL }>here</a>.
           </>
         );
       }
