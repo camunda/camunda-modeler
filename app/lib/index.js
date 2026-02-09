@@ -382,6 +382,16 @@ renderer.on('zeebe:searchElementInstances', async function(options, done) {
   }
 });
 
+renderer.on('zeebe:getWaitingState', async function(options, done) {
+  try {
+    const getWaitingStateResponse = await zeebeAPI.getWaitingState(options);
+
+    done(null, getWaitingStateResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
 // config //////////
 
 renderer.on('config:get', function(key, ...args) {

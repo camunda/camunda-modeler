@@ -126,6 +126,18 @@ export default class ZeebeAPI {
       processInstanceKey
     });
   }
+
+  getWaitingState(options, processInstanceKey, elementId) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:getWaitingState', {
+      endpoint,
+      processInstanceKey,
+      ...(elementId && { elementId })
+    });
+  }
 }
 
 /**
