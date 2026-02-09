@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import { Formik } from 'formik';
 
@@ -29,18 +29,18 @@ describe('<JSONInput>', function() {
   it('should show error', function() {
 
     // when
-    const wrapper = createJSONInput({
+    const { container } = createJSONInput({
       fieldMeta: {
         error: 'foo',
         touched: true
       }
     });
 
-    const formControl = wrapper.find('.custom-control-codemirror');
+    const formControl = container.querySelector('.custom-control-codemirror');
 
     // then
-    expect(formControl).to.have.length(1);
-    expect(formControl.hasClass('is-invalid')).to.be.true;
+    expect(formControl).to.exist;
+    expect(formControl.classList.contains('is-invalid')).to.be.true;
   });
 
 
@@ -85,7 +85,7 @@ function createJSONInput(options = {}) {
     }
   };
 
-  return mount(
+  return render(
     <Formik>
       <JSONInput
         { ...props }

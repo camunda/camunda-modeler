@@ -11,9 +11,10 @@
 import React from 'react';
 
 import {
-  mount,
-  shallow
-} from 'enzyme';
+  fireEvent,
+  render,
+  screen
+} from '@testing-library/react';
 
 import { FileInput } from '..';
 
@@ -30,7 +31,7 @@ describe('<FileInput>', function() {
 
     // given
     const setFieldValue = sinon.spy();
-    const wrapper = createFileInput({
+    const { container } = createFileInput({
       field: {
         name: 'name',
         value: []
@@ -38,13 +39,13 @@ describe('<FileInput>', function() {
       form: {
         setFieldValue
       }
-    }, mount);
-    const input = wrapper.find('input');
+    });
+    const input = container.querySelector('input[type="file"]');
 
     // when
     const newFiles = [ createFile() ];
     setFiles(input, newFiles);
-    input.simulate('change');
+    fireEvent.change(input);
 
     // then
     expect(setFieldValue).to.have.been.calledOnce;
@@ -59,7 +60,7 @@ describe('<FileInput>', function() {
     // given
     const initialValue = [ createFileDescriptor() ];
     const setFieldValue = sinon.spy();
-    const wrapper = createFileInput({
+    const { container } = createFileInput({
       field: {
         name: 'name',
         value: initialValue
@@ -67,12 +68,12 @@ describe('<FileInput>', function() {
       form: {
         setFieldValue
       }
-    }, mount);
-    const input = wrapper.find('input');
+    });
+    const input = container.querySelector('input[type="file"]');
 
     // when
     setFiles(input, initialValue);
-    input.simulate('change');
+    fireEvent.change(input);
 
     // then
     expect(setFieldValue).to.have.been.calledOnce;
@@ -87,7 +88,7 @@ describe('<FileInput>', function() {
     // given
     const initialValue = [ createFileDescriptor() ];
     const setFieldValue = sinon.spy();
-    const wrapper = createFileInput({
+    createFileInput({
       field: {
         name: 'name',
         value: initialValue
@@ -95,10 +96,11 @@ describe('<FileInput>', function() {
       form: {
         setFieldValue
       }
-    }, mount);
+    });
 
     // when
-    wrapper.find('.remove').simulate('click');
+    const removeButton = screen.getByRole('button', { name: /remove/i });
+    fireEvent.click(removeButton);
 
     // then
     expect(setFieldValue).to.have.been.calledOnce;
@@ -115,7 +117,7 @@ describe('<FileInput>', function() {
     const initialValue = [ createFileDescriptor() ];
 
     // when
-    const wrapper = createFileInput({
+    const { container } = createFileInput({
       field: {
         name: 'name',
         value: initialValue
@@ -125,11 +127,11 @@ describe('<FileInput>', function() {
           name: [ error ]
         }
       }
-    }, mount);
+    });
 
     // then
-    const errorWrapper = wrapper.findWhere((e) => e.is('svg') && e.hasClass('error-icon'));
-    expect(errorWrapper).to.have.lengthOf(1);
+    const errorIcon = container.querySelector('svg.error-icon');
+    expect(errorIcon).to.exist;
   });
 });
 
@@ -137,7 +139,7 @@ describe('<FileInput>', function() {
 
 // helpers ///////////////////
 
-function createFileInput(options = {}, render = shallow) {
+function createFileInput(options = {}) {
   const {
     field = { value: [] },
     form = {},
@@ -169,5 +171,9 @@ function createFileDescriptor(file = {}) {
 }
 
 function setFiles(input, files) {
-  sinon.stub(input.getDOMNode(), 'files').value(files);
+  Object.defineProperty(input, 'files', {
+    value: files,
+    writable: false,
+    configurable: true
+  });
 }

@@ -8,9 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import {
   Cache,
@@ -23,7 +23,7 @@ describe('WithCache', function() {
   it('should render', function() {
 
     // when
-    const instance = render();
+    const instance = renderWithCache();
 
     // then
     expect(instance).to.exist;
@@ -33,7 +33,7 @@ describe('WithCache', function() {
   it('should pass cache', function() {
 
     // when
-    const instance = render();
+    const instance = renderWithCache();
 
     // then
     expect(instance.props.cache).to.exist;
@@ -49,10 +49,16 @@ class Foo extends React.Component {
   }
 }
 
-function render(options = {}) {
+function renderWithCache(options = {}) {
   const FooWithCache = WithCache(Foo);
+  const ref = createRef();
 
-  const wrapper = mount(<FooWithCache cache={ new Cache() } />);
+  render(
+    <FooWithCache
+      ref={ ref }
+      cache={ new Cache() }
+    />
+  );
 
-  return wrapper.find(Foo).instance();
+  return ref.current;
 }

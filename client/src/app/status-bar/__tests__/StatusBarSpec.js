@@ -10,9 +10,9 @@
 
 import React from 'react';
 
-import {
-  shallow
-} from 'enzyme';
+import { render } from '@testing-library/react';
+
+import { SlotFillRoot } from '../../slot-fill';
 
 import { StatusBar } from '../StatusBar';
 
@@ -22,37 +22,24 @@ describe('<StatusBar>', function() {
   it('should provide slots', function() {
 
     // given
-    const { tree } = createStatusBar();
+    const { container } = createStatusBar();
 
     // then
-    const slots = tree.find('Slot');
+    const fileSlot = container.querySelector('.status-bar__file');
+    const appSlot = container.querySelector('.status-bar__app');
 
-    expect(slots).to.have.lengthOf(2);
-    expect(slots.map(wrapper => wrapper.prop('name'))).to.eql([
-      'status-bar__file',
-      'status-bar__app'
-    ]);
+    expect(fileSlot).to.exist;
+    expect(appSlot).to.exist;
   });
 });
 
 
 // helpers /////////////////////////////////////
 
-function createStatusBar(options = {}, mountFn = shallow) {
-
-  if (typeof options === 'function') {
-    mountFn = options;
-    options = {};
-  }
-
-  const tree = mountFn(
-    <StatusBar />
+function createStatusBar() {
+  return render(
+    <SlotFillRoot>
+      <StatusBar />
+    </SlotFillRoot>
   );
-
-  const instance = tree.instance();
-
-  return {
-    tree,
-    instance
-  };
 }

@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import { SlotFillRoot } from '../../../../slot-fill';
 
@@ -28,26 +28,27 @@ describe('<LintingTab>', function() {
   it('should render', function() {
 
     // when
-    const wrapper = renderLintingTab();
+    const { container } = renderLintingTab();
 
     // then
-    expect(wrapper.find('.panel__link')).to.have.length(1);
-    expect(wrapper.find('.panel__link--active')).to.have.length(1);
+    expect(container.querySelectorAll('.panel__link')).to.have.length(1);
+    expect(container.querySelectorAll('.panel__link--active')).to.have.length(1);
 
-    expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Problems');
-    expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+    const panelLink = container.querySelector('.panel__link');
+    expect(panelLink.querySelector('.panel__link-label').textContent).to.equal('Problems');
+    expect(panelLink.classList.contains('panel__link--active')).to.be.true;
 
-    expect(wrapper.find('.linting-tab-item__label')).to.have.length(1);
-    expect(wrapper.find('.linting-tab-item__label').text()).to.equal('Foo');
-    expect(wrapper.find('.linting-tab-item__content')).to.have.length(1);
-    expect(wrapper.find('.linting-tab-item__content').text()).to.equal('Foo message');
+    expect(container.querySelectorAll('.linting-tab-item__label')).to.have.length(1);
+    expect(container.querySelector('.linting-tab-item__label').textContent).to.equal('Foo');
+    expect(container.querySelectorAll('.linting-tab-item__content')).to.have.length(1);
+    expect(container.querySelector('.linting-tab-item__content').textContent).to.equal('Foo message');
   });
 
 
   it('should render with documentation link', function() {
 
     // when
-    const wrapper = renderLintingTab({
+    const { container } = renderLintingTab({
       linting: [
         {
           category: 'error',
@@ -65,18 +66,18 @@ describe('<LintingTab>', function() {
     });
 
     // then
-    expect(wrapper.find('.linting-tab-item__label')).to.have.length(1);
-    expect(wrapper.find('.linting-tab-item__label').text()).to.equal('Foo');
-    expect(wrapper.find('.linting-tab-item__content')).to.have.length(1);
-    expect(wrapper.find('.linting-tab-item__content').text()).to.equal('Foo message');
-    expect(wrapper.find('.linting-tab-item__link')).to.have.length(1);
+    expect(container.querySelectorAll('.linting-tab-item__label')).to.have.length(1);
+    expect(container.querySelector('.linting-tab-item__label').textContent).to.equal('Foo');
+    expect(container.querySelectorAll('.linting-tab-item__content')).to.have.length(1);
+    expect(container.querySelector('.linting-tab-item__content').textContent).to.equal('Foo message');
+    expect(container.querySelectorAll('.linting-tab-item__link')).to.have.length(1);
   });
 
 
   it('should render (rule error)', function() {
 
     // when
-    const wrapper = renderLintingTab({
+    const { container } = renderLintingTab({
       linting: [
         {
           category: 'rule-error',
@@ -87,36 +88,37 @@ describe('<LintingTab>', function() {
     });
 
     // then
-    expect(wrapper.find('.linting-tab-item__label')).to.have.length(1);
-    expect(wrapper.find('.linting-tab-item__label').text()).to.equal('Rule error');
-    expect(wrapper.find('.linting-tab-item__content')).to.have.length(1);
-    expect(wrapper.find('.linting-tab-item__content').text()).to.equal('Rule <bar-rule> errored with the following message: Bar');
+    expect(container.querySelectorAll('.linting-tab-item__label')).to.have.length(1);
+    expect(container.querySelector('.linting-tab-item__label').textContent).to.equal('Rule error');
+    expect(container.querySelectorAll('.linting-tab-item__content')).to.have.length(1);
+    expect(container.querySelector('.linting-tab-item__content').textContent).to.equal('Rule <bar-rule> errored with the following message: Bar');
   });
 
 
   it('should render (no problems)', function() {
 
     // when
-    const wrapper = renderLintingTab({
+    const { container } = renderLintingTab({
       linting: []
     });
 
     // then
-    expect(wrapper.find('.panel__link')).to.have.length(1);
-    expect(wrapper.find('.panel__link--active')).to.have.length(1);
+    expect(container.querySelectorAll('.panel__link')).to.have.length(1);
+    expect(container.querySelectorAll('.panel__link--active')).to.have.length(1);
 
-    expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Problems');
-    expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+    const panelLink = container.querySelector('.panel__link');
+    expect(panelLink.querySelector('.panel__link-label').textContent).to.equal('Problems');
+    expect(panelLink.classList.contains('panel__link--active')).to.be.true;
 
-    expect(wrapper.find('.linting-tab-item--empty')).to.have.length(1);
-    expect(wrapper.find('.linting-tab-item--empty').text()).to.equal('No problems found.');
+    expect(container.querySelectorAll('.linting-tab-item--empty')).to.have.length(1);
+    expect(container.querySelector('.linting-tab-item--empty').textContent).to.equal('No problems found.');
   });
 
 
   it('should sort', function() {
 
     // when
-    const wrapper = renderLintingTab({
+    const { container } = renderLintingTab({
       linting: [
         {
           category: 'error',
@@ -166,35 +168,38 @@ describe('<LintingTab>', function() {
     });
 
     // then
-    expect(wrapper.find('.linting-tab-item__label')).to.have.length(7);
-    expect(wrapper.find('.linting-tab-item__content')).to.have.length(7);
+    const labels = container.querySelectorAll('.linting-tab-item__label');
+    const contents = container.querySelectorAll('.linting-tab-item__content');
 
-    expect(wrapper.find('.linting-tab-item__label').at(0).text()).to.equal('Bar 1');
-    expect(wrapper.find('.linting-tab-item__content').at(0).text()).to.equal('bar 1 error');
+    expect(labels).to.have.length(7);
+    expect(contents).to.have.length(7);
 
-    expect(wrapper.find('.linting-tab-item__label').at(1).text()).to.equal('Bar 2');
-    expect(wrapper.find('.linting-tab-item__content').at(1).text()).to.equal('bar 2 error');
+    expect(labels[0].textContent).to.equal('Bar 1');
+    expect(contents[0].textContent).to.equal('bar 1 error');
 
-    expect(wrapper.find('.linting-tab-item__label').at(2).text()).to.equal('baz');
-    expect(wrapper.find('.linting-tab-item__content').at(2).text()).to.equal('baz 2 error');
+    expect(labels[1].textContent).to.equal('Bar 2');
+    expect(contents[1].textContent).to.equal('bar 2 error');
 
-    expect(wrapper.find('.linting-tab-item__label').at(3).text()).to.equal('Foo');
-    expect(wrapper.find('.linting-tab-item__content').at(3).text()).to.equal('foo error');
+    expect(labels[2].textContent).to.equal('baz');
+    expect(contents[2].textContent).to.equal('baz 2 error');
 
-    expect(wrapper.find('.linting-tab-item__label').at(4).text()).to.equal('baz');
-    expect(wrapper.find('.linting-tab-item__content').at(4).text()).to.equal('baz 1 warning');
+    expect(labels[3].textContent).to.equal('Foo');
+    expect(contents[3].textContent).to.equal('foo error');
 
-    expect(wrapper.find('.linting-tab-item__label').at(5).text()).to.equal('baz');
-    expect(wrapper.find('.linting-tab-item__content').at(5).text()).to.equal('baz 1 info');
+    expect(labels[4].textContent).to.equal('baz');
+    expect(contents[4].textContent).to.equal('baz 1 warning');
 
-    expect(wrapper.find('.linting-tab-item__label').at(6).text()).to.equal('Rule error');
-    expect(wrapper.find('.linting-tab-item__content').at(6).text()).to.equal('Rule <baz-rule> errored with the following message: Baz');
+    expect(labels[5].textContent).to.equal('baz');
+    expect(contents[5].textContent).to.equal('baz 1 info');
+
+    expect(labels[6].textContent).to.equal('Rule error');
+    expect(contents[6].textContent).to.equal('Rule <baz-rule> errored with the following message: Baz');
   });
 
   it('should render when report is missing id and name', function() {
 
     // when
-    const wrapper = renderLintingTab({
+    const { container } = renderLintingTab({
       linting: [
         {
           category: 'error',
@@ -205,9 +210,12 @@ describe('<LintingTab>', function() {
     });
 
     // then
-    expect(wrapper.find('.linting-tab-item')).to.have.length(1);
-    expect(wrapper.find('.linting-tab-item__label').at(0).text()).to.equal('');
-    expect(wrapper.find('.linting-tab-item__content').at(0).text()).to.equal('foo error');
+    const labels = container.querySelectorAll('.linting-tab-item__label');
+    const contents = container.querySelectorAll('.linting-tab-item__content');
+
+    expect(container.querySelectorAll('.linting-tab-item')).to.have.length(1);
+    expect(labels[0].textContent).to.equal('');
+    expect(contents[0].textContent).to.equal('foo error');
   });
 
 
@@ -216,12 +224,12 @@ describe('<LintingTab>', function() {
     // given
     const onActionSpy = spy();
 
-    const wrapper = renderLintingTab({
+    const { container } = renderLintingTab({
       onAction: onActionSpy
     });
 
     // when
-    wrapper.find('.linting-tab-item').at(0).simulate('click');
+    fireEvent.click(container.querySelector('.linting-tab-item'));
 
     // then
     expect(onActionSpy).to.have.been.calledOnce;
@@ -262,7 +270,7 @@ function renderLintingTab(options = {}) {
     onLayoutChanged = () => {}
   } = options;
 
-  return mount(
+  return render(
     <SlotFillRoot>
       <Panel
         layout={ layout }>
