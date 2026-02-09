@@ -10,7 +10,7 @@
 
 import debug from 'debug';
 
-import { getOperateUrl } from '../../../../plugins/zeebe-plugin/shared/util';
+import { getOperateUrl, getTasklistUrl } from '../../../../plugins/zeebe-plugin/shared/util';
 
 const log = debug('TaskTestingApi');
 
@@ -63,6 +63,24 @@ export default class TaskTestingApi {
     if (endpoint.targetType === 'selfHosted') {
       const { operateUrl } = endpoint;
       return operateUrl;
+    }
+  }
+
+  async getTasklistUrl() {
+    const { endpoint } = await this.getDeploymentConfig();
+
+    if (!endpoint) {
+      return;
+    }
+
+    if (endpoint.targetType === 'camundaCloud') {
+      const { href } = getTasklistUrl(endpoint) || {};
+      return href;
+    }
+
+    if (endpoint.targetType === 'selfHosted') {
+      const { tasklistUrl } = endpoint;
+      return tasklistUrl;
     }
   }
 

@@ -69,6 +69,8 @@ export default function TaskTestingTab(props) {
 
   const [ operateUrl, setOperateUrl ] = useState(null);
 
+  const [ tasklistUrl, setTasklistUrl ] = useState(null);
+
   const tab = useMemo(() => ({
     id: id?.includes('-') ? id.split('-')[0] : id,
     file
@@ -79,6 +81,7 @@ export default function TaskTestingTab(props) {
     const api = new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction);
 
     api.getOperateUrl().then(setOperateUrl);
+    api.getTasklistUrl().then(setTasklistUrl);
 
     return api.getApi();
   }, [ zeebeApi, config, tab, onAction ]);
@@ -169,6 +172,7 @@ export default function TaskTestingTab(props) {
         isConnectionConfigured={ isConnectionConfigured }
         onConfigChanged={ setTaskTestingConfig }
         operateBaseUrl={ operateUrl }
+        tasklistBaseUrl={ tasklistUrl }
         onTaskExecutionStarted={ handleTaskExecutionStarted }
         onTaskExecutionFinished={ handleTaskExecutionFinished }
         onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }

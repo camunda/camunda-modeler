@@ -28,13 +28,15 @@ const LABELS = {
   SELF_HOSTED: 'Camunda 8 Self-Managed',
   TARGET: 'Target',
   TENANT_ID: 'Tenant ID',
-  OPERATE_URL: 'Operate URL'
+  OPERATE_URL: 'Operate URL',
+  TASKLIST_URL: 'Tasklist URL'
 };
 
 const HINTS = {
   CLUSTER_URL: 'http://localhost:8080/v2',
   TENANT_ID: 'Optional',
-  OPERATE_URL: 'Optional'
+  OPERATE_URL: 'Optional',
+  TASKLIST_URL: 'Optional'
 };
 
 const VALIDATION_ERROR_MESSAGES = {
@@ -126,6 +128,13 @@ export const properties = [
     type: 'text',
     label: LABELS.OPERATE_URL,
     hint: HINTS.OPERATE_URL,
+    condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED }
+  },
+
+  { key: 'tasklistUrl',
+    type: 'text',
+    label: LABELS.TASKLIST_URL,
+    hint: HINTS.TASKLIST_URL,
     condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED }
   },
 

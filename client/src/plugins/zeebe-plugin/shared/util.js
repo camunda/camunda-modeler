@@ -45,6 +45,30 @@ export function getOperateUrl(endpoint) {
 }
 
 /**
+ * Get Camunda Tasklist URL.
+ *
+ * @param {Endpoint} endpoint
+ *
+ * @returns {URL|null}
+ */
+export function getTasklistUrl(endpoint) {
+  const { camundaCloudClusterUrl } = endpoint;
+
+  if (!camundaCloudClusterUrl) {
+    return null;
+  }
+
+  const clusterId = getClusterId(camundaCloudClusterUrl),
+        clusterRegion = getClusterRegion(camundaCloudClusterUrl);
+
+  if (!clusterId || !clusterRegion) {
+    return null;
+  }
+
+  return new URL(`https://${ clusterRegion }.tasklist.camunda.io/${ clusterId }`);
+}
+
+/**
   * Get cluster ID from cluster URL.
   *
   * Supported formats:

@@ -27,6 +27,7 @@ const DEFAULT_ENDPOINT = {
   name: 'c8run (local)',
   contactPoint: 'http://localhost:8080/v2',
   operateUrl: 'http://localhost:8080/operate',
+  tasklistUrl: 'http://localhost:8080/tasklist',
   targetType: TARGET_TYPES.SELF_HOSTED,
   authType: AUTH_TYPES.NONE,
 };

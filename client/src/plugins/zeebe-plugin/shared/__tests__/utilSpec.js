@@ -11,6 +11,7 @@
 import {
   getGRPCErrorCode,
   getOperateUrl,
+  getTasklistUrl,
   getDeploymentUrls,
   getProcessId,
   getStartInstanceUrl
@@ -76,6 +77,55 @@ describe('util', function() {
 
       // when
       const url = getOperateUrl(endpoint);
+
+      // then
+      expect(url).to.be.null;
+    });
+
+  });
+
+
+  describe('getTasklistUrl', function() {
+
+    it('should get Camunda Tasklist URL (gRPC)', function() {
+
+      // given
+      const endpoint = {
+        camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443'
+      };
+
+      // when
+      const url = getTasklistUrl(endpoint);
+
+      // then
+      expect(url.toString()).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should get Camunda Tasklist URL (REST)', function() {
+
+      // given
+      const endpoint = {
+        camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      };
+
+      // when
+      const url = getTasklistUrl(endpoint);
+
+      // then
+      expect(url.toString()).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should not get Camunda Tasklist URL', function() {
+
+      // given
+      const endpoint = {
+        camundaCloudClusterUrl: 'https://foo.com'
+      };
+
+      // when
+      const url = getTasklistUrl(endpoint);
 
       // then
       expect(url).to.be.null;
