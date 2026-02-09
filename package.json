@@ -22,7 +22,7 @@
     "format:markdown": "remark . -qo --ignore-pattern dist",
     "build:distro": "node tasks/distro.js",
     "build:test-distro": "node tasks/test-distro.js",
-    "build": "run-s preload:build client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
+    "build": "run-s preload:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
     "lint": "eslint .",
     "preload:build": "webpack -c webpack.config.js",
     "prerelease": "run-s update-license-book",

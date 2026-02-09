@@ -1,7 +1,6 @@
 .DS_Store
 node_modules
 dist/
-app/public/
 app/preload/
 plugins/**
 .vscode
