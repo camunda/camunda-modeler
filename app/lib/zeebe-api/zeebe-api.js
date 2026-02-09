@@ -534,6 +534,135 @@ class ZeebeAPI {
   }
 
   /**
+   * Get waiting state for a process instance. Searches jobs, user tasks,
+   * and message subscriptions in parallel and returns categorized items.
+   *
+   * @param {Object} config
+   * @param {import('./endpoints').Endpoint} config.endpoint
+   * @param {string} config.processInstanceKey
+   * @param {string} [config.elementId]
+   *
+   * @returns {Promise<{ success: boolean, response?: { items: Array }, reason?: string }>}
+   */
+  async getWaitingState(config) {
+    const {
+      endpoint,
+      processInstanceKey,
+      elementId
+    } = config;
+
+    this._log.debug('get waiting state', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const filter = {
+        processInstanceKey,
+        ...(elementId && { elementId })
+      };
+
+      // Execute all three searches in parallel
+      const [ jobs, userTasks, messageSubscriptions ] = await Promise.all([
+        camundaRestClient.callApiEndpoint({
+          urlPath: 'jobs/search',
+          method: 'POST',
+          body: {
+            filter
+          }
+        }).catch(err => {
+          this._log.warn('jobs search failed', err);
+          return { items: [] };
+        }),
+
+        camundaRestClient.searchUserTasks({
+          filter
+        }).catch(err => {
+          this._log.warn('user tasks search failed', err);
+          return { items: [] };
+        }),
+
+        camundaRestClient.callApiEndpoint({
+          urlPath: 'message-subscriptions/search',
+          method: 'POST',
+          body: {
+            filter
+          }
+        }).catch(err => {
+          this._log.warn('message subscriptions search failed', err);
+          return { items: [] };
+        })
+      ]);
+
+      const items = [];
+
+      // Process jobs
+      (jobs.items || []).forEach(job => {
+        if (job.state === 'FAILED' || job.state === 'CANCELED' || job.state === 'ERROR_THROWN') {
+          return;
+        }
+
+        if (job.state === 'COMPLETED') {
+          items.push({
+            type: 'job-completed',
+            data: job
+          });
+          return;
+        }
+
+        const isActive = job.state === 'CREATED' || job.state === 'ACTIVATABLE' || job.state === 'ACTIVATED';
+        items.push({
+          type: isActive ? 'job-active' : 'job-inactive',
+          data: job
+        });
+      });
+
+      // Process user tasks (only CREATED state)
+      (userTasks.items || []).forEach(userTask => {
+        if (userTask.state !== 'CREATED') {
+          return;
+        }
+
+        items.push({
+          type: 'user-task-form',
+          data: userTask
+        });
+      });
+
+      // Process message subscriptions (only CREATED state)
+      (messageSubscriptions.items || []).forEach(subscription => {
+        if (subscription.messageSubscriptionState !== 'CREATED') {
+          return;
+        }
+
+        items.push({
+          type: 'message-subscription',
+          data: subscription
+        });
+      });
+
+      return {
+        success: true,
+        response: { items }
+      };
+    } catch (err) {
+      this._log.error('get waiting state failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
+  /**
    * Get resources based on the provided configs
    *
    * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }>} resourceConfigs

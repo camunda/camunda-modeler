@@ -63,7 +63,8 @@ const allowedEvents = [
   'zeebe:searchProcessInstances',
   'zeebe:searchElementInstances',
   'zeebe:searchVariables',
-  'zeebe:searchIncidents'
+  'zeebe:searchIncidents',
+  'zeebe:getWaitingState'
 ];
 
 let executed = false;
