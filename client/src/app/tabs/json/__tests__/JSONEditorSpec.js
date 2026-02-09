@@ -8,9 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import {
   Cache,
@@ -216,8 +216,11 @@ function renderEditor(xml, options = {}) {
     onChanged,
   } = options;
 
-  const slotFillRoot = mount(
+  const ref = createRef();
+
+  render(
     <TestEditor
+      ref={ ref }
       id={ id || 'editor' }
       xml={ xml }
       activeSheet={ options.activeSheet || { id: 'xml' } }
@@ -226,12 +229,9 @@ function renderEditor(xml, options = {}) {
     />
   );
 
-  const wrapper = slotFillRoot.find(JSONEditor);
-
-  const instance = wrapper.instance();
+  const instance = ref.current;
 
   return {
-    instance,
-    wrapper
+    instance
   };
 }

@@ -10,9 +10,9 @@
 
 /* global sinon */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import TabLinks from '../TabLinks';
 
@@ -39,14 +39,14 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks();
 
       // when
-      const type = tree.find('.tab[data-tab-id="tab1"] .tab__type');
+      const type = container.querySelector('.tab[data-tab-id="tab1"] .tab__type');
 
       // then
-      expect(type.exists()).to.be.true;
+      expect(type).to.exist;
     });
 
 
@@ -56,16 +56,16 @@ describe('<TabLinks>', function() {
       const getTabIcon = () => NoopComponent;
 
       const {
-        tree
+        container
       } = renderTabLinks({
         getTabIcon
       });
 
       // when
-      const type = tree.find('.tab[data-tab-id="tab1"] .tab__type');
+      const type = container.querySelector('.tab[data-tab-id="tab1"] .tab__type');
 
       // then
-      expect(type.find('.empty')).to.exist;
+      expect(type.querySelector('.empty')).to.exist;
     });
 
 
@@ -73,14 +73,14 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks();
 
       // when
-      const name = tree.find('.tab[data-tab-id="tab1"] .tab__name');
+      const name = container.querySelector('.tab[data-tab-id="tab1"] .tab__name');
 
       // then
-      expect(name.text()).to.eql(tab1.name);
+      expect(name.textContent).to.eql(tab1.name);
     });
 
 
@@ -88,11 +88,11 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks();
 
       // when
-      const node = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+      const node = container.querySelector('.tab[data-tab-id="tab1"]');
 
       // then
       expect(node.title).to.eql(tab1.title);
@@ -103,14 +103,14 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks();
 
       // when
-      const close = tree.find('.tab[data-tab-id="tab1"] .tab__close');
+      const close = container.querySelector('.tab[data-tab-id="tab1"] .tab__close');
 
       // then
-      expect(close.exists()).to.be.true;
+      expect(close).to.exist;
     });
 
 
@@ -118,14 +118,14 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks();
 
       // when
-      const close = tree.find('.tab[data-tab-id="tab2"] .tab__close');
+      const close = container.querySelector('.tab[data-tab-id="tab2"] .tab__close');
 
       // then
-      expect(close.exists()).to.be.true;
+      expect(close).to.exist;
     });
 
 
@@ -133,16 +133,16 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks({
         isDirty: (tab) => tab.id === 'tab1'
       });
 
       // when
-      const close = tree.find('.tab[data-tab-id="tab1"] .tab__dirty-marker');
+      const dirtyMarker = container.querySelector('.tab[data-tab-id="tab1"] .tab__dirty-marker');
 
       // then
-      expect(close.exists()).to.be.true;
+      expect(dirtyMarker).to.exist;
     });
 
 
@@ -150,16 +150,16 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks({
         isDirty: (tab) => tab.id !== 'tab1'
       });
 
       // when
-      const close = tree.find('.tab[data-tab-id="tab1"] .tab__dirty-marker');
+      const dirtyMarker = container.querySelector('.tab[data-tab-id="tab1"] .tab__dirty-marker');
 
       // then
-      expect(close.exists()).to.be.false;
+      expect(dirtyMarker).to.be.null;
     });
 
   });
@@ -171,33 +171,33 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks();
 
       // when
-      const tab1 = tree.find('.tab[data-tab-id="tab1"]'),
-            tab2 = tree.find('.tab[data-tab-id="tab2"]'),
-            tab3 = tree.find('.tab[data-tab-id="tab3"]'),
-            tab4 = tree.find('.tab[data-tab-id="tab4"]');
+      const tab1 = container.querySelector('.tab[data-tab-id="tab1"]'),
+            tab2 = container.querySelector('.tab[data-tab-id="tab2"]'),
+            tab3 = container.querySelector('.tab[data-tab-id="tab3"]'),
+            tab4 = container.querySelector('.tab[data-tab-id="tab4"]');
 
       // then
-      expect(tab1.exists()).to.be.true;
-      expect(tab1.hasClass('tab--group')).to.be.true;
-      expect(tab1.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.exist;
+      expect(tab1).to.exist;
+      expect(tab1.classList.contains('tab--group')).to.be.true;
+      expect(tab1.style.getPropertyValue('--tab-line-group-background-color')).to.exist;
 
-      expect(tab2.exists()).to.be.true;
-      expect(tab2.hasClass('tab--group')).to.be.true;
-      expect(tab2.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.exist;
-      expect(tab2.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.equal(tab1.getDOMNode().style.getPropertyValue('--tab-line-group-background-color'));
+      expect(tab2).to.exist;
+      expect(tab2.classList.contains('tab--group')).to.be.true;
+      expect(tab2.style.getPropertyValue('--tab-line-group-background-color')).to.exist;
+      expect(tab2.style.getPropertyValue('--tab-line-group-background-color')).to.equal(tab1.style.getPropertyValue('--tab-line-group-background-color'));
 
-      expect(tab3.exists()).to.be.true;
-      expect(tab3.hasClass('tab--group')).to.be.true;
-      expect(tab3.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.exist;
-      expect(tab3.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).not.to.equal(tab1.getDOMNode().style.getPropertyValue('--tab-line-group-background-color'));
+      expect(tab3).to.exist;
+      expect(tab3.classList.contains('tab--group')).to.be.true;
+      expect(tab3.style.getPropertyValue('--tab-line-group-background-color')).to.exist;
+      expect(tab3.style.getPropertyValue('--tab-line-group-background-color')).not.to.equal(tab1.style.getPropertyValue('--tab-line-group-background-color'));
 
-      expect(tab4.exists()).to.be.true;
-      expect(tab4.hasClass('tab--group')).to.be.false;
-      expect(tab4.getDOMNode().style.getPropertyValue('--tab-line-group-background-color')).to.equal('');
+      expect(tab4).to.exist;
+      expect(tab4.classList.contains('tab--group')).to.be.false;
+      expect(tab4.style.getPropertyValue('--tab-line-group-background-color')).to.equal('');
     });
 
   });
@@ -211,15 +211,15 @@ describe('<TabLinks>', function() {
       const clickSpy = sinon.spy();
 
       const {
-        tree
+        container
       } = renderTabLinks({
         onSelect: clickSpy
       });
 
-      const close = tree.find('.tab[data-tab-id="tab1"]');
+      const tab = container.querySelector('.tab[data-tab-id="tab1"]');
 
       // when
-      close.simulate('click');
+      fireEvent.click(tab);
 
       // then
       expect(clickSpy).to.have.been.calledWith(tab1);
@@ -232,15 +232,15 @@ describe('<TabLinks>', function() {
       const contextMenuSpy = sinon.spy();
 
       const {
-        tree
+        container
       } = renderTabLinks({
         onContextMenu: contextMenuSpy
       });
 
-      const tab = tree.find('.tab[data-tab-id="tab1"]');
+      const tab = container.querySelector('.tab[data-tab-id="tab1"]');
 
       // when
-      tab.simulate('contextmenu');
+      fireEvent.contextMenu(tab);
 
       // then
       expect(contextMenuSpy).to.have.been.called;
@@ -253,15 +253,15 @@ describe('<TabLinks>', function() {
       const closeSpy = sinon.spy();
 
       const {
-        tree
+        container
       } = renderTabLinks({
         onClose: closeSpy
       });
 
-      const close = tree.find('.tab[data-tab-id="tab1"] .tab__close');
+      const close = container.querySelector('.tab[data-tab-id="tab1"] .tab__close');
 
       // when
-      close.simulate('click');
+      fireEvent.click(close);
 
       // then
       expect(closeSpy).to.have.been.calledWith(tab1);
@@ -283,17 +283,17 @@ describe('<TabLinks>', function() {
       };
 
       const {
-        tree
+        container
       } = renderTabLinks({ placeholder });
 
       // when
-      const tab = tree.find('.tab--placeholder');
+      const tab = container.querySelector('.tab--placeholder');
 
       // then
-      expect(tab.exists()).to.be.true;
+      expect(tab).to.exist;
 
       // and when
-      tab.simulate('click');
+      fireEvent.click(tab);
 
       // then
       expect(clickSpy).to.have.been.calledOnce;
@@ -303,14 +303,14 @@ describe('<TabLinks>', function() {
     it('should hide empty tab handle', function() {
 
       const {
-        tree
+        container
       } = renderTabLinks();
 
       // when
-      const tab = tree.find('.tab.placeholder');
+      const tab = container.querySelector('.tab.placeholder');
 
       // then
-      expect(tab.exists()).to.be.false;
+      expect(tab).to.be.null;
     });
 
   });
@@ -324,13 +324,13 @@ describe('<TabLinks>', function() {
       const onSelectSpy = spy();
 
       const {
-        tree,
+        container,
         tabLinks
       } = renderTabLinks({
         onSelect: onSelectSpy
       });
 
-      const node = tree.find('.tab[data-tab-id="tab2"]').getDOMNode();
+      const node = container.querySelector('.tab[data-tab-id="tab2"]');
 
       // when
       tabLinks.handleDragStart({
@@ -348,13 +348,13 @@ describe('<TabLinks>', function() {
       const moveTabSpy = spy();
 
       const {
-        tree,
+        container,
         tabLinks
       } = renderTabLinks({
         onMoveTab: moveTabSpy
       });
 
-      const node = tree.find('.tab[data-tab-id="tab2"]').getDOMNode();
+      const node = container.querySelector('.tab[data-tab-id="tab2"]');
 
       // when
       tabLinks.handleDrag({
@@ -375,11 +375,11 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks();
 
       // when
-      const tabNode = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+      const tabNode = container.querySelector('.tab[data-tab-id="tab1"]');
 
       // then
       expect(tabNode.classList.contains('tab--small')).to.be.false;
@@ -399,13 +399,13 @@ describe('<TabLinks>', function() {
       });
 
       const {
-        tree
+        container
       } = renderTabLinks({
         tabs
       });
 
       // when
-      const tabNode = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+      const tabNode = container.querySelector('.tab[data-tab-id="tab1"]');
 
       tabNode.dispatchEvent(new Event('resize'));
 
@@ -422,11 +422,11 @@ describe('<TabLinks>', function() {
 
       // given
       const {
-        tree
+        container
       } = renderTabLinks();
 
       // when
-      const tabNode = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+      const tabNode = container.querySelector('.tab[data-tab-id="tab1"]');
 
       // then
       expect(tabNode.classList.contains('tab--smaller')).to.be.false;
@@ -446,13 +446,13 @@ describe('<TabLinks>', function() {
       });
 
       const {
-        tree
+        container
       } = renderTabLinks({
         tabs
       });
 
       // when
-      const tabNode = tree.find('.tab[data-tab-id="tab1"]').getDOMNode();
+      const tabNode = container.querySelector('.tab[data-tab-id="tab1"]');
 
       tabNode.dispatchEvent(new Event('resize'));
 
@@ -484,9 +484,12 @@ function renderTabLinks(options = {}) {
     placeholder
   } = options;
 
-  const tree = mount(
+  const tabLinksRef = createRef();
+
+  const { container } = render(
     <SlotFillRoot>
       <TabLinks
+        ref={ tabLinksRef }
         activeTab={ activeTab || defaultActiveTab }
         tabs={ tabs || defaultTabs }
         tabGroups={ tabGroups || defaultTabGroups }
@@ -500,10 +503,10 @@ function renderTabLinks(options = {}) {
     </SlotFillRoot>
   );
 
-  const tabLinks = tree.find('TabLinks').first().instance();
+  const tabLinks = tabLinksRef.current;
 
   return {
-    tree,
+    container,
     tabLinks
   };
 }

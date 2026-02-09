@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import {
   SlotFillRoot,
@@ -29,10 +29,10 @@ describe('LintingStatusBarItem', function() {
   it('should render', function() {
 
     // when
-    const wrapper = renderLintingStatusBarItem();
+    const { container } = renderLintingStatusBarItem();
 
     // then
-    expect(wrapper.find(LintingStatusBarItem).exists()).to.be.true;
+    expect(container.querySelector('.btn')).to.exist;
   });
 
 
@@ -41,33 +41,33 @@ describe('LintingStatusBarItem', function() {
     it('should display 1 error and 1 warning', function() {
 
       // when
-      const wrapper = renderLintingStatusBarItem();
+      const { container } = renderLintingStatusBarItem();
 
       // then
-      expect(wrapper.find('.errors').text()).to.equal('1');
-      expect(wrapper.find('.warnings').text()).to.equal('1');
-      expect(wrapper.find('.infos').text()).to.equal('1');
+      expect(container.querySelector('.errors').textContent).to.equal('1');
+      expect(container.querySelector('.warnings').textContent).to.equal('1');
+      expect(container.querySelector('.infos').textContent).to.equal('1');
     });
 
 
     it('should always show error and warning handles', function() {
 
       // when
-      const wrapper = renderLintingStatusBarItem({
+      const { container } = renderLintingStatusBarItem({
         linting: []
       });
 
       // then
-      expect(wrapper.find('.errors').text()).to.equal('0');
-      expect(wrapper.find('.warnings').text()).to.equal('0');
-      expect(wrapper.find('.infos').exists()).to.be.false;
+      expect(container.querySelector('.errors').textContent).to.equal('0');
+      expect(container.querySelector('.warnings').textContent).to.equal('0');
+      expect(container.querySelector('.infos')).to.be.null;
     });
 
 
     it('should display 3 errors, 1 warning and 2 info messages', function() {
 
       // when
-      const wrapper = renderLintingStatusBarItem({
+      const { container } = renderLintingStatusBarItem({
         linting: [
           ...defaultLinting,
           {
@@ -89,9 +89,9 @@ describe('LintingStatusBarItem', function() {
       });
 
       // then
-      expect(wrapper.find('.errors').text()).to.equal('3');
-      expect(wrapper.find('.warnings').text()).to.equal('1');
-      expect(wrapper.find('.infos').text()).to.equal('2');
+      expect(container.querySelector('.errors').textContent).to.equal('3');
+      expect(container.querySelector('.warnings').textContent).to.equal('1');
+      expect(container.querySelector('.infos').textContent).to.equal('2');
     });
 
   });
@@ -102,7 +102,7 @@ describe('LintingStatusBarItem', function() {
     it('should be active (open)', function() {
 
       // when
-      const wrapper = renderLintingStatusBarItem({
+      const { container } = renderLintingStatusBarItem({
         layout: {
           panel: {
             open: true,
@@ -112,17 +112,17 @@ describe('LintingStatusBarItem', function() {
       });
 
       // then
-      expect(wrapper.find('.btn').hasClass('btn--active')).to.be.true;
+      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.true;
     });
 
 
     it('should not be active (closed)', function() {
 
       // when
-      const wrapper = renderLintingStatusBarItem();
+      const { container } = renderLintingStatusBarItem();
 
       // then
-      expect(wrapper.find('.btn').hasClass('btn--active')).to.be.false;
+      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.false;
     });
 
 
@@ -131,12 +131,12 @@ describe('LintingStatusBarItem', function() {
       // given
       const onToggleSpy = spy();
 
-      const wrapper = renderLintingStatusBarItem({
+      const { container } = renderLintingStatusBarItem({
         onToggle: onToggleSpy
       });
 
       // when
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(container.querySelector('.btn'));
 
       // then
       expect(onToggleSpy).to.have.been.calledOnce;
@@ -181,7 +181,7 @@ function renderLintingStatusBarItem(options = {}) {
     onToggle
   } = options;
 
-  return mount(
+  return render(
     <SlotFillRoot>
       <Slot name="status-bar__file" />
       <LintingStatusBarItem

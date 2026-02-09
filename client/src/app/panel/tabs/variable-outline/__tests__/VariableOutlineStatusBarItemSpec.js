@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import {
   SlotFillRoot,
@@ -29,10 +29,10 @@ describe('VariableOutlineStatusBarItem', function() {
   it('should render', function() {
 
     // when
-    const wrapper = renderVariableOutlineStatusBarItem();
+    const { container } = renderVariableOutlineStatusBarItem();
 
     // then
-    expect(wrapper.find(VariableOutlineStatusBarItem).exists()).to.be.true;
+    expect(container.querySelector('.btn')).to.exist;
   });
 
 
@@ -41,7 +41,7 @@ describe('VariableOutlineStatusBarItem', function() {
     it('should be active (open)', function() {
 
       // when
-      const wrapper = renderVariableOutlineStatusBarItem({
+      const { container } = renderVariableOutlineStatusBarItem({
         layout: {
           panel: {
             open: true,
@@ -51,17 +51,17 @@ describe('VariableOutlineStatusBarItem', function() {
       });
 
       // then
-      expect(wrapper.find('.btn').hasClass('btn--active')).to.be.true;
+      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.true;
     });
 
 
     it('should not be active (closed)', function() {
 
       // when
-      const wrapper = renderVariableOutlineStatusBarItem();
+      const { container } = renderVariableOutlineStatusBarItem();
 
       // then
-      expect(wrapper.find('.btn').hasClass('btn--active')).to.be.false;
+      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.false;
     });
 
 
@@ -70,12 +70,12 @@ describe('VariableOutlineStatusBarItem', function() {
       // given
       const onToggleSpy = spy();
 
-      const wrapper = renderVariableOutlineStatusBarItem({
+      const { container } = renderVariableOutlineStatusBarItem({
         onToggle: onToggleSpy
       });
 
       // when
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(container.querySelector('.btn'));
 
       // then
       expect(onToggleSpy).to.have.been.calledOnce;
@@ -102,7 +102,7 @@ function renderVariableOutlineStatusBarItem(options = {}) {
     onToggle
   } = options;
 
-  return mount(
+  return render(
     <SlotFillRoot>
       <Slot name="status-bar__file" />
       <VariableOutlineStatusBarItem

@@ -10,9 +10,9 @@
 
 /* global sinon */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import {
   CachedComponent
@@ -26,7 +26,7 @@ describe('<CachedComponent>', function() {
   it('should render', function() {
 
     // when
-    const instance = render();
+    const instance = renderCachedComponent();
 
     // then
     expect(instance).to.exist;
@@ -38,7 +38,7 @@ describe('<CachedComponent>', function() {
     it('cachedState', function() {
 
       // given
-      const instance = render({
+      const instance = renderCachedComponent({
         cachedState: {
           foo: 'foo'
         }
@@ -59,7 +59,7 @@ describe('<CachedComponent>', function() {
       // given
       const setCachedStateSpy = spy();
 
-      const instance = render({
+      const instance = renderCachedComponent({
         setCachedState: setCachedStateSpy
       });
 
@@ -84,10 +84,16 @@ class Foo extends CachedComponent {
   }
 }
 
-function render(options = {}) {
-  const wrapper = mount(<Foo
-    cachedState={ options.cachedState || {} }
-    setCachedState={ options.setCachedState || noop } />);
+function renderCachedComponent(options = {}) {
+  const ref = createRef();
 
-  return wrapper.find(Foo).instance();
+  render(
+    <Foo
+      ref={ ref }
+      cachedState={ options.cachedState || {} }
+      setCachedState={ options.setCachedState || noop }
+    />
+  );
+
+  return ref.current;
 }

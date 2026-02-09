@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import { SlotFillRoot } from '../../../../slot-fill';
 
@@ -28,17 +28,18 @@ describe('<LogTab>', function() {
   it('should render', function() {
 
     // when
-    const wrapper = renderLogTab();
+    const { container } = renderLogTab();
 
     // then
-    expect(wrapper.find('.panel__link')).to.have.length(1);
-    expect(wrapper.find('.panel__link--active')).to.have.length(1);
+    expect(container.querySelectorAll('.panel__link')).to.have.length(1);
+    expect(container.querySelectorAll('.panel__link--active')).to.have.length(1);
 
-    expect(wrapper.find('.panel__link').at(0).find('.panel__link-label').text()).to.equal('Output');
-    expect(wrapper.find('.panel__link').at(0).hasClass('panel__link--active')).to.be.true;
+    const panelLink = container.querySelector('.panel__link');
+    expect(panelLink.querySelector('.panel__link-label').textContent).to.equal('Output');
+    expect(panelLink.classList.contains('panel__link--active')).to.be.true;
 
-    expect(wrapper.find('.entry')).to.have.length(1);
-    expect(wrapper.find('.entry').text()).to.equal('Foo message [ error ]');
+    expect(container.querySelectorAll('.entry')).to.have.length(1);
+    expect(container.querySelector('.entry').textContent).to.equal('Foo message [ error ]');
   });
 
 
@@ -48,7 +49,7 @@ describe('<LogTab>', function() {
     const onActionSpy = spy();
 
     // when
-    const wrapper = renderLogTab({
+    const { container } = renderLogTab({
       logEntries: [
         {
           category: 'error',
@@ -59,9 +60,9 @@ describe('<LogTab>', function() {
     });
 
     // then
-    expect(wrapper.find('.action')).to.have.length(1);
+    expect(container.querySelectorAll('.action')).to.have.length(1);
 
-    wrapper.find('.action').first().simulate('click');
+    fireEvent.click(container.querySelector('.action'));
 
     expect(onActionSpy).to.have.been.called;
   });
@@ -70,13 +71,13 @@ describe('<LogTab>', function() {
   it('should render tab actions', function() {
 
     // when
-    const wrapper = renderLogTab();
+    const { container } = renderLogTab();
 
     // then
-    expect(wrapper.find('.panel__action')).to.have.length(3);
+    expect(container.querySelectorAll('.panel__action')).to.have.length(3);
 
-    expect(wrapper.find('.panel__action[title="Copy output"]')).to.have.length(1);
-    expect(wrapper.find('.panel__action[title="Clear output"]')).to.have.length(1);
+    expect(container.querySelector('.panel__action[title="Copy output"]')).to.exist;
+    expect(container.querySelector('.panel__action[title="Clear output"]')).to.exist;
   });
 
 });
@@ -108,7 +109,7 @@ function renderLogTab(options = {}) {
     onLayoutChanged = () => {}
   } = options;
 
-  return mount(
+  return render(
     <SlotFillRoot>
       <Panel
         layout={ layout }>
