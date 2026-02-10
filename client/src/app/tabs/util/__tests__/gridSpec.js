@@ -33,7 +33,7 @@ describe('tabs/util - GridBehavior', function() {
     });
 
 
-    it('should use default visible = false when not specified', function() {
+    it('should use default visible = true when not specified', function() {
 
       // given
       const adapter = {
@@ -44,7 +44,7 @@ describe('tabs/util - GridBehavior', function() {
       const gridBehavior = new GridBehavior(adapter);
 
       // then
-      expect(gridBehavior.defaultVisible).to.be.false;
+      expect(gridBehavior.defaultVisible).to.be.true;
     });
 
 
@@ -113,7 +113,7 @@ describe('tabs/util - GridBehavior', function() {
     });
 
 
-    it('should use default (false) when grid not specified in layout', function() {
+    it('should use default (true) when grid not specified in layout', function() {
 
       // given
       const grid = {
@@ -132,7 +132,7 @@ describe('tabs/util - GridBehavior', function() {
       gridBehavior.update(layout);
 
       // then
-      expect(grid.toggle).to.have.been.calledOnceWith(false);
+      expect(grid.toggle).to.have.been.calledOnceWith(true);
     });
 
 
@@ -148,14 +148,14 @@ describe('tabs/util - GridBehavior', function() {
       const adapter = {
         getDiagram: sinon.stub().returns(diagram)
       };
-      const gridBehavior = new GridBehavior(adapter, true);
+      const gridBehavior = new GridBehavior(adapter, false);
       const layout = {};
 
       // when
       gridBehavior.update(layout);
 
       // then
-      expect(grid.toggle).to.have.been.calledOnceWith(true);
+      expect(grid.toggle).to.have.been.calledOnceWith(false);
     });
 
 
@@ -297,7 +297,7 @@ describe('tabs/util - GridBehavior', function() {
     });
 
 
-    it('should toggle from undefined (default off) to on', function() {
+    it('should toggle from undefined (default on) to off', function() {
 
       // given
       const adapter = {
@@ -312,18 +312,18 @@ describe('tabs/util - GridBehavior', function() {
 
       // then
       expect(onLayoutChanged).to.have.been.calledOnceWith({
-        grid: { visible: true }
+        grid: { visible: false }
       });
     });
 
 
-    it('should toggle from undefined (custom default on) to off', function() {
+    it('should toggle from undefined (custom default off) to on', function() {
 
       // given
       const adapter = {
         getDiagram: sinon.stub()
       };
-      const gridBehavior = new GridBehavior(adapter, true);
+      const gridBehavior = new GridBehavior(adapter, false);
       const layout = {};
       const onLayoutChanged = sinon.spy();
 
@@ -332,7 +332,7 @@ describe('tabs/util - GridBehavior', function() {
 
       // then
       expect(onLayoutChanged).to.have.been.calledOnceWith({
-        grid: { visible: false }
+        grid: { visible: true }
       });
     });
 
@@ -492,7 +492,7 @@ describe('tabs/util - GridBehavior', function() {
       gridBehavior.checkUpdate(prevLayout, newLayout);
 
       // then
-      expect(grid.toggle).to.have.been.calledOnceWith(false);
+      expect(grid.toggle).to.have.been.calledOnceWith(true);
     });
 
 
