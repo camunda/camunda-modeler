@@ -10,18 +10,24 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FIX`: enable undo/redo actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
 * `FIX`: deduplicate open file filters ([#4503](https://github.com/camunda/camunda-modeler/issues/4503))
-* `DEPS`: update to `@bpmn-io/properties-panel@3.37.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.38.0`
 * `DEPS`: update to `@camunda/linting@3.48.0`
 
 ### BPMN
 
-* `FIX`: change the tooltip content for the message property to be specific depending on the event/task type ([#4864](https://github.com/camunda/camunda-modeler/issues/4864))
-* `FEAT`: validate conditional events ([#5400](https://github.com/camunda/camunda-modeler/issues/5400))
+* `FEAT`: add support of FEEL expressions for 'Form ID' field ([#5231](https://github.com/camunda/camunda-modeler/issues/5231))
+* `FEAT`: support conditional events modeling ([#5400](https://github.com/camunda/camunda-modeler/issues/5400))
 * `FEAT`: validate variable names ([#5188](https://github.com/camunda/camunda-modeler/issues/5188))
 * `FEAT`: add support of FEEL expressions for 'Form ID' field ([#5231](https://github.com/camunda/camunda-modeler/issues/5231))
 * `FIX`: change the tooltip content for the message property to be specific depending on the event/task type ([#4864](https://github.com/camunda/camunda-modeler/issues/4864))
 * `FIX`: fix unexpected close or resize of a properties panel by toggling groups inside ([#5526](https://github.com/camunda/camunda-modeler/issues/5526))
 * `FIX`: fix `sequence-flow-condition` rule crash on broken diagram ([#5584](https://github.com/camunda/camunda-modeler/issues/5584))
+* `FIX`: handle falsy values in variable resolver ([bpmn-io/variable-resolver#68](https://github.com/bpmn-io/variable-resolver/pull/68))
+* `DEPS`: update to `@camunda/linting@3.48.0`
+* `DEPS`: update to `@bpmn-io/variable-resolver@1.4.1`
+* `DEPS`: update to `camunda-bpmn-js@5.20.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.50.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.20.0`
 
 ## 5.44.0
 

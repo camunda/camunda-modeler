@@ -739,34 +739,78 @@
     "bpmn:Task"
   ],
   "properties": []
-},
-{
-  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-  "name": "Compatibility test",
-  "id": "io.camunda.examples.compatibility",
-  "version": 2,
-  "description": "This version is compatible with Camunda 8.5 and above.",
-  "engines": {
-    "camunda": ">=8.5"
   },
-  "appliesTo": [
-    "bpmn:Task"
-  ],
-  "properties": []
-},
-{
-  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-  "name": "Compatibility test - incompatible, no upgrade",
-  "id": "io.camunda.examples.incompatible",
-  "version": 2,
-  "description": "This version is not compatible with Desktop Modeler and Camunda 8",
-  "engines": {
-    "camunda": "^9",
-    "camundaDesktopModeler": "0"
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Compatibility test",
+    "id": "io.camunda.examples.compatibility",
+    "version": 2,
+    "description": "This version is compatible with Camunda 8.5 and above.",
+    "engines": {
+      "camunda": ">=8.5"
+    },
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": []
   },
-  "appliesTo": [
-    "bpmn:Task"
-  ],
-  "properties": []
-}
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Compatibility test - incompatible, no upgrade",
+    "id": "io.camunda.examples.incompatible",
+    "version": 2,
+    "description": "This version is not compatible with Desktop Modeler and Camunda 8",
+    "engines": {
+      "camunda": "^9",
+      "camundaDesktopModeler": "0"
+    },
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "properties": []
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Conditional Event",
+    "id": "conditional-event",
+    "version": 1,
+    "description": "Conditional event template",
+    "appliesTo": [
+      "bpmn:Event"
+    ],
+    "elementType": {
+      "value": "bpmn:IntermediateCatchEvent",
+      "eventDefinition": "bpmn:ConditionalEventDefinition"
+    },
+    "properties": [
+      {
+        "label": "Condition Expression",
+        "type": "String",
+        "value": "=foo > 100",
+        "feel": "required",
+        "binding": {
+          "type": "bpmn:ConditionalEventDefinition#property",
+          "name": "condition"
+        }
+      },
+      {
+        "label": "Variable Names",
+        "type": "String",
+        "value": "foo,bar",
+        "binding": {
+          "type": "bpmn:ConditionalEventDefinition#zeebe:conditionalFilter#property",
+          "name": "variableNames"
+        }
+      },
+      {
+        "label": "Variable Events",
+        "type": "String",
+        "value": "create,update",
+        "binding": {
+          "type": "bpmn:ConditionalEventDefinition#zeebe:conditionalFilter#property",
+          "name": "variableEvents"
+        }
+      }
+    ]
+  }
 ]
