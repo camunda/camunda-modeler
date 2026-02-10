@@ -7,9 +7,12 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ___Note:__ Yet to be released changes appear here._
 
 ### General
+
+* `FIX`: enable undo/redo actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.37.0`
 
 ### BPMN
+
 * `FIX`: change the tooltip content for the message property to be specific depending on the event/task type ([#4864](https://github.com/camunda/camunda-modeler/issues/4864))
 * `FEAT`: add support of FEEL expressions for 'Form ID' field ([#5231](https://github.com/camunda/camunda-modeler/issues/5231))
 * `FIX`: fix unexpected close or resize of a properties panel by toggling groups inside ([#5526](https://github.com/camunda/camunda-modeler/issues/5526))

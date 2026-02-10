@@ -54,4 +54,166 @@ describe('<KeyboardInteractionTrap>', function() {
     // then
     expect(container).to.exist;
   });
+
+
+  it('should update menu when input receives focus', function() {
+
+    // given
+    const triggerAction = sinon.spy();
+
+    const { container } = render(
+      <KeyboardInteractionTrapContext.Provider value={ triggerAction }>
+        <KeyboardInteractionTrap>
+          <input type="text" />
+        </KeyboardInteractionTrap>
+      </KeyboardInteractionTrapContext.Provider>
+    );
+
+    const input = container.querySelector('input');
+
+    // when
+    input.focus();
+
+    // then
+    expect(triggerAction).to.have.been.calledWith('update-menu', {
+      editMenu: [
+        [
+          {
+            role: 'undo',
+            enabled: true
+          },
+          {
+            role: 'redo',
+            enabled: true
+          }
+        ],
+        [
+          {
+            role: 'copy',
+            enabled: true
+          },
+          {
+            role: 'cut',
+            enabled: true
+          },
+          {
+            role: 'paste',
+            enabled: true
+          },
+          {
+            role: 'selectAll',
+            enabled: true
+          }
+        ]
+      ]
+    });
+  });
+
+
+  it('should update menu when textarea receives focus', function() {
+
+    // given
+    const triggerAction = sinon.spy();
+
+    const { container } = render(
+      <KeyboardInteractionTrapContext.Provider value={ triggerAction }>
+        <KeyboardInteractionTrap>
+          <textarea />
+        </KeyboardInteractionTrap>
+      </KeyboardInteractionTrapContext.Provider>
+    );
+
+    const textarea = container.querySelector('textarea');
+
+    // when
+    textarea.focus();
+
+    // then
+    expect(triggerAction).to.have.been.calledWith('update-menu', {
+      editMenu: [
+        [
+          {
+            role: 'undo',
+            enabled: true
+          },
+          {
+            role: 'redo',
+            enabled: true
+          }
+        ],
+        [
+          {
+            role: 'copy',
+            enabled: true
+          },
+          {
+            role: 'cut',
+            enabled: true
+          },
+          {
+            role: 'paste',
+            enabled: true
+          },
+          {
+            role: 'selectAll',
+            enabled: true
+          }
+        ]
+      ]
+    });
+  });
+
+
+  it('should disable menu when non-input element receives focus', function() {
+
+    // given
+    const triggerAction = sinon.spy();
+
+    const { container } = render(
+      <KeyboardInteractionTrapContext.Provider value={ triggerAction }>
+        <KeyboardInteractionTrap>
+          <button>Click me</button>
+        </KeyboardInteractionTrap>
+      </KeyboardInteractionTrapContext.Provider>
+    );
+
+    const button = container.querySelector('button');
+
+    // when
+    button.focus();
+
+    // then
+    expect(triggerAction).to.have.been.calledWith('update-menu', {
+      editMenu: [
+        [
+          {
+            role: 'undo',
+            enabled: false
+          },
+          {
+            role: 'redo',
+            enabled: false
+          }
+        ],
+        [
+          {
+            role: 'copy',
+            enabled: false
+          },
+          {
+            role: 'cut',
+            enabled: false
+          },
+          {
+            role: 'paste',
+            enabled: false
+          },
+          {
+            role: 'selectAll',
+            enabled: false
+          }
+        ]
+      ]
+    });
+  });
 });

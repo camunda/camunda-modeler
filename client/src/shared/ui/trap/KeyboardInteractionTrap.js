@@ -81,13 +81,13 @@ class KeyboardInteractionTrapComponent extends PureComponent {
   }
 
   componentDidMount() {
-    window.addEventListener('focus', this.handleFocus);
+    window.addEventListener('focusin', this.handleFocus);
 
     this.updateMenu(document.activeElement);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('focus', this.handleFocus);
+    window.removeEventListener('focusin', this.handleFocus);
   }
 
   render() {
