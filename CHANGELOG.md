@@ -9,6 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FIX`: enable undo/redo actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
+* `FIX`: deduplicate open file filters ([#4503](https://github.com/camunda/camunda-modeler/issues/4503))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.37.0`
 * `DEPS`: update to `@camunda/linting@3.48.0`
 

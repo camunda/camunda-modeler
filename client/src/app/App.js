@@ -2676,7 +2676,7 @@ function getOpenFilesDialogFilters(providers) {
     extensions: []
   };
 
-  let filters = [];
+  const filtersByName = new Map();
 
   forEach(providers, provider => {
     const {
@@ -2693,10 +2693,19 @@ function getOpenFilesDialogFilters(providers) {
       ...extensions
     ];
 
-    filters.push({
-      name,
-      extensions: [ ...extensions ]
-    });
+    const existingFilter = filtersByName.get(name);
+
+    if (existingFilter) {
+      existingFilter.extensions = Array.from(new Set([
+        ...existingFilter.extensions,
+        ...extensions
+      ]));
+    } else {
+      filtersByName.set(name, {
+        name,
+        extensions: [ ...extensions ]
+      });
+    }
   });
 
   // remove duplicates, sort alphabetically
@@ -2712,6 +2721,8 @@ function getOpenFilesDialogFilters(providers) {
       }
     }, [])
     .sort();
+
+  let filters = Array.from(filtersByName.values());
 
   // sort alphabetically
   filters = filters.sort((a, b) => {

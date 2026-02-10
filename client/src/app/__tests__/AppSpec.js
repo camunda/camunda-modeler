@@ -3204,6 +3204,100 @@ describe('<App>', function() {
 
   describe('#showOpenFilesDialog', function() {
 
+    it('should deduplicate dialog filters by name', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      dialog.setShowOpenFilesDialogResponse([]);
+
+      const showOpenFilesDialogSpy = spy(dialog, 'showOpenFilesDialog');
+
+      const tabsProvider = new TabsProvider();
+
+      tabsProvider.providers = {
+        bpmn: {
+          name: 'BPMN',
+          extensions: [ 'bpmn', 'xml' ]
+        },
+        bpmnDuplicate: {
+          name: 'BPMN',
+          extensions: [ 'bpmn', 'xml' ]
+        },
+        dmn: {
+          name: 'DMN',
+          extensions: [ 'dmn', 'xml' ]
+        },
+        dmnDuplicate: {
+          name: 'DMN',
+          extensions: [ 'dmn', 'xml', 'dmn13' ]
+        },
+        form: {
+          name: 'Form',
+          extensions: [ 'form' ]
+        },
+        formDuplicate: {
+          name: 'Form',
+          extensions: [ 'form' ]
+        },
+        rpa: {
+          name: 'RPA',
+          extensions: [ 'rpa' ]
+        },
+        test: {
+          name: 'TEST',
+          extensions: [ 'helloWorld' ]
+        }
+      };
+
+      const { app } = createApp({
+        globals: {
+          dialog
+        },
+        tabsProvider
+      });
+
+      // when
+      await app.showOpenFilesDialog();
+
+      // then
+      const {
+        filters
+      } = showOpenFilesDialogSpy.firstCall.args[0];
+
+      expect(filters).to.eql([
+        {
+          name: 'All Supported',
+          extensions: [ 'bpmn', 'dmn', 'dmn13', 'form', 'helloWorld', 'rpa', 'xml' ]
+        },
+        {
+          name: 'BPMN',
+          extensions: [ 'bpmn', 'xml' ]
+        },
+        {
+          name: 'DMN',
+          extensions: [ 'dmn', 'xml', 'dmn13' ]
+        },
+        {
+          name: 'Form',
+          extensions: [ 'form' ]
+        },
+        {
+          name: 'RPA',
+          extensions: [ 'rpa' ]
+        },
+        {
+          name: 'TEST',
+          extensions: [ 'helloWorld' ]
+        },
+        {
+          name: 'All Files',
+          extensions: [ '*' ]
+        }
+      ]);
+    });
+
+
     it('should open dialog and open files', async function() {
 
       // given
