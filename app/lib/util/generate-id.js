@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const Ids = require('ids');
+const { Ids } = require('ids');
 
 const ids = new Ids([ 32, 36, 1 ]);
 

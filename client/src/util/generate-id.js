@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import Ids from 'ids';
+import { Ids } from 'ids';
 
 const ids = new Ids([ 32, 36, 1 ]);
 
