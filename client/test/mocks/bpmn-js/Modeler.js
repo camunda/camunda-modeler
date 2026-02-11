@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import BpmnModdle from 'bpmn-moddle';
+import { BpmnModdle } from 'bpmn-moddle';
 
 import { assign } from 'min-dash';
 

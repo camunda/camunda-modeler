@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const DmnModdle = require('dmn-moddle');
+const { DmnModdle } = require('dmn-moddle');
 
 const moddle = new DmnModdle();
 
