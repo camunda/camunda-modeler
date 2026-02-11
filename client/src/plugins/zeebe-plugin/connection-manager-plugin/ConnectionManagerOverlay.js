@@ -83,7 +83,7 @@ export function ConnectionManagerOverlay({
     if (isC8RunConnection(activeConnection) && hasConnectionError) {
       return (
         <>
-          <a data-testid="c8run-download-link" href={ C8RUN_DOWNLOAD_URL }>Download</a> or start Camunda 8 Run to connect. See troubleshooting information about C8 Run <a data-testid="c8run-troubleshoot-link" href={ C8RUN_TROUBLESHOOTING_URL }>here</a>.
+          <a data-testid="c8run-download-link" href={ C8RUN_DOWNLOAD_URL }>Download</a> or start Camunda 8 Run to connect. For help, see the <a data-testid="c8run-troubleshoot-link" href={ C8RUN_TROUBLESHOOTING_URL }>troubleshooting information</a>.
         </>
       );
     }
@@ -121,9 +121,7 @@ export function ConnectionManagerOverlay({
           </div>
 
           <div className={ classNames('form-group form-description') }>
-            A connection to a running orchestration cluster lets you test tasks, deploy resources, and run processes. <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>
-              Learn more
-            </a>
+            A connection to a running <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>orchestration cluster</a> lets you test tasks, deploy resources, and run processes.
           </div>
         </form>
       </Section.Body>

@@ -314,7 +314,7 @@ describe('ConnectionManagerOverlay', function() {
       const descriptionField = container.querySelector('.custom-control-description');
       expect(descriptionField).to.exist;
       expect(descriptionField.textContent).to.equal(
-        'Download or start Camunda 8 Run to connect. See troubleshooting information about C8 Run here.'
+        'Download or start Camunda 8 Run to connect. For help, see the troubleshooting information.'
       );
 
       // Assert download link with correct text and URL
@@ -324,7 +324,7 @@ describe('ConnectionManagerOverlay', function() {
 
       // Assert troubleshooting link with correct text and URL
       const troubleshootLink = getByTestId('c8run-troubleshoot-link');
-      expect(troubleshootLink.textContent).to.equal('here');
+      expect(troubleshootLink.textContent).to.equal('troubleshooting information');
       expect(troubleshootLink.getAttribute('href')).to.equal(C8RUN_TROUBLESHOOTING_URL);
     });
 
