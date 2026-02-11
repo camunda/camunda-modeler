@@ -169,7 +169,7 @@ describe('ConnectionManagerOverlay', function() {
 
   describe('connection status', function() {
 
-    it('should display error message on connection failure', function() {
+    it('should display error message on connection failure (CONTACT_POINT_UNAVAILABLE)', function() {
 
       // given
       const connections = DEFAULT_CONNECTIONS;
@@ -185,7 +185,71 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.contain('Cannot connect to Orchestration Cluster');
+      expect(errorMessage.textContent).to.equal('Cannot connect to Orchestration Cluster.');
+      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+    });
+
+
+    it('should display error message without prefix (CLUSTER_UNAVAILABLE)', function() {
+
+      // given
+      const connections = DEFAULT_CONNECTIONS;
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'CLUSTER_UNAVAILABLE'
+      };
+
+      // when
+      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(errorMessage.textContent).to.equal('Cannot connect to Orchestration Cluster.');
+      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+    });
+
+
+    it('should display error message without prefix (UNKNOWN)', function() {
+
+      // given
+      const connections = DEFAULT_CONNECTIONS;
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'UNKNOWN'
+      };
+
+      // when
+      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(errorMessage.textContent).to.equal('Unknown error. Please check Orchestration Cluster status.');
+      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+    });
+
+
+    it('should display error message with prefix for other error types (UNAUTHORIZED)', function() {
+
+      // given
+      const connections = DEFAULT_CONNECTIONS;
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'UNAUTHORIZED'
+      };
+
+      // when
+      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(errorMessage.textContent).to.contain('Could not establish connection:');
+      expect(errorMessage.textContent).to.contain('Credentials rejected by server.');
     });
 
 

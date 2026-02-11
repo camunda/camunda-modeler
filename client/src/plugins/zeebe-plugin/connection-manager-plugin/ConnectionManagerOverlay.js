@@ -56,10 +56,21 @@ export function ConnectionManagerOverlay({
 
   const getConnectionFieldError = () => {
     if (connectionCheckResult?.success === false && connectionCheckResult.reason !== CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG) {
+      const { reason } = connectionCheckResult;
+      const shouldOmitPrefix = [
+        CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE,
+        CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE,
+        CONNECTION_CHECK_ERROR_REASONS.UNKNOWN
+      ].includes(reason);
+
+      if (shouldOmitPrefix) {
+        return getMessageForReason(reason);
+      }
+
       return (
         <>
           Could not establish connection: <br />
-          { getMessageForReason(connectionCheckResult?.reason) }
+          { getMessageForReason(reason) }
         </>
       );
     }
