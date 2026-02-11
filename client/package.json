@@ -52,7 +52,7 @@
     "dmn-js": "^17.6.0",
     "dmn-js-properties-panel": "^3.10.0",
     "dmn-js-shared": "^17.6.0",
-    "drag-tabs": "^2.3.1",
+    "drag-tabs": "^3.0.0",
     "events": "^3.0.0",
     "formik": "2.0.4",
     "ids": "^3.0.1",
