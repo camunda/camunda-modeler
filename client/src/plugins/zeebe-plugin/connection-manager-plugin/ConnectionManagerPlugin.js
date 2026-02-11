@@ -170,9 +170,16 @@ export default function ConnectionManagerPlugin(props) {
     })();
 
     const connectionCheckListener = (connectionCheckResult) => {
+      const endpoint = extractEndpointUrl(activeConnection);
+
       triggerAction('emit-event', {
         type: 'connectionManager.connectionStatusChanged',
-        payload: connectionCheckResult
+        payload: {
+          ...connectionCheckResult,
+          connectionId: activeConnection?.id,
+          connection: activeConnection,
+          isLocal: endpoint ? isLocalEndpoint(endpoint) : null
+        }
       });
       setConnectionCheckResult(connectionCheckResult);
     };
@@ -247,4 +254,46 @@ export default function ConnectionManagerPlugin(props) {
  */
 function tabNeedsConnection(tab) {
   return tab && [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form', 'rpa' ].includes(tab.type);
+}
+
+/**
+ * Checks if the endpoint is a local address (localhost, 127.0.0.1, etc.).
+ *
+ * @param {string} endpoint - The endpoint URL
+ * @returns {boolean} - True if local, false otherwise
+ */
+function isLocalEndpoint(endpoint) {
+  try {
+    const url = new URL(endpoint);
+    const hostname = url.hostname.toLowerCase();
+
+    return hostname === 'localhost' ||
+           hostname === '127.0.0.1' ||
+           hostname === '0.0.0.0';
+  } catch {
+
+    // Invalid URL
+    return false;
+  }
+}
+
+/**
+ * Extracts the endpoint URL from a connection object.
+ *
+ * @param {Object} connection - The connection configuration object
+ * @returns {string|null} - The endpoint URL or null if not found
+ */
+function extractEndpointUrl(connection) {
+
+  // Self-Managed uses contactPoint
+  if (connection.contactPoint) {
+    return connection.contactPoint;
+  }
+
+  // SaaS uses camundaCloudClusterUrl
+  if (connection.camundaCloudClusterUrl) {
+    return connection.camundaCloudClusterUrl;
+  }
+
+  return null;
 }

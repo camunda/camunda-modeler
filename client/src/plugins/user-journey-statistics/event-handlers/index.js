@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import ConnectionEventHandler from './ConnectionEventHandler';
 import DeploymentEventHandler from './DeploymentEventHandler';
 import LinkEventHandler from './LinkEventHandler';
 import OverlayEventHandler from './OverlayEventHandler';
@@ -18,6 +19,7 @@ import ModelingEventHandler from './ModelingEventHandler';
 import TaskTestingEventHandler from './TaskTestingEventHandler';
 
 export default [
+  ConnectionEventHandler,
   DeploymentEventHandler,
   FormEditorEventHandler,
   LinkEventHandler,
