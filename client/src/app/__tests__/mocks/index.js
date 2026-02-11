@@ -423,7 +423,7 @@ export class FileSystem extends Mock {
 }
 
 export class ZeebeAPI extends Mock {
-
+  checkConnection() {}
 }
 
 export class Backend extends Mock {

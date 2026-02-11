@@ -326,15 +326,16 @@ describe('<UserJourneyStatistics>', function() {
     const eventHandlers = instance._eventHandlers;
 
     // expect
-    expect(eventHandlers).to.have.length(8);
-    expectHandler(eventHandlers[0], 'DeploymentEventHandler');
-    expectHandler(eventHandlers[1], 'FormEditorEventHandler');
-    expectHandler(eventHandlers[2], 'LinkEventHandler');
-    expectHandler(eventHandlers[3], 'OverlayEventHandler');
-    expectHandler(eventHandlers[4], 'PingEventHandler');
-    expectHandler(eventHandlers[5], 'TabEventHandler');
-    expectHandler(eventHandlers[6], 'ModelingEventHandler');
-    expectHandler(eventHandlers[7], 'TaskTestingEventHandler');
+    expect(eventHandlers).to.have.length(9);
+    expectHandler(eventHandlers[0], 'ConnectionEventHandler');
+    expectHandler(eventHandlers[1], 'DeploymentEventHandler');
+    expectHandler(eventHandlers[2], 'FormEditorEventHandler');
+    expectHandler(eventHandlers[3], 'LinkEventHandler');
+    expectHandler(eventHandlers[4], 'OverlayEventHandler');
+    expectHandler(eventHandlers[5], 'PingEventHandler');
+    expectHandler(eventHandlers[6], 'TabEventHandler');
+    expectHandler(eventHandlers[7], 'ModelingEventHandler');
+    expectHandler(eventHandlers[8], 'TaskTestingEventHandler');
   });
 
 });
