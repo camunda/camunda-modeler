@@ -33,6 +33,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `min-dash@5.0.0`
 * `DEPS`: update to `min-dom@5.2.0`
 * `DEPS`: update to `ids@3.0.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.8.0`
 
 ### BPMN
 
