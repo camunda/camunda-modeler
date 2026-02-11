@@ -14,7 +14,7 @@ import React from 'react';
 
 import { act } from 'react-dom/test-utils';
 
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import { merge } from 'min-dash';
 
@@ -27,20 +27,20 @@ describe('<StartInstanceConfigForm>', function() {
   it('should render', function() {
 
     // when
-    const wrapper = createStartInstanceConfigForm();
+    const { container } = createStartInstanceConfigForm();
 
     // then
-    expect(wrapper.exists()).to.be.true;
+    expect(container.innerHTML).to.not.be.empty;
   });
 
 
   it('should render no header by default', function() {
 
     // when
-    const wrapper = createStartInstanceConfigForm();
+    const { container } = createStartInstanceConfigForm();
 
     // then
-    expect(wrapper.find('.section__header').exists()).to.be.false;
+    expect(container.querySelector('.section__header')).to.be.null;
   });
 
 
@@ -50,22 +50,22 @@ describe('<StartInstanceConfigForm>', function() {
     const renderHeader = 'Custom Header';
 
     // when
-    const wrapper = createStartInstanceConfigForm({
+    const { container } = createStartInstanceConfigForm({
       renderHeader
     });
 
     // then
-    expect(wrapper.find('.section__header').exists()).to.be.true;
+    expect(container.querySelector('.section__header')).to.not.be.null;
   });
 
 
   it('should render default submit button', function() {
 
     // when
-    const wrapper = createStartInstanceConfigForm();
+    const { container } = createStartInstanceConfigForm();
 
     // then
-    expect(wrapper.find('button[type="submit"]').text()).to.eql('Submit');
+    expect(container.querySelector('button[type="submit"]').textContent).to.eql('Submit');
   });
 
 
@@ -75,12 +75,12 @@ describe('<StartInstanceConfigForm>', function() {
     const renderSubmit = 'Custom Submit';
 
     // when
-    const wrapper = createStartInstanceConfigForm({
+    const { container } = createStartInstanceConfigForm({
       renderSubmit
     });
 
     // then
-    expect(wrapper.find('button[type="submit"]').text()).to.eql(renderSubmit);
+    expect(container.querySelector('button[type="submit"]').textContent).to.eql(renderSubmit);
   });
 
 
@@ -91,10 +91,10 @@ describe('<StartInstanceConfigForm>', function() {
       it('should render', function() {
 
         // when
-        const wrapper = createStartInstanceConfigForm();
+        const { container } = createStartInstanceConfigForm();
 
         // then
-        expect(wrapper.find('label[htmlFor="variables"]').exists()).to.be.true;
+        expect(container.querySelector('label[for="variables"]')).to.not.be.null;
       });
 
     });
@@ -109,24 +109,20 @@ describe('<StartInstanceConfigForm>', function() {
       // given
       const onSubmitSpy = sinon.spy();
 
-      const wrapper = createStartInstanceConfigForm({
+      const { container } = createStartInstanceConfigForm({
         onSubmit: onSubmitSpy
       });
 
       // when
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('change', {
+        fireEvent.change(container.querySelector('textarea[name="variables"]'), {
           target: { name: 'variables', value: '{ "foo": "bar" }' }
         });
       });
 
-      wrapper.update();
-
       await act(async () => {
-        wrapper.find('form').simulate('submit');
+        fireEvent.submit(container.querySelector('form'));
       });
-
-      wrapper.update();
 
       // then
       expect(onSubmitSpy).to.have.been.calledOnce;
@@ -143,21 +139,19 @@ describe('<StartInstanceConfigForm>', function() {
 
         // then
         expect(props.isSubmitting).to.be.true;
-        expect(wrapper.find('button[type="submit"]').prop('disabled')).to.be.true;
+        expect(container.querySelector('button[type="submit"]').disabled).to.be.true;
 
         return Promise.resolve();
       });
 
-      const wrapper = createStartInstanceConfigForm({
+      const { container } = createStartInstanceConfigForm({
         onSubmit: onSubmitSpy
       });
 
       // when
       await act(async () => {
-        wrapper.find('form').simulate('submit');
+        fireEvent.submit(container.querySelector('form'));
       });
-
-      wrapper.update();
 
       // then
       expect(onSubmitSpy).to.have.been.calledOnce;
@@ -198,7 +192,7 @@ describe('<StartInstanceConfigForm>', function() {
       const validateFieldSpy = sinon.spy(),
             validateFormSpy = sinon.spy();
 
-      const wrapper = createStartInstanceConfigForm({
+      const { container } = createStartInstanceConfigForm({
         validateField: validateFieldSpy,
         validateForm: validateFormSpy
       });
@@ -213,10 +207,8 @@ describe('<StartInstanceConfigForm>', function() {
       validateFormSpy.resetHistory();
 
       await act(async () => {
-        wrapper.find('form').simulate('submit');
+        fireEvent.submit(container.querySelector('form'));
       });
-
-      wrapper.update();
 
       // then
       expect(validateFieldSpy.callCount).to.eql(1);
@@ -230,7 +222,7 @@ describe('<StartInstanceConfigForm>', function() {
       const validateFieldSpy = sinon.spy(),
             validateFormSpy = sinon.spy();
 
-      const wrapper = createStartInstanceConfigForm({
+      const { container } = createStartInstanceConfigForm({
         validateField: validateFieldSpy,
         validateForm: validateFormSpy
       });
@@ -245,12 +237,10 @@ describe('<StartInstanceConfigForm>', function() {
       validateFormSpy.resetHistory();
 
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('blur', {
+        fireEvent.blur(container.querySelector('textarea[name="variables"]'), {
           target: { name: 'variables', value: '{ "foo": "bar" }' }
         });
       });
-
-      wrapper.update();
 
       // then
       expect(validateFieldSpy.callCount).to.eql(1);
@@ -263,18 +253,16 @@ describe('<StartInstanceConfigForm>', function() {
       // given
       const validateFieldSpy = sinon.spy();
 
-      const wrapper = createStartInstanceConfigForm({
+      const { container } = createStartInstanceConfigForm({
         validateField: validateFieldSpy
       });
 
       // when
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('change', {
+        fireEvent.change(container.querySelector('textarea[name="variables"]'), {
           target: { name: 'variables', value: '{ "foo": "bar" }' }
         });
       });
-
-      wrapper.update();
 
       // then
       expect(validateFieldSpy).to.have.been.calledWith('variables', '{ "foo": "bar" }');
@@ -284,39 +272,37 @@ describe('<StartInstanceConfigForm>', function() {
     it('should add field error (getFieldError)', async function() {
 
       // given
-      const wrapper = createStartInstanceConfigForm({
+      const { container } = createStartInstanceConfigForm({
         getFieldError: (fieldName) => {
           return fieldName === 'variables' ? 'Error' : undefined;
         }
       });
 
       // then
-      expect(wrapper.find('.invalid-feedback').text()).to.eql('Error');
+      expect(container.querySelector('.invalid-feedback').textContent).to.eql('Error');
     });
 
 
     it('should add field error (meta.error)', async function() {
 
       // given
-      const wrapper = createStartInstanceConfigForm({
+      const { container } = createStartInstanceConfigForm({
         validateField: (name, value) => name === 'variables' && value === '{' ? 'Error' : undefined
       });
 
       // when
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('change', {
+        fireEvent.change(container.querySelector('textarea[name="variables"]'), {
           target: { name: 'variables', value: '{' }
         });
       });
 
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('blur');
+        fireEvent.blur(container.querySelector('textarea[name="variables"]'));
       });
 
-      wrapper.update();
-
       // then
-      expect(wrapper.find('.invalid-feedback').text()).to.eql('Error');
+      expect(container.querySelector('.invalid-feedback').textContent).to.eql('Error');
     });
 
 
@@ -327,7 +313,7 @@ describe('<StartInstanceConfigForm>', function() {
 
       const getFieldError = (meta, fieldName) => fieldName === 'variables' ? error : undefined;
 
-      const wrapper = createStartInstanceConfigForm({
+      const { container } = createStartInstanceConfigForm({
         getFieldError,
         initialFieldValues: {
           endpoint: {
@@ -340,52 +326,46 @@ describe('<StartInstanceConfigForm>', function() {
       error = undefined;
 
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('change', {
+        fireEvent.change(container.querySelector('textarea[name="variables"]'), {
           target: { name: 'variables', value: 'bar' }
         });
       });
 
-      wrapper.update();
-
       // then
-      expect(wrapper.find('.invalid-feedback').exists()).to.be.false;
+      expect(container.querySelector('.invalid-feedback')).to.be.null;
     });
 
 
     it('should remove field error (meta.error)', async function() {
 
       // given
-      const wrapper = createStartInstanceConfigForm({
+      const { container } = createStartInstanceConfigForm({
         validateField: (name, value) => name === 'variables' && value === 'foo' ? 'Error' : undefined
       });
 
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('change', {
+        fireEvent.change(container.querySelector('textarea[name="variables"]'), {
           target: { name: 'variables', value: 'foo' }
         });
       });
 
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('blur');
+        fireEvent.blur(container.querySelector('textarea[name="variables"]'));
       });
-
-      wrapper.update();
 
       // when
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('change', {
+        fireEvent.change(container.querySelector('textarea[name="variables"]'), {
           target: { name: 'variables', value: 'bar' }
         });
       });
 
       await act(async () => {
-        wrapper.find('textarea[name="variables"]').simulate('blur');
+        fireEvent.blur(container.querySelector('textarea[name="variables"]'));
       });
 
-      wrapper.update();
 
-
-      expect(wrapper.find('.invalid-feedback').exists()).to.be.false;
+      expect(container.querySelector('.invalid-feedback')).to.be.null;
     });
 
   });
@@ -413,7 +393,7 @@ function createStartInstanceConfigForm(props = {}) {
 
   initialFieldValues = merge({}, DEFAULT_INITIAL_FIELD_VALUES, initialFieldValues);
 
-  return mount(<StartInstanceConfigForm
+  return render(<StartInstanceConfigForm
     getFieldError={ getFieldError }
     initialFieldValues={ initialFieldValues }
     onSubmit={ onSubmit }

@@ -10,9 +10,11 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render, fireEvent, screen } from '@testing-library/react';
 
 import { VersionInfo } from '../VersionInfo';
+
+import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 
 import Flags, { DISPLAY_VERSION } from '../../../util/Flags';
 
@@ -24,26 +26,16 @@ import Metadata from '../../../util/Metadata';
 
 describe('<VersionInfo>', function() {
 
-  it('should render', function() {
-
-    // given
-    const render = () => createVersionInfo();
-
-    // then
-    expect(render).not.to.throw();
-  });
-
-
   it('should open when button is clicked', function() {
 
     // given
-    const wrapper = createVersionInfo();
+    createVersionInfo();
 
     // when
-    wrapper.find('button').simulate('click');
+    fireEvent.click(screen.getByRole('button'));
 
     // then
-    expect(wrapper.exists('VersionInfoOverlay'), 'Overlay should be displayed').to.be.true;
+    expect(screen.getByRole('dialog')).to.exist;
   });
 
 
@@ -51,27 +43,27 @@ describe('<VersionInfo>', function() {
 
     // given
     const subscribe = createSubscribe();
-    const wrapper = createVersionInfo({ subscribe });
+    createVersionInfo({ subscribe });
 
     // when
     subscribe.emit({ source: 'menu' });
 
     // then
-    expect(wrapper.exists('VersionInfoOverlay'), 'Overlay should be displayed').to.be.true;
+    expect(screen.getByRole('dialog'), 'Overlay should be displayed').to.exist;
   });
 
 
   it('should close when button is clicked again', function() {
 
     // given
-    const wrapper = createVersionInfo();
+    createVersionInfo();
 
     // when
-    wrapper.find('button').simulate('click');
-    wrapper.find('button').simulate('click');
+    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(screen.getByRole('button'));
 
     // then
-    expect(wrapper.exists('VersionInfoOverlay'), 'Overlay should be gone').to.be.false;
+    expect(screen.queryByRole('dialog'), 'Overlay should be gone').to.be.null;
   });
 
 
@@ -85,10 +77,10 @@ describe('<VersionInfo>', function() {
     it('should display unread marker when app is opened for the first time', function() {
 
       // given
-      const wrapper = createVersionInfo();
+      createVersionInfo();
 
       // then
-      expect(wrapper.exists('UnreadMarker'), 'Unread marker should be displayed').to.be.true;
+      expect(screen.getByLabelText('unread'), 'Unread marker should be displayed').to.exist;
     });
 
 
@@ -97,10 +89,10 @@ describe('<VersionInfo>', function() {
       // given
       const get = key => key === 'versionInfo' && { lastOpenedVersion: 'OLD' };
       const config = new Config({ get });
-      const wrapper = createVersionInfo({ config });
+      createVersionInfo({ config });
 
       // then
-      expect(wrapper.exists('UnreadMarker'), 'Unread marker should be displayed').to.be.true;
+      expect(screen.getByLabelText('unread'), 'Unread marker should be displayed').to.exist;
     });
 
 
@@ -109,14 +101,14 @@ describe('<VersionInfo>', function() {
       // given
       const get = key => key === 'versionInfo' && { lastOpenedVersion: 'OLD' };
       const config = new Config({ get });
-      const wrapper = createVersionInfo({ config });
+      createVersionInfo({ config });
 
       // when
-      wrapper.find('button').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      return expectEventually(wrapper, () => {
-        expect(wrapper.exists('UnreadMarker'), 'Unread marker should be gone').to.be.false;
+      return expectEventually(() => {
+        expect(screen.queryByLabelText('unread'), 'Unread marker should be gone').to.be.null;
       });
     });
 
@@ -126,11 +118,11 @@ describe('<VersionInfo>', function() {
       // given
       const get = key => key === 'versionInfo' && { lastOpenedVersion: 'TEST_VERSION' };
       const config = new Config({ get });
-      const wrapper = createVersionInfo({ config });
+      createVersionInfo({ config });
 
       // then
-      return expectEventually(wrapper, () => {
-        expect(wrapper.exists('UnreadMarker'), 'Unread marker should be gone').to.be.false;
+      return expectEventually(() => {
+        expect(screen.queryByLabelText('unread'), 'Unread marker should be gone').to.be.null;
       });
     });
   });
@@ -142,10 +134,10 @@ describe('<VersionInfo>', function() {
 
       // given
       const triggerAction = sinon.spy();
-      const wrapper = createVersionInfo({ triggerAction });
+      createVersionInfo({ triggerAction });
 
       // when
-      wrapper.find('button').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
       expect(triggerAction).to.have.been.calledOnceWith(
@@ -158,11 +150,11 @@ describe('<VersionInfo>', function() {
 
       // given
       const triggerAction = sinon.spy();
-      const wrapper = createVersionInfo({ triggerAction });
-      const instance = wrapper.instance();
+      const subscribe = createSubscribe();
+      createVersionInfo({ subscribe, triggerAction });
 
       // when
-      instance.open('menu');
+      subscribe.emit({ source: 'menu' });
 
       // then
       expect(triggerAction).to.have.been.calledOnceWith(
@@ -176,9 +168,8 @@ describe('<VersionInfo>', function() {
       // given
       const triggerAction = sinon.spy();
       const subscribe = createSubscribe();
-      const wrapper = createVersionInfo({ subscribe, triggerAction });
-      const instance = wrapper.instance();
-      instance.open('menu');
+      createVersionInfo({ subscribe, triggerAction });
+      subscribe.emit({ source: 'menu' });
       triggerAction.resetHistory();
 
       // when
@@ -197,10 +188,10 @@ describe('<VersionInfo>', function() {
       // given
       Metadata.init({ version: '0.1.2' });
 
-      const wrapper = createVersionInfo();
+      createVersionInfo();
 
       // when
-      const buttonHtml = wrapper.find('button').html();
+      const buttonHtml = screen.getByRole('button').innerHTML;
 
       // then
       expect(buttonHtml).to.contain('0.1.2');
@@ -212,10 +203,10 @@ describe('<VersionInfo>', function() {
       // given
       Flags.init({ [ DISPLAY_VERSION ]: '1.2.3.4' });
 
-      const wrapper = createVersionInfo();
+      createVersionInfo();
 
       // when
-      const buttonHtml = wrapper.find('button').html();
+      const buttonHtml = screen.getByRole('button').innerHTML;
 
       // then
       expect(buttonHtml).to.contain('1.2.3.4');
@@ -226,25 +217,30 @@ describe('<VersionInfo>', function() {
 });
 
 
-function createVersionInfo(props = {}, mount = shallow) {
+function createVersionInfo(props = {}) {
   const {
     config = new Config(),
     subscribe = noop,
     triggerAction = noop
   } = props;
 
-  return mount(
-    <VersionInfo
-      config={ config }
-      subscribe={ subscribe }
-      triggerAction={ triggerAction }
-    />
+  render(
+    <SlotFillRoot>
+      <Slot name="status-bar__app" />
+      <VersionInfo
+        config={ config }
+        subscribe={ subscribe }
+        triggerAction={ triggerAction }
+      />
+    </SlotFillRoot>
   );
 }
 
-function noop() {}
+function noop() {
+  return { cancel() {} };
+}
 
-async function expectEventually(wrapper, expectStatement) {
+async function expectEventually(expectStatement) {
   const sleep = time => {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -254,8 +250,6 @@ async function expectEventually(wrapper, expectStatement) {
   };
 
   for (let i = 0; i < 10; i++) {
-    wrapper.update();
-
     try {
       expectStatement();
 

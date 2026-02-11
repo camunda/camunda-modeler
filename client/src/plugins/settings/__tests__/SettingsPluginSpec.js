@@ -10,14 +10,11 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 
 import SettingsPlugin from '../SettingsPlugin';
 
 import Settings from '../../../app/Settings';
-
-import { Modal } from '../../../shared/ui';
-
 
 
 describe('SettingsPlugin', function() {
@@ -25,10 +22,10 @@ describe('SettingsPlugin', function() {
   it('should render', function() {
 
     // when
-    const { wrapper } = render();
+    renderSettings();
 
     // then
-    expect(wrapper.find(Modal)).to.have.length(1);
+    expect(screen.getByRole('dialog')).to.exist;
   });
 
 });
@@ -38,7 +35,7 @@ describe('SettingsPlugin', function() {
 
 const noop = () => {};
 
-function render(props = {}) {
+function renderSettings(props = {}) {
 
   const settings = new Settings({ config: {
     get: noop,
@@ -47,9 +44,10 @@ function render(props = {}) {
 
   const subscribe = (_, cb) => {
     cb();
+    return { cancel: noop };
   };
 
-  const wrapper = mount(
+  return render(
     <SettingsPlugin
       subscribe={ subscribe }
       triggerAction={ noop }
@@ -57,6 +55,4 @@ function render(props = {}) {
       { ...props }
     />
   );
-
-  return { wrapper, settings };
 }

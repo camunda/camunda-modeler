@@ -10,9 +10,9 @@
 
 /* global sinon */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import ElementTemplatesModal from '../ElementTemplatesModal';
 
@@ -26,12 +26,12 @@ describe('<ElementTemplatesModal>', function() {
       // when
       const {
         instance,
-        wrapper
+        container
       } = await createElementTemplatesModal();
 
       // then
       expect(instance).to.exist;
-      expect(wrapper).to.exist;
+      expect(container).to.exist;
     });
 
 
@@ -147,20 +147,19 @@ describe('<ElementTemplatesModal>', function() {
     const elementTemplate = { id: 'foo' };
 
     let instance,
-        triggerActionSpy,
-        wrapper;
+        triggerActionSpy;
 
     beforeEach(async function() {
       triggerActionSpy = sinon.spy();
 
-      ({ instance, wrapper } = await createElementTemplatesModal({ triggerAction: triggerActionSpy }));
+      ({ instance } = await createElementTemplatesModal({ triggerAction: triggerActionSpy }));
     });
 
 
     it('should apply element template', function() {
 
       // given
-      wrapper.setState({
+      instance.setState({
         activeTab: createTab('bpmn')
       });
 
@@ -175,7 +174,7 @@ describe('<ElementTemplatesModal>', function() {
     it('should not apply element template', function() {
 
       // given
-      wrapper.setState({
+      instance.setState({
         activeTab: createTab('dmn')
       });
 
@@ -192,11 +191,10 @@ describe('<ElementTemplatesModal>', function() {
   describe('modal', function() {
 
 
-    let instance,
-        wrapper;
+    let instance;
 
     beforeEach(async function() {
-      ({ instance, wrapper } = await createElementTemplatesModal());
+      ({ instance } = await createElementTemplatesModal());
     });
 
 
@@ -206,23 +204,23 @@ describe('<ElementTemplatesModal>', function() {
       instance.onOpen();
 
       // then
-      expect(wrapper.state('showModal')).to.be.true;
+      expect(instance.state.showModal).to.be.true;
     });
 
 
     it('should close modal', function() {
 
       // given
-      wrapper.setState({ showModal: true });
+      instance.setState({ showModal: true });
 
       // assume
-      expect(wrapper.state('showModal')).to.be.true;
+      expect(instance.state.showModal).to.be.true;
 
       // when
       instance.onClose();
 
       // then
-      expect(wrapper.state('showModal')).to.be.false;
+      expect(instance.state.showModal).to.be.false;
     });
 
   });
@@ -233,21 +231,25 @@ async function createElementTemplatesModal(props = {}) {
   const defaultProps = {
     config: {},
     displayNotification() {},
-    subscribe() {},
+    subscribe() {
+      return { cancel() {} };
+    },
     triggerAction() {}
   };
 
-  const wrapper = shallow(<ElementTemplatesModal { ...{ ...defaultProps, ...props } } />);
+  const ref = createRef();
 
-  wrapper.setState({
+  const { container } = render(<ElementTemplatesModal ref={ ref } { ...{ ...defaultProps, ...props } } />);
+
+  const instance = ref.current;
+
+  instance.setState({
     activeTab: createTab()
   });
 
-  const instance = wrapper.instance();
-
   return {
     instance,
-    wrapper
+    container
   };
 }
 
@@ -259,8 +261,10 @@ function createSubscribe(event) {
       callback = _callback;
     }
 
-    return function cancel() {
-      callback = null;
+    return {
+      cancel() {
+        callback = null;
+      }
     };
   }
 

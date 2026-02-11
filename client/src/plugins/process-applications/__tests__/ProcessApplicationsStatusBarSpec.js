@@ -12,10 +12,9 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, fireEvent, screen } from '@testing-library/react';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
-import { Overlay } from '../../../shared/ui';
 
 import { TabsProvider } from '../../../app/__tests__/mocks';
 
@@ -28,61 +27,60 @@ describe('<ProcessApplicationsStatusBar>', function() {
     it('should render and indicate process application', function() {
 
       // when
-      const { wrapper } = createProcessApplicationsStatusBar();
+      createProcessApplicationsStatusBar();
 
       // then
-      expect(wrapper.find('.btn')).to.have.length(1);
-      expect(wrapper.find('.btn').hasClass('has-process-application')).to.be.true;
+      const button = screen.getByRole('button');
+      expect(button).to.exist;
+      expect(button.classList.contains('has-process-application')).to.be.true;
     });
 
 
     it('should open overlay on click', function() {
 
       // given
-      const { wrapper } = createProcessApplicationsStatusBar();
+      createProcessApplicationsStatusBar();
 
       // when
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(wrapper.find(Overlay)).to.have.length(1);
-      expect(wrapper.find(Overlay).hasClass('process-application')).to.be.true;
+      expect(screen.getByRole('dialog')).to.exist;
     });
 
 
     it('should close overlay on click', function() {
 
       // given
-      const { wrapper } = createProcessApplicationsStatusBar();
+      createProcessApplicationsStatusBar();
 
       // when
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(wrapper.find(Overlay)).to.have.length(1);
+      expect(screen.getByRole('dialog')).to.exist;
 
       // when
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.queryAllByRole('button')[0]);
 
       // then
-      expect(wrapper.find(Overlay)).to.have.length(0);
+      expect(screen.queryByRole('dialog')).to.not.exist;
     });
 
 
     it('should open file on clicking file', function() {
 
-
       // given
       const onOpenSpy = sinon.spy();
 
-      const { wrapper } = createProcessApplicationsStatusBar({
+      createProcessApplicationsStatusBar({
         onOpen: onOpenSpy
       });
 
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // when
-      wrapper.find('.process-application-files .file').at(0).find('button').simulate('click');
+      fireEvent.click(screen.getByText('foo.bpmn'));
 
       // then
       expect(onOpenSpy).to.have.been.calledOnce;
@@ -96,52 +94,53 @@ describe('<ProcessApplicationsStatusBar>', function() {
     it('should render and indicate no process application', function() {
 
       // when
-      const { wrapper } = createProcessApplicationsStatusBar({
+      createProcessApplicationsStatusBar({
         processApplication: null,
         processApplicationItems: []
       });
 
       // then
-      expect(wrapper.find('.btn')).to.have.length(1);
-      expect(wrapper.find('.btn').hasClass('has-process-application')).to.be.false;
+      const button = screen.getByRole('button');
+      expect(button).to.exist;
+      expect(button.classList.contains('has-process-application')).to.be.false;
     });
 
 
     it('should open overlay on click', function() {
 
       // given
-      const { wrapper } = createProcessApplicationsStatusBar({
+      createProcessApplicationsStatusBar({
         processApplication: null,
         processApplicationItems: []
       });
 
       // when
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(wrapper.find('.create-process-application-btn')).to.have.length(1);
+      expect(screen.getByText(/Create a new process application/i)).to.exist;
     });
 
 
     it('should close overlay on click', function() {
 
       // given
-      const { wrapper } = createProcessApplicationsStatusBar({
+      createProcessApplicationsStatusBar({
         processApplication: null,
         processApplicationItems: []
       });
 
       // when
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(wrapper.find(Overlay)).to.have.length(1);
+      expect(screen.getByRole('dialog')).to.exist;
 
       // when
-      wrapper.find('.btn:not(.create-process-application-btn)').simulate('click');
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       // then
-      expect(wrapper.find(Overlay)).to.have.length(0);
+      expect(screen.queryByRole('dialog')).to.not.exist;
     });
 
 
@@ -150,16 +149,16 @@ describe('<ProcessApplicationsStatusBar>', function() {
       // given
       const onCreateProcessApplicationSpy = sinon.spy();
 
-      const wrapper = createProcessApplicationsStatusBar({
+      createProcessApplicationsStatusBar({
         processApplication: null,
         processApplicationItems: [],
         onCreateProcessApplication: onCreateProcessApplicationSpy
-      }).wrapper;
+      });
 
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // when
-      wrapper.find('.create-process-application-btn').simulate('click');
+      fireEvent.click(screen.getByText(/Create a new process application/i));
 
       // then
       expect(onCreateProcessApplicationSpy).to.have.been.calledOnce;
@@ -171,7 +170,7 @@ describe('<ProcessApplicationsStatusBar>', function() {
   it('should not render for Camunda 7 files', function() {
 
     // when
-    const { wrapper } = createProcessApplicationsStatusBar({
+    createProcessApplicationsStatusBar({
       processApplication: null,
       processApplicationItems: [],
       activeTab: {
@@ -181,7 +180,7 @@ describe('<ProcessApplicationsStatusBar>', function() {
     });
 
     // then
-    expect(wrapper.find('.btn')).to.have.length(0);
+    expect(screen.queryByRole('button')).to.not.exist;
   });
 
 
@@ -190,13 +189,12 @@ describe('<ProcessApplicationsStatusBar>', function() {
     it('should render name of process application file', function() {
 
       // when
-      const wrapper = createProcessApplicationsStatusBar().wrapper;
+      createProcessApplicationsStatusBar();
 
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(wrapper.find('.process-application-file .file')).to.have.length(1);
-      expect(wrapper.find('.process-application-file .file').at(0).text()).to.eql('.process-application');
+      expect(screen.getByText('.process-application')).to.exist;
     });
 
 
@@ -205,14 +203,14 @@ describe('<ProcessApplicationsStatusBar>', function() {
       // given
       const revealInFileExplorerSpy = sinon.spy();
 
-      const wrapper = createProcessApplicationsStatusBar({
+      createProcessApplicationsStatusBar({
         onRevealInFileExplorer: revealInFileExplorerSpy
-      }).wrapper;
+      });
 
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // when
-      wrapper.find('.process-application-file .file').at(0).find('button').simulate('click');
+      fireEvent.click(screen.getByText('.process-application'));
 
       // then
       expect(revealInFileExplorerSpy).to.have.been.calledOnceWith('C://process-application/.process-application');
@@ -222,15 +220,14 @@ describe('<ProcessApplicationsStatusBar>', function() {
     it('should render names process application files sorted', function() {
 
       // when
-      const wrapper = createProcessApplicationsStatusBar().wrapper;
+      createProcessApplicationsStatusBar();
 
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(wrapper.find('.process-application-files .file')).to.have.length(3);
-      expect(wrapper.find('.process-application-files .file').at(0).text()).to.eql('foo.bpmn');
-      expect(wrapper.find('.process-application-files .file').at(1).text()).to.eql('bar.dmn');
-      expect(wrapper.find('.process-application-files .file').at(2).text()).to.eql('baz.form');
+      expect(screen.getByText('foo.bpmn')).to.exist;
+      expect(screen.getByText('bar.dmn')).to.exist;
+      expect(screen.getByText('baz.form')).to.exist;
     });
 
 
@@ -239,14 +236,14 @@ describe('<ProcessApplicationsStatusBar>', function() {
       // given
       const onOpenSpy = sinon.spy();
 
-      const wrapper = createProcessApplicationsStatusBar({
+      createProcessApplicationsStatusBar({
         onOpen: onOpenSpy
-      }).wrapper;
+      });
 
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // when
-      wrapper.find('.process-application-files .file').at(0).find('button').simulate('click');
+      fireEvent.click(screen.getByText('foo.bpmn'));
 
       // then
       expect(onOpenSpy).to.have.been.calledOnceWith('C://process-application/foo.bpmn');
@@ -262,15 +259,14 @@ describe('<ProcessApplicationsStatusBar>', function() {
       ];
 
       // when
-      const { wrapper } = createProcessApplicationsStatusBar({
+      createProcessApplicationsStatusBar({
         processApplicationItems
       });
 
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(wrapper.find('.process-application-files .file')).to.have.length(4);
-      expect(wrapper.find('.process-application-files .file').at(3).text()).to.eql('error.bpmn');
+      expect(screen.getByText('error.bpmn')).to.exist;
     });
 
 
@@ -284,15 +280,15 @@ describe('<ProcessApplicationsStatusBar>', function() {
         PROCESS_APPLICATION_ITEM_ERROR
       ];
 
-      const { wrapper } = createProcessApplicationsStatusBar({
+      createProcessApplicationsStatusBar({
         onOpen: onOpenSpy,
         processApplicationItems
       });
 
-      wrapper.find('.btn').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // when
-      wrapper.find('.process-application-files .file').at(3).find('button').simulate('click');
+      fireEvent.click(screen.getByText('error.bpmn'));
 
       // then
       expect(onOpenSpy).not.to.have.been.called;
@@ -379,7 +375,7 @@ const PROCESS_APPLICATION_ITEM_ERROR = {
   }
 };
 
-function createProcessApplicationsStatusBar(props = {}, render = mount) {
+function createProcessApplicationsStatusBar(props = {}) {
   const {
     activeTab = DEFAULT_OPEN_TAB,
     onOpen = () => {},
@@ -390,7 +386,7 @@ function createProcessApplicationsStatusBar(props = {}, render = mount) {
     tabsProvider = new TabsProvider(activeTab)
   } = props;
 
-  const wrapper = render(<SlotFillRoot>
+  render(<SlotFillRoot>
     <Slot name="status-bar__file" />
     <ProcessApplicationsStatusBar
       activeTab={ activeTab }
@@ -403,8 +399,4 @@ function createProcessApplicationsStatusBar(props = {}, render = mount) {
       { ...props }
     />
   </SlotFillRoot>);
-
-  const instance = wrapper.instance();
-
-  return { wrapper, instance };
 }

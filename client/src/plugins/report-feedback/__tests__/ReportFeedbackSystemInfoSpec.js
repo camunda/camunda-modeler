@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import { ReportFeedbackSystemInfoSection } from '../ReportFeedbackSystemInfoSection';
 
@@ -20,16 +20,16 @@ describe('<ReportFeedbackSystemInfoSection>', function() {
   it('should render', function() {
 
     // when
-    const render = () => createReportFeedbackSystemInfo();
+    const doRender = () => createReportFeedbackSystemInfo();
 
     // then
-    expect(render).not.to.throw();
+    expect(doRender).not.to.throw();
   });
 
 });
 
-function createReportFeedbackSystemInfo(props = {}, mount = shallow) {
-  return mount(
+function createReportFeedbackSystemInfo(props = {}) {
+  return render(
     <ReportFeedbackSystemInfoSection
       onSubmit={ props.onSubmit || noop }
     />

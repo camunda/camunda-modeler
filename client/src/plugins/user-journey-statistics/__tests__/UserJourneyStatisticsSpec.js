@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import Flags, { MIXPANEL_TOKEN, MIXPANEL_STAGE, DISABLE_REMOTE_INTERACTION } from '../../../util/Flags';
 
@@ -35,7 +35,7 @@ describe('<UserJourneyStatistics>', function() {
 
   it('should render', function() {
 
-    shallow(<UserJourneyStatistics subscribe={ () => {} } _getGlobal={ getGlobal } />);
+    render(<UserJourneyStatistics subscribe={ () => {} } _getGlobal={ getGlobal } />);
   });
 
 

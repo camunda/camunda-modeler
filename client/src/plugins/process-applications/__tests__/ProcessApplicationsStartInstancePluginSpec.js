@@ -12,9 +12,7 @@
 
 import React from 'react';
 
-import { waitFor } from '@testing-library/react';
-
-import { mount } from 'enzyme';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 
 import ProcessApplicationsStartInstancePlugin from '../ProcessApplicationsStartInstancePlugin';
 
@@ -25,46 +23,37 @@ import { Deployment, StartInstance, ZeebeAPI } from '../../../app/__tests__/mock
 
 describe('ProcessApplicationsStartInstancePlugin', function() {
 
-  beforeEach(function() {
-    document.body.innerHTML = '';
-  });
-
-  afterEach(function() {
-    document.body.innerHTML = '';
-  });
-
-
   it('should not render status bar item by default', function() {
 
     // when
-    const wrapper = createProcessApplicationsStartInstancePlugin();
+    const { container } = createProcessApplicationsStartInstancePlugin();
 
-    const statusBarItem = wrapper.find('.btn');
+    const statusBarItem = container.querySelector('.btn');
 
     // then
-    expect(statusBarItem.exists()).to.be.false;
+    expect(statusBarItem).to.be.null;
   });
 
 
   it('should render status bar item when active tab can be started and process application exists', async function() {
 
     // when
-    const wrapper = createProcessApplicationsStartInstancePlugin({
+    const { container } = createProcessApplicationsStartInstancePlugin({
       processApplication: DEFAULT_PROCESS_APPLICATION
     });
 
     // then
-    const statusBarItem = wrapper.find('.btn');
+    const statusBarItem = container.querySelector('.btn');
 
-    expect(statusBarItem.exists()).to.be.true;
-    expect(statusBarItem.prop('title')).to.equal('Open process application start instance');
+    expect(statusBarItem).to.not.be.null;
+    expect(statusBarItem.getAttribute('title')).to.equal('Open process application start instance');
   });
 
 
   it('should not render status bar item when active tab cannot be started', async function() {
 
     // when
-    const wrapper = createProcessApplicationsStartInstancePlugin({
+    const { container } = createProcessApplicationsStartInstancePlugin({
       activeTab: {
         type: 'cloud-dmn'
       },
@@ -72,9 +61,9 @@ describe('ProcessApplicationsStartInstancePlugin', function() {
     });
 
     // then
-    const statusBarItem = wrapper.find('.btn');
+    const statusBarItem = container.querySelector('.btn');
 
-    expect(statusBarItem.exists()).to.be.false;
+    expect(statusBarItem).to.be.null;
   });
 
 
@@ -87,13 +76,13 @@ describe('ProcessApplicationsStartInstancePlugin', function() {
       }
     });
 
-    const wrapper = createProcessApplicationsStartInstancePlugin({
+    const { container } = createProcessApplicationsStartInstancePlugin({
       processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     // then
     await waitFor(() => {
@@ -113,13 +102,13 @@ describe('ProcessApplicationsStartInstancePlugin', function() {
       }
     });
 
-    const wrapper = createProcessApplicationsStartInstancePlugin({
+    const { container } = createProcessApplicationsStartInstancePlugin({
       processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     // then
     await waitFor(() => {
@@ -129,7 +118,7 @@ describe('ProcessApplicationsStartInstancePlugin', function() {
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     await waitFor(() => {
       const overlay = document.querySelector('[role="dialog"]');
@@ -177,7 +166,7 @@ function createProcessApplicationsStartInstancePlugin(props = {}) {
     triggerAction = () => {}
   } = props;
 
-  return mount(<SlotFillRoot>
+  return render(<SlotFillRoot>
     <Slot name="status-bar__file" />
     <ProcessApplicationsStartInstancePlugin
       _getGlobal={ _getGlobal }

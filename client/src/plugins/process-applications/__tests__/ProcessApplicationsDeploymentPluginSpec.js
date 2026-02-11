@@ -12,9 +12,7 @@
 
 import React from 'react';
 
-import { waitFor } from '@testing-library/react';
-
-import { mount } from 'enzyme';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 
 import ProcessApplicationsDeploymentPlugin, { canDeployItem } from '../ProcessApplicationsDeploymentPlugin';
 
@@ -25,39 +23,30 @@ import { Deployment, ZeebeAPI } from '../../../app/__tests__/mocks';
 
 describe('ProcessApplicationsDeploymentPlugin', function() {
 
-  beforeEach(function() {
-    document.body.innerHTML = '';
-  });
-
-  afterEach(function() {
-    document.body.innerHTML = '';
-  });
-
-
   it('should not render status bar item by default', function() {
 
     // when
-    const wrapper = createProcessApplicationsDeploymentPlugin();
+    const { container } = createProcessApplicationsDeploymentPlugin();
 
-    const statusBarItem = wrapper.find('.btn');
+    const statusBarItem = container.querySelector('.btn');
 
     // then
-    expect(statusBarItem.exists()).to.be.false;
+    expect(statusBarItem).to.be.null;
   });
 
 
   it('should render status bar item when active tab can be deployed and process application exists', async function() {
 
     // when
-    const wrapper = createProcessApplicationsDeploymentPlugin({
+    const { container } = createProcessApplicationsDeploymentPlugin({
       processApplication: DEFAULT_PROCESS_APPLICATION
     });
 
     // then
-    const statusBarItem = wrapper.find('.btn');
+    const statusBarItem = container.querySelector('.btn');
 
-    expect(statusBarItem.exists()).to.be.true;
-    expect(statusBarItem.prop('title')).to.equal('Open process application deployment');
+    expect(statusBarItem).to.not.be.null;
+    expect(statusBarItem.getAttribute('title')).to.equal('Open process application deployment');
   });
 
 
@@ -70,13 +59,13 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
       }
     });
 
-    const wrapper = createProcessApplicationsDeploymentPlugin({
+    const { container } = createProcessApplicationsDeploymentPlugin({
       processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     // then
     await waitFor(() => {
@@ -96,14 +85,14 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
       }
     });
 
-    const wrapper = createProcessApplicationsDeploymentPlugin({
+    const { container } = createProcessApplicationsDeploymentPlugin({
       processApplication: DEFAULT_PROCESS_APPLICATION,
       processApplicationItems: DEFAULT_ITEMS.filter((item) => [ 'bpmn', 'processApplication' ].includes(item.metadata.type)),
       triggerAction
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     await waitFor(() => {
       const overlay = document.querySelector('[role="dialog"]');
@@ -127,13 +116,13 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
       }
     });
 
-    const wrapper = createProcessApplicationsDeploymentPlugin({
+    const { container } = createProcessApplicationsDeploymentPlugin({
       processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     await waitFor(() => {
       const overlay = document.querySelector('[role="dialog"]');
@@ -157,13 +146,13 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
       }
     });
 
-    const wrapper = createProcessApplicationsDeploymentPlugin({
+    const { container } = createProcessApplicationsDeploymentPlugin({
       processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     // then
     await waitFor(() => {
@@ -173,7 +162,7 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     await waitFor(() => {
       const overlay = document.querySelector('[role="dialog"]');
@@ -227,7 +216,7 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     };
 
     // when
-    const wrapper = createProcessApplicationsDeploymentPlugin({
+    const { unmount } = createProcessApplicationsDeploymentPlugin({
       _getGlobal: getGlobal,
       processApplication: DEFAULT_PROCESS_APPLICATION
     });
@@ -238,7 +227,7 @@ describe('ProcessApplicationsDeploymentPlugin', function() {
     });
 
     // when
-    wrapper.unmount();
+    unmount();
 
     // then
     await waitFor(() => {
@@ -320,7 +309,7 @@ function createProcessApplicationsDeploymentPlugin(props = {}) {
     triggerAction = () => {}
   } = props;
 
-  return mount(<SlotFillRoot>
+  return render(<SlotFillRoot>
     <Slot name="status-bar__file" />
     <ProcessApplicationsDeploymentPlugin
       _getGlobal={ _getGlobal }

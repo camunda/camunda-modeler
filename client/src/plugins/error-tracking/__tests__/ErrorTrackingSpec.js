@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import Flags, { SENTRY_DSN, DISABLE_REMOTE_INTERACTION } from '../../../util/Flags';
 import Metadata from '../../../util/Metadata';
@@ -28,8 +28,7 @@ describe('<ErrorTracking>', function() {
 
 
   it('should render', function() {
-
-    shallow(<ErrorTracking />);
+    render(<ErrorTracking />);
   });
 
 

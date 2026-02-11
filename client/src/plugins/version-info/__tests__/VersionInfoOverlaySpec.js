@@ -10,38 +10,36 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
-
-import MochaTestContainer from 'mocha-test-container-support';
+import { render, screen } from '@testing-library/react';
 
 import { VersionInfoOverlay } from '../VersionInfoOverlay';
 
 
 describe('<VersionInfoOverlay>', function() {
 
+  let anchor;
+
+  beforeEach(function() {
+    anchor = document.createElement('button');
+    document.body.appendChild(anchor);
+  });
+
+  afterEach(function() {
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.removeChild(anchor);
+    }
+  });
+
   it('should render', function() {
 
-    // given
-    const container = MochaTestContainer.get(this);
-    const anchor = document.createElement('button');
-    container.appendChild(anchor);
-
     // when
-    const render = () => createVersionInfoOverlay({ anchor });
+    render(
+      <VersionInfoOverlay
+        anchor={ anchor }
+      />
+    );
 
     // then
-    expect(render).not.to.throw();
+    expect(screen.getByRole('dialog')).to.exist;
   });
 });
-
-
-function createVersionInfoOverlay(props = {}, mount = shallow) {
-  return mount(
-    <VersionInfoOverlay
-      anchor={ props.anchor }
-      onClose={ props.onClose || noop }
-    />
-  );
-}
-
-function noop() {}

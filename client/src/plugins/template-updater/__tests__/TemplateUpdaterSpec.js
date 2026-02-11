@@ -10,9 +10,9 @@
 
 /* global sinon */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import TemplateUpdater from '..';
 
@@ -167,7 +167,9 @@ describe('<TemplateUpdater>', function() {
 });
 
 async function createTemplateUpdater(props = {}) {
-  const wrapper = shallow(<TemplateUpdater { ...{
+  const ref = createRef();
+
+  render(<TemplateUpdater ref={ ref } { ...{
     _getGlobal: () => {},
     displayNotification: () => {},
     log: () => {},
@@ -176,15 +178,14 @@ async function createTemplateUpdater(props = {}) {
     ...props
   } } />);
 
-  wrapper.setState({
+  const instance = ref.current;
+
+  instance.setState({
     activeTab: createTab()
   });
 
-  const instance = wrapper.instance();
-
   return {
-    instance,
-    wrapper
+    instance
   };
 }
 

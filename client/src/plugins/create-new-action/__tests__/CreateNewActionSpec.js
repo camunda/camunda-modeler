@@ -10,11 +10,9 @@
 
 /* global sinon */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import {
-  mount
-} from 'enzyme';
+import { render, fireEvent, screen } from '@testing-library/react';
 
 import { CreateNewAction } from '../CreateNewAction';
 
@@ -31,35 +29,14 @@ describe('<CreateNewAction>', function() {
   it('should open', function() {
 
     // given
-    const {
-      tree
-    } = createTabAction();
-
-    // assume
-    expect(tree.exists('Overlay')).to.be.false;
+    createTabAction();
 
     // when
-    tree.find('button').simulate('click');
+    fireEvent.click(screen.getByRole('button'));
 
     // then
-    expect(tree.exists('Overlay')).to.be.true;
-  });
-
-
-  it('should render items', function() {
-
-    // given
-    const {
-      tree
-    } = createTabAction();
-
-    tree.find('button').simulate('click');
-
-    // when
-    const items = tree.find('Overlay li');
-
-    // then
-    expect(items).to.have.length(2);
+    expect(screen.getByRole('button', { name: 'foo' })).to.exist;
+    expect(screen.getByRole('button', { name: 'bar' })).to.exist;
   });
 
 
@@ -72,16 +49,13 @@ describe('<CreateNewAction>', function() {
       { key: 'C', items: [ ...DEFAULT_ITEMS ] }
     ];
 
-    const {
-      tree
-    } = createTabAction({ newFileItems });
-
-    tree.find('button').simulate('click');
+    createTabAction({ newFileItems });
 
     // when
-    const sections = tree.find('Overlay section');
+    fireEvent.click(screen.getByRole('button'));
 
     // then
+    const sections = screen.getAllByRole('menu');
     expect(sections).to.have.length(3);
   });
 
@@ -97,7 +71,7 @@ describe('<CreateNewAction>', function() {
       instance
     } = createTabAction({ subscribe });
 
-    instance.open = spy;
+    instance.current.open = spy;
 
     // when
     subscribe.emit();
@@ -117,17 +91,18 @@ function createTabAction(options = {}) {
     subscribe
   } = options;
 
-  const tree = mount(
+  const ref = createRef();
+
+  const { container } = render(
     <CreateNewAction
+      ref={ ref }
       newFileItems={ newFileItems || DEFAULT_ITEMS }
       subscribe={ subscribe || createSubscribe() } />
   );
 
-  const instance = tree.instance();
-
   return {
-    tree,
-    instance
+    container,
+    instance: ref
   };
 }
 

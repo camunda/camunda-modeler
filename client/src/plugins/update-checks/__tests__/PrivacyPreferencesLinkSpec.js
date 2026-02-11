@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import PrivacyPreferencesLink from '../PrivacyPreferencesLink';
 
@@ -20,31 +20,31 @@ import PrivacyPreferencesLink from '../PrivacyPreferencesLink';
 describe('<PrivacyPreferencesLink>', function() {
 
   it('should render', function() {
-    shallow(<PrivacyPreferencesLink />);
+    render(<PrivacyPreferencesLink />);
   });
 
 
   it('should display if updates check are disabled', function() {
 
     // when
-    const wrapper = createPrivacyPreferencesLink({
+    const { container } = createPrivacyPreferencesLink({
       updateChecksEnabled: false
     });
 
     // then
-    expect(wrapper.exists('a')).to.be.true;
+    expect(container.querySelector('a')).to.exist;
   });
 
 
   it('should NOT display if updates check are enabled', function() {
 
     // when
-    const wrapper = createPrivacyPreferencesLink({
+    const { container } = createPrivacyPreferencesLink({
       updateChecksEnabled: true
     });
 
     // then
-    expect(wrapper.exists('a')).to.be.false;
+    expect(container.querySelector('a')).to.be.null;
   });
 
 
@@ -53,13 +53,13 @@ describe('<PrivacyPreferencesLink>', function() {
     // given
     const openSpy = sinon.spy();
 
-    const wrapper = createPrivacyPreferencesLink({
+    const { container } = createPrivacyPreferencesLink({
       updateChecksEnabled: false,
       onOpenPrivacyPreferences: openSpy
     });
 
     // when
-    wrapper.find('a').simulate('click');
+    fireEvent.click(container.querySelector('a'));
 
     // then
     expect(openSpy).to.have.been.calledOnce;
@@ -76,14 +76,12 @@ function createPrivacyPreferencesLink(props = {}) {
     updateChecksEnabled
   } = props;
 
-  const wrapper = shallow(
+  return render(
     <PrivacyPreferencesLink
       updateChecksEnabled={ updateChecksEnabled }
       onOpenPrivacyPreferences={ onOpenPrivacyPreferences || noop }
     />
   );
-
-  return wrapper;
 }
 
 function noop() {}

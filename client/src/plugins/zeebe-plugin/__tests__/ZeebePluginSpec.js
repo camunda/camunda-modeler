@@ -10,9 +10,7 @@
 
 import React from 'react';
 
-import {
-  shallow
-} from 'enzyme';
+import { render } from '@testing-library/react';
 
 import ZeebePlugin from '..';
 
@@ -21,10 +19,15 @@ describe('<ZeebePlugin>', function() {
   it('should render', function() {
 
     // when
-    const wrapper = shallow(<ZeebePlugin _getGlobal={ () => {} } />);
+    const { container } = render(
+      <ZeebePlugin
+        _getGlobal={ () => {} }
+        subscribe={ () => ({ cancel() {} }) }
+      />
+    );
 
     // then
-    expect(wrapper.exists()).to.be.true;
+    expect(container).to.exist;
   });
 
 });

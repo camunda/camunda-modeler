@@ -12,9 +12,7 @@
 
 import React from 'react';
 
-import { waitFor } from '@testing-library/react';
-
-import { mount } from 'enzyme';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 
 import StartInstancePlugin from '../StartInstancePlugin';
 
@@ -25,24 +23,15 @@ import { Deployment, StartInstance, ZeebeAPI } from '../../../../app/__tests__/m
 
 describe('StartInstancePlugin', function() {
 
-  beforeEach(function() {
-    document.body.innerHTML = '';
-  });
-
-  afterEach(function() {
-    document.body.innerHTML = '';
-  });
-
-
   it('should not render status bar item by default', function() {
 
     // when
-    const wrapper = createStartInstancePlugin();
+    const { container } = createStartInstancePlugin();
 
-    const statusBarItem = wrapper.find('.btn');
+    const statusBarItem = container.querySelector('.btn');
 
     // then
-    expect(statusBarItem.exists()).to.be.false;
+    expect(statusBarItem).to.be.null;
   });
 
 
@@ -58,13 +47,13 @@ describe('StartInstancePlugin', function() {
     });
 
     // when
-    const wrapper = createStartInstancePlugin({ subscribe });
+    const { container } = createStartInstancePlugin({ subscribe });
 
     // then
-    const statusBarItem = wrapper.find('.btn');
+    const statusBarItem = container.querySelector('.btn');
 
-    expect(statusBarItem.exists()).to.be.true;
-    expect(statusBarItem.prop('title')).to.equal('Open start instance');
+    expect(statusBarItem).to.not.be.null;
+    expect(statusBarItem.getAttribute('title')).to.equal('Open start instance');
   });
 
 
@@ -82,12 +71,12 @@ describe('StartInstancePlugin', function() {
     });
 
     // when
-    const wrapper = createStartInstancePlugin({ subscribe });
+    const { container } = createStartInstancePlugin({ subscribe });
 
     // then
-    const statusBarItem = wrapper.find('.btn');
+    const statusBarItem = container.querySelector('.btn');
 
-    expect(statusBarItem.exists()).to.be.false;
+    expect(statusBarItem).to.be.null;
   });
 
 
@@ -108,10 +97,10 @@ describe('StartInstancePlugin', function() {
       }
     });
 
-    const wrapper = createStartInstancePlugin({ subscribe, triggerAction });
+    const { container } = createStartInstancePlugin({ subscribe, triggerAction });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     // then
     await waitFor(() => {
@@ -139,10 +128,10 @@ describe('StartInstancePlugin', function() {
       }
     });
 
-    const wrapper = createStartInstancePlugin({ subscribe, triggerAction });
+    const { container } = createStartInstancePlugin({ subscribe, triggerAction });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     // then
     await waitFor(() => {
@@ -152,7 +141,7 @@ describe('StartInstancePlugin', function() {
     });
 
     // when
-    wrapper.find('.btn').simulate('click');
+    fireEvent.click(container.querySelector('.btn'));
 
     await waitFor(() => {
       const overlay = document.querySelector('[role="dialog"]');
@@ -209,7 +198,7 @@ function createStartInstancePlugin(props = {}) {
     triggerAction = () => {}
   } = props;
 
-  return mount(<SlotFillRoot>
+  return render(<SlotFillRoot>
     <Slot name="status-bar__file" />
     <StartInstancePlugin
       _getFromApp={ _getFromApp }

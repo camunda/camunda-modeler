@@ -14,7 +14,7 @@ import React from 'react';
 
 import { act } from 'react-dom/test-utils';
 
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import { merge } from 'min-dash';
 
@@ -27,20 +27,20 @@ describe('<DeploymentConfigForm>', function() {
   it('should render', function() {
 
     // when
-    const wrapper = createDeploymentConfigForm();
+    const { container } = createDeploymentConfigForm();
 
     // then
-    expect(wrapper.exists()).to.be.true;
+    expect(container.innerHTML).to.not.be.empty;
   });
 
 
   it('should render no header by default', function() {
 
     // when
-    const wrapper = createDeploymentConfigForm();
+    const { container } = createDeploymentConfigForm();
 
     // then
-    expect(wrapper.find('.section__header').exists()).to.be.false;
+    expect(container.querySelector('.section__header')).to.be.null;
   });
 
 
@@ -50,22 +50,22 @@ describe('<DeploymentConfigForm>', function() {
     const renderHeader = 'Custom Header';
 
     // when
-    const wrapper = createDeploymentConfigForm({
+    const { container } = createDeploymentConfigForm({
       renderHeader
     });
 
     // then
-    expect(wrapper.find('.section__header').exists()).to.be.true;
+    expect(container.querySelector('.section__header')).to.not.be.null;
   });
 
 
   it('should render default submit button', function() {
 
     // when
-    const wrapper = createDeploymentConfigForm();
+    const { container } = createDeploymentConfigForm();
 
     // then
-    expect(wrapper.find('button[type="submit"]').text()).to.eql('Submit');
+    expect(container.querySelector('button[type="submit"]').textContent).to.eql('Submit');
   });
 
 
@@ -75,12 +75,12 @@ describe('<DeploymentConfigForm>', function() {
     const renderSubmit = 'Custom Submit';
 
     // when
-    const wrapper = createDeploymentConfigForm({
+    const { container } = createDeploymentConfigForm({
       renderSubmit
     });
 
     // then
-    expect(wrapper.find('button[type="submit"]').text()).to.eql(renderSubmit);
+    expect(container.querySelector('button[type="submit"]').textContent).to.eql(renderSubmit);
   });
 
 
@@ -91,17 +91,15 @@ describe('<DeploymentConfigForm>', function() {
       // given
       const onSubmitSpy = sinon.spy();
 
-      const wrapper = createDeploymentConfigForm({
+      const { container } = createDeploymentConfigForm({
         onSubmit: onSubmitSpy
       });
 
       // when
 
       await act(async () => {
-        wrapper.find('button[type="submit"]').simulate('click');
+        fireEvent.click(container.querySelector('button[type="submit"]'));
       });
-
-      wrapper.update();
 
       // then
       expect(onSubmitSpy).to.have.been.calledOnce;
@@ -132,7 +130,7 @@ function createDeploymentConfigForm(props = {}) {
 
   initialFieldValues = merge({}, DEFAULT_INITIAL_FIELD_VALUES, initialFieldValues);
 
-  return mount(<DeploymentConfigForm
+  return render(<DeploymentConfigForm
     getFieldError={ getFieldError }
     initialFieldValues={ initialFieldValues }
     onSubmit={ onSubmit }
