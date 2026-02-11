@@ -22,6 +22,7 @@ import { DEFAULT_ENDPOINT } from '../../../../app/zeebe/Deployment';
 import { Deployment, ZeebeAPI } from '../../../../app/__tests__/mocks';
 
 describe('ConnectionManagerPlugin', function() {
+
   it('should not render status bar item by default', function() {
 
     // when
@@ -369,6 +370,53 @@ describe('ConnectionManagerPlugin', function() {
       });
     });
 
+
+    describe('events', function() {
+
+      it('should emit connectionManager.connectionStatusChanged on connection check result', async function() {
+
+        // given
+        const subscribe = (event, callback) => {
+          if (event === 'app.activeTabChanged') {
+
+            // required as otherwise the config is set to `null` later
+            requestAnimationFrame(() => callback({
+              activeTab: DEFAULT_ACTIVE_TAB
+            }));
+          }
+          return { cancel: () => {} };
+        };
+
+        const settings = createMockSettings({
+          'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+        });
+
+        const triggerAction = sinon.spy();
+
+        // when
+        createConnectionManagerPlugin({
+          getConnectionForTab: async () => DEFAULT_CONNECTIONS[0],
+          subscribe,
+          settings,
+          triggerAction,
+          connectionCheckResult: { success: true }
+        });
+
+        // then
+        await waitFor(() => {
+          expect(triggerAction).to.have.been.calledWith(
+            'emit-event',
+            sinon.match({
+              type: 'connectionManager.connectionStatusChanged',
+              payload: {
+                name: 'plugin',
+                success: true
+              }
+            })
+          );
+        }, { timeout: 10000 });
+      });
+    });
   });
 
 
@@ -918,13 +966,17 @@ const DEFAULT_CONNECTIONS = [
   {
     id: 'connection-1',
     name: 'Test Connection 1',
-    url: 'http://localhost:8080'
+    'targetType': 'selfHosted',
+    'authType': 'none',
+    'contactPoint': 'http://localhost:8080'
   },
   {
     id: 'connection-2',
     name: 'Test Connection 2',
-    url: 'http://localhost:8081'
-  }
+    'targetType': 'selfHosted',
+    'authType': 'none',
+    'contactPoint': 'http://localhost:8081'
+  },
 ];
 
 const DEFAULT_TABS_PROVIDER = {
@@ -991,13 +1043,12 @@ function createConnectionManagerPlugin(props = {}, globals = {}) {
 
 function createPluginProps(props = {}, globals = {}) {
   const {
+    getConnectionForTab = async file => DEFAULT_ENDPOINT,
     _getFromApp = DEFAULT_GET_FROM_APP,
     _getGlobal = (name) => {
       if (name === 'deployment') {
         return new Deployment({
-          async getConnectionForTab(file) {
-            return DEFAULT_ENDPOINT;
-          },
+          getConnectionForTab,
 
           async setConnectionForFile(file, connectionId) {
             return;
@@ -1009,7 +1060,7 @@ function createPluginProps(props = {}, globals = {}) {
           ...globals.deployment
         });
       } else if (name === 'zeebeAPI') {
-        return new ZeebeAPI();
+        return new ZeebeAPI({ checkConnection: () => connectionCheckResult });
       }
     },
     displayNotification = () => {},
