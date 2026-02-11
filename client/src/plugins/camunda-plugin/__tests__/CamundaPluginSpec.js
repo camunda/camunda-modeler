@@ -10,9 +10,9 @@
 
 /* global sinon */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import CamundaPlugin from '..';
 
@@ -29,35 +29,53 @@ describe('<CamundaPlugin>', function() {
     fetch.restore();
   });
 
+  const noop = () => {};
+
+  const defaultProps = {
+    subscribe: noop,
+    triggerAction: noop,
+    displayNotification: noop,
+    log: noop,
+    _getGlobal: noop,
+    config: {
+      get: () => {},
+      getForFile: () => {},
+      set: () => {}
+    }
+  };
+
 
   it('should render', function() {
-    shallow(<CamundaPlugin />);
+    render(<CamundaPlugin { ...defaultProps } />);
   });
 
 
-  it('should expose DeployService', function() {
+  it('should expose DeploymentTool methods via deployRef', function() {
 
     // given
-    const tree = shallow(<CamundaPlugin />);
+    const ref = createRef();
+    render(<CamundaPlugin ref={ ref } { ...defaultProps } />);
+    const instance = ref.current;
+
+    // DeployService methods map to these DeploymentTool methods
     const methods = [
       'deployWithConfiguration',
-      'getSavedDeployConfiguration',
-      'getDeployConfigurationFromUserInput',
-      'saveDeployConfiguration',
+      'getSavedConfiguration',
+      'getConfigurationFromUserInput',
+      'saveConfiguration',
       'canDeployWithConfiguration',
       'getVersion',
       'closeOverlay'
     ];
 
     // when
-    const startInstance = tree.find('StartInstanceTool');
-    const deployService = startInstance.prop('deployService');
+    const deploymentTool = instance.deployRef.current;
 
     // then
-    expect(deployService).to.exist;
+    expect(deploymentTool).to.exist;
 
     for (const method of methods) {
-      expect(typeof deployService[method]).to.be.eql('function');
+      expect(typeof deploymentTool[method]).to.be.eql('function');
     }
   });
 });

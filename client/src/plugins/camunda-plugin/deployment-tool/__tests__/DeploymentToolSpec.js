@@ -10,9 +10,9 @@
 
 /* global sinon */
 
-import React from 'react';
+import React, { createRef } from 'react';
 
-import { mount, shallow } from 'enzyme';
+import { render, fireEvent, screen } from '@testing-library/react';
 import {
   omit
 } from 'min-dash';
@@ -59,10 +59,10 @@ describe('<DeploymentTool>', function() {
     const activeTab = createTab({ type: 'bpmn' });
 
     // when
-    const { wrapper } = createDeploymentTool({ activeTab });
+    const { wrapper } = createDeploymentTool({ activeTab, withFillSlot: true });
 
     // then
-    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(1);
+    expect(wrapper.querySelectorAll(BUTTON_SELECTOR)).to.have.lengthOf(1);
   });
 
 
@@ -72,10 +72,10 @@ describe('<DeploymentTool>', function() {
     const activeTab = createTab({ type: 'form' });
 
     // when
-    const { wrapper } = createDeploymentTool({ activeTab });
+    const { wrapper } = createDeploymentTool({ activeTab, withFillSlot: true });
 
     // then
-    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(1);
+    expect(wrapper.querySelectorAll(BUTTON_SELECTOR)).to.have.lengthOf(1);
   });
 
 
@@ -85,10 +85,10 @@ describe('<DeploymentTool>', function() {
     const activeTab = createTab({ type: 'empty', id: '__empty' });
 
     // when
-    const { wrapper } = createDeploymentTool({ activeTab });
+    const { wrapper } = createDeploymentTool({ activeTab, withFillSlot: true });
 
     // then
-    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
+    expect(wrapper.querySelectorAll(BUTTON_SELECTOR)).to.have.lengthOf(0);
   });
 
 
@@ -98,10 +98,10 @@ describe('<DeploymentTool>', function() {
     const activeTab = createTab();
 
     // when
-    const { wrapper } = createDeploymentTool({ activeTab });
+    const { wrapper } = createDeploymentTool({ activeTab, withFillSlot: true });
 
     // then
-    expect(wrapper.find(BUTTON_SELECTOR)).to.have.lengthOf(0);
+    expect(wrapper.querySelectorAll(BUTTON_SELECTOR)).to.have.lengthOf(0);
   });
 
 
@@ -1233,18 +1233,18 @@ describe('<DeploymentTool>', function() {
           activeTab,
           withFillSlot: true,
           keepOpen: true
-        }, mount);
+        });
 
         // when
-        const statusBarBtn = wrapper.find("button[title='Deploy current diagram']");
-        statusBarBtn.simulate('click');
+        const statusBarBtn = wrapper.querySelector("button[title='Deploy current diagram']");
+        fireEvent.click(statusBarBtn);
 
         await new Promise(function(resolve) {
           setTimeout(resolve, 10);
         });
 
         // then
-        expect(wrapper.html().includes('form')).to.be.true;
+        expect(screen.getByText('Deploy diagram')).to.exist;
       });
 
 
@@ -1261,24 +1261,24 @@ describe('<DeploymentTool>', function() {
           subscribe,
           withFillSlot: true,
           keepOpen: true
-        }, mount);
+        });
 
         // open overlay
-        const statusBarBtn = wrapper.find("button[title='Deploy current diagram']");
-        statusBarBtn.simulate('click');
+        const statusBarBtn = wrapper.querySelector("button[title='Deploy current diagram']");
+        fireEvent.click(statusBarBtn);
 
         await new Promise(function(resolve) {
           setTimeout(resolve, 10);
         });
 
         // assume
-        expect(wrapper.html().includes('form')).to.be.true;
+        expect(screen.getByText('Deploy diagram')).to.exist;
 
         // then
         callSubscriber({ activeTab: createTab() });
 
         // expect
-        expect(wrapper.html().includes('form')).to.not.be.true;
+        expect(wrapper.innerHTML.includes('form')).to.not.be.true;
       });
 
     });
@@ -1316,10 +1316,10 @@ describe('<DeploymentTool>', function() {
 
             // then
             try {
-              const cockpitLink = mount(notification.content).find('a').first();
-              const { href } = cockpitLink.props();
+              const { container } = render(notification.content);
+              const cockpitLink = container.querySelector('a');
 
-              expect(href).to.eql(expectedCockpitLink);
+              expect(cockpitLink.href).to.eql(expectedCockpitLink);
 
               done();
             } catch (error) {
@@ -1391,43 +1391,43 @@ describe('<DeploymentTool>', function() {
       return this.props.checkConnectionSpy && this.props.checkConnectionSpy(...args);
     };
 
-    // closes automatically when modal is opened
-    componentDidUpdate(...args) {
-      super.componentDidUpdate && super.componentDidUpdate(...args);
+    // Override to bypass overlay rendering entirely (avoids anchor requirement)
+    async getConfigurationFromUserInput(tab, providedConfiguration, uiOptions) {
+      const { keepOpen } = this.props;
 
-      const { overlayState } = this.state;
-      const {
-        userAction,
-        endpoint,
-        deployment,
-        keepOpen
-      } = this.props;
+      // If keepOpen is true, use the real implementation (needs anchor)
+      if (keepOpen) {
+        return super.getConfigurationFromUserInput(tab, providedConfiguration, uiOptions);
+      }
 
-      if (overlayState) {
-        const action = userAction || 'deploy';
+      // Otherwise, simulate user interaction without rendering overlay
+      const configuration = await this.getDefaultConfiguration(tab, providedConfiguration);
+      const action = this.props.userAction || 'deploy';
 
-        const configuration = action !== 'cancel' && {
+      if (action === 'cancel') {
+        return { action: 'cancel', configuration: null };
+      }
+
+      return {
+        action,
+        configuration: {
           endpoint: {
-            ...overlayState.configuration.endpoint,
-            ...endpoint
+            ...configuration.endpoint,
+            ...this.props.endpoint
           },
           deployment: {
-            ...overlayState.configuration.deployment,
-            ...deployment
+            ...configuration.deployment,
+            ...this.props.deployment
           }
-        };
-
-        if (!keepOpen) {
-          overlayState.handleClose(action, configuration);
         }
-      }
+      };
     }
   }
 
   function createDeploymentTool({
     activeTab = createTab(),
     ...props
-  } = {}, render = shallow) {
+  } = {}) {
     const subscribe = (event, callback) => {
       event === 'app.activeTabChanged' && callback({ activeTab });
     };
@@ -1448,8 +1448,11 @@ describe('<DeploymentTool>', function() {
       ...props.config
     });
 
-    const DeploymentTool = (
+    const ref = createRef();
+
+    const DeploymentToolComponent = (
       <TestDeploymentTool
+        ref={ ref }
         subscribe={ props.subcribe || subscribe }
         triggerAction={ triggerAction }
         displayNotification={ noop }
@@ -1463,19 +1466,20 @@ describe('<DeploymentTool>', function() {
     const DeploymentToolWithFillSlot = (
       <SlotFillRoot>
         <Slot name="status-bar__file" />
-        {DeploymentTool}
+        {DeploymentToolComponent}
       </SlotFillRoot>
     );
 
-    const wrapper = render(
-      props.withFillSlot ? DeploymentToolWithFillSlot : DeploymentTool
+    const { container } = render(
+      props.withFillSlot ? DeploymentToolWithFillSlot : DeploymentToolComponent
     );
 
     return {
-      wrapper,
-      instance: wrapper.instance()
+      wrapper: container,
+      instance: ref.current
     };
-  }});
+  }
+});
 
 function createTab(overrides = {}) {
   return {

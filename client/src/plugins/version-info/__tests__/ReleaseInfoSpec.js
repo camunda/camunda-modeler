@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import { ReleaseInfo } from '../ReleaseInfo';
 
@@ -20,9 +20,9 @@ describe('<ReleaseInfo>', function() {
   it('should render', function() {
 
     // given
-    const render = () => shallow(<ReleaseInfo />);
+    const doRender = () => render(<ReleaseInfo />);
 
     // then
-    expect(render).not.to.throw();
+    expect(doRender).not.to.throw();
   });
 });

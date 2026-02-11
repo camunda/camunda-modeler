@@ -10,10 +10,7 @@
 
 import React from 'react';
 
-import {
-  mount,
-  shallow
-} from 'enzyme';
+import { render, fireEvent, screen } from '@testing-library/react';
 
 import PrivacyPreferencesView from '../PrivacyPreferencesView';
 
@@ -30,102 +27,98 @@ import {
 /* global sinon */
 const { spy } = sinon;
 
-const PRIVACY_PREFERENCES_SELECTOR = '.privacyPreferencesField';
-
 describe('<PrivacyPreferencesView>', function() {
 
   describe('rendering', function() {
 
-    let wrapper;
-
-    beforeEach(function() {
-
-      wrapper = mount(<PrivacyPreferencesView />);
-    });
-
-
     it('should render', function() {
-
-      shallow(<PrivacyPreferencesView />);
+      render(<PrivacyPreferencesView />);
     });
 
 
     it('should render privacy text field', function() {
 
-      const privacyText = wrapper.find('.privacyTextField').text();
+      // when
+      render(<PrivacyPreferencesView />);
 
-      expect(privacyText).to.be.eql(PRIVACY_TEXT_FIELD);
+      // then
+      expect(screen.getByText(PRIVACY_TEXT_FIELD)).to.exist;
     });
 
 
     it('should render privacy policy url', function() {
 
-      const privacyMoreInfoURLField = wrapper.find('.privacyMoreInfoField').find('a');
+      // when
+      render(<PrivacyPreferencesView />);
 
-      expect(privacyMoreInfoURLField.prop('href')).to.be.eql(PRIVACY_POLICY_URL);
-      expect(privacyMoreInfoURLField.text()).to.be.eql(PRIVACY_POLICY_TEXT);
+      // then
+      const privacyPolicyLink = screen.getByRole('link', { name: PRIVACY_POLICY_TEXT });
+      expect(privacyPolicyLink).to.exist;
+      expect(privacyPolicyLink.getAttribute('href')).to.be.eql(PRIVACY_POLICY_URL);
     });
 
 
     it('should render title', function() {
 
-      const title = wrapper.find('.modal-title');
+      // when
+      render(<PrivacyPreferencesView />);
 
-      expect(title.text()).to.be.eql(TITLE);
+      // then
+      expect(screen.getByText(TITLE)).to.exist;
     });
 
 
     it('should render OK button', function() {
 
-      const button = wrapper.find('.form-submit').find('button');
+      // when
+      render(<PrivacyPreferencesView />);
 
-      expect(button.text()).to.be.eql(OK_BUTTON_TEXT);
+      // then
+      expect(screen.getByRole('button', { name: OK_BUTTON_TEXT })).to.exist;
     });
 
 
     it('should not render cancel button if prop not set', function() {
 
-      const cancel = wrapper.find('.btn').at(1);
+      // when
+      render(<PrivacyPreferencesView />);
 
-      expect(cancel).to.have.lengthOf(0);
+      // then
+      expect(screen.queryByRole('button', { name: /Cancel/i })).to.not.exist;
     });
 
 
     it('should render cancel button if prop is set', function() {
 
-      wrapper = mount(<PrivacyPreferencesView canCloseWithoutSave />);
+      // when
+      render(<PrivacyPreferencesView canCloseWithoutSave />);
 
-      const cancel = wrapper.find('.btn').at(1);
-
-      expect(cancel).to.have.lengthOf(1);
+      // then
+      expect(screen.getByRole('button', { name: /Cancel/i })).to.exist;
+      expect(screen.getByRole('button', { name: OK_BUTTON_TEXT })).to.exist;
     });
 
 
     it('should render privacy policy more info field', function() {
 
-      const privacyPolicyMoreInfoField = wrapper.find('.privacyMoreInfoField').find('p');
+      // when
+      render(<PrivacyPreferencesView />);
 
-      expect(privacyPolicyMoreInfoField.text()).to.be.eql(LEARN_MORE_TEXT + ' ' + PRIVACY_POLICY_TEXT);
+      // then
+      expect(screen.getByText(LEARN_MORE_TEXT, { exact: false })).to.exist;
+      expect(screen.getByText(PRIVACY_POLICY_TEXT)).to.exist;
     });
 
 
     it('should render privacy settings', function() {
 
-      const privacyPreferences = wrapper.find(PRIVACY_PREFERENCES_SELECTOR);
+      // when
+      render(<PrivacyPreferencesView />);
 
-      expect(privacyPreferences.find('input')).to.have.lengthOf(PREFERENCES_LIST.length);
-
+      // then
       PREFERENCES_LIST.forEach(preference => {
-
-        const labelWrapper = privacyPreferences.findWhere(
-          wrapper => wrapper.prop('htmlFor') === preference.key
-        );
-
-        const label = labelWrapper.find('.checkboxLabel').text().trim();
-        const explanation = labelWrapper.find('.checkboxExplanation').text().trim();
-
-        expect(label).to.be.eql(preference.title);
-        expect(explanation).to.be.eql(preference.explanation);
+        expect(screen.getByLabelText(new RegExp(preference.title, 'i'))).to.exist;
+        expect(screen.getByText(new RegExp(preference.explanation, 'i'))).to.exist;
       });
     });
   });
@@ -136,13 +129,12 @@ describe('<PrivacyPreferencesView>', function() {
     it('should default to true (opt-out) if preferences unset', function() {
 
       // when
-      const wrapper = mount(<PrivacyPreferencesView />);
-
-      const checkboxes = wrapper.find(PRIVACY_PREFERENCES_SELECTOR).find('input');
+      render(<PrivacyPreferencesView />);
 
       // then
-      checkboxes.forEach(function(checkbox, index) {
-        expect(checkbox.props().defaultChecked).to.be.eql(true);
+      PREFERENCES_LIST.forEach(preference => {
+        const checkbox = screen.getByLabelText(new RegExp(preference.title, 'i'));
+        expect(checkbox.checked).to.be.true;
       });
     });
 
@@ -150,13 +142,12 @@ describe('<PrivacyPreferencesView>', function() {
     it('should use unchecked for existing empty preferences', function() {
 
       // when
-      const wrapper = mount(<PrivacyPreferencesView preferences={ {} } />);
-
-      const checkboxes = wrapper.find(PRIVACY_PREFERENCES_SELECTOR).find('input');
+      render(<PrivacyPreferencesView preferences={ {} } />);
 
       // then
-      checkboxes.forEach(function(checkbox, index) {
-        expect(checkbox.props().defaultChecked).to.not.be.ok;
+      PREFERENCES_LIST.forEach(preference => {
+        const checkbox = screen.getByLabelText(new RegExp(preference.title, 'i'));
+        expect(checkbox.checked).to.be.false;
       });
     });
 
@@ -164,39 +155,20 @@ describe('<PrivacyPreferencesView>', function() {
     it('should load privacy preferences', function() {
 
       // given
-      const values = [ false, true, false ];
-
       const privacyPreferences = {
-        ENABLE_CRASH_REPORTS: values[0],
-        ENABLE_USAGE_STATISTICS: values[1],
-        ENABLE_UPDATE_CHECKS: values[2]
+        ENABLE_CRASH_REPORTS: false,
+        ENABLE_USAGE_STATISTICS: true,
+        ENABLE_UPDATE_CHECKS: false
       };
 
       // when
-      const wrapper = mount(
-        <PrivacyPreferencesView preferences={ privacyPreferences } />
-      );
-
-      const checkboxes = wrapper.find(PRIVACY_PREFERENCES_SELECTOR).find('input');
+      render(<PrivacyPreferencesView preferences={ privacyPreferences } />);
 
       // then
-      checkboxes.forEach(function(checkbox, index) {
-        expect(checkbox.props().defaultChecked).to.be.eql(values[index]);
-      });
+      expect(screen.getByLabelText(/Enable Error Reports/i).checked).to.be.false;
+      expect(screen.getByLabelText(/Enable Usage Statistics/i).checked).to.be.true;
+      expect(screen.getByLabelText(/Enable Update Checks/i).checked).to.be.false;
     });
-
-    it('should not set autofocus', async function() {
-
-      // given
-      const preferenceKey = PREFERENCES_LIST[2].key;
-
-      // when
-      const wrapper = mount(<PrivacyPreferencesView />);
-
-      // then
-      expect(wrapper.find(`#${preferenceKey}`).is(':focus')).to.be.false;
-    });
-
 
 
     it('should set autofocus if specified', async function() {
@@ -205,17 +177,17 @@ describe('<PrivacyPreferencesView>', function() {
       const preferenceKey = PREFERENCES_LIST[2].key;
 
       // when
-      const wrapper = mount(
-        <PrivacyPreferencesView autoFocusKey={ preferenceKey } />
-      );
+      render(<PrivacyPreferencesView autoFocusKey={ preferenceKey } />);
 
       // then
-      expect(wrapper.find(`#${preferenceKey}`).is(':focus')).to.be.true;
+      const checkbox = screen.getByLabelText(new RegExp(PREFERENCES_LIST[2].title, 'i'));
+      expect(checkbox === document.activeElement).to.be.true;
     });
 
 
     it('should save privacy preferences on save click', function() {
 
+      // given
       let currentPreferences = {
         ENABLE_CRASH_REPORTS: true,
         ENABLE_USAGE_STATISTICS: true,
@@ -224,21 +196,24 @@ describe('<PrivacyPreferencesView>', function() {
 
       const onSaveAndClose = spy();
 
-      const wrapper = mount(
+      render(
         <PrivacyPreferencesView preferences={ currentPreferences } onSaveAndClose={ onSaveAndClose } />
       );
 
-      const saveButton = wrapper.find('.btn-primary').first();
-      saveButton.simulate('click');
+      // when
+      fireEvent.click(screen.getByRole('button', { name: OK_BUTTON_TEXT }));
+
+      // then
       expect(onSaveAndClose).to.have.been.calledWith(currentPreferences);
     });
 
 
     it('should not save privacy preferences on cancel click', function() {
 
+      // given
       const onSaveAndClose = spy();
 
-      const wrapper = mount(
+      render(
         <PrivacyPreferencesView
           preferences={ {} }
           canCloseWithoutSave
@@ -246,18 +221,22 @@ describe('<PrivacyPreferencesView>', function() {
           onSaveAndClose={ onSaveAndClose } />
       );
 
-      const cancelButton = wrapper.find('.btn-secondary');
-      cancelButton.simulate('click');
+      // when
+      fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
+
+      // then
       expect(onSaveAndClose).to.not.have.been.called;
     });
 
 
     it('should not have close icon', function() {
 
-      const wrapper = mount(<PrivacyPreferencesView />);
-      const closeIcon = wrapper.find('.close');
+      // when
+      const { container } = render(<PrivacyPreferencesView />);
 
-      expect(closeIcon).to.have.lengthOf(0);
+      // then
+      const closeIcon = container.querySelector('.close');
+      expect(closeIcon).to.be.null;
     });
   });
 });

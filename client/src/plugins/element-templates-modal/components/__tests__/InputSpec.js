@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 
 import Input from '../Input';
 
@@ -23,10 +23,10 @@ describe('<Input>', function() {
   it('should render', function() {
 
     // when
-    const wrapper = mount(<Input />);
+    const { container } = render(<Input />);
 
     // then
-    expect(wrapper).to.exist;
+    expect(container.querySelector('input')).to.exist;
   });
 
 
@@ -35,10 +35,11 @@ describe('<Input>', function() {
     // given
     const onChangeSpy = sinon.spy();
 
-    const wrapper = mount(<Input onChange={ onChangeSpy } />);
+    const { container } = render(<Input onChange={ onChangeSpy } />);
 
     // when
-    wrapper.find('input').first().simulate('change', { target: { value: 'foo' } });
+    const input = container.querySelector('input');
+    fireEvent.change(input, { target: { value: 'foo' } });
 
     // then
     expect(onChangeSpy).to.have.been.calledWith('foo');

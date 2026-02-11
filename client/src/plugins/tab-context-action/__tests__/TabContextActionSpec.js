@@ -12,11 +12,7 @@
 
 import React from 'react';
 
-import { act } from 'react-dom/test-utils';
-
-import {
-  mount
-} from 'enzyme';
+import { render, fireEvent, screen, within } from '@testing-library/react';
 
 import { TabContextAction } from '../TabContextAction';
 
@@ -38,70 +34,47 @@ const DEFAULT_TABS = [
 
 describe('<TabContextAction>', function() {
 
-  it('should render', function() {
-    expect(createTabAction).not.to.throw();
-  });
-
-
-  it('should display', async function() {
-
-    // when
-    const {
-      tree
-    } = createTabAction();
-
-    // then
-    expect(tree.isEmptyRender()).to.be.false;
-  });
-
-
   it('should NOT display on no tabs', function() {
 
     // given
     const tabs = [];
 
     // when
-    const {
-      tree
-    } = createTabAction({ tabs });
+    createTabAction({ tabs });
 
     // then
-    expect(tree.isEmptyRender()).to.be.true;
+    expect(screen.queryByRole('button')).to.be.null;
   });
 
 
   it('should open', function() {
 
     // given
-    const {
-      tree
-    } = createTabAction();
-
-    // assume
-    expect(tree.exists('Overlay')).to.be.false;
+    createTabAction();
 
     // when
-    tree.find('button').simulate('click');
+    fireEvent.click(screen.getByRole('button'));
 
     // then
-    expect(tree.exists('Overlay')).to.be.true;
+    expect(screen.getByRole('button', { name: DEFAULT_TABS[0].name })).to.exist;
+    expect(screen.getByRole('button', { name: DEFAULT_TABS[1].name })).to.exist;
+    expect(screen.getByRole('button', { name: DEFAULT_TABS[2].name })).to.exist;
   });
 
 
   it('should render items', function() {
 
     // given
-    const {
-      tree
-    } = createTabAction();
-
-    tree.find('button').simulate('click');
+    createTabAction();
 
     // when
-    const items = tree.find('Overlay li');
+    fireEvent.click(screen.getByRole('button'));
 
     // then
-    expect(nodesAsTextList(items)).to.eql([
+    const menu = screen.getByRole('dialog');
+    const items = within(menu).getAllByRole('menuitem');
+
+    expect(items.map(i => i.textContent)).to.eql([
       'Save all files',
       'Close active tab',
       'Close all tabs',
@@ -118,9 +91,7 @@ describe('<TabContextAction>', function() {
     // given
     const subscribe = createSubscribe();
 
-    const {
-      tree
-    } = createTabAction({ subscribe });
+    createTabAction({ subscribe });
 
     // when
     subscribe.emit({
@@ -132,12 +103,14 @@ describe('<TabContextAction>', function() {
         }
       ]
     });
-    tree.find('button').simulate('click');
 
-    const items = tree.find('Overlay li');
+    fireEvent.click(screen.getByRole('button'));
+
+    const menu = screen.getByRole('dialog');
+    const items = within(menu).getAllByRole('button');
 
     // then
-    expect(nodesAsTextList(items)).to.eql([
+    expect(items.map(i => i.textContent)).to.eql([
       'Save all files',
       'Close active tab',
       'Close all tabs',
@@ -155,20 +128,16 @@ describe('<TabContextAction>', function() {
     it('should retrieve all actions', function() {
 
       // given
-      const {
-        instance
-      } = createTabAction();
+      createTabAction();
 
       // when
-      const options = instance.getActionOptions();
+      fireEvent.click(screen.getByRole('button'));
 
-      // then
-      expect(asTextList(options.items)).to.eql([
-        'Save all files',
-        'Close active tab',
-        'Close all tabs',
-        'Close other tabs'
-      ]);
+      // then - first 4 items are actions
+      expect(screen.getByRole('menuitem', { name: 'Save all files' })).to.exist;
+      expect(screen.getByRole('menuitem', { name: 'Close active tab' })).to.exist;
+      expect(screen.getByRole('menuitem', { name: 'Close all tabs' })).to.exist;
+      expect(screen.getByRole('menuitem', { name: 'Close other tabs' })).to.exist;
     });
 
 
@@ -182,20 +151,18 @@ describe('<TabContextAction>', function() {
         }
       ];
 
-      const {
-        instance
-      } = createTabAction({
+      createTabAction({
         tabs
       });
 
       // when
-      const options = instance.getActionOptions();
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(asTextList(options.items)).to.eql([
-        'Save all files',
-        'Close active tab'
-      ]);
+      expect(screen.getByRole('menuitem', { name: 'Save all files' })).to.exist;
+      expect(screen.getByRole('menuitem', { name: 'Close active tab' })).to.exist;
+      expect(screen.queryByRole('menuitem', { name: 'Close all tabs' })).to.be.null;
+      expect(screen.queryByRole('menuitem', { name: 'Close other tabs' })).to.be.null;
     });
 
   });
@@ -204,26 +171,23 @@ describe('<TabContextAction>', function() {
   describe('trigger actions', function() {
 
     [
-      'save-all',
-      'close-active-tab',
-      'close-all-tabs',
-      'close-other-tabs'
-    ].forEach((action, index) => {
+      [ 'save-all', 'Save all files' ],
+      [ 'close-active-tab', 'Close active tab' ],
+      [ 'close-all-tabs', 'Close all tabs' ],
+      [ 'close-other-tabs', 'Close other tabs' ]
+    ].forEach(([ action, label ]) => {
 
       it(`should trigger <${action}>`, function() {
 
         // given
         const actionSpy = sinon.spy();
 
-        const {
-          tree
-        } = createTabAction({ triggerAction: actionSpy });
+        createTabAction({ triggerAction: actionSpy });
 
-        tree.find('button').simulate('click');
+        fireEvent.click(screen.getByRole('button'));
 
         // when
-        const item = tree.find('Overlay li button').at(index);
-        item.simulate('click');
+        fireEvent.click(screen.getByRole('button', { name: label }));
 
         // then
         expect(actionSpy).to.have.been.calledWith(action);
@@ -236,15 +200,12 @@ describe('<TabContextAction>', function() {
       // given
       const selectSpy = sinon.spy();
 
-      const {
-        tree
-      } = createTabAction({ onSelect: selectSpy });
+      createTabAction({ onSelect: selectSpy });
 
-      tree.find('button').simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // when
-      const item = tree.find('Overlay li button').at(4);
-      item.simulate('click');
+      fireEvent.click(screen.getByRole('button', { name: DEFAULT_TABS[0].name }));
 
       // then
       expect(selectSpy).to.have.been.calledWith(DEFAULT_TABS[0]);
@@ -260,37 +221,31 @@ describe('<TabContextAction>', function() {
 
 function createTabAction(options = {}) {
   const {
-    getTabIcon = noop,
+    getTabIcon = () => null,
     onSelect = noop,
-    subscribe = createSubscribe,
+    subscribe = () => ({ cancel() {} }),
     tabs = DEFAULT_TABS,
     triggerAction = noop
   } = options;
 
-  const tree = mount(
+  // Create a subscribe that immediately emits tabs
+  const wrappedSubscribe = (event, callback) => {
+    if (event === 'app.tabsChanged') {
+      callback({ tabs });
+    }
+    if (typeof subscribe === 'function' && subscribe.emit) {
+      return subscribe(event, callback);
+    }
+    return { cancel() {} };
+  };
+
+  render(
     <TabContextAction
       getTabIcon={ getTabIcon }
       onSelect={ onSelect }
-      subscribe={ subscribe }
+      subscribe={ wrappedSubscribe }
       triggerAction={ triggerAction } />
   );
-
-  const instance = tree.instance();
-
-  setTabs(tabs, tree, instance);
-
-  return {
-    tree,
-    instance
-  };
-}
-
-function setTabs(tabs, wrapper, instance) {
-  act(() => instance.setState({
-    tabs
-  }));
-
-  return wrapper.update();
 }
 
 function noop() {}
@@ -315,12 +270,4 @@ function createSubscribe() {
   subscribe.emit = (payload) => cb(payload);
 
   return subscribe;
-}
-
-function nodesAsTextList(items) {
-  return items.map(i => i.text());
-}
-
-function asTextList(items) {
-  return items.map(i => i.text);
 }

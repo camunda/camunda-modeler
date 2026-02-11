@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
 
 import { waitFor } from '@testing-library/react';
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import EventEmitter from 'events';
 
@@ -23,15 +23,6 @@ import StartInstancePluginOverlay from '../StartInstancePluginOverlay';
 import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
 
 describe('StartInstancePluginOverlay', function() {
-
-  beforeEach(function() {
-    document.body.innerHTML = '';
-  });
-
-  afterEach(function() {
-    document.body.innerHTML = '';
-  });
-
 
   it('should render (loading)', function() {
 
@@ -797,7 +788,7 @@ function createStartInstancePluginOverlay(props = {}) {
     triggerAction = () => {},
   } = props;
 
-  return mount(
+  return render(
     <StartInstancePluginOverlay
       activeTab={ activeTab }
       anchor={ anchor }

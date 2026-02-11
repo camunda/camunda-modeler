@@ -12,21 +12,20 @@
 
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { render, fireEvent, screen } from '@testing-library/react';
 
 import Dropdown from '../Dropdown';
 
 
 describe('<Dropdown>', function() {
 
-
   it('should render', function() {
 
     // when
-    const wrapper = mount(<Dropdown tagCounts={ DEFAULT_TAG_COUNTS } tagsSelected={ DEFAULT_TAGS_SELECTED } />);
+    render(<Dropdown tagCounts={ DEFAULT_TAG_COUNTS } tagsSelected={ DEFAULT_TAGS_SELECTED } />);
 
     // then
-    expect(wrapper).to.exist;
+    expect(screen.getByRole('button', { name: /Filter by Project/i })).to.exist;
   });
 
 
@@ -35,54 +34,51 @@ describe('<Dropdown>', function() {
     it('should open dropdown', function() {
 
       // given
-      const wrapper = mount(<Dropdown tagCounts={ DEFAULT_TAG_COUNTS } tagsSelected={ DEFAULT_TAGS_SELECTED } />);
+      render(<Dropdown tagCounts={ DEFAULT_TAG_COUNTS } tagsSelected={ DEFAULT_TAGS_SELECTED } />);
 
       // when
-      const button = wrapper.find('.dropdown__button').first();
-
-      button.simulate('click');
+      fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(wrapper.state('open')).to.be.true;
-      expect(wrapper.find('.dropdown__menu')).to.have.length(1);
+      expect(screen.getByText('foo')).to.exist;
+      expect(screen.getByText('bar')).to.exist;
     });
 
 
     it('should close dropdown (click button)', function() {
 
       // given
-      const wrapper = mount(<Dropdown tagCounts={ DEFAULT_TAG_COUNTS } tagsSelected={ DEFAULT_TAGS_SELECTED } />);
+      render(<Dropdown tagCounts={ DEFAULT_TAG_COUNTS } tagsSelected={ DEFAULT_TAGS_SELECTED } />);
 
-      wrapper.setState({ open: true });
+      const button = screen.getByRole('button');
+      fireEvent.click(button);
+
+      // assume dropdown is open
+      expect(screen.getByText('foo')).to.exist;
 
       // when
-      const button = wrapper.find('.dropdown__button').first();
-
-      button.simulate('click');
+      fireEvent.click(button);
 
       // then
-      expect(wrapper.state('open')).to.be.false;
-      expect(wrapper.find('.dropdown__items')).to.have.length(0);
+      expect(screen.queryByText('foo')).to.not.exist;
     });
 
 
     it('should close dropdown (global click)', function() {
 
       // given
-      const wrapper = mount(<Dropdown tagCounts={ DEFAULT_TAG_COUNTS } tagsSelected={ DEFAULT_TAGS_SELECTED } />);
+      render(<Dropdown tagCounts={ DEFAULT_TAG_COUNTS } tagsSelected={ DEFAULT_TAGS_SELECTED } />);
 
-      const button = wrapper.find('.dropdown__button').first();
+      fireEvent.click(screen.getByRole('button'));
 
-      button.simulate('click');
+      // assume dropdown is open
+      expect(screen.getByText('foo')).to.exist;
 
       // when
-      simulate('mousedown', document);
-
-      wrapper.update();
+      fireEvent.mouseDown(document.body);
 
       // then
-      expect(wrapper.state('open')).to.be.false;
-      expect(wrapper.find('.dropdown__items')).to.have.length(0);
+      expect(screen.queryByText('foo')).to.not.exist;
     });
 
   });
@@ -90,63 +86,69 @@ describe('<Dropdown>', function() {
 
   describe('select tags', function() {
 
-    it('should select tag', async function() {
+    it('should select tag', function() {
 
       // given
       const onChangeSpy = sinon.spy();
 
-      const { wrapper } = await createDropdown({ onChange: onChangeSpy });
+      render(
+        <Dropdown
+          tagCounts={ DEFAULT_TAG_COUNTS }
+          tagsSelected={ DEFAULT_TAGS_SELECTED }
+          onChange={ onChangeSpy }
+        />
+      );
 
-      wrapper.setState({ open: true });
-
-      const item = wrapper.findWhere(n => n.key() === 'foo').first();
+      fireEvent.click(screen.getByRole('button'));
 
       // when
-      item.simulate('click');
+      fireEvent.click(screen.getByText('foo'));
 
       // then
       expect(onChangeSpy).to.have.been.calledWithMatch([ 'foo' ]);
     });
 
 
-    it('should deselect tag', async function() {
+    it('should deselect tag', function() {
 
       // given
       const onChangeSpy = sinon.spy();
 
-      const { wrapper } = await createDropdown({
-        onChange: onChangeSpy,
-        tagsSelected: [ 'foo' ]
-      });
+      render(
+        <Dropdown
+          tagCounts={ DEFAULT_TAG_COUNTS }
+          tagsSelected={ [ 'foo' ] }
+          onChange={ onChangeSpy }
+        />
+      );
 
-      wrapper.setState({ open: true });
-
-      const item = wrapper.findWhere(n => n.key() === 'foo').first();
+      fireEvent.click(screen.getByRole('button'));
 
       // when
-      item.simulate('click');
+      fireEvent.click(screen.getByText('foo'));
 
       // then
       expect(onChangeSpy).to.have.been.calledWithMatch([]);
     });
 
 
-    it('should clear selected tags', async function() {
+    it('should clear selected tags', function() {
 
       // given
       const onChangeSpy = sinon.spy();
 
-      const { wrapper } = await createDropdown({
-        onChange: onChangeSpy,
-        tagsSelected: [ 'foo', 'bar' ]
-      });
+      render(
+        <Dropdown
+          tagCounts={ DEFAULT_TAG_COUNTS }
+          tagsSelected={ [ 'foo', 'bar' ] }
+          onChange={ onChangeSpy }
+        />
+      );
 
-      wrapper.setState({ open: true });
-
-      const item = wrapper.findWhere(n => n.key() === '__clear').first();
+      fireEvent.click(screen.getByRole('button'));
 
       // when
-      item.simulate('click');
+      fireEvent.click(screen.getByText('Clear all'));
 
       // then
       expect(onChangeSpy).to.have.been.calledWithMatch([]);
@@ -164,30 +166,3 @@ const DEFAULT_TAG_COUNTS = {
   foo: 1,
   bar: 2
 };
-
-async function createDropdown(props = {}) {
-  const defaultProps = {
-    tagCounts: DEFAULT_TAG_COUNTS,
-    tagsSelected: DEFAULT_TAGS_SELECTED,
-    onChange() {}
-  };
-
-  const wrapper = mount(<Dropdown { ...{ ...defaultProps, ...props } } />);
-
-  const instance = wrapper.instance();
-
-  return {
-    instance,
-    wrapper
-  };
-}
-
-function simulate(type, element) {
-  const event = new MouseEvent(type, {
-    bubbles: true,
-    cancelable: true,
-    view: window
-  });
-
-  element.dispatchEvent(event);
-}

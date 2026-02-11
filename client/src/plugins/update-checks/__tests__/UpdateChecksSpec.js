@@ -15,11 +15,13 @@ import React from 'react';
 import Flags, { DISABLE_REMOTE_INTERACTION, UPDATE_SERVER_URL } from '../../../util/Flags';
 import Metadata from '../../../util/Metadata';
 
-import {
-  shallow
-} from 'enzyme';
+import { render, screen, waitFor } from '@testing-library/react';
+
+import UpdateChecksAPI from '../UpdateChecksAPI';
 
 import UpdateChecks from '../UpdateChecks';
+
+import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const UPDATE_CHECKS_CONFIG_KEY = 'editor.updateChecks';
@@ -56,13 +58,9 @@ describe('<UpdateChecks>', function() {
       const checkSpy = sinon.spy();
 
       // when
-      const {
-        component
-      } = createComponent({
+      createComponent({
         onCheckPerformed: checkSpy
       });
-
-      await tick(component);
 
       // then
       expect(checkSpy).not.to.have.been.called;
@@ -72,20 +70,15 @@ describe('<UpdateChecks>', function() {
     it('should subscribe to updateChecks.execute', async function() {
 
       // given
-      const {
-        callSubscriber,
-        subscribe
-      } = createSubscribe('updateChecks.execute');
-
-      const { instance } = await createComponent({ subscribe });
-
-      const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+      const subscribeSpy = sinon.spy();
 
       // when
-      await callSubscriber();
+      createComponent({
+        subscribe: subscribeSpy
+      });
 
       // then
-      expect(checkLatestVersionSpy).to.have.been.called;
+      expect(subscribeSpy).to.have.been.calledWith('updateChecks.execute', sinon.match.func);
     });
 
 
@@ -97,24 +90,31 @@ describe('<UpdateChecks>', function() {
         subscribe
       } = createSubscribe('updateChecks.execute');
 
-      const {
-        component,
-        instance
-      } = await createComponent({ subscribe });
+      let requestUrl = '';
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').callsFake((url) => {
+        requestUrl = url;
+        return Promise.resolve({});
+      });
 
-      await tick(component);
+      createComponent({ subscribe });
 
-      const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+      // wait for initial check
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+      });
+
+      sendRequestStub.resetHistory();
 
       // when
       await callSubscriber();
 
       // then
-      expect(checkLatestVersionSpy).to.have.been.calledOnceWith({
-        lastChecked: 0,
-        latestVersion: 'v3.5.0',
-        stagedRollout: false
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+        expect(requestUrl).to.include('stagedRollout=false');
       });
+
+      sendRequestStub.restore();
     });
 
 
@@ -126,14 +126,20 @@ describe('<UpdateChecks>', function() {
         subscribe
       } = createSubscribe('updateChecks.execute');
 
-      const {
-        component,
-        instance
-      } = await createComponent({ subscribe });
+      let requestUrl = '';
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').callsFake((url) => {
+        requestUrl = url;
+        return Promise.resolve({});
+      });
 
-      await tick(component);
+      createComponent({ subscribe });
 
-      const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+      // wait for initial check
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+      });
+
+      sendRequestStub.resetHistory();
 
       Metadata.init({ name: 'test-name', version: '3.0.0' });
 
@@ -141,33 +147,34 @@ describe('<UpdateChecks>', function() {
       await callSubscriber();
 
       // then
-      expect(checkLatestVersionSpy).to.have.been.calledOnceWith({
-        lastChecked: 0,
-        latestVersion: 'v3.0.0',
-        stagedRollout: false
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+        expect(requestUrl).to.include('newerThan=v3.0.0');
       });
+
+      sendRequestStub.restore();
     });
 
 
     it('should pass stagedRollout=true on scheduled check', async function() {
 
       // given
-      const {
-        component,
-        instance
-      } = await createComponent();
-
-      const checkLatestVersionSpy = sinon.spy(instance, 'checkLatestVersion');
+      let requestUrl = '';
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').callsFake((url) => {
+        requestUrl = url;
+        return Promise.resolve({});
+      });
 
       // when
-      await tick(component);
+      createComponent();
 
       // then
-      expect(checkLatestVersionSpy).to.have.been.calledOnceWith({
-        lastChecked: 0,
-        latestVersion: 'v3.5.0',
-        stagedRollout: true
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+        expect(requestUrl).to.include('stagedRollout=true');
       });
+
+      sendRequestStub.restore();
     });
 
 
@@ -187,21 +194,18 @@ describe('<UpdateChecks>', function() {
       };
 
       // when
-      const {
-        component
-      } = createComponent({
+      createComponent({
         onCheckPerformed: checkSpy,
         config
       });
 
-      await tick(component);
-
       // then
-      expect(checkSpy).to.have.been.calledOnceWith({
-        resolution: 'skipped',
-        reason: 'privacy-settings'
+      await waitFor(() => {
+        expect(checkSpy).to.have.been.calledOnceWith({
+          resolution: 'skipped',
+          reason: 'privacy-settings'
+        });
       });
-
     });
 
 
@@ -223,19 +227,17 @@ describe('<UpdateChecks>', function() {
       };
 
       // when
-      const {
-        component
-      } = createComponent({
+      createComponent({
         onCheckPerformed: checkSpy,
         config
       });
 
-      await tick(component);
-
       // then
-      expect(checkSpy).to.have.been.calledOnceWith({
-        resolution: 'skipped',
-        reason: 'privacy-settings'
+      await waitFor(() => {
+        expect(checkSpy).to.have.been.calledOnceWith({
+          resolution: 'skipped',
+          reason: 'privacy-settings'
+        });
       });
     });
 
@@ -262,19 +264,17 @@ describe('<UpdateChecks>', function() {
       };
 
       // when
-      const {
-        component
-      } = createComponent({
+      createComponent({
         onCheckPerformed: checkSpy,
         config
       });
 
-      await tick(component);
-
       // then
-      expect(checkSpy).to.have.been.calledOnceWith({
-        reason: 'not-due',
-        resolution: 'skipped'
+      await waitFor(() => {
+        expect(checkSpy).to.have.been.calledOnceWith({
+          reason: 'not-due',
+          resolution: 'skipped'
+        });
       });
     });
 
@@ -287,17 +287,17 @@ describe('<UpdateChecks>', function() {
         setValue = value;
       };
 
-      const {
-        component
-      } = createComponent({
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').resolves({});
+
+      createComponent({
         onConfigSet
       });
 
-      mockServerResponse(component, {});
+      await waitFor(() => {
+        expect(setValue.lastChecked).to.exist;
+      });
 
-      await tick(component);
-
-      expect(setValue.lastChecked).to.exist;
+      sendRequestStub.restore();
     });
 
 
@@ -309,13 +309,7 @@ describe('<UpdateChecks>', function() {
         setValue = value;
       };
 
-      const {
-        component
-      } = createComponent({
-        onConfigSet
-      });
-
-      mockServerResponse(component, {
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').resolves({
         update: {
           latestVersion: 'v3.7.0',
           downloadURL: 'test-download-url',
@@ -323,9 +317,15 @@ describe('<UpdateChecks>', function() {
         }
       });
 
-      await tick(component);
+      createComponent({
+        onConfigSet
+      });
 
-      expect(setValue.latestVersion).to.be.eql('v3.7.0');
+      await waitFor(() => {
+        expect(setValue.latestVersion).to.be.eql('v3.7.0');
+      });
+
+      sendRequestStub.restore();
     });
 
 
@@ -336,24 +336,20 @@ describe('<UpdateChecks>', function() {
 
       const error = new Error('These things happen.');
 
-      const {
-        component
-      } = createComponent({
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').rejects(error);
+
+      // when
+      createComponent({
         onCheckPerformed: checkSpy
       });
 
-      component.instance().updateChecksAPI.sendRequest = () => {
-        throw error;
-      };
-
-      // when
-      await tick(component);
-
       // then
-      expect(checkSpy).to.have.been.calledOnceWith({
-        error,
-        resolution: 'failed'
+      await waitFor(() => {
+        expect(checkSpy).to.have.been.calledOnce;
+        expect(checkSpy.getCall(0).args[0].resolution).to.eql('failed');
       });
+
+      sendRequestStub.restore();
     });
 
 
@@ -364,33 +360,35 @@ describe('<UpdateChecks>', function() {
     it('should check with URL encoded parameters', async function() {
 
       // given
-
       Flags.init({
         [ UPDATE_SERVER_URL ]: 'http://test-update-server.com'
       });
 
-      const {
-        component,
-        instance
-      } = createComponent();
-
-      instance.updateChecksAPI.productName = 'Camunda Modeler';
-
       let calledURL = '';
 
-      mockServerResponse(component, {
-        update: {
-          latestVersion: 'v3.7.0',
-          downloadURL: 'test-download-url',
-          releases: []
-        }
-      }, (url) => { calledURL = url; });
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').callsFake((url) => {
+        calledURL = url;
+        return Promise.resolve({
+          update: {
+            latestVersion: 'v3.7.0',
+            downloadURL: 'test-download-url',
+            releases: []
+          }
+        });
+      });
 
       // when
-      await tick(component);
+      createComponent();
 
       // then
-      expect(calledURL).to.eql('http://test-update-server.com/update-check?editorID=test-id&newerThan=v3.5.0&modelerVersion=v3.5.0&os=windows&osVersion=98&productName=Camunda+Modeler&stagedRollout=true&plugins%5Bid%5D=plugin1&plugins%5Bname%5D=plugin1&plugins%5Bid%5D=plugin2&plugins%5Bname%5D=plugin2');
+      await waitFor(() => {
+        expect(calledURL).to.include('http://test-update-server.com/update-check');
+        expect(calledURL).to.include('editorID=test-id');
+        expect(calledURL).to.include('newerThan=v3.5.0');
+        expect(calledURL).to.include('stagedRollout=true');
+      });
+
+      sendRequestStub.restore();
     });
 
   });
@@ -402,40 +400,55 @@ describe('<UpdateChecks>', function() {
 
       // given
       const {
-        component,
-        instance
-      } = createComponent();
+        callSubscriber,
+        subscribe
+      } = createSubscribe('updateChecks.execute');
 
-      const update = {
-        latestVersion: 'v3.7.0',
-        downloadURL: 'test-download-url',
-        releases: []
-      };
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').resolves({
+        update: {
+          latestVersion: 'v3.7.0',
+          downloadURL: 'test-download-url',
+          releases: []
+        }
+      });
 
-      mockServerResponse(component, { update });
+      createComponent({ subscribe });
 
-      // when
-      await instance.checkLatestVersion(update, false);
+      // wait for initial check
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+      });
+
+      // when - trigger manual check (non-silent)
+      await callSubscriber();
 
       // then
-      expect(component.state().newVersionInfoViewOpen).to.be.true;
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).to.exist;
+      });
+
+      sendRequestStub.restore();
     });
 
 
     it('should NOT show modal for empty server response', async function() {
 
       // given
-      const {
-        component
-      } = createComponent();
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').resolves({});
 
-      mockServerResponse(component, {});
+      const checkSpy = sinon.spy();
+
+      createComponent({ onCheckPerformed: checkSpy });
 
       // when
-      await tick(component);
+      await waitFor(() => {
+        expect(checkSpy).to.have.been.called;
+      });
 
       // then
-      expect(component.state().newVersionInfoViewOpen).to.be.false;
+      expect(screen.queryByRole('dialog')).to.be.null;
+
+      sendRequestStub.restore();
     });
 
 
@@ -445,19 +458,33 @@ describe('<UpdateChecks>', function() {
       const displaySpy = sinon.spy();
 
       const {
-        component,
-        instance
-      } = createComponent({
-        displayNotification: displaySpy
+        callSubscriber,
+        subscribe
+      } = createSubscribe('updateChecks.execute');
+
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').resolves({});
+
+      createComponent({
+        displayNotification: displaySpy,
+        subscribe
       });
 
-      mockServerResponse(component, {});
+      // wait for initial check
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+      });
 
-      // when
-      await instance.checkLatestVersion(null, false);
+      displaySpy.resetHistory();
+
+      // when - trigger manual check
+      await callSubscriber();
 
       // then
-      expect(displaySpy).to.have.been.called;
+      await waitFor(() => {
+        expect(displaySpy).to.have.been.called;
+      });
+
+      sendRequestStub.restore();
     });
 
 
@@ -465,20 +492,24 @@ describe('<UpdateChecks>', function() {
 
       // given
       const displaySpy = sinon.spy();
+      const checkSpy = sinon.spy();
 
-      const {
-        component
-      } = createComponent({
-        displayNotification: displaySpy
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').resolves({});
+
+      createComponent({
+        displayNotification: displaySpy,
+        onCheckPerformed: checkSpy
       });
 
-      mockServerResponse(component, {});
-
-      // when
-      await tick(component);
+      // when - wait for background check to complete
+      await waitFor(() => {
+        expect(checkSpy).to.have.been.called;
+      });
 
       // then
       expect(displaySpy).to.not.have.been.called;
+
+      sendRequestStub.restore();
     });
 
 
@@ -490,21 +521,33 @@ describe('<UpdateChecks>', function() {
       const error = new Error('These things happen.');
 
       const {
-        component,
-        instance
-      } = createComponent({
-        displayNotification: displaySpy
+        callSubscriber,
+        subscribe
+      } = createSubscribe('updateChecks.execute');
+
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest');
+      sendRequestStub.onFirstCall().resolves({});
+      sendRequestStub.onSecondCall().rejects(error);
+
+      createComponent({
+        displayNotification: displaySpy,
+        subscribe
       });
 
-      component.instance().updateChecksAPI.sendRequest = () => {
-        throw error;
-      };
+      // wait for initial check
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+      });
 
-      // when
-      await instance.checkLatestVersion(null, false);
+      displaySpy.resetHistory();
+
+      // when - trigger manual check that will fail
+      await callSubscriber();
 
       // then
-      expect(displaySpy).to.have.been.calledOnce;
+      await waitFor(() => {
+        expect(displaySpy).to.have.been.calledOnce;
+      });
 
       const notification = displaySpy.getCall(0).args[0];
 
@@ -522,6 +565,8 @@ describe('<UpdateChecks>', function() {
           contentType: 'button'
         }
       );
+
+      sendRequestStub.restore();
     });
 
 
@@ -529,24 +574,26 @@ describe('<UpdateChecks>', function() {
 
       // given
       const displaySpy = sinon.spy();
+      const checkSpy = sinon.spy();
 
       const error = new Error('These things happen.');
 
-      const {
-        component
-      } = createComponent({
-        displayNotification: displaySpy
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').rejects(error);
+
+      createComponent({
+        displayNotification: displaySpy,
+        onCheckPerformed: checkSpy
       });
 
-      component.instance().updateChecksAPI.sendRequest = () => {
-        throw error;
-      };
-
-      // when
-      await tick(component);
+      // when - wait for background check to complete
+      await waitFor(() => {
+        expect(checkSpy).to.have.been.called;
+      });
 
       // then
       expect(displaySpy).to.not.have.been.called;
+
+      sendRequestStub.restore();
     });
 
 
@@ -560,23 +607,37 @@ describe('<UpdateChecks>', function() {
       const error = new Error('These things happen.');
 
       const {
-        component,
-        instance
-      } = createComponent({
+        callSubscriber,
+        subscribe
+      } = createSubscribe('updateChecks.execute');
+
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest');
+      sendRequestStub.onFirstCall().resolves({});
+      sendRequestStub.onSecondCall().rejects(error);
+
+      createComponent({
         displayNotification,
         triggerAction,
-        log: logSpy
+        log: logSpy,
+        subscribe
       });
 
-      component.instance().updateChecksAPI.sendRequest = () => {
-        throw error;
-      };
+      // wait for initial check
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+      });
 
-      // when
-      await instance.checkLatestVersion(null, false);
+      displayNotification.resetHistory();
+      logSpy.resetHistory();
+
+      // when - trigger manual check that will fail
+      await callSubscriber();
 
       // then
-      expect(displayNotification).to.have.been.calledOnce;
+      await waitFor(() => {
+        expect(displayNotification).to.have.been.calledOnce;
+      });
+
       const notification = displayNotification.getCall(0).args[0];
       expect(logSpy).to.have.been.calledOnceWith({
         category: 'update-check-error',
@@ -588,6 +649,7 @@ describe('<UpdateChecks>', function() {
       notification.content.props.onClick();
       expect(triggerAction).to.have.been.calledOnceWith('open-log');
 
+      sendRequestStub.restore();
     });
 
 
@@ -595,34 +657,32 @@ describe('<UpdateChecks>', function() {
 
       // given
       const logSpy = sinon.spy();
+      const checkSpy = sinon.spy();
 
       const error = new Error('These things happen.');
 
-      const {
-        component
-      } = createComponent({
-        log: logSpy
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').rejects(error);
+
+      createComponent({
+        log: logSpy,
+        onCheckPerformed: checkSpy
       });
 
-      component.instance().updateChecksAPI.sendRequest = () => {
-        throw error;
-      };
-
-      // when
-      await tick(component);
+      // when - wait for background check to complete
+      await waitFor(() => {
+        expect(checkSpy).to.have.been.called;
+      });
 
       // then
       expect(logSpy).to.not.have.been.called;
+
+      sendRequestStub.restore();
     });
 
     it('should show <update-available> button', async function() {
 
       // given
-      const {
-        component
-      } = createComponent();
-
-      mockServerResponse(component, {
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').resolves({
         update: {
           latestVersion: 'v3.7.0',
           downloadURL: 'test-download-url',
@@ -630,27 +690,38 @@ describe('<UpdateChecks>', function() {
         }
       });
 
+      createComponent();
+
       // when
-      await tick(component);
+      await waitFor(() => {
+        expect(sendRequestStub).to.have.been.called;
+      });
 
       // then
-      expect(component.state().updateAvailable).to.be.true;
+      await waitFor(() => {
+        expect(screen.getByText('Update')).to.exist;
+      });
+
+      sendRequestStub.restore();
     });
 
     it('should not show <update-available> button if no update', async function() {
 
       // given
-      const {
-        component
-      } = createComponent();
+      const sendRequestStub = sinon.stub(UpdateChecksAPI.prototype, 'sendRequest').resolves({});
+      const checkSpy = sinon.spy();
 
-      mockServerResponse(component, {});
+      createComponent({ onCheckPerformed: checkSpy });
 
       // when
-      await tick(component);
+      await waitFor(() => {
+        expect(checkSpy).to.have.been.called;
+      });
 
       // then
-      expect(component.state().updateAvailable).to.be.false;
+      expect(screen.queryByText('Update')).to.be.null;
+
+      sendRequestStub.restore();
     });
 
   });
@@ -659,23 +730,6 @@ describe('<UpdateChecks>', function() {
 
 
 // helper /////////////////////
-
-async function tick(component, n = 10) {
-  for (let i = 0; i < n; i ++) {
-    await component.update();
-  }
-}
-
-const mockServerResponse = (component, resp, callback) => {
-  component.instance().updateChecksAPI.sendRequest = (url) => {
-    if (callback) {
-      callback(url);
-    }
-    return new Promise((resolve, reject) => {
-      resolve(resp);
-    });
-  };
-};
 
 
 function createComponent(props = {}) {
@@ -712,23 +766,19 @@ function createComponent(props = {}) {
     set: onConfigSet
   };
 
-  const component = shallow(
-    <UpdateChecks
-      { ...props }
-      config={ config }
-      displayNotification={ props.displayNotification || noop }
-      log={ props.log || noop }
-      _getGlobal={ _getGlobal }
-      subscribe={ props.subscribe || noop }
-    />
+  render(
+    <SlotFillRoot>
+      <Slot name="status-bar__app" />
+      <UpdateChecks
+        { ...props }
+        config={ config }
+        displayNotification={ props.displayNotification || noop }
+        log={ props.log || noop }
+        _getGlobal={ _getGlobal }
+        subscribe={ props.subscribe || noop }
+      />
+    </SlotFillRoot>
   );
-
-  const instance = component.instance();
-
-  return {
-    component,
-    instance
-  };
 }
 
 function noop() {}

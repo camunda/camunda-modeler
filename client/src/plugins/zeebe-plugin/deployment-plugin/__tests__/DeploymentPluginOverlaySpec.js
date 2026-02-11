@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
 
 import { waitFor } from '@testing-library/react';
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import EventEmitter from 'events';
 
@@ -23,15 +23,6 @@ import DeploymentPluginOverlay from '../DeploymentPluginOverlay';
 import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
 
 describe('DeploymentPluginOverlay', function() {
-
-  beforeEach(function() {
-    document.body.innerHTML = '';
-  });
-
-  afterEach(function() {
-    document.body.innerHTML = '';
-  });
-
 
   describe('form submission', function() {
 
@@ -626,7 +617,7 @@ function createDeploymentPluginOverlay(props = {}) {
     triggerAction = () => {},
   } = props;
 
-  return mount(
+  return render(
     <DeploymentPluginOverlay
       activeTab={ activeTab }
       anchor={ anchor }

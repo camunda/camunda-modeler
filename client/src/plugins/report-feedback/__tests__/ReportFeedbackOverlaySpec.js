@@ -10,39 +10,37 @@
 
 import React from 'react';
 
-import { shallow } from 'enzyme';
-
-import MochaTestContainer from 'mocha-test-container-support';
+import { render, screen } from '@testing-library/react';
 
 import { ReportFeedbackOverlay } from '../ReportFeedbackOverlay';
 
 
 describe('<ReportFeedbackOverlay>', function() {
 
+  let anchor;
+
+  beforeEach(function() {
+    anchor = document.createElement('button');
+    document.body.appendChild(anchor);
+  });
+
+  afterEach(function() {
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.removeChild(anchor);
+    }
+  });
+
   it('should render', function() {
 
-    // given
-    const container = MochaTestContainer.get(this);
-    const anchor = document.createElement('button');
-    container.appendChild(anchor);
-
     // when
-    const render = () => createReportFeedbackOverlay({ anchor });
+    render(
+      <ReportFeedbackOverlay
+        anchor={ anchor }
+      />
+    );
 
     // then
-    expect(render).not.to.throw();
+    expect(screen.getByRole('dialog')).to.exist;
+    expect(screen.getByText('Share your feedback')).to.exist;
   });
 });
-
-
-function createReportFeedbackOverlay(props = {}, mount = shallow) {
-  return mount(
-    <ReportFeedbackOverlay
-      anchor={ props.anchor }
-      onClose={ props.onClose || noop }
-      onSubmit={ props.onSubmit || noop }
-    />
-  );
-}
-
-function noop() {}
