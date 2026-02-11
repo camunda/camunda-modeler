@@ -46,7 +46,7 @@
     "classnames": "^2.5.1",
     "codemirror": "^6.0.1",
     "debug": "^4.3.7",
-    "diagram-js": "^15.5.0",
+    "diagram-js": "^15.9.1",
     "diagram-js-direct-editing": "^3.2.0",
     "diagram-js-origin": "^1.4.0",
     "dmn-js": "^17.6.0",
