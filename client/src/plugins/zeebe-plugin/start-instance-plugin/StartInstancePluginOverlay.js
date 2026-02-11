@@ -37,10 +37,37 @@ import { ENGINES } from '../../../util/Engines';
 
 import * as css from './StartInstancePluginOverlay.less';
 
+/**
+ * @typedef {Object} StartInstancePluginOverlayProps
+ * @property {Object} activeTab - The currently active tab
+ * @property {HTMLElement} anchor - The anchor element for positioning the overlay
+ * @property {import('../../../app/zeebe/ConnectionManager').default} connectionManager - The connection manager instance
+ * @property {import('../../../app/zeebe/Deployment').default} deployment - The deployment instance
+ * @property {Function} displayNotification - Function to display notifications
+ * @property {Function} [getConfigFile] - Function to get the configuration file for the active tab
+ * @property {Function} [getErrorNotification] - Function to generate error notifications
+ * @property {Function} [getResourceConfigs] - Function to get resource configurations
+ * @property {Function} [getSuccessNotification] - Function to generate success notifications
+ * @property {Function} log - Logging function
+ * @property {Function} onClose - Callback function when overlay is closed
+ * @property {any} [renderStartInstanceDescription] - Custom render function for the description
+ * @property {any} [renderStartInstanceHeader] - Custom render for the header
+ * @property {any} [renderStartInstanceSubmit] - Custom render for the submit button
+ * @property {import('../../../app/zeebe/StartInstance').default} startInstance - The start instance service
+ * @property {React.Component|Function} [StartInstanceConfigForm] - Custom form component for start instance configuration
+ * @property {import('./StartInstanceConfigValidator').default} startInstanceConfigValidator - Validator for start instance configuration
+ * @property {ConnectionCheckResult} [connectionCheckResult] - Result of the connection check
+ * @property {Function} triggerAction - Function to trigger actions
+ */
+
+/**
+ * @param {StartInstancePluginOverlayProps} props
+ */
 export default function StartInstancePluginOverlay(props) {
   const {
     activeTab,
     anchor,
+    connectionManager,
     deployment,
     displayNotification,
     getConfigFile = defaultGetConfigFile,
@@ -154,7 +181,7 @@ export default function StartInstancePluginOverlay(props) {
 
   useEffect(() => {
     (async () => {
-      const connection = await deployment.getConnectionForTab(activeTab);
+      const connection = await connectionManager.getConnectionForTab(activeTab);
 
       setDeploymentConfig({ endpoint: connection, context: 'startInstancePlugin' });
 

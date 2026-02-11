@@ -35,6 +35,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
 
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
+  const connectionManager = _getGlobal('connectionManager');
   const deployment = _getGlobal('deployment');
 
   const anchorRef = useRef();
@@ -110,6 +111,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
         activeTab={ activeTab }
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
+        connectionManager={ connectionManager }
         deployment={ deployment }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
         log={ log }

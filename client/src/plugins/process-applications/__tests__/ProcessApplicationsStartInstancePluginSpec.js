@@ -17,7 +17,6 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import ProcessApplicationsStartInstancePlugin from '../ProcessApplicationsStartInstancePlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
-import { DEFAULT_ENDPOINT } from '../../../app/zeebe/Deployment';
 
 import { Deployment, StartInstance, ZeebeAPI } from '../../../app/__tests__/mocks';
 
@@ -143,17 +142,9 @@ function createProcessApplicationsStartInstancePlugin(props = {}) {
   const {
     _getGlobal = (name) => {
       if (name === 'deployment') {
-        return new Deployment({
-          async getConnectionForTab(file) {
-            return DEFAULT_ENDPOINT;
-          }
-        });
+        return new Deployment();
       } else if (name === 'startInstance') {
-        return new StartInstance({
-          async getConnectionForTab(file) {
-            return {};
-          }
-        });
+        return new StartInstance();
       } else if (name === 'zeebeAPI') {
         return new ZeebeAPI();
       }

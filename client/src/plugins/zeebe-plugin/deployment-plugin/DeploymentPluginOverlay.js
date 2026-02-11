@@ -37,6 +37,7 @@ import * as css from './DeploymentPluginOverlay.less';
  * @property {Object} activeTab - The currently active tab
  * @property {HTMLElement} anchor - The anchor element for positioning the overlay
  * @property {Object} connectionCheckResult - Result of the connection check
+ * @property {import('../../../app/zeebe/ConnectionManager').default} connectionManager - The connection manager instance
  * @property {import('../../../app/zeebe/Deployment').default} deployment - The deployment instance
  * @property {Function} displayNotification - Function to display notifications
  * @property {React.ComponentType} [DeploymentConfigForm] - Custom deployment configuration form component
@@ -59,6 +60,7 @@ export default function DeploymentPluginOverlay(props) {
     activeTab,
     anchor,
     connectionCheckResult,
+    connectionManager,
     deployment,
     displayNotification,
     DeploymentConfigForm = DefaultDeploymentConfigForm,
@@ -89,7 +91,7 @@ export default function DeploymentPluginOverlay(props) {
 
   const onSubmit = async () => {
     setIsSubmitting(true);
-    const connection = await deployment.getConnectionForTab(activeTab);
+    const connection = await connectionManager.getConnectionForTab(activeTab);
 
     const config = {
       context: 'deploymentTool',

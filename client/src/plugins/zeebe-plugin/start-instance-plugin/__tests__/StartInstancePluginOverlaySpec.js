@@ -16,8 +16,6 @@ import { waitFor } from '@testing-library/react';
 
 import { render } from '@testing-library/react';
 
-import EventEmitter from 'events';
-
 import StartInstancePluginOverlay from '../StartInstancePluginOverlay';
 
 import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
@@ -37,10 +35,10 @@ describe('StartInstancePluginOverlay', function() {
   it('should render start instance config (deployment config valid, no connection check result)', async function() {
 
     // when
-    const deploymentConfig = createMockEndpoint();
+    const connection = createMockConnection();
 
-    const deployment = new MockDeployment({
-      getConnectionForTab: () => Promise.resolve(deploymentConfig)
+    const connectionManager = new MockConnectionManager({
+      getConnectionForTab: () => Promise.resolve(connection)
     });
 
     const startInstanceConfig = createMockStartInstanceConfig();
@@ -50,7 +48,7 @@ describe('StartInstancePluginOverlay', function() {
     });
 
     createStartInstancePluginOverlay({
-      deployment,
+      connectionManager,
       startInstance,
       StartInstanceConfigForm: createMockStartInstanceConfigForm().Form
     });
@@ -69,10 +67,14 @@ describe('StartInstancePluginOverlay', function() {
       it('should submit form (success)', async function() {
 
         // given
-        const endpoint = createMockEndpoint();
+        const endpoint = createMockConnection();
 
         const deployment = new MockDeployment({
           deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+          getConnectionForTab: () => Promise.resolve(endpoint)
+        });
+
+        const connectionManager = new MockConnectionManager({
           getConnectionForTab: () => Promise.resolve(endpoint)
         });
 
@@ -89,6 +91,7 @@ describe('StartInstancePluginOverlay', function() {
 
         createStartInstancePluginOverlay({
           deployment,
+          connectionManager,
           displayNotification: displayNotificationSpy,
           startInstance,
           StartInstanceConfigForm: Form
@@ -123,10 +126,13 @@ describe('StartInstancePluginOverlay', function() {
       it('should submit form (no success)', async function() {
 
         // given
-        const endpoint = createMockEndpoint();
+        const endpoint = createMockConnection();
 
         const deployment = new MockDeployment({
-          deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+          deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult()))
+        });
+
+        const connectionManager = new MockConnectionManager({
           getConnectionForTab: () => Promise.resolve(endpoint)
         });
 
@@ -148,6 +154,7 @@ describe('StartInstancePluginOverlay', function() {
 
         createStartInstancePluginOverlay({
           deployment,
+          connectionManager,
           displayNotification: displayNotificationSpy,
           startInstance,
           StartInstanceConfigForm: Form
@@ -189,7 +196,7 @@ describe('StartInstancePluginOverlay', function() {
     it('should emit event (success)', async function() {
 
       // given
-      const endpoint = createMockEndpoint();
+      const endpoint = createMockConnection();
 
       const mockDeploymentResult = createMockDeploymentResult();
 
@@ -248,7 +255,7 @@ describe('StartInstancePluginOverlay', function() {
     it('should emit event (error)', async function() {
 
       // given
-      const endpoint = createMockEndpoint();
+      const endpoint = createMockConnection();
 
       const mockDeploymentResult = createMockDeploymentResult({
         success: false,
@@ -317,10 +324,10 @@ describe('StartInstancePluginOverlay', function() {
     it('should render custom start instance header', async function() {
 
       // when
-      const deploymentConfig = createMockEndpoint();
+      const connection = createMockConnection();
 
-      const deployment = new MockDeployment({
-        getConnectionForTab: () => Promise.resolve(deploymentConfig)
+      const connectionManager = new MockConnectionManager({
+        getConnectionForTab: () => Promise.resolve(connection)
       });
 
       const startInstanceConfig = createMockStartInstanceConfig();
@@ -330,7 +337,7 @@ describe('StartInstancePluginOverlay', function() {
       });
 
       createStartInstancePluginOverlay({
-        deployment,
+        connectionManager,
         renderStartInstanceHeader: <div id="custom-start-instance-header" />,
         startInstance
       });
@@ -347,10 +354,10 @@ describe('StartInstancePluginOverlay', function() {
     it('should render custom start instance submit', async function() {
 
       // when
-      const deploymentConfig = createMockEndpoint();
+      const connection = createMockConnection();
 
-      const deployment = new MockDeployment({
-        getConnectionForTab: () => Promise.resolve(deploymentConfig)
+      const connectionManager = new MockConnectionManager({
+        getConnectionForTab: () => Promise.resolve(connection)
       });
 
       const startInstanceConfig = createMockStartInstanceConfig();
@@ -360,7 +367,7 @@ describe('StartInstancePluginOverlay', function() {
       });
 
       createStartInstancePluginOverlay({
-        deployment,
+        connectionManager,
         renderStartInstanceSubmit: <div id="custom-start-instance-submit" />,
         startInstance
       });
@@ -377,7 +384,7 @@ describe('StartInstancePluginOverlay', function() {
     it('should deploy custom resources', async function() {
 
       // given
-      const endpoint = createMockEndpoint();
+      const endpoint = createMockConnection();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult({
@@ -398,6 +405,9 @@ describe('StartInstancePluginOverlay', function() {
             ]
           }
         }))),
+      });
+
+      const connectionManager = new MockConnectionManager({
         getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
@@ -425,6 +435,7 @@ describe('StartInstancePluginOverlay', function() {
 
       createStartInstancePluginOverlay({
         deployment,
+        connectionManager,
         displayNotification: displayNotificationSpy,
         getResourceConfigs: () => resourceConfigs,
         startInstance,
@@ -472,10 +483,13 @@ describe('StartInstancePluginOverlay', function() {
     it('should display custom success notification', async function() {
 
       // given
-      const endpoint = createMockEndpoint();
+      const endpoint = createMockConnection();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+      });
+
+      const connectionManager = new MockConnectionManager({
         getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
@@ -492,6 +506,7 @@ describe('StartInstancePluginOverlay', function() {
 
       createStartInstancePluginOverlay({
         deployment,
+        connectionManager,
         displayNotification: displayNotificationSpy,
         getSuccessNotification: () => ({
           title: 'Custom success notification',
@@ -531,11 +546,14 @@ describe('StartInstancePluginOverlay', function() {
     it('should display custom error notification', async function() {
 
       // given
-      const endpoint = createMockEndpoint();
+      const connection = createMockConnection();
 
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-        getConnectionForTab: () => Promise.resolve(endpoint)
+      });
+
+      const connectionManager = new MockConnectionManager({
+        getConnectionForTab: () => Promise.resolve(connection)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -555,6 +573,7 @@ describe('StartInstancePluginOverlay', function() {
       const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
 
       createStartInstancePluginOverlay({
+        connectionManager,
         deployment,
         displayNotification: displayNotificationSpy,
         getErrorNotification: () => ({
@@ -578,7 +597,7 @@ describe('StartInstancePluginOverlay', function() {
       });
 
       expect(startInstance.startInstance).to.have.been.calledWith({
-        endpoint,
+        endpoint: connection,
         context: 'startInstancePlugin',
         ...startInstanceConfig
       });
@@ -600,42 +619,16 @@ class Mock {
   }
 }
 
-class MockConnectionChecker extends Mock {
-  constructor(overrides = {}) {
-    super(overrides);
-
-    this.eventEmitter = new EventEmitter();
-  }
-
-  on = sinon.spy((...args) => {
-    return this.eventEmitter.on(...args);
-  });
-
-  off = sinon.spy((...args) => {
-    return this.eventEmitter.off(...args);
-  });
-
-  emit = sinon.spy((...args) => {
-    return this.eventEmitter.emit(...args);
-  });
-
-  updateConfig = sinon.spy();
-
-  startChecking = sinon.spy();
-
-  stopChecking = sinon.spy();
-}
-
 class MockDeployment extends Mock {
   deploy() {}
-
-  getConnectionForTab() {}
 
   off() {}
 
   on() {}
+}
 
-  setConfigForFile() {}
+class MockConnectionManager extends Mock {
+  getConnectionForTab() {}
 }
 
 class MockConfigValidator extends Mock {
@@ -734,7 +727,7 @@ const DEFAULT_ACTIVE_TAB = {
   }
 };
 
-function createMockEndpoint(overrides = {}) {
+function createMockConnection(overrides = {}) {
   return {
     targetType: TARGET_TYPES.CAMUNDA_CLOUD,
     id: 'foo',
@@ -766,7 +759,7 @@ function createStartInstancePluginOverlay(props = {}) {
   const {
     activeTab = DEFAULT_ACTIVE_TAB,
     anchor = new MockAnchor(),
-    connectionChecker = new MockConnectionChecker(),
+    connectionManager = new MockConnectionManager(),
     deployment = new MockDeployment(),
     DeploymentConfigForm,
     deploymentConfigValidator = MockConfigValidator,
@@ -792,7 +785,7 @@ function createStartInstancePluginOverlay(props = {}) {
     <StartInstancePluginOverlay
       activeTab={ activeTab }
       anchor={ anchor }
-      connectionChecker={ connectionChecker }
+      connectionManager={ connectionManager }
       deployment={ deployment }
       DeploymentConfigForm={ DeploymentConfigForm }
       deploymentConfigValidator={ deploymentConfigValidator }

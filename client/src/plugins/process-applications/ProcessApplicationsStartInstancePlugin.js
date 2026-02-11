@@ -37,6 +37,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
 
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
+  const connectionManager = _getGlobal('connectionManager');
   const deployment = _getGlobal('deployment');
   const startInstance = _getGlobal('startInstance');
 
@@ -96,17 +97,13 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
         activeTab={ activeTab }
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
+        connectionManager={ connectionManager }
         deployment={ deployment }
         getResourceConfigs={ () => resourceConfigs }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
         log={ log }
         onClose={ () => setOverlayOpen(false) }
         displayNotification={ displayNotification }
-        renderDeploymentDescription={ `${ processApplicationItems.length } files will be deployed` }
-        renderDeploymentHeader={ <>
-          <ProcessApplicationIcon width="16" height="16" />Configure deployment
-        </> }
-        renderDeploymentSubmit="Go to start instance"
         renderStartInstanceHeader={ <><ProcessApplicationIcon width="16" height="16" />Start BPMN process instance</> }
         renderStartInstanceSubmit="Start BPMN process instance"
         startInstance={ startInstance }

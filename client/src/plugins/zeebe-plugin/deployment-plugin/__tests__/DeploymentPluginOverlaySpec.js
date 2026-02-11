@@ -16,8 +16,6 @@ import { waitFor } from '@testing-library/react';
 
 import { render } from '@testing-library/react';
 
-import EventEmitter from 'events';
-
 import DeploymentPluginOverlay from '../DeploymentPluginOverlay';
 
 import { TARGET_TYPES } from '../../../../remote/ZeebeAPI';
@@ -31,9 +29,12 @@ describe('DeploymentPluginOverlay', function() {
       // given
       const endpoint = createMockEndpoint();
 
+      const connectionManager = new MockConnectionManager({
+        getConnectionForTab: () => Promise.resolve(endpoint)
+      });
+
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
-        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -41,6 +42,7 @@ describe('DeploymentPluginOverlay', function() {
       const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
 
       createDeploymentPluginOverlay({
+        connectionManager,
         deployment,
         DeploymentConfigForm: Form,
         displayNotification: displayNotificationSpy
@@ -78,6 +80,10 @@ describe('DeploymentPluginOverlay', function() {
       // given
       const endpoint = createMockEndpoint();
 
+      const connectionManager = new MockConnectionManager({
+        getConnectionForTab: () => Promise.resolve(endpoint)
+      });
+
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult({
           success: false,
@@ -85,7 +91,6 @@ describe('DeploymentPluginOverlay', function() {
             details: 'foo'
           }
         }))),
-        getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -95,6 +100,7 @@ describe('DeploymentPluginOverlay', function() {
       const logSpy = sinon.spy();
 
       createDeploymentPluginOverlay({
+        connectionManager,
         deployment,
         DeploymentConfigForm: Form,
         displayNotification: displayNotificationSpy,
@@ -146,15 +152,21 @@ describe('DeploymentPluginOverlay', function() {
 
       const mockDeploymentResult = createMockDeploymentResult();
 
-      const deployment = new MockDeployment({
-        deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
-        on: sinon.spy(),
+      const connectionManager = new MockConnectionManager({
         getConnectionForTab: () => Promise.resolve(endpoint)
       });
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
+        on: sinon.spy()
+      });
+
+
 
       const triggerActionSpy = sinon.spy();
 
       createDeploymentPluginOverlay({
+        connectionManager,
         deployment,
         triggerAction: triggerActionSpy
       });
@@ -200,15 +212,19 @@ describe('DeploymentPluginOverlay', function() {
         response: createMockDeploymentErrorResponse()
       });
 
+      const connectionManager = new MockConnectionManager({
+        getConnectionForTab: () => Promise.resolve(endpoint)
+      });
+
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(mockDeploymentResult)),
-        on: sinon.spy(),
-        getConnectionForTab: () => Promise.resolve(endpoint)
+        on: sinon.spy()
       });
 
       const triggerActionSpy = sinon.spy();
 
       createDeploymentPluginOverlay({
+        connectionManager,
         deployment,
         triggerAction: triggerActionSpy
       });
@@ -256,12 +272,12 @@ describe('DeploymentPluginOverlay', function() {
       // when
       const endpoint = createMockEndpoint();
 
-      const deployment = new MockDeployment({
+      const connectionManager = new MockConnectionManager({
         getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       createDeploymentPluginOverlay({
-        deployment,
+        connectionManager,
         renderHeader: <div id="custom-header" />
       });
 
@@ -279,12 +295,12 @@ describe('DeploymentPluginOverlay', function() {
       // when
       const endpoint = createMockEndpoint();
 
-      const deployment = new MockDeployment({
+      const connectionManager = new MockConnectionManager({
         getConnectionForTab: () => Promise.resolve(endpoint)
       });
 
       createDeploymentPluginOverlay({
-        deployment,
+        connectionManager,
         renderSubmit: <div id="custom-submit" />
       });
 
@@ -302,9 +318,12 @@ describe('DeploymentPluginOverlay', function() {
       // given
       const endpoint = createMockEndpoint();
 
-      const deployment = new MockDeployment({
-        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+      const connectionManager = new MockConnectionManager({
         getConnectionForTab: () => Promise.resolve(endpoint)
+      });
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult()))
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -319,6 +338,7 @@ describe('DeploymentPluginOverlay', function() {
       ];
 
       createDeploymentPluginOverlay({
+        connectionManager,
         deployment,
         DeploymentConfigForm: Form,
         displayNotification: displayNotificationSpy,
@@ -357,9 +377,12 @@ describe('DeploymentPluginOverlay', function() {
       // given
       const endpoint = createMockEndpoint();
 
-      const deployment = new MockDeployment({
-        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult())),
+      const connectionManager = new MockConnectionManager({
         getConnectionForTab: () => Promise.resolve(endpoint)
+      });
+
+      const deployment = new MockDeployment({
+        deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult()))
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -368,6 +391,7 @@ describe('DeploymentPluginOverlay', function() {
 
       createDeploymentPluginOverlay({
         deployment,
+        connectionManager,
         DeploymentConfigForm: Form,
         displayNotification: displayNotificationSpy,
         getSuccessNotification: () => ({
@@ -408,14 +432,17 @@ describe('DeploymentPluginOverlay', function() {
       // given
       const endpoint = createMockEndpoint();
 
+      const connectionManager = new MockConnectionManager({
+        getConnectionForTab: () => Promise.resolve(endpoint)
+      });
+
       const deployment = new MockDeployment({
         deploy: sinon.spy(() => Promise.resolve(createMockDeploymentResult({
           success: false,
           response: {
             details: 'foo'
           }
-        }))),
-        getConnectionForTab: () => Promise.resolve(endpoint)
+        })))
       });
 
       const displayNotificationSpy = sinon.spy();
@@ -424,6 +451,7 @@ describe('DeploymentPluginOverlay', function() {
 
       createDeploymentPluginOverlay({
         deployment,
+        connectionManager,
         DeploymentConfigForm: Form,
         displayNotification: displayNotificationSpy,
         getErrorNotification: () => ({
@@ -468,38 +496,16 @@ class Mock {
   }
 }
 
-class MockConnectionChecker extends Mock {
-  constructor(overrides = {}) {
-    super(overrides);
-
-    this.eventEmitter = new EventEmitter();
-  }
-
-  on = sinon.spy((...args) => {
-    return this.eventEmitter.on(...args);
-  });
-
-  off = sinon.spy((...args) => {
-    return this.eventEmitter.off(...args);
-  });
-
-  emit = sinon.spy((...args) => {
-    return this.eventEmitter.emit(...args);
-  });
-
-  updateConfig = sinon.spy();
-
-  startChecking = sinon.spy();
-
-  stopChecking = sinon.spy();
-}
-
 class MockDeployment extends Mock {
   deploy() {}
 
   off() {}
 
   on() {}
+}
+
+class MockConnectionManager extends Mock {
+  getConnectionForTab() {}
 }
 
 class MockConfigValidator extends Mock {
@@ -602,7 +608,7 @@ function createDeploymentPluginOverlay(props = {}) {
   const {
     activeTab = DEFAULT_ACTIVE_TAB,
     anchor = new MockAnchor(),
-    connectionChecker = new MockConnectionChecker(),
+    connectionManager = new MockConnectionManager(),
     deployment = new MockDeployment(),
     deploymentConfigValidator = MockConfigValidator,
     displayNotification = () => {},
@@ -621,7 +627,7 @@ function createDeploymentPluginOverlay(props = {}) {
     <DeploymentPluginOverlay
       activeTab={ activeTab }
       anchor={ anchor }
-      connectionChecker={ connectionChecker }
+      connectionManager={ connectionManager }
       deployment={ deployment }
       deploymentConfigValidator={ deploymentConfigValidator }
       displayNotification={ displayNotification }
