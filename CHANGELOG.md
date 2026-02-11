@@ -30,6 +30,10 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js@18.12.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.50.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.20.0`
+* `DEPS`: update to `bpmn-moddle@10.0.0`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.12.0`
+* `DEPS`: update to `dmn-moddle@12.0.1`
+* `DEPS`: update to `camunda-dmn-moddle@1.3.1`
 
 ## 5.44.0
 

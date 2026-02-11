@@ -18,7 +18,7 @@ import ElementTemplatesView, {
   getVersion
 } from '../ElementTemplatesModalView';
 
-import BpmnModdle from 'bpmn-moddle';
+import { BpmnModdle } from 'bpmn-moddle';
 import camundaModdlePackage from 'camunda-bpmn-moddle/resources/camunda';
 
 const moddle = new BpmnModdle({ camunda: camundaModdlePackage });

@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const BpmnModdle = require('bpmn-moddle');
+const { BpmnModdle } = require('bpmn-moddle');
 
 const zeebe = require('zeebe-bpmn-moddle/resources/zeebe');
 
