@@ -18,6 +18,11 @@ function getCopyPasteEntries({
     enabled: copy,
     action: 'copy'
   }, {
+    label: 'Cut',
+    accelerator: 'CommandOrControl+X',
+    enabled: copy,
+    action: 'cut'
+  }, {
     label: 'Paste',
     accelerator: 'CommandOrControl+V',
     enabled: paste,
