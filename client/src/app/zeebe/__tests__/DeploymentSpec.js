@@ -406,7 +406,7 @@ describe('Deployment', function() {
 
       // given
       const settings = {
-        get: sinon.stub().returns(null)
+        get: () => null
       };
 
       const deployment = createDeployment({ settings });
@@ -423,7 +423,7 @@ describe('Deployment', function() {
 
       // given
       const settings = {
-        get: sinon.stub().returns(undefined)
+        get: () => undefined
       };
 
       const deployment = createDeployment({ settings });
@@ -440,7 +440,7 @@ describe('Deployment', function() {
 
       // given
       const settings = {
-        get: sinon.stub().returns('invalid string')
+        get: () => 'invalid string'
       };
 
       const deployment = createDeployment({ settings });
@@ -457,7 +457,7 @@ describe('Deployment', function() {
 
       // given
       const settings = {
-        get: sinon.stub().returns({ corrupted: 'object' })
+        get: () => ({ corrupted: 'object' })
       };
 
       const deployment = createDeployment({ settings });
@@ -496,7 +496,7 @@ describe('Deployment', function() {
       ];
 
       const settings = {
-        get: sinon.stub().returns(connections)
+        get: () => connections
       };
 
       const deployment = createDeployment({ settings });
@@ -528,7 +528,7 @@ describe('Deployment', function() {
       ];
 
       const settings = {
-        get: sinon.stub().returns(connections)
+        get: () => connections
       };
 
       const deployment = createDeployment({ settings });
@@ -561,7 +561,7 @@ describe('Deployment', function() {
       ];
 
       const settings = {
-        get: sinon.stub().returns(connections)
+        get: () => connections
       };
 
       const deployment = createDeployment({ settings });
@@ -593,7 +593,7 @@ describe('Deployment', function() {
       ];
 
       const settings = {
-        get: sinon.stub().returns(connections)
+        get: () => connections
       };
 
       const deployment = createDeployment({ settings });
@@ -611,7 +611,7 @@ describe('Deployment', function() {
 
       // given
       const settings = {
-        get: sinon.stub().returns([])
+        get: () => []
       };
 
       const deployment = createDeployment({ settings });
@@ -641,7 +641,7 @@ describe('Deployment', function() {
       ];
 
       const settings = {
-        get: sinon.stub().returns(connections)
+        get: () => connections
       };
 
       const deployment = createDeployment({ settings });
@@ -695,7 +695,7 @@ describe('Deployment', function() {
       ];
 
       const settings = {
-        get: sinon.stub().returns(connections)
+        get: () => connections
       };
 
       const config = new MockConfig();
@@ -731,7 +731,7 @@ describe('Deployment', function() {
       ];
 
       const settings = {
-        get: sinon.stub().returns(connections)
+        get: () => connections
       };
 
       const config = new MockConfig();
