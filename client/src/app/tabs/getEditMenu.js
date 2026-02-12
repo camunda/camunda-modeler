@@ -179,6 +179,7 @@ export function getCanvasEntries({
 
 export function getCopyCutPasteEntries({
   copy,
+  copyAsImage,
   cut,
   paste
 }) {
@@ -187,6 +188,11 @@ export function getCopyCutPasteEntries({
     accelerator: 'CommandOrControl + C',
     enabled: copy,
     action: 'copy',
+  }, {
+    label: 'Copy as Image',
+    accelerator: 'CmdOrCtrl+Shift+C',
+    enabled: copyAsImage,
+    action: 'copySelectionAsImage',
   }, {
     label: 'Cut',
     accelerator: 'CommandOrControl + X',
