@@ -325,3 +325,25 @@ export function getGRPCErrorCode(response) {
 export function getMessageForReason(reason) {
   return CONNECTION_CHECK_ERROR_MESSAGES[reason] || CONNECTION_CHECK_ERROR_MESSAGES.UNKNOWN;
 }
+
+/**
+ * Check if a connection is a c8run local connection.
+ *
+ * Matches if both conditions are true:
+ * - contactPoint starts with http://localhost:8080 (protocol + host:port) (case-insensitive)
+ * - name starts with "c8run" (case-insensitive)
+ *
+ * @param {Endpoint} connection
+ *
+ * @returns {boolean}
+ */
+export function isC8RunConnection(connection) {
+  if (!connection) {
+    return false;
+  }
+
+  const urlMatches = /^http:\/\/localhost:8080/i.test(connection.contactPoint);
+  const nameMatches = /^c8run/i.test(connection.name);
+
+  return urlMatches && nameMatches;
+}

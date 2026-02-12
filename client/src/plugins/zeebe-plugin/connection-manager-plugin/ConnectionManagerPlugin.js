@@ -20,12 +20,24 @@ import { CONNECTION_MANAGER_PLUGIN_ID, SETTINGS_KEY_CONNECTIONS, initializeSetti
 import { ConnectionManagerOverlay } from './ConnectionManagerOverlay';
 import { StatusIndicator } from '../shared/StatusIndicator';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
+import { NO_CONNECTION_ID } from './constants';
+import { AUTH_TYPES, TARGET_TYPES } from '../../../remote/ZeebeAPI';
+import { generateId } from '../../../util';
 
 import * as css from './ConnectionManagerPlugin.less';
 
 export const NO_CONNECTION = {
-  id: 'NO_CONNECTION',
+  id: NO_CONNECTION_ID,
   name: 'No connection'
+};
+
+export const DEFAULT_ENDPOINT = {
+  id: generateId(),
+  name: 'c8run (local)',
+  contactPoint: 'http://localhost:8080/v2',
+  operateUrl: 'http://localhost:8080/operate',
+  targetType: TARGET_TYPES.SELF_HOSTED,
+  authType: AUTH_TYPES.NONE,
 };
 
 /**

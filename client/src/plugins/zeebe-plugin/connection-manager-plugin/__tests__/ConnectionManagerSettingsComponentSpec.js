@@ -21,6 +21,7 @@ import {
 import { Formik } from 'formik';
 
 import { ConnectionManagerSettingsComponent } from '../ConnectionManagerSettingsComponent';
+import { C8RUN_DOWNLOAD_URL, C8RUN_TROUBLESHOOTING_URL } from '../constants';
 
 describe('ConnectionManagerSettingsComponent', function() {
 
@@ -531,6 +532,100 @@ describe('ConnectionManagerSettingsComponent', function() {
       await waitFor(() => {
         expect(getByLabelText('Error')).to.exist;
       });
+    });
+
+
+    it('should display Camunda 8 Run download and troubleshooting links when c8run connection fails', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'c8run (local)',
+          targetType: 'selfHosted',
+          contactPoint: 'http://localhost:8080/v2'
+        }
+      ];
+
+      const connectionChecker = createMockConnectionChecker();
+
+      const { container, getByTestId, getByLabelText } = createComponent({
+        initialValues: connections,
+        connectionChecker
+      });
+
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // when - trigger failure
+      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
+      connectionCheckListener({
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE',
+        name: 'settings'
+      });
+
+      // then
+      await waitFor(() => {
+
+        // Check status indicator shows error
+        expect(getByLabelText('Error')).to.exist;
+
+        // Verify full message text content
+        expect(container.textContent).to.contain('Cannot connect to your local Orchestration Cluster');
+        expect(container.textContent).to.contain('Download');
+        expect(container.textContent).to.contain('or start Camunda 8 Run to connect');
+        expect(container.textContent).to.contain('See troubleshooting information about C8 Run');
+        expect(container.textContent).to.contain('here');
+
+        // Assert download link with correct text and URL
+        const downloadLink = getByTestId('c8run-download-link');
+        expect(downloadLink.textContent).to.equal('Download');
+        expect(downloadLink.getAttribute('href')).to.equal(C8RUN_DOWNLOAD_URL);
+
+        // Assert troubleshooting link with correct text and URL
+        const troubleshootLink = getByTestId('c8run-troubleshoot-link');
+        expect(troubleshootLink.textContent).to.equal('here');
+        expect(troubleshootLink.getAttribute('href')).to.equal(C8RUN_TROUBLESHOOTING_URL);
+      });
+    });
+
+
+    it('should NOT display Camunda 8 Run link when non-c8run connection fails', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'My Custom Connection',
+          targetType: 'selfHosted',
+          contactPoint: 'http://localhost:26500'
+        }
+      ];
+
+      const connectionChecker = createMockConnectionChecker();
+
+      const { container, queryByTestId } = createComponent({
+        initialValues: connections,
+        connectionChecker
+      });
+
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // when - trigger failure
+      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
+      connectionCheckListener({
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE',
+        name: 'settings'
+      });
+
+      // then
+      await waitFor(() => {
+        expect(container.querySelector('[aria-label="Error"]')).to.exist;
+      });
+      expect(queryByTestId('c8run-nudge-link')).to.not.exist;
     });
 
 

@@ -15,6 +15,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import { ConnectionManagerOverlay } from '../ConnectionManagerOverlay';
+import { C8RUN_DOWNLOAD_URL, C8RUN_TROUBLESHOOTING_URL } from '../constants';
 
 describe('ConnectionManagerOverlay', function() {
 
@@ -168,7 +169,7 @@ describe('ConnectionManagerOverlay', function() {
 
   describe('connection status', function() {
 
-    it('should display error message on connection failure', function() {
+    it('should display error message on connection failure (CONTACT_POINT_UNAVAILABLE)', function() {
 
       // given
       const connections = DEFAULT_CONNECTIONS;
@@ -184,7 +185,71 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.contain('Cannot connect to Orchestration Cluster');
+      expect(errorMessage.textContent).to.equal('Cannot connect to Orchestration Cluster.');
+      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+    });
+
+
+    it('should display error message without prefix (CLUSTER_UNAVAILABLE)', function() {
+
+      // given
+      const connections = DEFAULT_CONNECTIONS;
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'CLUSTER_UNAVAILABLE'
+      };
+
+      // when
+      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(errorMessage.textContent).to.equal('Cannot connect to Orchestration Cluster.');
+      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+    });
+
+
+    it('should display error message without prefix (UNKNOWN)', function() {
+
+      // given
+      const connections = DEFAULT_CONNECTIONS;
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'UNKNOWN'
+      };
+
+      // when
+      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(errorMessage.textContent).to.equal('Unknown error. Please check Orchestration Cluster status.');
+      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+    });
+
+
+    it('should display error message with prefix for other error types (UNAUTHORIZED)', function() {
+
+      // given
+      const connections = DEFAULT_CONNECTIONS;
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'UNAUTHORIZED'
+      };
+
+      // when
+      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(errorMessage.textContent).to.contain('Could not establish connection:');
+      expect(errorMessage.textContent).to.contain('Credentials rejected by server.');
     });
 
 
@@ -214,6 +279,84 @@ describe('ConnectionManagerOverlay', function() {
 
       // then
       expect(queryByText(/Cannot connect to the endpoint/)).to.not.exist;
+    });
+
+
+    it('should display Camunda 8 Run download and troubleshooting links when c8run connection fails', function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'c8run (local)',
+          targetType: 'selfHosted',
+          contactPoint: 'http://localhost:8080/v2'
+        }
+      ];
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE'
+      };
+
+      // when
+      const { container, getByTestId } = createConnectionManagerOverlay({
+        connections,
+        connectionCheckResult,
+        activeConnection
+      });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+
+      // Get the description field and verify full text
+      const descriptionField = container.querySelector('.custom-control-description');
+      expect(descriptionField).to.exist;
+      expect(descriptionField.textContent).to.equal(
+        'Download or start Camunda 8 Run to connect. For help, see the troubleshooting information.'
+      );
+
+      // Assert download link with correct text and URL
+      const downloadLink = getByTestId('c8run-download-link');
+      expect(downloadLink.textContent).to.equal('Download');
+      expect(downloadLink.getAttribute('href')).to.equal(C8RUN_DOWNLOAD_URL);
+
+      // Assert troubleshooting link with correct text and URL
+      const troubleshootLink = getByTestId('c8run-troubleshoot-link');
+      expect(troubleshootLink.textContent).to.equal('troubleshooting information');
+      expect(troubleshootLink.getAttribute('href')).to.equal(C8RUN_TROUBLESHOOTING_URL);
+    });
+
+
+    it('should NOT display Camunda 8 Run link when non-c8run connection fails', function() {
+
+      // given
+      const connections = [
+        {
+          id: 'custom-connection',
+          name: 'My Custom Connection',
+          targetType: 'selfHosted',
+          contactPoint: 'http://localhost:26500'
+        }
+      ];
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE'
+      };
+
+      // when
+      const { container, queryByTestId } = createConnectionManagerOverlay({
+        connections,
+        connectionCheckResult,
+        activeConnection
+      });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(queryByTestId('c8run-nudge-link')).to.not.exist;
     });
 
   });

@@ -13,10 +13,11 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { Section, Select } from '../../../shared/ui';
-import { getMessageForReason } from '../../zeebe-plugin/shared/util';
+import { getMessageForReason, isC8RunConnection } from '../../zeebe-plugin/shared/util';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 import { utmTag } from '../../../util/utmTag';
 import { NO_CONNECTION } from './ConnectionManagerPlugin';
+import { C8RUN_DOWNLOAD_URL, C8RUN_TROUBLESHOOTING_URL } from './constants';
 
 export function ConnectionManagerOverlay({
   connections = [],
@@ -55,14 +56,38 @@ export function ConnectionManagerOverlay({
 
   const getConnectionFieldError = () => {
     if (connectionCheckResult?.success === false && connectionCheckResult.reason !== CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG) {
+      const { reason } = connectionCheckResult;
+      const shouldOmitPrefix = [
+        CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE,
+        CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE,
+        CONNECTION_CHECK_ERROR_REASONS.UNKNOWN
+      ].includes(reason);
+
+      if (shouldOmitPrefix) {
+        return getMessageForReason(reason);
+      }
+
       return (
         <>
           Could not establish connection: <br />
-          { getMessageForReason(connectionCheckResult?.reason) }
+          { getMessageForReason(reason) }
         </>
       );
     }
     return undefined;
+  };
+
+  const getConnectionDescription = () => {
+    const hasConnectionError = connectionCheckResult?.success === false && connectionCheckResult.reason !== CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG;
+
+    if (isC8RunConnection(activeConnection) && hasConnectionError) {
+      return (
+        <>
+          <a data-testid="c8run-download-link" href={ C8RUN_DOWNLOAD_URL }>Download</a> or start Camunda 8 Run to connect. For help, see the <a data-testid="c8run-troubleshoot-link" href={ C8RUN_TROUBLESHOOTING_URL }>troubleshooting information</a>.
+        </>
+      );
+    }
+    return null;
   };
 
   function handleConnectionIdChange(connectionId) {
@@ -90,14 +115,13 @@ export function ConnectionManagerOverlay({
                 options={ connectionOptions }
                 value={ activeConnection?.id }
                 fieldError={ getConnectionFieldError }
+                description={ getConnectionDescription() }
               />
             </div>
           </div>
 
           <div className={ classNames('form-group form-description') }>
-            A connection to a running orchestration cluster lets you test tasks, deploy resources, and run processes. <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>
-              Learn more
-            </a>
+            A connection to a running <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>orchestration cluster</a> lets you test tasks, deploy resources, and run processes.
           </div>
         </form>
       </Section.Body>
