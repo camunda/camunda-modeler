@@ -105,7 +105,7 @@ class MenuBuilder {
     }
 
     if (contextMenu) {
-      this.menu = Menu.buildFromTemplate(contextMenu.map(mapMenuEntryTemplate));
+      this.menu = Menu.buildFromTemplate(expandMenuEntriesTemplate(contextMenu));
 
       return this;
     }
@@ -758,6 +758,33 @@ module.exports = MenuBuilder;
 
 
 // helpers //////
+
+/**
+ * @param { (MenuEntry[]|MenuEntry)[]} entries
+ *
+ * @return { ExpandedMenuEntry[] }
+ */
+function expandMenuEntriesTemplate(entries) {
+
+  return entries.reduce((expandedEntries, entries) => {
+
+    if (Array.isArray(entries)) {
+      if (expandedEntries.length && entries.length) {
+
+        // prepend separator
+        entries = [
+          { type: 'separator' },
+          ...entries
+        ];
+      }
+    } else {
+      entries = [ entries ];
+    }
+
+    return expandedEntries.concat(entries.map(mapMenuEntryTemplate));
+  }, []);
+}
+
 
 function mapMenuEntryTemplate(entry) {
   if (entry.type === 'separator') {
