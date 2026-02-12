@@ -127,7 +127,7 @@ jobs:
       run: npm run build -- --win
 
     - name: Upload artifact to Camunda Download Center
-      uses: camunda/infra-global-github-actions/download-center-upload@fff0b1f11fd8caf3e2a866fd2ecf113c671fab01
+      uses: camunda/infra-global-github-actions/download-center-upload@317ad657a9766301b0cae99eadfde9dddcffd286
       with:
         gcp_credentials: ${{ steps.secrets.outputs.GCP_CREDENTIALS_NAME }}
         env: 'prod'
