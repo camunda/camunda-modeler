@@ -28,6 +28,7 @@ var { DefinePlugin } = require('webpack');
 var MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 var absoluteBasePath = path.resolve(__dirname);
+var monacoEditorPath = path.dirname(require.resolve('monaco-editor/package.json'));
 var resourcePath = path.resolve(__dirname + '/resources');
 
 process.env.CHROME_BIN = require('puppeteer').executablePath();
@@ -125,7 +126,10 @@ module.exports = function(karma) {
             WINDOWS: JSON.stringify(windows)
           }
         }),
-        new MonacoWebpackPlugin()
+        new MonacoWebpackPlugin({
+          monacoEditorPath,
+          languages: [ 'json' ] // Only bundle JSON language for tests (RPA uses it)
+        })
       ],
       resolve: {
         mainFields: [
