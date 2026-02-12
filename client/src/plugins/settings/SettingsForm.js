@@ -23,21 +23,13 @@ import { utmTag } from '../../util/utmTag';
 /**
  * Formik form wrapper for the settings form.
  */
-export function SettingsForm({ schema, values, onChange, targetElement }) {
+export function SettingsForm({ schema, onChange, targetElement }) {
 
-  const { setFieldValue, values: formikValues, validateForm } = useFormikContext();
-
-
+  const { values: formikValues, validateForm } = useFormikContext();
 
   useEffect(() => {
     onChange(formikValues);
   }, [ formikValues, onChange ]);
-
-  useEffect(() => {
-    forEach(values, (value, key) => {
-      setFieldValue(key, value);
-    });
-  }, [ values, setFieldValue ]);
 
   useEffect(() => {
     validateForm();
@@ -179,19 +171,22 @@ export function SettingsField(props) {
   }
 
   return <>
-    <Field
-      name={ name }
-      component={ FieldComponent }
-      disabled={ disabledByFlag }
-      label={ label }
-      description={ description }
-      hint={ hint }
-      options={ options }
-      values={ options }
-      documentationUrl={ documentationUrl }
-      validate={ validate }
-      { ...restProps }
-    />
+    <Field name={ name } validate={ validate }>
+      {({ field, form }) => (
+        <FieldComponent
+          field={ field }
+          form={ form }
+          disabled={ disabledByFlag }
+          label={ label }
+          description={ description }
+          hint={ hint }
+          options={ options }
+          values={ options }
+          documentationUrl={ documentationUrl }
+          { ...restProps }
+        />
+      )}
+    </Field>
     { disabledByFlag &&
       <div className="flag-warning">
         This option is overridden by <code>{ flag }</code> flag.&nbsp;

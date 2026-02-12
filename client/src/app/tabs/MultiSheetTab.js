@@ -57,7 +57,11 @@ export class MultiSheetTab extends CachedComponent {
       sheets = [];
     }
 
-    const provider = activeSheet.provider;
+    const provider = activeSheet?.provider;
+
+    if (!provider) {
+      return;
+    }
 
     const wiredNewSheets = newSheets.map(newSheet => {
       return {

@@ -33,11 +33,13 @@ export default function CheckBox(props) {
   } = props;
 
   const {
-    name: fieldName
+    name,
+    value,
+    ...restField
   } = field;
 
-  const meta = form.getFieldMeta(fieldName);
-  const error = (fieldError || defaultFieldError)(meta, fieldName);
+  const meta = form.getFieldMeta(name);
+  const error = (fieldError || defaultFieldError)(meta, name);
 
   return (
     <React.Fragment>
@@ -46,19 +48,21 @@ export default function CheckBox(props) {
           classNames('custom-control', 'custom-checkbox')
         }>
           <input
-            { ...field }
+            name={ name }
+            checked={ !!value }
             disabled={ form.isSubmitting }
             className={ classNames('custom-control-input', {
               'is-invalid': !!error
             }) }
-            id={ fieldName }
+            id={ name }
+            { ...restField }
             { ...restProps }
           />
           <label
             className={ classNames('custom-control-option', {
               'is-invalid': !!error
             }) }
-            htmlFor={ fieldName }
+            htmlFor={ name }
           >
             { label }
             <DocumentationIcon url={ documentationUrl } />

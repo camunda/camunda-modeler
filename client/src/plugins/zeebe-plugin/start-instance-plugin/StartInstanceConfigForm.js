@@ -78,14 +78,20 @@ export default function StartInstanceConfigForm(props) {
                     <div className="fields">
                       <Field
                         name="variables"
-                        component={ VariablesComponent }
-                        label="Variables (optional)"
-                        description={ <span>Must be a proper <a href="https://www.w3schools.com/js/js_json_intro.asp">JSON string</a> representing <a href={ utmTag('https://docs.camunda.io/docs/components/concepts/variables/') }>Zeebe variables</a>.</span> }
-                        hint="A JSON string representing the variables the process instance is started with."
                         validate={ value => validateField('variables', value) }
-                        fieldError={ getFieldError }
-                        { ...variablesComponentProps }
-                      />
+                      >
+                        {({ field, form }) => (
+                          <VariablesComponent
+                            field={ field }
+                            form={ form }
+                            label="Variables (optional)"
+                            description={ <span>Must be a proper <a href="https://www.w3schools.com/js/js_json_intro.asp">JSON string</a> representing <a href={ utmTag('https://docs.camunda.io/docs/components/concepts/variables/') }>Zeebe variables</a>.</span> }
+                            hint="A JSON string representing the variables the process instance is started with."
+                            fieldError={ getFieldError }
+                            { ...variablesComponentProps }
+                          />
+                        )}
+                      </Field>
                     </div>
                   </fieldset>
                   <Section.Actions>

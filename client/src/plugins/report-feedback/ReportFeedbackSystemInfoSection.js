@@ -84,30 +84,46 @@ export function ReportFeedbackSystemInfoSection(props) {
           {formik => {
             return (
               <Form>
-                <Field
-                  name="version"
-                  component={ CheckBox }
-                  type="checkbox"
-                  label="Version"
-                />
-                <Field
-                  name="operatingSystem"
-                  component={ CheckBox }
-                  type="checkbox"
-                  label="Operating system"
-                />
-                <Field
-                  name="installedPlugins"
-                  component={ CheckBox }
-                  type="checkbox"
-                  label="Installed plugins"
-                />
-                <Field
-                  name="executionPlatform"
-                  component={ CheckBox }
-                  type="checkbox"
-                  label="Execution platform"
-                />
+                <Field name="version">
+                  {({ field, form }) => (
+                    <CheckBox
+                      field={ field }
+                      form={ form }
+                      type="checkbox"
+                      label="Version"
+                    />
+                  )}
+                </Field>
+                <Field name="operatingSystem">
+                  {({ field, form }) => (
+                    <CheckBox
+                      field={ field }
+                      form={ form }
+                      type="checkbox"
+                      label="Operating system"
+                    />
+                  )}
+                </Field>
+                <Field name="installedPlugins">
+                  {({ field, form }) => (
+                    <CheckBox
+                      field={ field }
+                      form={ form }
+                      type="checkbox"
+                      label="Installed plugins"
+                    />
+                  )}
+                </Field>
+                <Field name="executionPlatform">
+                  {({ field, form }) => (
+                    <CheckBox
+                      field={ field }
+                      form={ form }
+                      type="checkbox"
+                      label="Execution platform"
+                    />
+                  )}
+                </Field>
                 {formik.errors._form && allFieldsTruthy(formik.touched) && <div className="feedback__message">{formik.errors._form}</div>}
 
                 <Section.Actions>

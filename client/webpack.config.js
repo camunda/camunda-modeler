@@ -64,7 +64,11 @@ module.exports = {
     modules: [
       'node_modules',
       resourcePath
-    ]
+    ],
+    alias: {
+      'react': path.resolve(__dirname, 'node_modules/react'),
+      'react-dom': path.resolve(__dirname, 'node_modules/react-dom')
+    }
   },
   module: {
     rules: [
