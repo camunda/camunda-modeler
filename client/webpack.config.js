@@ -39,6 +39,7 @@ const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const resourcePath = path.resolve(__dirname + '/resources');
+const monacoEditorPath = path.dirname(require.resolve('monaco-editor/package.json'));
 
 
 const copyPattern = {
@@ -126,7 +127,9 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [ copyPattern ]
     }),
-    new MonacoWebpackPlugin(),
+    new MonacoWebpackPlugin({
+      monacoEditorPath
+    }),
     ...sentryIntegration(),
     ...extractDependencies()
   ],
