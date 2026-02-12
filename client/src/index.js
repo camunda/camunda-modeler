@@ -13,7 +13,7 @@ import './styles/style.less';
 import { flags, globals, metadata, plugins } from './globals';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import {
   AppParent,
@@ -69,13 +69,14 @@ async function render() {
 
   const tabsProvider = new TabsProvider(plugins.get('tabs'), globals.settings);
 
-  ReactDOM.render(
+  const root = createRoot(rootElement);
+  root.render(
     <AppParent
       keyboardBindings={ keyboardBindings }
       globals={ globals }
       tabsProvider={ tabsProvider }
       onStarted={ onStarted }
-    />, rootElement
+    />
   );
 }
 
