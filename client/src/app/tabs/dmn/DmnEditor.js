@@ -146,7 +146,7 @@ export class DmnEditor extends CachedComponent {
     if (activeViewer) {
       propertiesPanel = activeViewer.get('propertiesPanel', false);
 
-      if (propertiesPanel) {
+      if (propertiesPanel && this.propertiesPanelRef.current) {
         propertiesPanel.attachTo(this.propertiesPanelRef.current);
       }
 
@@ -176,8 +176,12 @@ export class DmnEditor extends CachedComponent {
     modeler.detach();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     this.checkImport(prevProps);
+
+    if (prevState?.importing && !this.state.importing) {
+      this.attachPropertiesPanel();
+    }
 
     // We can only notify interested parties about overview open once its parent component was
     // rendered
@@ -191,6 +195,21 @@ export class DmnEditor extends CachedComponent {
 
     if (isCachedStateChange(prevProps, this.props)) {
       this.handleChanged();
+    }
+  }
+
+  attachPropertiesPanel() {
+    const modeler = this.getModeler();
+    const activeViewer = modeler.getActiveViewer();
+
+    if (!activeViewer) {
+      return;
+    }
+
+    const propertiesPanel = activeViewer.get('propertiesPanel', false);
+
+    if (propertiesPanel && this.propertiesPanelRef.current) {
+      propertiesPanel.attachTo(this.propertiesPanelRef.current);
     }
   }
 
@@ -326,7 +345,7 @@ export class DmnEditor extends CachedComponent {
       (!previousActiveView || previousActiveView.element !== activeView.element)) {
       propertiesPanel = activeViewer.get('propertiesPanel', false);
 
-      if (propertiesPanel) {
+      if (propertiesPanel && this.propertiesPanelRef.current) {
         propertiesPanel.attachTo(this.propertiesPanelRef.current);
       }
     }
@@ -644,7 +663,13 @@ export class DmnEditor extends CachedComponent {
       return;
     }
 
-    this.open(this.props.activeSheet.element);
+    const { activeSheet } = this.props;
+
+    if (!activeSheet?.element) {
+      return;
+    }
+
+    this.open(activeSheet.element);
   }
 
   shouldOpenActiveSheet(prevProps) {

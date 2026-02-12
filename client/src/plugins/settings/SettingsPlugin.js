@@ -156,11 +156,11 @@ export default function SettingsPlugin(props) {
         }
 
         <Formik
-          initialValues={ { } }
+          initialValues={ unflattenValues(values) }
+          enableReinitialize
         >
           <SettingsForm
             schema={ schema }
-            values={ values }
             onChange={ debounce(handleSave, 200) }
             targetElement={ targetElement }
           />
@@ -214,4 +214,32 @@ function flattenSchema(schema) {
   return reduce(schema, (acc, { properties }) => {
     return { ...acc, ...properties };
   }, {});
+}
+
+/**
+ * Converts flat dotted keys to nested object structure.
+ * e.g. { 'test.checkbox': true } -> { test: { checkbox: true } }
+ *
+ * @param {Object} flatValues
+ * @returns {Object}
+ */
+function unflattenValues(flatValues) {
+  const result = {};
+
+  forEach(flatValues, (value, key) => {
+    const parts = key.split('.');
+    let current = result;
+
+    for (let i = 0; i < parts.length - 1; i++) {
+      const part = parts[i];
+      if (!current[part]) {
+        current[part] = {};
+      }
+      current = current[part];
+    }
+
+    current[parts[parts.length - 1]] = value;
+  });
+
+  return result;
 }

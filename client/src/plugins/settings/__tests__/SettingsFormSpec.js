@@ -148,6 +148,62 @@ describe('SettingsForm', function() {
     });
   });
 
+  describe('values', function() {
+
+    it('should show initial values', async function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.text': {
+            type: 'text',
+            label: 'Text Input'
+          },
+          'test.boolean': {
+            type: 'boolean',
+            label: 'Checkbox'
+          },
+          'test.select': {
+            type: 'select',
+            label: 'Select',
+            options: [
+              { label: 'One', value: 'one' },
+              { label: 'Two', value: 'two' }
+            ]
+          },
+          'test.radio': {
+            type: 'radio',
+            label: 'Radio',
+            options: [
+              { label: 'One', value: 'one' },
+              { label: 'Two', value: 'two' }
+            ]
+          }
+        }
+      } ];
+
+      // when
+      const { getByLabelText } = createSettingsForm({
+        schema,
+        initialValues: {
+          'test': {
+            'text': 'Hello World',
+            'boolean': true,
+            'select': 'two',
+            'radio': 'two'
+          }
+        }
+      });
+
+      // then
+      await waitFor(() => {
+        expect(getByLabelText('Text Input').value).to.equal('Hello World');
+        expect(getByLabelText('Checkbox').checked).to.be.true;
+        expect(getByLabelText('Select').value).to.equal('two');
+        expect(getByLabelText('Two').checked).to.be.true;
+      });
+    });
+  });
 
   describe('sections', function() {
 
@@ -550,7 +606,7 @@ describe('SettingsForm', function() {
     });
 
 
-    it('should hide field if one of allMatch conditions is not met', function() {
+    it('should hide field if one of allMatch conditions is not met', async function() {
 
       // given
       const schema = [ {
@@ -580,7 +636,7 @@ describe('SettingsForm', function() {
         }
       } ];
 
-      const { container } = createSettingsForm({
+      const { getByLabelText, queryByLabelText } = createSettingsForm({
         schema,
         initialValues: {
           'test': {
@@ -591,15 +647,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
-      expect(conditionalTextField).to.exist;
+      expect(getByLabelText('Checkbox').checked).to.be.true;
+      expect(queryByLabelText('Conditional Text Input')).to.exist;
 
       // when
-      fireEvent.click(container.querySelector('.form-group [id="test.checkbox"]'));
+      fireEvent.click(getByLabelText('Checkbox'));
 
       // then
-      conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
-      expect(conditionalTextField).to.not.exist;
+      expect(queryByLabelText('Conditional Text Input')).to.not.exist;
     });
 
   });
@@ -1171,14 +1226,16 @@ describe('SettingsForm', function() {
 });
 
 // helpers
-function createSettingsForm({ schema, values, initialValues, onChange = () => {} } = {}) {
+
+function createSettingsForm({ schema, initialValues, onChange = () => {} } = {}) {
+
   return render(
     <Formik
       initialValues={ initialValues }
+      enableReinitialize
     >
       <SettingsForm
         schema={ schema }
-        values={ values }
         onChange={ onChange }
       />
     </Formik>

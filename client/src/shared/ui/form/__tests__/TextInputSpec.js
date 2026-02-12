@@ -47,7 +47,9 @@ describe('<TextInput>', function() {
     // given
     const fieldError = sinon.spy();
     const field = {
-      name: 'name'
+      name: 'name',
+      value: '',
+      onChange: () => {}
     };
     const fieldMeta = {
       error: 'foo',
@@ -83,9 +85,15 @@ function createTextInput(options = {}) {
     }
   };
 
+  const defaultField = {
+    name: 'test',
+    value: '',
+    onChange: () => {}
+  };
+
   return render(<TextInput
     { ...props }
-    field={ field || {} }
+    field={ { ...defaultField, ...field } }
     form={ form }
   />);
 }
