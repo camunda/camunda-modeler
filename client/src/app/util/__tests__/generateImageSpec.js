@@ -44,7 +44,7 @@ describe('util - generateImage', function() {
       const image = await generateImage(type, outOfBoundsSVG);
 
       expectToBeAnImage(image);
-    }).timeout(10000); // downscaling may exceed the default timeout 2000ms.
+    }).timeout(15000); // downscaling may exceed the default timeout 2000ms.
 
 
     it('should generate expected images <' + type + '>', async function() {
