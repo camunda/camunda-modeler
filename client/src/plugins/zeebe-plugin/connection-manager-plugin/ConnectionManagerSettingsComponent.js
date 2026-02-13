@@ -214,7 +214,7 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
                       <TableCell key={ `${fieldName}[${index}].name` }>
                         { isExpanded(row) ?
                           <SettingsField name={ `${fieldName}[${index}].name` } type="text" hint="Name" default="New connection" /> :
-                          <span id={ `${fieldName}[${index}].name` }>{ fieldValue[index]['name'] || 'Unnamed connection'}</span>
+                          <span id={ `${fieldName}[${index}].name` }>{ fieldValue[index]?.name || 'Unnamed connection'}</span>
                         }
                       </TableCell>
 
