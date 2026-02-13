@@ -12,8 +12,8 @@ import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
-import buttonCss from './Button.less';
-import dropdownButtonCss from './DropdownButton.less';
+import * as buttonCss from './Button.less';
+import * as dropdownButtonCss from './DropdownButton.less';
 
 
 export default class DropdownButton extends PureComponent {
