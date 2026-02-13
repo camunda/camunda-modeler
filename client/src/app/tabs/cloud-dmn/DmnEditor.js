@@ -52,7 +52,7 @@ import getDmnWindowMenu from '../dmn/getDmnWindowMenu';
 
 import * as css from '../dmn/DmnEditor.less';
 
-import generateImage from '../../util/generateImage';
+import { generateImageFromSvg } from 'bpmn-js-copy-as-image';
 
 import Metadata from '../../../util/Metadata';
 
@@ -838,7 +838,7 @@ export class DmnEditor extends CachedComponent {
       return svg;
     }
 
-    return generateImage(type, svg);
+    return generateImageFromSvg(svg, { imageType: type, outputFormat: 'dataUrl' });
   }
 
   async exportSVG() {
