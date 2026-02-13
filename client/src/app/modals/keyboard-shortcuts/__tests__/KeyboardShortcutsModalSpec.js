@@ -42,26 +42,26 @@ describe('<KeyboardShortcutsModal>', function() {
     it('should render Mac OS shortcuts', function() {
 
       // when
-      const { queryByText } = renderOverlay({
+      const { queryAllByText } = renderOverlay({
         platform: 'darwin'
       });
 
       // then
-      expect(queryByText(COMMAND_MODIFIER, { exact: false })).to.exist;
-      expect(queryByText(CTRL_MODIFIER, { exact: false })).to.not.exist;
+      expect(queryAllByText(COMMAND_MODIFIER, { exact: false }).length).to.be.gt(0);
+      expect(queryAllByText(CTRL_MODIFIER, { exact: false }).length).to.be.equal(0);
     });
 
 
     it('should render Windows / Linux shortcuts', function() {
 
       // when
-      const { queryByText } = renderOverlay({
+      const { queryAllByText } = renderOverlay({
         platform: 'linux'
       });
 
       // then
-      expect(queryByText(COMMAND_MODIFIER, { exact: false })).to.not.exist;
-      expect(queryByText(CTRL_MODIFIER, { exact: false })).to.exist;
+      expect(queryAllByText(CTRL_MODIFIER, { exact: false }).length).to.be.gt(0);
+      expect(queryAllByText(COMMAND_MODIFIER, { exact: false }).length).to.be.equal(0);
     });
 
   });

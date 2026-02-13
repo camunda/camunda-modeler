@@ -56,6 +56,7 @@ export default class KeyboardBindings {
     this.isMac = isMac,
 
     this.copy = null;
+    this.copyAsImage = null;
     this.cut = null;
     this.paste = null;
     this.selectAll = null;
@@ -94,6 +95,11 @@ export default class KeyboardBindings {
     } = this;
 
     const commandOrCtrl = isCommandOrControl(event);
+
+    // copy selection as image
+    if (commandOrCtrl && isCopyAsImage(event) && isEnabled(this.copyAsImage)) {
+      action = getAction(this.copyAsImage);
+    }
 
     // copy
     if (commandOrCtrl && isCopy(event) && isEnabled(this.copy) && !hasRole(this.copy, 'copy')) {
@@ -210,6 +216,7 @@ export default class KeyboardBindings {
     menu = this.updateRemoveSelectionEntry(menu);
 
     this.copy = findCopy(menu);
+    this.copyAsImage = findCopyAsImage(menu);
     this.cut = findCut(menu);
     this.paste = findPaste(menu);
     this.selectAll = findSelectAll(menu);
@@ -281,7 +288,12 @@ export default class KeyboardBindings {
 
 // Ctrl + C
 function isCopy(event) {
-  return isKey([ 'c', 'C' ], event) && isCommandOrControl(event);
+  return isKey([ 'c', 'C' ], event) && isCommandOrControl(event) && !isShift(event);
+}
+
+// Ctrl + Shift + C
+function isCopyAsImage(event) {
+  return isKey([ 'c', 'C' ], event) && isCommandOrControl(event) && isShift(event);
 }
 
 // Ctrl + X
@@ -436,6 +448,10 @@ export function findAndReplaceAll(menu = [], matcher, overrides = {}) {
 
 function findCopy(menu) {
   return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'CommandOrControl+C'));
+}
+
+function findCopyAsImage(menu) {
+  return find(menu, ({ accelerator }) => isAccelerator(accelerator, 'CommandOrControl+Shift+C'));
 }
 
 function findCut(menu) {

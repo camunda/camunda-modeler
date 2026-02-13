@@ -40,7 +40,7 @@ import getBpmnWindowMenu from './getBpmnWindowMenu';
 
 import * as css from './BpmnEditor.less';
 
-import generateImage from '../../util/generateImage';
+import { generateImageFromSvg } from 'bpmn-js-copy-as-image';
 
 import applyDefaultTemplates from '../bpmn-shared/modeler/features/apply-default-templates/applyDefaultTemplates';
 
@@ -452,6 +452,7 @@ export class BpmnEditor extends CachedComponent {
       canvasFocused,
       close: true,
       copy: !!selectionLength,
+      copyAsImage: !!selectionLength,
       cut: !!selectionLength,
       duplicate: canvasFocused && !!selectionLength,
       createElement: canvasFocused,
@@ -663,7 +664,7 @@ export class BpmnEditor extends CachedComponent {
       return svg;
     }
 
-    return generateImage(type, svg);
+    return generateImageFromSvg(svg, { imageType: type, outputFormat: 'dataUrl' });
   }
 
   async exportSVG() {
