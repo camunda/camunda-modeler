@@ -100,7 +100,9 @@ describe('<ElementTemplatesView>', function() {
       template.click();
 
       // then
-      expect(template.closest('li').classList.contains('element-templates-list__item--selected')).to.be.true;
+      await waitFor(() => {
+        expect(template.closest('li').classList.contains('element-templates-list__item--selected')).to.be.true;
+      });
     });
 
 
@@ -117,7 +119,9 @@ describe('<ElementTemplatesView>', function() {
       expand.click();
 
       // then
-      expect(screen.getByText(DEFAULT_ELEMENT_TEMPLATES[2].description)).to.exist;
+      await waitFor(() => {
+        expect(screen.getByText(DEFAULT_ELEMENT_TEMPLATES[2].description)).to.exist;
+      });
     });
 
 
@@ -134,14 +138,18 @@ describe('<ElementTemplatesView>', function() {
       expand.click();
 
       // then
-      expect(screen.getByText(DEFAULT_ELEMENT_TEMPLATES[2].description)).to.exist;
+      await waitFor(() => {
+        expect(screen.getByText(DEFAULT_ELEMENT_TEMPLATES[2].description)).to.exist;
+      });
 
       // when
       const collapse = screen.getByText('Less');
       collapse.click();
 
       // then
-      expect(screen.queryByText(DEFAULT_ELEMENT_TEMPLATES[2].description)).to.be.null;
+      await waitFor(() => {
+        expect(screen.queryByText(DEFAULT_ELEMENT_TEMPLATES[2].description)).to.be.null;
+      });
     });
   });
 
@@ -160,6 +168,11 @@ describe('<ElementTemplatesView>', function() {
 
       // when
       template.click();
+
+      // wait for selection to take effect
+      await waitFor(() => {
+        expect(template.closest('li').classList.contains('element-templates-list__item--selected')).to.be.true;
+      });
 
       const applyButton = screen.getByRole('button', { name: 'Apply' });
       applyButton.click();
@@ -223,6 +236,11 @@ describe('<ElementTemplatesView>', function() {
       // when
       template.click();
 
+      // wait for selection to take effect
+      await waitFor(() => {
+        expect(template.closest('li').classList.contains('element-templates-list__item--selected')).to.be.true;
+      });
+
       // then
       const applyButton = screen.getByRole('button', { name: 'Apply' });
       expect(applyButton.disabled).to.be.false;
@@ -232,7 +250,9 @@ describe('<ElementTemplatesView>', function() {
       fireEvent.change(search, { target: { value: 'Template 1' } });
 
       // then
-      expect(applyButton.disabled).to.be.true;
+      await waitFor(() => {
+        expect(applyButton.disabled).to.be.true;
+      });
     });
 
   });

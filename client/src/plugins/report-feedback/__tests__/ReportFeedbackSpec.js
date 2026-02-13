@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import { ReportFeedback } from '../ReportFeedback';
 
@@ -32,7 +32,7 @@ describe('<ReportFeedback>', function() {
   });
 
 
-  it('should open via menu events', function() {
+  it('should open via menu events', async function() {
 
     // given
     const subscribe = createSubscribe('reportFeedback.open');
@@ -42,7 +42,9 @@ describe('<ReportFeedback>', function() {
     subscribe.emit({ source: 'menu' });
 
     // then
-    expect(screen.getByRole('dialog')).to.exist;
+    await waitFor(() => {
+      expect(screen.getByRole('dialog')).to.exist;
+    });
   });
 
 

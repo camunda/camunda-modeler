@@ -72,12 +72,17 @@ describe('<PingEventHandlerSpec>', function() {
 
     it('should send on interval', async function() {
 
-      // when
-      new Promise(resolve => setTimeout(resolve, 1000)).then(() => {
+      // given
+      const clock = sinon.useFakeTimers();
+      const handleTelemetryActivation = subscribe.getCall(0).args[1];
 
-        // then
-        expect(track).to.have.been.calledOnce;
-      });
+      // when
+      await handleTelemetryActivation();
+      clock.tick(1000);
+
+      // then
+      expect(track).to.have.been.calledOnce;
+      clock.restore();
     });
 
   });

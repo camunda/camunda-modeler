@@ -12,7 +12,7 @@
 
 import React, { createRef } from 'react';
 
-import { render } from '@testing-library/react';
+import { act, render, waitFor } from '@testing-library/react';
 
 import TemplateUpdater from '..';
 
@@ -104,9 +104,10 @@ describe('<TemplateUpdater>', function() {
     backend.receive('client:templates-update-done', null, true);
 
     // then
-    expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'success', title: 'Camunda Connector templates updated' });
-
-    expect(triggerActionSpy).to.have.been.calledWith('elementTemplates.reload');
+    await waitFor(() => {
+      expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'success', title: 'Camunda Connector templates updated' });
+      expect(triggerActionSpy).to.have.been.calledWith('elementTemplates.reload');
+    });
   });
 
 
@@ -180,8 +181,10 @@ async function createTemplateUpdater(props = {}) {
 
   const instance = ref.current;
 
-  instance.setState({
-    activeTab: createTab()
+  await act(async () => {
+    instance.setState({
+      activeTab: createTab()
+    });
   });
 
   return {

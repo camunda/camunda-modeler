@@ -316,9 +316,10 @@ describe('<DeploymentConfigValidator>', function() {
   });
 
 
-  it('should cancel endpoint url validation', function(done) {
+  it('should cancel endpoint url validation', function() {
 
     // given
+    const clock = sinon.useFakeTimers();
     const onConnectionStatusUpdate = sinon.spy();
 
     validator.validateConnectionWithoutCredentials = () => new Promise((resolve) => {
@@ -331,10 +332,9 @@ describe('<DeploymentConfigValidator>', function() {
     validator.cancel();
 
     // then
-    setTimeout(() => {
-      expect(onConnectionStatusUpdate).to.not.have.been.called;
-      done();
-    }, 1000);
+    clock.tick(1000);
+    expect(onConnectionStatusUpdate).to.not.have.been.called;
+    clock.restore();
   });
 
 

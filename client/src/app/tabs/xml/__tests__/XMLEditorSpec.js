@@ -10,7 +10,7 @@
 
 import React, { createRef } from 'react';
 
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import {
   Cache,
@@ -272,9 +272,10 @@ describe('<XMLEditor>', function() {
       await instance.getXML();
 
       // then
-      const dirty = instance.isDirty();
-
-      expect(dirty).to.be.false;
+      await waitFor(() => {
+        const dirty = instance.isDirty();
+        expect(dirty).to.be.false;
+      });
     });
 
   });
