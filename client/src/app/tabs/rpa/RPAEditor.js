@@ -171,7 +171,7 @@ export class RPAEditor extends CachedComponent {
 
     const { engineProfile: cachedEngineProfile } = this.getCached();
 
-    if (engineProfile.executionPlatformVersion === cachedEngineProfile?.executionPlatformVersion) {
+    if (engineProfile?.executionPlatformVersion === cachedEngineProfile?.executionPlatformVersion) {
       return;
     }
 
