@@ -11,11 +11,12 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add `from json` and `to json` FEEL functions ([#5365](https://github.com/camunda/camunda-modeler/issues/5365))
 * `FIX`: enable undo/redo actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
 * `FIX`: deduplicate open file filters ([#4503](https://github.com/camunda/camunda-modeler/issues/4503))
+* `DEPS`: add to `@bpmn-io/svg-to-image@1.0.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.39.0`
 * `DEPS`: update to `@camunda/linting@3.48.1`
 * `DEPS`: update to `@bpmn-io/variable-resolver@1.4.1`
 * `DEPS`: update to `@bpmn-io/extract-process-variables@2.0.0`
-* `DEPS`: update to `camunda-bpmn-js@5.22.0`
+* `DEPS`: update to `camunda-bpmn-js@5.22.1`
 * `DEPS`: update to `bpmn-js@18.12.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.50.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.20.0`
