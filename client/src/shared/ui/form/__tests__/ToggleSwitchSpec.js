@@ -29,7 +29,8 @@ describe('<ToggleSwitch>', function() {
       field:
         {
           name: 'foo',
-          value: true
+          value: true,
+          onChange: () => {}
         }
     });
 
@@ -47,7 +48,8 @@ describe('<ToggleSwitch>', function() {
       field:
         {
           name: 'foo',
-          value: false
+          value: false,
+          onChange: () => {}
         }
     });
 
@@ -64,7 +66,8 @@ describe('<ToggleSwitch>', function() {
 
 const DEFAULT_FIELD = {
   name: 'foo',
-  value: true
+  value: true,
+  onChange: () => {}
 };
 
 function createToggleSwitch(props = {}) {
