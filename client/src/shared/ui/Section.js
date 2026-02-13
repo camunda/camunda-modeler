@@ -32,7 +32,7 @@ export function Section(props) {
 
     if (maxHeight === true) {
       style = {
-        'overflow-y': 'hidden'
+        'overflowY': 'hidden'
       };
     } else {
       style = {
