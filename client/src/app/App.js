@@ -621,11 +621,14 @@ export class App extends PureComponent {
       await this.showTab(nextActive);
     }
 
-    this.setState({
-      tabs: newTabs,
-      openedTabs: newOpenedTabs
-    }, () => {
-      this.props.cache.destroy(tab.id);
+    return new Promise((resolve) => {
+      this.setState({
+        tabs: newTabs,
+        openedTabs: newOpenedTabs
+      }, () => {
+        this.props.cache.destroy(tab.id);
+        resolve();
+      });
     });
   }
 
