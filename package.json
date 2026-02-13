@@ -59,7 +59,7 @@
     "electron-extension-installer": "^2.0.0",
     "electron-publisher-s3": "^20.17.2",
     "electron-reloader": "^1.2.0",
-    "eslint": "^9.39.1",
+    "eslint": "^10.0.0",
     "eslint-plugin-bpmn-io": "^2.2.0",
     "eslint-plugin-camunda-licensed": "^1.0.0",
     "execa": "^1.0.0",
