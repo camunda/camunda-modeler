@@ -12,9 +12,7 @@
 
 import React from 'react';
 
-import { act } from 'react-dom/test-utils';
-
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 
 import { merge } from 'min-dash';
 
