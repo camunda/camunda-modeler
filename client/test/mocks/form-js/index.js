@@ -53,6 +53,8 @@ export class FormEditor {
         return reject(error);
       }
 
+      this._emit('import.done');
+
       return resolve({ warnings });
     });
   }

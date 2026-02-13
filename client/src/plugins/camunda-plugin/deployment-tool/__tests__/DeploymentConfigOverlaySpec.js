@@ -119,20 +119,21 @@ describe('<DeploymentConfigOverlay>', function() {
       });
 
       const {
-        getByRole
+        getByRole,
+        getByLabelText
       } = createOverlay({
         configuration,
         validator
       });
 
-      // when
-
-      // delayed execution because it is async that the deployment
-      // tool knows if the authentication is necessary
-      setTimeout(() => {
-        const submitButton = getByRole('button', { name: 'Deploy' });
-        fireEvent.click(submitButton);
+      // expect
+      await waitFor(() => {
+        expect(getByLabelText('Bearer token')).to.exist;
       });
+
+      // when
+      const submitButton = getByRole('button', { name: 'Deploy' });
+      fireEvent.click(submitButton);
 
       // then
       await waitFor(() => {

@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import { VersionInfo } from '../VersionInfo';
 
@@ -39,7 +39,7 @@ describe('<VersionInfo>', function() {
   });
 
 
-  it('should open via menu events', function() {
+  it('should open via menu events', async function() {
 
     // given
     const subscribe = createSubscribe();
@@ -49,7 +49,9 @@ describe('<VersionInfo>', function() {
     subscribe.emit({ source: 'menu' });
 
     // then
-    expect(screen.getByRole('dialog'), 'Overlay should be displayed').to.exist;
+    await waitFor(() => {
+      expect(screen.getByRole('dialog'), 'Overlay should be displayed').to.exist;
+    });
   });
 
 
@@ -60,6 +62,11 @@ describe('<VersionInfo>', function() {
 
     // when
     fireEvent.click(screen.getByRole('button'));
+
+    // assume
+    expect(screen.getByRole('dialog'), 'Overlay should be displayed').to.exist;
+
+    // when
     fireEvent.click(screen.getByRole('button'));
 
     // then
@@ -146,7 +153,7 @@ describe('<VersionInfo>', function() {
     });
 
 
-    it('should propagate the source', function() {
+    it('should propagate the source', async function() {
 
       // given
       const triggerAction = sinon.spy();
@@ -157,19 +164,26 @@ describe('<VersionInfo>', function() {
       subscribe.emit({ source: 'menu' });
 
       // then
-      expect(triggerAction).to.have.been.calledOnceWith(
-        'emit-event', { type: 'versionInfo.opened', payload: { type: 'open', source: 'menu' } }
-      );
+      await waitFor(() => {
+        expect(triggerAction).to.have.been.calledOnceWith(
+          'emit-event', { type: 'versionInfo.opened', payload: { type: 'open', source: 'menu' } }
+        );
+      });
     });
 
 
-    it('should NOT notify again when overlay is already open', function() {
+    it('should NOT notify again when overlay is already open', async function() {
 
       // given
       const triggerAction = sinon.spy();
       const subscribe = createSubscribe();
       createVersionInfo({ subscribe, triggerAction });
       subscribe.emit({ source: 'menu' });
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).to.exist;
+      });
+
       triggerAction.resetHistory();
 
       // when

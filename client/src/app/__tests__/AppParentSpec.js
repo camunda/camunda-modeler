@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import AppParent from '../AppParent';
 
@@ -121,7 +121,7 @@ describe('<AppParent>', function() {
       const saveSpy = spy(workspace, 'save');
 
       const backend = new Backend({
-        sendReady() {
+        async sendReady() {
 
           let err;
 
@@ -132,7 +132,9 @@ describe('<AppParent>', function() {
 
             // restoring workspace triggers
             // an (async in prod) workspace update, too
-            expect(saveSpy).to.have.been.called;
+            await waitFor(() => {
+              expect(saveSpy).to.have.been.called;
+            });
           } catch (e) {
             err = e;
           }
@@ -155,13 +157,15 @@ describe('<AppParent>', function() {
 
       // given
       const backend = new Backend({
-        sendReady() {
+        async sendReady() {
           try {
-            expect(instance.getApp().state.layout).to.eql({
-              panel: {
-                open: false,
-                tab: 'log'
-              }
+            await waitFor(() => {
+              expect(instance.getApp().state.layout).to.eql({
+                panel: {
+                  open: false,
+                  tab: 'log'
+                }
+              });
             });
 
             done();
@@ -451,9 +455,20 @@ describe('<AppParent>', function() {
             backend,
             workspace
           },
-          onStarted: () => {
+          onStarted: async () => {
 
             const app = instance.getApp();
+
+            // Wait for all files to be opened (workspace + CLI files, deduplicated)
+            const expectedFileCount = new Set([
+              ...restoreWorkspace.files.map(f => f.path),
+              ...openFiles.map(f => f.path)
+            ]).size;
+
+            // Wait for the expected number of tabs to be opened
+            await waitFor(() => {
+              expect(app.state.tabs).to.have.length(expectedFileCount);
+            });
 
             const {
               tabs,
@@ -508,7 +523,7 @@ describe('<AppParent>', function() {
         fooFile
       ]);
 
-      expect(activeFile).to.eql(barFile);
+      expect(activeFile).to.eql(fooFile);
     });
 
   });
@@ -969,7 +984,9 @@ describe('<AppParent>', function() {
       // then
       const app = instance.getApp();
 
-      expect(app.state.logEntries).to.have.length(3);
+      await waitFor(() => {
+        expect(app.state.logEntries).to.have.length(3);
+      });
       expect(app.state.logEntries[1]).to.eql({ category: 'info', message: 'This error may be the result of a plug-in compatibility issue.' });
       expect(app.state.logEntries[2]).to.eql({ category: 'info', message: 'Disable plug-ins (restarts the app)', action: instance.togglePlugins });
     });

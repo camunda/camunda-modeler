@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, screen } from '@testing-library/react';
 
 import {
   Cache,
@@ -86,22 +86,18 @@ describe('<RPAEditor>', function() {
 
   describe('#handleChanged', function() {
 
-    let instance;
+    it('should be dirty before first save', async function() {
 
-    beforeEach(async function() {
-      let resolve;
-      const promise = new Promise(r => resolve = r);
-      instance = renderEditor(RPA, {
-        onImport: resolve,
+      // given
+      const { instance } = renderEditor(RPA, {
         cache: new Cache()
-      }).instance;
-
-      return promise;
-    });
-
-    it('should be dirty before first save', function() {
+      });
 
       // then
+      await waitFor(() => {
+        expect(screen.getByText('RPA Script')).to.exist;
+      });
+
       const dirty = instance.isDirty();
 
       expect(dirty).to.be.true;
@@ -110,19 +106,37 @@ describe('<RPAEditor>', function() {
 
     it('should NOT be dirty after save', async function() {
 
+      // given
+      const { instance } = renderEditor(RPA, {
+        cache: new Cache()
+      });
+
       // when
+      await waitFor(() => {
+        expect(screen.getByText('RPA Script')).to.exist;
+      });
+
       await instance.getXML();
 
       // then
-      const dirty = instance.isDirty();
-
-      expect(dirty).to.be.false;
+      await waitFor(() => {
+        const dirty = instance.isDirty();
+        expect(dirty).to.be.false;
+      });
     });
 
 
     it('should be dirty after modeling', async function() {
 
       // given
+      const { instance } = renderEditor(RPA, {
+        cache: new Cache()
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('RPA Script')).to.exist;
+      });
+
       await instance.getXML();
 
       // when

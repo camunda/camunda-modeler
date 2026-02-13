@@ -12,7 +12,7 @@
 
 import React, { createRef } from 'react';
 
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import ElementTemplatesModal from '../ElementTemplatesModal';
 
@@ -156,11 +156,16 @@ describe('<ElementTemplatesModal>', function() {
     });
 
 
-    it('should apply element template', function() {
+    it('should apply element template', async function() {
 
       // given
       instance.setState({
         activeTab: createTab('bpmn')
+      });
+
+      // wait for state update
+      await waitFor(() => {
+        expect(instance.state.activeTab.type).to.equal('bpmn');
       });
 
       // when
@@ -198,29 +203,35 @@ describe('<ElementTemplatesModal>', function() {
     });
 
 
-    it('should open modal', function() {
+    it('should open modal', async function() {
 
       // when
       instance.onOpen();
 
       // then
-      expect(instance.state.showModal).to.be.true;
+      await waitFor(() => {
+        expect(instance.state.showModal).to.be.true;
+      });
     });
 
 
-    it('should close modal', function() {
+    it('should close modal', async function() {
 
       // given
       instance.setState({ showModal: true });
 
       // assume
-      expect(instance.state.showModal).to.be.true;
+      await waitFor(() => {
+        expect(instance.state.showModal).to.be.true;
+      });
 
       // when
       instance.onClose();
 
       // then
-      expect(instance.state.showModal).to.be.false;
+      await waitFor(() => {
+        expect(instance.state.showModal).to.be.false;
+      });
     });
 
   });

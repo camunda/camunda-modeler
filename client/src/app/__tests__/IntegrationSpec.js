@@ -14,7 +14,7 @@ import React from 'react';
 
 import { App } from '../App';
 
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import {
   Backend,
@@ -232,13 +232,24 @@ function ensureUnsavedChanges(modeler) {
  * @param {Object} multiSheetTab - MultiSheetTab.
  */
 async function ensureLastXML(multiSheetTab) {
-  const sheets = multiSheetTab.getCached().sheets;
+
+  // Wait for sheets to be available in cached state
+  let sheets;
+  await waitFor(() => {
+    sheets = multiSheetTab.getCached().sheets;
+    expect(sheets).to.exist;
+    expect(sheets.length).to.be.greaterThan(1);
+  });
 
   await multiSheetTab.switchSheet(sheets[ 1 ]);
 
-  expect(multiSheetTab.getCached().activeSheet.type).to.eql('xml');
+  await waitFor(() => {
+    expect(multiSheetTab.getCached().activeSheet.type).to.eql('xml');
+  });
 
   await multiSheetTab.switchSheet(sheets[ 0 ]);
 
-  expect(multiSheetTab.getCached().activeSheet.type).to.eql('bpmn');
+  await waitFor(() => {
+    expect(multiSheetTab.getCached().activeSheet.type).to.eql('bpmn');
+  });
 }
