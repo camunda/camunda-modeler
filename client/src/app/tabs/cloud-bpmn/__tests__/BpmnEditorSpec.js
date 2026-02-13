@@ -397,9 +397,10 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       it('should lint on import', async function() {
 
         // then
-        const matchingCalls = onActionSpy.getCalls().filter(call => call.calledWithMatch('lint-tab'));
-
-        expect(matchingCalls).to.have.lengthOf(1);
+        await waitFor(() => {
+          const matchingCalls = onActionSpy.getCalls().filter(call => call.calledWithMatch('lint-tab'));
+          expect(matchingCalls).to.have.lengthOf(1);
+        });
       });
 
 
@@ -1402,7 +1403,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       await instance.importXML('import-error');
 
       // then
-      expect(instance.getCached().lastXML).to.be.null;
+      await waitFor(() => {
+        expect(instance.getCached().lastXML).to.be.null;
+      });
     });
 
   });
@@ -1833,9 +1836,10 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       await instance.getXML();
 
       // then
-      const dirty = instance.isDirty();
-
-      expect(dirty).to.be.false;
+      await waitFor(() => {
+        const dirty = instance.isDirty();
+        expect(dirty).to.be.false;
+      });
     });
 
 

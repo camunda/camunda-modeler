@@ -1129,7 +1129,7 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should save dirty state', function() {
+    it('should save dirty state', async function() {
 
       // given
       const dirtySpy = spy(instance, 'isDirty');
@@ -1148,14 +1148,16 @@ describe('<DmnEditor>', function() {
         views
       });
 
-      const {
-        dirty
-      } = instance.getCached();
-
       // then
-      expect(dirtySpy).to.have.been.called;
-      expect(dirty).to.be.true;
-      expect(dirty).to.not.equal(oldDirty);
+      await waitFor(() => {
+        const {
+          dirty
+        } = instance.getCached();
+
+        expect(dirtySpy).to.have.been.called;
+        expect(dirty).to.be.true;
+        expect(dirty).to.not.equal(oldDirty);
+      });
     });
 
 
@@ -1179,7 +1181,7 @@ describe('<DmnEditor>', function() {
     });
 
 
-    it('should NOT reattach properties panel when stay on view', function() {
+    it('should NOT reattach properties panel when stay on view', async function() {
 
       // given
       const modeler = instance.getModeler();
@@ -1188,6 +1190,9 @@ describe('<DmnEditor>', function() {
         activeView: drdView,
         views
       });
+
+      // Wait for state to settle before spying
+      await waitFor(() => {});
 
       const propertiesPanel = modeler.getActiveViewer().get('propertiesPanel');
 
@@ -1211,6 +1216,9 @@ describe('<DmnEditor>', function() {
         activeView: drdView,
         views
       });
+
+      // Wait for state to settle before spying
+      await waitFor(() => {});
 
       const modeler = instance.getModeler();
 
@@ -1322,8 +1330,10 @@ describe('<DmnEditor>', function() {
         instance.handleChanged();
 
         // when
-        const toggle = container.querySelector('#button-toggle-overview');
-        fireEvent.click(toggle);
+        await waitFor(() => {
+          const toggle = container.querySelector('#button-toggle-overview');
+          fireEvent.click(toggle);
+        });
 
         // then
         await waitFor(() => {
@@ -1363,8 +1373,10 @@ describe('<DmnEditor>', function() {
         instance.handleChanged();
 
         // when
-        const toggle = container.querySelector('#button-toggle-overview');
-        fireEvent.click(toggle);
+        await waitFor(() => {
+          const toggle = container.querySelector('#button-toggle-overview');
+          fireEvent.click(toggle);
+        });
 
         // then
         await waitFor(() => {
@@ -1812,7 +1824,9 @@ describe('<DmnEditor>', function() {
       await instance.importXML('import-error');
 
       // then
-      expect(instance.getCached().lastXML).to.be.null;
+      await waitFor(() => {
+        expect(instance.getCached().lastXML).to.be.null;
+      });
     });
 
   });
@@ -1881,9 +1895,10 @@ describe('<DmnEditor>', function() {
       await instance.getXML();
 
       // then
-      const dirty = instance.isDirty();
-
-      expect(dirty).to.be.false;
+      await waitFor(() => {
+        const dirty = instance.isDirty();
+        expect(dirty).to.be.false;
+      });
     });
 
 

@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import PrivacyPreferences from '../PrivacyPreferences';
 
@@ -43,7 +43,9 @@ describe('<PrivacyPreferences>', function() {
     });
 
     // then
-    expect(getByRole('dialog')).to.exist;
+    await waitFor(() => {
+      expect(getByRole('dialog')).to.exist;
+    });
   });
 
 
@@ -61,10 +63,12 @@ describe('<PrivacyPreferences>', function() {
     });
 
     // then
-    const modal = getByRole('dialog');
-    expect(modal.querySelector('#ENABLE_CRASH_REPORTS').checked).to.be.true;
-    expect(modal.querySelector('#ENABLE_USAGE_STATISTICS').checked).to.be.true;
-    expect(modal.querySelector('#ENABLE_UPDATE_CHECKS').checked).to.be.true;
+    await waitFor(() => {
+      const modal = getByRole('dialog');
+      expect(modal.querySelector('#ENABLE_CRASH_REPORTS').checked).to.be.true;
+      expect(modal.querySelector('#ENABLE_USAGE_STATISTICS').checked).to.be.true;
+      expect(modal.querySelector('#ENABLE_UPDATE_CHECKS').checked).to.be.true;
+    });
   });
 
 
@@ -148,10 +152,15 @@ describe('<PrivacyPreferences>', function() {
     });
 
     // when
+    await waitFor(() => {
+      expect(getByRole('dialog')).to.exist;
+    });
     getByRole('button', { name: OK_BUTTON_TEXT }).click();
 
     // then
-    expect(setSpy).to.have.been.called;
+    await waitFor(() => {
+      expect(setSpy).to.have.been.called;
+    });
   });
 
 
@@ -190,7 +199,9 @@ describe('<PrivacyPreferences>', function() {
     await subscribeFunc({});
 
     // then
-    expect(getByRole('dialog')).to.exist;
+    await waitFor(() => {
+      expect(getByRole('dialog')).to.exist;
+    });
   });
 
 
@@ -217,6 +228,9 @@ describe('<PrivacyPreferences>', function() {
 
     // when
     await subscribeFunc({});
+    await waitFor(() => {
+      expect(getByRole('dialog')).to.exist;
+    });
     getByRole('button', { name: CANCEL_BUTTON_TEXT }).click();
 
     // then

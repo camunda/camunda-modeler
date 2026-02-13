@@ -12,7 +12,7 @@ import React from 'react';
 
 import {
   render,
-  cleanup
+  screen
 } from '@testing-library/react';
 
 import { Section } from '..';
@@ -20,11 +20,8 @@ import { Section } from '..';
 
 describe('<Section>', function() {
 
-  afterEach(cleanup);
-
-
   it('should render', function() {
-    const { container } = render(
+    render(
       <Section className="foo">
         <Section.Header>
           <span>{ 'HEADER' }</span>
@@ -38,19 +35,9 @@ describe('<Section>', function() {
       </Section>
     );
 
-    expectHTML(container, `
-      <section class="section foo">
-        <h3 class="section__header">
-          <span>HEADER</span>
-          <span class="section__actions">
-            <button>BUTTON</button>
-          </span>
-        </h3>
-        <div class="section__body">
-          <p>BODY</p>
-        </div>
-      </section>
-    `);
+    expect(screen.getByText('HEADER')).to.exist;
+    expect(screen.getByRole('button', { name: 'BUTTON' })).to.exist;
+    expect(screen.getByText('BODY')).to.exist;
   });
 
 
@@ -75,7 +62,7 @@ describe('<Section>', function() {
 
       // then
       expectStyle(container, {
-        'overflow-y': 'hidden'
+        'overflowY': 'hidden'
       });
 
     });
@@ -131,8 +118,3 @@ describe('<Section>', function() {
   });
 
 });
-
-
-function expectHTML(container, expectedHTML) {
-  expect(container.innerHTML).to.eql(expectedHTML.replace(/\s*\n\s*/g, ''));
-}

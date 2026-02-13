@@ -10,7 +10,7 @@
 
 import React, { createRef } from 'react';
 
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import {
   Cache,
@@ -54,7 +54,7 @@ describe('WithCachedState', function() {
   });
 
 
-  it('#setCached', function() {
+  it('#setCached', async function() {
 
     // given
     const instance = renderWithCachedState();
@@ -65,13 +65,15 @@ describe('WithCachedState', function() {
     });
 
     // then
-    expect(instance.getCached()).to.eql({
-      foo: 'foo'
+    await waitFor(() => {
+      expect(instance.getCached()).to.eql({
+        foo: 'foo'
+      });
     });
   });
 
 
-  it('#setCached -> #setCached', function() {
+  it('#setCached -> #setCached', async function() {
 
     // given
     const instance = renderWithCachedState();
@@ -86,9 +88,11 @@ describe('WithCachedState', function() {
     });
 
     // then
-    expect(instance.getCached()).to.eql({
-      foo: 'foo',
-      bar: 'bar'
+    await waitFor(() => {
+      expect(instance.getCached()).to.eql({
+        foo: 'foo',
+        bar: 'bar'
+      });
     });
   });
 

@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import StatusButton from '../StatusButton';
 import { Slot, SlotFillRoot } from '../../../slot-fill';
@@ -29,7 +29,7 @@ describe('<StatusButton>', function() {
   });
 
 
-  it('should open dialog on click', function() {
+  it('should open dialog on click', async function() {
 
     // given
     const { getByRole } = renderButton();
@@ -39,7 +39,9 @@ describe('<StatusButton>', function() {
     button.click();
 
     // then
-    expect(getByRole('dialog')).to.exist;
+    await waitFor(() => {
+      expect(getByRole('dialog')).to.exist;
+    });
   });
 
 
@@ -53,7 +55,9 @@ describe('<StatusButton>', function() {
     editor.eventBus.fire('dialog.config.open');
 
     // then
-    expect(getByRole('dialog')).to.exist;
+    await waitFor(() => {
+      expect(getByRole('dialog')).to.exist;
+    });
   });
 
 });

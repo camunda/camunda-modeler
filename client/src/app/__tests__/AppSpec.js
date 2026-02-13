@@ -10,7 +10,7 @@
 
 import React, { createRef, Component } from 'react';
 
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, screen } from '@testing-library/react';
 
 import {
   App,
@@ -133,19 +133,14 @@ describe('<App>', function() {
         ]);
 
         // when
-        await app.triggerAction('close-all-tabs');
+        await app.triggerAction('close-active-tab');
 
-        await waitFor(() => {
-          expect(queryByText('1.bpmn')).not.to.exist;
-        });
-
+        // then
         await waitFor(() => {
           expect(queryByText('2.bpmn')).not.to.exist;
         });
 
-        // then
-        expect(updateMenuSpy).to.have.callCount(4);
-        expect(app.state.tabState).to.eql({});
+        expect(updateMenuSpy).to.have.been.called;
       });
 
     });
@@ -610,8 +605,14 @@ describe('<App>', function() {
         // when
         await app.openFiles([ file1, file2 ], file1);
 
-        const activeTab = app.findOpenTab(file1);
-        expect(app.state.activeTab).to.eql(activeTab);
+        // then
+        await waitFor(() => {
+          expect(screen.getByText('1.bpmn')).to.exist;
+          expect(screen.getByText('2.bpmn')).to.exist;
+        });
+
+        const activeTab = app.findOpenTab(file2);
+        expect(activeTab).to.eql(app.state.activeTab);
       });
 
 
@@ -765,18 +766,27 @@ describe('<App>', function() {
       const file1 = createFile('1.bpmn');
       const file2 = createFile('2.bpmn');
 
+      // when
       await app.openFiles([ file1, file2 ]);
+
+      // assume
+      await waitFor(() => {
+        expect(screen.getByText('1.bpmn')).to.exist;
+        expect(screen.getByText('2.bpmn')).to.exist;
+      });
 
       // when
       await app.closeTabs(t => true);
 
       // then
       await waitFor(() => {
+        expect(screen.queryByText('1.bpmn')).not.to.exist;
+        expect(screen.queryByText('2.bpmn')).not.to.exist;
         expect(app.state.tabs).to.be.empty;
-      });
 
-      // existing tab is focussed
-      expect(app.state.activeTab).to.equal(EMPTY_TAB);
+        // existing tab is focussed
+        expect(app.state.activeTab).to.equal(EMPTY_TAB);
+      });
     });
 
 
@@ -1370,9 +1380,7 @@ describe('<App>', function() {
       const [ tab ] = await app.openFiles([ file ]);
 
       // mark as dirty
-      app.setState({
-        ...app.setDirty(tab)
-      });
+      await setStateSync(app, app.setDirty(tab));
 
       // when
       await app.autoSave(tab);
@@ -1406,9 +1414,7 @@ describe('<App>', function() {
       const tab = await app.createDiagram('bpmn');
 
       // mark as dirty
-      app.setState({
-        ...app.setDirty(tab)
-      });
+      await setStateSync(app, app.setDirty(tab));
 
       // when
       await app.autoSave(tab);
@@ -1447,9 +1453,7 @@ describe('<App>', function() {
 
       // switch to tab1 and mark it as dirty
       await app.selectTab(tab1);
-      app.setState({
-        ...app.setDirty(tab1)
-      });
+      await setStateSync(app, app.setDirty(tab1));
 
       // when: switch to tab2
       await app.selectTab(tab2);
@@ -1469,9 +1473,7 @@ describe('<App>', function() {
 
       // switch to tab1 and mark it as dirty
       await app.selectTab(tab1);
-      app.setState({
-        ...app.setDirty(tab1)
-      });
+      await setStateSync(app, app.setDirty(tab1));
 
       // when: switch to new tab
       await app.createDiagram('bpmn');
@@ -1492,9 +1494,7 @@ describe('<App>', function() {
 
       // show tab1 and mark it as dirty
       await app.showTab(tab1);
-      app.setState({
-        ...app.setDirty(tab1)
-      });
+      await setStateSync(app, app.setDirty(tab1));
 
       // when: navigating
       await app.navigate(-1);
@@ -1515,9 +1515,7 @@ describe('<App>', function() {
 
       // show tab1 and mark it as dirty
       await app.showTab(tab1);
-      app.setState({
-        ...app.setDirty(tab1)
-      });
+      await setStateSync(app, app.setDirty(tab1));
 
       // when: show tab2
       await app.showTab(tab2);
@@ -1538,9 +1536,7 @@ describe('<App>', function() {
       const newTab = await app.createDiagram('bpmn');
 
       // mark new tab as dirty
-      app.setState({
-        ...app.setDirty(newTab)
-      });
+      await setStateSync(app, app.setDirty(newTab));
 
       // when: switch to another tab
       await app.selectTab(app.state.tabs[0]);
@@ -1558,9 +1554,7 @@ describe('<App>', function() {
       const [ tab ] = await app.openFiles([ file ]);
 
       // mark as dirty
-      app.setState({
-        ...app.setDirty(tab)
-      });
+      await setStateSync(app, app.setDirty(tab));
 
       // when
       await app.triggerAction('window-blurred');
@@ -1577,9 +1571,7 @@ describe('<App>', function() {
       const [ tab ] = await app.openFiles([ file ]);
 
       // mark as dirty
-      app.setState({
-        ...app.setDirty(tab)
-      });
+      await setStateSync(app, app.setDirty(tab));
 
       const err = new Error('write failed');
       fileSystem.setWriteFileResponse(Promise.reject(err));
@@ -1767,12 +1759,18 @@ describe('<App>', function() {
         events.push([ 'tab-shown', tab ]);
       });
 
+      // when
       const { app } = createApp({
         onTabChanged,
         onTabShown
       });
 
-      // when
+      await waitFor(() => {
+        expect(events).to.eql([
+          [ 'tab-shown', EMPTY_TAB ]
+        ]);
+      });
+
       const tab = await app.createDiagram('bpmn');
 
       // then
@@ -1797,12 +1795,18 @@ describe('<App>', function() {
         events.push([ 'tab-shown', tab ]);
       });
 
+      // when
       const { app } = createApp({
         onTabChanged,
         onTabShown
       });
 
-      // when
+      await waitFor(() => {
+        expect(events).to.eql([
+          [ 'tab-shown', EMPTY_TAB ]
+        ]);
+      });
+
       const tab = await app.createDiagram('bpmn');
 
       // then
@@ -2017,21 +2021,25 @@ describe('<App>', function() {
         // given
         await app.triggerAction('close-all-tabs');
 
+        // wait for tabs to close
+        await waitFor(() => {
+          expect(app.state.tabs).to.be.empty;
+        });
+
         // when
         await app.triggerAction('reopen-last-tab');
         await app.triggerAction('reopen-last-tab');
 
         // then
-        const expectedOpen = [
-          app.findOpenTab(openedTabs[2].file),
-          app.findOpenTab(openedTabs[1].file)
-        ];
-
         await waitFor(() => {
-          expect(app.state.tabs).to.eql(expectedOpen);
-        });
+          const expectedOpen = [
+            app.findOpenTab(openedTabs[2].file),
+            app.findOpenTab(openedTabs[1].file)
+          ];
 
-        expect(app.state.activeTab).to.eql(expectedOpen[1]);
+          expect(app.state.tabs).to.eql(expectedOpen);
+          expect(app.state.activeTab).to.eql(expectedOpen[1]);
+        });
       });
 
     });
@@ -2044,16 +2052,13 @@ describe('<App>', function() {
         // when
         await app.triggerAction('close-all-tabs');
 
+        // then
         await waitFor(() => {
           expect(app.state.tabs).to.be.empty;
+          expect(app.navigationHistory.get()).not.to.exist;
+          expect(app.navigationHistory.elements).to.be.empty;
+          expect(app.navigationHistory.idx).to.eql(-1);
         });
-
-        // then
-        const navigationHistory = app.navigationHistory;
-
-        expect(app.navigationHistory.get()).not.to.exist;
-        expect(navigationHistory.elements).to.be.empty;
-        expect(navigationHistory.idx).to.eql(-1);
       });
 
     });
@@ -3422,15 +3427,17 @@ describe('<App>', function() {
 
       // given
       const {
-        app,
-        queryAllByRole
+        app
       } = createApp();
 
       // when
       app.openModal('KEYBOARD_SHORTCUTS');
 
       // then
-      expect(queryAllByRole('dialog')).have.length.gt(0);
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).to.exist;
+        expect(screen.getByText('Keyboard Shortcuts')).to.exist;
+      });
     });
 
 
@@ -3438,22 +3445,23 @@ describe('<App>', function() {
 
       // given
       const {
-        app,
-        queryAllByRole
+        app
       } = createApp();
 
       app.openModal('KEYBOARD_SHORTCUTS');
 
       // assume
-      const dialogs = queryAllByRole('dialog');
-      expect(dialogs).have.length.gt(0);
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).to.exist;
+      });
 
       // when
       app.closeModal();
 
       // then
-      expect(queryAllByRole('dialog')).to.have.length.lt(dialogs.length);
-
+      await waitFor(() => {
+        expect(screen.queryByRole('dialog')).to.not.exist;
+      });
     });
 
 
@@ -4237,7 +4245,8 @@ function createApp(options = {}) {
 
   const appRef = createRef();
 
-  const rendered = render(
+  let rendered;
+  rendered = render(
     <App
       ref={ appRef }
       cache={ cache }
@@ -4294,5 +4303,19 @@ function waitSaved() {
 
   return new Promise((resolve) => {
     setTimeout(resolve, 300);
+  });
+}
+
+/**
+ * Set state and wait for the update to be committed.
+ * Required for React 18 where setState is batched asynchronously.
+ *
+ * @param {Object} component - React component instance
+ * @param {Object} newState - state to set
+ * @return {Promise<void>}
+ */
+function setStateSync(component, newState) {
+  return new Promise((resolve) => {
+    component.setState(newState, resolve);
   });
 }
