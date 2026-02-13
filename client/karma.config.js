@@ -102,13 +102,42 @@ module.exports = function(karma) {
             use: 'babel-loader'
           },
           {
+            test: /\.css$/,
+            use: {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  mode: 'global',
+                  exportOnlyLocals: true,
+                  localIdentName: '[name]__[local]--[hash:base64:5]'
+                }
+              }
+            }
+          },
+          {
+            test: /\.less$/,
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: {
+                    mode: 'global',
+                    exportOnlyLocals: true,
+                    localIdentName: '[name]__[local]--[hash:base64:5]'
+                  }
+                }
+              },
+              'less-loader'
+            ]
+          },
+          {
             oneOf: [
               {
                 test: /[/\\][A-Z][^/\\]+\.svg$/,
                 use: 'react-svg-loader'
               },
               {
-                test: /\.(css|bpmn|dmn|less|xml|png|svg|form|rpa)$/,
+                test: /\.(bpmn|dmn|xml|png|svg|form|rpa)$/,
                 type: 'asset/source'
               }
             ]
