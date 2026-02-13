@@ -18,6 +18,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const fetch = require('electron').net.fetch;
 
 const semver = require('semver');
 

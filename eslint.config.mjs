@@ -2,6 +2,10 @@ import bpmnIoPlugin from 'eslint-plugin-bpmn-io';
 import camundaLicensedPlugin from 'eslint-plugin-camunda-licensed';
 
 const files = {
+  app: [
+    'app/*.js',
+    'app/lib/**/*.js'
+  ],
   client: [
     'client/src/**/*.js',
     'client/test/**/*.js',
@@ -49,6 +53,20 @@ export default [
       ignores: files.client
     };
   }),
+
+  // disallow fetch in app directory (main process)
+  {
+    files: files.app,
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        {
+          name: 'fetch',
+          message: 'Use Electron\'s net.fetch() instead of fetch in the main process for proper proxy support.'
+        }
+      ]
+    }
+  },
 
   // client
   ...bpmnIoPlugin.configs.browser.map((config) => {
