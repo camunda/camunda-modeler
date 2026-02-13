@@ -20,6 +20,31 @@ export default function(modifierKey) {
 
   return [
     {
+      id: 'copy',
+      label: 'Copy',
+      binding: keyboardBinding('C', modifierKey)
+    },
+    {
+      id: 'copyAsImage',
+      label: 'Copy as image',
+      binding: keyboardBinding('Shift + C', modifierKey)
+    },
+    {
+      id: 'cut',
+      label: 'Cut',
+      binding: keyboardBinding('X', modifierKey)
+    },
+    {
+      id: 'paste',
+      label: 'Paste',
+      binding: keyboardBinding('V', modifierKey)
+    },
+    {
+      id: 'duplicate',
+      label: 'Duplicate',
+      binding: keyboardBinding('D', modifierKey)
+    },
+    {
       id: 'addLineFeed',
       label: 'Add Line Feed (in text box)',
       binding: keyboardBinding('Shift + Enter')
