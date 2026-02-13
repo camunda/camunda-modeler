@@ -12,7 +12,7 @@
 
 import React from 'react';
 
-import { render, fireEvent, screen, within } from '@testing-library/react';
+import { render, fireEvent, screen, within, waitFor } from '@testing-library/react';
 
 import { TabContextAction } from '../TabContextAction';
 
@@ -86,7 +86,7 @@ describe('<TabContextAction>', function() {
   });
 
 
-  it('should set items via event', function() {
+  it('should set items via event', async function() {
 
     // given
     const subscribe = createSubscribe();
@@ -105,6 +105,10 @@ describe('<TabContextAction>', function() {
     });
 
     fireEvent.click(screen.getByRole('button'));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'bar' })).to.exist;
+    });
 
     const menu = screen.getByRole('dialog');
     const items = within(menu).getAllByRole('button');
