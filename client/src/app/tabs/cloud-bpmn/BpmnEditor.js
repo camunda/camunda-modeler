@@ -420,7 +420,7 @@ export class BpmnEditor extends CachedComponent {
 
     if (!error) {
       try {
-        this.handleLinting();
+        this.handleLinting(engineProfile);
       } catch (err) {
         error = err;
       }
@@ -523,11 +523,13 @@ export class BpmnEditor extends CachedComponent {
     }
   };
 
-  handleLinting = () => {
+  handleLinting = (engineProfileOverride) => {
     const {
-      engineProfile,
+      engineProfile: cachedEngineProfile,
       modeler
     } = this.getCached();
+
+    const engineProfile = engineProfileOverride || cachedEngineProfile;
 
     if (!engineProfile) {
       return;
