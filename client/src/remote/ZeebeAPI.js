@@ -127,12 +127,36 @@ export default class ZeebeAPI {
     });
   }
 
-  getWaitingState(options, processInstanceKey, elementId) {
+  searchJobs(options, processInstanceKey, elementId) {
     let { endpoint } = options;
 
     endpoint = getEndpointForTargetType(endpoint);
 
-    return this._backend.send('zeebe:getWaitingState', {
+    return this._backend.send('zeebe:searchJobs', {
+      endpoint,
+      processInstanceKey,
+      ...(elementId && { elementId })
+    });
+  }
+
+  searchUserTasks(options, processInstanceKey, elementId) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchUserTasks', {
+      endpoint,
+      processInstanceKey,
+      ...(elementId && { elementId })
+    });
+  }
+
+  searchMessageSubscriptions(options, processInstanceKey, elementId) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchMessageSubscriptions', {
       endpoint,
       processInstanceKey,
       ...(elementId && { elementId })
