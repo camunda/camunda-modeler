@@ -137,6 +137,24 @@ describe('KeyboardBindings', function() {
   });
 
 
+  it('copySelectionAsImage', function() {
+
+    // given
+    event = createKeyEvent('C', { ctrlKey: true, shiftKey: true });
+
+    keyboardBindings.update([ {
+      accelerator: 'CommandOrControl + Shift + C',
+      action: 'copySelectionAsImage'
+    } ]);
+
+    // when
+    keyboardBindings._keyDownHandler(event);
+
+    // then
+    expect(actionSpy).to.have.been.calledWith('copySelectionAsImage', event);
+  });
+
+
   it('cut', function() {
 
     // given
