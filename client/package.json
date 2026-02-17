@@ -35,7 +35,7 @@
     "@uiw/codemirror-theme-vscode": "^4.23.12",
     "bpmn-js": "^18.12.0",
     "bpmn-js-element-templates": "^2.20.0",
-    "bpmn-js-properties-panel": "^5.50.1",
+    "bpmn-js-properties-panel": "^6.0.0",
     "bpmn-js-tracking": "^0.6.0",
     "bpmn-moddle": "^10.0.0",
     "@bpmn-io/svg-to-image": "^1.0.0",
