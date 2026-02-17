@@ -13,7 +13,7 @@
     "@bpmn-io/form-js": "^1.18.0",
     "@bpmn-io/properties-panel": "^3.37.0",
     "@bpmn-io/replace-ids": "^0.2.0",
-    "@bpmn-io/variable-outline": "^2.0.1",
+    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#builder-experience",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.23.0",
     "@camunda/form-playground": "^0.23.0",
@@ -129,6 +129,7 @@
     "bpmn-io-modelers:auto-test": "cross-env MODELERS=1 npm run auto-test"
   },
   "overrides": {
-    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#woop"
+    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#woop",
+    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#builder-experience"
   }
 }
