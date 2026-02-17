@@ -9,7 +9,8 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: add `from json` and `to json` FEEL functions ([#5365](https://github.com/camunda/camunda-modeler/issues/5365))
-* `FIX`: enable undo/redo actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
+* `FEAT`: improve connection hint for local C8Run connections ([#5600](https://github.com/camunda/camunda-modeler/pull/5600))
+* `FIX`: enable undo/redo and select all actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
 * `FIX`: deduplicate open file filters ([#4503](https://github.com/camunda/camunda-modeler/issues/4503))
 * `DEPS`: add to `@bpmn-io/svg-to-image@1.0.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.39.0`
@@ -39,6 +40,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### BPMN
 
+* `FEAT`: add `cut` action ([#1696](https://github.com/camunda/camunda-modeler/issues/1696))
 * `FEAT`: add support of copy selection as image ([#5613](https://github.com/camunda/camunda-modeler/pull/5613), [#5592](https://github.com/camunda/camunda-modeler/issues/5592))
 * `FEAT`: add support of FEEL expressions for 'Form ID' field ([#5231](https://github.com/camunda/camunda-modeler/issues/5231))
 * `FEAT`: support conditional events modeling ([#5400](https://github.com/camunda/camunda-modeler/issues/5400))
