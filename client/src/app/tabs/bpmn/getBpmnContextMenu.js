@@ -10,6 +10,7 @@
 
 function getCopyPasteEntries({
   copy,
+  copyAsImage,
   paste
 }) {
   return [ {
@@ -17,6 +18,11 @@ function getCopyPasteEntries({
     accelerator: 'CommandOrControl+C',
     enabled: copy,
     action: 'copy'
+  }, {
+    label: 'Copy as Image',
+    accelerator: 'CommandOrControl + Shift + C',
+    enabled: copyAsImage,
+    action: 'copySelectionAsImage',
   }, {
     label: 'Cut',
     accelerator: 'CommandOrControl+X',
