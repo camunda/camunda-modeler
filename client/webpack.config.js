@@ -39,8 +39,6 @@ const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const resourcePath = path.resolve(__dirname + '/resources');
-const monacoEditorPath = path.dirname(require.resolve('monaco-editor/package.json'));
-
 
 const copyPattern = {
   from: './public'
@@ -128,7 +126,7 @@ module.exports = {
       patterns: [ copyPattern ]
     }),
     new MonacoWebpackPlugin({
-      monacoEditorPath
+      languages: [ 'json' ] // Only bundle JSON language for RPA editor
     }),
     ...sentryIntegration(),
     ...extractDependencies()
