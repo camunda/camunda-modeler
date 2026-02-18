@@ -1097,8 +1097,10 @@ describe('<FormEditor>', function() {
       // when
       instance.setState({ triggeredBy: 'foo' });
 
-      // wait for state to update
-      await waitFor(() => {});
+      // assume
+      await waitFor(() => {
+        expect(instance.state.triggeredBy).to.equal('foo');
+      });
 
       instance.handlePlaygroundLayoutChanged({
         layout
