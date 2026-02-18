@@ -52,6 +52,9 @@ describe('<DeploymentConfigOverlay>', function() {
 
   describe('connection check', function() {
 
+    // This can take a while on macOS CI...
+    this.timeout(30000);
+
     it('should display hint if the username and password are missing when submitting', async function() {
 
       // given
