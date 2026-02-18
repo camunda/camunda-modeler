@@ -48,6 +48,7 @@ export default function CheckBox(props) {
           classNames('custom-control', 'custom-checkbox')
         }>
           <input
+            type="checkbox"
             name={ name }
             checked={ !!value }
             disabled={ form.isSubmitting }
