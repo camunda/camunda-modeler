@@ -14,7 +14,7 @@ import React from 'react';
 
 import { waitFor } from '@testing-library/react';
 
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 
 import { merge } from 'min-dash';
 
@@ -67,27 +67,29 @@ describe('<DeploymentConfigOverlay>', function() {
       };
 
       const validator = new MockValidator({
-        validateConnection: () => new Promise((resolve, err) => {
-          resolve({
-            code: GenericApiErrors.UNAUTHORIZED
-          });
+        validateConnection: async () => ({
+          code: GenericApiErrors.UNAUTHORIZED
+        }),
+        validateConnectionWithoutCredentials: async () => ({
+          code: GenericApiErrors.UNAUTHORIZED
         })
       });
 
       const {
-        getByRole
+        getByRole,
+        getByLabelText
       } = createOverlay({
         configuration,
         validator
       });
 
-      // when
+      // when - wait for the auth fields to appear
+      await waitFor(() => {
+        expect(getByLabelText('Username')).to.exist;
+      });
 
-      // delayed execution because it is async that the deployment
-      // tool knows if the authentication is necessary
-      setTimeout(() => {
-        const submitButton = getByRole('button', { name: 'Deploy' });
-        fireEvent.click(submitButton);
+      act(() => {
+        fireEvent.click(getByRole('button', { name: 'Deploy' }));
       });
 
       // then
@@ -115,6 +117,9 @@ describe('<DeploymentConfigOverlay>', function() {
       const validator = new MockValidator({
         validateConnection: () => Promise.resolve({
           code: GenericApiErrors.UNAUTHORIZED
+        }),
+        validateConnectionWithoutCredentials: () => Promise.resolve({
+          code: GenericApiErrors.UNAUTHORIZED
         })
       });
 
@@ -126,14 +131,14 @@ describe('<DeploymentConfigOverlay>', function() {
         validator
       });
 
-      // expect
+      // when
       await waitFor(() => {
-        expect(getByLabelText('Bearer token')).to.exist;
+        expect(getByLabelText('Token')).to.exist;
       });
 
-      // when
-      const submitButton = getByRole('button', { name: 'Deploy' });
-      fireEvent.click(submitButton);
+      act(() => {
+        fireEvent.click(getByRole('button', { name: 'Deploy' }));
+      });
 
       // then
       await waitFor(() => {
@@ -174,7 +179,9 @@ describe('<DeploymentConfigOverlay>', function() {
 
       // when
       const submitButton = getByRole('button', { name: 'Deploy' });
-      fireEvent.click(submitButton);
+      act(() => {
+        fireEvent.click(submitButton);
+      });
 
       // then
       await waitFor(() => {
@@ -213,7 +220,9 @@ describe('<DeploymentConfigOverlay>', function() {
 
       // when
       const submitButton = getByRole('button', { name: 'Deploy' });
-      fireEvent.click(submitButton);
+      act(() => {
+        fireEvent.click(submitButton);
+      });
 
       // then
       await waitFor(() => {
@@ -310,7 +319,9 @@ describe('<DeploymentConfigOverlay>', function() {
 
     // when
     const submitButton = getByRole('button', { name: 'Deploy' });
-    fireEvent.click(submitButton);
+    act(() => {
+      fireEvent.click(submitButton);
+    });
 
     // then
     await waitFor(() => {
