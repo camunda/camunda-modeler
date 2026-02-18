@@ -1380,11 +1380,11 @@ describe('<App>', function() {
       const [ tab ] = await app.openFiles([ file ]);
 
       // mark as dirty
-      await setStateSync(app, app.setDirty(tab));
+      app.setState(app.setDirty(tab));
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
 
       // when
       await app.autoSave(tab);
-      await waitSaved();
 
       // then
       expect(writeFileSpy).to.have.been.calledOnce;
@@ -1401,7 +1401,6 @@ describe('<App>', function() {
 
       // when
       await app.autoSave(activeTab);
-      await waitSaved();
 
       // then
       expect(writeFileSpy).not.to.have.been.called;
@@ -1414,11 +1413,11 @@ describe('<App>', function() {
       const tab = await app.createDiagram('bpmn');
 
       // mark as dirty
-      await setStateSync(app, app.setDirty(tab));
+      app.setState(app.setDirty(tab));
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
 
       // when
       await app.autoSave(tab);
-      await waitSaved();
 
       // then
       // Should NOT write file because new files haven't been saved yet
@@ -1436,7 +1435,6 @@ describe('<App>', function() {
 
       // when
       await app.autoSave(activeTab);
-      await waitSaved();
 
       // then
       expect(writeFileSpy).not.to.have.been.called;
@@ -1453,14 +1451,14 @@ describe('<App>', function() {
 
       // switch to tab1 and mark it as dirty
       await app.selectTab(tab1);
-      await setStateSync(app, app.setDirty(tab1));
+      app.setState(app.setDirty(tab1));
+      await waitFor(() => expect(app.isDirty(tab1)).to.be.true);
 
       // when: switch to tab2
       await app.selectTab(tab2);
-      await waitSaved();
 
       // then: should have auto-saved tab1
-      expect(writeFileSpy).to.have.been.calledOnce;
+      await waitFor(() => expect(writeFileSpy).to.have.been.calledOnce);
     });
 
 
@@ -1473,14 +1471,14 @@ describe('<App>', function() {
 
       // switch to tab1 and mark it as dirty
       await app.selectTab(tab1);
-      await setStateSync(app, app.setDirty(tab1));
+      app.setState(app.setDirty(tab1));
+      await waitFor(() => expect(app.isDirty(tab1)).to.be.true);
 
       // when: switch to new tab
       await app.createDiagram('bpmn');
-      await waitSaved();
 
       // then: should have auto-saved tab1
-      expect(writeFileSpy).to.have.been.calledOnce;
+      await waitFor(() => expect(writeFileSpy).to.have.been.calledOnce);
     });
 
 
@@ -1494,14 +1492,14 @@ describe('<App>', function() {
 
       // show tab1 and mark it as dirty
       await app.showTab(tab1);
-      await setStateSync(app, app.setDirty(tab1));
+      app.setState(app.setDirty(tab1));
+      await waitFor(() => expect(app.isDirty(tab1)).to.be.true);
 
       // when: navigating
       await app.navigate(-1);
-      await waitSaved();
 
       // then: should have auto-saved tab1
-      expect(writeFileSpy).to.have.been.calledOnce;
+      await waitFor(() => expect(writeFileSpy).to.have.been.calledOnce);
     });
 
 
@@ -1515,14 +1513,14 @@ describe('<App>', function() {
 
       // show tab1 and mark it as dirty
       await app.showTab(tab1);
-      await setStateSync(app, app.setDirty(tab1));
+      app.setState(app.setDirty(tab1));
+      await waitFor(() => expect(app.isDirty(tab1)).to.be.true);
 
       // when: show tab2
       await app.showTab(tab2);
-      await waitSaved();
 
       // then: should have auto-saved tab1
-      expect(writeFileSpy).to.have.been.calledOnce;
+      await waitFor(() => expect(writeFileSpy).to.have.been.calledOnce);
     });
 
 
@@ -1536,11 +1534,11 @@ describe('<App>', function() {
       const newTab = await app.createDiagram('bpmn');
 
       // mark new tab as dirty
-      await setStateSync(app, app.setDirty(newTab));
+      app.setState(app.setDirty(newTab));
+      await waitFor(() => expect(app.isDirty(newTab)).to.be.true);
 
       // when: switch to another tab
       await app.selectTab(app.state.tabs[0]);
-      await waitSaved();
 
       // then: should NOT have auto-saved new tab
       expect(writeFileSpy).not.to.have.been.called;
@@ -1554,7 +1552,8 @@ describe('<App>', function() {
       const [ tab ] = await app.openFiles([ file ]);
 
       // mark as dirty
-      await setStateSync(app, app.setDirty(tab));
+      app.setState(app.setDirty(tab));
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
 
       // when
       await app.triggerAction('window-blurred');
@@ -1571,7 +1570,8 @@ describe('<App>', function() {
       const [ tab ] = await app.openFiles([ file ]);
 
       // mark as dirty
-      await setStateSync(app, app.setDirty(tab));
+      app.setState(app.setDirty(tab));
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
 
       const err = new Error('write failed');
       fileSystem.setWriteFileResponse(Promise.reject(err));
@@ -4293,29 +4293,4 @@ function updateFileStats(file, newAttrs, fileSystem) {
 
   fileSystem.setReadFileStatsResponse(newFileStats);
 
-}
-
-
-/**
- * @return {Promise<any>} promise for the timeout
- */
-function waitSaved() {
-
-  return new Promise((resolve) => {
-    setTimeout(resolve, 300);
-  });
-}
-
-/**
- * Set state and wait for the update to be committed.
- * Required for React 18 where setState is batched asynchronously.
- *
- * @param {Object} component - React component instance
- * @param {Object} newState - state to set
- * @return {Promise<void>}
- */
-function setStateSync(component, newState) {
-  return new Promise((resolve) => {
-    component.setState(newState, resolve);
-  });
 }
