@@ -726,7 +726,7 @@ describe('<FormEditor>', function() {
   });
 
 
-  describe.skip('linting', function() {
+  describe('linting', function() {
 
     describe('behavior', function() {
 
