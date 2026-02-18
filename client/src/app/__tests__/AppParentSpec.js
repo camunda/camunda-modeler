@@ -523,7 +523,7 @@ describe('<AppParent>', function() {
         fooFile
       ]);
 
-      expect(activeFile).to.eql(fooFile);
+      expect(activeFile).to.eql(barFile);
     });
 
   });
