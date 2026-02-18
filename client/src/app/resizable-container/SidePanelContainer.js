@@ -12,7 +12,7 @@ import React, { forwardRef, useCallback } from 'react';
 
 import classnames from 'classnames';
 
-import { Settings, ValueVariable } from '@carbon/icons-react';
+import { Settings } from '@carbon/icons-react';
 
 import ResizableContainer from './ResizableContainer';
 
@@ -29,6 +29,10 @@ export const SIDE_PANEL_TABS = {
   TEST: 'test'
 };
 
+export const VARIABLES_PANEL_TABS = {
+  VARIABLES: 'variables'
+};
+
 export const MIN_WIDTH = 280;
 export const MAX_WIDTH = MIN_WIDTH * 3;
 
@@ -43,13 +47,11 @@ export const DEFAULT_LAYOUT = {
 };
 
 const TAB_CONFIG = {
-  [SIDE_PANEL_TABS.VARIABLES]: { label: 'Variables', icon: ValueVariable },
   [SIDE_PANEL_TABS.PROPERTIES]: { label: 'Properties', icon: Settings },
   [SIDE_PANEL_TABS.TEST]: { label: 'Test', icon: TaskTestingIcon }
 };
 
 const TAB_ORDER = [
-  SIDE_PANEL_TABS.VARIABLES,
   SIDE_PANEL_TABS.PROPERTIES,
   SIDE_PANEL_TABS.TEST
 ];
@@ -58,7 +60,6 @@ export default forwardRef(function SidePanelContainer(props, ref) {
   const {
     layout,
     onLayoutChanged,
-    variablesContent,
     testContent,
     injector
   } = props;
@@ -121,24 +122,9 @@ export default forwardRef(function SidePanelContainer(props, ref) {
       maxWidth={ MAX_WIDTH }
       onResized={ onResized }
     >
-      <div className="side-panel__header">
-        <div className="side-panel__tabs">
-          { TAB_ORDER.map(tabId => {
-            const { label, icon: Icon } = TAB_CONFIG[tabId];
-            return (
-              <button
-                key={ tabId }
-                className={ classnames('side-panel__tab', {
-                  'side-panel__tab--active': tab === tabId
-                }) }
-                onClick={ () => onTabClick(tabId) }
-                title={ label }
-              >
-                <Icon className="side-panel__tab-icon" />
-                <span>{ label }</span>
-              </button>
-            );
-          }) }
+      <div className="side-panel__title-bar">
+        <div className="side-panel__title">
+          <span>Element</span>
         </div>
         <div className="side-panel__actions">
           <button
@@ -154,14 +140,26 @@ export default forwardRef(function SidePanelContainer(props, ref) {
       <SidePanelHeader
         injector={ injector } />
 
+      <div className="side-panel__tabs-bar">
+        { TAB_ORDER.map(tabId => {
+          const { label, icon: Icon } = TAB_CONFIG[tabId];
+          return (
+            <button
+              key={ tabId }
+              className={ classnames('side-panel__tab', {
+                'side-panel__tab--active': tab === tabId
+              }) }
+              onClick={ () => onTabClick(tabId) }
+              title={ label }
+            >
+              <Icon className="side-panel__tab-icon" />
+              <span>{ label }</span>
+            </button>
+          );
+        }) }
+      </div>
+
       <div className="side-panel__body">
-        <div
-          className={ classnames('side-panel__content', {
-            'side-panel__content--active': tab === SIDE_PANEL_TABS.VARIABLES
-          }) }
-        >
-          { variablesContent }
-        </div>
         <div
           className={ classnames('side-panel__content', {
             'side-panel__content--active': tab === SIDE_PANEL_TABS.PROPERTIES

@@ -14,8 +14,6 @@ import VariableOutline from '@bpmn-io/variable-outline';
 import '@bpmn-io/variable-outline/dist/style.css';
 import './VariableOutlineTab.less';
 
-import { SIDE_PANEL_TABS } from '../../../resizable-container/SidePanelContainer';
-
 import VariableOutlineStatusBarItem from './VariableOutlineStatusBarItem';
 
 export default function VariableTab(props) {
@@ -27,7 +25,7 @@ export default function VariableTab(props) {
   } = props;
 
   const onToggle = () => {
-    onAction('toggle-side-panel', { tab: SIDE_PANEL_TABS.VARIABLES });
+    onAction('toggle-variables-panel');
   };
 
   return <>

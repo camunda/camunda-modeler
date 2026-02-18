@@ -16,21 +16,19 @@ import { Fill } from '../../../slot-fill';
 
 import { ValueVariable } from '@carbon/icons-react';
 
-import { SIDE_PANEL_TABS } from '../../../resizable-container/SidePanelContainer';
-
 export default function VariableOutlineStatusBarItem(props) {
   const {
     onToggle,
     layout
   } = props;
 
-  const { sidePanel = {} } = layout;
+  const { variablesPanel = {} } = layout;
 
   return <Fill slot="status-bar__app" group="7_1_side_panel_variables">
     <button
       className={ classnames(
         'btn',
-        { 'btn--active': sidePanel.open && sidePanel.tab === SIDE_PANEL_TABS.VARIABLES }
+        { 'btn--active': variablesPanel.open }
       ) }
       onClick={ onToggle }
       title="Variables"

@@ -2226,6 +2226,17 @@ export class App extends PureComponent {
       return this.openSidePanel(tab);
     }
 
+    if (action === 'toggle-variables-panel') {
+      const { variablesPanel = {} } = this.state.layout;
+
+      return this.handleLayoutChanged({
+        variablesPanel: {
+          ...variablesPanel,
+          open: !variablesPanel.open
+        }
+      });
+    }
+
     if (action === 'display-notification') {
       return this.displayNotification(options);
     }

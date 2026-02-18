@@ -1,0 +1,98 @@
+:local(.VariablesPanelContainer) {
+  position: relative;
+  flex: none;
+  outline: none;
+
+  &.open {
+    outline: solid 1px var(--color-grey-225-10-75);
+  }
+
+  &:not(.open) .resizer {
+    display: none;
+  }
+
+  /* The ResizableContainer wraps children in an absolutely
+     positioned .children div — we need our content to fill it */
+  .children {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .variables-panel__header {
+    background-color: var(--color-grey-225-10-95);
+    border-bottom: solid 1px var(--color-grey-225-10-75);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex: none;
+    padding: 0 2px 0 12px;
+    min-height: 35px;
+  }
+
+  .variables-panel__title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-family);
+    font-size: 13px;
+    color: var(--color-grey-225-10-15);
+    font-weight: 600;
+
+    .variables-panel__title-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+  }
+
+  .variables-panel__actions {
+    display: flex;
+    align-items: center;
+  }
+
+  .variables-panel__action {
+    font-family: var(--font-family);
+    font-size: 14px;
+    color: var(--color-grey-225-10-35);
+    background: none;
+    border: none;
+    outline: none;
+    width: 28px;
+    height: 28px;
+    padding: 7px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: var(--color-grey-225-10-85);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--focus-outline-color);
+      outline-offset: -2px;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .variables-panel__body {
+    flex: 1;
+    position: relative;
+    overflow-y: auto;
+
+    > * {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+}

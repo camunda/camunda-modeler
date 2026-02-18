@@ -14,18 +14,33 @@
     flex-direction: column;
   }
 
-  .side-panel__header {
+  .side-panel__title-bar {
     background-color: var(--color-grey-225-10-95);
     border-bottom: solid 1px var(--color-grey-225-10-75);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     flex: none;
+    padding: 0 2px 0 12px;
+    min-height: 35px;
   }
 
-  .side-panel__tabs {
+  .side-panel__title {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-family);
+    font-size: 13px;
+    color: var(--color-grey-225-10-15);
+    font-weight: 600;
+  }
+
+  .side-panel__tabs-bar {
+    background-color: var(--color-grey-225-10-95);
+    border-bottom: solid 1px var(--color-grey-225-10-75);
     display: flex;
     flex-direction: row;
+    flex: none;
   }
 
   .side-panel__tab {

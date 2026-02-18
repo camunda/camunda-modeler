@@ -27,6 +27,7 @@ import {
 } from '../../cached';
 
 import SidePanelContainer, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT, SIDE_PANEL_TABS } from '../../resizable-container/SidePanelContainer';
+import VariablesPanelContainer, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/VariablesPanelContainer';
 
 import TaskTestingTab from '../../panel/tabs/task-testing/TaskTestingTab';
 import VariableTab from '../../panel/tabs/variable-outline/VariableOutlineTab';
@@ -721,6 +722,20 @@ export class BpmnEditor extends CachedComponent {
       return this.handleLayoutChange(newLayout);
     }
 
+    if (action === 'toggleVariables') {
+      const variablesPanelLayout = layout.variablesPanel || VARIABLES_PANEL_DEFAULT_LAYOUT;
+
+      const newLayout = {
+        variablesPanel: {
+          ...VARIABLES_PANEL_DEFAULT_LAYOUT,
+          ...variablesPanelLayout,
+          open: !variablesPanelLayout.open
+        }
+      };
+
+      return this.handleLayoutChange(newLayout);
+    }
+
     if (action === 'zoomIn') {
       action = 'stepZoom';
 
@@ -866,11 +881,17 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
+          <VariablesPanelContainer
+            layout={ layout }
+            onLayoutChanged={ this.handleLayoutChange }
+          >
+            { variablesContent }
+          </VariablesPanelContainer>
+
           <SidePanelContainer
             ref={ this.propertiesPanelRef }
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange }
-            variablesContent={ variablesContent }
             testContent={ testContent }
             injector={ injector } />
         </div>
