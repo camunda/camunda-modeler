@@ -1190,8 +1190,10 @@ describe('<DmnEditor>', function() {
         views
       });
 
-      // wait for state updates to settle
-      await waitFor(() => {});
+      // assume
+      await waitFor(() => {
+        expect(instance.getCached().activeView).to.eql(drdView);
+      });
 
       const propertiesPanel = modeler.getActiveViewer().get('propertiesPanel');
 
@@ -1216,8 +1218,10 @@ describe('<DmnEditor>', function() {
         views
       });
 
-      // wait for state updates to settle
-      await waitFor(() => {});
+      // assume
+      await waitFor(() => {
+        expect(instance.getCached().activeView).to.eql(drdView);
+      });
 
       const modeler = instance.getModeler();
 

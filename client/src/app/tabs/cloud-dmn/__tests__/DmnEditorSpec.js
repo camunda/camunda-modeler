@@ -1191,11 +1191,12 @@ describe('<DmnEditor>', function() {
         views
       });
 
-      // Wait for state to settle before spying
-      await waitFor(() => {});
+      // assume
+      await waitFor(() => {
+        expect(instance.getCached().activeView).to.eql(drdView);
+      });
 
       const propertiesPanel = modeler.getActiveViewer().get('propertiesPanel');
-
       const propertiesAttachSpy = sinon.spy(propertiesPanel, 'attachTo');
 
       // when
@@ -1205,7 +1206,9 @@ describe('<DmnEditor>', function() {
       });
 
       // then
-      expect(propertiesAttachSpy).not.to.be.called;
+      await waitFor(() => {
+        expect(propertiesAttachSpy).not.to.be.called;
+      });
     });
 
 
@@ -1217,8 +1220,10 @@ describe('<DmnEditor>', function() {
         views
       });
 
-      // Wait for state to settle before spying
-      await waitFor(() => {});
+      // assume
+      await waitFor(() => {
+        expect(instance.getCached().activeView).to.eql(drdView);
+      });
 
       const modeler = instance.getModeler();
 
