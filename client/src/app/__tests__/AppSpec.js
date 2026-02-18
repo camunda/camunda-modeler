@@ -611,7 +611,7 @@ describe('<App>', function() {
           expect(screen.getByText('2.bpmn')).to.exist;
         });
 
-        const activeTab = app.findOpenTab(file2);
+        const activeTab = app.findOpenTab(file1);
         expect(activeTab).to.eql(app.state.activeTab);
       });
 
