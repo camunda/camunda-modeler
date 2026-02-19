@@ -283,7 +283,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                         <Field
                           name="deployment.name"
                           validate={ (value) => {
-                            return validator.validateDeploymentName(value, this.isOnBeforeSubmit);
+                            return validator.validateDeploymentName(value, this.hasTriedSubmit);
                           } }
                         >
                           {({ field, form: fieldForm }) => (
@@ -316,7 +316,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                             return validator.validateEndpointURL(
                               value,
                               form.setFieldError,
-                              this.isOnBeforeSubmit,
+                              this.hasTriedSubmit,
                               onAuthDetection,
                               (code) => { this.externalErrorCodeCache = code; }
                             );
@@ -362,7 +362,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                             <Field
                               name="endpoint.username"
                               validate={ (value) => {
-                                return validator.validateUsername(value || '', this.isOnBeforeSubmit);
+                                return validator.validateUsername(value || '', this.hasTriedSubmit);
                               } }
                             >
                               {({ field, form: fieldForm }) => (
@@ -378,7 +378,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                             <Field
                               name="endpoint.password"
                               validate={ (value) => {
-                                return validator.validatePassword(value || '', this.isOnBeforeSubmit);
+                                return validator.validatePassword(value || '', this.hasTriedSubmit);
                               } }
                             >
                               {({ field, form: fieldForm }) => (
@@ -398,7 +398,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                           <Field
                             name="endpoint.token"
                             validate={ (value) => {
-                              return validator.validateToken(value || '', this.isOnBeforeSubmit);
+                              return validator.validateToken(value || '', this.hasTriedSubmit);
                             } }
                           >
                             {({ field, form: fieldForm }) => (
@@ -459,16 +459,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                         className="btn btn-primary"
                         disabled={ form.isSubmitting }
                         onClick={ () => {
-
-                          // @oguz:
-                          // this is a hack as FormIK does not seem to
-                          // set isSubmitting when this button is clicked.
-                          // if you come up with a better solution, please
-                          // do a PR.
-                          this.isOnBeforeSubmit = true;
-                          setTimeout(() => {
-                            this.isOnBeforeSubmit = false;
-                          });
+                          this.hasTriedSubmit = true;
                         } }
                       >
                         {
