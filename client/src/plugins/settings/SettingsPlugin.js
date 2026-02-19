@@ -223,11 +223,25 @@ function flattenSchema(schema) {
  * @param {Object} flatValues
  * @returns {Object}
  */
+const POLLUTION_KEYS = [ '__proto__', 'constructor', 'prototype' ];
+
+function isSafePathPart(part) {
+  return POLLUTION_KEYS.indexOf(part) === -1;
+}
+
 function unflattenValues(flatValues) {
   const result = {};
 
   forEach(flatValues, (value, key) => {
     const parts = key.split('.');
+
+    // Skip any key path containing unsafe segments to prevent prototype pollution
+    for (let i = 0; i < parts.length; i++) {
+      if (!isSafePathPart(parts[i])) {
+        return;
+      }
+    }
+
     let current = result;
 
     for (let i = 0; i < parts.length - 1; i++) {
@@ -238,7 +252,11 @@ function unflattenValues(flatValues) {
       current = current[part];
     }
 
-    current[parts[parts.length - 1]] = value;
+    const lastPart = parts[parts.length - 1];
+
+    if (isSafePathPart(lastPart)) {
+      current[lastPart] = value;
+    }
   });
 
   return result;
