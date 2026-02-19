@@ -13,7 +13,7 @@
     "@bpmn-io/form-js": "^1.18.0",
     "@bpmn-io/properties-panel": "^3.37.0",
     "@bpmn-io/replace-ids": "^0.2.0",
-    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#builder-experience",
+    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#iterate-variables-view",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.23.0",
     "@camunda/form-playground": "^0.23.0",
@@ -79,7 +79,7 @@
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
-    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#woop",
+    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#cover-null-variable-type",
     "@sentry/webpack-plugin": "^4.0.0",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^14.6.1",
@@ -129,7 +129,7 @@
     "bpmn-io-modelers:auto-test": "cross-env MODELERS=1 npm run auto-test"
   },
   "overrides": {
-    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#woop",
-    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#builder-experience"
+    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#cover-null-variable-type",
+    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#iterate-variables-view"
   }
 }
