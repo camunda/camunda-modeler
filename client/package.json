@@ -13,7 +13,7 @@
     "@bpmn-io/form-js": "^1.19.0",
     "@bpmn-io/properties-panel": "^3.39.0",
     "@bpmn-io/replace-ids": "^0.2.0",
-    "@bpmn-io/variable-outline": "^2.0.1",
+    "@bpmn-io/variable-outline": "github:bpmn-io/variable-outline#iterate-variables-view",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.24.0",
     "@camunda/form-playground": "^0.24.0",
@@ -79,7 +79,7 @@
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
-    "@bpmn-io/variable-resolver": "^1.4.1",
+    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#cover-null-variable-type",
     "@sentry/webpack-plugin": "^4.0.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -125,5 +125,9 @@
     "test": "karma start karma.config.js",
     "bpmn-io-modelers:test": "cross-env MODELERS=1 npm test",
     "bpmn-io-modelers:auto-test": "cross-env MODELERS=1 npm run auto-test"
+  },
+  "overrides": {
+    "@bpmn-io/variable-resolver": "@bpmn-io/variable-resolver",
+    "@bpmn-io/variable-outline": "@bpmn-io/variable-outline"
   }
 }
