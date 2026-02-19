@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { render, waitFor, screen } from '@testing-library/react';
+import { render, waitFor, screen, act } from '@testing-library/react';
 
 import {
   Cache,
@@ -144,9 +144,11 @@ describe('<RPAEditor>', function() {
 
       // when
       const { editor } = instance.getCached();
-      editor.eventBus.fire('property.change', {
-        key: 'script',
-        value: 'new value'
+      act(() => {
+        editor.eventBus.fire('property.change', {
+          key: 'script',
+          value: 'new value'
+        });
       });
 
       // then
@@ -261,7 +263,9 @@ describe('<RPAEditor>', function() {
         // when
         const { editor } = instance.getCached();
 
-        editor.eventBus.fire('model.changed');
+        act(() => {
+          editor.eventBus.fire('model.changed');
+        });
 
         await waitFor(() => {
           const calls = onActionSpy.getCalls()
