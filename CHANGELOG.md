@@ -12,6 +12,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: improve connection hint for local C8Run connections ([#5600](https://github.com/camunda/camunda-modeler/pull/5600))
 * `FIX`: enable undo/redo and select all actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
 * `FIX`: deduplicate open file filters ([#4503](https://github.com/camunda/camunda-modeler/issues/4503))
+* `FIX`: fix dragging elements out from the append menu ([#5513](https://github.com/camunda/camunda-modeler/issues/5513))
 * `DEPS`: add to `@bpmn-io/svg-to-image@1.0.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.39.0`
 * `DEPS`: update to `@camunda/linting@3.48.1`

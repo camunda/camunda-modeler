@@ -1,8 +1,12 @@
 h1, h2, h3, h4, h5, h6, p, a, em, ul, ol, li {
     all: revert;
+
+    // rollback browser default draggable element styles
+    [draggable="true"] {
+      -webkit-user-drag: element;
+    }
 }
 
 body {
     line-height: normal;
 }
-  
