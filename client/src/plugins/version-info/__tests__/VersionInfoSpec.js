@@ -103,7 +103,7 @@ describe('<VersionInfo>', function() {
     });
 
 
-    it('should NOT display unread marker when overlay is clicked', function() {
+    it('should NOT display unread marker when overlay is clicked', async function() {
 
       // given
       const get = key => key === 'versionInfo' && { lastOpenedVersion: 'OLD' };
@@ -114,13 +114,13 @@ describe('<VersionInfo>', function() {
       fireEvent.click(screen.getByRole('button'));
 
       // then
-      return expectEventually(() => {
+      await waitFor(() => {
         expect(screen.queryByLabelText('unread'), 'Unread marker should be gone').to.be.null;
       });
     });
 
 
-    it('should NOT display unread marker if it has been already opened', function() {
+    it('should NOT display unread marker if it has been already opened', async function() {
 
       // given
       const get = key => key === 'versionInfo' && { lastOpenedVersion: 'TEST_VERSION' };
@@ -128,7 +128,7 @@ describe('<VersionInfo>', function() {
       createVersionInfo({ config });
 
       // then
-      return expectEventually(() => {
+      await waitFor(() => {
         expect(screen.queryByLabelText('unread'), 'Unread marker should be gone').to.be.null;
       });
     });
@@ -252,33 +252,6 @@ function createVersionInfo(props = {}) {
 
 function noop() {
   return { cancel() {} };
-}
-
-async function expectEventually(expectStatement) {
-  const sleep = time => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, time);
-    });
-  };
-
-  for (let i = 0; i < 10; i++) {
-    try {
-      expectStatement();
-
-      // success
-      return;
-    } catch {
-
-      // do nothing
-    }
-
-    await sleep(50);
-  }
-
-  // let it fail correctly
-  expectStatement();
 }
 
 function createSubscribe() {

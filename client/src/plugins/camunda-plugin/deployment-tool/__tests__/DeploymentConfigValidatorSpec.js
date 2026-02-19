@@ -119,9 +119,10 @@ describe('<DeploymentConfigValidator>', function() {
   });
 
 
-  it('should validate endpoint URL completeness delayed if not submitting', function(done) {
+  it('should validate endpoint URL completeness delayed if not submitting', function() {
 
     // given
+    const clock = sinon.useFakeTimers();
     const setFieldErrorSpy = sinon.spy();
     const onAuthDetection = noop;
     const isOnBeforeSubmit = false;
@@ -136,10 +137,10 @@ describe('<DeploymentConfigValidator>', function() {
     // then
     expect(result).to.be.null;
     expect(setFieldErrorSpy).to.not.have.been.called;
-    setTimeout(() => {
-      expect(setFieldErrorSpy).to.have.been.calledWith(ENDPOINT_URL_FIELDNAME, NON_COMPLETE_ERROR);
-      done();
-    }, 1001);
+
+    clock.tick(1001);
+    expect(setFieldErrorSpy).to.have.been.calledWith(ENDPOINT_URL_FIELDNAME, NON_COMPLETE_ERROR);
+    clock.restore();
   });
 
 
@@ -165,6 +166,8 @@ describe('<DeploymentConfigValidator>', function() {
   it('should discard timed out connection checks', async function() {
 
     // given
+    const clock = sinon.useFakeTimers();
+
     validator.validateConnection = () => new Promise((resolve) => {
       setTimeout(() => {
         resolve({
@@ -177,12 +180,16 @@ describe('<DeploymentConfigValidator>', function() {
     const check1 = validator.validateConnectionWithoutCredentials('url1');
     const check2 = validator.validateConnectionWithoutCredentials('url2');
 
+    clock.tick(200);
+
     const oldResponse = await check1;
     const newResponse = await check2;
 
     // then
     expect(oldResponse).to.eql({ isExpired: true });
     expect(newResponse).to.eql({ isSuccessful: true });
+
+    clock.restore();
   });
 
 
@@ -285,9 +292,10 @@ describe('<DeploymentConfigValidator>', function() {
   });
 
 
-  it('should notify connection status to parent', function(done) {
+  it('should notify connection status to parent', async function() {
 
     // given
+    const clock = sinon.useFakeTimers();
     const setFieldError = noop;
     const onAuthDetection = noop;
     const isOnBeforeSubmit = false;
@@ -296,9 +304,10 @@ describe('<DeploymentConfigValidator>', function() {
     const url = 'https://test.com';
 
     // when
+    let connectionPromiseResolve;
     validator.endpointURLValidator.validateConnectionWithoutCredentials = () => {
-      return new Promise((resolve, reject) => {
-        resolve({
+      return new Promise((resolve) => {
+        connectionPromiseResolve = () => resolve({
           code: 'CONNECTION_FAILED'
         });
       });
@@ -309,10 +318,11 @@ describe('<DeploymentConfigValidator>', function() {
     );
 
     // then
-    setTimeout(() => {
-      expect(onConnectionStatusUpdate).to.have.been.calledWith('CONNECTION_FAILED');
-      done();
-    }, 1500);
+    clock.tick(1000);
+    await connectionPromiseResolve();
+
+    expect(onConnectionStatusUpdate).to.have.been.calledWith('CONNECTION_FAILED');
+    clock.restore();
   });
 
 
