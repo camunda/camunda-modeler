@@ -62,13 +62,11 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Copy selection as image</h4>
-          Copy selected BPMN elements as an image to easily paste them anywhere.
+          Use <code>{isMac ? 'Cmd+Shift+C' : 'Ctrl+Shift+C'}</code> to copy selected BPMN elements as an image to easily paste them anywhere.
         </li>
         <li>
-          <h4>FEEL expressions for Form ID</h4>
-        </li>
-        <li>
-          <h4>Variable name validation</h4>
+          <h4>Dynamic form references</h4>
+          Use FEEL expression to dynamically reference forms.
         </li>
       </ul>
     </div>
