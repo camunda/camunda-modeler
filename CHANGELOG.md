@@ -13,23 +13,24 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: enable undo/redo and select all actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
 * `FIX`: deduplicate open file filters ([#4503](https://github.com/camunda/camunda-modeler/issues/4503))
 * `FIX`: fix dragging elements out from the append menu ([#5513](https://github.com/camunda/camunda-modeler/issues/5513))
-* `DEPS`: add to `@bpmn-io/svg-to-image@1.0.0`
+* `DEPS`: update to `@bpmn-io/svg-to-image@1.0.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.39.0`
 * `DEPS`: update to `@camunda/linting@3.48.1`
-* `DEPS`: update to `@bpmn-io/variable-resolver@1.4.1`
-* `DEPS`: update to `@bpmn-io/extract-process-variables@2.0.0`
+* `DEPS`: update to `@bpmn-io/variable-resolver@1.6.1`
+* `DEPS`: update to `@bpmn-io/extract-process-variables@2.1.0`
 * `DEPS`: update to `camunda-bpmn-js@5.22.1`
 * `DEPS`: update to `bpmn-js@18.12.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.50.1`
-* `DEPS`: update to `bpmn-js-element-templates@2.20.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.51.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.20.1`
 * `DEPS`: update to `bpmn-moddle@10.0.0`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.12.0`
 * `DEPS`: update to `camunda-dmn-js@3.7.0`
-* `DEPS`: update to `dmn-js@17.6.0`
-* `DEPS`: update to `dmn-js-properties-panel@5.50.1`
+* `DEPS`: update to `dmn-js@17.7.0`
+* `DEPS`: update to `dmn-js-shared@17.7.0`
+* `DEPS`: update to `dmn-js-properties-panel@3.10.0`
 * `DEPS`: update to `dmn-moddle@12.0.1`
 * `DEPS`: update to `camunda-dmn-moddle@1.3.1`
-* `DEPS`: update to `@bpmn-io/dmn-migrate@0.7.0`
+* `DEPS`: update to `@bpmn-io/dmn-migrate@0.7.1`
 * `DEPS`: update to `@bpmn-io/form-js@1.19.0`
 * `DEPS`: update to `@camunda/form-linting@0.24.0`
 * `DEPS`: update to `@camunda/form-playground@0.24.0`
@@ -38,6 +39,8 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `min-dom@5.2.0`
 * `DEPS`: update to `ids@3.0.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.8.0`
+* `DEPS`: update to `@camunda/task-testing@2.2.0`
+* `DEPS`: update to `diagram-js-direct-editing@3.3.0`
 
 ### BPMN
 
@@ -54,6 +57,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: fix `sequence-flow-condition` rule crash on broken diagram ([#5584](https://github.com/camunda/camunda-modeler/issues/5584))
 * `FIX`: handle falsy values in variable resolver ([bpmn-io/variable-resolver#68](https://github.com/bpmn-io/variable-resolver/pull/68))
 * `FIX`: recognize `get or else` as a Camunda extension ([#3983](https://github.com/camunda/camunda-modeler/issues/3983))
+* `FIX`: change description of user task priority field and add docs link ([bpmn-io/bpmn-js-properties-panel#1193](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1193))
+* `FIX`: show Variable Events for boundary events ([#5622](https://github.com/camunda/camunda-modeler/issues/5622))
 
 ### DMN
 
