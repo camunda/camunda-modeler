@@ -1852,6 +1852,7 @@ export class App extends PureComponent {
     const { onMenuUpdate } = this.props;
 
     onMenuUpdate({
+      ...this.state.tabState,
       ...options,
       activeTab: this.state.activeTab,
       lastTab: !!this.closedTabs.get(),
