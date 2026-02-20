@@ -49,20 +49,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
+          <h4>Conditional events</h4>
+          Model and implement conditional events in BPMN diagrams to trigger flows based on data conditions.
+        </li>
+        <li>
+          <h4>New FEEL functions</h4>
+          Use <code>from json</code> and <code>to json</code> functions to convert between JSON strings and FEEL values.
+        </li>
+        <li>
           <h4>Cut action</h4>
           Use <code>{isMac ? 'Cmd+X' : 'Ctrl+X'}</code> to cut BPMN elements and move them across diagrams.
         </li>
         <li>
           <h4>Copy selection as image</h4>
           Copy selected BPMN elements as an image to easily paste them anywhere.
-        </li>
-        <li>
-          <h4>Conditional events modeling</h4>
-          Model conditional events in your BPMN diagrams to trigger flows based on data conditions.
-        </li>
-        <li>
-          <h4>New FEEL functions</h4>
-          Use <code>from json</code> and <code>to json</code> functions to convert between JSON strings and FEEL values.
         </li>
         <li>
           <h4>FEEL expressions for Form ID</h4>
