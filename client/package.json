@@ -79,7 +79,7 @@
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
-    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#cover-null-variable-type",
+    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#utils",
     "@sentry/webpack-plugin": "^4.0.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -127,7 +127,7 @@
     "bpmn-io-modelers:auto-test": "cross-env MODELERS=1 npm run auto-test"
   },
   "overrides": {
-    "@bpmn-io/variable-resolver": "@bpmn-io/variable-resolver",
-    "@bpmn-io/variable-outline": "@bpmn-io/variable-outline"
+    "@bpmn-io/variable-resolver": "$@bpmn-io/variable-resolver",
+    "@bpmn-io/variable-outline": "$@bpmn-io/variable-outline"
   }
 }
