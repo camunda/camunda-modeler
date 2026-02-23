@@ -28,9 +28,12 @@ jobs:
     - name: Build with code coverage
       if: ${{ runner.OS == 'Linux' }}
       run: COVERAGE=1 npm run all -- --x64 --no-compress
-    - name: Build
-      if: ${{ runner.OS != 'Linux' }}
+    - name: Build for Windows
+      if: ${{ runner.OS == 'Windows' }}
       run: npm run all -- --x64 --no-compress
+    - name: Build for macOS
+      if: ${{ runner.OS == 'macOS' }}
+      run: npm run all -- --arm64 --no-compress
     - name: Import Secrets
       if: ${{ runner.OS == 'Linux' }}
       id: secrets
