@@ -10,7 +10,7 @@
 
 /* global sinon */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { waitFor } from '@testing-library/react';
 
@@ -666,12 +666,10 @@ function createMockStartInstanceConfigForm() {
       validateField
     } = props;
 
-    useEffect(() => {
-      _props.initialFieldValues = initialFieldValues;
-      _props.onSubmit = onSubmit;
-      _props.validateForm = validateForm;
-      _props.validateField = validateField;
-    }, []);
+    _props.initialFieldValues = initialFieldValues;
+    _props.onSubmit = onSubmit;
+    _props.validateForm = validateForm;
+    _props.validateField = validateField;
 
     return (
       <form id="start-instance" onSubmit={ onSubmit }>
