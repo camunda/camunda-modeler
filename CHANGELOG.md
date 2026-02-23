@@ -60,8 +60,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: change description of user task priority field and add docs link ([bpmn-io/bpmn-js-properties-panel#1193](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1193))
 * `FIX`: show Variable Events for boundary events ([#5622](https://github.com/camunda/camunda-modeler/issues/5622))
 * `FIX`: make input mapping variable value FEEL by default ([#5647](https://github.com/camunda/camunda-modeler/issues/5647))
-* `FIX`: handle empty mapping variable name ([#5661](https://github.com/camunda/camunda-modeler/issues/5661))
-
 
 ### DMN
 
