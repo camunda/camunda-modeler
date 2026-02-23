@@ -32,9 +32,6 @@ describe('<RPAEditor>', function() {
 
     it('should import with script', async function() {
 
-      // this can take a while on macOS CI...
-      this.timeout(30000);
-
       // given
       const onImportSpy = sinon.spy((errors) => {
         expect(errors).not.to.exist;
@@ -42,7 +39,6 @@ describe('<RPAEditor>', function() {
 
       renderEditor(RPA, {
         onImport: onImportSpy,
-        cache: new Cache()
       });
 
       await waitFor(() => {
