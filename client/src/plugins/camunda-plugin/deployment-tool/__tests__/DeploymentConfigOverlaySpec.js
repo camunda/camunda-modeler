@@ -52,9 +52,6 @@ describe('<DeploymentConfigOverlay>', function() {
 
   describe('connection check', function() {
 
-    // This can take a while on macOS CI...
-    this.timeout(30000);
-
     it('should display hint if the username and password are missing when submitting', async function() {
 
       // given
@@ -70,11 +67,13 @@ describe('<DeploymentConfigOverlay>', function() {
       };
 
       const validator = new MockValidator({
-        validateConnection: async () => ({
-          code: GenericApiErrors.UNAUTHORIZED
+        validateConnection: () => Promise.resolve({
+          code: GenericApiErrors.UNAUTHORIZED,
+          details: 'Credentials are required to connect to the server.'
         }),
-        validateConnectionWithoutCredentials: async () => ({
-          code: GenericApiErrors.UNAUTHORIZED
+        validateConnectionWithoutCredentials: () => Promise.resolve({
+          code: GenericApiErrors.UNAUTHORIZED,
+          details: 'Credentials are required to connect to the server.'
         })
       });
 
@@ -119,10 +118,12 @@ describe('<DeploymentConfigOverlay>', function() {
 
       const validator = new MockValidator({
         validateConnection: () => Promise.resolve({
-          code: GenericApiErrors.UNAUTHORIZED
+          code: GenericApiErrors.UNAUTHORIZED,
+          details: 'Token is required to connect to the server.'
         }),
         validateConnectionWithoutCredentials: () => Promise.resolve({
-          code: GenericApiErrors.UNAUTHORIZED
+          code: GenericApiErrors.UNAUTHORIZED,
+          details: 'Token is required to connect to the server.'
         })
       });
 
