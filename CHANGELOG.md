@@ -13,8 +13,9 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: enable undo/redo and select all actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
 * `FIX`: deduplicate open file filters ([#4503](https://github.com/camunda/camunda-modeler/issues/4503))
 * `FIX`: fix dragging elements out from the append menu ([#5513](https://github.com/camunda/camunda-modeler/issues/5513))
+* `FIX`: prevent cutting the tooltip if it couldn't fit to the bottom of the screen ([#5451](https://github.com/camunda/camunda-modeler/issues/5451))
 * `DEPS`: update to `@bpmn-io/svg-to-image@1.0.1`
-* `DEPS`: update to `@bpmn-io/properties-panel@3.40.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.40.1`
 * `DEPS`: update to `@camunda/linting@3.48.1`
 * `DEPS`: update to `@bpmn-io/variable-resolver@1.6.1`
 * `DEPS`: update to `@bpmn-io/extract-process-variables@2.1.0`
