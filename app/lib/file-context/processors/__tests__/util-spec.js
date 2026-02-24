@@ -10,6 +10,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const sinon = require('sinon');
 
 const {
   isCamunda8BPMN,
@@ -177,6 +178,31 @@ describe('util', function() {
       const applicationFile = findProcessApplicationFile(diagramPath);
 
       expect(applicationFile).to.eql(false);
+    });
+
+
+    describe('should handle EPERM error during directory scan', function() {
+
+      afterEach(function() {
+        sinon.restore();
+      });
+
+
+      it('should return false', function() {
+
+        // given
+        const diagramPath = path.resolve(__dirname, './fixtures/application/nested/diagram.bpmn');
+
+        const epermError = Object.assign(new Error('EPERM: operation not permitted, scandir'), { code: 'EPERM' });
+        sinon.stub(fs, 'readdirSync').throws(epermError);
+
+        // when
+        const applicationFile = findProcessApplicationFile(diagramPath);
+
+        // then
+        expect(applicationFile).to.eql(false);
+      });
+
     });
   });
 
