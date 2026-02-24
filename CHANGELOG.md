@@ -20,7 +20,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/extract-process-variables@2.1.0`
 * `DEPS`: update to `camunda-bpmn-js@5.24.0`
 * `DEPS`: update to `bpmn-js@18.12.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.52.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.52.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.20.1`
 * `DEPS`: update to `bpmn-moddle@10.0.0`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.12.0`
