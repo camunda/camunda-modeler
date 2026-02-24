@@ -284,6 +284,28 @@ describe('<App>', function() {
 
     });
 
+
+    it('should preserve tabState when panel triggers a partial menu update', async function() {
+
+      // given
+      const updateMenuSpy = spy();
+
+      const { app } = createApp({
+        onMenuUpdate: updateMenuSpy
+      });
+
+      // set tabState with save enabled (as happens when a diagram is active)
+      app.setState({ tabState: { save: true, exportAs: true } });
+
+      await waitFor(() => expect(app.state.tabState).to.deep.equal({ save: true, exportAs: true }));
+
+      // when - panel triggers a partial update (only editMenu, as Panel.js does on focus)
+      app.updateMenu({ editMenu: [] });
+
+      // then - save state should be preserved in the menu update
+      expect(updateMenuSpy.lastCall.args[0]).to.include({ save: true, exportAs: true });
+    });
+
   });
 
 
