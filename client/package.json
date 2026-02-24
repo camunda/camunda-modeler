@@ -80,7 +80,7 @@
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
     "@bpmn-io/variable-resolver": "^1.6.1",
-    "@sentry/webpack-plugin": "^4.0.0",
+    "@sentry/webpack-plugin": "^5.0.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "babel-loader": "^10.0.0",
