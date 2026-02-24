@@ -11,6 +11,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const log = require('../../log')('app:file-context:processors:util');
+
 const { Parser } = require('saxen');
 
 const { getFileExtension } = require('../util');
@@ -74,7 +76,14 @@ function findProcessApplicationFile(filePath) {
   let dirName = path.dirname(filePath);
 
   while (dirName !== path.dirname(dirName)) {
-    const fileNames = fs.readdirSync(dirName);
+    let fileNames;
+
+    try {
+      fileNames = fs.readdirSync(dirName);
+    } catch (error) {
+      log.error('Failed to read directory', error);
+      return false;
+    }
 
     const fileName = fileNames.find(fileName => {
       return getFileExtension(fileName) === '.process-application';
