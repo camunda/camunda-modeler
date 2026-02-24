@@ -1,6 +1,6 @@
 {
   "name": "camunda-modeler-client",
-  "version": "5.44.0",
+  "version": "5.45.0-rc.0",
   "description": "Camunda Modeler client application",
   "private": true,
   "license": "MIT",
@@ -13,6 +13,7 @@
     "@bpmn-io/form-js": "^1.19.0",
     "@bpmn-io/properties-panel": "^3.40.0",
     "@bpmn-io/replace-ids": "^0.2.0",
+    "@bpmn-io/svg-to-image": "^1.0.1",
     "@bpmn-io/variable-outline": "^2.0.1",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.24.0",
@@ -38,7 +39,6 @@
     "bpmn-js-properties-panel": "^5.52.0",
     "bpmn-js-tracking": "^0.6.0",
     "bpmn-moddle": "^10.0.0",
-    "@bpmn-io/svg-to-image": "^1.0.1",
     "camunda-bpmn-js": "^5.24.0",
     "camunda-bpmn-moddle": "^7.0.1",
     "camunda-dmn-js": "^3.7.0",

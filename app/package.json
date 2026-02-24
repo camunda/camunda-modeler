@@ -1,6 +1,6 @@
 {
   "name": "camunda-modeler",
-  "version": "5.44.0",
+  "version": "5.45.0-rc.0",
   "description": "Modeling solution for BPMN, DMN, and Forms based on bpmn.io.",
   "private": true,
   "main": "prod.js",
@@ -15,7 +15,6 @@
     "@sentry/integrations": "^7.113.0",
     "@sentry/node": "^10.0.0",
     "bpmn-moddle": "^10.0.0",
-    "semver": "^7.7.3",
     "chokidar": "^5.0.0",
     "dmn-moddle": "^12.0.1",
     "epipebomb": "^1.0.0",
@@ -25,6 +24,7 @@
     "mri": "^1.1.6",
     "parents": "^1.0.1",
     "saxen": "^11.0.0",
+    "semver": "^7.7.3",
     "zeebe-bpmn-moddle": "^1.12.0"
   },
   "homepage": "https://github.com/camunda/camunda-modeler",
