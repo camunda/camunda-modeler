@@ -49,16 +49,24 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Tabs autosave</h4>
-          The editor autosaves your changes on tab switch and blur (app switch, window focus loss), ensuring your work is saved to disk and visible to your IDE and other tools.
+          <h4>Conditional events</h4>
+          Model and implement conditional events in BPMN diagrams to trigger flows based on data conditions.
         </li>
         <li>
-          <h4>Shared global clipboard</h4>
-          Copy and paste BPMN elements between Camunda 7 and Camunda 8 diagrams, and across other shared clipboard-enabled BPMN modeler applications and websites.
+          <h4>Cut action</h4>
+          Use <code>{isMac ? 'Cmd+X' : 'Ctrl+X'}</code> to cut BPMN elements and move them across diagrams.
         </li>
         <li>
-          <h4>Duplicate elements</h4>
-          Quickly duplicate BPMN elements using <code>{isMac ? 'Cmd+D' : 'Ctrl+D'}</code> to speed up your modeling process.
+          <h4>Copy selection as image</h4>
+          Use <code>{isMac ? 'Cmd+Shift+C' : 'Ctrl+Shift+C'}</code> to copy selected BPMN elements as an image to easily paste them anywhere.
+        </li>
+        <li>
+          <h4>Dynamic form references</h4>
+          Use FEEL expression to dynamically reference forms.
+        </li>
+        <li>
+          <h4>New FEEL functions for Camunda 8.9</h4>
+          Use <code>from json</code> and <code>to json</code> functions to convert between JSON strings and FEEL values.
         </li>
       </ul>
     </div>
