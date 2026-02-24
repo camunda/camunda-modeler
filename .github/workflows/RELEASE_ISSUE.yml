@@ -17,6 +17,7 @@ jobs:
       name: Create new Release Issue
       uses: bpmn-io/actions/release-issue@latest
       with:
+        moderators-path: 'docs/.project/release-managers.json'
         template-path: 'docs/.project/RELEASE_TEMPLATE.md'
         package-path: 'app/package.json'
 
