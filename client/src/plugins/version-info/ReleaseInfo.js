@@ -53,10 +53,6 @@ export function ReleaseInfo(props) {
           Model and implement conditional events in BPMN diagrams to trigger flows based on data conditions.
         </li>
         <li>
-          <h4>New FEEL functions</h4>
-          Use <code>from json</code> and <code>to json</code> functions to convert between JSON strings and FEEL values.
-        </li>
-        <li>
           <h4>Cut action</h4>
           Use <code>{isMac ? 'Cmd+X' : 'Ctrl+X'}</code> to cut BPMN elements and move them across diagrams.
         </li>
@@ -67,6 +63,10 @@ export function ReleaseInfo(props) {
         <li>
           <h4>Dynamic form references</h4>
           Use FEEL expression to dynamically reference forms.
+        </li>
+        <li>
+          <h4>New FEEL functions for Camunda 8.9</h4>
+          Use <code>from json</code> and <code>to json</code> functions to convert between JSON strings and FEEL values.
         </li>
       </ul>
     </div>
