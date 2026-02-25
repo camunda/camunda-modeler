@@ -46,7 +46,7 @@
     "url": "https://github.com/camunda/camunda-modeler"
   },
   "devDependencies": {
-    "@electron/notarize": "^3.0.1",
+    "@electron/notarize": "^3.1.1",
     "archiver": "^7.0.1",
     "chai": "^4.5.0",
     "chai-subset": "^1.6.0",
