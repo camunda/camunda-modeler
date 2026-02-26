@@ -198,7 +198,7 @@ export class App extends PureComponent {
     const tab = this.state.tabs.find((tab) => tab.id === id);
 
     if (!tab) {
-      throw new Error(`Tab with ID ${id} not found`);
+      return;
     }
 
     this.setState(({ tabGroups }) => {
