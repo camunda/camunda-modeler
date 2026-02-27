@@ -41,6 +41,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/improved-canvas@1.8.0`
 * `DEPS`: update to `@camunda/task-testing@2.2.0`
 * `DEPS`: update to `diagram-js-direct-editing@3.3.0`
+* `DEPS`: update to `electron@40.6.1`
 
 ### BPMN
 
