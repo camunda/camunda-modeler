@@ -78,7 +78,9 @@ jobs:
         # User ID is either the assignee from the newly created issue or the new assigned from the `assigned` trigger
         USER_ID: ${{ fromJSON(steps.secrets.outputs.TEAM_MEMBER_IDS)[ needs.create_release_issue.outputs.assignee || github.event.issue.assignee.login ] }}
       run: |
-        curl --fail-with-body -X POST -H "application/x-www-form-urlencoded" -d "token=${SLACK_BOT_TOKEN}&usergroup=${GROUP_ID}&users=${USER_ID}" https://slack.com/api/usergroups.users.update
+        RESPONSE="$(curl --fail-with-body -X POST -H "application/x-www-form-urlencoded" -d "token=${SLACK_BOT_TOKEN}&usergroup=${GROUP_ID}&users=${USER_ID}" https://slack.com/api/usergroups.users.update)"
+        echo "$RESPONSE"
+        echo "$RESPONSE" | jq -e '.ok == true' > /dev/null
 
   notify_on_slack:
     name: Notify new release manager on Slack
