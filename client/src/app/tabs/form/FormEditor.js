@@ -373,8 +373,6 @@ export class FormEditor extends CachedComponent {
 
     const { onChanged } = this.props;
 
-    const { previewOpen } = this.state;
-
     const { form } = this.getCached();
 
     const commandStack = form.getEditor().get('commandStack');
@@ -385,7 +383,6 @@ export class FormEditor extends CachedComponent {
       defaultUndoRedo: inputActive,
       dirty: this.isDirty(),
       inputActive,
-      previewOpen,
       redo: commandStack.canRedo(),
       removeSelected: inputActive,
       save: true,
