@@ -15,7 +15,9 @@ import debug from 'debug';
 import {
   assign,
   forEach,
-  isString
+  isNumber,
+  isString,
+  omit
 } from 'min-dash';
 
 import {
@@ -25,6 +27,8 @@ import {
 import App from './App';
 
 import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../util/Flags';
+
+import { SIDE_PANEL_TABS } from './tabs/cloud-bpmn/side-panel/SidePanel';
 
 const log = debug('AppParent');
 
@@ -164,16 +168,11 @@ export default class AppParent extends PureComponent {
 
     const app = this.getApp();
 
-    const { panel = { open: false } } = layout;
+    let newLayout = migratePropertiesPanelToSidePanel(layout);
 
-    // set log closed by default
-    app.setLayout({
-      ...layout,
-      panel: {
-        ...panel,
-        open: panel.tab === 'log' ? false : panel.open
-      }
-    });
+    newLayout = closeLogPanelByDefault(newLayout);
+
+    app.setLayout(newLayout);
 
     // remember to-be restored files but postpone opening + activation
     // until <client:started> batch restore workspace files + files opened
@@ -517,4 +516,62 @@ async function parseStackTrace(stack) {
   });
 
   return stackFrames.join('\n');
+}
+
+
+/**
+ * Migrate legacy `propertiesPanel` layout config to the new `sidePanel` config.
+ *
+ * @param {Object} layout
+ *
+ * @returns {Object}
+ */
+function migratePropertiesPanelToSidePanel(layout) {
+  if (layout.sidePanel) {
+    return layout;
+  }
+
+  const { propertiesPanel } = layout;
+
+  if (!propertiesPanel) {
+    return layout;
+  }
+
+  const sidePanel = {
+    open: propertiesPanel.open !== false,
+    tab: SIDE_PANEL_TABS.PROPERTIES
+  };
+
+  if (isNumber(propertiesPanel.width)) {
+    sidePanel.width = propertiesPanel.width;
+  }
+
+  return {
+    ...layout,
+    propertiesPanel: omit(propertiesPanel, [ 'open', 'width' ]),
+    sidePanel
+  };
+}
+
+/**
+ * Close the log panel by default if it was open in the previous session.
+ *
+ * @param {Object} layout
+ *
+ * @returns {Object}
+ */
+function closeLogPanelByDefault(layout) {
+  const { panel = { open: false } } = layout;
+
+  if (panel.tab !== 'log') {
+    return layout;
+  }
+
+  return {
+    ...layout,
+    panel: {
+      ...panel,
+      open: false
+    }
+  };
 }

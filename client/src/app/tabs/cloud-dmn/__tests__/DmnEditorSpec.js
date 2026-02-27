@@ -1421,7 +1421,7 @@ describe('<DmnEditor>', function() {
         await waitFor(() => {
           expect(onLayoutChanged).to.have.been.calledOnce;
           expect(onLayoutChanged).to.have.been.calledWithExactly({
-            propertiesPanel: {
+            sidePanel: {
               open: false,
               width: 280
             }
@@ -1434,7 +1434,7 @@ describe('<DmnEditor>', function() {
 
         // given
         const layout = {
-          propertiesPanel: {
+          sidePanel: {
             open: false
           }
         };
@@ -1456,7 +1456,7 @@ describe('<DmnEditor>', function() {
         await waitFor(() => {
           expect(onLayoutChanged).to.have.been.calledOnce;
           expect(onLayoutChanged).to.have.been.calledWithExactly({
-            propertiesPanel: {
+            sidePanel: {
               open: true,
               width: 280
             }
@@ -1469,7 +1469,7 @@ describe('<DmnEditor>', function() {
 
         // given
         const layout = {
-          propertiesPanel: {
+          sidePanel: {
             open: true,
             width: 280
           }
@@ -1492,7 +1492,7 @@ describe('<DmnEditor>', function() {
         await waitFor(() => {
           expect(onLayoutChanged).to.have.been.calledOnce;
           expect(onLayoutChanged).to.have.been.calledWithExactly({
-            propertiesPanel: {
+            sidePanel: {
               open: false,
               width: 280
             }
@@ -1946,7 +1946,7 @@ describe('<DmnEditor>', function() {
         instance
       } = await renderEditor(diagramXML, {
         layout: {
-          propertiesPanel: {
+          sidePanel: {
             open: false,
           }
         },
@@ -1958,7 +1958,7 @@ describe('<DmnEditor>', function() {
 
       // then
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
-        propertiesPanel: {
+        sidePanel: {
           open: true,
           width: 280
         }

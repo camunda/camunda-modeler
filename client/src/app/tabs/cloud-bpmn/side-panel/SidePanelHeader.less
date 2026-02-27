@@ -1,0 +1,54 @@
+:local(.SidePanelHeader) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 14px;
+  padding: 16px 10px;
+  background-color: var(--color-grey-225-10-95);
+  border-bottom: 1px solid var(--color-grey-225-10-75);
+  width: 100%;
+  z-index: 10;
+  max-height: 64px;
+  overflow: hidden;
+  flex: none;
+
+  .side-panel-header__icon {
+    fill: var(--color-grey-225-10-15);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .side-panel-header__labels {
+    overflow: hidden;
+    margin-left: 12px;
+    user-select: none;
+  }
+
+  .side-panel-header__type {
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-transform: uppercase;
+  }
+
+  .side-panel-header__name {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-top: -6px;
+    font-size: 14px;
+  }
+
+  .side-panel-header__actions {
+    margin-left: auto;
+    margin-top: auto;
+  }
+}
+

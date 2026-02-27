@@ -988,14 +988,22 @@ describe('<BpmnEditor>', function() {
         rerender(diagramXML, {
           layout: {
             propertiesPanel: {
-              open: false
+              groups: {
+                foo: {
+                  open: true
+                }
+              }
             }
           }
         });
 
         // then
         expect(setLayoutSpy).to.have.been.calledOnceWith({
-          open: false
+          groups: {
+            foo: {
+              open: true
+            }
+          }
         });
 
       });
@@ -1011,9 +1019,7 @@ describe('<BpmnEditor>', function() {
         // when
         rerender(diagramXML, {
           layout: {
-            propertiesPanel: {
-              open: true
-            }
+            propertiesPanel: {}
           }
         });
 
@@ -1048,7 +1054,7 @@ describe('<BpmnEditor>', function() {
 
         const callArg = onLayoutChanged.getCall(0).args[0];
         expect(callArg).to.deep.include({
-          propertiesPanel: {
+          sidePanel: {
             open: false,
             width: 280
           }
@@ -1060,7 +1066,7 @@ describe('<BpmnEditor>', function() {
 
         // given
         const layout = {
-          propertiesPanel: {
+          sidePanel: {
             open: false
           }
         };
@@ -1083,7 +1089,7 @@ describe('<BpmnEditor>', function() {
 
         const callArg = onLayoutChanged.getCall(0).args[0];
         expect(callArg).to.deep.include({
-          propertiesPanel: {
+          sidePanel: {
             open: true,
             width: 280
           }
@@ -1095,7 +1101,7 @@ describe('<BpmnEditor>', function() {
 
         // given
         const layout = {
-          propertiesPanel: {
+          sidePanel: {
             open: true
           }
         };
@@ -1122,7 +1128,7 @@ describe('<BpmnEditor>', function() {
 
         const callArg = onLayoutChanged.getCall(0).args[0];
         expect(callArg).to.deep.include({
-          propertiesPanel: {
+          sidePanel: {
             open: false,
             width: 280
           }
@@ -1875,7 +1881,7 @@ describe('<BpmnEditor>', function() {
         instance
       } = await renderEditor(diagramXML, {
         layout: {
-          propertiesPanel: {
+          sidePanel: {
             open: false,
           }
         },
@@ -1887,7 +1893,7 @@ describe('<BpmnEditor>', function() {
 
       // then
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
-        propertiesPanel: {
+        sidePanel: {
           open: true,
           width: 280
         }
