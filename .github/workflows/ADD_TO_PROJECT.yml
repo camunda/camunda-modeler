@@ -28,7 +28,7 @@ jobs:
           exportEnv: false
           secrets: |
             secret/data/products/desktop-modeler/ci/ADD_TO_PROJECT_PAT ADD_TO_PROJECT_PAT;
-      - uses: actions/add-to-project@v1.0.0
+      - uses: actions/add-to-project@v1.0.2
         with:
           project-url: ${{ secrets.CONNECTORS_PROJECT_URL }}
           github-token: ${{ steps.secrets.outputs.ADD_TO_PROJECT_PAT }}
