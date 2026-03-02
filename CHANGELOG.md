@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.45.0
+
 ### General
 
 * `FEAT`: add `from json` and `to json` FEEL functions ([#5365](https://github.com/camunda/camunda-modeler/issues/5365))
