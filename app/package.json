@@ -33,6 +33,6 @@
     "url": "https://github.com/camunda/camunda-modeler"
   },
   "optionalDependencies": {
-    "vscode-windows-ca-certs": "^0.3.0"
+    "@vscode/windows-ca-certs": "^0.3.4"
   }
 }

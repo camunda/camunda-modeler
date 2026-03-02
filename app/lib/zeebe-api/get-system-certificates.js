@@ -72,7 +72,7 @@ async function readCaCertificates() {
 }
 
 async function readWindowsCaCertificates() {
-  const winCA = require('vscode-windows-ca-certs');
+  const winCA = require('@vscode/windows-ca-certs');
 
   let ders = [];
   const store = new winCA.Crypt32();
