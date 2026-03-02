@@ -8,6 +8,12 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `DEPS`: update to `electron@40.6.1`
+
+## 5.45.0
+
+### General
+
 * `FEAT`: add `from json` and `to json` FEEL functions ([#5365](https://github.com/camunda/camunda-modeler/issues/5365))
 * `FEAT`: improve connection hint for local C8Run connections ([#5600](https://github.com/camunda/camunda-modeler/pull/5600))
 * `FIX`: enable undo/redo and select all actions in settings modal ([#5306](https://github.com/camunda/camunda-modeler/issues/5306))
@@ -41,7 +47,6 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/improved-canvas@1.8.0`
 * `DEPS`: update to `@camunda/task-testing@2.2.0`
 * `DEPS`: update to `diagram-js-direct-editing@3.3.0`
-* `DEPS`: update to `electron@40.6.1`
 
 ### BPMN
 
