@@ -101,6 +101,38 @@ describe('operate-url', function() {
     });
 
 
+    it('should handle invalid operateUrl (self-managed)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        operateUrl: 'not-a-url'
+      };
+
+      // when
+      const url = getOperateUrl(endpoint);
+
+      // then
+      expect(url).to.be.null;
+    });
+
+
+    it('should not get Camunda Operate URL from unsupported operateUrl protocol (self-managed)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        operateUrl: 'javascript:alert(1)'
+      };
+
+      // when
+      const url = getOperateUrl(endpoint);
+
+      // then
+      expect(url).to.be.null;
+    });
+
+
     it('should ignore explicit operateUrl for Camunda Cloud endpoint', function() {
 
       // given

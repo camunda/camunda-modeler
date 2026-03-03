@@ -329,7 +329,7 @@ function validator(constraints, propLabel) {
         ({ value: pattern, message } = pattern);
       }
 
-      if (!matchesPattern(value, pattern)) {
+      if (!isEmpty(value) && !matchesPattern(value, pattern)) {
         return message || `${propLabel || 'This field'} must match pattern ${pattern}`;
       }
     }

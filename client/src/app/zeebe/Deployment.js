@@ -255,7 +255,9 @@ export default class Deployment extends EventEmitter {
       return [];
     }
 
-    return connections.filter(connection => connection && !!connection.id);
+    return connections
+      .filter(connection => connection && !!connection.id)
+      .map(sanitizeEndpoint);
   }
 
   /**
@@ -319,5 +321,25 @@ export default class Deployment extends EventEmitter {
    */
   unregisterResourcesProvider(provider) {
     this._resourcesProviders = this._resourcesProviders.filter(p => p !== provider);
+  }
+}
+
+function sanitizeEndpoint(endpoint) {
+  if (endpoint.targetType !== TARGET_TYPES.SELF_HOSTED || !endpoint.operateUrl) {
+    return endpoint;
+  }
+
+  try {
+    const parsedOperateUrl = new URL(endpoint.operateUrl);
+
+    if (![ 'http:', 'https:' ].includes(parsedOperateUrl.protocol)) {
+      const { operateUrl, ...sanitizedEndpoint } = endpoint;
+      return sanitizedEndpoint;
+    }
+
+    return endpoint;
+  } catch {
+    const { operateUrl, ...sanitizedEndpoint } = endpoint;
+    return sanitizedEndpoint;
   }
 }
