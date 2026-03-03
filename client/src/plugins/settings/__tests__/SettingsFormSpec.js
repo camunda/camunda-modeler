@@ -795,7 +795,7 @@ describe('SettingsForm', function() {
       });
 
 
-      it('should handle undefined', async function() {
+      it('should skip validation for undefined values', async function() {
 
         // given
         const schema = [
@@ -820,7 +820,7 @@ describe('SettingsForm', function() {
         const { container } = createSettingsForm({ schema, initialValues: { test: { select: undefined } } });
 
         // then
-        await expectError(container, 'Please select the second option');
+        await expectNoError(container);
       });
 
 

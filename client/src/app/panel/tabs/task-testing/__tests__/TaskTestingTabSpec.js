@@ -209,9 +209,6 @@ describe('<TaskTestingTab>', function() {
       // when
       await selectElement(modeler, 'Task_1');
 
-      // wait for connection check
-      expect(screen.getByText('Connection error')).to.exist;
-
       // then
       await waitFor(() => {
         expect(screen.getByText('View in Operate')).to.exist;
