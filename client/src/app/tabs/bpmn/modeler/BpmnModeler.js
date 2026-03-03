@@ -12,6 +12,7 @@ import BpmnModeler from 'camunda-bpmn-js/lib/camunda-platform/Modeler';
 
 import addExporterModule from '@bpmn-io/add-exporter';
 
+import appendToExpandedSubprocessModule from './features/append-to-expanded-subprocess';
 import completeDirectEditingModule from './features/complete-direct-editing';
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from './features/hand-tool-on-space';
@@ -71,6 +72,7 @@ const defaultModules = BpmnModeler.prototype._modules;
 
 const extensionModules = [
   addExporterModule,
+  appendToExpandedSubprocessModule,
   completeDirectEditingModule,
   globalClipboardModule,
   handToolOnSpaceModule,
