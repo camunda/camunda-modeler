@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-import { getStartInstanceUrl } from '../zeebe-plugin/shared/util';
+import { getStartInstanceUrl } from '../../app/zeebe/util';
 
 import * as css from './ProcessApplicationsStartInstanceNotifications.less';
 
