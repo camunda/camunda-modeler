@@ -104,6 +104,64 @@ describe('<TaskTestingApi>', function() {
       // then
       expect(operateUrl).to.equal('https://operate.example.com');
     });
+
+
+    it('should return undefined for invalid Operate URL for SM', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'selfHosted',
+              operateUrl: 'not-a-url'
+            };
+          }
+        }),
+        null,
+        null,
+        {
+          path: 'path/to/file.bpmn'
+        },
+        null
+      );
+
+
+      // when
+      const operateUrl = await api.getOperateUrl();
+
+      // then
+      expect(operateUrl).to.be.undefined;
+    });
+
+
+    it('should return undefined for unsupported Operate URL protocol for SM', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'selfHosted',
+              operateUrl: 'javascript:alert(1)'
+            };
+          }
+        }),
+        null,
+        null,
+        {
+          path: 'path/to/file.bpmn'
+        },
+        null
+      );
+
+
+      // when
+      const operateUrl = await api.getOperateUrl();
+
+      // then
+      expect(operateUrl).to.be.undefined;
+    });
   });
 
 

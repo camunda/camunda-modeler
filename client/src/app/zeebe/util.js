@@ -31,7 +31,17 @@ export function getOperateUrl(endpoint) {
       return null;
     }
 
-    return new URL(endpoint.operateUrl);
+    try {
+      const operateUrl = new URL(endpoint.operateUrl);
+
+      if (![ 'http:', 'https:' ].includes(operateUrl.protocol)) {
+        return null;
+      }
+
+      return operateUrl;
+    } catch (error) {
+      return null;
+    }
   }
 
   if (targetType !== TARGET_TYPES.CAMUNDA_CLOUD) {

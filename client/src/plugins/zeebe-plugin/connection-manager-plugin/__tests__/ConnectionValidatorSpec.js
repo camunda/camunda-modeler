@@ -131,6 +131,42 @@ describe('ConnectionConfigValidator', function() {
         expect(errors).to.have.property('contactPoint');
       });
 
+
+      it('should allow empty optional operateUrl', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          operateUrl: ''
+        });
+
+        expect(errors).to.not.have.property('operateUrl');
+      });
+
+
+      it('should validate valid operateUrl', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          operateUrl: 'https://operate.example.com'
+        });
+
+        expect(errors).to.not.have.property('operateUrl');
+      });
+
+
+      it('should return error for invalid operateUrl protocol', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          operateUrl: 'javascript:alert(1)'
+        });
+
+        expect(errors).to.have.property('operateUrl');
+      });
+
     });
 
 

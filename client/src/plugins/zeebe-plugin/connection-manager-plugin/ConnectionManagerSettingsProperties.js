@@ -45,6 +45,7 @@ const VALIDATION_ERROR_MESSAGES = {
   CLIENT_SECRET_MUST_NOT_BE_EMPTY: 'Client secret must not be empty.',
   CLUSTER_URL_MUST_BE_VALID_CLOUD_URL: 'Must be a valid Camunda 8 SaaS URL.',
   CONTACT_POINT_MUST_BE_URL: 'Cluster URL must be a valid URL.',
+  OPERATE_URL_MUST_BE_URL: 'Operate URL must be a valid URL starting with "http://" or "https://".',
   CONTACT_POINT_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
   CLUSTER_URL_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
   CLUSTER_URL_MUST_START_WITH_PROTOCOL: 'Cluster URL must start with "http://", "grpc://", "https://", or "grpcs://".',
@@ -54,6 +55,7 @@ const VALIDATION_ERROR_MESSAGES = {
 
 const REGEXES = {
   URL: /^(http|grpc)s?:\/\//,
+  OPTIONAL_HTTP_URL: /^$|^https?:\/\/\S+$/,
   CAMUNDA_CLOUD_GRPC_URL: /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?$/,
   CAMUNDA_CLOUD_REST_URL: /^https:\/\/[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/[a-z\d-]+\/?$/
 };
@@ -126,7 +128,13 @@ export const properties = [
     type: 'text',
     label: LABELS.OPERATE_URL,
     hint: HINTS.OPERATE_URL,
-    condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED }
+    condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+    constraints: {
+      pattern: {
+        value: REGEXES.OPTIONAL_HTTP_URL,
+        message: VALIDATION_ERROR_MESSAGES.OPERATE_URL_MUST_BE_URL
+      }
+    }
   },
 
   { key: 'authType',
