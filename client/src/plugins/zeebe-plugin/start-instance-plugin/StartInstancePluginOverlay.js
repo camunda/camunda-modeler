@@ -28,10 +28,13 @@ import {
 import Loader from '../../../app/primitives/Loader';
 
 import {
-  getGRPCErrorCode,
+  getGRPCErrorCode
+} from '../shared/util';
+
+import {
   getProcessId,
   getResourceType
-} from '../shared/util';
+} from '../../../app/zeebe/util';
 
 import { ENGINES } from '../../../util/Engines';
 

@@ -19,7 +19,7 @@ import {
   getDeploymentUrls,
   getResourceType,
   RESOURCE_TYPES
-} from '../shared/util';
+} from '../../../app/zeebe/util';
 
 import * as css from './DeploymentNotifications.less';
 

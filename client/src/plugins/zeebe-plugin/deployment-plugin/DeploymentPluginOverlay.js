@@ -26,7 +26,9 @@ import {
 } from './DeploymentNotifications';
 
 
-import { getGRPCErrorCode, getResourceType } from '../shared/util';
+import { getGRPCErrorCode } from '../shared/util';
+
+import { getResourceType } from '../../../app/zeebe/util';
 
 import { ENGINES } from '../../../util/Engines';
 

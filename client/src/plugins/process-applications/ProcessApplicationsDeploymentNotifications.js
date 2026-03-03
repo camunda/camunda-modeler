@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-import { getDeploymentUrls } from '../zeebe-plugin/shared/util';
+import { getDeploymentUrls } from '../../app/zeebe/util';
 
 import * as css from './ProcessApplicationsDeploymentNotifications.less';
 
