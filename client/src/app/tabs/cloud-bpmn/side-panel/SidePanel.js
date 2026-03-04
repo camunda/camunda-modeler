@@ -37,7 +37,7 @@ export const MIN_WIDTH = 280;
 export const MAX_WIDTH = MIN_WIDTH * 3;
 
 export const DEFAULT_OPEN = true;
-export const DEFAULT_WIDTH = 280;
+export const DEFAULT_WIDTH = MIN_WIDTH;
 export const DEFAULT_TAB = SIDE_PANEL_TABS.PROPERTIES;
 
 export const DEFAULT_LAYOUT = {
