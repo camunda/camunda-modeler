@@ -249,7 +249,7 @@ class MenuBuilder {
 
   appendSaveAsFile() {
     this.menu.append(new MenuItem({
-      label: 'Save File As..',
+      label: 'Save File As...',
       accelerator: 'CommandOrControl+Shift+S',
       enabled: this.options.state.save,
       click: function() {
