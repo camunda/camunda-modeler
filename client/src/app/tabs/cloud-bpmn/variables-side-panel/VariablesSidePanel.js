@@ -10,7 +10,7 @@
 
 import React, { useCallback } from 'react';
 
-import { ValueVariable } from '@carbon/icons-react';
+import { ValueVariableAlt } from '@carbon/icons-react';
 
 import classNames from 'classnames';
 
@@ -81,7 +81,7 @@ export default function VariablesSidePanel(props) {
     >
       <div className="variables-side-panel__header">
         <div className="variables-side-panel__title">
-          <ValueVariable className="variables-side-panel__title-icon" />
+          <ValueVariableAlt className="variables-side-panel__title-icon" />
           <span>Variables</span>
         </div>
         <div className="variables-side-panel__actions">
