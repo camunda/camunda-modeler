@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { ValueVariable } from '@carbon/icons-react';
+import { ValueVariableAlt } from '@carbon/icons-react';
 
 import classNames from 'classnames';
 
@@ -45,7 +45,7 @@ export default function VariablesStatusBarItem(props) {
       onClick={ onClick }
       title="Variables"
     >
-      <ValueVariable />
+      <ValueVariableAlt />
     </button>
   </Fill>;
 }
