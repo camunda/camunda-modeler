@@ -16,7 +16,7 @@ import {
 export default function getBpmnWindowMenu(state) {
   return [
     ...getZoomEntries(state),
-    ...getPropertiesPanelEntries(state),
+    ...getSidePanelEntries(state),
     ...getGridEntries(state)
   ];
 }
@@ -46,10 +46,24 @@ function getZoomEntries({ zoom }) {
   } ] : [];
 }
 
-function getPropertiesPanelEntries({ propertiesPanel }) {
-  return propertiesPanel ? [ {
-    label: 'Toggle Properties Panel',
-    accelerator: 'CommandOrControl+P',
-    action: 'toggleProperties'
-  } ] : [];
+function getSidePanelEntries({ propertiesPanel, variablesPanel }) {
+  const entries = [];
+
+  if (propertiesPanel) {
+    entries.push({
+      label: 'Toggle Properties Panel',
+      accelerator: 'CommandOrControl+P',
+      action: 'toggleProperties'
+    });
+  }
+
+  if (variablesPanel) {
+    entries.push({
+      label: 'Toggle Variables Panel',
+      accelerator: 'CommandOrControl+Alt+P',
+      action: 'toggleVariables'
+    });
+  }
+
+  return entries;
 }
