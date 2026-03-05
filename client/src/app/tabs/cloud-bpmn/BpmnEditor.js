@@ -479,6 +479,7 @@ export class BpmnEditor extends CachedComponent {
       paste: true,
       platform: 'cloud',
       propertiesPanel: true,
+      variablesPanel: true,
       grid: this.gridBehavior.hasGrid(),
       redo: canvasFocused && commandStack.canRedo(),
       removeSelected: canvasFocused && !!selectionLength,
