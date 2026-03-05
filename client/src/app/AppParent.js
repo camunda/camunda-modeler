@@ -28,8 +28,6 @@ import App from './App';
 
 import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../util/Flags';
 
-import { SIDE_PANEL_TABS } from './tabs/cloud-bpmn/side-panel/SidePanel';
-
 const log = debug('AppParent');
 
 const DEFAULT_CONFIG = {
@@ -539,7 +537,7 @@ function migratePropertiesPanelToSidePanel(layout) {
 
   const sidePanel = {
     open: propertiesPanel.open !== false,
-    tab: SIDE_PANEL_TABS.PROPERTIES
+    tab: 'properties'
   };
 
   if (isNumber(propertiesPanel.width)) {
