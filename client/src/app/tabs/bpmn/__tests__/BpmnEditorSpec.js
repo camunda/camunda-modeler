@@ -1056,6 +1056,7 @@ describe('<BpmnEditor>', function() {
         expect(callArg).to.deep.include({
           sidePanel: {
             open: false,
+            tab: 'properties',
             width: 280
           }
         });
@@ -1091,6 +1092,7 @@ describe('<BpmnEditor>', function() {
         expect(callArg).to.deep.include({
           sidePanel: {
             open: true,
+            tab: 'properties',
             width: 280
           }
         });
@@ -1130,6 +1132,7 @@ describe('<BpmnEditor>', function() {
         expect(callArg).to.deep.include({
           sidePanel: {
             open: false,
+            tab: 'properties',
             width: 280
           }
         });
@@ -1895,6 +1898,7 @@ describe('<BpmnEditor>', function() {
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
         sidePanel: {
           open: true,
+          tab: 'properties',
           width: 280
         }
       });
