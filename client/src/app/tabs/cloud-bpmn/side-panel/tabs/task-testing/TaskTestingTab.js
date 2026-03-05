@@ -28,6 +28,8 @@ import { EventsContext } from '../../../../../EventsContext';
 
 export const TAB_ID = 'task-testing';
 
+export const TEST_TAB_ID = 'test';
+
 export const DEFAULT_CONFIG = {
   input: {},
   output: {}

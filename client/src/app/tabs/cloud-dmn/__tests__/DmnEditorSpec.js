@@ -1423,6 +1423,7 @@ describe('<DmnEditor>', function() {
           expect(onLayoutChanged).to.have.been.calledWithExactly({
             sidePanel: {
               open: false,
+              tab: 'properties',
               width: 280
             }
           });
@@ -1458,6 +1459,7 @@ describe('<DmnEditor>', function() {
           expect(onLayoutChanged).to.have.been.calledWithExactly({
             sidePanel: {
               open: true,
+              tab: 'properties',
               width: 280
             }
           });
@@ -1494,6 +1496,7 @@ describe('<DmnEditor>', function() {
           expect(onLayoutChanged).to.have.been.calledWithExactly({
             sidePanel: {
               open: false,
+              tab: 'properties',
               width: 280
             }
           });
@@ -1960,6 +1963,7 @@ describe('<DmnEditor>', function() {
       expect(onLayoutChangedSpy).to.be.calledOnceWith({
         sidePanel: {
           open: true,
+          tab: 'properties',
           width: 280
         }
       });

@@ -16,7 +16,7 @@ import { Fill } from '../../../../../slot-fill';
 
 import TaskTestingIcon from '../../../../../../../resources/icons/TaskTesting.svg';
 
-import { DEFAULT_LAYOUT, SIDE_PANEL_TABS } from '../../SidePanel';
+import { DEFAULT_LAYOUT } from '../../../../../side-panel/SidePanel';
 
 import * as css from './TaskTestingStatusBarItem.less';
 
@@ -34,8 +34,8 @@ export default function TestStatusBarItem(props) {
     onLayoutChanged({
       sidePanel: {
         ...sidePanelLayout,
-        open: !sidePanelLayout.open || sidePanelLayout.tab !== SIDE_PANEL_TABS.TEST,
-        tab: SIDE_PANEL_TABS.TEST
+        open: !sidePanelLayout.open || sidePanelLayout.tab !== 'test',
+        tab: 'test'
       }
     });
   };
@@ -46,7 +46,7 @@ export default function TestStatusBarItem(props) {
         css.TestStatusBarItem,
         'btn',
         {
-          'btn--active': sidePanelLayout.open && sidePanelLayout.tab === SIDE_PANEL_TABS.TEST
+          'btn--active': sidePanelLayout.open && sidePanelLayout.tab === 'test'
         }
       ) }
       onClick={ onClick }

@@ -26,7 +26,10 @@ import {
   CachedComponent
 } from '../../cached';
 
-import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
+import { Settings } from '@carbon/icons-react';
+
+import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
+import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
 import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
 
 import BpmnModeler from './modeler';
@@ -705,9 +708,10 @@ export class BpmnEditor extends CachedComponent {
     if (action === 'toggleProperties') {
       const newLayout = {
         sidePanel: {
-          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
+          ...SIDE_PANEL_DEFAULT_LAYOUT,
           ...sidePanelLayout,
-          open: !sidePanelLayout.open
+          open: !sidePanelLayout.open,
+          tab: 'properties'
         }
       };
 
@@ -828,10 +832,14 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
-          <PropertiesPanelContainer
-            ref={ this.propertiesPanelRef }
+          <SidePanel
             layout={ layout }
-            onLayoutChanged={ this.handleLayoutChange } />
+            onLayoutChanged={ this.handleLayoutChange }
+          >
+            <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
+              <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
+            </SidePanel.Tab>
+          </SidePanel>
         </div>
 
         <PropertiesPanelStatusBarItem
