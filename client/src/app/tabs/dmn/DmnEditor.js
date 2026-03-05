@@ -35,7 +35,10 @@ import {
 
 import OverviewContainer from './OverviewContainer';
 
-import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
+import { Settings } from '@carbon/icons-react';
+
+import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
+import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
 import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
 
 import CamundaDmnModeler from './modeler';
@@ -737,9 +740,10 @@ export class DmnEditor extends CachedComponent {
     if (action === 'toggleProperties') {
       const newLayout = {
         sidePanel: {
-          ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
+          ...SIDE_PANEL_DEFAULT_LAYOUT,
           ...sidePanelLayout,
-          open: !sidePanelLayout.open
+          open: !sidePanelLayout.open,
+          tab: 'properties'
         }
       };
 
@@ -988,10 +992,14 @@ export class DmnEditor extends CachedComponent {
           {
             hasPropertiesPanel && (
               <>
-                <PropertiesPanelContainer
-                  ref={ this.propertiesPanelRef }
+                <SidePanel
                   layout={ layout }
-                  onLayoutChanged={ onLayoutChanged } />
+                  onLayoutChanged={ onLayoutChanged }
+                >
+                  <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
+                    <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
+                  </SidePanel.Tab>
+                </SidePanel>
                 <PropertiesPanelStatusBarItem
                   layout={ layout }
                   onLayoutChanged={ onLayoutChanged } />

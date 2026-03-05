@@ -16,7 +16,7 @@ import { Fill } from '../slot-fill';
 
 import { Settings } from '@carbon/icons-react';
 
-import { DEFAULT_LAYOUT, SIDE_PANEL_TABS } from '../tabs/cloud-bpmn/side-panel/SidePanel';
+import { DEFAULT_LAYOUT } from '../side-panel/SidePanel';
 
 export default function PropertiesPanelStatusBarItem(props) {
   const {
@@ -32,8 +32,8 @@ export default function PropertiesPanelStatusBarItem(props) {
     onLayoutChanged({
       sidePanel: {
         ...sidePanelLayout,
-        open: !sidePanelLayout.open || sidePanelLayout.tab !== SIDE_PANEL_TABS.PROPERTIES,
-        tab: SIDE_PANEL_TABS.PROPERTIES
+        open: !sidePanelLayout.open || sidePanelLayout.tab !== 'properties',
+        tab: 'properties'
       }
     });
   };
@@ -42,7 +42,7 @@ export default function PropertiesPanelStatusBarItem(props) {
     <button
       className={ classnames(
         'btn',
-        { 'btn--active': sidePanelLayout.open && sidePanelLayout.tab === SIDE_PANEL_TABS.PROPERTIES }
+        { 'btn--active': sidePanelLayout.open && sidePanelLayout.tab === 'properties' }
       ) }
       onClick={ onClick }
       title="Properties"

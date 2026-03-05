@@ -25,7 +25,11 @@ import {
 } from 'min-dash';
 
 import { RPAEditor as RPACodeEditor, DebugInfo } from '@camunda/rpa-integration';
-import PropertiesPanelContainer from '../../resizable-container/PropertiesPanelContainer';
+import { Settings } from '@carbon/icons-react';
+
+import SidePanel from '../../side-panel/SidePanel';
+import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
+import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
 import { getRPAEditMenu } from './getRobotEditMenu';
 import { Fill } from '../../slot-fill';
 import RunButton from './RunButton';
@@ -429,10 +433,18 @@ export class RPAEditor extends CachedComponent {
               className="content">
             </div>
 
-            <PropertiesPanelContainer
-              ref={ this.propertiesPanelRef }
+            <SidePanel
               layout={ this.props.layout }
-              onLayoutChanged={ this.handleLayoutChange } />
+              onLayoutChanged={ this.handleLayoutChange }>
+              <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
+                <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
+              </SidePanel.Tab>
+            </SidePanel>
+
+            <PropertiesPanelStatusBarItem
+              layout={ this.props.layout }
+              onLayoutChanged={ this.handleLayoutChange }
+            />
           </div>
         </div>
 

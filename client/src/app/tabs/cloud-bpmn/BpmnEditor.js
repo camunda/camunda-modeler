@@ -26,9 +26,16 @@ import {
   CachedComponent
 } from '../../cached';
 
-import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT, SIDE_PANEL_TABS } from './side-panel/SidePanel';
+import { Settings } from '@carbon/icons-react';
+
+import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
+import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
 import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
 import TaskTestingStatusBarItem from './side-panel/tabs/task-testing/TaskTestingStatusBarItem';
+
+import TaskTestingTab from './side-panel/tabs/task-testing/TaskTestingTab';
+import TaskTestingIcon from '../../../../resources/icons/TaskTesting.svg';
+import SidePanelHeader from './side-panel/SidePanelHeader';
 
 import VariablesSidePanel, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT } from './variables-side-panel/VariablesSidePanel';
 import VariablesStatusBarItem from './variables-side-panel/VariablesStatusBarItem';
@@ -709,8 +716,8 @@ export class BpmnEditor extends CachedComponent {
       const newLayout = {
         sidePanel: {
           ...sidePanelLayout,
-          open: sidePanelLayout.tab === SIDE_PANEL_TABS.PROPERTIES ? !sidePanelLayout.open : true,
-          tab: SIDE_PANEL_TABS.PROPERTIES
+          open: sidePanelLayout.tab === 'properties' ? !sidePanelLayout.open : true,
+          tab: 'properties'
         }
       };
 
@@ -875,18 +882,29 @@ export class BpmnEditor extends CachedComponent {
           />
 
           <SidePanel
-            injector={ injector }
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange }
-            propertiesPanelRef={ this.propertiesPanelRef }
-            config={ config }
-            deployment={ deployment }
-            file={ file }
-            id={ id }
-            onAction={ onAction }
-            startInstance={ startInstance }
-            zeebeApi={ zeebeApi }
-          />
+          >
+            <SidePanel.Header>
+              <SidePanelHeader injector={ injector } />
+            </SidePanel.Header>
+            <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
+              <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
+            </SidePanel.Tab>
+            <SidePanel.Tab id="test" label="Test" icon={ TaskTestingIcon }>
+              <TaskTestingTab
+                config={ config }
+                deployment={ deployment }
+                file={ file }
+                id={ id }
+                injector={ injector }
+                layout={ layout }
+                onAction={ onAction }
+                startInstance={ startInstance }
+                zeebeApi={ zeebeApi }
+              />
+            </SidePanel.Tab>
+          </SidePanel>
 
           <PropertiesPanelStatusBarItem
             layout={ layout }
