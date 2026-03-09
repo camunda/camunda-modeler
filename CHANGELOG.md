@@ -12,7 +12,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/properties-panel@3.40.1`
 * `DEPS`: update to `@bpmn-io/variable-resolver@2.0.0`
 * `DEPS`: update to `electron@40.6.1`
-* `DEPS`: update to `@bpmn-io/variable-outline@3.0.0-rc.0`
+* `DEPS`: update to `@bpmn-io/variable-outline@3.0.0-rc.1`
 
 ## 5.45.0
 
