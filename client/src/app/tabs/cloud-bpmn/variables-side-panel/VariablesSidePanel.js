@@ -15,7 +15,7 @@ import { ValueVariableAlt } from '@carbon/icons-react';
 import classNames from 'classnames';
 
 import VariableOutline from '@bpmn-io/variable-outline';
-import '@bpmn-io/variable-outline/dist/style.css';
+import '@bpmn-io/variable-outline/dist/variable-outline.css';
 
 import ResizableContainer from '../../../resizable-container/ResizableContainer';
 
