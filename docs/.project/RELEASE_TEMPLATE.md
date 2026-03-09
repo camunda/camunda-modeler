@@ -61,7 +61,7 @@ _To be done to build the release after release testing completed._
 
 * [ ] create release (`npm run release`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/main/releases/RELEASE_SCHEMA.md)
   * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
-  * [ ] smoke test the Windows, macOS, and Linux artifacts
+  * [ ] smoke test the Windows, Mac, and Linux artifacts
 
 _To be done once the release is built._
 
