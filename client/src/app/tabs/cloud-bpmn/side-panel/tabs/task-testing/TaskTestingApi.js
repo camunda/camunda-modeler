@@ -30,7 +30,10 @@ export default class TaskTestingApi {
       getProcessInstance: this.getProcessInstance.bind(this),
       getProcessInstanceVariables: this.getProcessInstanceVariables.bind(this),
       getProcessInstanceElementInstances: this.getProcessInstanceElementInstances.bind(this),
-      getProcessInstanceIncident: this.getProcessInstanceIncident.bind(this)
+      getProcessInstanceIncident: this.getProcessInstanceIncident.bind(this),
+      getProcessInstanceJobs: this.getProcessInstanceJobs.bind(this),
+      getProcessInstanceMessageSubscriptions: this.getProcessInstanceMessageSubscriptions.bind(this),
+      getProcessInstanceUserTasks: this.getProcessInstanceUserTasks.bind(this),
     };
   }
 
@@ -138,6 +141,24 @@ export default class TaskTestingApi {
     const config = await this.getDeploymentConfig();
 
     return this._zeebeApi.searchIncidents(config, processInstanceKey);
+  }
+
+  async getProcessInstanceJobs(processInstanceKey, elementId) {
+    const config = await this.getDeploymentConfig();
+
+    return this._zeebeApi.searchJobs(config, processInstanceKey, elementId);
+  }
+
+  async getProcessInstanceMessageSubscriptions(processInstanceKey, elementId) {
+    const config = await this.getDeploymentConfig();
+
+    return this._zeebeApi.searchMessageSubscriptions(config, processInstanceKey, elementId);
+  }
+
+  async getProcessInstanceUserTasks(processInstanceKey, elementId) {
+    const config = await this.getDeploymentConfig();
+
+    return this._zeebeApi.searchUserTasks(config, processInstanceKey, elementId);
   }
 
   _handleDeployment({ context, deploymentResult, endpoint }) {

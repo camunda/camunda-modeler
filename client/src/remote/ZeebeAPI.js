@@ -126,6 +126,42 @@ export default class ZeebeAPI {
       processInstanceKey
     });
   }
+
+  searchJobs(options, processInstanceKey, elementId) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchJobs', {
+      endpoint,
+      processInstanceKey,
+      elementId
+    });
+  }
+
+  searchMessageSubscriptions(options, processInstanceKey, elementId) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchMessageSubscriptions', {
+      endpoint,
+      processInstanceKey,
+      elementId
+    });
+  }
+
+  searchUserTasks(options, processInstanceKey, elementId) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchUserTasks', {
+      endpoint,
+      processInstanceKey,
+      elementId
+    });
+  }
 }
 
 /**

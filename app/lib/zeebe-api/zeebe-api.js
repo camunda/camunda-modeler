@@ -534,6 +534,150 @@ class ZeebeAPI {
   }
 
   /**
+   * Search jobs. Requires Camunda REST client.
+   */
+  async searchJobs(config) {
+    const {
+      endpoint,
+      processInstanceKey,
+      elementId
+    } = config;
+
+    this._log.debug('search jobs', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.callApiEndpoint({
+        urlPath: 'jobs/search',
+        method: 'POST',
+        body: {
+          filter: {
+            processInstanceKey,
+            elementId
+          }
+        }
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search jobs failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
+  /**
+   * Search message subscriptions. Requires Camunda REST client.
+   */
+  async searchMessageSubscriptions(config) {
+    const {
+      endpoint,
+      processInstanceKey,
+      elementId
+    } = config;
+
+    this._log.debug('search message subscriptions', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.callApiEndpoint({
+        urlPath: 'message-subscriptions/search',
+        method: 'POST',
+        body: {
+          filter: {
+            processInstanceKey,
+            elementId
+          }
+        }
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search message subscriptions failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
+  /**
+   * Search user tasks. Requires Camunda REST client.
+   */
+  async searchUserTasks(config) {
+    const {
+      endpoint,
+      processInstanceKey,
+      elementId
+    } = config;
+
+    this._log.debug('search user tasks', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.callApiEndpoint({
+        urlPath: 'user-tasks/search',
+        method: 'POST',
+        body: {
+          filter: {
+            processInstanceKey,
+            elementId
+          }
+        }
+      });
+
+      return {
+        success: true,
+        response: response
+      };
+    } catch (err) {
+      this._log.error('search user tasks failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
+  /**
    * Get resources based on the provided configs
    *
    * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }>} resourceConfigs
