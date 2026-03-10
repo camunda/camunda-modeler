@@ -176,7 +176,7 @@ export const PanelHeaderProvider = (injector) => {
       if (templateIcon) {
         const TemplateIcon = () => (
           <img
-            class="bio-properties-panel-header-template-icon"
+            className="bio-properties-panel-header-template-icon"
             width="32"
             height="32"
             src={ templateIcon }
