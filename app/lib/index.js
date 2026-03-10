@@ -382,6 +382,36 @@ renderer.on('zeebe:searchElementInstances', async function(options, done) {
   }
 });
 
+renderer.on('zeebe:searchJobs', async function(options, done) {
+  try {
+    const searchJobsResponse = await zeebeAPI.searchJobs(options);
+
+    done(null, searchJobsResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:searchMessageSubscriptions', async function(options, done) {
+  try {
+    const searchMessageSubscriptionsResponse = await zeebeAPI.searchMessageSubscriptions(options);
+
+    done(null, searchMessageSubscriptionsResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:searchUserTasks', async function(options, done) {
+  try {
+    const searchUserTasksResponse = await zeebeAPI.searchUserTasks(options);
+
+    done(null, searchUserTasksResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
 // config //////////
 
 renderer.on('config:get', function(key, ...args) {

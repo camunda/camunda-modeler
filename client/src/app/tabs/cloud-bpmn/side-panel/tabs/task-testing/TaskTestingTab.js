@@ -120,12 +120,27 @@ export default function TaskTestingTab(props) {
     });
   }, [ onAction ]);
 
-  const handleTaskExecutionFinished = useCallback((element, output) => {
+  const handleTaskExecutionFinished = useCallback((element, result) => {
+
+    const {
+      success,
+      reason,
+      lastPolledResult,
+      incident
+    } = result;
+
+    if (!success && reason === 'user.selectionChanged') {
+      handleTaskExecutionInterrupted();
+      return;
+    }
+
     onAction('emit-event', {
       type: 'taskTesting.finished',
       payload: {
-        element,
-        output
+        element: element,
+        success,
+        incident,
+        output: lastPolledResult
       }
     });
   }, [ onAction ]);
@@ -164,7 +179,6 @@ export default function TaskTestingTab(props) {
       operateBaseUrl={ operateUrl }
       onTaskExecutionStarted={ handleTaskExecutionStarted }
       onTaskExecutionFinished={ handleTaskExecutionFinished }
-      onTaskExecutionInterrupted={ handleTaskExecutionInterrupted }
       onTestTask={ handleTestTask }
       configureConnectionBannerTitle={ configureConnectionBannerTitle }
       configureConnectionBannerDescription={ configureConnectionBannerDescription }
