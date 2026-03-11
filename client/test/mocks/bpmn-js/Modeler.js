@@ -137,6 +137,13 @@ export default class Modeler {
       clipboard: {
         isEmpty() {}
       },
+      elementRegistry: {
+        get() {},
+        getAll() { return []; },
+        filter() { return []; },
+        find() {},
+        forEach() {}
+      },
       commandStack: new CommandStack(),
       elementTemplatesLoader: {
         setTemplates() {}

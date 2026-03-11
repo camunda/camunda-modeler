@@ -16,10 +16,6 @@ import Modeler from 'bpmn-js-headless/lib/Modeler';
 
 import { render, waitFor, screen } from '@testing-library/react';
 
-import { SlotFillRoot } from '../../../../../../slot-fill';
-
-import Panel from '../../../../../../panel/Panel';
-
 import TaskTestingTab, {
   CANNOT_CONNECT_TITLE,
   UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE,
@@ -37,7 +33,7 @@ describe('<TaskTestingTab>', function() {
 
   let modeler;
 
-  beforeEach(async function() {
+  this.beforeAll(async function() {
     modeler = new Modeler({
       additionalModules: [
         ZeebeVariableResolverModule
@@ -47,7 +43,17 @@ describe('<TaskTestingTab>', function() {
     await modeler.importXML(diagramXML);
   });
 
-  it('should not show error', async function() {
+  it('should render empty', async function() {
+
+    // given
+    renderTab(modeler);
+
+    // then
+    expect(screen.getByText('Select a task or subprocess to start testing.')).to.exist;
+  });
+
+
+  it('should be ready when task selected', async function() {
 
     // given
     renderTab(modeler);
@@ -55,13 +61,8 @@ describe('<TaskTestingTab>', function() {
     // when
     await selectElement(modeler, 'Task_1');
 
-    // wait for connection check
-    expect(screen.getByText('Connection error')).to.exist;
-
     // then
-    await waitFor(() => {
-      expect(screen.queryByText('Ready')).to.exist;
-    });
+    expect(screen.getByRole('button', { name: 'Run test' })).to.exist;
   });
 
 
@@ -71,17 +72,6 @@ describe('<TaskTestingTab>', function() {
 
       // given
       renderTab(modeler, {
-        zeebeApi: new ZeebeAPI({
-          checkConnection: async () => {
-            return {
-              success: true,
-              response: {
-                protocol: 'rest',
-                gatewayVersion: '8.7.0'
-              }
-            };
-          }
-        }),
         connectionCheckResult: {
           success: true,
           response: {
@@ -94,15 +84,8 @@ describe('<TaskTestingTab>', function() {
       // when
       await selectElement(modeler, 'Task_1');
 
-      // wait for connection check
-      expect(screen.getByText('Connection error')).to.exist;
-
       // then
-      await waitFor(() => {
-        expect(screen.getByText(UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE, {
-          ignore: '.cds--tooltip-content'
-        })).to.exist;
-      });
+      expect(screen.getByText(UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE)).to.exist;
     });
 
 
@@ -110,17 +93,6 @@ describe('<TaskTestingTab>', function() {
 
       // given
       renderTab(modeler, {
-        zeebeApi: new ZeebeAPI({
-          checkConnection: async () => {
-            return {
-              success: true,
-              response: {
-                protocol: 'grpc',
-                gatewayVersion: '8.8.0'
-              }
-            };
-          }
-        }),
         connectionCheckResult: {
           success: true,
           response: {
@@ -133,15 +105,8 @@ describe('<TaskTestingTab>', function() {
       // when
       await selectElement(modeler, 'Task_1');
 
-      // wait for connection check
-      expect(screen.getByText('Connection error')).to.exist;
-
       // then
-      await waitFor(() => {
-        expect(screen.getByText(UNSUPPORTED_PROTOCOL_TITLE, {
-          ignore: '.cds--tooltip-content'
-        })).to.exist;
-      });
+      expect(screen.getByText(UNSUPPORTED_PROTOCOL_TITLE)).to.exist;
     });
 
 
@@ -149,14 +114,6 @@ describe('<TaskTestingTab>', function() {
 
       // given
       renderTab(modeler, {
-        zeebeApi: new ZeebeAPI({
-          checkConnection: async () => {
-            return {
-              success: false,
-              reason: 'Foo'
-            };
-          }
-        }),
         connectionCheckResult: {
           success: false,
           reason: 'Foo'
@@ -166,15 +123,8 @@ describe('<TaskTestingTab>', function() {
       // when
       await selectElement(modeler, 'Task_1');
 
-      // wait for connection check
-      expect(screen.getByText('Connection error')).to.exist;
-
       // then
-      await waitFor(() => {
-        expect(screen.getByText(CANNOT_CONNECT_TITLE, {
-          ignore: '.cds--tooltip-content'
-        })).to.exist;
-      });
+      expect(screen.getByText(CANNOT_CONNECT_TITLE)).to.exist;
     });
 
   });
@@ -208,10 +158,11 @@ describe('<TaskTestingTab>', function() {
 
       // when
       await selectElement(modeler, 'Task_1');
+      screen.getByRole('tab', { name: 'Result' }).click();
 
       // then
       await waitFor(() => {
-        expect(screen.getByText('View in Operate')).to.exist;
+        expect(screen.getByText('Open in Operate')).to.exist;
       });
     });
 
@@ -220,14 +171,6 @@ describe('<TaskTestingTab>', function() {
 
       // given
       renderTab(modeler, {
-        zeebeApi: new ZeebeAPI({
-          checkConnection: async () => {
-            return {
-              success: false,
-              reason: 'Foo'
-            };
-          }
-        }),
         config: new Config({
           getForFile: async (file, key) => {
             if (key === 'taskTesting') {
@@ -254,14 +197,10 @@ describe('<TaskTestingTab>', function() {
 
       // when
       await selectElement(modeler, 'Task_1');
-
-      // wait for connection check
-      expect(screen.getByText('Connection error')).to.exist;
+      screen.getByRole('tab', { name: 'Result' }).click();
 
       // then
-      await waitFor(() => {
-        expect(screen.queryByText('View in Operate')).to.not.exist;
-      });
+      expect(screen.queryByText('Open in Operate')).to.not.exist;
     });
   });
 
@@ -269,13 +208,6 @@ describe('<TaskTestingTab>', function() {
 
 
 // helpers //////////
-
-const defaultLayout = {
-  panel: {
-    open: true,
-    tab: 'task-testing'
-  }
-};
 
 const mockConnectionCheckResult = {
   success: true,
@@ -285,48 +217,43 @@ const mockConnectionCheckResult = {
   }
 };
 
-const mockProps = {
-  zeebeApi: new ZeebeAPI({
-    checkConnection: () => {
-      return mockConnectionCheckResult;
-    }
-  }),
-  config: new Config({
-    getForFile: (file, key) => {
-      if (key === 'taskTesting') {
-        return {
-          input: {},
-          output: {}
-        };
-      }
-    }
-  }),
-  deployment: new Deployment({
-    getConnectionForTab: () => {
-      return {
-        targetType: 'camundaCloud',
-        camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-      };
-    }
-  }),
-  startInstance: new StartInstance(),
-  connectionCheckResult: mockConnectionCheckResult,
-  file: {
-    path: 'foo.bpmn'
-  },
-  layout: defaultLayout,
-  onAction: () => { },
-};
-
 function renderTab(modeler, options = {}) {
 
-  const props = {
-    ...mockProps,
-    ...options,
-    injector: modeler.get('injector')
-  };
+  const connectionCheckResult = options.connectionCheckResult || mockConnectionCheckResult;
 
-  const { connectionCheckResult } = props;
+  const props = {
+    injector: modeler.get('injector'),
+    zeebeApi: new ZeebeAPI({
+      checkConnection: () => {
+        return connectionCheckResult;
+      }
+    }),
+    config: new Config({
+      getForFile: (file, key) => {
+        if (key === 'taskTesting') {
+          return {
+            input: {},
+            output: {}
+          };
+        }
+      }
+    }),
+    deployment: new Deployment({
+      getConnectionForTab: () => {
+        return {
+          targetType: 'camundaCloud',
+          camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+        };
+      }
+    }),
+    startInstance: new StartInstance(),
+    connectionCheckResult,
+    file: {
+      path: 'foo.bpmn'
+    },
+    onAction: () => { },
+    ...options,
+  };
 
   const mockSubscribe = (event, listener) => {
     if (event === 'connectionManager.connectionStatusChanged' && connectionCheckResult) {
@@ -343,20 +270,15 @@ function renderTab(modeler, options = {}) {
 
   render(
     <EventsContext.Provider value={ eventsContext }>
-      <SlotFillRoot>
-        <Panel
-          layout={ props.layout }>
-          <TaskTestingTab
-            deployment={ props.deployment }
-            startInstance={ props.startInstance }
-            zeebeApi={ props.zeebeApi }
-            layout={ props.layout }
-            injector={ props.injector }
-            file={ props.file }
-            config={ props.config }
-            onAction={ props.onAction } />
-        </Panel>
-      </SlotFillRoot>
+      <TaskTestingTab
+        deployment={ props.deployment }
+        startInstance={ props.startInstance }
+        zeebeApi={ props.zeebeApi }
+        layout={ props.layout }
+        injector={ props.injector }
+        file={ props.file }
+        config={ props.config }
+        onAction={ props.onAction } />
     </EventsContext.Provider>
   );
 }

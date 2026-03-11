@@ -85,11 +85,9 @@ describe('<TaskTestingEventHandler>', function() {
             modelerTemplate: 'someTemplate'
           }
         },
-        output: {
-          success: false,
-          incident: {
-            errorType: 'INCIDENT_TYPE'
-          }
+        success: false,
+        incident: {
+          errorType: 'INCIDENT_TYPE'
         }
       };
 
