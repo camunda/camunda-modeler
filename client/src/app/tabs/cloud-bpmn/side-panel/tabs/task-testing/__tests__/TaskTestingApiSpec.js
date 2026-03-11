@@ -212,4 +212,38 @@ describe('<TaskTestingApi>', function() {
     });
   });
 
+
+  describe('#getProcessInstanceVariables', function() {
+
+    it('should call searchVariables with truncateValues=false', async function() {
+
+      // given
+      const searchVariablesSpy = sinon.spy();
+
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+            };
+          }
+        }),
+        null,
+        { searchVariables: searchVariablesSpy },
+        {
+          path: 'path/to/file.bpmn'
+        },
+        null
+      );
+
+      // when
+      await api.getProcessInstanceVariables('test-process-instance-key');
+
+      // then
+      expect(searchVariablesSpy).to.have.been.calledOnce;
+      expect(searchVariablesSpy.args[0][2]).to.equal(false);
+    });
+  });
+
 });

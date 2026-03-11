@@ -105,14 +105,15 @@ export default class ZeebeAPI {
     });
   }
 
-  searchVariables(options, processInstanceKey) {
+  searchVariables(options, processInstanceKey, truncateValues = true) {
     let { endpoint } = options;
 
     endpoint = getEndpointForTargetType(endpoint);
 
     return this._backend.send('zeebe:searchVariables', {
       endpoint,
-      processInstanceKey
+      processInstanceKey,
+      truncateValues
     });
   }
 

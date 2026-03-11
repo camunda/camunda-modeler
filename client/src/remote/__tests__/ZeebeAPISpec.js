@@ -1081,7 +1081,43 @@ describe('<ZeebeAPI>', function() {
           url: endpoint.contactPoint,
           tenantId: undefined
         },
-        processInstanceKey
+        processInstanceKey,
+        truncateValues: true
+      });
+
+    });
+
+
+    it('should forward truncateValues=false to backend', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const processInstanceKey = '123';
+
+      // when
+      zeebeAPI.searchVariables({ endpoint }, processInstanceKey, false);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchVariables', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        processInstanceKey,
+        truncateValues: false
       });
 
     });

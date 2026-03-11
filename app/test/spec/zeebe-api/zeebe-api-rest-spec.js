@@ -1513,7 +1513,7 @@ describe('ZeebeAPI (REST)', function() {
       // given
       const zeebeAPI = createZeebeAPI({
         CamundaRestClient: {
-          searchVariables: () => ({ items: [] })
+          callApiEndpoint: () => ({ items: [] })
         }
       });
 
@@ -1539,7 +1539,7 @@ describe('ZeebeAPI (REST)', function() {
       // given
       const zeebeAPI = createZeebeAPI({
         CamundaRestClient: {
-          searchVariables: () => { throw new Error('TEST ERROR.'); }
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
         }
       });
 
@@ -1557,6 +1557,69 @@ describe('ZeebeAPI (REST)', function() {
       // then
       expect(result.success).to.be.false;
       expect(result.reason).to.exist;
+    });
+
+
+    it('should pass truncateValues=true by default', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      await zeebeAPI.searchVariables(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        queryParams: {
+          truncateValues: true
+        }
+      });
+    });
+
+
+    it('should pass truncateValues=false when specified', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123',
+        truncateValues: false
+      };
+
+      // when
+      await zeebeAPI.searchVariables(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        queryParams: {
+          truncateValues: false
+        }
+      });
     });
 
   });

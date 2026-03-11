@@ -417,14 +417,15 @@ class ZeebeAPI {
   /**
    * Search variables. Requires Camunda REST client.
    *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, truncateValues: boolean }} config
    *
    * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchVariables(config) {
     const {
       endpoint,
-      processInstanceKey
+      processInstanceKey,
+      truncateValues = true
     } = config;
 
     this._log.debug('search variables', {
@@ -438,9 +439,16 @@ class ZeebeAPI {
         throw new Error('Camunda REST client is not available');
       }
 
-      const response = await camundaRestClient.searchVariables({
-        filter: {
-          processInstanceKey
+      const response = await camundaRestClient.callApiEndpoint({
+        method: 'POST',
+        urlPath: 'variables/search',
+        body: {
+          filter: {
+            processInstanceKey
+          },
+        },
+        queryParams: {
+          truncateValues
         }
       });
 
