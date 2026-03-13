@@ -202,7 +202,7 @@ jobs:
         )
         echo "LINK=https://github.com/camunda/camunda-modeler/issues?q=is%3Aissue+label%3Achannel%3Asupport+milestone%3A$MILESTONE" >> $GITHUB_OUTPUT
     - name: Post to a Slack channel
-      uses: slackapi/slack-github-action@v2
+      uses: slackapi/slack-github-action@v3
       with:
         method: chat.postMessage
         token: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
