@@ -33,7 +33,7 @@ describe('<TaskTestingTab>', function() {
 
   let modeler;
 
-  this.beforeAll(async function() {
+  beforeEach(async function() {
     modeler = new Modeler({
       additionalModules: [
         ZeebeVariableResolverModule
