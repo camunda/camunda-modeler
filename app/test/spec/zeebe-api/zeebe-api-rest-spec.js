@@ -1450,6 +1450,404 @@ describe('ZeebeAPI (REST)', function() {
   });
 
 
+  describe('#searchProcessInstances', function() {
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          searchProcessInstances: () => ({ items: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      const result = await zeebeAPI.searchProcessInstances(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          searchProcessInstances: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      const result = await zeebeAPI.searchProcessInstances(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+  });
+
+
+  describe('#searchVariables', function() {
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          searchVariables: () => ({ items: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      const result = await zeebeAPI.searchVariables(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          searchVariables: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      const result = await zeebeAPI.searchVariables(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+  });
+
+
+  describe('#searchElementInstances', function() {
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          searchElementInstances: () => ({ items: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      const result = await zeebeAPI.searchElementInstances(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          searchElementInstances: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      const result = await zeebeAPI.searchElementInstances(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+  });
+
+
+  describe('#searchIncidents', function() {
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          searchIncidents: () => ({ items: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      const result = await zeebeAPI.searchIncidents(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          searchIncidents: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      const result = await zeebeAPI.searchIncidents(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+  });
+
+
+  describe('#searchJobs', function() {
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({ items: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123',
+        elementId: 'Task_1'
+      };
+
+      // when
+      const result = await zeebeAPI.searchJobs(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123',
+        elementId: 'Task_1'
+      };
+
+      // when
+      const result = await zeebeAPI.searchJobs(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+  });
+
+
+  describe('#searchMessageSubscriptions', function() {
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({ items: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123',
+        elementId: 'Event_1'
+      };
+
+      // when
+      const result = await zeebeAPI.searchMessageSubscriptions(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123',
+        elementId: 'Event_1'
+      };
+
+      // when
+      const result = await zeebeAPI.searchMessageSubscriptions(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+  });
+
+
+  describe('#searchUserTasks', function() {
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({ items: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123',
+        elementId: 'UserTask_1'
+      };
+
+      // when
+      const result = await zeebeAPI.searchUserTasks(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123',
+        elementId: 'UserTask_1'
+      };
+
+      // when
+      const result = await zeebeAPI.searchUserTasks(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+  });
+
+
   describe('create client', function() {
 
     it('should create client with correct url', async function() {
