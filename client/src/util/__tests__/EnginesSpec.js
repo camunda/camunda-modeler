@@ -29,7 +29,7 @@ describe('util/Engines', function() {
 
     it('Platform', verifyLatestStable(ENGINES.PLATFORM, '7.24.0'));
 
-    it('Cloud', verifyLatestStable(ENGINES.CLOUD, '8.8.0'));
+    it('Cloud', verifyLatestStable(ENGINES.CLOUD, '8.9.0'));
 
   });
 
