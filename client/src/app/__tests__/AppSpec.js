@@ -2620,6 +2620,59 @@ describe('<App>', function() {
   });
 
 
+  describe('sidePanel', function() {
+
+    it('should open', async function() {
+
+      // given
+      const { app } = createApp();
+
+      // when
+      app.openSidePanel('properties');
+
+      // then
+      await waitFor(() => {
+        expect(app.state.layout).to.eql({
+          sidePanel: {
+            open: true,
+            tab: 'properties'
+          }
+        });
+      });
+    });
+
+
+    it('should close', async function() {
+
+      // given
+      const { app } = createApp();
+
+      await waitFor(() => {
+        app.setLayout({
+          sidePanel: {
+            open: true,
+            tab: 'properties'
+          }
+        });
+      });
+
+      // when
+      app.closeSidePanel();
+
+      // then
+      await waitFor(() => {
+        expect(app.state.layout).to.eql({
+          sidePanel: {
+            open: false,
+            tab: 'properties'
+          }
+        });
+      });
+    });
+
+  });
+
+
   describe('notifications', function() {
 
     it('should display notification', async function() {
