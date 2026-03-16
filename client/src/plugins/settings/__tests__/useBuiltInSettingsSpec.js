@@ -16,7 +16,7 @@ describe('useBuiltInSettings', function() {
   it('should use latest stable versions', function() {
 
     // then
-    expect(schema.properties['app.defaultC8Version'].default).to.equal('8.8.0');
+    expect(schema.properties['app.defaultC8Version'].default).to.equal('8.9.0');
     expect(schema.properties['app.defaultC7Version'].default).to.equal('7.24.0');
   });
 
