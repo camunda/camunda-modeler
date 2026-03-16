@@ -974,6 +974,278 @@ describe('<ZeebeAPI>', function() {
 
   });
 
+
+  describe('#searchProcessInstances', function() {
+
+    it('should search process instances', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const processInstanceKey = '123';
+
+      // when
+      zeebeAPI.searchProcessInstances({ endpoint }, processInstanceKey);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchProcessInstances', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        processInstanceKey
+      });
+
+    });
+
+  });
+
+
+  describe('#searchElementInstances', function() {
+
+    it('should search element instances', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const processInstanceKey = '123';
+
+      // when
+      zeebeAPI.searchElementInstances({ endpoint }, processInstanceKey);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchElementInstances', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        processInstanceKey
+      });
+
+    });
+
+  });
+
+
+  describe('#searchVariables', function() {
+
+    it('should search variables', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const processInstanceKey = '123';
+
+      // when
+      zeebeAPI.searchVariables({ endpoint }, processInstanceKey);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchVariables', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        processInstanceKey
+      });
+
+    });
+
+  });
+
+
+  describe('#searchIncidents', function() {
+
+    it('should search incidents', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const processInstanceKey = '123';
+
+      // when
+      zeebeAPI.searchIncidents({ endpoint }, processInstanceKey);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchIncidents', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        processInstanceKey
+      });
+
+    });
+
+  });
+
+
+  describe('#searchJobs', function() {
+
+    it('should search jobs', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const processInstanceKey = '123';
+      const elementId = 'Task_1';
+
+      // when
+      zeebeAPI.searchJobs({ endpoint }, processInstanceKey, elementId);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchJobs', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        processInstanceKey,
+        elementId
+      });
+
+    });
+
+  });
+
+
+  describe('#searchMessageSubscriptions', function() {
+
+    it('should search message subscriptions', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const processInstanceKey = '123';
+      const elementId = 'Event_1';
+
+      // when
+      zeebeAPI.searchMessageSubscriptions({ endpoint }, processInstanceKey, elementId);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchMessageSubscriptions', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        processInstanceKey,
+        elementId
+      });
+
+    });
+
+  });
+
+
+  describe('#searchUserTasks', function() {
+
+    it('should search user tasks', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const processInstanceKey = '123';
+      const elementId = 'UserTask_1';
+
+      // when
+      zeebeAPI.searchUserTasks({ endpoint }, processInstanceKey, elementId);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchUserTasks', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        processInstanceKey,
+        elementId
+      });
+
+    });
+
+  });
+
 });
 
 class Mock {

@@ -370,6 +370,10 @@ class ZeebeAPI {
 
   /**
    * Search process instances. Requires Camunda REST client.
+   *
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
+   *
+   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchProcessInstances(config) {
     const {
@@ -412,6 +416,10 @@ class ZeebeAPI {
 
   /**
    * Search variables. Requires Camunda REST client.
+   *
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
+   *
+   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchVariables(config) {
     const {
@@ -452,6 +460,13 @@ class ZeebeAPI {
     }
   }
 
+  /**
+   * Search element instances. Requires Camunda REST client.
+   *
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
+   *
+   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
+   */
   async searchElementInstances(config) {
     const {
       endpoint,
@@ -493,6 +508,10 @@ class ZeebeAPI {
 
   /**
    * Search incidents. Requires Camunda REST client.
+   *
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
+   *
+   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchIncidents(config) {
     const {
@@ -535,6 +554,10 @@ class ZeebeAPI {
 
   /**
    * Search jobs. Requires Camunda REST client.
+   *
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, elementId?: string }} config
+   *
+   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchJobs(config) {
     const {
@@ -583,6 +606,10 @@ class ZeebeAPI {
 
   /**
    * Search message subscriptions. Requires Camunda REST client.
+   *
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, elementId?: string }} config
+   *
+   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchMessageSubscriptions(config) {
     const {
@@ -631,6 +658,10 @@ class ZeebeAPI {
 
   /**
    * Search user tasks. Requires Camunda REST client.
+   *
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, elementId?: string }} config
+   *
+   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchUserTasks(config) {
     const {
