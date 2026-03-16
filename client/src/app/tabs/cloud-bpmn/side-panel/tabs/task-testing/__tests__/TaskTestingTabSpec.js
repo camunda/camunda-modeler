@@ -85,7 +85,9 @@ describe('<TaskTestingTab>', function() {
       await selectElement(modeler, 'Task_1');
 
       // then
-      expect(screen.getByText(UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE)).to.exist;
+      await waitFor(() => {
+        expect(screen.getByText(UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE)).to.exist;
+      });
     });
 
 
@@ -106,7 +108,9 @@ describe('<TaskTestingTab>', function() {
       await selectElement(modeler, 'Task_1');
 
       // then
-      expect(screen.getByText(UNSUPPORTED_PROTOCOL_TITLE)).to.exist;
+      await waitFor(() => {
+        expect(screen.getByText(UNSUPPORTED_PROTOCOL_TITLE)).to.exist;
+      });
     });
 
 
@@ -124,7 +128,9 @@ describe('<TaskTestingTab>', function() {
       await selectElement(modeler, 'Task_1');
 
       // then
-      expect(screen.getByText(CANNOT_CONNECT_TITLE)).to.exist;
+      await waitFor(() => {
+        expect(screen.getByText(CANNOT_CONNECT_TITLE)).to.exist;
+      });
     });
 
   });
