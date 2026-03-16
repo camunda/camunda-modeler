@@ -27,6 +27,8 @@ import {
 
 import iconsByType from './icons';
 
+import LaunchIcon from '../../../../../resources/icons/Launch.svg';
+
 import * as css from './SidePanelHeader.less';
 
 export default function SidePanelHeader({ injector }) {
@@ -130,7 +132,9 @@ export default function SidePanelHeader({ injector }) {
             title="Open documentation"
             target="_blank"
             rel="noopener noreferrer"
-          >?</a>
+          >
+            <LaunchIcon width="16" height="16" viewBox="0 0 12 12" />
+          </a>
         ) }
       </div>
     </div>
