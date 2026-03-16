@@ -308,9 +308,7 @@ function isConditionalFlow(element) {
 }
 
 function isPlane(element) {
-
-  // Backwards compatibility for bpmn-js<8
-  const di = element && (element.di || getBusinessObject(element).di);
+  const di = element && getBusinessObject(element).di;
 
   return is(di, 'bpmndi:BPMNPlane');
 }
