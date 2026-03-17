@@ -279,6 +279,26 @@ describe('<BpmnEditor>', function() {
   });
 
 
+  it('#getXML - should not fail when modeler is not initialized', async function() {
+
+    // given
+    const { instance } = await renderEditor(diagramXML);
+
+    const getCachedStub = sinon.stub(instance, 'getCached').returns({
+      lastXML: diagramXML,
+      modeler: undefined
+    });
+
+    // when
+    const xml = await instance.getXML();
+
+    getCachedStub.restore();
+
+    // then
+    expect(xml).to.equal(diagramXML);
+  });
+
+
   describe('#exportAs', function() {
 
     // increase test time-outs, as exporting takes a
