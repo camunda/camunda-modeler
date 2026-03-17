@@ -279,23 +279,31 @@ describe('<BpmnEditor>', function() {
   });
 
 
-  it('#getXML - should not fail when modeler is not initialized', async function() {
+  it('#getXML - should not call saveXML when importing', async function() {
 
     // given
     const { instance } = await renderEditor(diagramXML);
 
-    const getCachedStub = sinon.stub(instance, 'getCached').returns({
-      lastXML: diagramXML,
-      modeler: undefined
-    });
+    const modeler = instance.getModeler();
 
-    // when
+    // make the editor dirty
+    modeler.get('commandStack').execute(1);
+
+    // simulate BpmnDiOrdering crash: rootDi.set('planeElement', ...) where rootDi is undefined
+    sinon.stub(modeler, 'saveXML').rejects(
+      new TypeError("Cannot read properties of undefined (reading 'set')")
+    );
+
+    // simulate an in-progress import (canvas is in intermediate state)
+    instance.setState({ importing: true });
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    // when - should return lastXML without calling saveXML
     const xml = await instance.getXML();
-
-    getCachedStub.restore();
 
     // then
     expect(xml).to.equal(diagramXML);
+    expect(modeler.saveXML).not.to.have.been.called;
   });
 
 

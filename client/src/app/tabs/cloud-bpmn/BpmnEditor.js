@@ -641,7 +641,7 @@ export class BpmnEditor extends CachedComponent {
       modeler
     } = this.getCached();
 
-    if (!modeler) {
+    if (this.state.importing) {
       return lastXML || this.props.xml;
     }
 
