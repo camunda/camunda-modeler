@@ -247,16 +247,16 @@ jobs:
             secret/data/products/desktop-modeler/ci/fossa FOSSA_API_KEY;
       - name: Get FOSSA context
         id: fossa-context
-        uses: camunda/infra-global-github-actions/fossa/info@76984bd06bb37b0efe547900968cb78c383a8eb8
+        uses: camunda/infra-global-github-actions/fossa/info@7386ec9e5f8dbe82f719c1ff3a3d74a0668276ac
       - name: Wait for FOSSA scan completion
-        uses: camunda/infra-global-github-actions/fossa/wait-for-scan@76984bd06bb37b0efe547900968cb78c383a8eb8
+        uses: camunda/infra-global-github-actions/fossa/wait-for-scan@7386ec9e5f8dbe82f719c1ff3a3d74a0668276ac
         with:
           api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
           branch: ${{ steps.fossa-context.outputs.head-ref }}
           project-id: "custom+50756/camunda/camunda-modeler"
           revision-id: ${{ steps.fossa-context.outputs.head-revision }}
       - name: Create FOSSA releases and generate reports
-        uses: camunda/infra-global-github-actions/fossa/release@76984bd06bb37b0efe547900968cb78c383a8eb8
+        uses: camunda/infra-global-github-actions/fossa/release@7386ec9e5f8dbe82f719c1ff3a3d74a0668276ac
         with:
           api-key: ${{ steps.secrets.outputs.FOSSA_API_KEY }}
           branch: ${{ steps.fossa-context.outputs.head-ref }}
