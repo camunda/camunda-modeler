@@ -26,7 +26,7 @@ export default function PropertiesPanelStatusBarItem(props) {
 
   let { sidePanel: sidePanelLayout = DEFAULT_LAYOUT } = layout;
 
-  sidePanelLayout = { ...DEFAULT_LAYOUT, ...sidePanelLayout };
+  sidePanelLayout = { tab: 'properties', ...DEFAULT_LAYOUT, ...sidePanelLayout };
 
   const onClick = () => {
     onLayoutChanged({
