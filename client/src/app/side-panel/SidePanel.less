@@ -90,3 +90,13 @@
     user-select: text;
   }
 }
+
+:global(.variables-side-panel.open) ~ :local(.SidePanel):not(.open) {
+  .handlebar {
+    display: none;
+  }
+
+  .resizer {
+     pointer-events: none;
+   }
+}
