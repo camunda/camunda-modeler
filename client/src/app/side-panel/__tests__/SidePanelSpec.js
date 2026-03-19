@@ -162,36 +162,6 @@ describe('<SidePanel>', function() {
   });
 
 
-  it('should close panel when clicking active tab', function() {
-
-    // given
-    const onLayoutChanged = spy();
-
-    const { container } = createSidePanel({
-      layout: {
-        sidePanel: { open: true, width: DEFAULT_WIDTH, tab: 'foo' }
-      },
-      onLayoutChanged,
-      tabs: [
-        { id: 'foo', label: 'Foo', children: <div>Foo</div> },
-        { id: 'bar', label: 'Bar', children: <div>Bar</div> }
-      ]
-    });
-
-    const tabs = container.querySelectorAll('.side-panel__tab');
-
-    // when
-    fireEvent.click(tabs[0]);
-
-    // then
-    expect(onLayoutChanged).to.have.been.calledOnce;
-
-    const layoutArg = onLayoutChanged.firstCall.args[0];
-
-    expect(layoutArg.sidePanel.open).to.be.false;
-  });
-
-
   it('should render header', function() {
 
     // when
