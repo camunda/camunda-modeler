@@ -89,5 +89,11 @@
         false
       ]
     ]
+  },
+  "overrides": {
+    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#5639_variable-input-requirements"
+  },
+  "dependencies": {
+    "@bpmn-io/variable-resolver": "github:bpmn-io/variable-resolver#5639_variable-input-requirements"
   }
 }
