@@ -128,23 +128,17 @@ export default function SidePanel(props) {
 
   const onTabClick = useCallback((tabId) => {
     if (tab === tabId && open) {
-      onLayoutChanged({
-        sidePanel: {
-          ...DEFAULT_LAYOUT,
-          ...sidePanel,
-          open: false
-        }
-      });
-    } else {
-      onLayoutChanged({
-        sidePanel: {
-          ...DEFAULT_LAYOUT,
-          ...sidePanel,
-          open: true,
-          tab: tabId
-        }
-      });
+      return;
     }
+
+    onLayoutChanged({
+      sidePanel: {
+        ...DEFAULT_LAYOUT,
+        ...sidePanel,
+        open: true,
+        tab: tabId
+      }
+    });
   }, [ onLayoutChanged, sidePanel, tab, open ]);
 
   return (
