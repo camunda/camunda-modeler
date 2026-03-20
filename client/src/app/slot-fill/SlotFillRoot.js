@@ -42,9 +42,14 @@ export default class SlotFillRoot extends PureComponent {
       addFill: (newFill) => {
 
         let id = newFill.id;
+        const fillRegistration = {
+          id,
+          props: newFill.props
+        };
 
         if (!id) {
           id = newFill.id = this.uid++;
+          fillRegistration.id = id;
         }
 
         this.setState((state) => {
@@ -57,11 +62,12 @@ export default class SlotFillRoot extends PureComponent {
             if (fill.id === id) {
               found = true;
 
-              if (fill !== newFill) {
+              if (!sameFillProps(fill, fillRegistration)) {
                 changed = true;
+                return fillRegistration;
               }
 
-              return newFill;
+              return fill;
             }
 
             return fill;
@@ -69,7 +75,7 @@ export default class SlotFillRoot extends PureComponent {
 
           if (!found) {
             changed = true;
-            newFills.push(newFill);
+            newFills.push(fillRegistration);
           }
 
           if (!changed) {
@@ -113,4 +119,24 @@ export default class SlotFillRoot extends PureComponent {
       </SlotContext.Provider>
     );
   }
+}
+
+function sameFillProps(a, b) {
+  const aProps = a.props || {};
+  const bProps = b.props || {};
+
+  const aKeys = Object.keys(aProps);
+  const bKeys = Object.keys(bProps);
+
+  if (aKeys.length !== bKeys.length) {
+    return false;
+  }
+
+  for (const key of aKeys) {
+    if (aProps[key] !== bProps[key]) {
+      return false;
+    }
+  }
+
+  return true;
 }

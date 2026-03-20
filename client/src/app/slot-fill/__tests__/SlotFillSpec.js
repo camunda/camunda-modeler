@@ -187,12 +187,76 @@ describe('slot-fill', function() {
       await act(() => fillContext.addFill(fill));
 
       expect(slotContextSpy).to.have.callCount(2);
-      expect(slotContextSpy.lastCall.args[0]).to.eql([ fill ]);
+      expect(slotContextSpy.lastCall.args[0]).to.eql([
+        {
+          id: fill.id,
+          props: fill.props
+        }
+      ]);
 
       await act(() => fillContext.addFill(fill));
 
       expect(slotContextSpy).to.have.callCount(2);
-      expect(slotContextSpy.lastCall.args[0]).to.eql([ fill ]);
+      expect(slotContextSpy.lastCall.args[0]).to.eql([
+        {
+          id: fill.id,
+          props: fill.props
+        }
+      ]);
+    });
+
+
+    it('should update slot context for identical fill instance with changed props', async function() {
+      let fillContext;
+
+      const slotContextSpy = sinon.spy();
+
+      render(
+        <SlotFillRoot>
+          <FillContext.Consumer>
+            {
+              context => {
+                fillContext = context;
+
+                return null;
+              }
+            }
+          </FillContext.Consumer>
+          <SlotContext.Consumer>
+            {
+              slotContext => {
+                slotContextSpy(slotContext.fills);
+
+                return null;
+              }
+            }
+          </SlotContext.Consumer>
+        </SlotFillRoot>
+      );
+
+      const fill = {
+        props: {
+          slot: 'foo',
+          children: 'first'
+        }
+      };
+
+      await act(() => fillContext.addFill(fill));
+
+      fill.props = {
+        slot: 'foo',
+        children: 'second'
+      };
+
+      await act(() => fillContext.addFill(fill));
+
+      expect(slotContextSpy).to.have.callCount(3);
+      expect(slotContextSpy.lastCall.args[0]).to.eql([
+        {
+          id: fill.id,
+          props: fill.props
+        }
+      ]);
     });
 
   });
