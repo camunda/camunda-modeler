@@ -149,6 +149,52 @@ describe('slot-fill', function() {
       expect(queryByTestId('bar')).not.to.exist;
     });
 
+
+    it('should not update slot context for identical fill registration', async function() {
+      let fillContext;
+
+      const slotContextSpy = sinon.spy();
+
+      render(
+        <SlotFillRoot>
+          <FillContext.Consumer>
+            {
+              context => {
+                fillContext = context;
+
+                return null;
+              }
+            }
+          </FillContext.Consumer>
+          <SlotContext.Consumer>
+            {
+              slotContext => {
+                slotContextSpy(slotContext.fills);
+
+                return null;
+              }
+            }
+          </SlotContext.Consumer>
+        </SlotFillRoot>
+      );
+
+      const fill = {
+        props: {
+          slot: 'foo'
+        }
+      };
+
+      await act(() => fillContext.addFill(fill));
+
+      expect(slotContextSpy).to.have.callCount(2);
+      expect(slotContextSpy.lastCall.args[0]).to.eql([ fill ]);
+
+      await act(() => fillContext.addFill(fill));
+
+      expect(slotContextSpy).to.have.callCount(2);
+      expect(slotContextSpy.lastCall.args[0]).to.eql([ fill ]);
+    });
+
   });
 
 

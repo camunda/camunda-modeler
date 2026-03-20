@@ -50,11 +50,16 @@ export default class SlotFillRoot extends PureComponent {
         this.setState((state) => {
 
           let found = false;
+          let changed = false;
 
           const newFills = state.fills.map(function(fill) {
 
             if (fill.id === id) {
               found = true;
+
+              if (fill !== newFill) {
+                changed = true;
+              }
 
               return newFill;
             }
@@ -63,7 +68,12 @@ export default class SlotFillRoot extends PureComponent {
           });
 
           if (!found) {
+            changed = true;
             newFills.push(newFill);
+          }
+
+          if (!changed) {
+            return null;
           }
 
           return {
