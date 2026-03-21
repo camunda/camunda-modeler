@@ -195,9 +195,12 @@ export class BpmnEditor extends CachedComponent {
   componentDidUpdate(prevProps) {
     this.checkImport(prevProps);
 
-    if (isCacheStateChanged(prevProps, this.props)) {
-      this.handleChanged();
-    }
+    // Note: Don't call handleChanged() when only cachedState changed,
+    // as it would create new menu objects and trigger parent setState,
+    // causing an infinite loop in React strict mode
+    // if (isCacheStateChanged(prevProps, this.props)) {
+    //   this.handleChanged();
+    // }
 
     if (prevProps.linting !== this.props.linting) {
       this.getModeler().get('linting').setErrors(this.props.linting || []);

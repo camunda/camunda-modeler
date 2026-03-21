@@ -8,212 +8,236 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 
-import classnames from 'classnames';
+import classnames from "classnames";
 
-import semver from 'semver';
+import semver from "semver";
 
 import Flags, {
   PLATFORM_ENGINE_VERSION,
-  CLOUD_ENGINE_VERSION
-} from '../../util/Flags';
+  CLOUD_ENGINE_VERSION,
+} from "../../util/Flags";
+
+import { Overlay, Section } from "../../shared/ui";
+
+import { utmTag } from "../../util/utmTag";
+import { Fill } from "../slot-fill";
 
 import {
-  Overlay,
-  Section
-} from '../../shared/ui';
-
-import { utmTag } from '../../util/utmTag';
-import { Fill } from '../slot-fill';
-
-import { ENGINES, ENGINE_LABELS, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
+  ENGINES,
+  ENGINE_LABELS,
+  ENGINE_PROFILES,
+  getLatestStable,
+} from "../../util/Engines";
 
 const HELP_LINKS = {
-  [ ENGINES.PLATFORM ]: utmTag('https://docs.camunda.org/manual/latest/'),
-  [ ENGINES.CLOUD ]: utmTag('https://docs.camunda.io/')
+  [ENGINES.PLATFORM]: utmTag("https://docs.camunda.org/manual/latest/"),
+  [ENGINES.CLOUD]: utmTag("https://docs.camunda.io/"),
 };
 
-const DONWLOAD_PAGE = utmTag('https://camunda.com/download/modeler/');
+const DONWLOAD_PAGE = utmTag("https://camunda.com/download/modeler/");
 
 export function EngineProfile(props) {
-  const {
-    filterVersions = () => true,
-    engineProfile,
-    onChange = null
-  } = props;
+  const { filterVersions = () => true, engineProfile, onChange = null } = props;
 
-  const [ open, setOpen ] = useState(false, []);
+  const [open, setOpen] = useState(false, []);
   const buttonRef = useRef(null);
 
   if (!engineProfile) {
-    throw new Error('<engineProfile> required');
+    throw new Error("<engineProfile> required");
   }
 
-  const engineProfileForExecutionPlatform = ENGINE_PROFILES.find(p => p.executionPlatform === engineProfile.executionPlatform);
+  const engineProfileForExecutionPlatform = ENGINE_PROFILES.find(
+    (p) => p.executionPlatform === engineProfile.executionPlatform,
+  );
 
-  const engineProfileVersions = engineProfileForExecutionPlatform && engineProfileForExecutionPlatform.executionPlatformVersions.filter(filterVersions);
+  const engineProfileVersions =
+    engineProfileForExecutionPlatform &&
+    engineProfileForExecutionPlatform.executionPlatformVersions.filter(
+      filterVersions,
+    );
 
   if (!engineProfileVersions) {
-    throw new Error('<engineProfileVersions: string[]> not found');
+    throw new Error("<engineProfileVersions: string[]> not found");
   }
 
   const label = getStatusBarLabel(engineProfile);
 
-  const handleChange = onChange ? (engineProfile) => {
-    onChange(engineProfile);
-    setOpen(false);
-  } : null;
+  const handleChange = onChange
+    ? (engineProfile) => {
+        onChange(engineProfile);
+        setOpen(false);
+      }
+    : null;
 
-  const toggle = () => setOpen(open => !open);
+  const toggle = () => setOpen((open) => !open);
 
   return (
     <Fill slot="status-bar__file" group="1_engine">
-      {
-        open &&
+      {open && (
         <EngineProfileOverlay
-          anchor={ buttonRef.current }
-          onClose={ () => setOpen(false) }
-          engineProfile={ engineProfile }
-          engineProfileVersions={ engineProfileVersions }
-          onChange={ handleChange }
+          anchor={buttonRef.current}
+          onClose={() => setOpen(false)}
+          engineProfile={engineProfile}
+          engineProfileVersions={engineProfileVersions}
+          onChange={handleChange}
         />
-      }
+      )}
       <button
-        className={ classnames('btn', { 'btn--active': open }) }
-        onClick={ toggle } ref={ buttonRef }
-        title={ handleChange ? 'Change execution platform' : 'Display execution platform information' }
+        className={classnames("btn", { "btn--active": open })}
+        onClick={toggle}
+        ref={buttonRef}
+        title={
+          handleChange
+            ? "Change execution platform"
+            : "Display execution platform information"
+        }
       >
-        { label }
+        {label}
       </button>
     </Fill>
   );
 }
 
 function EngineProfileOverlay(props) {
-  const {
-    anchor,
-    onClose,
-    onChange
-  } = props;
+  const { anchor, onClose, onChange } = props;
 
   return (
-    <Overlay anchor={ anchor } onClose={ onClose }>
-
-      {
-        onChange
-          ? <EditableVersionSection { ...props } />
-          : <ReadonlyVersionSection { ...props } />
-      }
+    <Overlay anchor={anchor} onClose={onClose}>
+      {onChange ? (
+        <EditableVersionSection {...props} />
+      ) : (
+        <ReadonlyVersionSection {...props} />
+      )}
     </Overlay>
   );
 }
 
-
 function EditableVersionSection(props) {
-
   const {
-    engineProfile,
+    engineProfile: _engineProfile,
     engineProfileVersions,
-    onChange
+    onChange,
   } = props;
 
   if (!onChange) {
-    throw new Error('<onChange> required');
+    throw new Error("<onChange> required");
   }
 
-  if (!engineProfile) {
-    throw new Error('<engineProfile> required');
+  if (!_engineProfile) {
+    throw new Error("<engineProfile> required");
   }
 
   if (!engineProfileVersions) {
-    throw new Error('<engineProfileVersions> required');
+    throw new Error("<engineProfileVersions> required");
   }
 
-  const handleVersionChanged = event => {
+  const [engineProfile, setEngineProfile] = useState(_engineProfile);
+
+  const handleVersionChanged = (event) => {
     const executionPlatformVersion = toSemver(event.target.value);
 
-    onChange({
+    setEngineProfile({
       executionPlatform: engineProfile.executionPlatform,
-      executionPlatformVersion: executionPlatformVersion || undefined
+      executionPlatformVersion: executionPlatformVersion || undefined,
     });
   };
 
-  const {
-    executionPlatform
-  } = engineProfile;
+  const handleApply = (e) => {
+    onChange(engineProfile);
+
+    e.preventDefault();
+  };
+
+  const { executionPlatform } = engineProfile;
 
   const engineLabel = ENGINE_LABELS[executionPlatform];
-  const name = 'engineProfile.version';
+  const name = "engineProfile.version";
 
-  const currentMinorVersion = toSemverMinor(engineProfile.executionPlatformVersion);
+  const currentMinorVersion = toSemverMinor(
+    engineProfile.executionPlatformVersion,
+  );
   const minorVersions = engineProfileVersions.map(toSemverMinor);
 
-  const versionRecognized = isKnownVersion(engineProfileVersions, engineProfile.executionPlatformVersion);
+  const versionRecognized = isKnownVersion(
+    engineProfileVersions,
+    engineProfile.executionPlatformVersion,
+  );
 
   return (
     <Section>
-      <Section.Header>
-        Select the { engineLabel } version
-      </Section.Header>
+      <Section.Header>Select the {engineLabel} version</Section.Header>
       <Section.Body>
-        <form className="fields">
+        <form onSubmit={handleApply} className="fields">
           <div className="form-group">
-            <label htmlFor={ name }>Version</label>
+            <label htmlFor={name}>Version</label>
 
             <select
               className="form-control"
-              onChange={ handleVersionChanged }
-              value={ currentMinorVersion || '' }
-              id={ name }
-              name={ name }>
-              {
-                versionRecognized
-                  ? null
-                  : <option value={ currentMinorVersion || '' }>{ currentMinorVersion ? `${currentMinorVersion} (unsupported)` : '<unset>' }</option>
-              }
-              {
-                minorVersions.map(version => {
-                  return (
-                    <option key={ version } value={ version }>
-                      { getAnnotatedVersion(version, executionPlatform) }
-                    </option>
-                  );
-                })
-              }
+              onChange={handleVersionChanged}
+              value={currentMinorVersion || ""}
+              id={name}
+              name={name}
+            >
+              {versionRecognized ? null : (
+                <option value={currentMinorVersion || ""}>
+                  {currentMinorVersion
+                    ? `${currentMinorVersion} (unsupported)`
+                    : "<unset>"}
+                </option>
+              )}
+              {minorVersions.map((version) => {
+                return (
+                  <option key={version} value={version}>
+                    {getAnnotatedVersion(version, executionPlatform)}
+                  </option>
+                );
+              })}
             </select>
           </div>
 
-          {(versionRecognized || !currentMinorVersion) ?
-            <PlatformHint className="form-group form-description" executionPlatform={ executionPlatform } displayLabel={ engineLabel } /> :
-            <UnknownVersionHint className="form-group form-description" executionPlatform={ executionPlatform } executionPlatformVersion={ engineProfile.executionPlatformVersion } displayLabel={ engineLabel } />
-          }
+          {versionRecognized || !currentMinorVersion ? (
+            <PlatformHint
+              className="form-group form-description"
+              executionPlatform={executionPlatform}
+              displayLabel={engineLabel}
+            />
+          ) : (
+            <UnknownVersionHint
+              className="form-group form-description"
+              executionPlatform={executionPlatform}
+              executionPlatformVersion={engineProfile.executionPlatformVersion}
+              displayLabel={engineLabel}
+            />
+          )}
+
+          <Section.Actions>
+            <button className="btn btn-primary" type="submit">
+              Apply
+            </button>
+          </Section.Actions>
         </form>
       </Section.Body>
     </Section>
   );
 }
 
-
 function ReadonlyVersionSection(props) {
-
-  const {
-    engineProfile
-  } = props;
+  const { engineProfile } = props;
 
   const engineLabel = ENGINE_LABELS[engineProfile.executionPlatform];
 
   return (
     <Section>
-      <Section.Header>
-        { engineLabel }
-      </Section.Header>
+      <Section.Header>{engineLabel}</Section.Header>
       <Section.Body>
         <form>
           <PlatformHint
             className="form-control form-description"
-            executionPlatform={ engineProfile.executionPlatform }
-            displayLabel={ engineLabel } />
+            executionPlatform={engineProfile.executionPlatform}
+            displayLabel={engineLabel}
+          />
         </form>
       </Section.Body>
     </Section>
@@ -221,58 +245,45 @@ function ReadonlyVersionSection(props) {
 }
 
 function PlatformHint(props) {
-  const {
-    executionPlatform,
-    displayLabel,
-    className
-  } = props;
+  const { executionPlatform, displayLabel, className } = props;
 
   return (
-    <div className={ className }>
-      This file can be deployed and executed on { displayLabel }.
-      The properties panel provides the related implementation features. <a href={ HELP_LINKS[executionPlatform] }>
-        Learn more
-      </a>
+    <div className={className}>
+      This file can be deployed and executed on {displayLabel}. The properties
+      panel provides the related implementation features.{" "}
+      <a href={HELP_LINKS[executionPlatform]}>Learn more</a>
     </div>
   );
 }
 
 function UnknownVersionHint(props) {
-  const {
-    displayLabel,
-    className
-  } = props;
+  const { displayLabel, className } = props;
 
   return (
-    <div className={ className }>
+    <div className={className}>
       <p>
-        This diagram uses an unsupported { displayLabel } version.
-        As a result, some features might not work as expected.
+        This diagram uses an unsupported {displayLabel} version. As a result,
+        some features might not work as expected.
       </p>
 
       <p>
-        To use the latest features, please <a href={ DONWLOAD_PAGE }>
-          check for an updated modeler version
-        </a>.
+        To use the latest features, please{" "}
+        <a href={DONWLOAD_PAGE}>check for an updated modeler version</a>.
       </p>
     </div>
   );
 }
 
 function getExecutionPlatformHash(a) {
-  return `${a && a.executionPlatform || 'undefined'}#${a && toSemver(a.executionPlatformVersion) || 'undefined' }`;
+  return `${(a && a.executionPlatform) || "undefined"}#${(a && toSemver(a.executionPlatformVersion)) || "undefined"}`;
 }
 
 export function getStatusBarLabel(engineProfile) {
-
-  const {
-    executionPlatformVersion,
-    executionPlatform
-  } = engineProfile;
+  const { executionPlatformVersion, executionPlatform } = engineProfile;
 
   if (!executionPlatformVersion) {
     return `${ENGINE_LABELS[executionPlatform]}`;
-  } else if (executionPlatformVersion.startsWith('1.')) {
+  } else if (executionPlatformVersion.startsWith("1.")) {
     return `${ENGINE_LABELS[executionPlatform]} (Zeebe ${toSemverMinor(executionPlatformVersion)})`;
   } else {
     return `Camunda ${toDisplayVersion(engineProfile)}`;
@@ -280,12 +291,12 @@ export function getStatusBarLabel(engineProfile) {
 }
 
 export function getAnnotatedVersion(version, platform) {
-  if (version.startsWith('1.')) {
-    return 'Zeebe ' + version;
+  if (version.startsWith("1.")) {
+    return "Zeebe " + version;
   }
 
   if (platform && isAlpha(version, platform)) {
-    return version + ' (alpha)';
+    return version + " (alpha)";
   }
 
   return version;
@@ -315,7 +326,8 @@ function getFlagVersion(engine) {
 }
 
 function getVersions(engine) {
-  return ENGINE_PROFILES.find(profile => profile.executionPlatform === engine).executionPlatformVersions;
+  return ENGINE_PROFILES.find((profile) => profile.executionPlatform === engine)
+    .executionPlatformVersions;
 }
 
 export function engineProfilesEqual(a, b) {
@@ -325,22 +337,22 @@ export function engineProfilesEqual(a, b) {
 export function isKnownVersion(knownVersions, version) {
   const minorVersion = toSemverMinor(version);
 
-  return knownVersions.some(version => minorVersion === toSemverMinor(version));
+  return knownVersions.some(
+    (version) => minorVersion === toSemverMinor(version),
+  );
 }
 
 export function isKnownEngineProfile(engineProfile = {}) {
-
-  const {
-    executionPlatform,
-    executionPlatformVersion
-  } = engineProfile;
+  const { executionPlatform, executionPlatformVersion } = engineProfile;
 
   if (!executionPlatform) {
     return false;
   }
 
   // <platform> not known
-  const existingEngineProfile = ENGINE_PROFILES.find(profile => profile.executionPlatform === executionPlatform);
+  const existingEngineProfile = ENGINE_PROFILES.find(
+    (profile) => profile.executionPlatform === executionPlatform,
+  );
 
   if (!existingEngineProfile) {
     return false;
@@ -363,7 +375,6 @@ export function isKnownEngineProfile(engineProfile = {}) {
   return true;
 }
 
-
 /**
  * @param {ModdleElement} definitions
  * @param { { executionPlatform: string, executionPlatformVersion: string } } defaultProfile
@@ -371,30 +382,37 @@ export function isKnownEngineProfile(engineProfile = {}) {
  * @return { { executionPlatform?: string, executionPlatformVersion?: string } }
  */
 export function getEngineProfileFromBpmn(definitions, defaultProfile) {
-
   if (!definitions) {
     return {
-      ...defaultProfile
+      ...defaultProfile,
     };
   }
 
   return {
-    executionPlatform: definitions.get('modeler:executionPlatform') || defaultProfile.executionPlatform,
-    executionPlatformVersion: toSemver(definitions.get('modeler:executionPlatformVersion') || defaultProfile.executionPlatformVersion)
+    executionPlatform:
+      definitions.get("modeler:executionPlatform") ||
+      defaultProfile.executionPlatform,
+    executionPlatformVersion: toSemver(
+      definitions.get("modeler:executionPlatformVersion") ||
+        defaultProfile.executionPlatformVersion,
+    ),
   };
 }
 
 export function getEngineProfileFromForm(schema, defaultProfile) {
-
   if (!schema) {
     return {
-      ...defaultProfile
+      ...defaultProfile,
     };
   }
 
   return {
-    executionPlatform: schema.executionPlatform || defaultProfile.executionPlatform,
-    executionPlatformVersion: toSemver(schema.executionPlatformVersion || defaultProfile.executionPlatformVersion)
+    executionPlatform:
+      schema.executionPlatform || defaultProfile.executionPlatform,
+    executionPlatformVersion: toSemver(
+      schema.executionPlatformVersion ||
+        defaultProfile.executionPlatformVersion,
+    ),
   };
 }
 
@@ -409,7 +427,6 @@ export function getEngineProfileFromForm(schema, defaultProfile) {
  * @return {string|undefined}
  */
 export function toSemver(versionString) {
-
   if (!versionString) {
     return undefined;
   }
@@ -417,10 +434,10 @@ export function toSemver(versionString) {
   const parts = versionString.split(/\./);
 
   while (parts.length < 3) {
-    parts.push('0');
+    parts.push("0");
   }
 
-  return parts.join('.');
+  return parts.join(".");
 }
 
 /**
@@ -431,14 +448,11 @@ export function toSemver(versionString) {
  * @return {string|null}
  */
 export function toSemverMinor(string) {
-  return string && string.split(/\./).slice(0, 2).join('.');
+  return string && string.split(/\./).slice(0, 2).join(".");
 }
 
 function toDisplayVersion(engineProfile) {
-  const {
-    executionPlatformVersion,
-    executionPlatform
-  } = engineProfile;
+  const { executionPlatformVersion, executionPlatform } = engineProfile;
 
   const version = toSemverMinor(executionPlatformVersion);
 
@@ -452,7 +466,6 @@ function toDisplayVersion(engineProfile) {
 
   return version;
 }
-
 
 /**
  * Checks if the given version is an alpha of the selected platform.

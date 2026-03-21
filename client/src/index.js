@@ -42,6 +42,9 @@ const keyboardBindings = new KeyboardBindings({
   isMac: globals.isMac
 });
 
+const STRICT_MODE_ENABLED = process.env.REACT_STRICT_MODE === 'true';
+// const STRICT_MODE_ENABLED = false;
+
 
 
 
@@ -71,12 +74,23 @@ async function render() {
 
   const root = createRoot(rootElement);
   root.render(
-    <AppParent
-      keyboardBindings={ keyboardBindings }
-      globals={ globals }
-      tabsProvider={ tabsProvider }
-      onStarted={ onStarted }
-    />
+    STRICT_MODE_ENABLED ? (
+      <React.StrictMode>
+        <AppParent
+          keyboardBindings={ keyboardBindings }
+          globals={ globals }
+          tabsProvider={ tabsProvider }
+          onStarted={ onStarted }
+        />
+      </React.StrictMode>
+    ) : (
+      <AppParent
+        keyboardBindings={ keyboardBindings }
+        globals={ globals }
+        tabsProvider={ tabsProvider }
+        onStarted={ onStarted }
+      />
+    )
   );
 }
 

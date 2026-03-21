@@ -185,6 +185,10 @@ export default class Deployment extends EventEmitter {
       }
     }
 
+    if (connectionId === NO_CONNECTION.id) {
+      return NO_CONNECTION;
+    }
+
     let endpoint = this.getEndpoint(connectionId);
 
     if (!endpoint) {

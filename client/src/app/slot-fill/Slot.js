@@ -43,6 +43,22 @@ import SlotContext from './SlotContext';
  */
 export default class Slot extends PureComponent {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      fills: []
+    };
+  }
+
+  componentDidMount() {
+    this._subscribe(this.context);
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
   render() {
     const {
       name,
@@ -51,30 +67,53 @@ export default class Slot extends PureComponent {
       Component
     } = this.props;
 
-    return (
-      <SlotContext.Consumer>{
-        ({ fills }) => {
-          const filtered = fills.filter(fill => fill.props.slot === name);
+    const {
+      fills
+    } = this.state;
 
-          const replaced = filtered.reduce((replaced, fill) => {
-            if (!fill.props.name || !filtered.some(otherFill => otherFill.props.replaces === fill.props.name)) {
-              replaced.push(fill);
-            }
+    const filtered = fills.filter(fill => fill.props.slot === name);
 
-            return replaced;
-          }, []);
+    const replaced = filtered.reduce((replaced, fill) => {
+      if (!fill.props.name || !filtered.some(otherFill => otherFill.props.replaces === fill.props.name)) {
+        replaced.push(fill);
+      }
 
-          const sorted = replaced.slice().sort(comparePriority);
+      return replaced;
+    }, []);
 
-          const grouped = group(sorted);
+    const sorted = replaced.slice().sort(comparePriority);
 
-          return createFills(grouped, fillFragment(Component), separator);
-        }
-      }</SlotContext.Consumer>
-    );
+    const grouped = group(sorted);
+
+    return createFills(grouped, fillFragment(Component), separator);
+  }
+
+  _subscribe(slotContext) {
+    if (!slotContext) {
+      return;
+    }
+
+    const fills = slotContext.getFills ? slotContext.getFills() : slotContext.fills || [];
+
+    this.setState({ fills });
+
+    if (slotContext.subscribe) {
+      this._unsubscribeListener = slotContext.subscribe((fills) => {
+        this.setState({ fills });
+      });
+    }
+  }
+
+  _unsubscribe() {
+    if (this._unsubscribeListener) {
+      this._unsubscribeListener();
+      this._unsubscribeListener = null;
+    }
   }
 
 }
+
+Slot.contextType = SlotContext;
 
 const fillFragment = (Component) => function FragmentFill(fill) {
   const { id, props } = fill;

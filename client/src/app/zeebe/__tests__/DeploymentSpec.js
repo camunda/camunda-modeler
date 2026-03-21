@@ -698,9 +698,10 @@ describe('Deployment', function() {
         get: () => connections
       };
 
-      const config = new MockConfig();
-      config.getForFile = sinon.stub().resolves({});
-      config.get = sinon.stub().resolves(null);
+      const config = new MockConfig({
+        getForFile: () => Promise.resolve({}),
+        get: () => Promise.resolve(null)
+      });
 
       const deployment = createDeployment({ settings, config });
       sinon.spy(deployment, 'setConnectionIdForTab');
@@ -734,9 +735,10 @@ describe('Deployment', function() {
         get: () => connections
       };
 
-      const config = new MockConfig();
-      config.getForFile = sinon.stub().resolves({});
-      config.get = sinon.stub().resolves(null);
+      const config = new MockConfig({
+        getForFile: () => Promise.resolve({}),
+        get: () => Promise.resolve(null)
+      });
 
       const deployment = createDeployment({ settings, config });
       sinon.spy(deployment, 'setConnectionIdForTab');
@@ -752,6 +754,43 @@ describe('Deployment', function() {
       // then
       expect(result.id).to.equal('NO_CONNECTION');
       expect(deployment.setConnectionIdForTab).to.not.have.been.called;
+    });
+
+
+    it('should not overwrite NO_CONNECTION with default endpoint', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'c8run-local',
+          name: 'c8run (local)',
+          contactPoint: 'http://localhost:8080'
+        }
+      ];
+
+      const settings = {
+        get: () => connections
+      };
+
+      const config = new MockConfig({
+        getForFile: () => Promise.resolve({}),
+        get: () => Promise.resolve('NO_CONNECTION'),
+        set: sinon.spy()
+      });
+
+      const deployment = createDeployment({ settings, config });
+
+      const tab = {
+        id: 'tab-1',
+        file: createMockFile()
+      };
+
+      // when
+      const result = await deployment.getConnectionForTab(tab);
+
+      // then
+      expect(result.id).to.equal('NO_CONNECTION');
+      expect(config.set).to.not.have.been.calledWith('lastUsedConnection', 'c8run-local');
     });
 
   });
