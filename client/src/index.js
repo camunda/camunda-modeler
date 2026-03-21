@@ -8,50 +8,42 @@
  * except in compliance with the MIT License.
  */
 
-import './styles/style.less';
+import "./styles/style.less";
 
-import { flags, globals, metadata, plugins } from './globals';
+import { flags, globals, metadata, plugins } from "./globals";
 
-import React from 'react';
-import { createRoot } from 'react-dom/client';
+import React from "react";
+import { createRoot } from "react-dom/client";
 
-import {
-  AppParent,
-  KeyboardBindings,
-  TabsProvider,
-} from './app';
+import { AppParent, KeyboardBindings, TabsProvider } from "./app";
 
-import Metadata from './util/Metadata';
-import Flags from './util/Flags';
+import Metadata from "./util/Metadata";
+import Flags from "./util/Flags";
 
-import debug from 'debug';
-import { migrateConnections } from './app/migrations/migrateConnections';
+import debug from "debug";
+import { migrateConnections } from "./app/migrations/migrateConnections";
 
 // This fix is necessary because dragular expects `global` to be defined, see
 // https://github.com/bevacqua/dragula/issues/602 for context
 window.global = window;
 
-if (process.env.NODE_ENV !== 'production') {
-  debug.enable('*,-sockjs-client:*');
+if (process.env.NODE_ENV !== "production") {
+  debug.enable("*,-sockjs-client:*");
 }
 
 Metadata.init(metadata);
 Flags.init(flags);
 
 const keyboardBindings = new KeyboardBindings({
-  isMac: globals.isMac
+  isMac: globals.isMac,
 });
 
-const STRICT_MODE_ENABLED = process.env.REACT_STRICT_MODE === 'true';
+const STRICT_MODE_ENABLED = process.env.REACT_STRICT_MODE === "true";
 // const STRICT_MODE_ENABLED = false;
 
-
-
-
 async function render() {
-
-  if (process.env.NODE_ENV !== 'production') {
-    const { loadA11yHelper } = await import('./util/a11y');
+  if (process.env.NODE_ENV !== "production") {
+    const { loadA11yHelper } = await import("./util/a11y");
     await loadA11yHelper();
   }
 
@@ -60,37 +52,36 @@ async function render() {
 
   await plugins.loadAll();
 
-  const rootElement = document.querySelector('#root');
+  const rootElement = document.querySelector("#root");
 
   const onStarted = () => {
-
     // mark as finished loading
-    document.querySelector('body > .spinner-border').classList.add('hidden');
+    document.querySelector("body > .spinner-border").classList.add("hidden");
 
     migrateConnections(globals.settings, globals.config);
   };
 
-  const tabsProvider = new TabsProvider(plugins.get('tabs'), globals.settings);
+  const tabsProvider = new TabsProvider(plugins.get("tabs"), globals.settings);
 
   const root = createRoot(rootElement);
   root.render(
     STRICT_MODE_ENABLED ? (
       <React.StrictMode>
         <AppParent
-          keyboardBindings={ keyboardBindings }
-          globals={ globals }
-          tabsProvider={ tabsProvider }
-          onStarted={ onStarted }
+          keyboardBindings={keyboardBindings}
+          globals={globals}
+          tabsProvider={tabsProvider}
+          onStarted={onStarted}
         />
       </React.StrictMode>
     ) : (
       <AppParent
-        keyboardBindings={ keyboardBindings }
-        globals={ globals }
-        tabsProvider={ tabsProvider }
-        onStarted={ onStarted }
+        keyboardBindings={keyboardBindings}
+        globals={globals}
+        tabsProvider={tabsProvider}
+        onStarted={onStarted}
       />
-    )
+    ),
   );
 }
 

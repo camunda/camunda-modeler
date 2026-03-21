@@ -8,75 +8,62 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React from "react";
 
-import { isFunction } from 'min-dash';
+import { isFunction } from "min-dash";
 
-import {
-  Loader
-} from '../../primitives';
+import { Loader } from "../../primitives";
 
-import {
-  debounce
-} from '../../../util';
+import { debounce } from "../../../util";
 
-import {
-  WithCache,
-  WithCachedState,
-  CachedComponent
-} from '../../cached';
+import { WithCache, WithCachedState, CachedComponent } from "../../cached";
 
-import PropertiesPanelContainer, { DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT } from '../../resizable-container/PropertiesPanelContainer';
+import PropertiesPanelContainer, {
+  DEFAULT_LAYOUT as PROPERTIES_PANEL_DEFAULT_LAYOUT,
+} from "../../resizable-container/PropertiesPanelContainer";
 
-import TaskTestingTab from '../../panel/tabs/task-testing/TaskTestingTab';
-import VariableTab from '../../panel/tabs/variable-outline/VariableOutlineTab';
+import TaskTestingTab from "../../panel/tabs/task-testing/TaskTestingTab";
+import VariableTab from "../../panel/tabs/variable-outline/VariableOutlineTab";
 
-import BpmnModeler from './modeler';
+import BpmnModeler from "./modeler";
 
-import { active as isInputActive } from '../../../util/dom/isInput';
+import { active as isInputActive } from "../../../util/dom/isInput";
 
-import getBpmnContextMenu from '../bpmn/getBpmnContextMenu';
+import getBpmnContextMenu from "../bpmn/getBpmnContextMenu";
 
-import { getBpmnEditMenu } from '../bpmn/getBpmnEditMenu';
+import { getBpmnEditMenu } from "../bpmn/getBpmnEditMenu";
 
-import getBpmnWindowMenu from '../bpmn/getBpmnWindowMenu';
+import getBpmnWindowMenu from "../bpmn/getBpmnWindowMenu";
 
-import * as css from './BpmnEditor.less';
+import * as css from "./BpmnEditor.less";
 
-import { svgToImage } from '@bpmn-io/svg-to-image';
+import { svgToImage } from "@bpmn-io/svg-to-image";
 
-import applyDefaultTemplates from '../bpmn-shared/modeler/features/apply-default-templates/applyDefaultTemplates';
+import applyDefaultTemplates from "../bpmn-shared/modeler/features/apply-default-templates/applyDefaultTemplates";
 
-import configureModeler from '../bpmn-shared/util/configure';
+import configureModeler from "../bpmn-shared/util/configure";
 
-import Metadata from '../../../util/Metadata';
+import Metadata from "../../../util/Metadata";
 
-import { GridBehavior } from '../util/grid';
+import { GridBehavior } from "../util/grid";
 
-import {
-  EngineProfile,
-  getEngineProfileFromBpmn
-} from '../EngineProfile';
+import { EngineProfile, getEngineProfileFromBpmn } from "../EngineProfile";
 
-import EngineProfileHelper from '../EngineProfileHelper';
+import EngineProfileHelper from "../EngineProfileHelper";
 
-import {
-  ENGINES
-} from '../../../util/Engines';
+import { ENGINES } from "../../../util/Engines";
 
-import { getCloudTemplates } from '../../../util/elementTemplates';
+import { getCloudTemplates } from "../../../util/elementTemplates";
 
-const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
+const EXPORT_AS = ["png", "jpeg", "svg"];
 
 export const DEFAULT_ENGINE_PROFILE = {
-  executionPlatform: ENGINES.CLOUD
+  executionPlatform: ENGINES.CLOUD,
 };
 
 const LOW_PRIORITY = 500;
 
-
 export class BpmnEditor extends CachedComponent {
-
   constructor(props) {
     super(props);
 
@@ -85,7 +72,9 @@ export class BpmnEditor extends CachedComponent {
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
 
-    this.handleEngineProfileChangeDebounced = debounce(this.handleEngineProfileChange);
+    this.handleEngineProfileChangeDebounced = debounce(
+      this.handleEngineProfileChange,
+    );
 
     this.engineProfile = new EngineProfileHelper({
       get: () => {
@@ -98,27 +87,24 @@ export class BpmnEditor extends CachedComponent {
       set: (engineProfile) => {
         const modeler = this.getModeler();
 
-        const canvas = modeler.get('canvas'),
-              modeling = modeler.get('modeling');
+        const canvas = modeler.get("canvas"),
+          modeling = modeler.get("modeling");
 
         const definitions = modeler.getDefinitions();
 
-        const {
-          executionPlatform,
-          executionPlatformVersion
-        } = engineProfile;
+        const { executionPlatform, executionPlatformVersion } = engineProfile;
 
         modeling.updateModdleProperties(canvas.getRootElement(), definitions, {
-          'modeler:executionPlatform': executionPlatform,
-          'modeler:executionPlatformVersion': executionPlatformVersion
+          "modeler:executionPlatform": executionPlatform,
+          "modeler:executionPlatformVersion": executionPlatformVersion,
         });
 
-        this.props.onAction('emit-event', {
-          type: 'tab.engineProfileChanged',
+        this.props.onAction("emit-event", {
+          type: "tab.engineProfileChanged",
           payload: {
             executionPlatform,
-            executionPlatformVersion
-          }
+            executionPlatformVersion,
+          },
         });
       },
       getCached: () => this.getCached(),
@@ -126,48 +112,46 @@ export class BpmnEditor extends CachedComponent {
         this.handleEngineProfileChangeDebounced({ engineProfile });
 
         this.setCached({ engineProfile });
-      }
+      },
     });
 
     this.gridBehavior = new GridBehavior({
-      getDiagram: () => this.getModeler()
+      getDiagram: () => this.getModeler(),
     });
 
     this.handleResize = debounce(this.handleResize);
 
     this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
 
-    this.handlePropertiesPanelLayoutChange = this.handlePropertiesPanelLayoutChange.bind(this);
+    this.handlePropertiesPanelLayoutChange =
+      this.handlePropertiesPanelLayoutChange.bind(this);
     this.handleLayoutChange = this.handleLayoutChange.bind(this);
   }
 
   async componentDidMount() {
     this._isMounted = true;
 
-    const {
-      layout
-    } = this.props;
+    const { layout } = this.props;
 
     const modeler = this.getModeler();
 
-    this.listen('on');
+    this.listen("on");
 
     modeler.attachTo(this.ref.current);
 
-    const minimap = modeler.get('minimap');
+    const minimap = modeler.get("minimap");
 
     minimap.toggle(layout.minimap?.open === true);
 
     this.gridBehavior.update(layout);
 
-    const propertiesPanel = modeler.get('propertiesPanel');
+    const propertiesPanel = modeler.get("propertiesPanel");
 
     if (layout.propertiesPanel) {
       propertiesPanel.setLayout(layout.propertiesPanel);
     }
 
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
-
 
     try {
       await this.loadTemplates();
@@ -183,11 +167,11 @@ export class BpmnEditor extends CachedComponent {
 
     const modeler = this.getModeler();
 
-    this.listen('off');
+    this.listen("off");
 
     modeler.detach();
 
-    const propertiesPanel = modeler.get('propertiesPanel');
+    const propertiesPanel = modeler.get("propertiesPanel");
 
     propertiesPanel.detach();
   }
@@ -203,7 +187,9 @@ export class BpmnEditor extends CachedComponent {
     // }
 
     if (prevProps.linting !== this.props.linting) {
-      this.getModeler().get('linting').setErrors(this.props.linting || []);
+      this.getModeler()
+        .get("linting")
+        .setErrors(this.props.linting || []);
     }
 
     if (prevProps.file !== this.props.file) {
@@ -214,15 +200,15 @@ export class BpmnEditor extends CachedComponent {
 
     const { panel = {} } = layout;
 
-    if (panel.open && panel.tab === 'linting') {
-      this.getModeler().get('linting').activate();
-    } else if (!panel.open || panel.tab !== 'linting') {
-      this.getModeler().get('linting').deactivate();
+    if (panel.open && panel.tab === "linting") {
+      this.getModeler().get("linting").activate();
+    } else if (!panel.open || panel.tab !== "linting") {
+      this.getModeler().get("linting").deactivate();
     }
 
     if (isPropertiesPanelLayoutChanged(prevProps, this.props)) {
       const modeler = this.getModeler();
-      const propertiesPanel = modeler.get('propertiesPanel');
+      const propertiesPanel = modeler.get("propertiesPanel");
 
       propertiesPanel.setLayout(this.props.layout.propertiesPanel);
     }
@@ -233,40 +219,47 @@ export class BpmnEditor extends CachedComponent {
   listen(fn) {
     const modeler = this.getModeler();
 
-    modeler[fn]('attach', this.handleAttach);
+    modeler[fn]("attach", this.handleAttach);
 
     [
-      'import.done',
-      'saveXML.done',
-      'commandStack.changed',
-      'selection.changed',
-      'attach',
-      'elements.copied',
-      'propertiesPanel.focusin',
-      'propertiesPanel.focusout',
-      'canvas.focus.changed'
+      "import.done",
+      "saveXML.done",
+      "commandStack.changed",
+      "selection.changed",
+      "attach",
+      "elements.copied",
+      "propertiesPanel.focusin",
+      "propertiesPanel.focusout",
+      "canvas.focus.changed",
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
 
-    modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
+    modeler[fn]("elementTemplates.errors", this.handleElementTemplateErrors);
 
-    modeler[fn]('error', 1500, this.handleError);
+    modeler[fn]("error", 1500, this.handleError);
 
-    modeler[fn]('minimap.toggle', this.handleMinimapToggle);
+    modeler[fn]("minimap.toggle", this.handleMinimapToggle);
 
-    modeler[fn]('propertiesPanel.layoutChanged', this.handlePropertiesPanelLayoutChange);
+    modeler[fn](
+      "propertiesPanel.layoutChanged",
+      this.handlePropertiesPanelLayoutChange,
+    );
 
-    if (fn === 'on') {
-      modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
-    } else if (fn === 'off') {
-      modeler[ fn ]('commandStack.changed', this.handleLintingDebounced);
+    if (fn === "on") {
+      modeler[fn](
+        "commandStack.changed",
+        LOW_PRIORITY,
+        this.handleLintingDebounced,
+      );
+    } else if (fn === "off") {
+      modeler[fn]("commandStack.changed", this.handleLintingDebounced);
     }
   }
 
   handlePropertiesPanelLayoutChange(e) {
     this.handleLayoutChange({
-      propertiesPanel: e.layout
+      propertiesPanel: e.layout,
     });
   }
 
@@ -277,11 +270,11 @@ export class BpmnEditor extends CachedComponent {
       return;
     }
 
-    const elementTemplates = this.getModeler().get('elementTemplates');
+    const elementTemplates = this.getModeler().get("elementTemplates");
 
     const engines = {
       ...elementTemplates.getEngines(),
-      camunda: version
+      camunda: version,
     };
 
     elementTemplates.setEngines(engines);
@@ -292,9 +285,9 @@ export class BpmnEditor extends CachedComponent {
 
     const modeler = this.getModeler();
 
-    const templatesLoader = modeler.get('elementTemplatesLoader');
+    const templatesLoader = modeler.get("elementTemplatesLoader");
 
-    let templates = await getConfig('bpmn.elementTemplates');
+    let templates = await getConfig("bpmn.elementTemplates");
 
     templatesLoader.setTemplates(getCloudTemplates(templates));
   }
@@ -302,39 +295,35 @@ export class BpmnEditor extends CachedComponent {
   undo = () => {
     const modeler = this.getModeler();
 
-    modeler.get('commandStack').undo();
+    modeler.get("commandStack").undo();
   };
 
   redo = () => {
     const modeler = this.getModeler();
 
-    modeler.get('commandStack').redo();
+    modeler.get("commandStack").redo();
   };
 
   handleAlignElements = (type) => {
-    this.triggerAction('alignElements', {
-      type
+    this.triggerAction("alignElements", {
+      type,
     });
   };
 
   handleMinimapToggle = (event) => {
     this.handleLayoutChange({
       minimap: {
-        open: event.open
-      }
+        open: event.open,
+      },
     });
   };
 
   handleElementTemplateErrors = (event) => {
-    const {
-      onWarning
-    } = this.props;
+    const { onWarning } = this.props;
 
-    const {
-      errors
-    } = event;
+    const { errors } = event;
 
-    errors.forEach(error => {
+    errors.forEach((error) => {
       onWarning({ message: error.message });
     });
   };
@@ -342,35 +331,25 @@ export class BpmnEditor extends CachedComponent {
   handleAttach = (event) => {
     const modeler = this.getModeler();
 
-    modeler.get('canvas').focus();
+    modeler.get("canvas").focus();
   };
 
   handleError = (event) => {
-    const {
-      error
-    } = event;
+    const { error } = event;
 
-    const {
-      onError
-    } = this.props;
+    const { onError } = this.props;
 
     onError(error);
   };
 
   handleImport = (error, warnings) => {
-    const {
-      isNew,
-      onImport,
-      xml
-    } = this.props;
+    const { isNew, onImport, xml } = this.props;
 
-    let {
-      defaultTemplatesApplied
-    } = this.getCached();
+    let { defaultTemplatesApplied } = this.getCached();
 
     const modeler = this.getModeler();
 
-    const commandStack = modeler.get('commandStack');
+    const commandStack = modeler.get("commandStack");
 
     const stackIdx = commandStack._stackIdx;
 
@@ -398,25 +377,25 @@ export class BpmnEditor extends CachedComponent {
       this.setCached({
         defaultTemplatesApplied: false,
         engineProfile: null,
-        lastXML: null
+        lastXML: null,
       });
     } else {
       this.setCached({
         defaultTemplatesApplied,
         engineProfile,
         lastXML: xml,
-        stackIdx
+        stackIdx,
       });
 
       if (engineProfile) {
         const { executionPlatform, executionPlatformVersion } = engineProfile;
 
-        this.props.onAction('emit-event', {
-          type: 'tab.engineProfileChanged',
+        this.props.onAction("emit-event", {
+          type: "tab.engineProfileChanged",
           payload: {
             executionPlatform,
-            executionPlatformVersion
-          }
+            executionPlatformVersion,
+          },
         });
       }
     }
@@ -430,7 +409,7 @@ export class BpmnEditor extends CachedComponent {
     }
 
     this.setState({
-      importing: false
+      importing: false,
     });
 
     onImport(error, warnings);
@@ -439,20 +418,18 @@ export class BpmnEditor extends CachedComponent {
   handleChanged = () => {
     const modeler = this.getModeler();
 
-    const {
-      onChanged
-    } = this.props;
+    const { onChanged } = this.props;
 
     const dirty = this.isDirty();
 
-    const commandStack = modeler.get('commandStack');
-    const selection = modeler.get('selection');
+    const commandStack = modeler.get("commandStack");
+    const selection = modeler.get("selection");
 
     const selectionLength = selection.get().length;
 
     const inputActive = isInputActive();
 
-    const canvasFocused = modeler.get('canvas').isFocused();
+    const canvasFocused = modeler.get("canvas").isFocused();
 
     const newState = {
       align: selectionLength > 1,
@@ -479,7 +456,7 @@ export class BpmnEditor extends CachedComponent {
       moveToOrigin: canvasFocused,
       moveSelection: canvasFocused && !!selectionLength,
       paste: true,
-      platform: 'cloud',
+      platform: "cloud",
       propertiesPanel: true,
       grid: this.gridBehavior.hasGrid(),
       redo: canvasFocused && commandStack.canRedo(),
@@ -490,7 +467,7 @@ export class BpmnEditor extends CachedComponent {
       setColor: !!selectionLength,
       spaceTool: canvasFocused,
       undo: canvasFocused && commandStack.canUndo(),
-      zoom: true
+      zoom: true,
     };
 
     // ensure backwards compatibility
@@ -511,7 +488,7 @@ export class BpmnEditor extends CachedComponent {
         ...newState,
         contextMenu,
         editMenu,
-        windowMenu
+        windowMenu,
       });
     }
 
@@ -522,16 +499,12 @@ export class BpmnEditor extends CachedComponent {
 
       this.engineProfile.setCached(engineProfile);
     } catch (err) {
-
       // TODO
     }
   };
 
   handleLinting = (engineProfileOverride) => {
-    const {
-      engineProfile: cachedEngineProfile,
-      modeler
-    } = this.getCached();
+    const { engineProfile: cachedEngineProfile, modeler } = this.getCached();
 
     const engineProfile = engineProfileOverride || cachedEngineProfile;
 
@@ -543,20 +516,17 @@ export class BpmnEditor extends CachedComponent {
 
     const { onAction } = this.props;
 
-    onAction('lint-tab', { contents });
+    onAction("lint-tab", { contents });
   };
 
   isLintingActive = () => {
-    return this.getModeler().get('linting').isActive();
+    return this.getModeler().get("linting").isActive();
   };
 
   isDirty() {
-    const {
-      modeler,
-      stackIdx
-    } = this.getCached();
+    const { modeler, stackIdx } = this.getCached();
 
-    const commandStack = modeler.get('commandStack');
+    const commandStack = modeler.get("commandStack");
 
     return commandStack._stackIdx !== stackIdx;
   }
@@ -572,43 +542,36 @@ export class BpmnEditor extends CachedComponent {
   }
 
   isImportNeeded(prevProps) {
-    const {
-      importing
-    } = this.state;
+    const { importing } = this.state;
 
     if (importing) {
       return false;
     }
 
-    const {
-      xml
-    } = this.props;
+    const { xml } = this.props;
 
     if (prevProps && prevProps.xml === xml) {
       return false;
     }
 
-    const {
-      lastXML
-    } = this.getCached();
+    const { lastXML } = this.getCached();
 
     return xml !== lastXML;
   }
 
   async importXML(xml) {
     this.setState({
-      importing: true
+      importing: true,
     });
 
     const modeler = this.getModeler();
 
-    let error = null, warnings = null;
+    let error = null,
+      warnings = null;
     try {
-
       const result = await modeler.importXML(xml);
       warnings = result.warnings;
     } catch (err) {
-
       error = err;
       warnings = err.warnings;
     }
@@ -622,20 +585,15 @@ export class BpmnEditor extends CachedComponent {
    * @returns {BpmnModeler}
    */
   getModeler() {
-    const {
-      modeler
-    } = this.getCached();
+    const { modeler } = this.getCached();
 
     return modeler;
   }
 
   async getXML() {
-    const {
-      lastXML,
-      modeler
-    } = this.getCached();
+    const { lastXML, modeler } = this.getCached();
 
-    const commandStack = modeler.get('commandStack');
+    const commandStack = modeler.get("commandStack");
 
     if (!this.isDirty()) {
       return lastXML || this.props.xml;
@@ -667,11 +625,11 @@ export class BpmnEditor extends CachedComponent {
       return Promise.reject(error);
     }
 
-    if (type === 'svg') {
+    if (type === "svg") {
       return svg;
     }
 
-    return svgToImage(svg, { imageType: type, outputFormat: 'dataUrl' });
+    return svgToImage(svg, { imageType: type, outputFormat: "dataUrl" });
   }
 
   async exportSVG() {
@@ -682,110 +640,102 @@ export class BpmnEditor extends CachedComponent {
 
       return svg;
     } catch (err) {
-
       return Promise.reject(err);
     }
   }
 
   triggerAction = (action, context = {}) => {
-    const {
-      layout = {}
-    } = this.props;
+    const { layout = {} } = this.props;
 
-    const {
-      propertiesPanel: propertiesPanelLayout = {}
-    } = layout;
+    const { propertiesPanel: propertiesPanelLayout = {} } = layout;
 
     const modeler = this.getModeler();
 
-    if (action === 'resize') {
+    if (action === "resize") {
       return this.handleResize();
     }
 
-    if (action === 'toggleGrid') {
+    if (action === "toggleGrid") {
       return this.gridBehavior.toggleGrid(layout, this.handleLayoutChange);
     }
 
-    if (action === 'toggleProperties') {
+    if (action === "toggleProperties") {
       const newLayout = {
         propertiesPanel: {
           ...PROPERTIES_PANEL_DEFAULT_LAYOUT,
           ...propertiesPanelLayout,
-          open: !propertiesPanelLayout.open
-        }
+          open: !propertiesPanelLayout.open,
+        },
       };
 
       return this.handleLayoutChange(newLayout);
     }
 
-    if (action === 'zoomIn') {
-      action = 'stepZoom';
+    if (action === "zoomIn") {
+      action = "stepZoom";
 
       context = {
-        value: 1
+        value: 1,
       };
     }
 
-    if (action === 'zoomOut') {
-      action = 'stepZoom';
+    if (action === "zoomOut") {
+      action = "stepZoom";
 
       context = {
-        value: -1
+        value: -1,
       };
     }
 
-    if (action === 'resetZoom') {
-      action = 'zoom';
+    if (action === "resetZoom") {
+      action = "zoom";
 
       context = {
-        value: 1
+        value: 1,
       };
     }
 
-    if (action === 'zoomFit') {
-      action = 'zoom';
+    if (action === "zoomFit") {
+      action = "zoom";
 
       context = {
-        value: 'fit-viewport'
+        value: "fit-viewport",
       };
     }
 
-    if (action === 'showLintError') {
-      this.getModeler().get('linting').showError(context);
+    if (action === "showLintError") {
+      this.getModeler().get("linting").showError(context);
 
       return;
     }
 
-    if (action === 'elementTemplates.reload') {
+    if (action === "elementTemplates.reload") {
       return this.loadTemplates();
     }
 
-    if (action === 'resources.reload') {
-      return modeler.get('resources.resourceLoader').reload();
+    if (action === "resources.reload") {
+      return modeler.get("resources.resourceLoader").reload();
     }
 
     // TODO(nikku): handle all editor actions
-    return modeler.get('editorActions').trigger(action, context);
+    return modeler.get("editorActions").trigger(action, context);
   };
 
   handleSetColor = (fill, stroke) => {
-    this.triggerAction('setColor', {
+    this.triggerAction("setColor", {
       fill,
-      stroke
+      stroke,
     });
   };
 
   handleDistributeElements = (type) => {
-    this.triggerAction('distributeElements', {
-      type
+    this.triggerAction("distributeElements", {
+      type,
     });
   };
 
   handleContextMenu = (event) => {
-
-    const {
-      onContextMenu
-    } = this.props;
+    const { onContextMenu } = this.props;
 
     if (isFunction(onContextMenu)) {
       onContextMenu(event);
@@ -793,9 +743,7 @@ export class BpmnEditor extends CachedComponent {
   };
 
   handleLayoutChange(newLayout) {
-    const {
-      onLayoutChanged
-    } = this.props;
+    const { onLayoutChanged } = this.props;
 
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged(newLayout);
@@ -805,11 +753,11 @@ export class BpmnEditor extends CachedComponent {
   handleResize = () => {
     const modeler = this.getModeler();
 
-    const canvas = modeler.get('canvas');
-    const eventBus = modeler.get('eventBus');
+    const canvas = modeler.get("canvas");
+    const eventBus = modeler.get("eventBus");
 
     canvas.resized();
-    eventBus.fire('propertiesPanel.resized');
+    eventBus.fire("propertiesPanel.resized");
   };
 
   render() {
@@ -819,138 +767,133 @@ export class BpmnEditor extends CachedComponent {
 
     const modeler = this.getModeler();
     const imported = modeler.getDefinitions();
-    const injector = modeler.get('injector');
+    const injector = modeler.get("injector");
 
-    const {
-      importing
-    } = this.state;
+    const { importing } = this.state;
 
     return (
-      <div className={ css.BpmnEditor }>
-
-        <Loader hidden={ imported && !importing } />
+      <div className={css.BpmnEditor}>
+        <Loader hidden={imported && !importing} />
 
         <div className="editor">
           <div
             className="diagram"
-            ref={ this.ref }
-            onFocus={ this.handleChanged }
-            onContextMenu={ this.handleContextMenu }
+            ref={this.ref}
+            onFocus={this.handleChanged}
+            onContextMenu={this.handleContextMenu}
           ></div>
 
           <PropertiesPanelContainer
-            ref={ this.propertiesPanelRef }
-            layout={ layout }
-            onLayoutChanged={ this.handleLayoutChange } />
+            ref={this.propertiesPanelRef}
+            layout={layout}
+            onLayoutChanged={this.handleLayoutChange}
+          />
         </div>
 
-        { engineProfile && <EngineProfile
-          type="bpmn"
-          engineProfile={ engineProfile }
-          onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
-        }
+        {engineProfile && (
+          <EngineProfile
+            type="bpmn"
+            engineProfile={engineProfile}
+            onChange={(engineProfile) => this.engineProfile.set(engineProfile)}
+          />
+        )}
 
         <TaskTestingTab
-          config={ this.props.config }
-          deployment={ this.props.deployment }
-          file={ this.props.file }
-          id={ this.props.id }
-          injector={ injector }
-          layout={ layout }
-          onAction={ onAction }
-          startInstance={ this.props.startInstance }
-          zeebeApi={ this.props.zeebeApi } />
+          config={this.props.config}
+          deployment={this.props.deployment}
+          file={this.props.file}
+          id={this.props.id}
+          injector={injector}
+          layout={layout}
+          onAction={onAction}
+          startInstance={this.props.startInstance}
+          zeebeApi={this.props.zeebeApi}
+        />
 
         <VariableTab
-          id={ this.props.id }
-          injector={ injector }
-          layout={ layout }
-          onAction={ onAction } />
+          id={this.props.id}
+          injector={injector}
+          layout={layout}
+          onAction={onAction}
+        />
       </div>
     );
   }
 
   static createCachedState(props) {
+    const { name, version } = Metadata;
 
-    const {
-      name,
-      version
-    } = Metadata;
-
-    const {
-      getPlugins,
-      onAction,
-      onError,
-      layout = {},
-      settings
-    } = props;
+    const { getPlugins, onAction, onError, layout = {}, settings } = props;
 
     // notify interested parties that modeler will be configured
     const handleMiddlewareExtensions = (middlewares) => {
-      onAction('emit-event', {
-        type: 'bpmn.modeler.configure',
+      onAction("emit-event", {
+        type: "bpmn.modeler.configure",
         payload: {
-          middlewares
-        }
+          middlewares,
+        },
       });
     };
 
-    const {
-      options,
-      warnings
-    } = configureModeler(getPlugins, {
-      exporter: {
-        name,
-        version
+    const { options, warnings } = configureModeler(
+      getPlugins,
+      {
+        exporter: {
+          name,
+          version,
+        },
+        settings,
       },
-      settings
-    }, handleMiddlewareExtensions, 'cloud');
+      handleMiddlewareExtensions,
+      "cloud",
+    );
 
     if (warnings.length && isFunction(onError)) {
       onError(
-        'Problem(s) configuring BPMN editor: \n\t' +
-        warnings.map(error => error.message).join('\n\t') +
-        '\n'
+        "Problem(s) configuring BPMN editor: \n\t" +
+          warnings.map((error) => error.message).join("\n\t") +
+          "\n",
       );
     }
 
     const modeler = new BpmnModeler({
       ...options,
-      position: 'absolute',
-      changeTemplateCommand: 'propertiesPanel.zeebe.changeTemplate',
+      position: "absolute",
+      changeTemplateCommand: "propertiesPanel.zeebe.changeTemplate",
       linting: {
-        active: layout.panel && layout.panel.open && layout.panel.tab === 'linting'
+        active:
+          layout.panel && layout.panel.open && layout.panel.tab === "linting",
       },
       propertiesPanel: {
-        feelTooltipContainer: '.editor',
-        feelPopupContainer: '.bjs-container',
-        layout: layout.propertiesPanel
+        feelTooltipContainer: ".editor",
+        feelPopupContainer: ".bjs-container",
+        layout: layout.propertiesPanel,
       },
       elementTemplateChooser: false,
       keyboard: {
-        bind: false
+        bind: false,
       },
       elementTemplates: {
         engines: {
-          camundaDesktopModeler: version
-        }
-      }
+          camundaDesktopModeler: version,
+        },
+      },
     });
 
-    modeler.on('elementTemplates.errors', (event) => {
-      console.warn('Element templates errors', event.errors);
+    modeler.on("elementTemplates.errors", (event) => {
+      console.warn("Element templates errors", event.errors);
     });
 
-    const commandStack = modeler.get('commandStack');
+    const commandStack = modeler.get("commandStack");
 
     const stackIdx = commandStack._stackIdx;
 
     // notify interested parties that modeler was created
-    onAction('emit-event', {
-      type: 'bpmn.modeler.created',
+    onAction("emit-event", {
+      type: "bpmn.modeler.created",
       payload: {
-        modeler
-      }
+        modeler,
+      },
     });
 
     return {
@@ -961,12 +904,10 @@ export class BpmnEditor extends CachedComponent {
       lastXML: null,
       modeler,
       stackIdx,
-      templatesLoaded: false
+      templatesLoaded: false,
     };
   }
-
 }
-
 
 export default WithCache(WithCachedState(BpmnEditor));
 
@@ -977,7 +918,6 @@ function isCacheStateChanged(prevProps, props) {
 }
 
 function isPropertiesPanelLayoutChanged(prevProps, props) {
-
   // same Object
   if (props.layout === prevProps.layout) {
     return false;
@@ -989,5 +929,8 @@ function isPropertiesPanelLayoutChanged(prevProps, props) {
   }
 
   // check JSON equality
-  return JSON.stringify(prevProps.layout.propertiesPanel) !== JSON.stringify(props.layout.propertiesPanel);
+  return (
+    JSON.stringify(prevProps.layout.propertiesPanel) !==
+    JSON.stringify(props.layout.propertiesPanel)
+  );
 }

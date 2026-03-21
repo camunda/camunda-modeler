@@ -71,10 +71,10 @@ export default class SlotFillRoot extends PureComponent {
               const isSame = sameFill(fill, newFill);
               console.log(
                 `[slot-fill] addFill id=${id} slot=${newFill.props?.slot} sameFill=${isSame}`,
-                '(updating fill)'
+                "(updating fill)",
               );
             }
-            
+
             // Always return new fill to get updated children
             return newFill;
           }
@@ -129,7 +129,10 @@ export default class SlotFillRoot extends PureComponent {
   }
 
   _trackDebugRegistration(fill) {
-    const current = this._debugRegistrations.get(fill.id) || { count: 0, timeout: null };
+    const current = this._debugRegistrations.get(fill.id) || {
+      count: 0,
+      timeout: null,
+    };
 
     current.count++;
 
@@ -159,8 +162,8 @@ function sameFill(a, b) {
   const bProps = b.props || {};
 
   // Get keys excluding 'children' which changes on every render
-  const aKeys = Object.keys(aProps).filter(key => key !== 'children');
-  const bKeys = Object.keys(bProps).filter(key => key !== 'children');
+  const aKeys = Object.keys(aProps).filter((key) => key !== "children");
+  const bKeys = Object.keys(bProps).filter((key) => key !== "children");
 
   if (aKeys.length !== bKeys.length) {
     return false;
@@ -224,7 +227,9 @@ function getDebugLabel(props) {
     props.group,
     props.label,
     summarizeFillValue(props.children),
-  ].filter(Boolean).join("|");
+  ]
+    .filter(Boolean)
+    .join("|");
 }
 
 function summarizeFillValue(value) {

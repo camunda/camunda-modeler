@@ -8,10 +8,9 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent, Fragment } from "react";
 
-import SlotContext from './SlotContext';
-
+import SlotContext from "./SlotContext";
 
 /**
  * A slot that may be filled by fills.
@@ -42,12 +41,11 @@ import SlotContext from './SlotContext';
  * ```
  */
 export default class Slot extends PureComponent {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      fills: []
+      fills: [],
     };
   }
 
@@ -64,17 +62,20 @@ export default class Slot extends PureComponent {
       name,
       group = groupFills,
       separator = nonSeparator,
-      Component
+      Component,
     } = this.props;
 
-    const {
-      fills
-    } = this.state;
+    const { fills } = this.state;
 
-    const filtered = fills.filter(fill => fill.props.slot === name);
+    const filtered = fills.filter((fill) => fill.props.slot === name);
 
     const replaced = filtered.reduce((replaced, fill) => {
-      if (!fill.props.name || !filtered.some(otherFill => otherFill.props.replaces === fill.props.name)) {
+      if (
+        !fill.props.name ||
+        !filtered.some(
+          (otherFill) => otherFill.props.replaces === fill.props.name,
+        )
+      ) {
         replaced.push(fill);
       }
 
@@ -93,7 +94,9 @@ export default class Slot extends PureComponent {
       return;
     }
 
-    const fills = slotContext.getFills ? slotContext.getFills() : slotContext.fills || [];
+    const fills = slotContext.getFills
+      ? slotContext.getFills()
+      : slotContext.fills || [];
 
     this.setState({ fills });
 
@@ -110,31 +113,29 @@ export default class Slot extends PureComponent {
       this._unsubscribeListener = null;
     }
   }
-
 }
 
 Slot.contextType = SlotContext;
 
-const fillFragment = (Component) => function FragmentFill(fill) {
-  const { id, props } = fill;
+const fillFragment = (Component) =>
+  function FragmentFill(fill) {
+    const { id, props } = fill;
 
-  if (!Component) {
-    return <Fragment key={ id }>{props.children}</Fragment>;
-  }
+    if (!Component) {
+      return <Fragment key={id}>{props.children}</Fragment>;
+    }
 
-  return <Component key={ id } { ...props } />;
-};
+    return <Component key={id} {...props} />;
+  };
 
 function nonSeparator(key) {
   return null;
 }
 
 function createFills(arrays, fillFn, separatorFn) {
-
   var result = [];
 
-  arrays.forEach(function(array, idx) {
-
+  arrays.forEach(function (array, idx) {
     if (idx !== 0) {
       const separator = separatorFn(`__separator_${idx}`);
 
@@ -143,7 +144,7 @@ function createFills(arrays, fillFn, separatorFn) {
       }
     }
 
-    array.forEach(function(fill) {
+    array.forEach(function (fill) {
       result.push(fillFn(fill));
     });
   });
@@ -159,16 +160,12 @@ function createFills(arrays, fillFn, separatorFn) {
  * @return {Array<Array<Component>>} grouped fills
  */
 function groupFills(fills) {
-
   const groups = [];
 
   const groupsById = {};
 
-  fills.forEach(function(fill) {
-
-    const {
-      group: groupName = 'z_default'
-    } = fill.props;
+  fills.forEach(function (fill) {
+    const { group: groupName = "z_default" } = fill.props;
 
     let group = groupsById[groupName];
 
@@ -181,11 +178,11 @@ function groupFills(fills) {
   });
 
   // sort within groups based on priority [default = 0]
-  groups.forEach(group => group.sort(comparePriority));
+  groups.forEach((group) => group.sort(comparePriority));
 
   return Object.keys(groupsById)
     .sort()
-    .map(id => groupsById[id]);
+    .map((id) => groupsById[id]);
 }
 
 function comparePriority(a, b) {

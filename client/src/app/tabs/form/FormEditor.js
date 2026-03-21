@@ -8,72 +8,62 @@
  * except in compliance with the MIT License.
  */
 
-import React, { createRef } from 'react';
+import React, { createRef } from "react";
 
-import { isFunction, keys } from 'min-dash';
+import { isFunction, keys } from "min-dash";
 
-import debounce from '../../../util/debounce';
+import debounce from "../../../util/debounce";
 
-import {
-  WithCache,
-  WithCachedState,
-  CachedComponent
-} from '../../cached';
+import { WithCache, WithCachedState, CachedComponent } from "../../cached";
 
-import { Loader } from '../../primitives';
+import { Loader } from "../../primitives";
 
-import * as css from './FormEditor.less';
+import * as css from "./FormEditor.less";
 
-import { getFormEditMenu } from './getFormEditMenu';
+import { getFormEditMenu } from "./getFormEditMenu";
 
-import { getFormWindowMenu } from './getFormWindowMenu';
+import { getFormWindowMenu } from "./getFormWindowMenu";
 
-import { active as isInputActive } from '../../../util/dom/isInput';
+import { active as isInputActive } from "../../../util/dom/isInput";
 
-import { FormPlayground as Form } from './editor/FormEditor';
+import { FormPlayground as Form } from "./editor/FormEditor";
 
-import Metadata from '../../../util/Metadata';
+import Metadata from "../../../util/Metadata";
 
-import {
-  EngineProfile,
-  getEngineProfileFromForm
-} from '../EngineProfile';
+import { EngineProfile, getEngineProfileFromForm } from "../EngineProfile";
 
-import EngineProfileHelper from '../EngineProfileHelper';
+import EngineProfileHelper from "../EngineProfileHelper";
 
-import { ENGINES } from '../../../util/Engines';
+import { ENGINES } from "../../../util/Engines";
 
-import { FormPreviewToggle } from './FormPreviewToggle';
+import { FormPreviewToggle } from "./FormPreviewToggle";
 
 const LOW_PRIORITY = 500;
 
 export const DEFAULT_ENGINE_PROFILE = {
-  executionPlatform: ENGINES.PLATFORM
+  executionPlatform: ENGINES.PLATFORM,
 };
 
-const FORM_LAYOUT_KEY = 'formEditor';
+const FORM_LAYOUT_KEY = "formEditor";
 
 const DEFAULT_LAYOUT = {
-  'form-preview': { open: false },
-  'form-input': { open: false },
-  'form-output': { open: false }
+  "form-preview": { open: false },
+  "form-input": { open: false },
+  "form-output": { open: false },
 };
 
 export const FORM_PREVIEW_TRIGGER = {
-  KEYBOARD_SHORTCUT: 'keyboardShortcut',
-  PREVIEW_PANEL: 'previewPanel',
-  STATUS_BAR: 'statusBar',
-  WINDOW_MENU: 'windowMenu'
+  KEYBOARD_SHORTCUT: "keyboardShortcut",
+  PREVIEW_PANEL: "previewPanel",
+  STATUS_BAR: "statusBar",
+  WINDOW_MENU: "windowMenu",
 };
-
 
 export class FormEditor extends CachedComponent {
   constructor(props) {
     super(props);
 
-    const {
-      layout = {}
-    } = props;
+    const { layout = {} } = props;
 
     this.ref = createRef();
 
@@ -82,7 +72,7 @@ export class FormEditor extends CachedComponent {
       lastInputData: null,
       importing: false,
       previewOpen: isValidation(getInitialFormLayout(layout)),
-      triggeredBy: null
+      triggeredBy: null,
     };
 
     this.engineProfile = new EngineProfileHelper({
@@ -100,12 +90,12 @@ export class FormEditor extends CachedComponent {
 
         const root = editor._state.schema;
 
-        const modeling = editor.get('modeling');
+        const modeling = editor.get("modeling");
 
         modeling.editFormField(root, engineProfile);
       },
       getCached: () => this.getCached(),
-      setCached: (state) => this.setCached(state)
+      setCached: (state) => this.setCached(state),
     });
 
     this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
@@ -122,9 +112,8 @@ export class FormEditor extends CachedComponent {
       this.handlePlaygroundRendered();
       this.handleInitialPlaygroundLayout();
     } else {
-
       // wait for proper instantiation
-      form.on('formPlayground.rendered', this.handlePlaygroundRendered);
+      form.on("formPlayground.rendered", this.handlePlaygroundRendered);
     }
   }
 
@@ -136,9 +125,9 @@ export class FormEditor extends CachedComponent {
     form.detach();
 
     // notify current dragula instance to properly destroy from editor
-    form.getEditor().get('eventBus').fire('detach');
+    form.getEditor().get("eventBus").fire("detach");
 
-    this.listen('off');
+    this.listen("off");
   }
 
   componentDidUpdate(prevProps) {
@@ -184,13 +173,13 @@ export class FormEditor extends CachedComponent {
 
   async importSchema(schema) {
     this.setState({
-      importing: true
+      importing: true,
     });
 
     const { form } = this.getCached();
 
     let error = null,
-        warnings = null;
+      warnings = null;
 
     try {
       const schemaJSON = JSON.parse(schema);
@@ -223,14 +212,11 @@ export class FormEditor extends CachedComponent {
   handleImport(error, warnings) {
     const { form } = this.getCached();
 
-    const {
-      onImport,
-      xml: schema
-    } = this.props;
+    const { onImport, xml: schema } = this.props;
 
     const editor = form.getEditor();
 
-    const commandStack = editor.get('commandStack');
+    const commandStack = editor.get("commandStack");
 
     const stackIdx = commandStack._stackIdx;
 
@@ -245,20 +231,20 @@ export class FormEditor extends CachedComponent {
     if (error) {
       this.setCached({
         engineProfile: null,
-        lastSchema: null
+        lastSchema: null,
       });
     } else {
       this.setCached({
         engineProfile,
         lastSchema: schema,
-        stackIdx
+        stackIdx,
       });
 
       this.handleLinting(engineProfile);
     }
 
     this.setState({
-      importing: false
+      importing: false,
     });
 
     onImport(error, warnings);
@@ -270,115 +256,148 @@ export class FormEditor extends CachedComponent {
     const editor = form.getEditor();
 
     [
-      'attach',
-      'commandStack.changed',
-      'import.done',
-      'propertiesPanel.focusin',
-      'propertiesPanel.focusout',
-      'selection.changed'
-    ].forEach((event) => editor[ fn ](event, this.handleChanged));
+      "attach",
+      "commandStack.changed",
+      "import.done",
+      "propertiesPanel.focusin",
+      "propertiesPanel.focusout",
+      "selection.changed",
+    ].forEach((event) => editor[fn](event, this.handleChanged));
 
     this.handleDataEditorInteraction(fn);
     this.handleFormPreviewInteraction(fn);
 
-    if (fn === 'on') {
-      editor.on('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
-      form.on('formPlayground.layoutChanged', this.handlePlaygroundLayoutChanged);
-    } else if (fn === 'off') {
-      editor.off('commandStack.changed', this.handleLintingDebounced);
-      form.off('formPlayground.layoutChanged', this.handlePlaygroundLayoutChanged);
+    if (fn === "on") {
+      editor.on(
+        "commandStack.changed",
+        LOW_PRIORITY,
+        this.handleLintingDebounced,
+      );
+      form.on(
+        "formPlayground.layoutChanged",
+        this.handlePlaygroundLayoutChanged,
+      );
+    } else if (fn === "off") {
+      editor.off("commandStack.changed", this.handleLintingDebounced);
+      form.off(
+        "formPlayground.layoutChanged",
+        this.handlePlaygroundLayoutChanged,
+      );
     }
   }
 
   handleDataEditorInteractionStart = () => {
     this.setState({
-      lastInputData: this.getInputData()
+      lastInputData: this.getInputData(),
     });
   };
 
   handleDataEditorInteractionEnd = () => {
-    const {
-      onAction
-    } = this.props;
+    const { onAction } = this.props;
 
     const newData = this.getInputData();
 
     // fire event once data was touched (changed)
     if (this.state.lastInputData !== newData) {
-      onAction('emit-event', {
-        type: 'form.modeler.inputDataChanged'
+      onAction("emit-event", {
+        type: "form.modeler.inputDataChanged",
       });
     }
 
     this.setState({
-      lastInputData: null
+      lastInputData: null,
     });
   };
 
   handleDataEditorInteraction(fn) {
-    const dataEditorNode = this.ref.current.querySelector('.cfp-data-container');
+    const dataEditorNode = this.ref.current.querySelector(
+      ".cfp-data-container",
+    );
 
     if (!dataEditorNode) {
       return;
     }
 
-    if (fn === 'on') {
-      dataEditorNode.addEventListener('focusin', this.handleDataEditorInteractionStart);
-      dataEditorNode.addEventListener('focusout', this.handleDataEditorInteractionEnd);
+    if (fn === "on") {
+      dataEditorNode.addEventListener(
+        "focusin",
+        this.handleDataEditorInteractionStart,
+      );
+      dataEditorNode.addEventListener(
+        "focusout",
+        this.handleDataEditorInteractionEnd,
+      );
     } else {
-      dataEditorNode.removeEventListener('focusin', this.handleDataEditorInteractionStart);
-      dataEditorNode.removeEventListener('focusout', this.handleDataEditorInteractionEnd);
+      dataEditorNode.removeEventListener(
+        "focusin",
+        this.handleDataEditorInteractionStart,
+      );
+      dataEditorNode.removeEventListener(
+        "focusout",
+        this.handleDataEditorInteractionEnd,
+      );
     }
   }
 
   handleFormPreviewInteractionStart = () => {
     this.setState({
-      lastFormPreviewState: this.getFormPreviewState()
+      lastFormPreviewState: this.getFormPreviewState(),
     });
   };
 
   handleFormPreviewInteractionEnd = () => {
-    const {
-      onAction
-    } = this.props;
+    const { onAction } = this.props;
 
     const newformPreviewState = this.getFormPreviewState();
 
     // fire event once preview was touched (changed)
     if (this.state.lastFormPreviewState !== newformPreviewState) {
-      onAction('emit-event', {
-        type: 'form.modeler.previewChanged'
+      onAction("emit-event", {
+        type: "form.modeler.previewChanged",
       });
     }
 
     this.setState({
-      lastFormPreviewState: null
+      lastFormPreviewState: null,
     });
   };
 
   handleFormPreviewInteraction(fn) {
-    const formPreviewNode = this.ref.current.querySelector('.cfp-preview-container');
+    const formPreviewNode = this.ref.current.querySelector(
+      ".cfp-preview-container",
+    );
 
     if (!formPreviewNode) {
       return;
     }
 
-    if (fn === 'on') {
-      formPreviewNode.addEventListener('focusin', this.handleFormPreviewInteractionStart);
-      formPreviewNode.addEventListener('focusout', this.handleFormPreviewInteractionEnd);
+    if (fn === "on") {
+      formPreviewNode.addEventListener(
+        "focusin",
+        this.handleFormPreviewInteractionStart,
+      );
+      formPreviewNode.addEventListener(
+        "focusout",
+        this.handleFormPreviewInteractionEnd,
+      );
     } else {
-      formPreviewNode.removeEventListener('focusin', this.handleFormPreviewInteractionStart);
-      formPreviewNode.removeEventListener('focusout', this.handleFormPreviewInteractionEnd);
+      formPreviewNode.removeEventListener(
+        "focusin",
+        this.handleFormPreviewInteractionStart,
+      );
+      formPreviewNode.removeEventListener(
+        "focusout",
+        this.handleFormPreviewInteractionEnd,
+      );
     }
   }
 
   handleChanged = () => {
-
     const { onChanged } = this.props;
 
     const { form } = this.getCached();
 
-    const commandStack = form.getEditor().get('commandStack');
+    const commandStack = form.getEditor().get("commandStack");
 
     const inputActive = isInputActive() || formOutputFocused();
 
@@ -390,14 +409,14 @@ export class FormEditor extends CachedComponent {
       removeSelected: inputActive,
       save: true,
       selectAll: true,
-      undo: commandStack.canUndo()
+      undo: commandStack.canUndo(),
     };
 
     if (isFunction(onChanged)) {
       onChanged({
         ...newState,
         editMenu: getFormEditMenu(newState),
-        windowMenu: getFormWindowMenu(newState)
+        windowMenu: getFormWindowMenu(newState),
       });
     }
 
@@ -408,7 +427,6 @@ export class FormEditor extends CachedComponent {
 
       this.engineProfile.setCached(engineProfile);
     } catch (err) {
-
       // TODO
     }
   };
@@ -417,16 +435,15 @@ export class FormEditor extends CachedComponent {
     const { form } = this.getCached();
 
     this._isMounted = true;
-    this.listen('on');
+    this.listen("on");
 
     // notify current dragula instance to properly re-attach
-    form.getEditor().get('eventBus').fire('attach');
+    form.getEditor().get("eventBus").fire("attach");
 
     this.checkImport();
   };
 
   handleInitialPlaygroundLayout() {
-
     const { form } = this.getCached();
 
     const { layout } = this.props;
@@ -442,37 +459,33 @@ export class FormEditor extends CachedComponent {
   }
 
   handlePlaygroundLayoutChanged = (event) => {
-    const {
-      layout
-    } = event;
+    const { layout } = event;
 
-    const {
-      onAction,
-      onLayoutChanged
-    } = this.props;
+    const { onAction, onLayoutChanged } = this.props;
 
     // (1) persist layout in application
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged({
-        [FORM_LAYOUT_KEY]: layout
+        [FORM_LAYOUT_KEY]: layout,
       });
     }
 
     // (2) notify interested parties that playground layout has changed
-    onAction('emit-event', {
-      type: 'form.modeler.playgroundLayoutChanged',
+    onAction("emit-event", {
+      type: "form.modeler.playgroundLayoutChanged",
       payload: {
         layout,
 
         // assumption: everything else is internally triggered by the playground
-        triggeredBy: this.state.triggeredBy || FORM_PREVIEW_TRIGGER.PREVIEW_PANEL
-      }
+        triggeredBy:
+          this.state.triggeredBy || FORM_PREVIEW_TRIGGER.PREVIEW_PANEL,
+      },
     });
 
     // (3) toggle preview
     this.setState({
       previewOpen: isValidation(layout),
-      triggeredBy: null
+      triggeredBy: null,
     });
 
     // (4) update menus and others
@@ -480,16 +493,15 @@ export class FormEditor extends CachedComponent {
   };
 
   onTogglePreview = (open, context = {}) => {
-    const {
-      triggeredBy,
-      triggeredByShortcut
-    } = context;
+    const { triggeredBy, triggeredByShortcut } = context;
 
     const { form } = this.getCached();
     open ? form.open() : form.collapse();
 
     this.setState({
-      triggeredBy: triggeredByShortcut ? FORM_PREVIEW_TRIGGER.KEYBOARD_SHORTCUT : triggeredBy
+      triggeredBy: triggeredByShortcut
+        ? FORM_PREVIEW_TRIGGER.KEYBOARD_SHORTCUT
+        : triggeredBy,
     });
   };
 
@@ -498,7 +510,8 @@ export class FormEditor extends CachedComponent {
   onOpenPreview = (context) => this.onTogglePreview(true, context);
 
   handleLinting = (engineProfileOverride) => {
-    const engineProfile = engineProfileOverride || this.engineProfile.getCached();
+    const engineProfile =
+      engineProfileOverride || this.engineProfile.getCached();
 
     const { form } = this.getCached();
 
@@ -510,35 +523,27 @@ export class FormEditor extends CachedComponent {
 
     const { onAction } = this.props;
 
-    onAction('lint-tab', { contents });
+    onAction("lint-tab", { contents });
   };
 
   isDirty() {
-    const {
-      form,
-      stackIdx
-    } = this.getCached();
+    const { form, stackIdx } = this.getCached();
 
-    const commandStack = form.getEditor().get('commandStack');
+    const commandStack = form.getEditor().get("commandStack");
 
     return commandStack._stackIdx !== stackIdx;
   }
 
   getForm() {
-    const {
-      form
-    } = this.getCached();
+    const { form } = this.getCached();
 
     return form;
   }
 
   getXML() {
-    const {
-      form,
-      lastSchema
-    } = this.getCached();
+    const { form, lastSchema } = this.getCached();
 
-    const commandStack = form.getEditor().get('commandStack');
+    const commandStack = form.getEditor().get("commandStack");
 
     const stackIdx = commandStack._stackIdx;
 
@@ -550,24 +555,20 @@ export class FormEditor extends CachedComponent {
 
     this.setCached({
       lastSchema: schema,
-      stackIdx
+      stackIdx,
     });
 
     return schema;
   }
 
   getInputData() {
-    const {
-      form
-    } = this.getCached();
+    const { form } = this.getCached();
 
     return form.getDataEditor().getValue();
   }
 
   getFormPreviewState() {
-    const {
-      form
-    } = this.getCached();
+    const { form } = this.getCached();
 
     return form.getForm()._getState();
   }
@@ -575,11 +576,11 @@ export class FormEditor extends CachedComponent {
   triggerAction(action, context) {
     const { form } = this.getCached();
 
-    if (action === 'collapsePreview') {
+    if (action === "collapsePreview") {
       return this.onCollapsePreview(context);
     }
 
-    if (action === 'openPreview') {
+    if (action === "openPreview") {
       return this.onOpenPreview(context);
     }
 
@@ -588,10 +589,10 @@ export class FormEditor extends CachedComponent {
       return;
     }
 
-    const editorActions = form.getEditor().get('editorActions');
+    const editorActions = form.getEditor().get("editorActions");
 
-    if (action === 'showLintError') {
-      editorActions.trigger('selectFormField', context);
+    if (action === "showLintError") {
+      editorActions.trigger("selectFormField", context);
     }
 
     if (editorActions.isRegistered(action)) {
@@ -602,60 +603,50 @@ export class FormEditor extends CachedComponent {
   render() {
     const engineProfile = this.engineProfile.getCached();
 
-    const {
-      importing,
-      previewOpen
-    } = this.state;
+    const { importing, previewOpen } = this.state;
 
     return (
-      <div className={ css.FormEditor }>
-        <Loader hidden={ !importing } />
+      <div className={css.FormEditor}>
+        <Loader hidden={!importing} />
 
-        <div
-          className="form"
-          onFocus={ this.handleChanged }
-          ref={ this.ref }
-        ></div>
+        <div className="form" onFocus={this.handleChanged} ref={this.ref}></div>
 
-        { engineProfile && <EngineProfile
-          engineProfile={ engineProfile }
-          onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } /> }
+        {engineProfile && (
+          <EngineProfile
+            engineProfile={engineProfile}
+            onChange={(engineProfile) => this.engineProfile.set(engineProfile)}
+          />
+        )}
 
         <FormPreviewToggle
-          previewOpen={ previewOpen }
-          onCollapsePreview={ this.onCollapsePreview }
-          onOpenPreview={ this.onOpenPreview } />
+          previewOpen={previewOpen}
+          onCollapsePreview={this.onCollapsePreview}
+          onOpenPreview={this.onOpenPreview}
+        />
       </div>
     );
   }
 
   static createCachedState(props) {
+    const { layout = {}, onAction } = props;
 
-    const {
-      layout = {},
-      onAction
-    } = props;
-
-    const {
-      name,
-      version
-    } = Metadata;
+    const { name, version } = Metadata;
 
     const form = new Form({
       schema: {
         components: [],
-        type: 'default'
+        type: "default",
       },
       layout: getInitialFormLayout(layout),
       exporter: {
         name,
-        version
-      }
+        version,
+      },
     });
 
-    onAction('emit-event', {
-      type: 'form.modeler.created',
-      payload: form
+    onAction("emit-event", {
+      type: "form.modeler.created",
+      payload: form,
     });
 
     return {
@@ -665,7 +656,7 @@ export class FormEditor extends CachedComponent {
       engineProfile: null,
       form,
       lastSchema: null,
-      stackIdx: -1
+      stackIdx: -1,
     };
   }
 }
@@ -680,16 +671,14 @@ function isCacheStateChanged(prevProps, props) {
 
 function isValidation(layout = {}) {
   return (
-    (layout['form-preview'] || {}).open ||
-    (layout['form-input'] || {}).open ||
-    (layout['form-output'] || {}).open
+    (layout["form-preview"] || {}).open ||
+    (layout["form-input"] || {}).open ||
+    (layout["form-output"] || {}).open
   );
 }
 
 function getInitialFormLayout(layout) {
-  const {
-    [FORM_LAYOUT_KEY]: formLayout
-  } = layout;
+  const { [FORM_LAYOUT_KEY]: formLayout } = layout;
 
   return formLayout || DEFAULT_LAYOUT;
 }
@@ -715,8 +704,9 @@ function getOpenContainers(formLayout) {
 }
 
 function formOutputFocused() {
-  const formOutputNode =
-    document.body.querySelector('.cfp-collapsible-panel[data-idx="form-output"] .cfp-collapsible-panel-content');
+  const formOutputNode = document.body.querySelector(
+    '.cfp-collapsible-panel[data-idx="form-output"] .cfp-collapsible-panel-content',
+  );
 
   return !!formOutputNode && formOutputNode.contains(document.activeElement);
 }

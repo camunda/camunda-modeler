@@ -29,7 +29,6 @@ export default class Fill extends PureComponent {
 }
 
 class ActualFill extends PureComponent {
-
   _fillId = null;
 
   componentWillUnmount() {
@@ -73,14 +72,16 @@ class ActualFill extends PureComponent {
 }
 
 function haveFillPropsChanged(previousProps, nextProps) {
-  const { fillContext: previousFillContext, ...previousFillProps } = previousProps;
+  const { fillContext: previousFillContext, ...previousFillProps } =
+    previousProps;
   const { fillContext: nextFillContext, ...nextFillProps } = nextProps;
 
   return havePropsChanged(previousFillProps, nextFillProps);
 }
 
 function getChangedFillPropKeys(previousProps, nextProps) {
-  const { fillContext: previousFillContext, ...previousFillProps } = previousProps;
+  const { fillContext: previousFillContext, ...previousFillProps } =
+    previousProps;
   const { fillContext: nextFillContext, ...nextFillProps } = nextProps;
 
   const keys = new Set([
@@ -88,7 +89,9 @@ function getChangedFillPropKeys(previousProps, nextProps) {
     ...Object.keys(nextFillProps),
   ]);
 
-  return Array.from(keys).filter((key) => previousFillProps[key] !== nextFillProps[key]);
+  return Array.from(keys).filter(
+    (key) => previousFillProps[key] !== nextFillProps[key],
+  );
 }
 
 function havePropsChanged(previousProps, nextProps) {
@@ -106,9 +109,9 @@ function debugFillUpdate(fillId, previousProps, nextProps, changedKeys) {
   const debugLabel = getDebugLabel(nextProps, previousProps);
 
   // Only log if something other than children changed, or if it's a new fill
-  if (!fillId || changedKeys.some(k => k !== 'children')) {
+  if (!fillId || changedKeys.some((k) => k !== "children")) {
     console.log(
-      `[slot-fill] Fill.componentDidUpdate id=${fillId || "new"} slot=${nextProps.slot || previousProps.slot || "unknown"} label=${debugLabel} changed=${changedKeys.join(",")}`
+      `[slot-fill] Fill.componentDidUpdate id=${fillId || "new"} slot=${nextProps.slot || previousProps.slot || "unknown"} label=${debugLabel} changed=${changedKeys.join(",")}`,
     );
   }
 }
@@ -160,5 +163,7 @@ function getDebugLabel(nextProps, previousProps) {
     props.group,
     props.label,
     summarizeValue(props.children),
-  ].filter(Boolean).join("|");
+  ]
+    .filter(Boolean)
+    .join("|");
 }
