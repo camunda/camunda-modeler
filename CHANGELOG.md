@@ -8,13 +8,20 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: implement side panel for variables and task testing ([#5633](https://github.com/camunda/camunda-modeler/issues/5633))
+* `FEAT`: update welcome screen to encourage creation ([#5716](https://github.com/camunda/camunda-modeler/pull/5716))
+* `FEAT`: mark Camunda 8.9 as latest stable engine profile ([#5740](https://github.com/camunda/camunda-modeler/issues/5740))
 * `FIX`: persist offline connection as last used connection across restart ([#5746](https://github.com/camunda/camunda-modeler/pull/5746))
+* `FIX`: use configured operate URL for linking also in Self-Managed ([#5669](https://github.com/camunda/camunda-modeler/pull/5669))
+* `FIX`: validate operate URL before using it ([#5708](https://github.com/camunda/camunda-modeler/issues/5708))
+* `FIX`: gracefully handle permission error when searching for process application file ([#5670](https://github.com/camunda/camunda-modeler/issues/5670))
+* `FIX`: indicate tab cut-off through ellipsis ([#5660](https://github.com/camunda/camunda-modeler/pull/5660))
 * `FIX`: prevent cutting the tooltip if it couldn't fit to the bottom of the screen ([#5451](https://github.com/camunda/camunda-modeler/issues/5451))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.40.1`
 * `DEPS`: update to `@bpmn-io/variable-resolver@2.0.0`
-* `DEPS`: update to `electron@40.6.1`
 * `DEPS`: update to `@bpmn-io/variable-outline@3.0.0-rc.2`
 * `DEPS`: update to `@camunda/task-testing@3.0.0-rc.0`
+* `DEPS`: update to `electron@41`
 
 ## 5.45.0
 
