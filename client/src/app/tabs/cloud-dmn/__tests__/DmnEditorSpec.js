@@ -1936,6 +1936,31 @@ describe('<DmnEditor>', function() {
       expect(dirty).to.be.true;
     });
 
+
+    it('should NOT report dirty: true via onChanged after import (regression)', async function() {
+
+      // given
+      // Simulate real DMN modeler: stackIdx starts as null (no active viewer on creation)
+      const onChangedSpy = sinon.spy();
+      const { instance } = await renderEditor(diagramXML, {
+        onChanged: onChangedSpy
+      });
+
+      // Simulate views.changed firing during import with null stackIdx
+      // (occurs with real modeler where getStackIdx() returns -1 but stackIdx is null)
+      instance.setCached({ dirty: false, stackIdx: null });
+      instance.viewsChanged({ activeView: { type: 'drd', element: { id: 'drd' } } });
+
+      // when - import completes
+      instance.handleImport(null, []);
+
+      // then - onChanged should be called with dirty: false
+      await waitFor(() => {
+        expect(onChangedSpy).to.have.been.called;
+        expect(onChangedSpy.lastCall.args[0].dirty).to.be.false;
+      });
+    });
+
   });
 
 
