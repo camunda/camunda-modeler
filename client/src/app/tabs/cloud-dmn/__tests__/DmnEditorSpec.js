@@ -1947,7 +1947,8 @@ describe('<DmnEditor>', function() {
       });
 
       // Simulate views.changed firing during import with null stackIdx
-      // (occurs with real modeler where getStackIdx() returns -1 but stackIdx is null)
+      // (occurs with real modeler: stackIdx in cache is null before import,
+      // but modeler.getStackIdx() returns -1 after the viewer is created)
       instance.setCached({ dirty: false, stackIdx: null });
       instance.viewsChanged({ activeView: { type: 'drd', element: { id: 'drd' } } });
 
