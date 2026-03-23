@@ -16,6 +16,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const SENTRY_DSN = process.env.SENTRY_DSN || null;
 const MIXPANEL_TOKEN = process.env.MIXPANEL_TOKEN || null;
 const MIXPANEL_STAGE = process.env.MIXPANEL_STAGE || null;
+const REACT_STRICT_MODE_DISABLED = process.env.REACT_STRICT_MODE_DISABLED || 'false';
 
 const DEV = NODE_ENV === 'development';
 const LICENSE_CHECK = process.env.LICENSE_CHECK;
@@ -121,6 +122,7 @@ module.exports = {
       'process.env.UPDATES_SERVER_PRODUCT_NAME': JSON.stringify(UPDATES_SERVER_PRODUCT_NAME),
       'process.env.MIXPANEL_TOKEN': JSON.stringify(MIXPANEL_TOKEN),
       'process.env.MIXPANEL_STAGE': JSON.stringify(MIXPANEL_STAGE),
+      'process.env.REACT_STRICT_MODE_DISABLED': JSON.stringify(REACT_STRICT_MODE_DISABLED)
     }),
     new CopyWebpackPlugin({
       patterns: [ copyPattern ]
