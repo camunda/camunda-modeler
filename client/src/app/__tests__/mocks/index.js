@@ -51,10 +51,11 @@ class FakeTab extends Component {
 
   componentDidMount() {
     const {
-      onShown
+      onShown,
+      tab
     } = this.props;
 
-    onShown();
+    onShown(tab);
   }
 
   componentDidUpdate() {
@@ -79,11 +80,11 @@ class FakeTab extends Component {
     }
 
     if (action === 'error') {
-      this.props.onError(options);
+      this.props.onError(this.props.tab, options);
     }
 
     if (action === 'warning') {
-      this.props.onWarning(options);
+      this.props.onWarning(this.props.tab, options);
     }
 
     if (action === 'errorThrow') {

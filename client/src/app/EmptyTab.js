@@ -28,7 +28,7 @@ import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../util/Flags';
 export default class EmptyTab extends PureComponent {
 
   componentDidMount() {
-    this.props.onShown();
+    this.props.onShown(this.props.tab);
   }
 
   triggerAction() { }
