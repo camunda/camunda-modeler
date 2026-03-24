@@ -29,6 +29,8 @@ import defaultPlugins from '../plugins';
 
 import executeOnce from './util/executeOnce';
 
+import { cachedFn } from './util/cachedFn';
+
 import { WithCache } from './cached';
 
 import { DropZone } from './drop-zone';
@@ -957,7 +959,7 @@ export class App extends PureComponent {
    *
    * @return {Function} tab shown callback
    */
-  handleTabShown = (tab) => () => {
+  handleTabShown = (tab) => cachedFn('handleTabShown', () => {
 
     const {
       openedTabs,
@@ -978,7 +980,7 @@ export class App extends PureComponent {
       },
       tabLoadingState: 'shown'
     });
-  };
+  }, [ tab ]);
 
   /**
    * Handle tab error.
@@ -987,9 +989,9 @@ export class App extends PureComponent {
    *
    * @return {Function} tab error callback
    */
-  handleTabError = (tab) => (error) => {
+  handleTabError = (tab) => cachedFn('handleTabError', (error) => {
     this.handleError(error, tab);
-  };
+  }, [ tab ]);
 
   /**
    * Handle tab warning.
@@ -998,9 +1000,9 @@ export class App extends PureComponent {
    *
    * @return {Function} tab warning callback
    */
-  handleTabWarning = (tab) => (warning) => {
+  handleTabWarning = (tab) => cachedFn('handleTabWarning', (warning) => {
     this.handleWarning(warning, tab);
-  };
+  }, [ tab ]);
 
   /**
    * Handle tab changed.
@@ -1009,7 +1011,7 @@ export class App extends PureComponent {
    *
    * @return {Function} tab changed callback
    */
-  handleTabChanged = (tab) => (properties = {}) => {
+  handleTabChanged = (tab) => cachedFn('handleTabChanged', (properties = {}) => {
 
     let {
       tabState
@@ -1028,7 +1030,7 @@ export class App extends PureComponent {
         ...properties
       }
     });
-  };
+  }, [ tab ]);
 
   lintTab = async (tab, contents) => {
     const { tabsProvider } = this.props;
