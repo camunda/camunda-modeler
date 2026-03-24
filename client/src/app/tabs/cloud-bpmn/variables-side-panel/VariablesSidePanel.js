@@ -19,7 +19,7 @@ import '@bpmn-io/variable-outline/dist/variable-outline.css';
 
 import { utmTag } from '../../../../util/utmTag';
 import ResizableContainer from '../../../resizable-container/ResizableContainer';
-import TabCloseIcon from '../../../../../resources/icons/TabClose.svg';
+import SidePanelTitleBar from '../../../side-panel/SidePanelTitleBar';
 
 import * as css from './VariablesSidePanel.less';
 
@@ -81,21 +81,7 @@ export default function VariablesSidePanel(props) {
       maxWidth={ MAX_WIDTH }
       onResized={ onResized }
     >
-      <div className="variables-side-panel__header">
-        <div className="variables-side-panel__title">
-          <ValueVariableAlt className="variables-side-panel__title-icon" />
-          <span>Variables</span>
-        </div>
-        <div className="variables-side-panel__actions">
-          <button
-            className="variables-side-panel__action"
-            title="Close panel"
-            onClick={ onClose }
-          >
-            <TabCloseIcon />
-          </button>
-        </div>
-      </div>
+      <SidePanelTitleBar title="Variables" icon={ ValueVariableAlt } onClose={ onClose } />
 
       <div className="variables-side-panel__body">
         <VariableOutline
