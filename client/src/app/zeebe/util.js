@@ -66,6 +66,38 @@ export function getOperateUrl(endpoint) {
 }
 
 /**
+ * Get Camunda Tasklist URL.
+ *
+ * @param {Endpoint} endpoint
+ *
+ * @returns {URL|null}
+ */
+export function getTasklistUrl(endpoint) {
+
+  const { targetType } = endpoint;
+
+  if (targetType !== TARGET_TYPES.CAMUNDA_CLOUD) {
+    return null;
+  }
+
+  // build Tasklist URL from cluster URL (SaaS)
+  const { camundaCloudClusterUrl } = endpoint;
+
+  if (!camundaCloudClusterUrl) {
+    return null;
+  }
+
+  const clusterId = getClusterId(camundaCloudClusterUrl),
+        clusterRegion = getClusterRegion(camundaCloudClusterUrl);
+
+  if (!clusterId || !clusterRegion) {
+    return null;
+  }
+
+  return new URL(`https://${ clusterRegion }.tasklist.camunda.io/${ clusterId }`);
+}
+
+/**
  * Get Camunda Operate base URL string (without trailing slash).
  *
  * @param {Endpoint} endpoint
@@ -80,6 +112,23 @@ export function getOperateBaseUrl(endpoint) {
   }
 
   return operateUrl.toString().replace(/\/$/, '');
+}
+
+/**
+ * Get Camunda Tasklist base URL string (without trailing slash).
+ *
+ * @param {Endpoint} endpoint
+ *
+ * @returns {string|null}
+ */
+export function getTasklistBaseUrl(endpoint) {
+  const tasklistUrl = getTasklistUrl(endpoint);
+
+  if (!tasklistUrl) {
+    return null;
+  }
+
+  return tasklistUrl.toString().replace(/\/$/, '');
 }
 
 /**

@@ -165,6 +165,96 @@ describe('<TaskTestingApi>', function() {
   });
 
 
+  describe('#getTasklistUrl', function() {
+
+    it('should return Tasklist URL for SaaS', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+            };
+          }
+        }),
+        null,
+        null,
+        {
+          path: 'path/to/file.bpmn'
+        },
+        null
+      );
+
+
+      // when
+      const tasklistUrl = await api.getTasklistUrl();
+
+      // then
+      expect(tasklistUrl).to.equal('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should return undefined for SM', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'selfHosted'
+            };
+          }
+        }),
+        null,
+        null,
+        {
+          path: 'path/to/file.bpmn'
+        },
+        null
+      );
+
+
+      // when
+      const tasklistUrl = await api.getTasklistUrl();
+
+      // then
+      expect(tasklistUrl).to.be.undefined;
+    });
+
+
+    it('should return URL for unsaved file', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+            };
+          }
+        }),
+        null,
+        null,
+        {
+          path: null
+        },
+        null
+      );
+
+
+      // when
+      const tasklistUrl = await api.getTasklistUrl();
+
+      // then
+      expect(tasklistUrl).to.equal('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+  });
+
+
   describe('#deploy', function() {
 
     it('should save and deploy an unsaved file', async function() {
