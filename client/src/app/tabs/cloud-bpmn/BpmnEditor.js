@@ -457,6 +457,7 @@ export class BpmnEditor extends CachedComponent {
     const selection = modeler.get('selection');
 
     const selectionLength = selection.get().length;
+    const selectionIncludesShapes = selection.get().some(el => !el.waypoints);
 
     const inputActive = isInputActive();
 
@@ -467,10 +468,10 @@ export class BpmnEditor extends CachedComponent {
       appendElement: canvasFocused,
       canvasFocused,
       close: true,
-      copy: !!selectionLength,
-      copyAsImage: !!selectionLength,
-      cut: !!selectionLength,
-      duplicate: canvasFocused && !!selectionLength,
+      copy: selectionIncludesShapes,
+      copyAsImage: selectionIncludesShapes,
+      cut: selectionIncludesShapes,
+      duplicate: canvasFocused && selectionIncludesShapes,
       createElement: canvasFocused,
       defaultCopyCutPaste: !canvasFocused,
       defaultUndoRedo: !canvasFocused,
