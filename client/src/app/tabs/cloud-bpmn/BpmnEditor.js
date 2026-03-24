@@ -468,7 +468,7 @@ export class BpmnEditor extends CachedComponent {
       canvasFocused,
       close: true,
       copy: !!selectionLength,
-      copyAsImage: !!selectionLength,
+      copyAsImage: selectionLength > 0 && selection.get().some(el => !el.waypoints),
       cut: !!selectionLength,
       duplicate: canvasFocused && !!selectionLength,
       createElement: canvasFocused,
