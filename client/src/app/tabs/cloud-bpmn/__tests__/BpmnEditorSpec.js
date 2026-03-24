@@ -10,7 +10,7 @@
 
 /* global sinon */
 
-import { waitFor, fireEvent } from '@testing-library/react';
+import { waitFor, fireEvent, getByRole } from '@testing-library/react';
 
 import { find } from 'min-dash';
 
@@ -1132,6 +1132,40 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
             width: 280
           }
         });
+      });
+
+
+      it('should close via title bar close button', async function() {
+
+        // given
+        const layout = {
+          sidePanel: {
+            open: true
+          }
+        };
+
+        const onLayoutChanged = sinon.spy();
+
+        const { getByText } = await renderEditor(diagramXML, {
+          layout,
+          onLayoutChanged
+        });
+
+        // when
+        const configurationTitle = getByText('Configuration');
+        const configurationSidePanel = configurationTitle.closest('.side-panel');
+        const closeButton = getByRole(configurationSidePanel, 'button', { name: 'Close panel' });
+
+        fireEvent.click(closeButton);
+
+        // then
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledOnce;
+        });
+
+        const callArg = onLayoutChanged.getCall(0).args[0];
+
+        expect(callArg.sidePanel.open).to.be.false;
       });
 
     });

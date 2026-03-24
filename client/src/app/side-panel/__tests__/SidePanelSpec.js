@@ -15,6 +15,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import SidePanel, { DEFAULT_WIDTH } from '../SidePanel';
+import SidePanelTitleBar from '../SidePanelTitleBar';
 
 const { spy } = sinon;
 
@@ -174,6 +175,22 @@ describe('<SidePanel>', function() {
 
     // then
     expect(container.querySelector('.custom-header')).to.exist;
+  });
+
+
+  it('should render title bar in header', function() {
+
+    // when
+    const { getByText, getByRole } = createSidePanel({
+      header: <SidePanelTitleBar title="Configuration" onClose={ noop } />,
+      tabs: [
+        { id: 'foo', label: 'Foo', children: <div>Foo</div> }
+      ]
+    });
+
+    // then
+    expect(getByText('Configuration')).to.exist;
+    expect(getByRole('button', { name: 'Close panel' })).to.exist;
   });
 
 
