@@ -66,6 +66,7 @@ export default function TaskTestingTab(props) {
   const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
   const [ operateUrl, setOperateUrl ] = useState(null);
+  const [ tasklistUrl, setTasklistUrl ] = useState(null);
 
   const tab = useMemo(() => ({
     id: id?.includes('-') ? id.split('-')[0] : id,
@@ -73,13 +74,30 @@ export default function TaskTestingTab(props) {
   }), [ id, file ]);
 
   const taskTestingApi = useMemo(() => {
+    return new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction);
+  }, [ deployment, startInstance, zeebeApi, tab, onAction ]);
 
-    const api = new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction);
+  const api = useMemo(() => taskTestingApi.getApi(), [ taskTestingApi ]);
 
-    api.getOperateUrl().then(setOperateUrl);
+  useEffect(() => {
+    let canceled = false;
 
-    return api.getApi();
-  }, [ zeebeApi, config, tab, onAction ]);
+    taskTestingApi.getOperateUrl().then(url => {
+      if (!canceled) {
+        setOperateUrl(url);
+      }
+    });
+
+    taskTestingApi.getTasklistUrl().then(url => {
+      if (!canceled) {
+        setTasklistUrl(url);
+      }
+    });
+
+    return () => {
+      canceled = true;
+    };
+  }, [ taskTestingApi ]);
 
   const connectionCheckResult = useConnectionStatus(subscribe);
 
@@ -177,12 +195,13 @@ export default function TaskTestingTab(props) {
       isConnectionConfigured={ isConnectionConfigured }
       onConfigChanged={ setTaskTestingConfig }
       operateBaseUrl={ operateUrl }
+      tasklistBaseUrl={ tasklistUrl }
       onTaskExecutionStarted={ handleTaskExecutionStarted }
       onTaskExecutionFinished={ handleTaskExecutionFinished }
       onTestTask={ handleTestTask }
       configureConnectionBannerTitle={ configureConnectionBannerTitle }
       configureConnectionBannerDescription={ configureConnectionBannerDescription }
-      api={ taskTestingApi }
+      api={ api }
       documentationUrl={ DOCUMENTATION_URL }
     />
   </div>;

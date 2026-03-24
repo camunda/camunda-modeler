@@ -9,10 +9,11 @@
  */
 
 import {
-  getOperateUrl,
   getDeploymentUrls,
+  getOperateUrl,
   getProcessId,
-  getStartInstanceUrl
+  getStartInstanceUrl,
+  getTasklistUrl
 } from '../util';
 
 import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
@@ -147,6 +148,90 @@ describe('operate-url', function() {
 
       // then
       expect(url.toString()).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+  });
+
+
+  describe('getTasklistUrl', function() {
+
+    it('should get Camunda Tasklist URL (gRPC)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443'
+      };
+
+      // when
+      const url = getTasklistUrl(endpoint);
+
+      // then
+      expect(url.toString()).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should get Camunda Tasklist URL (REST)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      };
+
+      // when
+      const url = getTasklistUrl(endpoint);
+
+      // then
+      expect(url.toString()).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should get Camunda Tasklist URL (REST v2)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/v2/'
+      };
+
+      // when
+      const url = getTasklistUrl(endpoint);
+
+      // then
+      expect(url.toString()).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should not get Camunda Tasklist URL', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'https://foo.com'
+      };
+
+      // when
+      const url = getTasklistUrl(endpoint);
+
+      // then
+      expect(url).to.be.null;
+    });
+
+
+    it('should not get Camunda Tasklist URL (self-managed)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443'
+      };
+
+      // when
+      const url = getTasklistUrl(endpoint);
+
+      // then
+      expect(url).to.be.null;
     });
 
   });

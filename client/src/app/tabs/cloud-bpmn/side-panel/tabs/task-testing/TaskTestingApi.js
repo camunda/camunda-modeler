@@ -10,7 +10,7 @@
 
 import debug from 'debug';
 
-import { getOperateBaseUrl } from '../../../../../zeebe/util';
+import { getOperateBaseUrl, getTasklistBaseUrl } from '../../../../../zeebe/util';
 
 const log = debug('TaskTestingApi');
 
@@ -58,6 +58,16 @@ export default class TaskTestingApi {
     }
 
     return getOperateBaseUrl(endpoint) || undefined;
+  }
+
+  async getTasklistUrl() {
+    const { endpoint } = await this.getDeploymentConfig();
+
+    if (!endpoint) {
+      return;
+    }
+
+    return getTasklistBaseUrl(endpoint) || undefined;
   }
 
   async deploy() {
