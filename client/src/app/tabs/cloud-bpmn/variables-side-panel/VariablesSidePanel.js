@@ -17,11 +17,13 @@ import classNames from 'classnames';
 import VariableOutline from '@bpmn-io/variable-outline';
 import '@bpmn-io/variable-outline/dist/variable-outline.css';
 
+import { utmTag } from '../../../../util/utmTag';
 import ResizableContainer from '../../../resizable-container/ResizableContainer';
-
 import TabCloseIcon from '../../../../../resources/icons/TabClose.svg';
 
 import * as css from './VariablesSidePanel.less';
+
+const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/variables/');
 
 export const MIN_WIDTH = 280;
 export const MAX_WIDTH = MIN_WIDTH * 3;
@@ -96,7 +98,10 @@ export default function VariablesSidePanel(props) {
       </div>
 
       <div className="variables-side-panel__body">
-        <VariableOutline injector={ injector } />
+        <VariableOutline
+          injector={ injector }
+          learnMoreUrl={ DOCUMENTATION_URL }
+        />
       </div>
     </ResizableContainer>
   );
