@@ -88,12 +88,13 @@ export class MultiSheetTab extends CachedComponent {
 
   handleChanged = (newState = {}) => {
     const {
-      onChanged
+      onChanged,
+      tab
     } = this.props;
 
     const dirty = this.isDirty(newState);
 
-    onChanged({
+    onChanged(tab, {
       ...newState,
       dirty
     });
@@ -101,18 +102,20 @@ export class MultiSheetTab extends CachedComponent {
 
   handleError = (error) => {
     const {
-      onError
+      onError,
+      tab
     } = this.props;
 
-    onError(error);
+    onError(tab, error);
   };
 
   handleWarning = (warning) => {
     const {
-      onWarning
+      onWarning,
+      tab
     } = this.props;
 
-    onWarning(warning);
+    onWarning(tab, warning);
   };
 
   /**
