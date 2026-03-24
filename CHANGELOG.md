@@ -15,6 +15,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `electron@40.6.1`
 * `DEPS`: update to `@bpmn-io/variable-outline@3.0.0-rc.2`
 * `DEPS`: update to `@camunda/task-testing@3.0.0-rc.0`
+* `FEAT`: align variables and properties side panel styling ([#5778](https://github.com/camunda/camunda-modeler/pull/5778))
 
 ## 5.45.0
 

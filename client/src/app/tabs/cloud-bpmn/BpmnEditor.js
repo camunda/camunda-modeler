@@ -29,6 +29,7 @@ import {
 import { Settings } from '@carbon/icons-react';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
+import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
 import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
 import TaskTestingStatusBarItem from './side-panel/tabs/task-testing/TaskTestingStatusBarItem';
@@ -885,6 +886,19 @@ export class BpmnEditor extends CachedComponent {
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange }
           >
+            <SidePanel.Header>
+              <SidePanelTitleBar
+                title="Configuration"
+                icon={ Settings }
+                onClose={ () => this.handleLayoutChange({
+                  sidePanel: {
+                    ...SIDE_PANEL_DEFAULT_LAYOUT,
+                    ...layout.sidePanel,
+                    open: false
+                  }
+                }) }
+              />
+            </SidePanel.Header>
             <SidePanel.Header>
               <SidePanelHeader injector={ injector } />
             </SidePanel.Header>
