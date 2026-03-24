@@ -10,17 +10,17 @@
 
 import {
   getDeploymentUrls,
-  getOperateUrl,
+  getOperateBaseUrl,
   getProcessId,
   getStartInstanceUrl,
-  getTasklistUrl
+  getTasklistBaseUrl
 } from '../util';
 
 import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
 describe('operate-url', function() {
 
-  describe('getOperateUrl', function() {
+  describe('getOperateBaseUrl', function() {
 
     it('should get Camunda Operate URL (gRPC)', function() {
 
@@ -31,10 +31,10 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getOperateUrl(endpoint);
+      const url = getOperateBaseUrl(endpoint);
 
       // then
-      expect(url.toString()).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+      expect(url).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
     });
 
 
@@ -47,10 +47,10 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getOperateUrl(endpoint);
+      const url = getOperateBaseUrl(endpoint);
 
       // then
-      expect(url.toString()).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+      expect(url).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
     });
 
 
@@ -63,10 +63,10 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getOperateUrl(endpoint);
+      const url = getOperateBaseUrl(endpoint);
 
       // then
-      expect(url.toString()).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+      expect(url).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
     });
 
 
@@ -79,7 +79,7 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getOperateUrl(endpoint);
+      const url = getOperateBaseUrl(endpoint);
 
       // then
       expect(url).to.be.null;
@@ -95,10 +95,10 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getOperateUrl(endpoint);
+      const url = getOperateBaseUrl(endpoint);
 
       // then
-      expect(url.toString()).to.eql('https://operate.example.com/');
+      expect(url).to.eql('https://operate.example.com');
     });
 
 
@@ -111,7 +111,7 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getOperateUrl(endpoint);
+      const url = getOperateBaseUrl(endpoint);
 
       // then
       expect(url).to.be.null;
@@ -127,7 +127,7 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getOperateUrl(endpoint);
+      const url = getOperateBaseUrl(endpoint);
 
       // then
       expect(url).to.be.null;
@@ -144,16 +144,16 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getOperateUrl(endpoint);
+      const url = getOperateBaseUrl(endpoint);
 
       // then
-      expect(url.toString()).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+      expect(url).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
     });
 
   });
 
 
-  describe('getTasklistUrl', function() {
+  describe('getTasklistBaseUrl', function() {
 
     it('should get Camunda Tasklist URL (gRPC)', function() {
 
@@ -164,10 +164,10 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getTasklistUrl(endpoint);
+      const url = getTasklistBaseUrl(endpoint);
 
       // then
-      expect(url.toString()).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+      expect(url).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
     });
 
 
@@ -180,10 +180,10 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getTasklistUrl(endpoint);
+      const url = getTasklistBaseUrl(endpoint);
 
       // then
-      expect(url.toString()).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+      expect(url).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
     });
 
 
@@ -196,10 +196,10 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getTasklistUrl(endpoint);
+      const url = getTasklistBaseUrl(endpoint);
 
       // then
-      expect(url.toString()).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+      expect(url).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
     });
 
 
@@ -212,7 +212,7 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getTasklistUrl(endpoint);
+      const url = getTasklistBaseUrl(endpoint);
 
       // then
       expect(url).to.be.null;
@@ -228,7 +228,7 @@ describe('operate-url', function() {
       };
 
       // when
-      const url = getTasklistUrl(endpoint);
+      const url = getTasklistBaseUrl(endpoint);
 
       // then
       expect(url).to.be.null;

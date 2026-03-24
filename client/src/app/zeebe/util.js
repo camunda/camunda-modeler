@@ -15,13 +15,13 @@
 import { TARGET_TYPES } from '../../remote/ZeebeAPI';
 
 /**
- * Get Camunda Operate URL.
+ * Create Camunda Operate base URL.
  *
  * @param {Endpoint} endpoint
  *
  * @returns {URL|null}
  */
-export function getOperateUrl(endpoint) {
+function createOperateBaseUrl(endpoint) {
 
   const { targetType } = endpoint;
 
@@ -66,13 +66,13 @@ export function getOperateUrl(endpoint) {
 }
 
 /**
- * Get Camunda Tasklist URL.
+ * Create Camunda Tasklist base URL.
  *
  * @param {Endpoint} endpoint
  *
  * @returns {URL|null}
  */
-export function getTasklistUrl(endpoint) {
+function createTasklistBaseUrl(endpoint) {
 
   const { targetType } = endpoint;
 
@@ -105,7 +105,7 @@ export function getTasklistUrl(endpoint) {
  * @returns {string|null}
  */
 export function getOperateBaseUrl(endpoint) {
-  const operateUrl = getOperateUrl(endpoint);
+  const operateUrl = createOperateBaseUrl(endpoint);
 
   if (!operateUrl) {
     return null;
@@ -122,7 +122,7 @@ export function getOperateBaseUrl(endpoint) {
  * @returns {string|null}
  */
 export function getTasklistBaseUrl(endpoint) {
-  const tasklistUrl = getTasklistUrl(endpoint);
+  const tasklistUrl = createTasklistBaseUrl(endpoint);
 
   if (!tasklistUrl) {
     return null;
