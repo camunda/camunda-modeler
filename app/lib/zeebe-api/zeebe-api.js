@@ -417,15 +417,14 @@ class ZeebeAPI {
   /**
    * Search variables. Requires Camunda REST client.
    *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, truncateValues?: boolean }} config
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
    *
    * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchVariables(config) {
     const {
       endpoint,
-      processInstanceKey,
-      truncateValues = true
+      processInstanceKey
     } = config;
 
     this._log.debug('search variables', {
@@ -448,7 +447,7 @@ class ZeebeAPI {
           },
         },
         queryParams: {
-          truncateValues
+          truncateValues: false
         }
       });
 

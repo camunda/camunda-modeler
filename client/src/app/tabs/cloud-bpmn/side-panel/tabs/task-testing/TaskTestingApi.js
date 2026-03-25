@@ -128,7 +128,7 @@ export default class TaskTestingApi {
   async getProcessInstanceVariables(processInstanceKey) {
     const config = await this.getDeploymentConfig();
 
-    return this._zeebeApi.searchVariables(config, processInstanceKey, false);
+    return this._zeebeApi.searchVariables(config, processInstanceKey);
   }
 
   async getProcessInstanceElementInstances(processInstanceKey) {

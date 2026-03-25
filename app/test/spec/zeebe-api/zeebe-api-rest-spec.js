@@ -1560,7 +1560,7 @@ describe('ZeebeAPI (REST)', function() {
     });
 
 
-    it('should pass truncateValues=true by default', async function() {
+    it('should pass truncateValues=false', async function() {
 
       // given
       const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
@@ -1577,38 +1577,6 @@ describe('ZeebeAPI (REST)', function() {
           url: TEST_URL
         },
         processInstanceKey: '123'
-      };
-
-      // when
-      await zeebeAPI.searchVariables(parameters);
-
-      // then
-      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
-        queryParams: {
-          truncateValues: true
-        }
-      });
-    });
-
-
-    it('should pass truncateValues=false when specified', async function() {
-
-      // given
-      const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
-
-      const zeebeAPI = createZeebeAPI({
-        CamundaRestClient: {
-          callApiEndpoint: callApiEndpointSpy
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
-        },
-        processInstanceKey: '123',
-        truncateValues: false
       };
 
       // when
