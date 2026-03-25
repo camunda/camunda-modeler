@@ -417,7 +417,7 @@ class ZeebeAPI {
   /**
    * Search variables. Requires Camunda REST client.
    *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, truncateValues: boolean }} config
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, truncateValues?: boolean }} config
    *
    * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
