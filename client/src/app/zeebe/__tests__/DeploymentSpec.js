@@ -567,6 +567,35 @@ describe('Deployment', function() {
       expect(endpoints).to.have.length(1);
       expect(endpoints[0]).to.not.have.property('operateUrl');
     });
+
+
+    it('should remove invalid self-hosted tasklistUrl from endpoints', function() {
+
+      // given
+      const connections = [
+        {
+          id: 'connection-1',
+          name: 'Self-Managed',
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080/v2',
+          tasklistUrl: 'example'
+        }
+      ];
+
+      const settings = {
+        get: () => connections
+      };
+
+      const deployment = createDeployment({ settings });
+
+      // when
+      const endpoints = deployment.getEndpoints();
+
+      // then
+      expect(endpoints).to.have.length(1);
+      expect(endpoints[0]).to.not.have.property('tasklistUrl');
+    });
+
   });
 
 

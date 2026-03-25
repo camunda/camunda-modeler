@@ -219,12 +219,28 @@ describe('operate-url', function() {
     });
 
 
-    it('should not get Camunda Tasklist URL (self-managed)', function() {
+    it('should get Camunda Tasklist URL from explicit tasklistUrl (self-managed)', function() {
 
       // given
       const endpoint = {
         targetType: TARGET_TYPES.SELF_HOSTED,
-        camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443'
+        tasklistUrl: 'https://tasklist.example.com'
+      };
+
+      // when
+      const url = getTasklistBaseUrl(endpoint);
+
+      // then
+      expect(url).to.eql('https://tasklist.example.com');
+    });
+
+
+    it('should handle invalid tasklistUrl (self-managed)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        tasklistUrl: 'not-a-url'
       };
 
       // when
@@ -232,6 +248,39 @@ describe('operate-url', function() {
 
       // then
       expect(url).to.be.null;
+    });
+
+
+    it('should not get Camunda Tasklist URL from unsupported tasklistUrl protocol (self-managed)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        tasklistUrl: 'javascript:alert(1)'
+      };
+
+      // when
+      const url = getTasklistBaseUrl(endpoint);
+
+      // then
+      expect(url).to.be.null;
+    });
+
+
+    it('should ignore explicit tasklistUrl for Camunda Cloud endpoint', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        tasklistUrl: 'https://tasklist.example.com',
+        camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443'
+      };
+
+      // when
+      const url = getTasklistBaseUrl(endpoint);
+
+      // then
+      expect(url).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
     });
 
   });
