@@ -8,7 +8,11 @@
  * except in compliance with the MIT License.
  */
 
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
+
+if (process.env.REACT_STRICT_MODE === 'true') {
+  configure({ reactStrictMode: true });
+}
 
 // eslint-disable-next-line mocha/no-top-level-hooks
 beforeEach(function() {

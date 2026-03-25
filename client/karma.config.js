@@ -9,7 +9,8 @@
  */
 
 var coverage = process.env.COVERAGE,
-    modelers = process.env.MODELERS;
+    modelers = process.env.MODELERS,
+    strictMode = process.env.REACT_STRICT_MODE === 'true';
 
 if (coverage) {
 
@@ -155,6 +156,7 @@ module.exports = function(karma) {
         new DefinePlugin({
           'process.env.NODE_ENV': JSON.stringify('test'),
           'process.env.WINDOWS': JSON.stringify(windows),
+          'process.env.REACT_STRICT_MODE': JSON.stringify(process.env.REACT_STRICT_MODE || 'false'),
           'process.env.RTL_SKIP_AUTO_CLEANUP': JSON.stringify('true'), // auto-cleanup is configured as beforeEach hook
           'process': { // must be present to prevent short-circuit in RTL auto-cleanup
             env: {} // mocks variables set at build time

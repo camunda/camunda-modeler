@@ -12,6 +12,7 @@
     "client:auto-test": "npm run auto-test --workspace=client",
     "client:dev": "npm run dev --workspace=client",
     "client:test": "npm run test --workspace=client",
+    "client:test:strict": "npm run test:strict --workspace=client",
     "bpmn-io-modelers:test": "npm run bpmn-io-modelers:test --workspace=client",
     "bpmn-io-modelers:auto-test": "npm run bpmn-io-modelers:auto-test --workspace=client",
     "all": "run-s clean lint test \"build -- {@}\" --",

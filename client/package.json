@@ -123,6 +123,7 @@
     "dev": "run-s start",
     "auto-test": "npm test -- --auto-watch --no-single-run",
     "test": "karma start karma.config.js",
+    "test:strict": "cross-env REACT_STRICT_MODE=true karma start karma.config.js",
     "bpmn-io-modelers:test": "cross-env MODELERS=1 npm test",
     "bpmn-io-modelers:auto-test": "cross-env MODELERS=1 npm run auto-test"
   }
