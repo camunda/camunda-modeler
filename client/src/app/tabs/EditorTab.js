@@ -37,11 +37,11 @@ export function createTab(tabName, providers) {
     }
 
     componentDidCatch(error, info) {
-      this.props.onError(error, info);
+      this.props.onError(this.props.tab, error, info);
     }
 
     componentDidMount() {
-      this.props.onShown();
+      this.props.onShown(this.props.tab);
     }
 
     render() {

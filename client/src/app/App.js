@@ -86,6 +86,8 @@ const FILTER_ALL_EXTENSIONS = {
   extensions: [ '*' ]
 };
 
+const EMPTY_LINTING_STATE = [];
+
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
   dirtyTabs: {},
@@ -951,13 +953,14 @@ export class App extends PureComponent {
 
 
   /**
-   * Mark a tab as shown.
+   * Mark tab as shown if it's active tab, otherwise ignore.
    *
-   * @param {Object} tab descriptor
-   *
-   * @return {Function} tab shown callback
+   * @param {Tab} tab
    */
-  handleTabShown = (tab) => () => {
+  handleTabShown = (tab) => {
+    if (tab !== this.state.activeTab) {
+      return;
+    }
 
     const {
       openedTabs,
@@ -965,11 +968,7 @@ export class App extends PureComponent {
       tabShown
     } = this.state;
 
-    if (tab === activeTab) {
-      tabShown.resolve();
-    } else {
-      tabShown.reject(new Error('tab miss-match'));
-    }
+    tabShown.resolve();
 
     this.setState({
       openedTabs: {
@@ -981,44 +980,53 @@ export class App extends PureComponent {
   };
 
   /**
-   * Handle tab error.
+   * Handle tab error if it is active tab, otherwise ignore.
    *
-   * @param {Object} tab descriptor
-   *
-   * @return {Function} tab error callback
+   * @param {Tab} tab
+   * @param {Error} error
    */
-  handleTabError = (tab) => (error) => {
-    this.handleError(error, tab);
+  handleTabError = (tab, error) => {
+    if (tab !== this.state.activeTab) {
+      return;
+    }
+
+    this.handleError(error, this.state.activeTab);
   };
 
   /**
-   * Handle tab warning.
+   * Handle tab warning if it is active tab, otherwise ignore.
    *
-   * @param {Object} tab descriptor
-   *
-   * @return {Function} tab warning callback
+   * @param {Tab} tab
+   * @param {Error|{ message: string }} warning
    */
-  handleTabWarning = (tab) => (warning) => {
-    this.handleWarning(warning, tab);
+  handleTabWarning = (tab, warning) => {
+    if (tab !== this.state.activeTab) {
+      return;
+    }
+
+    this.handleWarning(warning, this.state.activeTab);
   };
 
   /**
-   * Handle tab changed.
+   * Handle tab changed if it is active tab, otherwise ignore.
    *
-   * @param {Object} tab descriptor
-   *
-   * @return {Function} tab changed callback
+   * @param {Tab} tab
+   * @param {Object} properties
    */
-  handleTabChanged = (tab) => (properties = {}) => {
+  handleTabChanged = (tab, properties = {}) => {
+    if (tab !== this.state.activeTab) {
+      return;
+    }
 
-    let {
+    const {
+      activeTab,
       tabState
     } = this.state;
 
     let dirtyState = {};
 
     if ('dirty' in properties) {
-      dirtyState = this.setDirty(tab, properties.dirty);
+      dirtyState = this.setDirty(activeTab, properties.dirty);
     }
 
     this.setState({
@@ -1055,7 +1063,7 @@ export class App extends PureComponent {
   };
 
   getLintingState = (tab) => {
-    return this.state.lintingState[ tab.id ] || [];
+    return this.state.lintingState[ tab.id ] || EMPTY_LINTING_STATE;
   };
 
   setLintingState = (tab, results) => {
@@ -2436,10 +2444,10 @@ export class App extends PureComponent {
                         tab={ activeTab }
                         layout={ layout }
                         linting={ this.getLintingState(activeTab) }
-                        onChanged={ this.handleTabChanged(activeTab) }
-                        onError={ this.handleTabError(activeTab) }
-                        onWarning={ this.handleTabWarning(activeTab) }
-                        onShown={ this.handleTabShown(activeTab) }
+                        onChanged={ this.handleTabChanged }
+                        onError={ this.handleTabError }
+                        onWarning={ this.handleTabWarning }
+                        onShown={ this.handleTabShown }
                         onLayoutChanged={ this.handleLayoutChanged }
                         onContextMenu={ this.openTabMenu }
                         onAction={ this.triggerAction }
@@ -2564,7 +2572,7 @@ function missingProvider(providerType) {
   class MissingProviderTab extends PureComponent {
 
     componentDidMount() {
-      this.props.onShown();
+      this.props.onShown(this.props.tab);
     }
 
     render() {

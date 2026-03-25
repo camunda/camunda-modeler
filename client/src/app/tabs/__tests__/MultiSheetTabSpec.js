@@ -115,7 +115,7 @@ describe('<MultiSheetTab>', function() {
       // then
       expect(errorSpy).not.to.have.been.called;
       expect(warningSpy).to.have.been.calledTwice;
-      expect(warningSpy.alwaysCalledWith('warning')).to.be.true;
+      expect(warningSpy.alwaysCalledWith(defaultTab, 'warning')).to.be.true;
     });
 
 
@@ -154,7 +154,7 @@ describe('<MultiSheetTab>', function() {
       instance.handleImport(error);
 
       // then
-      expect(errorSpy).to.have.been.calledWith(error);
+      expect(errorSpy).to.have.been.calledWith(defaultTab, error);
       expect(warningSpy).not.to.have.been.called;
       expect(showImportErrorDialogSpy).to.have.been.called;
     });
@@ -180,10 +180,10 @@ describe('<MultiSheetTab>', function() {
       instance.handleImport(error, warnings);
 
       // then
-      expect(errorSpy).to.have.been.calledWith(error);
+      expect(errorSpy).to.have.been.calledWith(defaultTab, error);
 
       expect(warningSpy).to.have.been.calledTwice;
-      expect(warningSpy.alwaysCalledWith('warning')).to.be.true;
+      expect(warningSpy.alwaysCalledWith(defaultTab, 'warning')).to.be.true;
 
       expect(showImportErrorDialogSpy).to.have.been.called;
       expect(displayWarningsNotificationSpy).not.to.have.been.called;
