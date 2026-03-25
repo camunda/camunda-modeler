@@ -16,7 +16,8 @@ import {
 
 import {
   is,
-  getBusinessObject
+  getBusinessObject,
+  getDi
 } from 'bpmn-js/lib/util/ModelUtil';
 
 import {
@@ -38,6 +39,7 @@ export default function SidePanelHeader({ injector }) {
   const updateElementInfo = useCallback(() => {
     if (!injector) {
       setElementInfo(null);
+
       return;
     }
 
@@ -57,6 +59,7 @@ export default function SidePanelHeader({ injector }) {
 
         // multiple elements selected
         setElementInfo(null);
+
         return;
       }
 
@@ -141,13 +144,14 @@ export default function SidePanelHeader({ injector }) {
   );
 }
 
-
-// PanelHeaderProvider //////////
-
 export const PanelHeaderProvider = (injector) => {
   return {
     getDocumentationRef: (element) => {
-      const elementTemplates = getTemplatesService(injector);
+      if (isImplicitRoot(element)) {
+        return null;
+      }
+
+      const elementTemplates = injector.get('elementTemplates', false);
 
       if (elementTemplates) {
         return getTemplateDocumentation(element, elementTemplates);
@@ -155,6 +159,10 @@ export const PanelHeaderProvider = (injector) => {
     },
 
     getElementLabel: (element) => {
+      if (isImplicitRoot(element)) {
+        return null;
+      }
+
       if (is(element, 'bpmn:Process')) {
         return getBusinessObject(element).name;
       }
@@ -163,15 +171,13 @@ export const PanelHeaderProvider = (injector) => {
     },
 
     getElementIcon: (element) => {
+      if (isImplicitRoot(element)) {
+        return null;
+      }
+
       const concreteType = getConcreteType(element);
 
-      let config;
-      try {
-        config = injector.get('config.elementTemplateIconRenderer', false);
-      } catch (e) {
-
-        // service may not be available
-      }
+      const config = injector.get('config.elementTemplateIconRenderer', false);
 
       const { iconProperty = 'zeebe:modelerTemplateIcon' } = config || {};
 
@@ -195,7 +201,11 @@ export const PanelHeaderProvider = (injector) => {
     },
 
     getTypeLabel: (element) => {
-      const elementTemplates = getTemplatesService(injector);
+      if (isImplicitRoot(element)) {
+        return null;
+      }
+
+      const elementTemplates = injector.get('elementTemplates', false);
 
       if (elementTemplates) {
         const template = getTemplate(element, elementTemplates);
@@ -312,17 +322,9 @@ function isConditionalFlow(element) {
 }
 
 function isPlane(element) {
-  const di = element && getBusinessObject(element).di;
+  const di = element && getDi(element);
 
   return is(di, 'bpmndi:BPMNPlane');
-}
-
-function getTemplatesService(injector) {
-  try {
-    return injector.get('elementTemplates', false);
-  } catch (e) {
-    return null;
-  }
 }
 
 function getTemplate(element, elementTemplates) {
@@ -333,4 +335,8 @@ function getTemplateDocumentation(element, elementTemplates) {
   const template = getTemplate(element, elementTemplates);
 
   return template && template.documentationRef;
+}
+
+function isImplicitRoot(element) {
+  return element && element.isImplicit;
 }
