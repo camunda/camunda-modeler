@@ -167,6 +167,42 @@ describe('ConnectionConfigValidator', function() {
         expect(errors).to.have.property('operateUrl');
       });
 
+
+      it('should allow empty optional tasklistUrl', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tasklistUrl: ''
+        });
+
+        expect(errors).to.not.have.property('tasklistUrl');
+      });
+
+
+      it('should validate valid tasklistUrl', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tasklistUrl: 'https://tasklist.example.com'
+        });
+
+        expect(errors).to.not.have.property('tasklistUrl');
+      });
+
+
+      it('should return error for invalid tasklistUrl protocol', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tasklistUrl: 'javascript:alert(1)'
+        });
+
+        expect(errors).to.have.property('tasklistUrl');
+      });
+
     });
 
 

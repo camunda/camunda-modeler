@@ -19,6 +19,8 @@ import EventEmitter from 'events';
 
 import debug from 'debug';
 
+import { omit } from 'min-dash';
+
 import { generateId } from '../../util/index.js';
 
 import { AUTH_TYPES, TARGET_TYPES } from '../../remote/ZeebeAPI.js';
@@ -328,22 +330,36 @@ export default class Deployment extends EventEmitter {
   }
 }
 
+/**
+ * Sanitize an endpoint by ensuring that operateUrl and tasklistUrl (if present)
+ * are valid URLs with http or https protocol. If not, they are removed from the
+ * endpoint.
+ *
+ * @param {Endpoint} endpoint
+ *
+ * @returns {Endpoint}
+ */
 function sanitizeEndpoint(endpoint) {
-  if (endpoint.targetType !== TARGET_TYPES.SELF_HOSTED || !endpoint.operateUrl) {
+  if (endpoint.targetType !== TARGET_TYPES.SELF_HOSTED) {
     return endpoint;
   }
 
+  return omit(endpoint, [ 'operateUrl', 'tasklistUrl' ].filter(
+    key => endpoint[key] && !isValidHttpUrl(endpoint[key])
+  ));
+}
+
+/**
+ * Check if a URL is a valid HTTP or HTTPS URL.
+ *
+ * @param {string} url
+ *
+ * @returns {boolean}
+ */
+function isValidHttpUrl(url) {
   try {
-    const parsedOperateUrl = new URL(endpoint.operateUrl);
-
-    if (![ 'http:', 'https:' ].includes(parsedOperateUrl.protocol)) {
-      const { operateUrl, ...sanitizedEndpoint } = endpoint;
-      return sanitizedEndpoint;
-    }
-
-    return endpoint;
+    return [ 'http:', 'https:' ].includes(new URL(url).protocol);
   } catch {
-    const { operateUrl, ...sanitizedEndpoint } = endpoint;
-    return sanitizedEndpoint;
+    return false;
   }
 }

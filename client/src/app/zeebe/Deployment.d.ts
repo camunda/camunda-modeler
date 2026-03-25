@@ -16,6 +16,7 @@ export interface AbstractEndpoint {
   name?: string;
   tenantId?: string;
   operateUrl?: string;
+  tasklistUrl?: string;
 }
 
 export interface SelfHostedNoAuthEndpoint extends AbstractEndpoint {

@@ -76,6 +76,25 @@ function createTasklistBaseUrl(endpoint) {
 
   const { targetType } = endpoint;
 
+  // use explicit Tasklist URL for self-managed
+  if (targetType === TARGET_TYPES.SELF_HOSTED) {
+    if (!endpoint.tasklistUrl) {
+      return null;
+    }
+
+    try {
+      const tasklistUrl = new URL(endpoint.tasklistUrl);
+
+      if (![ 'http:', 'https:' ].includes(tasklistUrl.protocol)) {
+        return null;
+      }
+
+      return tasklistUrl;
+    } catch (error) {
+      return null;
+    }
+  }
+
   if (targetType !== TARGET_TYPES.CAMUNDA_CLOUD) {
     return null;
   }
