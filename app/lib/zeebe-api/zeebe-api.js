@@ -438,9 +438,16 @@ class ZeebeAPI {
         throw new Error('Camunda REST client is not available');
       }
 
-      const response = await camundaRestClient.searchVariables({
-        filter: {
-          processInstanceKey
+      const response = await camundaRestClient.callApiEndpoint({
+        method: 'POST',
+        urlPath: 'variables/search',
+        body: {
+          filter: {
+            processInstanceKey
+          },
+        },
+        queryParams: {
+          truncateValues: false
         }
       });
 
