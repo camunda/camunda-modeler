@@ -373,6 +373,21 @@ describe('ConnectionManagerPlugin', function() {
 
     describe('events', function() {
 
+      let clock;
+
+      beforeEach(function() {
+
+        // excludes requestAnimationFrame used by React
+        clock = sinon.useFakeTimers({
+          toFake: [ 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval' ]
+        });
+      });
+
+      afterEach(function() {
+        clock.restore();
+      });
+
+
       it('should emit connectionManager.connectionStatusChanged on connection check result', async function() {
 
         // given
@@ -395,26 +410,30 @@ describe('ConnectionManagerPlugin', function() {
 
         // when
         createConnectionManagerPlugin({
-          getConnectionForTab: async () => DEFAULT_CONNECTIONS[0],
+          getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
           subscribe,
           settings,
           triggerAction,
           connectionCheckResult: { success: true }
         });
 
+        // make React state settle
+        await waitForNextFrame(3);
+
+        // advance past ConnectionChecker SHORT delay (1000ms)
+        await clock.tickAsync(2000);
+
         // then
-        await waitFor(() => {
-          expect(triggerAction).to.have.been.calledWith(
-            'emit-event',
-            sinon.match({
-              type: 'connectionManager.connectionStatusChanged',
-              payload: {
-                name: 'plugin',
-                success: true
-              }
-            })
-          );
-        }, { timeout: 10000 });
+        expect(triggerAction).to.have.been.calledWith(
+          'emit-event',
+          sinon.match({
+            type: 'connectionManager.connectionStatusChanged',
+            payload: {
+              name: 'plugin',
+              success: true
+            }
+          })
+        );
       });
     });
   });
@@ -1089,4 +1108,12 @@ function createPluginProps(props = {}, globals = {}) {
     connectionCheckResult,
     setConnectionCheckResult
   };
+}
+
+async function waitForNextFrame(n = 1) {
+  while (n-- > 0) {
+    await new Promise(resolve => {
+      requestAnimationFrame(resolve);
+    });
+  }
 }
