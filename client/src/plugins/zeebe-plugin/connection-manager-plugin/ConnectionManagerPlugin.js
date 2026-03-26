@@ -276,6 +276,10 @@ function tabNeedsConnection(tab) {
  * @returns {boolean} - True if local, false otherwise
  */
 function isLocalEndpoint(endpoint) {
+  if (!endpoint) {
+    return false;
+  }
+
   try {
     const url = new URL(endpoint);
     const hostname = url.hostname.toLowerCase();
@@ -297,6 +301,9 @@ function isLocalEndpoint(endpoint) {
  * @returns {string|null} - The endpoint URL or null if not found
  */
 function extractEndpointUrl(connection) {
+  if (!connection) {
+    return null;
+  }
 
   // Self-Managed uses contactPoint
   if (connection.contactPoint) {
