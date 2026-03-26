@@ -11,6 +11,8 @@
 const {
   app,
   dialog: electronDialog,
+  Menu: ElectronMenu,
+  MenuItem,
   screen: electronScreen,
   session,
   BrowserWindow
@@ -505,6 +507,29 @@ app.on('web-contents-created', (event, webContents) => {
 
     if (url !== webContents.getURL()) {
       browserOpen(url);
+    }
+  });
+
+  // show context menu for editable elements and selected text
+  webContents.on('context-menu', (event, params) => {
+    if (params.isEditable || params.selectionText) {
+      const menu = new ElectronMenu();
+
+      if (params.selectionText) {
+        menu.append(new MenuItem({ role: 'copy' }));
+      }
+
+      if (params.isEditable) {
+        if (params.selectionText) {
+          menu.append(new MenuItem({ role: 'cut' }));
+        }
+        menu.append(new MenuItem({ role: 'paste' }));
+        menu.append(new MenuItem({ type: 'separator' }));
+        menu.append(new MenuItem({ role: 'selectAll' }));
+      }
+
+
+      menu.popup();
     }
   });
 });
