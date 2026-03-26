@@ -888,7 +888,7 @@ export class BpmnEditor extends CachedComponent {
           >
             <SidePanel.Header>
               <SidePanelTitleBar
-                title="Configuration"
+                title="Details"
                 onClose={ () => this.handleLayoutChange({
                   sidePanel: {
                     ...SIDE_PANEL_DEFAULT_LAYOUT,

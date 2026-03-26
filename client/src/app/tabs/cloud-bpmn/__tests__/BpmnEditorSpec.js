@@ -1152,9 +1152,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         });
 
         // when
-        const configurationTitle = getByText('Configuration');
-        const configurationSidePanel = configurationTitle.closest('.side-panel');
-        const closeButton = getByRole(configurationSidePanel, 'button', { name: 'Close panel' });
+        const detailsTitle = getByText('Details');
+        const detailsSidePanel = detailsTitle.closest('.side-panel');
+        const closeButton = getByRole(detailsSidePanel, 'button', { name: 'Close panel' });
 
         fireEvent.click(closeButton);
 

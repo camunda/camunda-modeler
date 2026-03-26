@@ -12,6 +12,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: update welcome screen to encourage creation ([#5716](https://github.com/camunda/camunda-modeler/pull/5716))
 * `FEAT`: mark Camunda 8.9 as latest stable engine profile ([#5740](https://github.com/camunda/camunda-modeler/issues/5740))
 * `FEAT`: remove icons in side panel title bars ([#5798](https://github.com/camunda/camunda-modeler/pull/5798))
+* `FEAT`: update properties sidebar title to "Details" ([#5795](https://github.com/camunda/camunda-modeler/pull/5795))
 * `FIX`: persist offline connection as last used connection across restart ([#5746](https://github.com/camunda/camunda-modeler/pull/5746))
 * `FIX`: use configured operate URL for linking also in Self-Managed ([#5669](https://github.com/camunda/camunda-modeler/pull/5669))
 * `FIX`: validate operate URL before using it ([#5708](https://github.com/camunda/camunda-modeler/issues/5708))
