@@ -16,7 +16,6 @@ import { render, fireEvent, screen } from '@testing-library/react';
 
 import ResizableContainer, {
   CLOSED_THRESHOLD,
-  MIN_CANVAS_WIDTH,
   getCSSFromProps,
 } from '../ResizableContainer';
 
@@ -282,78 +281,53 @@ describe('<ResizableContainer>', function() {
 
   describe('effective max', function() {
 
-    it('should not open to maxWidth if not enough space', function() {
+    it('should preserve preferred width when toggling open', function() {
 
       // given
       const onResized = spy();
 
-      render(
-        <div style={ { width: '1000px', height: '1000px' } }>
-          <ResizableContainer
-            direction="left"
-            width={ 600 }
-            open={ true }
-            onResized={ () => {} }
-          />
-          <ResizableContainer
-            direction="left"
-            width={ 600 }
-            maxWidth={ 600 }
-            open={ false }
-            onResized={ onResized }
-          />
-        </div>
-      );
+      createResizableContainer({
+        direction: 'left',
+        width: 600,
+        maxWidth: 400,
+        open: false,
+        onResized
+      });
 
       // when
-      const resizers = screen.getAllByRole('separator');
-      fireEvent.mouseDown(resizers[1], { clientX: 0, clientY: 0 });
-      fireEvent.mouseUp(window, { clientX: 0, clientY: 0 });
+      toggle();
 
-      // then
+      // then - preferred width is preserved, CSS handles visual clamping
       expect(onResized).to.have.been.calledOnce;
 
       const { width, open } = onResized.getCall(0).args[0];
       expect(open).to.be.true;
-      expect(width).to.eq(MIN_CANVAS_WIDTH);
+      expect(width).to.eq(600);
     });
 
 
-    it('should not resize beyond effective max', function() {
+    it('should not resize beyond maxWidth', function() {
 
       // given
       const onResized = spy();
 
-      render(
-        <div style={ { width: '1000px', height: '1000px' } }>
-          <ResizableContainer
-            direction="right"
-            width={ 600 }
-            open={ true }
-            onResized={ () => {} }
-          />
-          <ResizableContainer
-            direction="left"
-            width={ 100 }
-            maxWidth={ 600 }
-            open={ true }
-            onResized={ onResized }
-          />
-        </div>
-      );
+      createResizableContainer({
+        direction: 'left',
+        width: 100,
+        maxWidth: 300,
+        open: true,
+        onResized
+      });
 
       // when
-      const resizers = screen.getAllByRole('separator');
-      fireEvent.mouseDown(resizers[1], { clientX: 0, clientY: 0 });
-      fireEvent.mouseMove(window, { clientX: -400, clientY: 0 });
-      fireEvent.mouseUp(window, { clientX: -400, clientY: 0 });
+      resize(-400, 0);
 
       // then
       expect(onResized).to.have.been.calledOnce;
 
       const { width, open } = onResized.getCall(0).args[0];
       expect(open).to.be.true;
-      expect(width).to.eq(200);
+      expect(width).to.eq(300);
     });
   });
 

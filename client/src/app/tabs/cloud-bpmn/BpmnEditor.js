@@ -37,7 +37,7 @@ import TaskTestingTab from './side-panel/tabs/task-testing/TaskTestingTab';
 import TaskTestingIcon from '../../../../resources/icons/TaskTesting.svg';
 import SidePanelHeader from './side-panel/SidePanelHeader';
 
-import VariablesSidePanel, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT } from './variables-side-panel/VariablesSidePanel';
+import VariablesSidePanel, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT, DEFAULT_WIDTH as VARIABLES_DEFAULT_WIDTH } from './variables-side-panel/VariablesSidePanel';
 import VariablesStatusBarItem from './variables-side-panel/VariablesStatusBarItem';
 
 import BpmnModeler from './modeler';
@@ -77,6 +77,8 @@ import { getCloudTemplates } from '../../../util/elementTemplates';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
+const MIN_CANVAS_WIDTH = 200;
+
 export const DEFAULT_ENGINE_PROFILE = {
   executionPlatform: ENGINES.CLOUD
 };
@@ -92,6 +94,7 @@ export class BpmnEditor extends CachedComponent {
     this.state = {};
 
     this.ref = React.createRef();
+    this.editorRef = React.createRef();
     this.propertiesPanelRef = React.createRef();
 
     this.handleEngineProfileChangeDebounced = debounce(this.handleEngineProfileChange);
@@ -177,6 +180,18 @@ export class BpmnEditor extends CachedComponent {
 
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
+    if (this.editorRef.current) {
+      this._resizeObserver = new ResizeObserver(entries => {
+        for (const entry of entries) {
+          const width = entry.contentRect.width;
+          if (width !== this.state.editorWidth) {
+            this.setState({ editorWidth: width });
+          }
+        }
+      });
+      this._resizeObserver.observe(this.editorRef.current);
+    }
+
     try {
       await this.loadTemplates();
     } catch (error) {
@@ -188,6 +203,10 @@ export class BpmnEditor extends CachedComponent {
 
   componentWillUnmount() {
     this._isMounted = false;
+
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+    }
 
     const modeler = this.getModeler();
 
@@ -834,6 +853,24 @@ export class BpmnEditor extends CachedComponent {
     eventBus.fire('propertiesPanel.resized');
   };
 
+  getEffectiveMaxWidth(panelKey) {
+    const { editorWidth } = this.state;
+    const { layout } = this.props;
+
+    if (!editorWidth) return undefined;
+
+    const { sidePanel = SIDE_PANEL_DEFAULT_LAYOUT } = layout;
+    const { variablesSidePanel = VARIABLES_PANEL_DEFAULT_LAYOUT } = layout;
+
+    const sidePanelWidth = sidePanel.open ? (sidePanel.width || SIDE_PANEL_DEFAULT_LAYOUT.width) : 0;
+    const variablesWidth = variablesSidePanel.open
+      ? (variablesSidePanel.width || VARIABLES_DEFAULT_WIDTH) : 0;
+
+    const siblingWidth = panelKey === 'sidePanel' ? variablesWidth : sidePanelWidth;
+
+    return Math.max(0, editorWidth - siblingWidth - MIN_CANVAS_WIDTH);
+  }
+
   render() {
     const engineProfile = this.engineProfile.getCached();
 
@@ -861,7 +898,7 @@ export class BpmnEditor extends CachedComponent {
 
         <Loader hidden={ imported && !importing } />
 
-        <div className="editor">
+        <div className="editor" ref={ this.editorRef }>
           <div
             className="diagram"
             ref={ this.ref }
@@ -872,6 +909,7 @@ export class BpmnEditor extends CachedComponent {
           <VariablesSidePanel
             injector={ injector }
             layout={ layout }
+            maxWidth={ this.getEffectiveMaxWidth('variablesSidePanel') }
             onAction={ onAction }
             onLayoutChanged={ this.handleLayoutChange }
           />
@@ -883,6 +921,7 @@ export class BpmnEditor extends CachedComponent {
 
           <SidePanel
             layout={ layout }
+            maxWidth={ this.getEffectiveMaxWidth('sidePanel') }
             onLayoutChanged={ this.handleLayoutChange }
           >
             <SidePanel.Header>

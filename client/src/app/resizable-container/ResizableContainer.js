@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import classNames from 'classnames';
 
@@ -48,16 +48,10 @@ export const DEFAULT_MIN_HEIGHT = 100;
 
 export const CLOSED_THRESHOLD = 50;
 
-export const MIN_CANVAS_WIDTH = 200;
-export const MIN_CANVAS_HEIGHT = 200;
-
 /**
  * Resizable container that can be dragged to resize or clicked to toggle open/closed.
  *
  * Supports both horizontal (width) and vertical (height) resizing based on the `direction` prop.
- *
- * It reserves at least `MIN_CANVAS_WIDTH`/`MIN_CANVAS_HEIGHT` px for the canvas,
- * even if panel's `maxWidth`/`maxHeight` allows for more.
  *
  * @param {Object} props
  * @param {'left'|'right'|'top'|'bottom'} props.direction
@@ -107,111 +101,41 @@ export default function ResizableContainer(props) {
       rect = ref.current.getBoundingClientRect();
     }
 
-    const effectiveMax = getEffectiveMaxSize(
-      ref.current, direction, { maxWidth, minWidth, maxHeight, minHeight }
-    );
-
     return {
       ...context,
-      rect,
-      effectiveMax
+      rect
     };
   };
 
-  const onResize = ({ delta }, { rect, effectiveMax }) => {
+  const onResize = ({ delta }, { rect }) => {
     const newSize = rect[dimension] + delta;
     const newOpen = newSize > CLOSED_THRESHOLD;
 
-    ref.current.style[dimension] = getEffectiveSize(newSize, minSize, effectiveMax || maxSize) + 'px';
+    ref.current.style[dimension] = getEffectiveSize(newSize, minSize, maxSize) + 'px';
     ref.current.classList.toggle('open', newOpen);
     ref.current.classList.add('resizing');
   };
 
-  const onResizeEnd = ({ delta }, { rect, effectiveMax }) => {
+  const onResizeEnd = ({ delta }, { rect }) => {
     ref.current.classList.remove('resizing');
 
     const newSize = rect[dimension] + delta;
     const newOpen = newSize > CLOSED_THRESHOLD;
 
     onResized({
-      [dimension]: newOpen ? getEffectiveSize(newSize, minSize, effectiveMax || maxSize) : size,
+      [dimension]: newOpen ? getEffectiveSize(newSize, minSize, maxSize) : size,
       open: newOpen
     });
   };
 
   const onToggle = () => {
-    let newSize = size < minSize ? minSize : size;
-
-    if (!open) {
-      const effectiveMax = getEffectiveMaxSize(
-        ref.current, direction, { maxWidth, minWidth, maxHeight, minHeight }
-      );
-      if (effectiveMax) {
-        newSize = Math.min(newSize, effectiveMax);
-      }
-    }
+    const newSize = size < minSize ? minSize : size;
 
     onResized({
       [dimension]: newSize,
       open: !open
     });
   };
-
-  const shrinkIfNeeded = (element) => {
-    const effectiveMax = getEffectiveMaxSize(
-      element, direction, { maxWidth, minWidth, maxHeight, minHeight }
-    );
-
-    if (effectiveMax && size > effectiveMax) {
-      element.style[dimension] = effectiveMax + 'px';
-      onResized({ [dimension]: effectiveMax, open: true });
-    }
-  };
-
-  // When a container opens, calculate its size and notify siblings
-  useLayoutEffect(() => {
-    if (!open || !ref.current) return;
-
-    const effectiveMax = getEffectiveMaxSize(
-      ref.current, direction, { maxWidth, minWidth, maxHeight, minHeight }
-    );
-
-    if (effectiveMax && size > effectiveMax) {
-      ref.current.style[dimension] = effectiveMax + 'px';
-      onResized({ [dimension]: effectiveMax, open: true });
-    }
-
-    ref.current.parentElement?.dispatchEvent(
-      new CustomEvent('panel-layout-change', { detail: ref.current })
-    );
-  }, [ open ]);
-
-  // Listen for sibling layout changes and window resizes, shrink if needed
-  useEffect(() => {
-    if (!ref.current || !open) return;
-
-    const parent = ref.current.parentElement;
-    if (!parent) return;
-
-    const element = ref.current;
-
-    const handleLayoutChange = (event) => {
-      if (event.detail === element) return;
-      shrinkIfNeeded(element);
-    };
-
-    const handleWindowResize = () => {
-      shrinkIfNeeded(element);
-    };
-
-    parent.addEventListener('panel-layout-change', handleLayoutChange);
-    window.addEventListener('resize', handleWindowResize);
-
-    return () => {
-      parent.removeEventListener('panel-layout-change', handleLayoutChange);
-      window.removeEventListener('resize', handleWindowResize);
-    };
-  }, [ open, size, dimension, direction, maxWidth, minWidth, maxHeight, minHeight, onResized ]);
 
   const onMouseDown = useResize(onResizeStart, onResize, onResizeEnd, onToggle, direction);
 
@@ -353,40 +277,6 @@ function getSizeProps(props) {
 }
 
 /**
- * Calculates the effective maximum size for a container,
- * accounting for sibling `ResizableContainer` elements that are currently open.
- * Reserves `MIN_CANVAS_WIDTH`/`MIN_CANVAS_HEIGHT` for the canvas.
- *
- * @param {HTMLElement} element
- * @param {'left'|'right'|'top'|'bottom'} direction
- * @param {Object} sizes - Size constraints.
- * @param {number|null} sizes.maxWidth
- * @param {number} sizes.minWidth
- * @param {number|null} sizes.maxHeight
- * @param {number} sizes.minHeight
- * @returns {number|null} The effective max, or the static max if no parent is found.
- */
-function getEffectiveMaxSize(element, direction, { maxWidth, minWidth, maxHeight, minHeight }) {
-  const parent = element?.parentElement;
-
-  const horizontal = isHorizontal(direction);
-  const max = horizontal ? maxWidth : maxHeight;
-  const min = horizontal ? minWidth : minHeight;
-  const minCanvas = horizontal ? MIN_CANVAS_WIDTH : MIN_CANVAS_HEIGHT;
-
-  if (!parent) return max;
-
-  const siblingSize = getOpenSiblingSize(element, horizontal);
-  const parentSize = horizontal
-    ? parent.getBoundingClientRect().width
-    : parent.getBoundingClientRect().height;
-
-  const spaceBasedMax = Math.max(min, parentSize - siblingSize - minCanvas);
-
-  return max ? Math.min(max, spaceBasedMax) : spaceBasedMax;
-}
-
-/**
  * Get a size value between min and max, collapsing to 0 below `CLOSED_THRESHOLD`.
  *
  * @param {number} size
@@ -404,29 +294,4 @@ function getEffectiveSize(size, min, max) {
   }
 
   return size;
-}
-
-/**
- * Returns the total size (width or height) of open sibling ResizableContainer elements.
- *
- * @param {HTMLElement} element
- * @param {boolean} horizontal
- * @returns {number}
- */
-function getOpenSiblingSize(element, horizontal) {
-  const parent = element?.parentElement;
-
-  const siblings = Array.from(parent?.children || []).filter(
-    child => child !== element &&
-    child.classList.contains(css.ResizableContainer) &&
-    child.classList.contains('open')
-  );
-
-  let total = 0;
-  siblings.forEach(child => {
-    const rect = child.getBoundingClientRect();
-    total += horizontal ? rect.width : rect.height;
-  });
-
-  return total;
 }
