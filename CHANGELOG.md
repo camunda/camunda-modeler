@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FIX`: persist offline connection as last used connection across restart ([#5746](https://github.com/camunda/camunda-modeler/pull/5746))
 * `FIX`: prevent cutting the tooltip if it couldn't fit to the bottom of the screen ([#5451](https://github.com/camunda/camunda-modeler/issues/5451))
+* `FIX`: enable right click context menu for editable elements and selected text ([#5801](https://github.com/camunda/camunda-modeler/pull/5801))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.40.1`
 * `DEPS`: update to `@bpmn-io/variable-resolver@2.0.0`
 * `DEPS`: update to `electron@40.6.1`
