@@ -103,7 +103,7 @@
     "less": "^4.0.0",
     "less-loader": "^12.3.1",
     "license-webpack-plugin": "^4.0.0",
-    "mocha": "^10.8.2",
+    "mocha": "^11.7.5",
     "mocha-test-container-support": "0.2.0",
     "monaco-editor-webpack-plugin": "^7.1.1",
     "npm-run-all2": "^8.0.4",
