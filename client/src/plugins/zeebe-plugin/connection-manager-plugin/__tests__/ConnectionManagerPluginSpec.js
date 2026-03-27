@@ -395,7 +395,7 @@ describe('ConnectionManagerPlugin', function() {
           if (event === 'app.activeTabChanged') {
 
             // required as otherwise the config is set to `null` later
-            requestAnimationFrame(() => callback({
+            waitForNextCycle().then(() => callback({
               activeTab: DEFAULT_ACTIVE_TAB
             }));
           }
@@ -418,7 +418,7 @@ describe('ConnectionManagerPlugin', function() {
         });
 
         // make React state settle
-        await waitForNextFrame(3);
+        await waitForNextCycle(3);
 
         // advance past ConnectionChecker SHORT delay (1000ms)
         await clock.tickAsync(2000);
@@ -1110,10 +1110,10 @@ function createPluginProps(props = {}, globals = {}) {
   };
 }
 
-async function waitForNextFrame(n = 1) {
+async function waitForNextCycle(n = 1) {
   while (n-- > 0) {
     await new Promise(resolve => {
-      requestAnimationFrame(resolve);
+      queueMicrotask(resolve);
     });
   }
 }
