@@ -107,7 +107,7 @@
     "mocha-test-container-support": "0.2.0",
     "monaco-editor-webpack-plugin": "^7.1.1",
     "npm-run-all2": "^8.0.4",
-    "puppeteer": "^24.28.0",
+    "puppeteer": "^24.40.0",
     "react-svg-loader": "^3.0.3",
     "react-test-renderer": "^18.3.1",
     "sinon": "^17.0.1",

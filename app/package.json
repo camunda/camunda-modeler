@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@camunda8/sdk": "^8.7.28",
+    "@camunda8/sdk": "^8.8.9",
     "@sentry/integrations": "^7.113.0",
     "@sentry/node": "^10.0.0",
     "bpmn-moddle": "^10.0.0",
