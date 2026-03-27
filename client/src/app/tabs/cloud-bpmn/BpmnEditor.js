@@ -889,7 +889,6 @@ export class BpmnEditor extends CachedComponent {
             <SidePanel.Header>
               <SidePanelTitleBar
                 title="Configuration"
-                icon={ Settings }
                 onClose={ () => this.handleLayoutChange({
                   sidePanel: {
                     ...SIDE_PANEL_DEFAULT_LAYOUT,

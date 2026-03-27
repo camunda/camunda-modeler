@@ -18,8 +18,6 @@ import SidePanelTitleBar from '../SidePanelTitleBar';
 
 const { spy } = sinon;
 
-const DummyIcon = (props) => <svg { ...props } aria-label="dummy icon" />;
-
 
 describe('<SidePanelTitleBar>', function() {
 
@@ -40,26 +38,6 @@ describe('<SidePanelTitleBar>', function() {
 
     // then
     expect(screen.getByText('Variables')).to.exist;
-  });
-
-
-  it('should render icon', function() {
-
-    // when
-    createSidePanelTitleBar({ icon: DummyIcon });
-
-    // then
-    expect(screen.getByLabelText('dummy icon')).to.exist;
-  });
-
-
-  it('should NOT render icon when not provided', function() {
-
-    // when
-    createSidePanelTitleBar();
-
-    // then
-    expect(screen.queryByLabelText('dummy icon')).not.to.exist;
   });
 
 
@@ -105,11 +83,10 @@ describe('<SidePanelTitleBar>', function() {
 function createSidePanelTitleBar(options = {}) {
   const {
     title = 'Test',
-    icon,
     onClose
   } = options;
 
   return render(
-    <SidePanelTitleBar title={ title } icon={ icon } onClose={ onClose } />
+    <SidePanelTitleBar title={ title } onClose={ onClose } />
   );
 }

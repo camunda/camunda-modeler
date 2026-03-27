@@ -10,8 +10,6 @@
 
 import React, { useCallback } from 'react';
 
-import { ValueVariableAlt } from '@carbon/icons-react';
-
 import classNames from 'classnames';
 
 import VariableOutline from '@bpmn-io/variable-outline';
@@ -81,7 +79,7 @@ export default function VariablesSidePanel(props) {
       maxWidth={ MAX_WIDTH }
       onResized={ onResized }
     >
-      <SidePanelTitleBar title="Variables" icon={ ValueVariableAlt } onClose={ onClose } />
+      <SidePanelTitleBar title="Variables" onClose={ onClose } />
 
       <div className="variables-side-panel__body">
         <VariableOutline
