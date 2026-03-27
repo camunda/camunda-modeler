@@ -23,11 +23,11 @@ import {
   reduce
 } from 'min-dash';
 
-import semver from 'semver';
-
 import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
+
+import VersionMismatchLintPlugin from './linting/VersionMismatchLintPlugin';
 
 import executeOnce from './util/executeOnce';
 
@@ -1058,21 +1058,38 @@ export class App extends PureComponent {
 
     const linter = await tabProvider.getLinter(plugins, tab, this.getConfig);
 
-    if (!linter) {
-      return;
+    let results = [];
+
+    if (linter) {
+      if (!contents) {
+        contents = tab.file.contents;
+      }
+
+      results = await linter.lint(contents);
     }
 
-    if (!contents) {
-      contents = tab.file.contents;
-    }
+    const getWarnings = VersionMismatchLintPlugin({
+      connectionCheckResult: this.state.connectionCheckResult,
+      engineProfiles: this.state.engineProfiles
+    });
 
-    const results = await linter.lint(contents);
+    const warnings = getWarnings(tab);
+
+    if (warnings.length) {
+      results = [ ...results, ...warnings ];
+    }
 
     this.setLintingState(tab, results);
   };
 
   _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
-    this.setState({ connectionCheckResult });
+    this.setState({ connectionCheckResult }, () => {
+      const { activeTab } = this.state;
+
+      if (activeTab && activeTab !== EMPTY_TAB) {
+        this.lintTab(activeTab);
+      }
+    });
   };
 
   _handleEngineProfileChanged = ({ tab, executionPlatform, executionPlatformVersion }) => {
@@ -1085,67 +1102,15 @@ export class App extends PureComponent {
         ...state.engineProfiles,
         [ tab.id ]: { executionPlatform, executionPlatformVersion }
       }
-    }));
-  };
+    }), () => {
 
-  _getVersionMismatchWarning(tab) {
-    if (![ 'cloud-bpmn', 'cloud-dmn', 'cloud-form' ].includes(tab.type)) {
-      return null;
-    }
-
-    const { connectionCheckResult, engineProfiles } = this.state;
-
-    if (!connectionCheckResult || !connectionCheckResult.success) {
-      return null;
-    }
-
-    const clusterVersion = connectionCheckResult.response
-      && connectionCheckResult.response.gatewayVersion;
-
-    if (!clusterVersion) {
-      return null;
-    }
-
-    const engineProfile = engineProfiles[ tab.id ];
-
-    if (!engineProfile || !engineProfile.executionPlatformVersion) {
-      return null;
-    }
-
-    const selectedVersion = engineProfile.executionPlatformVersion;
-
-    const clusterCoerced = semver.coerce(clusterVersion);
-    const selectedCoerced = semver.coerce(selectedVersion);
-
-    if (!clusterCoerced || !selectedCoerced) {
-      return null;
-    }
-
-    if (clusterCoerced.major === selectedCoerced.major
-      && clusterCoerced.minor === selectedCoerced.minor) {
-      return null;
-    }
-
-    return {
-      category: 'warn',
-      message: `The selected version (${ selectedCoerced.major }.${ selectedCoerced.minor }) differs from the connected cluster version (${ clusterCoerced.major }.${ clusterCoerced.minor }).`,
-      rule: 'camunda/version-mismatch'
-    };
-  }
-
-  _getRawLintingState = (tab) => {
-    return this.state.lintingState[ tab.id ] || EMPTY_LINTING_STATE;
+      // Re-lint to pick up version mismatch warning
+      this.lintTab(tab);
+    });
   };
 
   getLintingState = (tab) => {
-    const lintResults = this._getRawLintingState(tab);
-    const versionWarning = this._getVersionMismatchWarning(tab);
-
-    if (!versionWarning) {
-      return lintResults;
-    }
-
-    return [ ...lintResults, versionWarning ];
+    return this.state.lintingState[ tab.id ] || EMPTY_LINTING_STATE;
   };
 
   setLintingState = (tab, results) => {
@@ -1158,7 +1123,7 @@ export class App extends PureComponent {
 
       return {
         ...lintingState,
-        [ t.id ]: this._getRawLintingState(t)
+        [ t.id ]: this.getLintingState(t)
       };
     }, {
       [ tab.id ]: results
