@@ -435,6 +435,55 @@ describe('ConnectionManagerPlugin', function() {
           })
         );
       });
+
+
+      it('should NOT emit event after the checking is paused', async function() {
+
+        // given
+        let openSettings;
+        const subscribe = (event, callback) => {
+          if (event === 'app.activeTabChanged') {
+
+            // required as otherwise the config is set to `null` later
+            waitForNextCycle().then(() => callback({
+              activeTab: DEFAULT_ACTIVE_TAB
+            }));
+          } else if (event === 'app.settings-open') {
+            openSettings = callback;
+          }
+          return { cancel: () => {} };
+        };
+
+        const settings = createMockSettings({
+          'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+        });
+
+        const triggerAction = sinon.spy();
+        createConnectionManagerPlugin({
+          getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
+          subscribe,
+          settings,
+          triggerAction,
+          connectionCheckResult: { success: true }
+        });
+
+        // when
+        openSettings();
+
+        // make React state settle
+        await waitForNextCycle(3);
+
+        // advance past ConnectionChecker SHORT delay (1000ms)
+        await clock.tickAsync(2000);
+
+        // then
+        expect(triggerAction).not.to.have.been.calledWith(
+          'emit-event',
+          sinon.match({
+            type: 'connectionManager.connectionStatusChanged'
+          })
+        );
+      });
     });
   });
 
