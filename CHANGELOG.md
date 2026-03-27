@@ -8,24 +8,50 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: add support of templating execution and task listeners ([#5187](https://github.com/camunda/camunda-modeler/issues/5187))
+* `FEAT`: allow template authors to enable dynamic output mappings ([bpmn-io/bpmn-js-element-templates#157](https://github.com/bpmn-io/bpmn-js-element-templates/issues/157))
 * `FEAT`: implement side panel for variables and task testing ([#5633](https://github.com/camunda/camunda-modeler/issues/5633))
-* `FEAT`: update welcome screen to encourage creation ([#5716](https://github.com/camunda/camunda-modeler/pull/5716))
+* `FEAT`: improve min and max length error messages ([#4207](https://github.com/camunda/camunda-modeler/issues/4207))
 * `FEAT`: mark Camunda 8.9 as latest stable engine profile ([#5740](https://github.com/camunda/camunda-modeler/issues/5740))
 * `FEAT`: remove icons in side panel title bars ([#5798](https://github.com/camunda/camunda-modeler/pull/5798))
-* `FEAT`: update properties sidebar title to "Details" ([#5795](https://github.com/camunda/camunda-modeler/pull/5795))
 * `FEAT`: task testing links to tasklist for open user tasks ([#5765](https://github.com/camunda/camunda-modeler/issues/5765))
-* `FIX`: persist offline connection as last used connection across restart ([#5746](https://github.com/camunda/camunda-modeler/pull/5746))
-* `FIX`: use configured operate URL for linking also in Self-Managed ([#5669](https://github.com/camunda/camunda-modeler/pull/5669))
-* `FIX`: validate operate URL before using it ([#5708](https://github.com/camunda/camunda-modeler/issues/5708))
+* `FEAT`: update properties sidebar title to "Details" ([#5795](https://github.com/camunda/camunda-modeler/pull/5795))
+* `FEAT`: update welcome screen to encourage creation ([#5716](https://github.com/camunda/camunda-modeler/pull/5716))
+* `FIX`: do not truncate variable values in task testing ([#5723](https://github.com/camunda/camunda-modeler/issues/5723))
+* `FIX`: ensure Feel/Text editors value is properly committed on blur, paste, and unmount ([#5364](https://github.com/camunda/camunda-modeler/issues/5364), [#5583](https://github.com/camunda/camunda-modeler/issues/5583))
 * `FIX`: gracefully handle permission error when searching for process application file ([#5670](https://github.com/camunda/camunda-modeler/issues/5670))
 * `FIX`: indicate tab cut-off through ellipsis ([#5660](https://github.com/camunda/camunda-modeler/pull/5660))
+* `FIX`: persist offline connection as last used connection across restart ([#5746](https://github.com/camunda/camunda-modeler/pull/5746))
+* `FIX`: preserve user-defined outputs when apply/update template with `entriesVisible.outputs === true` ([bpmn-io/bpmn-js-element-templates#233](https://github.com/bpmn-io/bpmn-js-element-templates/pull/233))
 * `FIX`: prevent cutting the tooltip if it couldn't fit to the bottom of the screen ([#5451](https://github.com/camunda/camunda-modeler/issues/5451))
-* `FIX`: do not truncate variable values in task testing ([#5723](https://github.com/camunda/camunda-modeler/issues/5723))
-* `DEPS`: update to `@bpmn-io/properties-panel@3.40.1`
-* `DEPS`: update to `@bpmn-io/variable-resolver@2.0.0`
-* `DEPS`: update to `@bpmn-io/variable-outline@3.0.0-rc.2`
+* `FIX`: use configured operate URL for linking also in Self-Managed ([#5669](https://github.com/camunda/camunda-modeler/pull/5669))
+* `FIX`: validate operate URL before using it ([#5708](https://github.com/camunda/camunda-modeler/issues/5708))
+* `DEPS`: update to `@bpmn-io/extract-process-variables@2.2.1`
+* `DEPS`: update to `@bpmn-io/form-js@1.21.1`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.40.5`
+* `DEPS`: update to `@bpmn-io/variable-outline@3.0.0`
+* `DEPS`: update to `@bpmn-io/variable-resolver@3.0.0`
+* `DEPS`: update to `@camunda/rpa-integration@1.3.4`
 * `DEPS`: update to `@camunda/task-testing@3.0.0-rc.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.23.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.53.0`
+* `DEPS`: update to `bpmn-js@18.14.0`
+* `DEPS`: update to `diagram-js@15.11.0`
 * `DEPS`: update to `electron@41`
+
+### BPMN
+
+* `FEAT`: allow to create child elements from the context pad ([bpmn-io/bpmn-js#2391](https://github.com/bpmn-io/bpmn-js/issues/2391))
+* `FIX`: plain BPMN elements are not hidden in groups during search ([#5658](https://github.com/camunda/camunda-modeler/issues/5658))
+* `FIX`: correct handling of annotations during sub-process collapse/expand, copy/paste, and remove actions ([#5163](https://github.com/camunda/camunda-modeler/issues/5163), [#4987](https://github.com/camunda/camunda-modeler/issues/4987))
+* `FIX`: allow undo of pasted sub-process ([bpmn-io/bpmn-js#2269](https://github.com/bpmn-io/bpmn-js/issues/2269))
+* `FIX`: correct sequence flow layout for corner boundary events whose target is strictly axis-aligned ([bpmn-io/bpmn-js#2270](https://github.com/bpmn-io/bpmn-js/issues/2270))
+* `FIX`: correctly replace non-interrupting event with an interrupting one ([#5395](https://github.com/camunda/camunda-modeler/issues/5395))
+
+### Forms
+
+* `FEAT`: support custom headers for document previews ([bpmn-io/form-js#1428](https://github.com/bpmn-io/form-js/issues/1428))
+* `FIX`: fix visibility conditions hiding fields in the editor canvas ([bpmn-io/form-js#1489](https://github.com/bpmn-io/form-js/issues/1489))
 
 ## 5.45.0
 
