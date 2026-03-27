@@ -23,6 +23,8 @@ import {
   reduce
 } from 'min-dash';
 
+import semver from 'semver';
+
 import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
@@ -98,6 +100,8 @@ const INITIAL_STATE = {
   tabGroups: {},
   tabState: {},
   lintingState: {},
+  connectionCheckResult: null,
+  engineProfiles: {},
   logEntries: [],
   notifications: [],
   currentModal: null
@@ -156,6 +160,11 @@ export class App extends PureComponent {
     });
 
     this.tabRef = React.createRef();
+
+    this.on('connectionManager.connectionStatusChanged',
+      this._handleConnectionStatusChanged);
+    this.on('tab.engineProfileChanged',
+      this._handleEngineProfileChanged);
 
     const userPlugins = this.getPlugins('client');
 
@@ -1062,8 +1071,81 @@ export class App extends PureComponent {
     this.setLintingState(tab, results);
   };
 
-  getLintingState = (tab) => {
+  _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
+    this.setState({ connectionCheckResult });
+  };
+
+  _handleEngineProfileChanged = ({ tab, executionPlatform, executionPlatformVersion }) => {
+    if (!tab || !tab.id) {
+      return;
+    }
+
+    this.setState(state => ({
+      engineProfiles: {
+        ...state.engineProfiles,
+        [ tab.id ]: { executionPlatform, executionPlatformVersion }
+      }
+    }));
+  };
+
+  _getVersionMismatchWarning(tab) {
+    if (![ 'cloud-bpmn', 'cloud-dmn', 'cloud-form' ].includes(tab.type)) {
+      return null;
+    }
+
+    const { connectionCheckResult, engineProfiles } = this.state;
+
+    if (!connectionCheckResult || !connectionCheckResult.success) {
+      return null;
+    }
+
+    const clusterVersion = connectionCheckResult.response
+      && connectionCheckResult.response.gatewayVersion;
+
+    if (!clusterVersion) {
+      return null;
+    }
+
+    const engineProfile = engineProfiles[ tab.id ];
+
+    if (!engineProfile || !engineProfile.executionPlatformVersion) {
+      return null;
+    }
+
+    const selectedVersion = engineProfile.executionPlatformVersion;
+
+    const clusterCoerced = semver.coerce(clusterVersion);
+    const selectedCoerced = semver.coerce(selectedVersion);
+
+    if (!clusterCoerced || !selectedCoerced) {
+      return null;
+    }
+
+    if (clusterCoerced.major === selectedCoerced.major
+      && clusterCoerced.minor === selectedCoerced.minor) {
+      return null;
+    }
+
+    return {
+      category: 'warn',
+      message: `The selected version (${ selectedCoerced.major }.${ selectedCoerced.minor }) differs from the connected cluster version (${ clusterCoerced.major }.${ clusterCoerced.minor }).`,
+      rule: 'camunda/version-mismatch'
+    };
+  }
+
+  _getRawLintingState = (tab) => {
     return this.state.lintingState[ tab.id ] || EMPTY_LINTING_STATE;
+  };
+
+  getLintingState = (tab) => {
+    const lintResults = this._getRawLintingState(tab);
+    const versionWarning = this._getVersionMismatchWarning(tab);
+
+    if (!versionWarning) {
+      return lintResults;
+    }
+
+    return [ ...lintResults, versionWarning ];
   };
 
   setLintingState = (tab, results) => {
@@ -1076,7 +1158,7 @@ export class App extends PureComponent {
 
       return {
         ...lintingState,
-        [ t.id ]: this.getLintingState(t)
+        [ t.id ]: this._getRawLintingState(t)
       };
     }, {
       [ tab.id ]: results

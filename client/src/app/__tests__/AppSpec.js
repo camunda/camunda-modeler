@@ -4131,6 +4131,181 @@ describe('<App>', function() {
       expect(lintingState).to.be.empty;
     });
 
+
+    describe('version mismatch warning', function() {
+
+      it('should show warning when selected version differs from cluster version', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        // when
+        app.state.engineProfiles = {
+          [ activeTab.id ]: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          }
+        };
+        app.state.connectionCheckResult = {
+          success: true,
+          response: { gatewayVersion: '8.8.0' }
+        };
+
+        // then
+        const lintingState = app.getLintingState(activeTab);
+        const warning = lintingState.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.exist;
+        expect(warning.category).to.equal('warn');
+        expect(warning.message).to.include('8.7');
+        expect(warning.message).to.include('8.8');
+      });
+
+
+      it('should not show warning when versions match', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        // when
+        app.state.engineProfiles = {
+          [ activeTab.id ]: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.8.0'
+          }
+        };
+        app.state.connectionCheckResult = {
+          success: true,
+          response: { gatewayVersion: '8.8.3' }
+        };
+
+        // then
+        const lintingState = app.getLintingState(activeTab);
+        const warning = lintingState.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+      });
+
+
+      it('should not show warning when connection is not successful', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        // when
+        app.state.engineProfiles = {
+          [ activeTab.id ]: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          }
+        };
+        app.state.connectionCheckResult = {
+          success: false,
+          reason: 'CONTACT_POINT_UNAVAILABLE'
+        };
+
+        // then
+        const lintingState = app.getLintingState(activeTab);
+        const warning = lintingState.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+      });
+
+
+      it('should not show warning when connection check result is null', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        // when
+        app.state.engineProfiles = {
+          [ activeTab.id ]: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          }
+        };
+
+        // connectionCheckResult remains null (default)
+
+        // then
+        const lintingState = app.getLintingState(activeTab);
+        const warning = lintingState.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+      });
+
+
+      it('should not show warning for non-cloud tab types', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('bpmn');
+
+        const { activeTab } = app.state;
+
+        // when
+        app.state.engineProfiles = {
+          [ activeTab.id ]: {
+            executionPlatform: 'Camunda Platform',
+            executionPlatformVersion: '7.20.0'
+          }
+        };
+        app.state.connectionCheckResult = {
+          success: true,
+          response: { gatewayVersion: '7.21.0' }
+        };
+
+        // then
+        const lintingState = app.getLintingState(activeTab);
+        const warning = lintingState.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+      });
+
+
+      it('should not show warning when engine profile is not set', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        // when
+        app.state.connectionCheckResult = {
+          success: true,
+          response: { gatewayVersion: '8.8.0' }
+        };
+
+        // engineProfiles remains empty (default)
+
+        // then
+        const lintingState = app.getLintingState(activeTab);
+        const warning = lintingState.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+      });
+
+    });
+
   });
 
 
