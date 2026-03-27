@@ -197,7 +197,9 @@ export default function ConnectionManagerPlugin(props) {
       setConnectionCheckResult(connectionCheckResult);
     };
 
-    globalConnectionChecker.current.on('connectionCheck', connectionCheckListener);
+    if (!paused) {
+      globalConnectionChecker.current.on('connectionCheck', connectionCheckListener);
+    }
 
     return () => {
       globalConnectionChecker.current.off('connectionCheck', connectionCheckListener);
