@@ -2218,7 +2218,7 @@ describe('<DmnEditor>', function() {
       });
 
       // then
-      expect(onActionSpy).to.have.been.calledOnce;
+      expect(onActionSpy).to.have.been.calledWithMatch('show-dialog');
       expect(onActionSpy.firstCall.args[ 0 ]).to.eql('show-dialog');
 
       expect(onContentUpdatedSpy).to.have.been.calledOnceWith(sinon.match('dmndi:DMNDI'));

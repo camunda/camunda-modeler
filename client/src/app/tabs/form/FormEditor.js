@@ -103,6 +103,19 @@ export class FormEditor extends CachedComponent {
         const modeling = editor.get('modeling');
 
         modeling.editFormField(root, engineProfile);
+
+        const {
+          executionPlatform,
+          executionPlatformVersion
+        } = engineProfile;
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
       },
       getCached: () => this.getCached(),
       setCached: (state) => this.setCached(state)
@@ -250,6 +263,18 @@ export class FormEditor extends CachedComponent {
         lastSchema: schema,
         stackIdx
       });
+
+      if (engineProfile) {
+        const { executionPlatform, executionPlatformVersion } = engineProfile;
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
+      }
 
       this.handleLinting(engineProfile);
     }
