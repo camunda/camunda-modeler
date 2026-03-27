@@ -13,6 +13,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: mark Camunda 8.9 as latest stable engine profile ([#5740](https://github.com/camunda/camunda-modeler/issues/5740))
 * `FEAT`: remove icons in side panel title bars ([#5798](https://github.com/camunda/camunda-modeler/pull/5798))
 * `FEAT`: update properties sidebar title to "Details" ([#5795](https://github.com/camunda/camunda-modeler/pull/5795))
+* `FEAT`: task testing links to tasklist for open user tasks ([#5765](https://github.com/camunda/camunda-modeler/issues/5765))
 * `FIX`: persist offline connection as last used connection across restart ([#5746](https://github.com/camunda/camunda-modeler/pull/5746))
 * `FIX`: use configured operate URL for linking also in Self-Managed ([#5669](https://github.com/camunda/camunda-modeler/pull/5669))
 * `FIX`: validate operate URL before using it ([#5708](https://github.com/camunda/camunda-modeler/issues/5708))
@@ -20,6 +21,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: indicate tab cut-off through ellipsis ([#5660](https://github.com/camunda/camunda-modeler/pull/5660))
 * `FIX`: prevent cutting the tooltip if it couldn't fit to the bottom of the screen ([#5451](https://github.com/camunda/camunda-modeler/issues/5451))
 * `FIX`: enable right click context menu for editable elements and selected text ([#5801](https://github.com/camunda/camunda-modeler/pull/5801))
+* `FIX`: do not truncate variable values in task testing ([#5723](https://github.com/camunda/camunda-modeler/issues/5723))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.40.1`
 * `DEPS`: update to `@bpmn-io/variable-resolver@2.0.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@3.0.0-rc.2`
