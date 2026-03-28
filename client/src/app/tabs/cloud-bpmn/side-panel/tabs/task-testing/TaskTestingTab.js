@@ -165,8 +165,8 @@ export default function TaskTestingTab(props) {
 
   const handleTaskExecutionInterrupted = useCallback(() => {
     onAction('display-notification', {
-      type: 'warning',
-      title: 'Task testing canceled',
+      type: 'info',
+      title: 'Test canceled',
     });
   }, [ onAction ]);
 
