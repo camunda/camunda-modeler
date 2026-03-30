@@ -2038,6 +2038,101 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   describe('properties panel actions', function() {
 
+    it('should switch to properties tab on propertiesPanel.showEntry', async function() {
+
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const { instance } = await renderEditor(diagramXML, {
+        layout: {
+          sidePanel: {
+            open: true,
+            tab: 'test',
+            width: 280
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      const modeler = instance.getModeler();
+
+      onLayoutChangedSpy.resetHistory();
+
+      // when
+      modeler._emit('propertiesPanel.showEntry', { id: 'foo' });
+
+      // then
+      expect(onLayoutChangedSpy).to.have.been.calledWith({
+        sidePanel: {
+          open: true,
+          tab: 'properties',
+          width: 280
+        }
+      });
+    });
+
+
+    it('should re-emit propertiesPanel.showEntry after switching to properties tab', async function() {
+
+      // given
+      const { instance, rerender } = await renderEditor(diagramXML, {
+        layout: {
+          sidePanel: {
+            open: true,
+            tab: 'test',
+            width: 280
+          }
+        }
+      });
+
+      const modeler = instance.getModeler();
+      const eventBus = modeler.get('eventBus');
+      const fireSpy = sinon.spy(eventBus, 'fire');
+
+      // when
+      modeler._emit('propertiesPanel.showEntry', { id: 'foo' });
+
+      rerender(diagramXML, {
+        layout: {
+          sidePanel: {
+            open: true,
+            tab: 'properties',
+            width: 280
+          }
+        }
+      });
+
+      // then
+      expect(fireSpy).to.have.been.calledWith('propertiesPanel.showEntry', sinon.match({ id: 'foo' }));
+    });
+
+
+    it('should not update layout if properties tab is already active and open', async function() {
+
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const { instance } = await renderEditor(diagramXML, {
+        layout: {
+          sidePanel: {
+            open: true,
+            tab: 'properties',
+            width: 280
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      const modeler = instance.getModeler();
+
+      onLayoutChangedSpy.resetHistory();
+
+      // when
+      modeler._emit('propertiesPanel.showEntry', { id: 'foo' });
+
+      // then
+      expect(onLayoutChangedSpy).not.to.have.been.called;
+    });
+
+
     it('should toggle properties panel', async function() {
 
       // given
