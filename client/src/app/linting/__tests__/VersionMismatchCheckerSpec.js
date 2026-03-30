@@ -10,11 +10,10 @@
 
 import VersionMismatchChecker, {
   getVersionMismatchWarning
-} from 'client/src/app/linting/VersionMismatchChecker';
+} from '../VersionMismatchChecker';
 
 
 describe('VersionMismatchChecker', function() {
-
 
   describe('getVersionMismatchWarning', function() {
 
