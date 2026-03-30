@@ -152,7 +152,7 @@ This project incorporates components from the projects listed below. The origina
 145.  @protobufjs/fetch@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
 146.  @protobufjs/path@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
 147.  long@5.2.4 (https://github.com/dcodeIO/long.js.git)
-148.  form-data@4.0.4 (git://github.com/form-data/form-data.git)
+148.  form-data@4.0.5 (git://github.com/form-data/form-data.git)
 149.  combined-stream@1.0.8 (git://github.com/felixge/node-combined-stream.git)
 150.  delayed-stream@1.0.0 (git://github.com/felixge/node-delayed-stream.git)
 151.  mime-types@2.1.35 (jshttp/mime-types)
@@ -206,10 +206,10 @@ This project incorporates components from the projects listed below. The origina
 199.  epipebomb@1.0.0 (git://github.com/mhart/epipebomb.git)
 200.  monaco-editor@0.51.0 (https://github.com/microsoft/monaco-editor)
 201.  style-loader@4.0.0 (webpack-contrib/style-loader)
-202.  css-loader@7.1.2 (webpack-contrib/css-loader)
+202.  css-loader@7.1.4 (webpack/css-loader)
 203.  @carbon/styles@1.100.0 (https://github.com/carbon-design-system/carbon.git)
 204.  @camunda/form-playground@0.24.0 (git+https://github.com/camunda/form-playground.git)
-205.  camunda-bpmn-js@5.24.1 (https://github.com/camunda/camunda-bpmn-js)
+205.  camunda-bpmn-js@5.26.0 (https://github.com/camunda/camunda-bpmn-js)
 206.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
 207.  camunda-dmn-js@3.7.0 (https://github.com/camunda/camunda-dmn-js)
 208.  @camunda/linting@3.48.1 (https://github.com/camunda/linting)
@@ -221,8 +221,8 @@ This project incorporates components from the projects listed below. The origina
 214.  @carbon/react@1.101.0 (https://github.com/carbon-design-system/carbon.git)
 215.  @carbon/feature-flags@1.0.0 (https://github.com/carbon-design-system/carbon.git)
 216.  prop-types@15.8.1 (facebook/prop-types)
-217.  @carbon/icons-react@11.75.0 (https://github.com/carbon-design-system/carbon.git)
-218.  @carbon/icon-helpers@10.72.0 (https://github.com/carbon-design-system/carbon.git)
+217.  @carbon/icons-react@11.77.0 (https://github.com/carbon-design-system/carbon.git)
+218.  @carbon/icon-helpers@10.74.0 (https://github.com/carbon-design-system/carbon.git)
 219.  @floating-ui/react@0.27.17 (https://github.com/floating-ui/floating-ui.git)
 220.  @floating-ui/utils@0.2.10 (https://github.com/floating-ui/floating-ui.git)
 221.  tabbable@6.4.0 (git+https://github.com/focus-trap/tabbable.git)
@@ -249,13 +249,13 @@ This project incorporates components from the projects listed below. The origina
 242.  hoist-non-react-statics@3.3.2 (git://github.com/mridgway/hoist-non-react-statics.git)
 243.  events@3.3.0 (git://github.com/Gozala/events.git)
 244.  codemirror@6.0.2 (https://github.com/codemirror/basic-setup.git)
-245.  @codemirror/view@6.39.13 (git+https://github.com/codemirror/view.git)
+245.  @codemirror/view@6.39.16 (git+https://github.com/codemirror/view.git)
 246.  @codemirror/state@6.5.4 (git+https://github.com/codemirror/state.git)
 247.  @marijn/find-cluster-break@1.0.2 (git+https://github.com/marijnh/find-cluster-break.git)
 248.  style-mod@4.1.0 (git+https://github.com/marijnh/style-mod.git)
 249.  w3c-keyname@2.2.6 (git+https://github.com/marijnh/w3c-keyname.git)
 250.  crelt@1.0.6 (git+https://github.com/marijnh/crelt.git)
-251.  @codemirror/language@6.12.1 (https://github.com/codemirror/language.git)
+251.  @codemirror/language@6.12.2 (git+https://github.com/codemirror/language.git)
 252.  @lezer/common@1.5.1 (https://github.com/lezer-parser/common.git)
 253.  @lezer/highlight@1.2.3 (https://github.com/lezer-parser/highlight.git)
 254.  @codemirror/commands@6.10.2 (git+https://github.com/codemirror/commands.git)
@@ -271,7 +271,7 @@ This project incorporates components from the projects listed below. The origina
 264.  min-dom@5.3.0 (https://github.com/bpmn-io/min-dom)
 265.  domify@3.0.0 (sindresorhus/domify)
 266.  mitt@3.0.1 (developit/mitt)
-267.  @bpmn-io/properties-panel@3.40.0 (git+https://github.com/bpmn-io/properties-panel.git)
+267.  @bpmn-io/properties-panel@3.40.5 (git+https://github.com/bpmn-io/properties-panel.git)
 268.  preact-hooks@0.1.0
 269.  preact@10.19.3 (preactjs/preact)
 270.  preact-compat@4.0.0
@@ -279,18 +279,18 @@ This project incorporates components from the projects listed below. The origina
 272.  feelers@1.5.1
 273.  @bpmn-io/feelin@6.1.0 (https://github.com/bpmn-io/feelin)
 274.  luxon@3.7.2 (https://github.com/moment/luxon)
-275.  @bpmn-io/lezer-feel@2.3.0 (https://github.com/bpmn-io/lezer-feel.git)
+275.  @bpmn-io/lezer-feel@2.3.1 (https://github.com/bpmn-io/lezer-feel.git)
 276.  @lezer/markdown@1.6.3 (https://github.com/lezer-parser/markdown.git)
 277.  @bpmn-io/feel-lint@3.1.0 (git+https://github.com/bpmn-io/feel-lint.git)
 278.  @bpmn-io/cm-theme@0.1.0-alpha.2
-279.  @bpmn-io/feel-editor@2.5.0 (git+https://github.com/bpmn-io/feel-editor.git)
+279.  @bpmn-io/feel-editor@2.5.2 (git+https://github.com/bpmn-io/feel-editor.git)
 280.  @bpmn-io/lang-feel@3.0.0 (https://github.com/bpmn-io/lang-feel.git)
 281.  @camunda/feel-builtins@1.0.0 (git+https://github.com/camunda/feel-builtins.git)
 282.  focus-trap@8.0.0 (git+https://github.com/focus-trap/focus-trap.git)
-283.  bpmn-js-properties-panel@5.52.1 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-284.  bpmn-js@18.12.0 (https://github.com/bpmn-io/bpmn-js)
-285.  diagram-js@15.9.1 (https://github.com/bpmn-io/diagram-js)
-286.  ids@3.0.1 (https://github.com/bpmn-io/ids)
+283.  bpmn-js-properties-panel@5.53.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+284.  bpmn-js@18.14.0 (https://github.com/bpmn-io/bpmn-js)
+285.  diagram-js@15.11.0 (https://github.com/bpmn-io/diagram-js)
+286.  ids@3.0.2 (https://github.com/bpmn-io/ids)
 287.  @bpmn-io/extract-process-variables@2.2.1 (git+https://github.com/bpmn-io/extract-process-variables.git)
 288.  array-move@4.0.0 (sindresorhus/array-move)
 289.  dmn-js-properties-panel@3.10.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
@@ -327,22 +327,22 @@ This project incorporates components from the projects listed below. The origina
 320.  @bpmn-io/moddle-utils@0.3.0 (https://github.com/bpmn-io/moddle-utils)
 321.  semver-compare@1.0.0 (git://github.com/substack/semver-compare.git)
 322.  @camunda/form-linting@0.24.0
-323.  bpmn-js-element-templates@2.20.1 (https://github.com/bpmn-io/bpmn-js-element-templates)
+323.  bpmn-js-element-templates@2.23.0 (https://github.com/bpmn-io/bpmn-js-element-templates)
 324.  uuid@13.0.0 (https://github.com/uuidjs/uuid.git)
-325.  @bpmn-io/element-templates-validator@2.17.0 (git+https://github.com/bpmn-io/element-templates-validator.git)
-326.  @camunda/rpa-integration@1.3.2 (https://github.com/camunda/rpa-frontend)
+325.  @bpmn-io/element-templates-validator@2.20.1 (git+https://github.com/bpmn-io/element-templates-validator.git)
+326.  @camunda/rpa-integration@1.3.4 (https://github.com/camunda/rpa-frontend)
 327.  htm_preact@undefined
 328.  htm@3.1.1 (developit/htm)
 329.  didi@11.0.0 (git://github.com/nikku/didi.git)
 330.  @bpmn-io/element-template-chooser@2.1.0 (https://github.com/bpmn-io/element-template-chooser.git)
 331.  tiny-svg@3.1.3 (https://github.com/bpmn-io/tiny-svg)
 332.  @bpmn-io/element-template-icon-renderer@1.0.0 (git+ssh://git@github.com/bpmn-io/element-template-icon-renderer.git)
-333.  @bpmn-io/variable-outline@2.0.1
+333.  @bpmn-io/variable-outline@3.0.1 (https://github.com/bpmn-io/variable-outline)
 334.  @camunda/example-data-properties-provider@1.3.0
-335.  @camunda/task-testing@2.2.0
+335.  @camunda/task-testing@3.0.0-rc.0 (https://github.com/camunda/task-testing)
 336.  camunda-bpmn-js-behaviors@1.14.1 (https://github.com/camunda/camunda-bpmn-js-behaviors)
 337.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
-338.  @bpmn-io/variable-resolver@1.7.0
+338.  @bpmn-io/variable-resolver@3.0.0 (https://github.com/bpmn-io/variable-resolver)
 339.  bpmn-js-color-picker@0.7.2 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
 340.  bpmn-js-create-append-anything@1.2.0 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
 341.  bpmn-js-executable-fix@0.2.1 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
@@ -369,31 +369,32 @@ This project incorporates components from the projects listed below. The origina
 362.  escape-html@1.0.3 (component/escape-html)
 363.  inferno@5.6.3 (https://github.com/infernojs/inferno)
 364.  table-js@9.4.0 (https://github.com/bpmn-io/table-js)
-365.  @bpmn-io/form-js-editor@1.19.0 (git+https://github.com/bpmn-io/form-js.git)
-366.  @bpmn-io/form-js-playground@1.19.0 (git+https://github.com/bpmn-io/form-js.git)
-367.  @bpmn-io/form-js-viewer@1.19.0 (git+https://github.com/bpmn-io/form-js.git)
+365.  @bpmn-io/form-js-editor@1.21.2 (git+https://github.com/bpmn-io/form-js.git)
+366.  @bpmn-io/form-js-playground@1.21.2 (git+https://github.com/bpmn-io/form-js.git)
+367.  @bpmn-io/form-js-viewer@1.21.2 (git+https://github.com/bpmn-io/form-js.git)
 368.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
-369.  path-intersection@4.1.0 (https://github.com/bpmn-io/path-intersection)
-370.  clsx@2.1.1 (lukeed/clsx)
-371.  diagram-js-grid@2.0.1 (git@github.com:bpmn-io/diagram-js-grid.git)
-372.  @bpmn-io/svg-to-image@1.0.1 (git+https://github.com/bpmn-io/svg-to-image.git)
-373.  canvg@4.0.3 (https://github.com/canvg/canvg)
-374.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
-375.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
-376.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
-377.  bpmn-js-copy-as-image@0.4.1 (git+https://github.com/barmac/bpmn-js-copy-as-image.git)
-378.  dmn-moddle@12.0.1 (https://github.com/bpmn-io/dmn-moddle)
-379.  selection-ranges@4.1.1 (git+ssh://git@github.com/nikku/selection-ranges.git)
-380.  selection-update@1.1.1 (git+ssh://git@github.com/nikku/selection-update.git)
-381.  camunda-dmn-moddle@1.3.1 (https://github.com/camunda/camunda-dmn-moddle)
-382.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
-383.  @bpmn-io/dmn-migrate@0.7.1 (git+https://github.com/bpmn-io/dmn-migrate.git)
-384.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
-385.  dompurify@3.3.1 (git://github.com/cure53/DOMPurify.git)
-386.  marked@17.0.1 (git://github.com/markedjs/marked.git)
-387.  file-drops@0.7.0 (git+ssh://git@github.com/nikku/file-drops.git)
-388.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
-389.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
+369.  @bpmn-io/svg-to-image@1.0.1 (git+https://github.com/bpmn-io/svg-to-image.git)
+370.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
+371.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
+372.  canvg@4.0.3 (https://github.com/canvg/canvg)
+373.  clsx@2.1.1 (lukeed/clsx)
+374.  diagram-js-grid@2.0.1 (git@github.com:bpmn-io/diagram-js-grid.git)
+375.  path-intersection@4.1.0 (https://github.com/bpmn-io/path-intersection)
+376.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
+377.  @bpmn-io/feel-analyzer@0.1.0 (git+https://github.com/bpmn-io/feel-analyzer.git)
+378.  bpmn-js-copy-as-image@0.4.1 (git+https://github.com/barmac/bpmn-js-copy-as-image.git)
+379.  @bpmn-io/dmn-migrate@0.7.1 (git+https://github.com/bpmn-io/dmn-migrate.git)
+380.  dmn-moddle@12.0.1 (https://github.com/bpmn-io/dmn-moddle)
+381.  selection-ranges@4.1.1 (git+ssh://git@github.com/nikku/selection-ranges.git)
+382.  selection-update@1.1.1 (git+ssh://git@github.com/nikku/selection-update.git)
+383.  camunda-dmn-moddle@1.3.1 (https://github.com/camunda/camunda-dmn-moddle)
+384.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
+385.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
+386.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
+387.  dompurify@3.3.3 (git://github.com/cure53/DOMPurify.git)
+388.  file-drops@0.7.0 (git+ssh://git@github.com/nikku/file-drops.git)
+389.  marked@17.0.5 (git://github.com/markedjs/marked.git)
+390.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
 
 
 %% @sentry/node@10.8.0 NOTICES AND INFORMATION BEGIN HERE
@@ -11551,7 +11552,7 @@ END OF @protobufjs/path@1.1.2 NOTICES AND INFORMATION
 END OF long@5.2.4 NOTICES AND INFORMATION
 
 
-%% form-data@4.0.4 NOTICES AND INFORMATION BEGIN HERE
+%% form-data@4.0.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors
 
@@ -11574,7 +11575,7 @@ Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors
  THE SOFTWARE.
 
 ==========================================
-END OF form-data@4.0.4 NOTICES AND INFORMATION
+END OF form-data@4.0.5 NOTICES AND INFORMATION
 
 
 %% combined-stream@1.0.8 NOTICES AND INFORMATION BEGIN HERE
@@ -13168,7 +13169,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF style-loader@4.0.0 NOTICES AND INFORMATION
 
 
-%% css-loader@7.1.2 NOTICES AND INFORMATION BEGIN HERE
+%% css-loader@7.1.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright JS Foundation and other contributors
 
@@ -13192,7 +13193,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF css-loader@7.1.2 NOTICES AND INFORMATION
+END OF css-loader@7.1.4 NOTICES AND INFORMATION
 
 
 %% @carbon/styles@1.100.0 NOTICES AND INFORMATION BEGIN HERE
@@ -13430,7 +13431,7 @@ THE SOFTWARE.
 END OF @camunda/form-playground@0.24.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@5.24.1 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@5.26.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -13454,7 +13455,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@5.24.1 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@5.26.0 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.4.1 NOTICES AND INFORMATION BEGIN HERE
@@ -14194,7 +14195,7 @@ SOFTWARE.
 END OF prop-types@15.8.1 NOTICES AND INFORMATION
 
 
-%% @carbon/icons-react@11.75.0 NOTICES AND INFORMATION BEGIN HERE
+%% @carbon/icons-react@11.77.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -14399,10 +14400,10 @@ END OF prop-types@15.8.1 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @carbon/icons-react@11.75.0 NOTICES AND INFORMATION
+END OF @carbon/icons-react@11.77.0 NOTICES AND INFORMATION
 
 
-%% @carbon/icon-helpers@10.72.0 NOTICES AND INFORMATION BEGIN HERE
+%% @carbon/icon-helpers@10.74.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -14607,7 +14608,7 @@ END OF @carbon/icons-react@11.75.0 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @carbon/icon-helpers@10.72.0 NOTICES AND INFORMATION
+END OF @carbon/icon-helpers@10.74.0 NOTICES AND INFORMATION
 
 
 %% @floating-ui/react@0.27.17 NOTICES AND INFORMATION BEGIN HERE
@@ -15857,7 +15858,7 @@ THE SOFTWARE.
 END OF codemirror@6.0.2 NOTICES AND INFORMATION
 
 
-%% @codemirror/view@6.39.13 NOTICES AND INFORMATION BEGIN HERE
+%% @codemirror/view@6.39.16 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -15882,7 +15883,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @codemirror/view@6.39.13 NOTICES AND INFORMATION
+END OF @codemirror/view@6.39.16 NOTICES AND INFORMATION
 
 
 %% @codemirror/state@6.5.4 NOTICES AND INFORMATION BEGIN HERE
@@ -16019,7 +16020,7 @@ THE SOFTWARE.
 END OF crelt@1.0.6 NOTICES AND INFORMATION
 
 
-%% @codemirror/language@6.12.1 NOTICES AND INFORMATION BEGIN HERE
+%% @codemirror/language@6.12.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -16044,7 +16045,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @codemirror/language@6.12.1 NOTICES AND INFORMATION
+END OF @codemirror/language@6.12.2 NOTICES AND INFORMATION
 
 
 %% @lezer/common@1.5.1 NOTICES AND INFORMATION BEGIN HERE
@@ -16412,7 +16413,7 @@ SOFTWARE.
 END OF mitt@3.0.1 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/properties-panel@3.40.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/properties-panel@3.40.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16436,7 +16437,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/properties-panel@3.40.0 NOTICES AND INFORMATION
+END OF @bpmn-io/properties-panel@3.40.5 NOTICES AND INFORMATION
 
 
 %% preact-hooks@0.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16615,7 +16616,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF luxon@3.7.2 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/lezer-feel@2.3.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/lezer-feel@2.3.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -16640,7 +16641,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @bpmn-io/lezer-feel@2.3.0 NOTICES AND INFORMATION
+END OF @bpmn-io/lezer-feel@2.3.1 NOTICES AND INFORMATION
 
 
 %% @lezer/markdown@1.6.3 NOTICES AND INFORMATION BEGIN HERE
@@ -16721,7 +16722,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF @bpmn-io/cm-theme@0.1.0-alpha.2 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/feel-editor@2.5.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/feel-editor@2.5.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16745,7 +16746,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/feel-editor@2.5.0 NOTICES AND INFORMATION
+END OF @bpmn-io/feel-editor@2.5.2 NOTICES AND INFORMATION
 
 
 %% @bpmn-io/lang-feel@3.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16832,7 +16833,7 @@ SOFTWARE.
 END OF focus-trap@8.0.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@5.52.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@5.53.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16856,10 +16857,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@5.52.1 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@5.53.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js@18.12.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@18.14.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -16886,10 +16887,10 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@18.12.0 NOTICES AND INFORMATION
+END OF bpmn-js@18.14.0 NOTICES AND INFORMATION
 
 
-%% diagram-js@15.9.1 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@15.11.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16913,10 +16914,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@15.9.1 NOTICES AND INFORMATION
+END OF diagram-js@15.11.0 NOTICES AND INFORMATION
 
 
-%% ids@3.0.1 NOTICES AND INFORMATION BEGIN HERE
+%% ids@3.0.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16940,7 +16941,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF ids@3.0.1 NOTICES AND INFORMATION
+END OF ids@3.0.2 NOTICES AND INFORMATION
 
 
 %% @bpmn-io/extract-process-variables@2.2.1 NOTICES AND INFORMATION BEGIN HERE
@@ -18097,7 +18098,7 @@ SOFTWARE.
 END OF @camunda/form-linting@0.24.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-element-templates@2.20.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-element-templates@2.23.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -18121,7 +18122,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-element-templates@2.20.1 NOTICES AND INFORMATION
+END OF bpmn-js-element-templates@2.23.0 NOTICES AND INFORMATION
 
 
 %% uuid@13.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -18140,7 +18141,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF uuid@13.0.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/element-templates-validator@2.17.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/element-templates-validator@2.20.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -18165,10 +18166,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @bpmn-io/element-templates-validator@2.17.0 NOTICES AND INFORMATION
+END OF @bpmn-io/element-templates-validator@2.20.1 NOTICES AND INFORMATION
 
 
-%% @camunda/rpa-integration@1.3.2 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/rpa-integration@1.3.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Camunda License 1.0
 
@@ -18236,7 +18237,7 @@ Non-Production Environment means a setting in which the Software is used for dev
 testing, quality assurance, demonstration, or evaluation purposes, and not for any live or
 production systems. 
 ==========================================
-END OF @camunda/rpa-integration@1.3.2 NOTICES AND INFORMATION
+END OF @camunda/rpa-integration@1.3.4 NOTICES AND INFORMATION
 
 
 %% htm_preact@undefined NOTICES AND INFORMATION BEGIN HERE
@@ -18766,11 +18767,32 @@ SOFTWARE.
 END OF @bpmn-io/element-template-icon-renderer@1.0.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/variable-outline@2.0.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/variable-outline@3.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
-null
+The MIT License (MIT)
+
+Copyright (c) 2024-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
 ==========================================
-END OF @bpmn-io/variable-outline@2.0.1 NOTICES AND INFORMATION
+END OF @bpmn-io/variable-outline@3.0.1 NOTICES AND INFORMATION
 
 
 %% @camunda/example-data-properties-provider@1.3.0 NOTICES AND INFORMATION BEGIN HERE
@@ -18800,7 +18822,7 @@ THE SOFTWARE.
 END OF @camunda/example-data-properties-provider@1.3.0 NOTICES AND INFORMATION
 
 
-%% @camunda/task-testing@2.2.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/task-testing@3.0.0-rc.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -18824,7 +18846,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/task-testing@2.2.0 NOTICES AND INFORMATION
+END OF @camunda/task-testing@3.0.0-rc.0 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-js-behaviors@1.14.1 NOTICES AND INFORMATION BEGIN HERE
@@ -18881,7 +18903,7 @@ THE SOFTWARE.
 END OF @bpmn-io/add-exporter@0.2.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/variable-resolver@1.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/variable-resolver@3.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -18905,7 +18927,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/variable-resolver@1.7.0 NOTICES AND INFORMATION
+END OF @bpmn-io/variable-resolver@3.0.0 NOTICES AND INFORMATION
 
 
 %% bpmn-js-color-picker@0.7.2 NOTICES AND INFORMATION BEGIN HERE
@@ -19588,7 +19610,7 @@ THE SOFTWARE.
 END OF table-js@9.4.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-editor@1.19.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-editor@1.21.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -19614,10 +19636,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-editor@1.19.0 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-editor@1.21.2 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-playground@1.19.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-playground@1.21.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -19643,10 +19665,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-playground@1.19.0 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-playground@1.21.2 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-viewer@1.19.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-viewer@1.21.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -19672,7 +19694,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-viewer@1.19.0 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-viewer@1.21.2 NOTICES AND INFORMATION
 
 
 %% downloadjs@1.4.7 NOTICES AND INFORMATION BEGIN HERE
@@ -19703,76 +19725,6 @@ SOFTWARE.
 END OF downloadjs@1.4.7 NOTICES AND INFORMATION
 
 
-%% path-intersection@4.1.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2017 camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF path-intersection@4.1.0 NOTICES AND INFORMATION
-
-
-%% clsx@2.1.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF clsx@2.1.1 NOTICES AND INFORMATION
-
-
-%% diagram-js-grid@2.0.1 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2023-present camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF diagram-js-grid@2.0.1 NOTICES AND INFORMATION
-
-
 %% @bpmn-io/svg-to-image@1.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
@@ -19798,61 +19750,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
 END OF @bpmn-io/svg-to-image@1.0.1 NOTICES AND INFORMATION
-
-
-%% canvg@4.0.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2010 - present Gabe Lerner (gabelerner@gmail.com) - https://github.com/canvg/canvg
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF canvg@4.0.3 NOTICES AND INFORMATION
-
-
-%% svg-pathdata@6.0.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-Copyright © 2017 Nicolas Froidure
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF svg-pathdata@6.0.3 NOTICES AND INFORMATION
 
 
 %% @codemirror/lang-xml@6.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -19911,11 +19808,192 @@ THE SOFTWARE.
 END OF @lezer/xml@1.0.1 NOTICES AND INFORMATION
 
 
+%% canvg@4.0.3 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2010 - present Gabe Lerner (gabelerner@gmail.com) - https://github.com/canvg/canvg
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF canvg@4.0.3 NOTICES AND INFORMATION
+
+
+%% clsx@2.1.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF clsx@2.1.1 NOTICES AND INFORMATION
+
+
+%% diagram-js-grid@2.0.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2023-present camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF diagram-js-grid@2.0.1 NOTICES AND INFORMATION
+
+
+%% path-intersection@4.1.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2017 camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF path-intersection@4.1.0 NOTICES AND INFORMATION
+
+
+%% svg-pathdata@6.0.3 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+Copyright © 2017 Nicolas Froidure
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF svg-pathdata@6.0.3 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/feel-analyzer@0.1.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2026 Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF @bpmn-io/feel-analyzer@0.1.0 NOTICES AND INFORMATION
+
+
 %% bpmn-js-copy-as-image@0.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 null
 ==========================================
 END OF bpmn-js-copy-as-image@0.4.1 NOTICES AND INFORMATION
+
+
+%% @bpmn-io/dmn-migrate@0.7.1 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2020-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF @bpmn-io/dmn-migrate@0.7.1 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@12.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -20053,32 +20131,32 @@ THE SOFTWARE.
 END OF zeebe-dmn-moddle@1.0.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/dmn-migrate@0.7.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/draggle@4.1.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
-Copyright (c) 2020-present Camunda Services GmbH
+Copyright © 2015-2016 Nicolas Bevacqua
+Copyright © 2023 bpmn-io
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF @bpmn-io/dmn-migrate@0.7.1 NOTICES AND INFORMATION
+END OF @bpmn-io/draggle@4.1.2 NOTICES AND INFORMATION
 
 
 %% big.js@7.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -20114,7 +20192,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 END OF big.js@7.0.1 NOTICES AND INFORMATION
 
 
-%% dompurify@3.3.1 NOTICES AND INFORMATION BEGIN HERE
+%% dompurify@3.3.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 DOMPurify
 Copyright 2025 Dr.-Ing. Mario Heiderich, Cure53
@@ -20686,10 +20764,37 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
 
 
 ==========================================
-END OF dompurify@3.3.1 NOTICES AND INFORMATION
+END OF dompurify@3.3.3 NOTICES AND INFORMATION
 
 
-%% marked@17.0.1 NOTICES AND INFORMATION BEGIN HERE
+%% file-drops@0.7.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2018-present Nico Rehwaldt
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+==========================================
+END OF file-drops@0.7.0 NOTICES AND INFORMATION
+
+
+%% marked@17.0.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 # License information
 
@@ -20737,62 +20842,7 @@ Redistribution and use in source and binary forms, with or without modification,
 This software is provided by the copyright holders and contributors “as is” and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the copyright owner or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
 
 ==========================================
-END OF marked@17.0.1 NOTICES AND INFORMATION
-
-
-%% file-drops@0.7.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2018-present Nico Rehwaldt
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-==========================================
-END OF file-drops@0.7.0 NOTICES AND INFORMATION
-
-
-%% @bpmn-io/draggle@4.1.2 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright © 2015-2016 Nicolas Bevacqua
-Copyright © 2023 bpmn-io
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-==========================================
-END OF @bpmn-io/draggle@4.1.2 NOTICES AND INFORMATION
+END OF marked@17.0.5 NOTICES AND INFORMATION
 
 
 %% vscode-windows-ca-certs@0.3.0 NOTICES AND INFORMATION BEGIN HERE
