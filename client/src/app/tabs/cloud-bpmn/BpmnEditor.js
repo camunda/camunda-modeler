@@ -255,6 +255,8 @@ export class BpmnEditor extends CachedComponent {
       modeler[fn](event, this.handleChanged);
     });
 
+    modeler[fn]('propertiesPanel.showEntry', this.handleShowEntry);
+
     modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
 
     modeler[fn]('error', 1500, this.handleError);
@@ -789,6 +791,26 @@ export class BpmnEditor extends CachedComponent {
 
     // TODO(nikku): handle all editor actions
     return modeler.get('editorActions').trigger(action, context);
+  };
+
+  handleShowEntry = (event) => {
+    const { layout = {} } = this.props;
+
+    let { sidePanel: sidePanelLayout = SIDE_PANEL_DEFAULT_LAYOUT } = layout;
+
+    sidePanelLayout = { ...SIDE_PANEL_DEFAULT_LAYOUT, ...sidePanelLayout };
+
+    if (sidePanelLayout.tab === 'properties' && sidePanelLayout.open) {
+      return;
+    }
+
+    this.handleLayoutChange({
+      sidePanel: {
+        ...sidePanelLayout,
+        open: true,
+        tab: 'properties'
+      }
+    });
   };
 
   handleSetColor = (fill, stroke) => {
