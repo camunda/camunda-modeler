@@ -168,7 +168,18 @@ export default function ConnectionManagerPlugin(props) {
   // update connection checker on connection change
   useEffect(() => {
     (async () => {
+
+      // Clear stale version mismatch warnings while the new
+      // connection check is in progress
+      if (connectionCheckResult && connectionCheckResult.success) {
+        triggerAction('emit-event', {
+          type: 'connectionManager.connectionStatusChanged',
+          payload: { success: false }
+        });
+      }
+
       setConnectionCheckResult(null);
+
       if (activeConnection && activeConnection.id !== NO_CONNECTION.id && !paused) {
         globalConnectionChecker.current.updateConfig({ endpoint: activeConnection });
       }
