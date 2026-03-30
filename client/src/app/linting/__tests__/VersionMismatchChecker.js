@@ -8,12 +8,12 @@
  * except in compliance with the MIT License.
  */
 
-import VersionMismatchLintPlugin, {
+import VersionMismatchChecker, {
   getVersionMismatchWarning
-} from '../VersionMismatchLintPlugin';
+} from 'client/src/app/linting/VersionMismatchChecker';
 
 
-describe('VersionMismatchLintPlugin', function() {
+describe('VersionMismatchChecker', function() {
 
 
   describe('getVersionMismatchWarning', function() {
@@ -91,7 +91,7 @@ describe('VersionMismatchLintPlugin', function() {
     it('should return warnings for cloud-bpmn tab with version mismatch', function() {
 
       // given
-      const getWarnings = VersionMismatchLintPlugin({
+      const getWarnings = VersionMismatchChecker({
         connectionCheckResult: {
           success: true,
           response: { gatewayVersion: '8.8.0' }
@@ -113,7 +113,7 @@ describe('VersionMismatchLintPlugin', function() {
     it('should return warnings for cloud-dmn tab', function() {
 
       // given
-      const getWarnings = VersionMismatchLintPlugin({
+      const getWarnings = VersionMismatchChecker({
         connectionCheckResult: {
           success: true,
           response: { gatewayVersion: '8.8.0' }
@@ -134,7 +134,7 @@ describe('VersionMismatchLintPlugin', function() {
     it('should return warnings for cloud-form tab', function() {
 
       // given
-      const getWarnings = VersionMismatchLintPlugin({
+      const getWarnings = VersionMismatchChecker({
         connectionCheckResult: {
           success: true,
           response: { gatewayVersion: '8.8.0' }
@@ -155,7 +155,7 @@ describe('VersionMismatchLintPlugin', function() {
     it('should return warnings for rpa tab', function() {
 
       // given
-      const getWarnings = VersionMismatchLintPlugin({
+      const getWarnings = VersionMismatchChecker({
         connectionCheckResult: {
           success: true,
           response: { gatewayVersion: '8.8.0' }
@@ -176,7 +176,7 @@ describe('VersionMismatchLintPlugin', function() {
     it('should return empty for non-cloud tab', function() {
 
       // given
-      const getWarnings = VersionMismatchLintPlugin({
+      const getWarnings = VersionMismatchChecker({
         connectionCheckResult: {
           success: true,
           response: { gatewayVersion: '8.8.0' }
@@ -197,7 +197,7 @@ describe('VersionMismatchLintPlugin', function() {
     it('should return empty when connection is not successful', function() {
 
       // given
-      const getWarnings = VersionMismatchLintPlugin({
+      const getWarnings = VersionMismatchChecker({
         connectionCheckResult: {
           success: false,
           reason: 'CONTACT_POINT_UNAVAILABLE'
@@ -218,7 +218,7 @@ describe('VersionMismatchLintPlugin', function() {
     it('should return empty when connection check result is null', function() {
 
       // given
-      const getWarnings = VersionMismatchLintPlugin({
+      const getWarnings = VersionMismatchChecker({
         connectionCheckResult: null,
         engineProfiles: {
           'tab-1': { executionPlatformVersion: '8.7.0' }
@@ -236,7 +236,7 @@ describe('VersionMismatchLintPlugin', function() {
     it('should return empty when engine profile is not set', function() {
 
       // given
-      const getWarnings = VersionMismatchLintPlugin({
+      const getWarnings = VersionMismatchChecker({
         connectionCheckResult: {
           success: true,
           response: { gatewayVersion: '8.8.0' }
@@ -255,7 +255,7 @@ describe('VersionMismatchLintPlugin', function() {
     it('should return empty when versions match', function() {
 
       // given
-      const getWarnings = VersionMismatchLintPlugin({
+      const getWarnings = VersionMismatchChecker({
         connectionCheckResult: {
           success: true,
           response: { gatewayVersion: '8.8.3' }

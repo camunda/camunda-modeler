@@ -27,7 +27,7 @@ import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
 
-import VersionMismatchLintPlugin from './linting/VersionMismatchLintPlugin';
+import VersionMismatchChecker from './linting/VersionMismatchChecker';
 
 import executeOnce from './util/executeOnce';
 
@@ -1068,7 +1068,7 @@ export class App extends PureComponent {
       results = await linter.lint(contents);
     }
 
-    const getWarnings = VersionMismatchLintPlugin({
+    const getWarnings = VersionMismatchChecker({
       connectionCheckResult: this.state.connectionCheckResult,
       engineProfiles: this.state.engineProfiles
     });
