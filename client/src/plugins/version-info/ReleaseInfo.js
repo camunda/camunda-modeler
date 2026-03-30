@@ -11,8 +11,6 @@
 import React from 'react';
 import * as css from './ReleaseInfo.less';
 
-import { isMac } from '../../globals';
-
 // If you add links to the release info, make sure to track them with UTM tags
 // import { utmTag } from '../../util/utmTag';
 
@@ -49,24 +47,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Conditional events</h4>
-          Model and implement conditional events in BPMN diagrams to trigger flows based on data conditions.
+          <h4>Support for Camunda 8.9</h4>
+          Camunda 8.9 is now fully supported.
         </li>
         <li>
-          <h4>Cut action</h4>
-          Use <code>{isMac ? 'Cmd+X' : 'Ctrl+X'}</code> to cut BPMN elements and move them across diagrams.
+          <h4>Variables panel improvements</h4>
+          The variables panel is now placed next to a new side panel, making it easier to configure elements.
         </li>
         <li>
-          <h4>Copy selection as image</h4>
-          Use <code>{isMac ? 'Cmd+Shift+C' : 'Ctrl+Shift+C'}</code> to copy selected BPMN elements as an image to easily paste them anywhere.
+          <h4>Revamped testing</h4>
+          Task testing now supports testing any activity including subprocesses. It also displays the log of executed elements to make the execution transparent and got moved into the new side panel.
         </li>
         <li>
-          <h4>Dynamic form references</h4>
-          Use FEEL expression to dynamically reference forms.
-        </li>
-        <li>
-          <h4>New FEEL functions for Camunda 8.9</h4>
-          Use <code>from json</code> and <code>to json</code> functions to convert between JSON strings and FEEL values.
+          <h4>Enhanced element templates</h4>
+          Element templates may now define execution and task listeners. Template authors can enable the users to define element output mappings dynamically.
         </li>
       </ul>
     </div>
