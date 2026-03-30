@@ -723,6 +723,30 @@ describe('<FormEditor>', function() {
       });
     });
 
+
+    it('should emit tab.engineProfileChanged event on import', async function() {
+
+      // given
+      const onActionSpy = spy();
+
+      // when
+      await renderEditor(engineProfileSchema, {
+        onAction: onActionSpy
+      });
+
+      // then
+      await waitFor(() => {
+        expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform: 'Camunda Platform',
+            executionPlatformVersion: '7.16.0'
+          }
+        });
+      });
+    });
+
+
   });
 
 

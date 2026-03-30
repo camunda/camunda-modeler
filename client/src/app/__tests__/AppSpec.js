@@ -4195,6 +4195,114 @@ describe('<App>', function() {
       });
 
 
+      it('should show warning for cloud-dmn tab', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-dmn');
+
+        const { activeTab } = app.state;
+
+        await setVersionState(app, activeTab, {
+          engineProfile: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          },
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          }
+        });
+
+        const setLintingSpy = sinon.spy(app, 'setLintingState');
+
+        // when
+        await app.lintTab(activeTab);
+
+        // then
+        const results = setLintingSpy.lastCall.args[ 1 ];
+        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.exist;
+        expect(warning.category).to.equal('warn');
+
+        setLintingSpy.restore();
+      });
+
+
+      it('should show warning for cloud-form tab', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-form');
+
+        const { activeTab } = app.state;
+
+        await setVersionState(app, activeTab, {
+          engineProfile: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          },
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          }
+        });
+
+        const setLintingSpy = sinon.spy(app, 'setLintingState');
+
+        // when
+        await app.lintTab(activeTab);
+
+        // then
+        const results = setLintingSpy.lastCall.args[ 1 ];
+        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.exist;
+        expect(warning.category).to.equal('warn');
+
+        setLintingSpy.restore();
+      });
+
+
+      it('should show warning for rpa tab', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('rpa');
+
+        const { activeTab } = app.state;
+
+        await setVersionState(app, activeTab, {
+          engineProfile: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          },
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          }
+        });
+
+        const setLintingSpy = sinon.spy(app, 'setLintingState');
+
+        // when
+        await app.lintTab(activeTab);
+
+        // then
+        const results = setLintingSpy.lastCall.args[ 1 ];
+        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.exist;
+        expect(warning.category).to.equal('warn');
+
+        setLintingSpy.restore();
+      });
+
+
       it('should not show warning when versions match', async function() {
 
         // given

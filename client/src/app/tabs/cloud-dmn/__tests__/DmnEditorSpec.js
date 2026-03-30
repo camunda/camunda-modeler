@@ -2328,6 +2328,55 @@ describe('<DmnEditor>', function() {
       });
     });
 
+
+    it('should emit tab.engineProfileChanged event on import', async function() {
+
+      // given
+      const onActionSpy = sinon.spy();
+
+      // when
+      await renderEditor(engineProfileXML, {
+        onAction: onActionSpy
+      });
+
+      // then
+      expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
+        type: 'tab.engineProfileChanged',
+        payload: {
+          executionPlatform: 'Camunda Cloud',
+          executionPlatformVersion: '8.0.0'
+        }
+      });
+    });
+
+
+    it('should emit tab.engineProfileChanged event on set engine profile', async function() {
+
+      // given
+      const onActionSpy = sinon.spy();
+
+      const { instance } = await renderEditor(engineProfileXML, {
+        onAction: onActionSpy
+      });
+
+      onActionSpy.resetHistory();
+
+      // when
+      instance.engineProfile.set({
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '8.1.0'
+      });
+
+      // then
+      expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
+        type: 'tab.engineProfileChanged',
+        payload: {
+          executionPlatform: 'Camunda Cloud',
+          executionPlatformVersion: '8.1.0'
+        }
+      });
+    });
+
   });
 
 });
