@@ -22,6 +22,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: gracefully handle permission error when searching for process application file ([#5670](https://github.com/camunda/camunda-modeler/issues/5670))
 * `FIX`: indicate tab cut-off through ellipsis ([#5660](https://github.com/camunda/camunda-modeler/pull/5660))
 * `FIX`: persist offline connection as last used connection across restart ([#5746](https://github.com/camunda/camunda-modeler/pull/5746))
+* `FIX`: fixed the visibility of template properties based on the `isActive` condition ([bpmn-io/bpmn-js-element-templates#232](https://github.com/bpmn-io/bpmn-js-element-templates/pull/232))
 * `FIX`: preserve user-defined outputs when apply/update template with `entriesVisible.outputs === true` ([bpmn-io/bpmn-js-element-templates#233](https://github.com/bpmn-io/bpmn-js-element-templates/pull/233))
 * `FIX`: prevent cutting the tooltip if it couldn't fit to the bottom of the screen ([#5451](https://github.com/camunda/camunda-modeler/issues/5451))
 * `FIX`: use configured operate URL for linking also in Self-Managed ([#5669](https://github.com/camunda/camunda-modeler/pull/5669))
