@@ -36,7 +36,8 @@ export function Section(props) {
       };
     } else {
       style = {
-        '--section-max-height': isString(maxHeight) ? maxHeight : `${maxHeight}px`
+        '--section-max-height': isString(maxHeight) ? maxHeight : `${maxHeight}px`,
+        'overflowY': 'auto'
       };
     }
   }
