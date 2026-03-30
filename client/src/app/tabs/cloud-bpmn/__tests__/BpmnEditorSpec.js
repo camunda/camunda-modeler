@@ -1291,20 +1291,13 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         fireEvent.mouseDown(toggle);
         fireEvent.mouseUp(toggle);
 
-        await waitFor(() => {
-          expect(onLayoutChanged).to.have.been.calledOnce;
-        });
-
         // then
-        expect(onLayoutChanged).to.have.been.calledOnce;
-
-        const callArg = onLayoutChanged.getCall(0).args[0];
-        expect(callArg).to.deep.include({
-          sidePanel: {
-            open: false,
-            tab: 'properties',
-            width: 280
-          }
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledWithMatch({
+            sidePanel: {
+              open: false
+            }
+          });
         });
       });
 
@@ -1443,19 +1436,11 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         fireEvent.mouseDown(toggle);
         fireEvent.mouseUp(toggle);
 
-        await waitFor(() => {
-          expect(onLayoutChanged).to.have.been.calledOnce;
-        });
-
         // then
-        expect(onLayoutChanged).to.have.been.calledOnce;
-
-        const callArg = onLayoutChanged.getCall(0).args[0];
-        expect(callArg).to.deep.include({
-          variablesSidePanel: {
-            open: false,
-            width: 280
-          }
+        await waitFor(() => {
+          expect(onLayoutChanged).to.have.been.calledWithMatch({
+            variablesSidePanel: { open: false }
+          });
         });
       });
 

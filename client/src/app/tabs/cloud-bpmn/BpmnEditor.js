@@ -41,6 +41,8 @@ import SidePanelHeader from './side-panel/SidePanelHeader';
 import VariablesSidePanel, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT } from './variables-side-panel/VariablesSidePanel';
 import VariablesTabActionItem from './variables-side-panel/VariablesTabActionItem';
 
+import { SidePanelContainer, SidePanelSlot } from '../../side-panel/SidePanelContainer';
+
 import BpmnModeler from './modeler';
 
 import { active as isInputActive, isTextInput } from '../../../util/dom/isInput';
@@ -912,54 +914,68 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
-          <VariablesSidePanel
-            injector={ injector }
-            layout={ layout }
-            onAction={ onAction }
-            onLayoutChanged={ this.handleLayoutChange }
-          />
+          <SidePanelContainer layout={ layout } onLayoutChanged={ this.handleLayoutChange }>
+            <SidePanelSlot panelId="variablesSidePanel">
+              { ({ maxWidth, onLayoutChanged }) => (
+                <VariablesSidePanel
+                  injector={ injector }
+                  layout={ layout }
+                  maxWidth={ maxWidth }
+                  onAction={ onAction }
+                  onLayoutChanged={ onLayoutChanged }
+                />
+              ) }
+            </SidePanelSlot>
+
+            <SidePanelSlot panelId="sidePanel">
+              { ({ maxWidth, onLayoutChanged }) => (
+                <SidePanel
+                  layout={ layout }
+                  maxWidth={ maxWidth }
+                  onLayoutChanged={ onLayoutChanged }
+                >
+                  <SidePanel.Header>
+                    <SidePanelTitleBar
+                      title="Details"
+                      onClose={ () => this.handleLayoutChange({
+                        sidePanel: {
+                          ...SIDE_PANEL_DEFAULT_LAYOUT,
+                          ...layout.sidePanel,
+                          open: false
+                        }
+                      }) }
+                    />
+                  </SidePanel.Header>
+                  <SidePanel.Header>
+                    <SidePanelHeader injector={ injector } />
+                  </SidePanel.Header>
+                  <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
+                    <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
+                  </SidePanel.Tab>
+                  <SidePanel.Tab id="test" label="Test" icon={ TaskTestingIcon }>
+                    <TaskTestingTab
+                      config={ config }
+                      deployment={ deployment }
+                      file={ file }
+                      id={ id }
+                      injector={ injector }
+                      layout={ layout }
+                      onAction={ onAction }
+                      startInstance={ startInstance }
+                      zeebeApi={ zeebeApi }
+                    />
+                  </SidePanel.Tab>
+                </SidePanel>
+              ) }
+            </SidePanelSlot>
+          </SidePanelContainer>
 
           <VariablesTabActionItem
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange }
           />
 
-          <SidePanel
-            layout={ layout }
-            onLayoutChanged={ this.handleLayoutChange }
-          >
-            <SidePanel.Header>
-              <SidePanelTitleBar
-                title="Details"
-                onClose={ () => this.handleLayoutChange({
-                  sidePanel: {
-                    ...SIDE_PANEL_DEFAULT_LAYOUT,
-                    ...layout.sidePanel,
-                    open: false
-                  }
-                }) }
-              />
-            </SidePanel.Header>
-            <SidePanel.Header>
-              <SidePanelHeader injector={ injector } />
-            </SidePanel.Header>
-            <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
-              <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
-            </SidePanel.Tab>
-            <SidePanel.Tab id="test" label="Test" icon={ TaskTestingIcon }>
-              <TaskTestingTab
-                config={ config }
-                deployment={ deployment }
-                file={ file }
-                id={ id }
-                injector={ injector }
-                layout={ layout }
-                onAction={ onAction }
-                startInstance={ startInstance }
-                zeebeApi={ zeebeApi }
-              />
-            </SidePanel.Tab>
-          </SidePanel>
+
 
           <PropertiesPanelTabActionItem
             layout={ layout }
