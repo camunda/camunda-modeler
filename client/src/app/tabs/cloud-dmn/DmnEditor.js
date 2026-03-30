@@ -301,12 +301,14 @@ export class DmnEditor extends CachedComponent {
       });
 
       if (activeSheet && activeSheet.element) {
-        return this.open(activeSheet.element);
+        this.open(activeSheet.element);
+      } else {
+        const initialView = modeler._getInitialView(modeler._views);
+
+        this.open(initialView.element);
       }
 
-      const initialView = modeler._getInitialView(modeler._views);
-
-      this.open(initialView.element);
+      this.handleChanged();
     }
 
   }
@@ -1068,7 +1070,10 @@ export class DmnEditor extends CachedComponent {
       }
     });
 
-    const stackIdx = modeler.getStackIdx();
+    // Use -1 as the initial stackIdx (the initial value of any command stack)
+    // rather than modeler.getStackIdx() which returns null before any import.
+    // This prevents false dirty detection when views.changed fires during initial import.
+    const stackIdx = -1;
 
     // notify interested parties that modeler was created
     onAction('emit-event', {
