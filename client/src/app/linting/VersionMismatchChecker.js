@@ -24,7 +24,7 @@ const CLOUD_TAB_TYPES = [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form', 'rpa' ];
  *
  * @return {Function} getWarnings(tab) → Array
  */
-export default function VersionMismatchLintPlugin({ connectionCheckResult, engineProfiles }) {
+export default function VersionMismatchChecker({ connectionCheckResult, engineProfiles }) {
 
   return function getWarnings(tab) {
     if (!CLOUD_TAB_TYPES.includes(tab.type)) {
