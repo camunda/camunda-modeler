@@ -209,7 +209,11 @@ export class BpmnEditor extends CachedComponent {
     }
 
     if (prevProps.linting !== this.props.linting) {
-      this.getModeler().get('linting').setErrors(this.props.linting || []);
+      const { lastXML } = this.getCached();
+
+      if (lastXML && !this.state.importing) {
+        this.getModeler().get('linting').setErrors(this.props.linting || []);
+      }
     }
 
     if (prevProps.file !== this.props.file) {

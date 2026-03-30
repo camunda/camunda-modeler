@@ -4131,6 +4131,239 @@ describe('<App>', function() {
       expect(lintingState).to.be.empty;
     });
 
+
+    describe('version mismatch warning', function() {
+
+      function setVersionState(app, activeTab, { engineProfile, connectionCheckResult }) {
+        return new Promise(resolve => {
+          const update = {};
+
+          if (engineProfile) {
+            update.engineProfiles = {
+              [ activeTab.id ]: engineProfile
+            };
+          }
+
+          if (connectionCheckResult !== undefined) {
+            update.connectionCheckResult = connectionCheckResult;
+          }
+
+          app.setState(update, resolve);
+        });
+      }
+
+
+      it('should show warning when selected version differs from cluster version', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        await setVersionState(app, activeTab, {
+          engineProfile: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          },
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          }
+        });
+
+        const setLintingSpy = sinon.spy(app, 'setLintingState');
+
+        // when
+        await app.lintTab(activeTab);
+
+        // then
+        const lastCall = setLintingSpy.lastCall;
+
+        expect(lastCall).to.exist;
+
+        const results = lastCall.args[ 1 ];
+        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.exist;
+        expect(warning.category).to.equal('warn');
+        expect(warning.message).to.include('8.7');
+        expect(warning.message).to.include('8.8');
+
+        setLintingSpy.restore();
+      });
+
+
+      it('should not show warning when versions match', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        await setVersionState(app, activeTab, {
+          engineProfile: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.8.0'
+          },
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.3' }
+          }
+        });
+
+        const setLintingSpy = sinon.spy(app, 'setLintingState');
+
+        // when
+        await app.lintTab(activeTab);
+
+        // then
+        const results = setLintingSpy.lastCall.args[ 1 ];
+        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+
+        setLintingSpy.restore();
+      });
+
+
+      it('should not show warning when connection is not successful', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        await setVersionState(app, activeTab, {
+          engineProfile: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          },
+          connectionCheckResult: {
+            success: false,
+            reason: 'CONTACT_POINT_UNAVAILABLE'
+          }
+        });
+
+        const setLintingSpy = sinon.spy(app, 'setLintingState');
+
+        // when
+        await app.lintTab(activeTab);
+
+        // then
+        const results = setLintingSpy.lastCall.args[ 1 ];
+        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+
+        setLintingSpy.restore();
+      });
+
+
+      it('should not show warning when connection check result is null', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        await setVersionState(app, activeTab, {
+          engineProfile: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          },
+          connectionCheckResult: null
+        });
+
+        const setLintingSpy = sinon.spy(app, 'setLintingState');
+
+        // when
+        await app.lintTab(activeTab);
+
+        // then
+        const results = setLintingSpy.lastCall.args[ 1 ];
+        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+
+        setLintingSpy.restore();
+      });
+
+
+      it('should not show warning for non-cloud tab types', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('bpmn');
+
+        const { activeTab } = app.state;
+
+        await setVersionState(app, activeTab, {
+          engineProfile: {
+            executionPlatform: 'Camunda Platform',
+            executionPlatformVersion: '7.20.0'
+          },
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '7.21.0' }
+          }
+        });
+
+        const setLintingSpy = sinon.spy(app, 'setLintingState');
+
+        // when
+        await app.lintTab(activeTab);
+
+        // then
+        const results = setLintingSpy.lastCall.args[ 1 ];
+        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+
+        setLintingSpy.restore();
+      });
+
+
+      it('should not show warning when engine profile is not set', async function() {
+
+        // given
+        const { app } = createApp();
+
+        await app.createDiagram('cloud-bpmn');
+
+        const { activeTab } = app.state;
+
+        await setVersionState(app, activeTab, {
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          }
+        });
+
+        const setLintingSpy = sinon.spy(app, 'setLintingState');
+
+        // when
+        await app.lintTab(activeTab);
+
+        // then
+        const results = setLintingSpy.lastCall.args[ 1 ];
+        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+
+        expect(warning).to.not.exist;
+
+        setLintingSpy.restore();
+      });
+
+    });
+
   });
 
 

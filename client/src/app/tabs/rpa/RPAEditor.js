@@ -80,6 +80,19 @@ export class RPAEditor extends CachedComponent {
           key: 'executionPlatformVersion',
           value: engineProfile.executionPlatformVersion
         });
+
+        const {
+          executionPlatform,
+          executionPlatformVersion
+        } = engineProfile;
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
       },
       getCached: () => this.getCached(),
       setCached: (state) => this.setCached(state)
@@ -186,6 +199,19 @@ export class RPAEditor extends CachedComponent {
     } else {
       this.setCached({
         engineProfile,
+      });
+
+      const {
+        executionPlatform,
+        executionPlatformVersion
+      } = engineProfile;
+
+      this.props.onAction('emit-event', {
+        type: 'tab.engineProfileChanged',
+        payload: {
+          executionPlatform,
+          executionPlatformVersion
+        }
       });
     }
   }
