@@ -13,7 +13,6 @@ import React, { useCallback } from 'react';
 import ResizableContainer from './ResizableContainer';
 
 export const MIN_HEIGHT = 100;
-export const MAX_HEIGHT = '80%';
 
 export const DEFAULT_OPEN = false;
 export const DEFAULT_HEIGHT = 200;
@@ -52,7 +51,6 @@ export default function PanelContainer(props) {
       open={ open }
       height={ height }
       minHeight={ MIN_HEIGHT }
-      maxHeight={ MAX_HEIGHT }
       onResized={ onResized }
     >
       {props.children}

@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useCallback, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 
 import classNames from 'classnames';
 
@@ -48,8 +48,29 @@ export const DEFAULT_MIN_HEIGHT = 100;
 
 export const CLOSED_THRESHOLD = 50;
 
+export const MIN_CANVAS_WIDTH = 200;
+export const MIN_CANVAS_HEIGHT = 200;
+
 /**
- * Resizable container.
+ * Resizable container that can be dragged to resize or clicked to toggle open/closed.
+ *
+ * Supports both horizontal (width) and vertical (height) resizing based on the `direction` prop.
+ *
+ * It reserves at least `MIN_CANVAS_WIDTH`/`MIN_CANVAS_HEIGHT` px for the canvas,
+ * even if panel's `maxWidth`/`maxHeight` allows for more.
+ *
+ * @param {Object} props
+ * @param {'left'|'right'|'top'|'bottom'} props.direction
+ * @param {boolean} props.open
+ * @param {(args: { width?: number, height?: number, open: boolean }) => void} props.onResized
+ * @param {string} [props.className='']
+ * @param {number} [props.width]
+ * @param {number} [props.height]
+ * @param {number} [props.minWidth=100]
+ * @param {number} [props.minHeight=100]
+ * @param {number} [props.maxWidth]
+ * @param {number} [props.maxHeight]
+ * @param {React.ReactNode} [props.children]
  */
 export default function ResizableContainer(props) {
   const {
@@ -68,9 +89,15 @@ export default function ResizableContainer(props) {
     maxHeight
   } = getSizeProps(props);
 
+  const horizontal = isHorizontal(direction);
+  const dimension = horizontal ? 'width' : 'height';
+  const size = horizontal ? width : height;
+  const minSize = horizontal ? minWidth : minHeight;
+  const maxSize = horizontal ? maxWidth : maxHeight;
+
   const ref = useRef();
 
-  const onResizeStart = useCallback((_, context) => {
+  const onResizeStart = (_, context) => {
     let rect = {
       width,
       height
@@ -80,75 +107,111 @@ export default function ResizableContainer(props) {
       rect = ref.current.getBoundingClientRect();
     }
 
+    const effectiveMax = getEffectiveMaxSize(
+      ref.current, direction, { maxWidth, minWidth, maxHeight, minHeight }
+    );
+
     return {
       ...context,
-      rect
+      rect,
+      effectiveMax
     };
-  }, [ width, height, ref.current ]);
+  };
 
-  const onResize = useCallback(({ dx, dy }, { rect }) => {
-    let newOpen;
+  const onResize = ({ delta }, { rect, effectiveMax }) => {
+    const newSize = rect[dimension] + delta;
+    const newOpen = newSize > CLOSED_THRESHOLD;
 
-    if (isHorizontal(direction)) {
-      const newWidth = rect.width + dx;
-
-      newOpen = newWidth > CLOSED_THRESHOLD;
-
-      setCSSWidth(ref.current, getCSSWidth(newWidth, minWidth, maxWidth));
-    } else {
-      const newHeight = rect.height + dy;
-
-      newOpen = newHeight > CLOSED_THRESHOLD;
-
-      setCSSHeight(ref.current, getCSSHeight(newHeight, minHeight, maxHeight));
-    }
-
-    if (newOpen) {
-      ref.current.classList.add('open');
-    } else {
-      ref.current.classList.remove('open');
-    }
-
+    ref.current.style[dimension] = getEffectiveSize(newSize, minSize, effectiveMax || maxSize) + 'px';
+    ref.current.classList.toggle('open', newOpen);
     ref.current.classList.add('resizing');
-  }, [ direction, minWidth, minHeight, maxWidth, maxHeight ]);
+  };
 
-  const onResizeEnd = useCallback(({ dx, dy }, { rect }) => {
+  const onResizeEnd = ({ delta }, { rect, effectiveMax }) => {
     ref.current.classList.remove('resizing');
 
-    if (isHorizontal(direction)) {
-      const newWidth = rect.width + dx;
+    const newSize = rect[dimension] + delta;
+    const newOpen = newSize > CLOSED_THRESHOLD;
 
-      const newOpen = newWidth > CLOSED_THRESHOLD;
+    onResized({
+      [dimension]: newOpen ? getEffectiveSize(newSize, minSize, effectiveMax || maxSize) : size,
+      open: newOpen
+    });
+  };
 
-      onResized({
-        width: newOpen ? newWidth : width,
-        open: newOpen
-      });
-    } else {
-      const newHeight = rect.height + dy;
+  const onToggle = () => {
+    let newSize = size < minSize ? minSize : size;
 
-      const newOpen = newHeight > CLOSED_THRESHOLD;
-
-      onResized({
-        height: newOpen ? newHeight : height,
-        open: newOpen
-      });
+    if (!open) {
+      const effectiveMax = getEffectiveMaxSize(
+        ref.current, direction, { maxWidth, minWidth, maxHeight, minHeight }
+      );
+      if (effectiveMax) {
+        newSize = Math.min(newSize, effectiveMax);
+      }
     }
-  }, [ direction, minWidth, minHeight, onResized ]);
 
-  const onToggle = useCallback(() => {
-    if (isHorizontal(direction)) {
-      onResized({
-        width: width < minWidth ? minWidth : width,
-        open: !open
-      });
-    } else {
-      onResized({
-        height: height < minHeight ? minHeight : height,
-        open: !open
-      });
+    onResized({
+      [dimension]: newSize,
+      open: !open
+    });
+  };
+
+  const shrinkIfNeeded = (element) => {
+    const effectiveMax = getEffectiveMaxSize(
+      element, direction, { maxWidth, minWidth, maxHeight, minHeight }
+    );
+
+    if (effectiveMax && size > effectiveMax) {
+      element.style[dimension] = effectiveMax + 'px';
+      onResized({ [dimension]: effectiveMax, open: true });
     }
-  }, [ direction, width, height, open ]);
+  };
+
+  // When a container opens, calculate its size and notify siblings
+  useLayoutEffect(() => {
+    if (!open || !ref.current) return;
+
+    const effectiveMax = getEffectiveMaxSize(
+      ref.current, direction, { maxWidth, minWidth, maxHeight, minHeight }
+    );
+
+    if (effectiveMax && size > effectiveMax) {
+      ref.current.style[dimension] = effectiveMax + 'px';
+      onResized({ [dimension]: effectiveMax, open: true });
+    }
+
+    ref.current.parentElement?.dispatchEvent(
+      new CustomEvent('panel-layout-change', { detail: ref.current })
+    );
+  }, [ open ]);
+
+  // Listen for sibling layout changes and window resizes, shrink if needed
+  useEffect(() => {
+    if (!ref.current || !open) return;
+
+    const parent = ref.current.parentElement;
+    if (!parent) return;
+
+    const element = ref.current;
+
+    const handleLayoutChange = (event) => {
+      if (event.detail === element) return;
+      shrinkIfNeeded(element);
+    };
+
+    const handleWindowResize = () => {
+      shrinkIfNeeded(element);
+    };
+
+    parent.addEventListener('panel-layout-change', handleLayoutChange);
+    window.addEventListener('resize', handleWindowResize);
+
+    return () => {
+      parent.removeEventListener('panel-layout-change', handleLayoutChange);
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, [ open, size, dimension, direction, maxWidth, minWidth, maxHeight, minHeight, onResized ]);
 
   const onMouseDown = useResize(onResizeStart, onResize, onResizeEnd, onToggle, direction);
 
@@ -210,130 +273,69 @@ export function getCSSFromProps(props) {
     maxHeight
   } = getSizeProps(props);
 
-  if (isHorizontal(direction)) {
-    return {
-      width: open ? getCSSWidth(width, minWidth, maxWidth) : '0px'
-    };
-  } else if (isVertical(direction)) {
-    return {
-      height: open ? getCSSHeight(height, minHeight, maxHeight) : '0px'
-    };
-  }
-}
+  const horizontal = isHorizontal(direction);
+  const dimension = horizontal ? 'width' : 'height';
+  const size = horizontal ? width : height;
+  const minSize = horizontal ? minWidth : minHeight;
+  const maxSize = horizontal ? maxWidth : maxHeight;
 
-function getWidth(width, minWidth, maxWidth) {
-  if (width < CLOSED_THRESHOLD) {
-    return 0;
-  } else if (width < minWidth) {
-    return minWidth;
-  } else if (maxWidth && width > maxWidth) {
-    return maxWidth;
-  }
-
-  return width;
-}
-
-function getHeight(height, minHeight, maxHeight) {
-  if (height < CLOSED_THRESHOLD) {
-    return 0;
-  } else if (height < minHeight) {
-    return minHeight;
-  } else if (maxHeight && height > maxHeight) {
-    return maxHeight;
-  }
-
-  return height;
-}
-
-function getCSSWidth(width, minWidth, maxWidth) {
-  return `${ getWidth(width, minWidth, maxWidth) }px`;
-}
-
-function getCSSHeight(height, minHeight, maxHeight) {
-  return `${ getHeight(height, minHeight, maxHeight) }px`;
-}
-
-function setCSSWidth(element, width) {
-  element.style.width = width;
-}
-function setCSSHeight(element, height) {
-  element.style.height = height;
+  return {
+    [dimension]: open ? getEffectiveSize(size, minSize, maxSize) + 'px' : '0px'
+  };
 }
 
 function useResize(onResizeStart, onResize, onResizeEnd, onToggle, direction) {
 
-  const onMouseDown = useCallback(
-    (event) => {
+  const onMouseDown = (event) => {
 
-      // https://legacy.reactjs.org/docs/legacy-event-pooling.html
-      event.persist();
+    let isClick = true;
 
-      let isClick = true;
+    const startEvent = event;
 
-      const startEvent = event;
+    let context = {};
 
-      let context = {};
+    context = onResizeStart(event, context) || context;
 
-      context = onResizeStart(event, context) || context;
+    const onMouseMove = (event) => {
+      isClick = false;
 
-      const onMouseMove = (event) => {
-        isClick = false;
+      context = onResize(getDelta(startEvent, event, direction), context) || context;
+    };
 
-        context = onResize(getDelta(startEvent, event, direction), context) || context;
-      };
+    const onMouseUp = (event) => {
+      if (isClick) {
+        onToggle();
+      } else {
+        onResizeEnd(getDelta(startEvent, event, direction), context);
+      }
 
-      const onMouseUp = (event) => {
-        if (isClick) {
-          onToggle();
-        } else {
-          onResizeEnd(getDelta(startEvent, event, direction), context);
-        }
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
 
-        window.removeEventListener('mousemove', onMouseMove);
-        window.removeEventListener('mouseup', onMouseUp);
-      };
-
-      window.addEventListener('mousemove', onMouseMove);
-      window.addEventListener('mouseup', onMouseUp);
-    },
-    [ direction, onResize, onResizeEnd, onToggle ]
-  );
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  };
 
   return onMouseDown;
 }
 
 function getDelta(startEvent, event, direction) {
-  const {
-    clientX: startClientX,
-    clientY: startClientY
-  } = startEvent;
+  const horizontal = isHorizontal(direction);
 
-  const {
-    clientX,
-    clientY
-  } = event;
-
-  if (isHorizontal(direction)) {
-    if (isLeft(direction)) {
-      return { dx: startClientX - clientX };
-    } else {
-      return { dx: clientX - startClientX };
-    }
-  }
-
-  if (isVertical(direction)) {
-    if (isTop(direction)) {
-      return { dy: startClientY - clientY };
-    } else {
-      return { dy: clientY - startClientY };
-    }
+  if (horizontal) {
+    const sign = isLeft(direction) ? -1 : 1;
+    return { delta: sign * (event.clientX - startEvent.clientX) };
+  } else {
+    const sign = isTop(direction) ? -1 : 1;
+    return { delta: sign * (event.clientY - startEvent.clientY) };
   }
 }
 
 function getSizeProps(props) {
   const {
-    width,
-    height,
+    width = 0,
+    height = 0,
     minWidth = DEFAULT_MIN_WIDTH,
     minHeight = DEFAULT_MIN_HEIGHT,
     maxWidth,
@@ -341,35 +343,90 @@ function getSizeProps(props) {
   } = props;
 
   return {
-    width: getWidthInPixels(width),
-    height: getHeightInPixels(height),
-    minWidth: getWidthInPixels(minWidth),
-    minHeight: getHeightInPixels(minHeight),
-    maxWidth: maxWidth ? getWidthInPixels(maxWidth) : null,
-    maxHeight: maxHeight ? getHeightInPixels(maxHeight) : null
+    width,
+    height,
+    minWidth,
+    minHeight,
+    maxWidth,
+    maxHeight
   };
 }
 
-function getHeightInPixels(value) {
-  return getInPixels(value, window.innerHeight);
+/**
+ * Calculates the effective maximum size for a container,
+ * accounting for sibling `ResizableContainer` elements that are currently open.
+ * Reserves `MIN_CANVAS_WIDTH`/`MIN_CANVAS_HEIGHT` for the canvas.
+ *
+ * @param {HTMLElement} element
+ * @param {'left'|'right'|'top'|'bottom'} direction
+ * @param {Object} sizes - Size constraints.
+ * @param {number|null} sizes.maxWidth
+ * @param {number} sizes.minWidth
+ * @param {number|null} sizes.maxHeight
+ * @param {number} sizes.minHeight
+ * @returns {number|null} The effective max, or the static max if no parent is found.
+ */
+function getEffectiveMaxSize(element, direction, { maxWidth, minWidth, maxHeight, minHeight }) {
+  const parent = element?.parentElement;
+
+  const horizontal = isHorizontal(direction);
+  const max = horizontal ? maxWidth : maxHeight;
+  const min = horizontal ? minWidth : minHeight;
+  const minCanvas = horizontal ? MIN_CANVAS_WIDTH : MIN_CANVAS_HEIGHT;
+
+  if (!parent) return max;
+
+  const siblingSize = getOpenSiblingSize(element, horizontal);
+  const parentSize = horizontal
+    ? parent.getBoundingClientRect().width
+    : parent.getBoundingClientRect().height;
+
+  const spaceBasedMax = Math.max(min, parentSize - siblingSize - minCanvas);
+
+  return max ? Math.min(max, spaceBasedMax) : spaceBasedMax;
 }
 
-function getWidthInPixels(value) {
-  return getInPixels(value, window.innerWidth);
-}
-
-function getInPixels(value, parentSize) {
-  if (typeof value === 'string') {
-    return parentSize * (parseInt(value.replace('%', '')) / 100);
-  }
-
-  if (typeof value === 'number') {
-    return value;
-  }
-
-  if (!value) {
+/**
+ * Get a size value between min and max, collapsing to 0 below `CLOSED_THRESHOLD`.
+ *
+ * @param {number} size
+ * @param {number} min
+ * @param {number|null} max
+ * @returns {number}
+ */
+function getEffectiveSize(size, min, max) {
+  if (size < CLOSED_THRESHOLD) {
     return 0;
+  } else if (size < min) {
+    return min;
+  } else if (max && size > max) {
+    return max;
   }
 
-  throw new Error('Unsupported ResizableContainer size value: ' + value);
+  return size;
+}
+
+/**
+ * Returns the total size (width or height) of open sibling ResizableContainer elements.
+ *
+ * @param {HTMLElement} element
+ * @param {boolean} horizontal
+ * @returns {number}
+ */
+function getOpenSiblingSize(element, horizontal) {
+  const parent = element?.parentElement;
+
+  const siblings = Array.from(parent?.children || []).filter(
+    child => child !== element &&
+    child.classList.contains(css.ResizableContainer) &&
+    child.classList.contains('open')
+  );
+
+  let total = 0;
+  siblings.forEach(child => {
+    const rect = child.getBoundingClientRect();
+    total += horizontal ? rect.width : rect.height;
+  });
+
+  return total;
 }
