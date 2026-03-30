@@ -4470,6 +4470,199 @@ describe('<App>', function() {
         setLintingSpy.restore();
       });
 
+
+      describe('connection status changed re-lint', function() {
+
+        it('should re-lint when connection success state changes', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.createDiagram('cloud-bpmn');
+
+          const { activeTab } = app.state;
+
+          await setVersionState(app, activeTab, {
+            engineProfile: {
+              executionPlatform: 'Camunda Cloud',
+              executionPlatformVersion: '8.7.0'
+            },
+            connectionCheckResult: {
+              success: false,
+              reason: 'UNAVAILABLE'
+            }
+          });
+
+          const lintTabSpy = sinon.spy(app, 'lintTab');
+
+          // when - success state changes from false to true
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          });
+
+          // then
+          await waitFor(() => {
+            expect(lintTabSpy).to.have.been.calledOnce;
+          });
+
+          lintTabSpy.restore();
+        });
+
+
+        it('should re-lint when gateway version changes', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.createDiagram('cloud-bpmn');
+
+          const { activeTab } = app.state;
+
+          await setVersionState(app, activeTab, {
+            engineProfile: {
+              executionPlatform: 'Camunda Cloud',
+              executionPlatformVersion: '8.7.0'
+            },
+            connectionCheckResult: {
+              success: true,
+              response: { gatewayVersion: '8.8.0' }
+            }
+          });
+
+          const lintTabSpy = sinon.spy(app, 'lintTab');
+
+          // when - gateway version changes
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
+            success: true,
+            response: { gatewayVersion: '8.9.0' }
+          });
+
+          // then
+          await waitFor(() => {
+            expect(lintTabSpy).to.have.been.calledOnce;
+          });
+
+          lintTabSpy.restore();
+        });
+
+
+        it('should NOT re-lint on periodic poll with same result', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.createDiagram('cloud-bpmn');
+
+          const { activeTab } = app.state;
+
+          await setVersionState(app, activeTab, {
+            engineProfile: {
+              executionPlatform: 'Camunda Cloud',
+              executionPlatformVersion: '8.7.0'
+            },
+            connectionCheckResult: {
+              success: true,
+              response: { gatewayVersion: '8.8.0' }
+            }
+          });
+
+          const lintTabSpy = sinon.spy(app, 'lintTab');
+
+          // when - same success + same version (periodic poll)
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          });
+
+          // then - wait for setState to commit, verify state updated
+          await waitFor(() => {
+            expect(app.state.connectionCheckResult.response.gatewayVersion).to.equal('8.8.0');
+          });
+
+          expect(lintTabSpy).to.not.have.been.called;
+
+          lintTabSpy.restore();
+        });
+
+
+        it('should NOT re-lint on periodic poll with same failure', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.createDiagram('cloud-bpmn');
+
+          const { activeTab } = app.state;
+
+          await setVersionState(app, activeTab, {
+            engineProfile: {
+              executionPlatform: 'Camunda Cloud',
+              executionPlatformVersion: '8.7.0'
+            },
+            connectionCheckResult: {
+              success: false,
+              reason: 'UNAVAILABLE'
+            }
+          });
+
+          const lintTabSpy = sinon.spy(app, 'lintTab');
+
+          // when - still failing (periodic poll)
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
+            success: false,
+            reason: 'UNAVAILABLE'
+          });
+
+          // then - wait for setState to commit, verify state updated
+          await waitFor(() => {
+            expect(app.state.connectionCheckResult.reason).to.equal('UNAVAILABLE');
+          });
+
+          expect(lintTabSpy).to.not.have.been.called;
+
+          lintTabSpy.restore();
+        });
+
+
+        it('should update state even when not re-linting', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.createDiagram('cloud-bpmn');
+
+          const { activeTab } = app.state;
+
+          await setVersionState(app, activeTab, {
+            connectionCheckResult: {
+              success: true,
+              response: { gatewayVersion: '8.8.0' }
+            }
+          });
+
+          // when - same success + same version (periodic poll)
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          });
+
+          // then
+          await waitFor(() => {
+            expect(app.state.connectionCheckResult).to.eql({
+              success: true,
+              response: { gatewayVersion: '8.8.0' }
+            });
+          });
+        });
+
+      });
+
     });
 
   });

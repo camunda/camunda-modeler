@@ -608,6 +608,11 @@ export class App extends PureComponent {
 
     delete newOpenedTabs[tab.id];
 
+    const {
+      [ tab.id ]: _removedProfile,
+      ...newEngineProfiles
+    } = this.state.engineProfiles;
+
     const newTabs = tabs.filter(t => t !== tab);
 
     navigationHistory.purge(tab);
@@ -635,7 +640,8 @@ export class App extends PureComponent {
     return new Promise((resolve) => {
       this.setState({
         tabs: newTabs,
-        openedTabs: newOpenedTabs
+        openedTabs: newOpenedTabs,
+        engineProfiles: newEngineProfiles
       }, () => {
         this.props.cache.destroy(tab.id);
         resolve();
@@ -1083,7 +1089,22 @@ export class App extends PureComponent {
   };
 
   _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
+    const prev = this.state.connectionCheckResult;
+
+    // Only re-lint when the data relevant to version mismatch
+    // warning actually changes, not on every periodic poll
+    const prevVersion = prev && prev.success && prev.response
+      ? prev.response.gatewayVersion : null;
+    const nextVersion = connectionCheckResult.success && connectionCheckResult.response
+      ? connectionCheckResult.response.gatewayVersion : null;
+    const relevantChange = (prev && prev.success) !== connectionCheckResult.success
+      || prevVersion !== nextVersion;
+
     this.setState({ connectionCheckResult }, () => {
+      if (!relevantChange) {
+        return;
+      }
+
       const { activeTab } = this.state;
 
       if (activeTab && activeTab !== EMPTY_TAB) {
