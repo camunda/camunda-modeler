@@ -99,6 +99,28 @@ describe('PropertiesPanelStatusBarItem', function() {
     });
 
 
+    it('should close panel on first click when no layout config is set', function() {
+
+      // given
+      const onLayoutChangedSpy = spy();
+
+      const { container } = renderPropertiesPanelStatusBarItem({
+        layout: {},
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      fireEvent.click(container.querySelector('.btn'));
+
+      // then
+      expect(onLayoutChangedSpy).to.have.been.calledOnce;
+
+      const { sidePanel } = onLayoutChangedSpy.getCall(0).args[0];
+      expect(sidePanel.open).to.be.false;
+      expect(sidePanel.tab).to.equal('properties');
+    });
+
+
     it('should open properties tab when panel is closed', function() {
 
       // given

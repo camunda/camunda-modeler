@@ -712,7 +712,7 @@ export class BpmnEditor extends CachedComponent {
     if (action === 'toggleProperties') {
       let { sidePanel: sidePanelLayout = SIDE_PANEL_DEFAULT_LAYOUT } = layout;
 
-      sidePanelLayout = { ...SIDE_PANEL_DEFAULT_LAYOUT, ...sidePanelLayout };
+      sidePanelLayout = { tab: 'properties', ...SIDE_PANEL_DEFAULT_LAYOUT, ...sidePanelLayout };
 
       const newLayout = {
         sidePanel: {

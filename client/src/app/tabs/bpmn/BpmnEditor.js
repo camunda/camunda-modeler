@@ -706,11 +706,11 @@ export class BpmnEditor extends CachedComponent {
     }
 
     if (action === 'toggleProperties') {
+      const mergedSidePanelLayout = { ...SIDE_PANEL_DEFAULT_LAYOUT, ...sidePanelLayout };
       const newLayout = {
         sidePanel: {
-          ...SIDE_PANEL_DEFAULT_LAYOUT,
-          ...sidePanelLayout,
-          open: !sidePanelLayout.open,
+          ...mergedSidePanelLayout,
+          open: !mergedSidePanelLayout.open,
           tab: 'properties'
         }
       };
