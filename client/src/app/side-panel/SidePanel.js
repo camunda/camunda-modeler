@@ -61,6 +61,7 @@ export default function SidePanel(props) {
   const {
     children,
     layout,
+    maxWidth,
     onLayoutChanged
   } = props;
 
@@ -148,7 +149,7 @@ export default function SidePanel(props) {
       open={ open }
       width={ width }
       minWidth={ MIN_WIDTH }
-      maxWidth={ MAX_WIDTH }
+      maxWidth={ maxWidth || MAX_WIDTH }
       onResized={ onResized }
     >
       { headers }
