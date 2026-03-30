@@ -152,6 +152,27 @@ describe('VersionMismatchLintPlugin', function() {
     });
 
 
+    it('should return warnings for rpa tab', function() {
+
+      // given
+      const getWarnings = VersionMismatchLintPlugin({
+        connectionCheckResult: {
+          success: true,
+          response: { gatewayVersion: '8.8.0' }
+        },
+        engineProfiles: {
+          'tab-1': { executionPlatformVersion: '8.7.0' }
+        }
+      });
+
+      // when
+      const warnings = getWarnings({ id: 'tab-1', type: 'rpa' });
+
+      // then
+      expect(warnings).to.have.length(1);
+    });
+
+
     it('should return empty for non-cloud tab', function() {
 
       // given
