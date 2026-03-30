@@ -75,7 +75,8 @@ describe('<Section>', function() {
 
       // then
       expectStyle(container, {
-        '--section-max-height': '100vh'
+        '--section-max-height': '100vh',
+        'overflowY': 'auto'
       });
 
     });
@@ -88,7 +89,8 @@ describe('<Section>', function() {
 
       // then
       expectStyle(container, {
-        '--section-max-height': '100px'
+        '--section-max-height': '100px',
+        'overflowY': 'auto'
       });
 
     });
