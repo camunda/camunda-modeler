@@ -11,7 +11,7 @@
 import semver from 'semver';
 
 
-const CLOUD_TAB_TYPES = [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form' ];
+const CLOUD_TAB_TYPES = [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form', 'rpa' ];
 
 
 /**
