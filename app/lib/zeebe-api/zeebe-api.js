@@ -562,15 +562,14 @@ class ZeebeAPI {
   /**
    * Search jobs. Requires Camunda REST client.
    *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, elementId?: string }} config
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
    *
    * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchJobs(config) {
     const {
       endpoint,
-      processInstanceKey,
-      elementId
+      processInstanceKey
     } = config;
 
     this._log.debug('search jobs', {
@@ -589,8 +588,7 @@ class ZeebeAPI {
         method: 'POST',
         body: {
           filter: {
-            processInstanceKey,
-            elementId
+            processInstanceKey
           }
         }
       });
@@ -614,15 +612,14 @@ class ZeebeAPI {
   /**
    * Search message subscriptions. Requires Camunda REST client.
    *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, elementId?: string }} config
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
    *
    * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchMessageSubscriptions(config) {
     const {
       endpoint,
-      processInstanceKey,
-      elementId
+      processInstanceKey
     } = config;
 
     this._log.debug('search message subscriptions', {
@@ -641,8 +638,7 @@ class ZeebeAPI {
         method: 'POST',
         body: {
           filter: {
-            processInstanceKey,
-            elementId
+            processInstanceKey
           }
         }
       });
@@ -666,15 +662,14 @@ class ZeebeAPI {
   /**
    * Search user tasks. Requires Camunda REST client.
    *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string, elementId?: string }} config
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
    *
    * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchUserTasks(config) {
     const {
       endpoint,
-      processInstanceKey,
-      elementId
+      processInstanceKey
     } = config;
 
     this._log.debug('search user tasks', {
@@ -693,8 +688,7 @@ class ZeebeAPI {
         method: 'POST',
         body: {
           filter: {
-            processInstanceKey,
-            elementId
+            processInstanceKey
           }
         }
       });
