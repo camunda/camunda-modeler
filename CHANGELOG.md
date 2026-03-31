@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.46.0
+
 ### General
 
 * `FEAT`: add support of templating execution and task listeners ([#5187](https://github.com/camunda/camunda-modeler/issues/5187))
