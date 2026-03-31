@@ -28,6 +28,10 @@ describe('VersionMismatchChecker', function() {
       expect(warning.rule).to.equal('camunda/version-mismatch');
       expect(warning.message).to.include('8.7');
       expect(warning.message).to.include('9.0');
+      expect(warning.action).to.exist;
+      expect(warning.action.label).to.equal('Switch to 9.0');
+      expect(warning.action.handler).to.equal('set-engine-profile');
+      expect(warning.action.options.executionPlatformVersion).to.equal('9.0.0');
     });
 
 

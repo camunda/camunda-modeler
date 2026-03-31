@@ -616,6 +616,15 @@ export class FormEditor extends CachedComponent {
       editorActions.trigger('selectFormField', context);
     }
 
+    if (action === 'set-engine-profile') {
+      const currentProfile = this.engineProfile.get();
+
+      return this.engineProfile.set({
+        executionPlatform: currentProfile.executionPlatform,
+        executionPlatformVersion: context.executionPlatformVersion
+      });
+    }
+
     if (editorActions.isRegistered(action)) {
       return editorActions.trigger(action, context);
     }

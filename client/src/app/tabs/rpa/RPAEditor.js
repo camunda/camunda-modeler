@@ -301,7 +301,7 @@ export class RPAEditor extends CachedComponent {
     }
   }
 
-  triggerAction(action) {
+  triggerAction(action, context) {
     const {
       editor
     } = this.getCached();
@@ -309,6 +309,15 @@ export class RPAEditor extends CachedComponent {
     const {
       editor: monaco
     } = editor;
+
+    if (action === 'set-engine-profile') {
+      const currentProfile = this.engineProfile.get();
+
+      return this.engineProfile.set({
+        executionPlatform: currentProfile.executionPlatform,
+        executionPlatformVersion: context.executionPlatformVersion
+      });
+    }
 
     if (action === 'undo') {
       monaco.trigger('menu', 'undo');

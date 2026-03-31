@@ -811,6 +811,15 @@ export class DmnEditor extends CachedComponent {
       return this.resetOverview();
     }
 
+    if (action === 'set-engine-profile') {
+      const currentProfile = this.engineProfile.get();
+
+      return this.engineProfile.set({
+        executionPlatform: currentProfile.executionPlatform,
+        executionPlatformVersion: context.executionPlatformVersion
+      });
+    }
+
     return modeler.getActiveViewer()
       .get('editorActions')
       .trigger(action, context);

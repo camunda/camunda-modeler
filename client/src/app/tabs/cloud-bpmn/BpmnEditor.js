@@ -783,6 +783,15 @@ export class BpmnEditor extends CachedComponent {
       return;
     }
 
+    if (action === 'set-engine-profile') {
+      const currentProfile = this.engineProfile.get();
+
+      return this.engineProfile.set({
+        executionPlatform: currentProfile.executionPlatform,
+        executionPlatformVersion: context.executionPlatformVersion
+      });
+    }
+
     if (action === 'elementTemplates.reload') {
       return this.loadTemplates();
     }
