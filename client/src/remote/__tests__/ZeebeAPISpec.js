@@ -1145,10 +1145,9 @@ describe('<ZeebeAPI>', function() {
       };
 
       const processInstanceKey = '123';
-      const elementId = 'Task_1';
 
       // when
-      zeebeAPI.searchJobs({ endpoint }, processInstanceKey, elementId);
+      zeebeAPI.searchJobs({ endpoint }, processInstanceKey);
 
       // then
       expect(backend.send).to.have.been.calledWith('zeebe:searchJobs', {
@@ -1158,8 +1157,7 @@ describe('<ZeebeAPI>', function() {
           url: endpoint.contactPoint,
           tenantId: undefined
         },
-        processInstanceKey,
-        elementId
+        processInstanceKey
       });
 
     });
@@ -1185,10 +1183,9 @@ describe('<ZeebeAPI>', function() {
       };
 
       const processInstanceKey = '123';
-      const elementId = 'Event_1';
 
       // when
-      zeebeAPI.searchMessageSubscriptions({ endpoint }, processInstanceKey, elementId);
+      zeebeAPI.searchMessageSubscriptions({ endpoint }, processInstanceKey);
 
       // then
       expect(backend.send).to.have.been.calledWith('zeebe:searchMessageSubscriptions', {
@@ -1198,8 +1195,7 @@ describe('<ZeebeAPI>', function() {
           url: endpoint.contactPoint,
           tenantId: undefined
         },
-        processInstanceKey,
-        elementId
+        processInstanceKey
       });
 
     });
@@ -1225,10 +1221,9 @@ describe('<ZeebeAPI>', function() {
       };
 
       const processInstanceKey = '123';
-      const elementId = 'UserTask_1';
 
       // when
-      zeebeAPI.searchUserTasks({ endpoint }, processInstanceKey, elementId);
+      zeebeAPI.searchUserTasks({ endpoint }, processInstanceKey);
 
       // then
       expect(backend.send).to.have.been.calledWith('zeebe:searchUserTasks', {
@@ -1238,8 +1233,7 @@ describe('<ZeebeAPI>', function() {
           url: endpoint.contactPoint,
           tenantId: undefined
         },
-        processInstanceKey,
-        elementId
+        processInstanceKey
       });
 
     });

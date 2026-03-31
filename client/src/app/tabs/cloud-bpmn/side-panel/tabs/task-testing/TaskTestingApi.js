@@ -153,22 +153,22 @@ export default class TaskTestingApi {
     return this._zeebeApi.searchIncidents(config, processInstanceKey);
   }
 
-  async getProcessInstanceJobs(processInstanceKey, elementId) {
+  async getProcessInstanceJobs(processInstanceKey) {
     const config = await this.getDeploymentConfig();
 
-    return this._zeebeApi.searchJobs(config, processInstanceKey, elementId);
+    return this._zeebeApi.searchJobs(config, processInstanceKey);
   }
 
-  async getProcessInstanceMessageSubscriptions(processInstanceKey, elementId) {
+  async getProcessInstanceMessageSubscriptions(processInstanceKey) {
     const config = await this.getDeploymentConfig();
 
-    return this._zeebeApi.searchMessageSubscriptions(config, processInstanceKey, elementId);
+    return this._zeebeApi.searchMessageSubscriptions(config, processInstanceKey);
   }
 
-  async getProcessInstanceUserTasks(processInstanceKey, elementId) {
+  async getProcessInstanceUserTasks(processInstanceKey) {
     const config = await this.getDeploymentConfig();
 
-    return this._zeebeApi.searchUserTasks(config, processInstanceKey, elementId);
+    return this._zeebeApi.searchUserTasks(config, processInstanceKey);
   }
 
   _handleDeployment({ context, deploymentResult, endpoint }) {
