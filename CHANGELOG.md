@@ -15,6 +15,11 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: mark Camunda 8.9 as latest stable engine profile ([#5740](https://github.com/camunda/camunda-modeler/issues/5740))
 * `FEAT`: remove icons in side panel title bars ([#5798](https://github.com/camunda/camunda-modeler/pull/5798))
 * `FEAT`: task testing links to tasklist for open user tasks ([#5765](https://github.com/camunda/camunda-modeler/issues/5765))
+* `FEAT`: task testing prefills variable names of needed inputs ([#5640](https://github.com/camunda/camunda-modeler/issues/5640))
+* `FEAT`: task testing supports undo-redo in input editor ([camunda/task-testing#87](https://github.com/camunda/task-testing/pull/87))
+* `FEAT`: task testing supports ad-hoc subprocess children ([#5588](https://github.com/camunda/camunda-modeler/issues/5588))
+* `FEAT`: persistent execution log in the task testing panel tracking process execution step by step ([#5621](https://github.com/camunda/camunda-modeler/issues/5621))
+* `FEAT`: task testing shows CTA for active jobs, message subscriptions, and user tasks ([#5589](https://github.com/camunda/camunda-modeler/issues/5589), [#5348](https://github.com/camunda/camunda-modeler/issues/5348))
 * `FEAT`: update properties sidebar title to "Details" ([#5795](https://github.com/camunda/camunda-modeler/pull/5795))
 * `FEAT`: update welcome screen to encourage creation ([#5716](https://github.com/camunda/camunda-modeler/pull/5716))
 * `FIX`: do not truncate variable values in task testing ([#5723](https://github.com/camunda/camunda-modeler/issues/5723))
@@ -34,7 +39,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/variable-outline@3.0.1`
 * `DEPS`: update to `@bpmn-io/variable-resolver@3.0.0`
 * `DEPS`: update to `@camunda/rpa-integration@1.3.4`
-* `DEPS`: update to `@camunda/task-testing@3.0.0-rc.0`
+* `DEPS`: update to `@camunda/task-testing@4.0.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.23.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.53.0`
 * `DEPS`: update to `bpmn-js@18.14.0`

@@ -1721,8 +1721,7 @@ describe('ZeebeAPI (REST)', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         },
-        processInstanceKey: '123',
-        elementId: 'Task_1'
+        processInstanceKey: '123'
       };
 
       // when
@@ -1748,8 +1747,7 @@ describe('ZeebeAPI (REST)', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         },
-        processInstanceKey: '123',
-        elementId: 'Task_1'
+        processInstanceKey: '123'
       };
 
       // when
@@ -1779,8 +1777,7 @@ describe('ZeebeAPI (REST)', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         },
-        processInstanceKey: '123',
-        elementId: 'Event_1'
+        processInstanceKey: '123'
       };
 
       // when
@@ -1806,8 +1803,7 @@ describe('ZeebeAPI (REST)', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         },
-        processInstanceKey: '123',
-        elementId: 'Event_1'
+        processInstanceKey: '123'
       };
 
       // when
@@ -1837,8 +1833,7 @@ describe('ZeebeAPI (REST)', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         },
-        processInstanceKey: '123',
-        elementId: 'UserTask_1'
+        processInstanceKey: '123'
       };
 
       // when
@@ -1864,8 +1859,7 @@ describe('ZeebeAPI (REST)', function() {
           type: ENDPOINT_TYPES.SELF_HOSTED,
           url: TEST_URL
         },
-        processInstanceKey: '123',
-        elementId: 'UserTask_1'
+        processInstanceKey: '123'
       };
 
       // when
