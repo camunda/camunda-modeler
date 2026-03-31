@@ -172,6 +172,11 @@ describe('<AppParent>', function() {
                   open: true,
                   tab: 'properties',
                   width: 300
+                },
+                variablesSidePanel: {
+                  open: true,
+                  width: 280,
+                  _defaultOpenApplied: true
                 }
               });
             });
@@ -219,11 +224,9 @@ describe('<AppParent>', function() {
         async sendReady() {
           try {
             await waitFor(() => {
-              expect(instance.getApp().state.layout).to.eql({
-                panel: {
-                  open: false,
-                  tab: 'log'
-                }
+              expect(instance.getApp().state.layout.panel).to.eql({
+                open: false,
+                tab: 'log'
               });
             });
 
@@ -242,6 +245,137 @@ describe('<AppParent>', function() {
               panel: {
                 open: true,
                 tab: 'log'
+              }
+            }
+          });
+        }
+      });
+
+      // when
+      const { instance } = createAppParent({
+        globals: {
+          backend,
+          workspace
+        }
+      });
+    });
+
+
+    it('should set variables panel open by default', function(done) {
+
+      // given
+      const backend = new Backend({
+        async sendReady() {
+          try {
+            await waitFor(() => {
+              expect(instance.getApp().state.layout.variablesSidePanel).to.eql({
+                open: true,
+                width: 280,
+                _defaultOpenApplied: true
+              });
+            });
+
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      });
+
+      const workspace = new Workspace({
+        restore(defaultConfig) {
+          return Promise.resolve({
+            ...defaultConfig,
+            layout: {}
+          });
+        }
+      });
+
+      // when
+      const { instance } = createAppParent({
+        globals: {
+          backend,
+          workspace
+        }
+      });
+    });
+
+
+    it('should force-open variables panel on upgrade from older version', function(done) {
+
+      // given
+      const backend = new Backend({
+        async sendReady() {
+          try {
+            await waitFor(() => {
+              expect(instance.getApp().state.layout.variablesSidePanel).to.eql({
+                open: true,
+                width: 300,
+                _defaultOpenApplied: true
+              });
+            });
+
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      });
+
+      const workspace = new Workspace({
+        restore(defaultConfig) {
+          return Promise.resolve({
+            ...defaultConfig,
+            layout: {
+              variablesSidePanel: {
+                open: false,
+                width: 300
+              }
+            }
+          });
+        }
+      });
+
+      // when
+      const { instance } = createAppParent({
+        globals: {
+          backend,
+          workspace
+        }
+      });
+    });
+
+
+    it('should preserve closed variables panel after migration was applied', function(done) {
+
+      // given
+      const backend = new Backend({
+        async sendReady() {
+          try {
+            await waitFor(() => {
+              expect(instance.getApp().state.layout.variablesSidePanel).to.eql({
+                open: false,
+                width: 300,
+                _defaultOpenApplied: true
+              });
+            });
+
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      });
+
+      const workspace = new Workspace({
+        restore(defaultConfig) {
+          return Promise.resolve({
+            ...defaultConfig,
+            layout: {
+              variablesSidePanel: {
+                open: false,
+                width: 300,
+                _defaultOpenApplied: true
               }
             }
           });

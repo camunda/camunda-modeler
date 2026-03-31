@@ -1172,7 +1172,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
     describe('variables panel', function() {
 
-      it('should close (default is closed, no layout)', async function() {
+      it('should close (default is open, no layout)', async function() {
 
         // given
         const layout = {};
@@ -1201,7 +1201,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         expect(callArg).to.deep.include({
           variablesSidePanel: {
-            open: true,
+            open: false,
             width: 280
           }
         });
