@@ -32,7 +32,7 @@ describe('VariablesStatusBarItem', function() {
     const { container } = renderVariablesStatusBarItem();
 
     // then
-    expect(container.querySelector('.btn')).to.exist;
+    expect(container.querySelector('.btn--tab-action')).to.exist;
   });
 
 
@@ -50,7 +50,7 @@ describe('VariablesStatusBarItem', function() {
       });
 
       // then
-      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.true;
+      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.true;
     });
 
 
@@ -60,7 +60,7 @@ describe('VariablesStatusBarItem', function() {
       const { container } = renderVariablesStatusBarItem();
 
       // then
-      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.false;
+      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.false;
     });
 
 
@@ -74,7 +74,7 @@ describe('VariablesStatusBarItem', function() {
       });
 
       // when
-      fireEvent.click(container.querySelector('.btn'));
+      fireEvent.click(container.querySelector('.btn--tab-action'));
 
       // then
       expect(onLayoutChangedSpy).to.have.been.calledOnce;
@@ -102,7 +102,7 @@ function renderVariablesStatusBarItem(options = {}) {
 
   return render(
     <SlotFillRoot>
-      <Slot name="status-bar__app" />
+      <Slot name="tab-actions" />
       <VariablesStatusBarItem
         layout={ layout }
         onLayoutChanged={ onLayoutChanged } />

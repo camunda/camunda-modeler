@@ -22,6 +22,8 @@ import {
 
 import { TabActions } from '../tab-actions';
 
+import { Slot } from '../slot-fill';
+
 import TabCloseIcon from '../../../resources/icons/TabClose.svg';
 
 const noop = () => {};
@@ -158,6 +160,10 @@ export default class TabLinks extends PureComponent {
               </span>
             </div>
           }
+
+          <div className="tab-trailing">
+            <Slot name="tab-trailing" />
+          </div>
         </div>
 
         <TabActions />

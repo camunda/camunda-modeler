@@ -155,7 +155,7 @@ export function TabContextActionPlugin(props) {
   const onSelect = _getFromApp('selectTab');
 
   return (
-    <Fill slot="tab-actions" priority={ 1 }>
+    <Fill slot="tab-trailing" priority={ 1 }>
       <TabContextAction
         { ...restProps }
         getTabIcon={ getTabIcon }

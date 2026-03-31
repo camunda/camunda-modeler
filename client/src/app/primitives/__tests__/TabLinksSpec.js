@@ -16,7 +16,7 @@ import { render, fireEvent } from '@testing-library/react';
 
 import TabLinks from '../TabLinks';
 
-import { SlotFillRoot } from '../../slot-fill';
+import { SlotFillRoot, Fill } from '../../slot-fill';
 
 import {
   defaultActiveTab,
@@ -500,6 +500,11 @@ function renderTabLinks(options = {}) {
         onSelect={ onSelect || noop }
         isDirty={ isDirty }
         placeholder={ placeholder } />
+
+      <Fill slot="tab-trailing">
+        <button className="btn btn--tab-action">+</button>
+        <button className="btn btn--tab-action">...</button>
+      </Fill>
     </SlotFillRoot>
   );
 
