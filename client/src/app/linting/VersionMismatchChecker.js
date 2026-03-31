@@ -80,7 +80,7 @@ export function getVersionMismatchWarning(selectedVersion, clusterVersion) {
     message: `The selected version (${ selectedCoerced.major }.${ selectedCoerced.minor }) differs from the connected cluster version (${ clusterMinorVersion }).`,
     rule: 'camunda/version-mismatch',
     action: {
-      label: `Switch to ${ clusterMinorVersion }`,
+      label: `Select ${ clusterMinorVersion } instead`,
       handler: 'set-engine-profile',
       options: {
         executionPlatformVersion: `${ clusterMinorVersion }.0`
