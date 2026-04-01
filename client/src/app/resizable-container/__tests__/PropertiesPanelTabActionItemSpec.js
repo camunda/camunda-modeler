@@ -19,17 +19,17 @@ import {
   Slot
 } from '../../slot-fill';
 
-import PropertiesPanelStatusBarItem from '../PropertiesPanelStatusBarItem';
+import PropertiesPanelTabActionItem from '../PropertiesPanelTabActionItem';
 
 const spy = sinon.spy;
 
 
-describe('PropertiesPanelStatusBarItem', function() {
+describe('PropertiesPanelTabActionItem', function() {
 
   it('should render', function() {
 
     // when
-    const { container } = renderPropertiesPanelStatusBarItem();
+    const { container } = renderPropertiesPanelTabActionItem();
 
     // then
     expect(container.querySelector('.btn--tab-action')).to.exist;
@@ -41,7 +41,7 @@ describe('PropertiesPanelStatusBarItem', function() {
     it('should be active (open on properties tab)', function() {
 
       // when
-      const { container } = renderPropertiesPanelStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -58,7 +58,7 @@ describe('PropertiesPanelStatusBarItem', function() {
     it('should not be active (closed)', function() {
 
       // when
-      const { container } = renderPropertiesPanelStatusBarItem();
+      const { container } = renderPropertiesPanelTabActionItem();
 
       // then
       expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.false;
@@ -68,7 +68,7 @@ describe('PropertiesPanelStatusBarItem', function() {
     it('should not be active (open on different tab)', function() {
 
       // when
-      const { container } = renderPropertiesPanelStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -87,7 +87,7 @@ describe('PropertiesPanelStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderPropertiesPanelStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         onLayoutChanged: onLayoutChangedSpy
       });
 
@@ -104,7 +104,7 @@ describe('PropertiesPanelStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderPropertiesPanelStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         layout: {
           sidePanel: {
             open: false,
@@ -131,7 +131,7 @@ describe('PropertiesPanelStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderPropertiesPanelStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -158,7 +158,7 @@ describe('PropertiesPanelStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderPropertiesPanelStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -194,7 +194,7 @@ const defaultLayout = {
 };
 
 
-function renderPropertiesPanelStatusBarItem(options = {}) {
+function renderPropertiesPanelTabActionItem(options = {}) {
   const {
     layout = defaultLayout,
     onLayoutChanged = () => {}
@@ -203,7 +203,7 @@ function renderPropertiesPanelStatusBarItem(options = {}) {
   return render(
     <SlotFillRoot>
       <Slot name="tab-actions" />
-      <PropertiesPanelStatusBarItem
+      <PropertiesPanelTabActionItem
         layout={ layout }
         onLayoutChanged={ onLayoutChanged } />
     </SlotFillRoot>

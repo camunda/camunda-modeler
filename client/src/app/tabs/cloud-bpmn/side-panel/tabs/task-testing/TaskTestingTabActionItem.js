@@ -18,7 +18,7 @@ import TaskTestingIcon from '../../../../../../../resources/icons/TaskTesting.sv
 
 import { DEFAULT_LAYOUT } from '../../../../../side-panel/SidePanel';
 
-export default function TestStatusBarItem(props) {
+export default function TaskTestingTabActionItem(props) {
   const {
     onLayoutChanged,
     layout

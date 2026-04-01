@@ -18,7 +18,7 @@ import { Fill } from '../../../slot-fill';
 
 import { DEFAULT_LAYOUT } from './VariablesSidePanel';
 
-export default function VariablesStatusBarItem(props) {
+export default function VariablesTabActionItem(props) {
   const {
     layout,
     onLayoutChanged

@@ -19,17 +19,17 @@ import {
   Slot
 } from '../../../../slot-fill';
 
-import VariablesStatusBarItem from '../VariablesStatusBarItem';
+import VariablesTabActionItem from '../VariablesTabActionItem';
 
 const spy = sinon.spy;
 
 
-describe('VariablesStatusBarItem', function() {
+describe('VariablesTabActionItem', function() {
 
   it('should render', function() {
 
     // when
-    const { container } = renderVariablesStatusBarItem();
+    const { container } = renderVariablesTabActionItem();
 
     // then
     expect(container.querySelector('.btn--tab-action')).to.exist;
@@ -41,7 +41,7 @@ describe('VariablesStatusBarItem', function() {
     it('should be active (open)', function() {
 
       // when
-      const { container } = renderVariablesStatusBarItem({
+      const { container } = renderVariablesTabActionItem({
         layout: {
           variablesSidePanel: {
             open: true
@@ -57,7 +57,7 @@ describe('VariablesStatusBarItem', function() {
     it('should not be active (closed)', function() {
 
       // when
-      const { container } = renderVariablesStatusBarItem();
+      const { container } = renderVariablesTabActionItem();
 
       // then
       expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.false;
@@ -69,7 +69,7 @@ describe('VariablesStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderVariablesStatusBarItem({
+      const { container } = renderVariablesTabActionItem({
         onLayoutChanged: onLayoutChangedSpy
       });
 
@@ -94,7 +94,7 @@ const defaultLayout = {
 };
 
 
-function renderVariablesStatusBarItem(options = {}) {
+function renderVariablesTabActionItem(options = {}) {
   const {
     layout = defaultLayout,
     onLayoutChanged = () => {}
@@ -103,7 +103,7 @@ function renderVariablesStatusBarItem(options = {}) {
   return render(
     <SlotFillRoot>
       <Slot name="tab-actions" />
-      <VariablesStatusBarItem
+      <VariablesTabActionItem
         layout={ layout }
         onLayoutChanged={ onLayoutChanged } />
     </SlotFillRoot>

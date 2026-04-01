@@ -18,7 +18,7 @@ import { Settings } from '@carbon/icons-react';
 
 import { DEFAULT_LAYOUT } from '../side-panel/SidePanel';
 
-export default function PropertiesPanelStatusBarItem(props) {
+export default function PropertiesPanelTabActionItem(props) {
   const {
     layout,
     onLayoutChanged

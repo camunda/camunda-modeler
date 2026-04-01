@@ -19,17 +19,17 @@ import {
   Slot
 } from '../../../../../../slot-fill';
 
-import TaskTestingStatusBarItem from '../TaskTestingStatusBarItem';
+import TaskTestingTabActionItem from '../TaskTestingTabActionItem';
 
 const spy = sinon.spy;
 
 
-describe('TaskTestingStatusBarItem', function() {
+describe('TaskTestingTabActionItem', function() {
 
   it('should render', function() {
 
     // when
-    const { container } = renderTaskTestingStatusBarItem();
+    const { container } = renderTaskTestingTabActionItem();
 
     // then
     expect(container.querySelector('.btn--tab-action')).to.exist;
@@ -41,7 +41,7 @@ describe('TaskTestingStatusBarItem', function() {
     it('should be active (open on test tab)', function() {
 
       // when
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderTaskTestingTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -58,7 +58,7 @@ describe('TaskTestingStatusBarItem', function() {
     it('should not be active (closed)', function() {
 
       // when
-      const { container } = renderTaskTestingStatusBarItem();
+      const { container } = renderTaskTestingTabActionItem();
 
       // then
       expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.false;
@@ -68,7 +68,7 @@ describe('TaskTestingStatusBarItem', function() {
     it('should not be active (open on different tab)', function() {
 
       // when
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderTaskTestingTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -87,7 +87,7 @@ describe('TaskTestingStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderTaskTestingTabActionItem({
         onLayoutChanged: onLayoutChangedSpy
       });
 
@@ -104,7 +104,7 @@ describe('TaskTestingStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderTaskTestingTabActionItem({
         layout: {
           sidePanel: {
             open: false,
@@ -131,7 +131,7 @@ describe('TaskTestingStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderTaskTestingTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -158,7 +158,7 @@ describe('TaskTestingStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderTaskTestingTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -194,7 +194,7 @@ const defaultLayout = {
 };
 
 
-function renderTaskTestingStatusBarItem(options = {}) {
+function renderTaskTestingTabActionItem(options = {}) {
   const {
     layout = defaultLayout,
     onLayoutChanged = () => {}
@@ -203,7 +203,7 @@ function renderTaskTestingStatusBarItem(options = {}) {
   return render(
     <SlotFillRoot>
       <Slot name="tab-actions" />
-      <TaskTestingStatusBarItem
+      <TaskTestingTabActionItem
         layout={ layout }
         onLayoutChanged={ onLayoutChanged } />
     </SlotFillRoot>

@@ -39,7 +39,7 @@ import { Settings } from '@carbon/icons-react';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
-import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
+import PropertiesPanelTabActionItem from '../../resizable-container/PropertiesPanelTabActionItem';
 
 import CamundaDmnModeler from './modeler';
 
@@ -998,7 +998,7 @@ export class DmnEditor extends CachedComponent {
                     <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
                   </SidePanel.Tab>
                 </SidePanel>
-                <PropertiesPanelStatusBarItem
+                <PropertiesPanelTabActionItem
                   layout={ layout }
                   onLayoutChanged={ onLayoutChanged } />
               </>
