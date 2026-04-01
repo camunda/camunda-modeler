@@ -35,6 +35,8 @@ if (process.env.NODE_ENV !== 'production') {
   debug.enable('*,-sockjs-client:*');
 }
 
+const STRICT_MODE_ENABLED = process.env.REACT_STRICT_MODE_DISABLED !== 'true';
+
 Metadata.init(metadata);
 Flags.init(flags);
 
@@ -71,12 +73,23 @@ async function render() {
 
   const root = createRoot(rootElement);
   root.render(
-    <AppParent
-      keyboardBindings={ keyboardBindings }
-      globals={ globals }
-      tabsProvider={ tabsProvider }
-      onStarted={ onStarted }
-    />
+    STRICT_MODE_ENABLED ? (
+      <React.StrictMode>
+        <AppParent
+          keyboardBindings={ keyboardBindings }
+          globals={ globals }
+          tabsProvider={ tabsProvider }
+          onStarted={ onStarted }
+        />
+      </React.StrictMode>
+    ) : (
+      <AppParent
+        keyboardBindings={ keyboardBindings }
+        globals={ globals }
+        tabsProvider={ tabsProvider }
+        onStarted={ onStarted }
+      />
+    ),
   );
 }
 
