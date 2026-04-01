@@ -74,6 +74,7 @@ export default function ConnectionManagerPlugin(props) {
   const settingsConnectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI'), 'settings'));
 
   const statusBarButtonRef = useRef(null);
+  const prevActiveConnectionIdRef = useRef(null);
 
   useEffect(() => {
     initializeSettings({
@@ -168,7 +169,24 @@ export default function ConnectionManagerPlugin(props) {
   // update connection checker on connection change
   useEffect(() => {
     (async () => {
+
+      const prevConnectionId = prevActiveConnectionIdRef.current;
+      const activeConnectionId = activeConnection ? activeConnection.id : null;
+      prevActiveConnectionIdRef.current = activeConnectionId;
+      const connectionChanged = activeConnectionId !== prevConnectionId;
+
+      // Clear stale version mismatch warnings while the new
+      // connection check is in progress, but only when switching
+      // from an established connection (not on initial load)
+      if (connectionChanged && prevConnectionId !== null && connectionCheckResult && connectionCheckResult.success) {
+        triggerAction('emit-event', {
+          type: 'connectionManager.connectionStatusChanged',
+          payload: { success: false }
+        });
+      }
+
       setConnectionCheckResult(null);
+
       if (activeConnection && activeConnection.id !== NO_CONNECTION.id && !paused) {
         globalConnectionChecker.current.updateConfig({ endpoint: activeConnection });
       }

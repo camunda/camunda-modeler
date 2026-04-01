@@ -42,6 +42,8 @@ describe('<LintingTab>', function() {
     expect(container.querySelector('.linting-tab-item__label').textContent).to.equal('Foo');
     expect(container.querySelectorAll('.linting-tab-item__content')).to.have.length(1);
     expect(container.querySelector('.linting-tab-item__content').textContent).to.equal('Foo message');
+
+    expect(container.querySelectorAll('.linting-tab-item__link')).to.have.length(0);
   });
 
 
@@ -216,6 +218,70 @@ describe('<LintingTab>', function() {
     expect(container.querySelectorAll('.linting-tab-item')).to.have.length(1);
     expect(labels[0].textContent).to.equal('');
     expect(contents[0].textContent).to.equal('foo error');
+  });
+
+
+  it('should render with action link', function() {
+
+    // when
+    const { getByRole } = renderLintingTab({
+      linting: [
+        {
+          category: 'warn',
+          id: 'foo',
+          name: 'Version mismatch',
+          message: 'The selected version (8.7) differs from the connected cluster version (8.8).',
+          rule: 'camunda/version-mismatch',
+          action: {
+            label: 'Select 8.8 instead',
+            handler: 'set-engine-profile',
+            options: {
+              executionPlatformVersion: '8.8.0'
+            }
+          }
+        }
+      ]
+    });
+
+    // then
+    const link = getByRole('link', { name: 'Select 8.8 instead' });
+    expect(link).to.exist;
+    expect(link.textContent).to.equal('Select 8.8 instead');
+  });
+
+
+  it('should trigger action on action link click', function() {
+
+    // given
+    const onActionSpy = spy();
+
+    const { getByRole } = renderLintingTab({
+      onAction: onActionSpy,
+      linting: [
+        {
+          category: 'warn',
+          id: 'foo',
+          name: 'Version mismatch',
+          message: 'Version mismatch message',
+          rule: 'camunda/version-mismatch',
+          action: {
+            label: 'Select 8.8 instead',
+            handler: 'set-engine-profile',
+            options: {
+              executionPlatformVersion: '8.8.0'
+            }
+          }
+        }
+      ]
+    });
+
+    // when
+    fireEvent.click(getByRole('link', { name: 'Select 8.8 instead' }));
+
+    // then
+    expect(onActionSpy).to.have.been.calledWith('set-engine-profile', {
+      executionPlatformVersion: '8.8.0'
+    });
   });
 
 
