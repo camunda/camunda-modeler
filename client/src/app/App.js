@@ -942,13 +942,11 @@ export class App extends PureComponent {
   };
 
   handleLayoutChanged = (newLayout) => {
-    const {
-      layout
-    } = this.state;
+    this.setState(({ layout }) => {
+      const latestLayout = merge({}, layout, newLayout);
 
-    const latestLayout = merge({}, layout, newLayout);
-
-    this.setLayout(latestLayout);
+      return { layout: latestLayout };
+    });
   };
 
 
