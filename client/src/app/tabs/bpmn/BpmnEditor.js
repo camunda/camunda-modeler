@@ -634,6 +634,10 @@ export class BpmnEditor extends CachedComponent {
       modeler
     } = this.getCached();
 
+    if (this.state.importing) {
+      return lastXML || this.props.xml;
+    }
+
     const commandStack = modeler.get('commandStack');
 
     if (!this.isDirty()) {
