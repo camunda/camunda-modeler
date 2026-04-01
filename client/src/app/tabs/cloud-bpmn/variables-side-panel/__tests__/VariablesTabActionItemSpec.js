@@ -19,20 +19,20 @@ import {
   Slot
 } from '../../../../slot-fill';
 
-import VariablesStatusBarItem from '../VariablesStatusBarItem';
+import VariablesTabActionItem from '../VariablesTabActionItem';
 
 const spy = sinon.spy;
 
 
-describe('VariablesStatusBarItem', function() {
+describe('VariablesTabActionItem', function() {
 
   it('should render', function() {
 
     // when
-    const { container } = renderVariablesStatusBarItem();
+    const { container } = renderVariablesTabActionItem();
 
     // then
-    expect(container.querySelector('.btn')).to.exist;
+    expect(container.querySelector('.btn--tab-action')).to.exist;
   });
 
 
@@ -41,7 +41,7 @@ describe('VariablesStatusBarItem', function() {
     it('should be active (open)', function() {
 
       // when
-      const { container } = renderVariablesStatusBarItem({
+      const { container } = renderVariablesTabActionItem({
         layout: {
           variablesSidePanel: {
             open: true
@@ -50,17 +50,17 @@ describe('VariablesStatusBarItem', function() {
       });
 
       // then
-      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.true;
+      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.true;
     });
 
 
     it('should not be active (closed)', function() {
 
       // when
-      const { container } = renderVariablesStatusBarItem();
+      const { container } = renderVariablesTabActionItem();
 
       // then
-      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.false;
+      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.false;
     });
 
 
@@ -69,12 +69,12 @@ describe('VariablesStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderVariablesStatusBarItem({
+      const { container } = renderVariablesTabActionItem({
         onLayoutChanged: onLayoutChangedSpy
       });
 
       // when
-      fireEvent.click(container.querySelector('.btn'));
+      fireEvent.click(container.querySelector('.btn--tab-action'));
 
       // then
       expect(onLayoutChangedSpy).to.have.been.calledOnce;
@@ -94,7 +94,7 @@ const defaultLayout = {
 };
 
 
-function renderVariablesStatusBarItem(options = {}) {
+function renderVariablesTabActionItem(options = {}) {
   const {
     layout = defaultLayout,
     onLayoutChanged = () => {}
@@ -102,8 +102,8 @@ function renderVariablesStatusBarItem(options = {}) {
 
   return render(
     <SlotFillRoot>
-      <Slot name="status-bar__app" />
-      <VariablesStatusBarItem
+      <Slot name="tab-actions" />
+      <VariablesTabActionItem
         layout={ layout }
         onLayoutChanged={ onLayoutChanged } />
     </SlotFillRoot>

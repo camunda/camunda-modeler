@@ -30,7 +30,7 @@ import { Settings } from '@carbon/icons-react';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
-import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
+import PropertiesPanelTabActionItem from '../../resizable-container/PropertiesPanelTabActionItem';
 
 import BpmnModeler from './modeler';
 
@@ -842,7 +842,7 @@ export class BpmnEditor extends CachedComponent {
           </SidePanel>
         </div>
 
-        <PropertiesPanelStatusBarItem
+        <PropertiesPanelTabActionItem
           layout={ layout }
           onLayoutChanged={ this.handleLayoutChange }
         />

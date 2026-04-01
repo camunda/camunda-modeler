@@ -18,7 +18,7 @@ import { Settings } from '@carbon/icons-react';
 
 import { DEFAULT_LAYOUT } from '../side-panel/SidePanel';
 
-export default function PropertiesPanelStatusBarItem(props) {
+export default function PropertiesPanelTabActionItem(props) {
   const {
     layout,
     onLayoutChanged
@@ -38,10 +38,10 @@ export default function PropertiesPanelStatusBarItem(props) {
     });
   };
 
-  return <Fill slot="status-bar__app" group="7_2_side_panel_properties">
+  return <Fill slot="tab-actions" priority={ 2 }>
     <button
       className={ classnames(
-        'btn',
+        'btn--tab-action',
         { 'btn--active': sidePanelLayout.open && sidePanelLayout.tab === 'properties' }
       ) }
       onClick={ onClick }

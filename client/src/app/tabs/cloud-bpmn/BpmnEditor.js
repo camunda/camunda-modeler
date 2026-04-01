@@ -31,15 +31,15 @@ import { Settings } from '@carbon/icons-react';
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
-import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
-import TaskTestingStatusBarItem from './side-panel/tabs/task-testing/TaskTestingStatusBarItem';
+import PropertiesPanelTabActionItem from '../../resizable-container/PropertiesPanelTabActionItem';
+import TaskTestingTabActionItem from './side-panel/tabs/task-testing/TaskTestingTabActionItem';
 
 import TaskTestingTab from './side-panel/tabs/task-testing/TaskTestingTab';
 import TaskTestingIcon from '../../../../resources/icons/TaskTesting.svg';
 import SidePanelHeader from './side-panel/SidePanelHeader';
 
 import VariablesSidePanel, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT } from './variables-side-panel/VariablesSidePanel';
-import VariablesStatusBarItem from './variables-side-panel/VariablesStatusBarItem';
+import VariablesTabActionItem from './variables-side-panel/VariablesTabActionItem';
 
 import BpmnModeler from './modeler';
 
@@ -877,7 +877,7 @@ export class BpmnEditor extends CachedComponent {
             onLayoutChanged={ this.handleLayoutChange }
           />
 
-          <VariablesStatusBarItem
+          <VariablesTabActionItem
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange }
           />
@@ -919,11 +919,11 @@ export class BpmnEditor extends CachedComponent {
             </SidePanel.Tab>
           </SidePanel>
 
-          <PropertiesPanelStatusBarItem
+          <PropertiesPanelTabActionItem
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange }
           />
-          <TaskTestingStatusBarItem
+          <TaskTestingTabActionItem
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange }
           />
