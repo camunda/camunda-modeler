@@ -24,7 +24,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: task testing shows CTA for active jobs, message subscriptions, and user tasks ([#5589](https://github.com/camunda/camunda-modeler/issues/5589), [#5348](https://github.com/camunda/camunda-modeler/issues/5348))
 * `FEAT`: update properties sidebar title to "Details" ([#5795](https://github.com/camunda/camunda-modeler/pull/5795))
 * `FEAT`: update welcome screen to encourage creation ([#5716](https://github.com/camunda/camunda-modeler/pull/5716))
-* `FEAT`: move panel toggle buttons to tab actions area ([#5789](https://github.com/camunda/camunda-modeler/issues/5789))
 * `FIX`: do not truncate variable values in task testing ([#5723](https://github.com/camunda/camunda-modeler/issues/5723))
 * `FIX`: ensure Feel/Text editors value is properly committed on blur, paste, and unmount ([#5364](https://github.com/camunda/camunda-modeler/issues/5364), [#5583](https://github.com/camunda/camunda-modeler/issues/5583))
 * `FIX`: gracefully handle permission error when searching for process application file ([#5670](https://github.com/camunda/camunda-modeler/issues/5670))
