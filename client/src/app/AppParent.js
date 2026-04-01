@@ -26,8 +26,6 @@ import {
 
 import App from './App';
 
-import { DEFAULT_WIDTH as VARIABLES_PANEL_DEFAULT_WIDTH } from './tabs/cloud-bpmn/variables-side-panel/VariablesSidePanel';
-
 import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../util/Flags';
 
 const log = debug('AppParent');
@@ -171,8 +169,6 @@ export default class AppParent extends PureComponent {
     let newLayout = migratePropertiesPanelToSidePanel(layout);
 
     newLayout = closeLogPanelByDefault(newLayout);
-
-    newLayout = openVariablesPanelByDefault(newLayout);
 
     app.setLayout(newLayout);
 
@@ -574,22 +570,6 @@ function closeLogPanelByDefault(layout) {
     panel: {
       ...panel,
       open: false
-    }
-  };
-}
-
-function openVariablesPanelByDefault(layout) {
-  if (layout.variablesSidePanel?._defaultOpenApplied) {
-    return layout;
-  }
-
-  return {
-    ...layout,
-    variablesSidePanel: {
-      ...layout.variablesSidePanel,
-      open: true,
-      width: layout.variablesSidePanel?.width || VARIABLES_PANEL_DEFAULT_WIDTH,
-      _defaultOpenApplied: true
     }
   };
 }

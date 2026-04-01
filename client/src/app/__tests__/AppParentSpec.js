@@ -172,11 +172,6 @@ describe('<AppParent>', function() {
                   open: true,
                   tab: 'properties',
                   width: 300
-                },
-                variablesSidePanel: {
-                  open: true,
-                  width: 280,
-                  _defaultOpenApplied: true
                 }
               });
             });
@@ -261,18 +256,14 @@ describe('<AppParent>', function() {
     });
 
 
-    it('should set variables panel open by default', function(done) {
+    it('should not add variables panel layout on first launch', function(done) {
 
       // given
       const backend = new Backend({
         async sendReady() {
           try {
             await waitFor(() => {
-              expect(instance.getApp().state.layout.variablesSidePanel).to.eql({
-                open: true,
-                width: 280,
-                _defaultOpenApplied: true
-              });
+              expect(instance.getApp().state.layout.variablesSidePanel).not.to.exist;
             });
 
             done();
@@ -301,7 +292,7 @@ describe('<AppParent>', function() {
     });
 
 
-    it('should force-open variables panel on upgrade from older version', function(done) {
+    it('should preserve existing variables panel layout', function(done) {
 
       // given
       const backend = new Backend({
@@ -309,9 +300,8 @@ describe('<AppParent>', function() {
           try {
             await waitFor(() => {
               expect(instance.getApp().state.layout.variablesSidePanel).to.eql({
-                open: true,
-                width: 300,
-                _defaultOpenApplied: true
+                open: false,
+                width: 300
               });
             });
 
@@ -330,52 +320,6 @@ describe('<AppParent>', function() {
               variablesSidePanel: {
                 open: false,
                 width: 300
-              }
-            }
-          });
-        }
-      });
-
-      // when
-      const { instance } = createAppParent({
-        globals: {
-          backend,
-          workspace
-        }
-      });
-    });
-
-
-    it('should preserve closed variables panel after migration was applied', function(done) {
-
-      // given
-      const backend = new Backend({
-        async sendReady() {
-          try {
-            await waitFor(() => {
-              expect(instance.getApp().state.layout.variablesSidePanel).to.eql({
-                open: false,
-                width: 300,
-                _defaultOpenApplied: true
-              });
-            });
-
-            done();
-          } catch (error) {
-            done(error);
-          }
-        }
-      });
-
-      const workspace = new Workspace({
-        restore(defaultConfig) {
-          return Promise.resolve({
-            ...defaultConfig,
-            layout: {
-              variablesSidePanel: {
-                open: false,
-                width: 300,
-                _defaultOpenApplied: true
               }
             }
           });
