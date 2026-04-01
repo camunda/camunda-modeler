@@ -24,6 +24,7 @@ export const DEFAULT_WIDTH = MIN_WIDTH;
 
 export const DEFAULT_LAYOUT = {
   open: DEFAULT_OPEN,
+  tab: 'properties',
   width: DEFAULT_WIDTH
 };
 
