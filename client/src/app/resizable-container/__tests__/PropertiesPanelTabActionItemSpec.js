@@ -17,58 +17,31 @@ import { render, fireEvent } from '@testing-library/react';
 import {
   SlotFillRoot,
   Slot
-} from '../../../../../../slot-fill';
+} from '../../slot-fill';
 
-import TaskTestingStatusBarItem from '../TaskTestingStatusBarItem';
+import PropertiesPanelTabActionItem from '../PropertiesPanelTabActionItem';
 
 const spy = sinon.spy;
 
 
-describe('TaskTestingStatusBarItem', function() {
+describe('PropertiesPanelTabActionItem', function() {
 
   it('should render', function() {
 
     // when
-    const { container } = renderTaskTestingStatusBarItem();
+    const { container } = renderPropertiesPanelTabActionItem();
 
     // then
-    expect(container.querySelector('.btn')).to.exist;
+    expect(container.querySelector('.btn--tab-action')).to.exist;
   });
 
 
   describe('toggle', function() {
 
-    it('should be active (open on test tab)', function() {
+    it('should be active (open on properties tab)', function() {
 
       // when
-      const { container } = renderTaskTestingStatusBarItem({
-        layout: {
-          sidePanel: {
-            open: true,
-            tab: 'test'
-          }
-        }
-      });
-
-      // then
-      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.true;
-    });
-
-
-    it('should not be active (closed)', function() {
-
-      // when
-      const { container } = renderTaskTestingStatusBarItem();
-
-      // then
-      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.false;
-    });
-
-
-    it('should not be active (open on different tab)', function() {
-
-      // when
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -78,7 +51,34 @@ describe('TaskTestingStatusBarItem', function() {
       });
 
       // then
-      expect(container.querySelector('.btn').classList.contains('btn--active')).to.be.false;
+      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.true;
+    });
+
+
+    it('should not be active (closed)', function() {
+
+      // when
+      const { container } = renderPropertiesPanelTabActionItem();
+
+      // then
+      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.false;
+    });
+
+
+    it('should not be active (open on different tab)', function() {
+
+      // when
+      const { container } = renderPropertiesPanelTabActionItem({
+        layout: {
+          sidePanel: {
+            open: true,
+            tab: 'test'
+          }
+        }
+      });
+
+      // then
+      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.false;
     });
 
 
@@ -87,27 +87,54 @@ describe('TaskTestingStatusBarItem', function() {
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         onLayoutChanged: onLayoutChangedSpy
       });
 
       // when
-      fireEvent.click(container.querySelector('.btn'));
+      fireEvent.click(container.querySelector('.btn--tab-action'));
 
       // then
       expect(onLayoutChangedSpy).to.have.been.calledOnce;
     });
 
 
-    it('should open test tab when panel is closed', function() {
+    it('should open properties tab when panel is closed', function() {
 
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         layout: {
           sidePanel: {
             open: false,
+            tab: 'test'
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      fireEvent.click(container.querySelector('.btn--tab-action'));
+
+      // then
+      expect(onLayoutChangedSpy).to.have.been.calledOnce;
+
+      const { sidePanel } = onLayoutChangedSpy.getCall(0).args[0];
+      expect(sidePanel.open).to.be.true;
+      expect(sidePanel.tab).to.equal('properties');
+    });
+
+
+    it('should close panel when already open on properties tab', function() {
+
+      // given
+      const onLayoutChangedSpy = spy();
+
+      const { container } = renderPropertiesPanelTabActionItem({
+        layout: {
+          sidePanel: {
+            open: true,
             tab: 'properties'
           }
         },
@@ -115,23 +142,23 @@ describe('TaskTestingStatusBarItem', function() {
       });
 
       // when
-      fireEvent.click(container.querySelector('.btn'));
+      fireEvent.click(container.querySelector('.btn--tab-action'));
 
       // then
       expect(onLayoutChangedSpy).to.have.been.calledOnce;
 
       const { sidePanel } = onLayoutChangedSpy.getCall(0).args[0];
-      expect(sidePanel.open).to.be.true;
-      expect(sidePanel.tab).to.equal('test');
+      expect(sidePanel.open).to.be.false;
+      expect(sidePanel.tab).to.equal('properties');
     });
 
 
-    it('should close panel when already open on test tab', function() {
+    it('should switch to properties tab when panel is open on different tab', function() {
 
       // given
       const onLayoutChangedSpy = spy();
 
-      const { container } = renderTaskTestingStatusBarItem({
+      const { container } = renderPropertiesPanelTabActionItem({
         layout: {
           sidePanel: {
             open: true,
@@ -142,41 +169,14 @@ describe('TaskTestingStatusBarItem', function() {
       });
 
       // when
-      fireEvent.click(container.querySelector('.btn'));
-
-      // then
-      expect(onLayoutChangedSpy).to.have.been.calledOnce;
-
-      const { sidePanel } = onLayoutChangedSpy.getCall(0).args[0];
-      expect(sidePanel.open).to.be.false;
-      expect(sidePanel.tab).to.equal('test');
-    });
-
-
-    it('should switch to test tab when panel is open on different tab', function() {
-
-      // given
-      const onLayoutChangedSpy = spy();
-
-      const { container } = renderTaskTestingStatusBarItem({
-        layout: {
-          sidePanel: {
-            open: true,
-            tab: 'properties'
-          }
-        },
-        onLayoutChanged: onLayoutChangedSpy
-      });
-
-      // when
-      fireEvent.click(container.querySelector('.btn'));
+      fireEvent.click(container.querySelector('.btn--tab-action'));
 
       // then
       expect(onLayoutChangedSpy).to.have.been.calledOnce;
 
       const { sidePanel } = onLayoutChangedSpy.getCall(0).args[0];
       expect(sidePanel.open).to.be.true;
-      expect(sidePanel.tab).to.equal('test');
+      expect(sidePanel.tab).to.equal('properties');
     });
 
   });
@@ -194,7 +194,7 @@ const defaultLayout = {
 };
 
 
-function renderTaskTestingStatusBarItem(options = {}) {
+function renderPropertiesPanelTabActionItem(options = {}) {
   const {
     layout = defaultLayout,
     onLayoutChanged = () => {}
@@ -202,8 +202,8 @@ function renderTaskTestingStatusBarItem(options = {}) {
 
   return render(
     <SlotFillRoot>
-      <Slot name="status-bar__app" />
-      <TaskTestingStatusBarItem
+      <Slot name="tab-actions" />
+      <PropertiesPanelTabActionItem
         layout={ layout }
         onLayoutChanged={ onLayoutChanged } />
     </SlotFillRoot>

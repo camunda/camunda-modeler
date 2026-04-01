@@ -29,7 +29,7 @@ import { Settings } from '@carbon/icons-react';
 
 import SidePanel from '../../side-panel/SidePanel';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
-import PropertiesPanelStatusBarItem from '../../resizable-container/PropertiesPanelStatusBarItem';
+import PropertiesPanelTabActionItem from '../../resizable-container/PropertiesPanelTabActionItem';
 import { getRPAEditMenu } from './getRobotEditMenu';
 import { Fill } from '../../slot-fill';
 import RunButton from './RunButton';
@@ -441,7 +441,7 @@ export class RPAEditor extends CachedComponent {
               </SidePanel.Tab>
             </SidePanel>
 
-            <PropertiesPanelStatusBarItem
+            <PropertiesPanelTabActionItem
               layout={ this.props.layout }
               onLayoutChanged={ this.handleLayoutChange }
             />

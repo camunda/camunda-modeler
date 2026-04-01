@@ -18,7 +18,7 @@ import { Fill } from '../../../slot-fill';
 
 import { DEFAULT_LAYOUT } from './VariablesSidePanel';
 
-export default function VariablesStatusBarItem(props) {
+export default function VariablesTabActionItem(props) {
   const {
     layout,
     onLayoutChanged
@@ -36,10 +36,10 @@ export default function VariablesStatusBarItem(props) {
     });
   };
 
-  return <Fill slot="status-bar__app" group="7_1_side_panel_variables">
+  return <Fill slot="tab-actions" priority={ 3 }>
     <button
       className={ classNames(
-        'btn',
+        'btn--tab-action',
         { 'btn--active': variablesSidePanel.open }
       ) }
       onClick={ onClick }

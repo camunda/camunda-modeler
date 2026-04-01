@@ -18,9 +18,7 @@ import TaskTestingIcon from '../../../../../../../resources/icons/TaskTesting.sv
 
 import { DEFAULT_LAYOUT } from '../../../../../side-panel/SidePanel';
 
-import * as css from './TaskTestingStatusBarItem.less';
-
-export default function TestStatusBarItem(props) {
+export default function TaskTestingTabActionItem(props) {
   const {
     onLayoutChanged,
     layout
@@ -40,11 +38,10 @@ export default function TestStatusBarItem(props) {
     });
   };
 
-  return <Fill slot="status-bar__app" group="7_3_side_panel_test">
+  return <Fill slot="tab-actions" priority={ 1 }>
     <button
       className={ classnames(
-        css.TestStatusBarItem,
-        'btn',
+        'btn--tab-action',
         {
           'btn--active': sidePanelLayout.open && sidePanelLayout.tab === 'test'
         }
@@ -52,7 +49,7 @@ export default function TestStatusBarItem(props) {
       onClick={ onClick }
       title="Test"
     >
-      <TaskTestingIcon className="icon" />
+      <TaskTestingIcon />
     </button>
   </Fill>;
 }
