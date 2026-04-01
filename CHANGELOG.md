@@ -35,6 +35,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: use configured operate URL for linking also in Self-Managed ([#5669](https://github.com/camunda/camunda-modeler/pull/5669))
 * `FIX`: enable right click context menu for editable elements and selected text ([#5801](https://github.com/camunda/camunda-modeler/pull/5801))
 * `FIX`: validate operate URL before using it ([#5708](https://github.com/camunda/camunda-modeler/issues/5708))
+* `FIX`: highlight active side panel tab on initial start ([#5826](https://github.com/camunda/camunda-modeler/issues/5826))
 * `DEPS`: update to `@bpmn-io/extract-process-variables@2.2.1`
 * `DEPS`: update to `@bpmn-io/form-js@1.21.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.40.5`

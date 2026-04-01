@@ -32,7 +32,7 @@ export default function TaskTestingTabActionItem(props) {
     onLayoutChanged({
       sidePanel: {
         ...sidePanelLayout,
-        open: !sidePanelLayout.open || sidePanelLayout.tab !== 'test',
+        open: !sidePanelLayout.open || (sidePanelLayout.tab ?? 'properties') !== 'test',
         tab: 'test'
       }
     });
@@ -43,7 +43,7 @@ export default function TaskTestingTabActionItem(props) {
       className={ classnames(
         'btn--tab-action',
         {
-          'btn--active': sidePanelLayout.open && sidePanelLayout.tab === 'test'
+          'btn--active': sidePanelLayout.open && (sidePanelLayout.tab ?? 'properties') === 'test'
         }
       ) }
       onClick={ onClick }

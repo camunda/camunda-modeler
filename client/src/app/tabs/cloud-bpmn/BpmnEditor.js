@@ -717,7 +717,7 @@ export class BpmnEditor extends CachedComponent {
       const newLayout = {
         sidePanel: {
           ...sidePanelLayout,
-          open: sidePanelLayout.tab === 'properties' ? !sidePanelLayout.open : true,
+          open: (sidePanelLayout.tab ?? 'properties') === 'properties' ? !sidePanelLayout.open : true,
           tab: 'properties'
         }
       };

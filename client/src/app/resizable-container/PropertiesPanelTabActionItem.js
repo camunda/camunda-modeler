@@ -32,7 +32,7 @@ export default function PropertiesPanelTabActionItem(props) {
     onLayoutChanged({
       sidePanel: {
         ...sidePanelLayout,
-        open: !sidePanelLayout.open || sidePanelLayout.tab !== 'properties',
+        open: !sidePanelLayout.open || (sidePanelLayout.tab ?? 'properties') !== 'properties',
         tab: 'properties'
       }
     });
@@ -42,7 +42,7 @@ export default function PropertiesPanelTabActionItem(props) {
     <button
       className={ classnames(
         'btn--tab-action',
-        { 'btn--active': sidePanelLayout.open && sidePanelLayout.tab === 'properties' }
+        { 'btn--active': sidePanelLayout.open && (sidePanelLayout.tab ?? 'properties') === 'properties' }
       ) }
       onClick={ onClick }
       title="Properties"
