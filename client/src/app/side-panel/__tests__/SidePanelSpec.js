@@ -141,6 +141,9 @@ describe('<SidePanel>', function() {
     const onLayoutChanged = spy();
 
     const { container } = createSidePanel({
+      layout: {
+        sidePanel: { open: true, width: DEFAULT_WIDTH, tab: 'foo' }
+      },
       onLayoutChanged,
       tabs: [
         { id: 'foo', label: 'Foo', children: <div>Foo</div> },
