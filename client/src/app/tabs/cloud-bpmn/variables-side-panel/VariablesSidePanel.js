@@ -26,7 +26,7 @@ const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modele
 export const MIN_WIDTH = 280;
 export const MAX_WIDTH = MIN_WIDTH * 3;
 
-export const DEFAULT_OPEN = false;
+export const DEFAULT_OPEN = true;
 export const DEFAULT_WIDTH = MIN_WIDTH;
 
 export const DEFAULT_LAYOUT = {

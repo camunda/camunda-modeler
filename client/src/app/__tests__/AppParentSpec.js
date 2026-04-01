@@ -219,11 +219,9 @@ describe('<AppParent>', function() {
         async sendReady() {
           try {
             await waitFor(() => {
-              expect(instance.getApp().state.layout).to.eql({
-                panel: {
-                  open: false,
-                  tab: 'log'
-                }
+              expect(instance.getApp().state.layout.panel).to.eql({
+                open: false,
+                tab: 'log'
               });
             });
 
@@ -242,6 +240,86 @@ describe('<AppParent>', function() {
               panel: {
                 open: true,
                 tab: 'log'
+              }
+            }
+          });
+        }
+      });
+
+      // when
+      const { instance } = createAppParent({
+        globals: {
+          backend,
+          workspace
+        }
+      });
+    });
+
+
+    it('should not add variables panel layout on first launch', function(done) {
+
+      // given
+      const backend = new Backend({
+        async sendReady() {
+          try {
+            await waitFor(() => {
+              expect(instance.getApp().state.layout.variablesSidePanel).not.to.exist;
+            });
+
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      });
+
+      const workspace = new Workspace({
+        restore(defaultConfig) {
+          return Promise.resolve({
+            ...defaultConfig,
+            layout: {}
+          });
+        }
+      });
+
+      // when
+      const { instance } = createAppParent({
+        globals: {
+          backend,
+          workspace
+        }
+      });
+    });
+
+
+    it('should preserve existing variables panel layout', function(done) {
+
+      // given
+      const backend = new Backend({
+        async sendReady() {
+          try {
+            await waitFor(() => {
+              expect(instance.getApp().state.layout.variablesSidePanel).to.eql({
+                open: false,
+                width: 300
+              });
+            });
+
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      });
+
+      const workspace = new Workspace({
+        restore(defaultConfig) {
+          return Promise.resolve({
+            ...defaultConfig,
+            layout: {
+              variablesSidePanel: {
+                open: false,
+                width: 300
               }
             }
           });
