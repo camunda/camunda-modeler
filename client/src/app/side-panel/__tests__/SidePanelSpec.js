@@ -114,6 +114,29 @@ describe('<SidePanel>', function() {
   });
 
 
+  it('should sync active tab to layout on initial render (no tab in layout)', function() {
+
+    // given
+    const onLayoutChanged = spy();
+
+    // when
+    createSidePanel({
+      onLayoutChanged,
+      tabs: [
+        { id: 'foo', label: 'Foo', children: <div>Foo</div> },
+        { id: 'bar', label: 'Bar', children: <div>Bar</div> }
+      ]
+    });
+
+    // then
+    expect(onLayoutChanged).to.have.been.called;
+
+    const layoutArg = onLayoutChanged.firstCall.args[0];
+
+    expect(layoutArg.sidePanel.tab).to.equal('foo');
+  });
+
+
   it('should set active tab from layout', function() {
 
     // when

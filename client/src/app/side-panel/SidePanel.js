@@ -103,7 +103,7 @@ export default function SidePanel(props) {
     : tabs[0]?.id;
 
   useEffect(() => {
-    if (activeTabId && tab !== undefined && activeTabId !== tab) {
+    if (activeTabId && activeTabId !== tab) {
       onLayoutChanged({
         sidePanel: {
           ...DEFAULT_LAYOUT,
