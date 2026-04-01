@@ -1904,6 +1904,31 @@ describe('<BpmnEditor>', function() {
       });
     });
 
+
+    it('should close properties panel on first toggle when no layout config is set', async function() {
+
+      // given
+      const onLayoutChangedSpy = sinon.spy();
+      const {
+        instance
+      } = await renderEditor(diagramXML, {
+        layout: {},
+        onLayoutChanged: onLayoutChangedSpy
+      });
+
+      // when
+      instance.triggerAction('toggleProperties');
+
+      // then
+      expect(onLayoutChangedSpy).to.be.calledOnceWith({
+        sidePanel: {
+          open: false,
+          tab: 'properties',
+          width: 280
+        }
+      });
+    });
+
   });
 
 
