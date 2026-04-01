@@ -234,6 +234,20 @@ export class BpmnEditor extends CachedComponent {
     }
 
     this.gridBehavior.checkUpdate(prevProps.layout, layout);
+
+    if (
+      this._pendingPropertiesPanelShowEntry &&
+      isPropertiesPanelTabChanged(prevProps, this.props)
+    ) {
+
+      // re-emit event after properties tab has been opened
+      const modeler = this.getModeler();
+      const eventBus = modeler.get('eventBus');
+
+      const event = this._pendingPropertiesPanelShowEntry;
+      this._pendingPropertiesPanelShowEntry = null;
+      eventBus.fire('propertiesPanel.showEntry', event);
+    }
   }
 
   listen(fn) {
@@ -255,6 +269,8 @@ export class BpmnEditor extends CachedComponent {
       modeler[fn](event, this.handleChanged);
     });
 
+    modeler[fn]('propertiesPanel.showEntry', this.handleShowEntry);
+
     modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
 
     modeler[fn]('error', 1500, this.handleError);
@@ -262,6 +278,7 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
 
     modeler[fn]('propertiesPanel.layoutChanged', this.handlePropertiesPanelLayoutChange);
+
 
     if (fn === 'on') {
       modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
@@ -791,6 +808,28 @@ export class BpmnEditor extends CachedComponent {
     return modeler.get('editorActions').trigger(action, context);
   };
 
+  handleShowEntry = (event) => {
+    const { layout = {} } = this.props;
+
+    let { sidePanel: sidePanelLayout = SIDE_PANEL_DEFAULT_LAYOUT } = layout;
+
+    sidePanelLayout = { ...SIDE_PANEL_DEFAULT_LAYOUT, ...sidePanelLayout };
+
+    if (sidePanelLayout.tab === 'properties' && sidePanelLayout.open) {
+      return;
+    }
+
+    this._pendingPropertiesPanelShowEntry = event;
+
+    this.handleLayoutChange({
+      sidePanel: {
+        ...sidePanelLayout,
+        open: true,
+        tab: 'properties'
+      }
+    });
+  };
+
   handleSetColor = (fill, stroke) => {
     this.triggerAction('setColor', {
       fill,
@@ -1058,4 +1097,14 @@ function isPropertiesPanelLayoutChanged(prevProps, props) {
 
   // check JSON equality
   return JSON.stringify(prevProps.layout.propertiesPanel) !== JSON.stringify(props.layout.propertiesPanel);
+}
+
+function isPropertiesPanelTabChanged(prevProps, props) {
+  const prevSidePanel = prevProps.layout?.sidePanel || {};
+  const currSidePanel = props.layout?.sidePanel || {};
+
+  return (
+    (currSidePanel.tab === 'properties' && currSidePanel.open) &&
+    (prevSidePanel.tab !== 'properties' || !prevSidePanel.open)
+  );
 }
