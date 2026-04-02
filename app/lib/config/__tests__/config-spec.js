@@ -95,6 +95,27 @@ describe('Config', function() {
       });
 
 
+      it('should read from cache on subsequent gets', function() {
+
+        // given
+        const config = new Config({
+          userPath: getAbsolutePath('fixtures')
+        });
+
+        const readFileSpy = sinon.spy(fs, 'readFileSync');
+
+        // when
+        config.get('foo');
+        config.get('foo');
+        config.get('foo');
+
+        // then
+        expect(readFileSpy).to.have.been.calledOnce;
+
+        readFileSpy.restore();
+      });
+
+
       it('should NOT throw if cannot read config', function() {
 
         // given
@@ -127,6 +148,30 @@ describe('Config', function() {
         const value = config.get('foo');
 
         expect(value).to.equal(false);
+      });
+
+
+      it('should update cache on set', function() {
+
+        // given
+        const config = new Config({
+          userPath: getAbsolutePath('fixtures')
+        });
+
+        const readFileSpy = sinon.spy(fs, 'readFileSync');
+
+        // when
+        config.set('bar', 'baz');
+
+        readFileSpy.resetHistory();
+
+        const value = config.get('bar');
+
+        // then
+        expect(value).to.equal('baz');
+        expect(readFileSpy).to.not.have.been.called;
+
+        readFileSpy.restore();
       });
 
     });
