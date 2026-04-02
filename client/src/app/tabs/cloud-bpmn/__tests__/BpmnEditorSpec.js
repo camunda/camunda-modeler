@@ -662,6 +662,115 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     });
 
 
+    it('should disable copy/cut/duplicate when only connections selected', async function() {
+
+      // given
+      const onChangedSpy = spy((state) => {
+
+        // then
+        expect(state).to.include({
+          copy: false,
+          copyAsImage: false,
+          cut: false,
+          duplicate: false
+        });
+      });
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          engineProfile: DEFAULT_ENGINE_PROFILE,
+          lastXML: diagramXML,
+          modeler: new BpmnModeler({
+            modules: {
+              clipboard: {
+                isEmpty: () => true
+              },
+              commandStack: {
+                canRedo: () => true,
+                canUndo: () => true,
+                _stackIdx: 1
+              },
+              selection: {
+                get: () => [ { waypoints: [ {}, {} ] } ]
+              }
+            }
+          }),
+          stackIdx: 2
+        },
+        __destroy: () => {}
+      });
+
+      const { instance } = await renderEditor(diagramXML, {
+        id: 'editor',
+        cache,
+        onChanged: onChangedSpy,
+        waitForImport: false
+      });
+
+      // when
+      instance.handleChanged();
+
+      // then
+      expect(onChangedSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should enable copy/cut/duplicate when shapes are selected', async function() {
+
+      // given
+      const onChangedSpy = spy((state) => {
+
+        // then
+        expect(state).to.include({
+          copy: true,
+          copyAsImage: true,
+          cut: true
+        });
+      });
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          engineProfile: DEFAULT_ENGINE_PROFILE,
+          lastXML: diagramXML,
+          modeler: new BpmnModeler({
+            modules: {
+              clipboard: {
+                isEmpty: () => true
+              },
+              commandStack: {
+                canRedo: () => true,
+                canUndo: () => true,
+                _stackIdx: 1
+              },
+              selection: {
+                get: () => [ { id: 'shape1' }, { waypoints: [ {}, {} ] } ]
+              }
+            }
+          }),
+          stackIdx: 2
+        },
+        __destroy: () => {}
+      });
+
+      const { instance } = await renderEditor(diagramXML, {
+        id: 'editor',
+        cache,
+        onChanged: onChangedSpy,
+        waitForImport: false
+      });
+
+      // when
+      instance.handleChanged();
+
+      // then
+      expect(onChangedSpy).to.have.been.calledOnce;
+    });
+
+
     it('should notify about plugin related changes', async function() {
 
       // given
