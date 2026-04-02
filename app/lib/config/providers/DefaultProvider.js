@@ -33,7 +33,7 @@ class DefaultProvider {
    * @returns {*}
    */
   get(key, defaultValue = null) {
-    const json = this._json || this._readFile();
+    const json = this._json = this._json || this._readFile();
 
     if (!key) {
       return json;
