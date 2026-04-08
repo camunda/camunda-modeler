@@ -10,9 +10,8 @@
 
 import React from 'react';
 
+import { IconButton } from '@carbon/react';
 import { ValueVariableAlt } from '@carbon/icons-react';
-
-import classNames from 'classnames';
 
 import { Fill } from '../../../slot-fill';
 
@@ -26,6 +25,8 @@ export default function VariablesTabActionItem(props) {
 
   const { variablesSidePanel = DEFAULT_LAYOUT } = layout;
 
+  const isActive = variablesSidePanel.open;
+
   const onClick = () => {
     onLayoutChanged({
       variablesSidePanel: {
@@ -37,15 +38,15 @@ export default function VariablesTabActionItem(props) {
   };
 
   return <Fill slot="tab-actions" priority={ 3 }>
-    <button
-      className={ classNames(
-        'btn--tab-action',
-        { 'btn--active': variablesSidePanel.open }
-      ) }
+    <IconButton
+      className="btn--tab-action"
+      kind="ghost"
+      size="sm"
+      isSelected={ isActive }
+      label="Variables"
       onClick={ onClick }
-      title="Variables"
     >
       <ValueVariableAlt />
-    </button>
+    </IconButton>
   </Fill>;
 }

@@ -40,6 +40,11 @@ const DEFAULT_OFFSET = {
  * @prop {string | number} [minWidth]
  * @prop {string} [className]
  * @prop {function} [onClose]
+ * @prop {boolean} [enableFocusTrap=true] evaluated once at mount time
+ * @prop {boolean} [enableEscapeTrap=true] evaluated once at mount time
+ * @prop {boolean} [enableGlobalClickTrap=true] evaluated once at mount time
+ * @prop {boolean} [enableCloseTrap=true] evaluated once at mount time
+ * @prop {boolean} [enableKeyboardTrap=true]
  *
  * @extends {PureComponent<OverlayProps>}
  */
@@ -50,17 +55,32 @@ export class Overlay extends PureComponent {
 
     this.overlayRef = React.createRef();
 
-    this.focusTrap = FocusTrap(() => this.overlayRef.current);
+    const {
+      enableFocusTrap = true,
+      enableEscapeTrap = true,
+      enableGlobalClickTrap = true,
+      enableCloseTrap = true
+    } = props;
 
-    this.escapeTrap = EscapeTrap(() => {
-      this.close();
-    });
+    if (enableFocusTrap) {
+      this.focusTrap = FocusTrap(() => this.overlayRef.current);
+    }
 
-    this.globalClickTrap = GlobalClickTrap(() => {
-      return [ this.overlayRef.current, this.props.anchor ];
-    }, this.close);
+    if (enableEscapeTrap) {
+      this.escapeTrap = EscapeTrap(() => {
+        this.close();
+      });
+    }
 
-    this.closeTrap = CloseTrap(document.activeElement);
+    if (enableGlobalClickTrap) {
+      this.globalClickTrap = GlobalClickTrap(() => {
+        return [ this.overlayRef.current, this.props.anchor ];
+      }, this.close);
+    }
+
+    if (enableCloseTrap) {
+      this.closeTrap = CloseTrap(document.activeElement);
+    }
   }
 
   close = () => {
@@ -70,17 +90,17 @@ export class Overlay extends PureComponent {
   };
 
   componentDidMount() {
-    this.focusTrap.mount();
-    this.escapeTrap.mount();
-    this.globalClickTrap.mount();
-    this.closeTrap.mount();
+    this.focusTrap && this.focusTrap.mount();
+    this.escapeTrap && this.escapeTrap.mount();
+    this.globalClickTrap && this.globalClickTrap.mount();
+    this.closeTrap && this.closeTrap.mount();
   }
 
   componentWillUnmount() {
-    this.focusTrap.unmount();
-    this.escapeTrap.unmount();
-    this.globalClickTrap.unmount();
-    this.closeTrap.unmount();
+    this.focusTrap && this.focusTrap.unmount();
+    this.escapeTrap && this.escapeTrap.unmount();
+    this.globalClickTrap && this.globalClickTrap.unmount();
+    this.closeTrap && this.closeTrap.unmount();
   }
 
   getStyle() {
@@ -159,27 +179,29 @@ export class Overlay extends PureComponent {
       anchor,
       className,
       children,
-      id
+      id,
+      enableKeyboardTrap = true
     } = this.props;
 
     if (!anchor) {
       throw new Error('Overlay must receive an `anchor` prop.');
     }
 
-    // set id only if passed via props
     const optionalId = id ? { id } : {};
 
     const style = this.getStyle();
 
+    const Wrapper = enableKeyboardTrap ? KeyboardInteractionTrap : React.Fragment;
+
     return ReactDOM.createPortal(
-      <KeyboardInteractionTrap>
+      <Wrapper>
         <div
           className={ classNames(css.Overlay, className) } style={ style } { ...optionalId }
           ref={ this.overlayRef } role="dialog"
         >
           { children }
         </div>
-      </KeyboardInteractionTrap>,
+      </Wrapper>,
       document.body
     );
   }

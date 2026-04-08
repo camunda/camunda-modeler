@@ -10,10 +10,9 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
-
 import { Fill } from '../slot-fill';
 
+import { IconButton } from '@carbon/react';
 import { Settings } from '@carbon/icons-react';
 
 import { DEFAULT_LAYOUT } from '../side-panel/SidePanel';
@@ -28,6 +27,8 @@ export default function PropertiesPanelTabActionItem(props) {
 
   sidePanelLayout = { ...DEFAULT_LAYOUT, ...sidePanelLayout };
 
+  const isActive = sidePanelLayout.open && sidePanelLayout.tab === 'properties';
+
   const onClick = () => {
     onLayoutChanged({
       sidePanel: {
@@ -39,15 +40,15 @@ export default function PropertiesPanelTabActionItem(props) {
   };
 
   return <Fill slot="tab-actions" priority={ 2 }>
-    <button
-      className={ classnames(
-        'btn--tab-action',
-        { 'btn--active': sidePanelLayout.open && sidePanelLayout.tab === 'properties' }
-      ) }
+    <IconButton
+      className="btn--tab-action"
+      kind="ghost"
+      size="sm"
+      isSelected={ isActive }
+      label="Properties"
       onClick={ onClick }
-      title="Properties"
     >
       <Settings />
-    </button>
+    </IconButton>
   </Fill>;
 }

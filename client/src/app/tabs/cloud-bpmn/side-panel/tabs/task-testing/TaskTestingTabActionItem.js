@@ -10,9 +10,9 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
-
 import { Fill } from '../../../../../slot-fill';
+
+import { IconButton } from '@carbon/react';
 
 import TaskTestingIcon from '../../../../../../../resources/icons/TaskTesting.svg';
 
@@ -28,6 +28,8 @@ export default function TaskTestingTabActionItem(props) {
 
   sidePanelLayout = { ...DEFAULT_LAYOUT, ...sidePanelLayout };
 
+  const isActive = sidePanelLayout.open && sidePanelLayout.tab === 'test';
+
   const onClick = () => {
     onLayoutChanged({
       sidePanel: {
@@ -39,17 +41,15 @@ export default function TaskTestingTabActionItem(props) {
   };
 
   return <Fill slot="tab-actions" priority={ 1 }>
-    <button
-      className={ classnames(
-        'btn--tab-action',
-        {
-          'btn--active': sidePanelLayout.open && sidePanelLayout.tab === 'test'
-        }
-      ) }
+    <IconButton
+      className="btn--tab-action"
+      kind="ghost"
+      size="sm"
+      isSelected={ isActive }
+      label="Test"
       onClick={ onClick }
-      title="Test"
     >
       <TaskTestingIcon />
-    </button>
+    </IconButton>
   </Fill>;
 }

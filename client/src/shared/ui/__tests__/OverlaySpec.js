@@ -267,6 +267,55 @@ describe('<Overlay>', function() {
   });
 
 
+  describe('enable* props', function() {
+
+    it('should NOT close on Escape when enableEscapeTrap=false', function() {
+
+      // given
+      const onCloseSpy = sinon.spy();
+      renderOverlay({ onClose: onCloseSpy, enableEscapeTrap: false });
+
+      // when
+      fireEvent.keyDown(document, { key: 'Escape' });
+
+      // then
+      expect(onCloseSpy).to.not.have.been.called;
+    });
+
+
+    it('should NOT close on background click when enableGlobalClickTrap=false', function() {
+
+      // given
+      const onCloseSpy = sinon.spy();
+      renderOverlay({ onClose: onCloseSpy, enableGlobalClickTrap: false });
+
+      // when
+      document.dispatchEvent(new MouseEvent('mousedown'));
+
+      // then
+      expect(onCloseSpy).to.not.have.been.called;
+    });
+
+
+    it('should NOT register keyboard interaction trap when enableKeyboardTrap=false', function() {
+
+      // given
+      const addEventListenerSpy = sinon.spy(window, 'addEventListener');
+
+      // when
+      renderOverlay({ enableKeyboardTrap: false });
+
+      // then
+      try {
+        expect(addEventListenerSpy).to.not.have.been.calledWith('focusin', sinon.match.func);
+      } finally {
+        addEventListenerSpy.restore();
+      }
+    });
+
+  });
+
+
   describe('<Overlay.Title>', function() {
 
     it('should render', function() {
