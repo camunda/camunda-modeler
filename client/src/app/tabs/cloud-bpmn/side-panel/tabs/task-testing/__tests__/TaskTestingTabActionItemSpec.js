@@ -51,7 +51,7 @@ describe('TaskTestingTabActionItem', function() {
       });
 
       // then
-      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.true;
+      expect(container.querySelector('.btn--tab-action').getAttribute('aria-pressed')).to.equal('true');
     });
 
 
@@ -61,7 +61,7 @@ describe('TaskTestingTabActionItem', function() {
       const { container } = renderTaskTestingTabActionItem();
 
       // then
-      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.false;
+      expect(container.querySelector('.btn--tab-action').getAttribute('aria-pressed')).to.equal('false');
     });
 
 
@@ -78,7 +78,7 @@ describe('TaskTestingTabActionItem', function() {
       });
 
       // then
-      expect(container.querySelector('.btn--tab-action').classList.contains('btn--active')).to.be.false;
+      expect(container.querySelector('.btn--tab-action').getAttribute('aria-pressed')).to.equal('false');
     });
 
 
