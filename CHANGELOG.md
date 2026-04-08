@@ -41,7 +41,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/variable-outline@3.0.1`
 * `DEPS`: update to `@bpmn-io/variable-resolver@3.0.0`
 * `DEPS`: update to `@camunda/rpa-integration@1.3.4`
-* `DEPS`: update to `@camunda/task-testing@4.0.0`
+* `DEPS`: update to `@camunda/task-testing@4.0.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.23.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.53.0`
 * `DEPS`: update to `bpmn-js@18.14.0`
