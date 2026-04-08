@@ -101,6 +101,7 @@ export default class TabLinks extends PureComponent {
       activeTab,
       tabs,
       tabGroups,
+      config,
       getTabIcon,
       onSelect,
       onContextMenu,
@@ -166,7 +167,7 @@ export default class TabLinks extends PureComponent {
           </div>
         </div>
 
-        <TabActions />
+        <TabActions activeTab={ activeTab } config={ config } />
       </div>
     );
   }
