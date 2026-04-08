@@ -28,6 +28,8 @@ describe('Config', function() {
 
     afterEach(function() {
       fs.writeFileSync(getAbsolutePath('fixtures/config.json'), file, { encoding: 'utf8' });
+
+      sinon.restore();
     });
 
 
@@ -111,8 +113,6 @@ describe('Config', function() {
 
         // then
         expect(readFileSpy).to.have.been.calledOnce;
-
-        readFileSpy.restore();
       });
 
 
@@ -170,8 +170,6 @@ describe('Config', function() {
         // then
         expect(value).to.equal('baz');
         expect(readFileSpy).to.not.have.been.called;
-
-        readFileSpy.restore();
       });
 
     });
