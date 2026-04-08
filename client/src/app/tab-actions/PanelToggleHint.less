@@ -1,0 +1,41 @@
+:local(.PanelToggleHintOverlay) {
+  position: relative;
+  width: 240px;
+  overflow: visible;
+  box-shadow: none;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, .16)) drop-shadow(0 2px 16px rgba(0, 0, 0, .16));
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 16px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--overlay-background-color);
+    transform: rotate(45deg);
+  }
+
+  p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
+
+:local(.PanelToggleHintClose) {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  color: inherit;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}

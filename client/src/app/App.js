@@ -2425,6 +2425,7 @@ export class App extends PureComponent {
                     tabGroups={ tabGroups }
                     isDirty={ isDirty }
                     activeTab={ activeTab }
+                    config={ this.getGlobal('config') }
                     getTabIcon={ this._getTabIcon }
                     onSelect={ this.selectTab }
                     onMoveTab={ this.moveTab }
