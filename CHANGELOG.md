@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: prevent use of canvas context menu in properties panel popups ([#5803](https://github.com/camunda/camunda-modeler/issues/5803))
+
 ## 5.46.0
 
 ### General
