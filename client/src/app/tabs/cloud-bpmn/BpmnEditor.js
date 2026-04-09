@@ -828,6 +828,12 @@ export class BpmnEditor extends CachedComponent {
 
   handleContextMenu = (event) => {
 
+    // prevent diagram context menu in properties panel popups (e.g. FEEL editor)
+    // to allow native text editing context menu instead
+    if (event.target.closest('.bio-properties-panel-popup')) {
+      return;
+    }
+
     const {
       onContextMenu
     } = this.props;
