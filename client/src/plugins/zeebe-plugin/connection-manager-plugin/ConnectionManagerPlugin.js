@@ -168,7 +168,16 @@ export default function ConnectionManagerPlugin(props) {
   // update connection checker on connection change
   useEffect(() => {
     (async () => {
+      triggerAction('emit-event', {
+        type: 'connectionManager.connectionCheckStarted',
+        payload: {
+          connectionId: activeConnection?.id,
+          connection: activeConnection,
+        }
+      });
+
       setConnectionCheckResult(null);
+
       if (activeConnection && activeConnection.id !== NO_CONNECTION.id && !paused) {
         globalConnectionChecker.current.updateConfig({ endpoint: activeConnection });
       }

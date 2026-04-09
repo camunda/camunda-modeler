@@ -484,6 +484,168 @@ describe('ConnectionManagerPlugin', function() {
           })
         );
       });
+
+
+      describe('connectionManager.connectionCheckStarted event', function() {
+
+        it('should emit event on connection check start', async function() {
+
+          // given
+          const subscribe = (event, callback) => {
+            if (event === 'app.activeTabChanged') {
+
+              // required as otherwise the config is set to `null` later
+              waitForNextCycle().then(() => callback({
+                activeTab: DEFAULT_ACTIVE_TAB
+              }));
+            }
+            return { cancel: () => {} };
+          };
+
+          const settings = createMockSettings({
+            'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+          });
+
+          const triggerAction = sinon.spy();
+
+          // when
+          createConnectionManagerPlugin({
+            getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
+            subscribe,
+            settings,
+            triggerAction,
+          });
+
+          // make React state settle and let the connection resolve
+          await waitForNextCycle(3);
+          await clock.tickAsync(2000);
+
+          // then
+          expect(triggerAction).to.have.been.calledWith(
+            'emit-event',
+            sinon.match({
+              type: 'connectionManager.connectionCheckStarted',
+              payload: sinon.match({
+                connectionId: DEFAULT_CONNECTIONS[0].id,
+                connection: DEFAULT_CONNECTIONS[0],
+              })
+            })
+          );
+        });
+
+
+        [ true, false ].forEach((success) => {
+          it('should NOT emit event on connection check result', async function() {
+
+            // given
+            const subscribe = (event, callback) => {
+              if (event === 'app.activeTabChanged') {
+
+                // required as otherwise the config is set to `null` later
+                waitForNextCycle().then(() => callback({
+                  activeTab: DEFAULT_ACTIVE_TAB
+                }));
+              }
+              return { cancel: () => {} };
+            };
+
+            const settings = createMockSettings({
+              'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+            });
+
+            const triggerAction = sinon.spy();
+
+            createConnectionManagerPlugin({
+              getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
+              subscribe,
+              settings,
+              triggerAction,
+              connectionCheckResult: { success }
+            });
+
+            // make React state settle and let initial checks run
+            await waitForNextCycle(3);
+            await clock.tickAsync(2000);
+
+            // isolate: reset history so assertions only cover the next check cycle
+            triggerAction.resetHistory();
+
+            // advance to trigger a periodic check (ConnectionChecker LONG interval = 5000ms)
+            await clock.tickAsync(5000);
+
+            // then - connectionStatusChanged was emitted (a result arrived from interval check)
+            expect(triggerAction).to.have.been.calledWith(
+              'emit-event',
+              sinon.match({ type: 'connectionManager.connectionStatusChanged' })
+            );
+
+            // but connectionCheckStarted was NOT emitted (no state change occurred)
+            const checkStartedCalls = triggerAction.getCalls().filter(
+              call => call.args[0] === 'emit-event' &&
+                call.args[1]?.type === 'connectionManager.connectionCheckStarted'
+            );
+            expect(checkStartedCalls).to.have.lengthOf(0);
+          });
+        });
+
+
+        it('should NOT emit event on connection check cancel', async function() {
+
+          // given
+          let openSettings;
+          const subscribe = (event, callback) => {
+            if (event === 'app.activeTabChanged') {
+
+              // required as otherwise the config is set to `null` later
+              waitForNextCycle().then(() => callback({
+                activeTab: DEFAULT_ACTIVE_TAB
+              }));
+            } else if (event === 'app.settings-open') {
+              openSettings = callback;
+            }
+            return { cancel: () => {} };
+          };
+
+          const settings = createMockSettings({
+            'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+          });
+
+          const triggerAction = sinon.spy();
+
+          createConnectionManagerPlugin({
+            getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
+            subscribe,
+            settings,
+            triggerAction,
+            connectionCheckResult: { success: true }
+          });
+
+          // make React state settle and let initial checks run
+          await waitForNextCycle(3);
+          await clock.tickAsync(2000);
+
+          // cancel the in-progress check by opening settings (triggers stopChecking)
+          openSettings();
+
+          // let React process the paused state change and settle
+          await waitForNextCycle(3);
+          await clock.tickAsync(1000);
+
+          // isolate: reset history so assertions only cover the post-cancel window
+          triggerAction.resetHistory();
+
+          // advance clock past where the cancelled check interval would have fired
+          await clock.tickAsync(5000);
+
+          // then - no connectionCheckStarted from the cancelled check
+          const checkStartedCalls = triggerAction.getCalls().filter(
+            call => call.args[0] === 'emit-event' &&
+                    call.args[1]?.type === 'connectionManager.connectionCheckStarted'
+          );
+          expect(checkStartedCalls).to.have.lengthOf(0);
+        });
+
+      });
     });
   });
 

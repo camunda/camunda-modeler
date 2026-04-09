@@ -209,7 +209,11 @@ export class BpmnEditor extends CachedComponent {
     }
 
     if (prevProps.linting !== this.props.linting) {
-      this.getModeler().get('linting').setErrors(this.props.linting || []);
+      const { lastXML } = this.getCached();
+
+      if (lastXML && !this.state.importing) {
+        this.getModeler().get('linting').setErrors(this.props.linting || []);
+      }
     }
 
     if (prevProps.file !== this.props.file) {
@@ -779,6 +783,15 @@ export class BpmnEditor extends CachedComponent {
       this.getModeler().get('linting').showError(context);
 
       return;
+    }
+
+    if (action === 'set-engine-profile') {
+      const currentProfile = this.engineProfile.get();
+
+      return this.engineProfile.set({
+        executionPlatform: currentProfile.executionPlatform,
+        executionPlatformVersion: context.executionPlatformVersion
+      });
     }
 
     if (action === 'elementTemplates.reload') {
