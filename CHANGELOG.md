@@ -38,7 +38,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/extract-process-variables@2.2.1`
 * `DEPS`: update to `@bpmn-io/form-js@1.21.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.40.5`
-* `DEPS`: update to `@bpmn-io/variable-outline@3.0.2`
+* `DEPS`: update to `@bpmn-io/variable-outline@3.0.3`
 * `DEPS`: update to `@bpmn-io/variable-resolver@3.0.0`
 * `DEPS`: update to `@camunda/rpa-integration@1.3.4`
 * `DEPS`: update to `@camunda/task-testing@4.0.1`

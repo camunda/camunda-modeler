@@ -14,7 +14,7 @@
     "@bpmn-io/properties-panel": "^3.40.5",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@bpmn-io/svg-to-image": "^1.0.1",
-    "@bpmn-io/variable-outline": "^3.0.2",
+    "@bpmn-io/variable-outline": "^3.0.3",
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.24.0",
     "@camunda/form-playground": "^0.24.0",
