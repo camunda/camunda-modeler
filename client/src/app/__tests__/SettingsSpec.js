@@ -167,18 +167,6 @@ describe('Settings', function() {
     });
 
 
-    it('should throw error when duplicate group is registered', function() {
-
-      // given
-      settings.register(settingsMock);
-
-      // then
-      expect(() => {
-        settings.register(settingsMock);
-      }).to.throw();
-    });
-
-
     it('should throw error when property ID does not start with group ID', function() {
 
       // given

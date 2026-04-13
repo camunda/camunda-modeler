@@ -169,10 +169,6 @@ export default class Settings {
       if (!key.startsWith(`${id}.`)) {
         throw new Error(`Property key ${key} must start with group ID ${id}`);
       }
-
-      if (this._settings[id]?.properties[key]) {
-        throw new Error(`Setting with key ${key} is already registered`);
-      }
     });
   }
 
