@@ -48,7 +48,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: task testing shows CTA for active jobs, message subscriptions, and user tasks ([#5589](https://github.com/camunda/camunda-modeler/issues/5589), [#5348](https://github.com/camunda/camunda-modeler/issues/5348))
 * `FEAT`: allow to create child elements from the context pad ([bpmn-io/bpmn-js#2391](https://github.com/bpmn-io/bpmn-js/issues/2391))
 * `FIX`: do not truncate variable values in task testing ([#5723](https://github.com/camunda/camunda-modeler/issues/5723))
-* `FIX`: preserve user-defined outputs when apply/update template with `entriesVisible.outputs === true` ([bpmn-io/bpmn-js-element-templates#233](https://github.com/bpmn-io/bpmn-js-element-templates/pull/233))
+* `FIX`: preserve user-defined outputs when applying or updating a template with `entriesVisible.outputs === true` ([bpmn-io/bpmn-js-element-templates#233](https://github.com/bpmn-io/bpmn-js-element-templates/pull/233))
 * `FIX`: plain BPMN elements are not hidden in groups during search ([#5658](https://github.com/camunda/camunda-modeler/issues/5658))
 * `FIX`: correct handling of annotations during sub-process collapse/expand, copy/paste, and remove actions ([#5163](https://github.com/camunda/camunda-modeler/issues/5163), [#4987](https://github.com/camunda/camunda-modeler/issues/4987))
 * `FIX`: allow undo of pasted sub-process ([bpmn-io/bpmn-js#2269](https://github.com/bpmn-io/bpmn-js/issues/2269))
