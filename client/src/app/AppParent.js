@@ -340,9 +340,13 @@ export default class AppParent extends PureComponent {
 
     const backend = this.getBackend();
 
-    backend.once('client:started', this.handleStarted);
+    this.prereadyState = this.prereadyState || {
+      files: [],
+      workspace: {}
+    };
 
     this.subscriptions = [
+      backend.once('client:started', this.handleStarted),
       backend.on('menu:action', (_, action, options) => this.triggerAction(action, options)),
       backend.on('client:open-files', this.handleOpenFiles),
       backend.on('client:window-focused', this.handleFocused),
