@@ -247,9 +247,17 @@ export default class Settings {
    *
    * @param { string } key - The setting key.
    * @param { (event:Object) => any } callback - A function to call with the new value.
+   *
+   * @returns { () => void } A function to unsubscribe the listener.
    */
   subscribe(key, callback) {
     this._listeners[key] = [ ...(this._listeners[key] ?? []), callback ];
+
+    const unsubscribe = () => {
+      this._listeners[key] = this._listeners[key].filter(listener => listener !== callback);
+    };
+
+    return unsubscribe;
   }
 
   /**
