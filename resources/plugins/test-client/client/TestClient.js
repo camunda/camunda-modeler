@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 
 import Fill from 'camunda-modeler-plugin-helpers/components/Fill';
 
@@ -16,254 +16,214 @@ import CarbonModal from './CarbonModal';
 
 const PLUGIN_NAME = 'test-client';
 
+const PLUGIN_SETTINGS = {
+  id: 'testClientPlugin',
+  title: 'Test Client Plugin',
+  properties: {
+    'testClientPlugin.heartbeat': {
+      type: 'boolean',
+      default: true,
+      label: 'Will My Heart Go On?',
+      description: 'Enable the heart icon in the status bar.'
+    },
+    'testClientPlugin.iconColor': {
+      type: 'text',
+      default: '#10ad73',
+      label: 'Icon color',
+      description: 'Color of the lovely heart icon.'
+    },
+    'testClientPlugin.showAllFields': {
+      type: 'boolean',
+      default: false,
+      label: 'Show all possible form fields',
+    },
 
-export default class TestClient extends Component {
+    'testClientPlugin.textInput': {
+      type: 'text',
+      label: 'Constrained Text Input with Hint',
+      description: 'describing the text input',
+      hint: 'Hint (must be URL)',
 
-  constructor(props) {
+      // showcasing that also absolute path works
+      condition: { property: 'testClientPlugin.showAllFields', equals: true },
+      constraints:{
+        notEmpty: 'This field must be filled',
+        pattern:{
+          value: /(https?:\/\/).*/,
+          message: 'Must be a valid URL'
+        }
+      }
+    },
 
-    super(props);
+    'testClientPlugin.passwordInput': {
+      type: 'password',
+      label: 'Password Input',
+      description: 'describing the password',
+      condition: { property: 'showAllFields', equals: true },
+      constraints: {
+        pattern:{
+          value: 'secret',
+          message: 'Password must be secret'
+        }
+      }
+    },
+    'testClientPlugin.boolean': {
+      type: 'boolean',
+      default: false,
+      label: 'Checkbox',
+      description: 'describing the checkbox',
+      documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
+      condition: { property: 'showAllFields', equals: true },
+      constraints: {
+        pattern: {
+          value: false,
+          message: 'You must uncheck the box'
+        }
+      }
+    },
+    'testClientPlugin.select': {
+      type: 'select',
+      label: 'Select Dropdown',
+      placeholder: 'You need to select second',
+      description: 'describing the select',
+      documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
+      options: [
+        { label: 'First Option', value: 'first' },
+        { label: 'Second Option', value: 'second' },
+        { label: 'Third Option', value: 'third' }
+      ],
+      condition: { property: 'showAllFields', equals: true },
+      constraints: {
+        pattern: 'second'
+      }
+    },
+    'testClientPlugin.radio': {
+      type: 'radio',
+      label: 'Radio for oneOf & matchAll condition',
+      description: 'describing the radio',
+      documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
 
-    const {
-      subscribe,
-      settings
-    } = props;
 
+      options: [
+        { label: 'First Option (show)', value: 'first' },
+        { label: 'Second Option (hide)', value: 'second' },
+        { label: 'Third Option (show)', value: 'third' }
+      ],
+      condition: { property: 'showAllFields', equals: true },
+      constraints: {
+        pattern: 'second'
+      }
+    },
+    'testClientPlugin.conditionOneOfTextField': {
+      type: 'text',
+      label: 'allMatch(equals, oneOf) Text Field',
+      condition: {
+        allMatch: [
+          { property: 'showAllFields', equals: true },
+          { property: 'radio', oneOf: [ 'first', 'third' ] }
+        ]
+      }
+    }
+  }
+};
+
+export default function TestClient(props) {
+
+  const {
+    subscribe,
+    config,
+    settings
+  } = props;
+
+  const [ saveCounter, setSaveCounter ] = useState(0);
+  const [ tabType, setTabType ] = useState(null);
+  const [ showModal, setShowModal ] = useState(false);
+  const [ color, setColor ] = useState('#10ad73');
+  const [ heartbeat, setHeartbeat ] = useState(true);
+
+  const saveCounterRef = useRef(saveCounter);
+  saveCounterRef.current = saveCounter;
+
+  useEffect(() => {
+    settings.register(PLUGIN_SETTINGS);
+
+    const initialValues = settings.get();
+    setColor(initialValues['testClientPlugin.iconColor']);
+    setHeartbeat(initialValues['testClientPlugin.heartbeat']);
+  }, []);
+
+  useEffect(() => {
+    const unsubColor = settings.subscribe('testClientPlugin.iconColor', ({ value }) => {
+      setColor(value);
+    });
+
+    const unsubHeartbeat = settings.subscribe('testClientPlugin.heartbeat', ({ value }) => {
+      setHeartbeat(value);
+    });
+
+    return () => {
+      unsubColor();
+      unsubHeartbeat();
+    };
+  }, []);
+
+  useEffect(() => {
     subscribe('tab.saved', (event) => {
-      const {
-        tab
-      } = event;
-
-      const {
-        saveCounter
-      } = this.state;
-
-      console.log('[TestClient]', 'Tab saved', tab);
-
-      this.setState({
-        saveCounter: saveCounter + 1
-      });
+      console.log('[TestClient]', 'Tab saved', event.tab);
+      setSaveCounter(prev => prev + 1);
     });
 
     subscribe('app.activeTabChanged', ({ activeTab }) => {
-      this.setState({
-        tabType: activeTab.type
-      });
+      setTabType(activeTab.type);
     });
+  }, []);
 
-    const pluginSettings = {
-      id: 'testClientPlugin',
-      title: 'Test Client Plugin',
-      properties: {
-        'testClientPlugin.heartbeat': {
-          type: 'boolean',
-          default: true,
-          label: 'Will My Heart Go On?',
-          description: 'Enable the heart icon in the status bar.'
-        },
-        'testClientPlugin.iconColor': {
-          type: 'text',
-          default: '#10ad73',
-          label: 'Icon color',
-          description: 'Color of the lovely heart icon.'
-        },
-        'testClientPlugin.showAllFields': {
-          type: 'boolean',
-          default: false,
-          label: 'Show all possible form fields',
-        },
-
-        'testClientPlugin.textInput': {
-          type: 'text',
-          label: 'Constrained Text Input with Hint',
-          description: 'describing the text input',
-          hint: 'Hint (must be URL)',
-
-          // showcasing that also absolute path works
-          condition: { property: 'testClientPlugin.showAllFields', equals: true },
-          constraints:{
-            notEmpty: 'This field must be filled',
-            pattern:{
-              value: /(https?:\/\/).*/,
-              message: 'Must be a valid URL'
-            }
-          }
-        },
-
-        'testClientPlugin.passwordInput': {
-          type: 'password',
-          label: 'Password Input',
-          description: 'describing the password',
-          condition: { property: 'showAllFields', equals: true },
-          constraints: {
-            pattern:{
-              value: 'secret',
-              message: 'Password must be secret'
-            }
-          }
-        },
-        'testClientPlugin.boolean': {
-          type: 'boolean',
-          default: false,
-          label: 'Checkbox',
-          description: 'describing the checkbox',
-          documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
-          condition: { property: 'showAllFields', equals: true },
-          constraints: {
-            pattern: {
-              value: false,
-              message: 'You must uncheck the box'
-            }
-          }
-        },
-        'testClientPlugin.select': {
-          type: 'select',
-          label: 'Select Dropdown',
-          placeholder: 'You need to select second',
-          description: 'describing the select',
-          documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
-          options: [
-            { label: 'First Option', value: 'first' },
-            { label: 'Second Option', value: 'second' },
-            { label: 'Third Option', value: 'third' }
-          ],
-          condition: { property: 'showAllFields', equals: true },
-          constraints: {
-            pattern: 'second'
-          }
-        },
-        'testClientPlugin.radio': {
-          type: 'radio',
-          label: 'Radio for oneOf & matchAll condition',
-          description: 'describing the radio',
-          documentationUrl: 'https://docs.camunda.io/docs/apis-tools/camunda-8-api/overview/',
-
-
-          options: [
-            { label: 'First Option (show)', value: 'first' },
-            { label: 'Second Option (hide)', value: 'second' },
-            { label: 'Third Option (show)', value: 'third' }
-          ],
-          condition: { property: 'showAllFields', equals: true },
-          constraints: {
-            pattern: 'second'
-          }
-        },
-        'testClientPlugin.conditionOneOfTextField': {
-          type: 'text',
-          label: 'allMatch(equals, oneOf) Text Field',
-          condition: {
-            allMatch: [
-              { property: 'showAllFields', equals: true },
-              { property: 'radio', oneOf: [ 'first', 'third' ] }
-            ]
-          }
-        }
-      }
-    };
-
-    settings.register(pluginSettings);
-
-    settings.subscribe('testClientPlugin.iconColor', ({ value }) => {
-      this.setState({
-        color: value,
-      });
+  useEffect(() => {
+    config.getForPlugin(PLUGIN_NAME, 'saveCounter', 0).then((value) => {
+      console.log('[TestClient]', 'last session save counter:', value);
     });
-
-    settings.subscribe('testClientPlugin.heartbeat', ({ value }) => {
-      this.setState({
-        heartbeat: value,
-      });
-    });
-
-    this.state = {
-      saveCounter: 0,
-      tabType: null,
-      showModal: false,
-      color: settings.get('testClientPlugin.iconColor'),
-      heartbeat: settings.get('testClientPlugin.heartbeat')
-    };
-  }
-
-  async componentDidMount() {
-
-    const {
-      config
-    } = this.props;
-
-    const saveCounter = await config.getForPlugin(
-      PLUGIN_NAME,
-      'saveCounter',
-      0
-    );
-
-    console.log('[TestClient]', 'last session save counter:', saveCounter);
 
     // cleanup for next session
-    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', 0);
-  }
+    config.setForPlugin(PLUGIN_NAME, 'saveCounter', 0);
+  }, []);
 
-  async componentDidUpdate() {
+  useEffect(() => {
+    config.setForPlugin(PLUGIN_NAME, 'saveCounter', saveCounter);
+  }, [ saveCounter ]);
 
-    const {
-      config
-    } = this.props;
+  return (
+    <Fragment>
+      <Fill slot="toolbar">
+        Saved: { saveCounter }
+      </Fill>
 
-    await config.setForPlugin(PLUGIN_NAME, 'saveCounter', this.state.saveCounter);
-  }
+      {heartbeat && (
+        <Fill slot="status-bar__file">
+          <button
+            type="button"
+            onClick={ () => setShowModal(true) }
+            className="btn"
+            title="Just an icon (test-client plug-in contributed)"
+            style={ { color: '#10ad73' } }>
+            <TestIcon color={ color } />
+          </button>
+        </Fill>
+      )}
 
-  render() {
-
-    const {
-      saveCounter,
-      tabType,
-      color,
-      heartbeat,
-      showModal
-    } = this.state;
-
-    /**
-     * Starting with Camunda Modeler v4.12 the `toolbar`
-     * slot is a no-op.
-     *
-     * Move your features to the `status-bar__file` and
-     * `status-bar__app` slots instead.
-     */
-
-    return (
-      <Fragment>
-        <Fill slot="toolbar">
+      <Fill slot="status-bar__app" group="0_first">
+        <div className="btn" style={ { background: '#10ad73', color: '#FEFEFE' } }>
           Saved: { saveCounter }
-        </Fill>
+        </div>
+      </Fill>
 
-        {heartbeat && (
-          <Fill slot="status-bar__file">
-            <button
-              type="button"
-              onClick={ () => this.setState({ showModal: true }) }
-              className="btn"
-              title="Just an icon (test-client plug-in contributed)"
-              style={ { color: '#10ad73' } }>
-              <TestIcon color={ color } />
-            </button>
-          </Fill>
-        )}
+      {tabType === 'cloud-bpmn' && <Fill slot="bottom-panel" label="Cloud Plugin" id="cloudPlugin">
+        <h1>Hello World</h1>
+      </Fill>
+      }
 
-        <Fill slot="status-bar__app" group="0_first">
-          <div className="btn" style={ { background: '#10ad73', color: '#FEFEFE' } }>
-            Saved: { saveCounter }
-          </div>
-        </Fill>
-
-        {tabType === 'cloud-bpmn' && <Fill slot="bottom-panel" label="Cloud Plugin" id="cloudPlugin">
-          <h1>Hello World</h1>
-        </Fill>
-        }
-
-        {showModal && <CarbonModal onClose={ () => this.setState({ showModal: false }) } />}
-      </Fragment>
-    );
-  }
-
+      {showModal && <CarbonModal onClose={ () => setShowModal(false) } />}
+    </Fragment>
+  );
 }
 
 
