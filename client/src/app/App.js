@@ -139,6 +139,7 @@ export class App extends PureComponent {
     this.navigationHistory = new History();
 
     this.events = new EventEmitter();
+    this.events.setMaxListeners(20);
     this.eventsContext = {
       subscribe: (event, listener) => {
         this.on(event, listener);
