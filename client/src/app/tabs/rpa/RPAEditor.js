@@ -354,9 +354,15 @@ export class RPAEditor extends CachedComponent {
       return;
     }
 
+    const model = monaco.editor.getModel();
+
+    if (!model) {
+      return;
+    }
+
     const undoState = {
-      redo: monaco.editor.getModel().canRedo(),
-      undo: monaco.editor.getModel().canUndo()
+      redo: model.canRedo(),
+      undo: model.canUndo()
     };
 
     const editMenu = getRPAEditMenu(undoState);
