@@ -76,15 +76,21 @@ export default function ConnectionManagerPlugin(props) {
   const statusBarButtonRef = useRef(null);
 
   useEffect(() => {
+    let unsubscribe;
+
     initializeSettings({
       settings,
       connectionChecker: settingsConnectionChecker,
     }).then(() => {
-      settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
+      unsubscribe = settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
         setConnections(connections.value);
       });
       setConnections(deployment.getEndpoints());
     });
+
+    return () => {
+      unsubscribe && unsubscribe();
+    };
   }, [ settings ]);
 
 
