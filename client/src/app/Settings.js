@@ -143,6 +143,11 @@ export default class Settings {
     // Append properties to the group
     forEach(properties, (property, key) => {
 
+      if (this._settings[id].properties[key]) {
+        console.warn(`Setting with key ${key} is already registered. Skipping.`);
+        return;
+      }
+
       this._settings[id].properties[key] = property;
 
       // Set the default value if provided
@@ -168,10 +173,6 @@ export default class Settings {
 
       if (!key.startsWith(`${id}.`)) {
         throw new Error(`Property key ${key} must start with group ID ${id}`);
-      }
-
-      if (this._settings[id]?.properties[key]) {
-        throw new Error(`Setting with key ${key} is already registered`);
       }
     });
   }
