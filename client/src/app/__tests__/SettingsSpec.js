@@ -333,5 +333,22 @@ describe('Settings', function() {
       expect(listener).to.have.been.calledWith({ value: 'test' });
     });
 
+
+    it('should unsubscribe the listener', function() {
+
+      // given
+      const listener = sinon.spy();
+
+      settings.register(settingsMock);
+      const unsubscribe = settings.subscribe('test.name', listener);
+
+      // when
+      unsubscribe();
+      settings.set({ 'test.name': 'foo' });
+
+      // then
+      expect(listener).to.not.have.been.called;
+    });
+
   });
 });
