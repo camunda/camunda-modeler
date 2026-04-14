@@ -6,7 +6,11 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `FIX`: make non-editable FEEL properties read-only ([#5819](https://github.com/camunda/camunda-modeler/issues/5819))
 * `FIX`: show default context menu for text inputs in diagram ([#5803](https://github.com/camunda/camunda-modeler/issues/5803))
+* `DEPS`: update to `@bpmn-io/properties-panel@3.40.6`
 
 ## 5.46.0
 
