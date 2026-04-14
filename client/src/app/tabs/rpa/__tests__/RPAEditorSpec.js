@@ -218,24 +218,32 @@ describe('<RPAEditor>', function() {
 
     describe('behavior', function() {
 
+      // More time for debounced linting
+      this.timeout(3000);
+
       it('should lint on import', async function() {
 
         // given
         const onActionSpy = sinon.spy();
+        const onImportSpy = sinon.spy();
 
         // when
-        renderEditor(RPA, {
-          onAction: onActionSpy
+        const { instance } = renderEditor(RPA, {
+          onAction: onActionSpy,
+          onImport: onImportSpy
         });
+
+        await waitFor(() => {
+          expect(onImportSpy).to.have.been.calledOnce;
+        });
+
+        instance.handleLinting.flush();
 
         // then
-        await waitFor(() => {
-          const calls = onActionSpy.getCalls()
-            .filter(call => call.args[0] === 'lint-tab');
+        const calls = onActionSpy.getCalls()
+          .filter(call => call.args[0] === 'lint-tab');
 
-          expect(calls).to.have.lengthOf(1);
-        });
-
+        expect(calls).to.have.lengthOf(1);
       });
 
 
@@ -243,18 +251,18 @@ describe('<RPAEditor>', function() {
 
         // given
         const onActionSpy = sinon.spy();
+        const onImportSpy = sinon.spy();
 
         const { instance } = renderEditor(RPA, {
-          onAction: onActionSpy
+          onAction: onActionSpy,
+          onImport: onImportSpy
         });
-
 
         await waitFor(() => {
-          const calls = onActionSpy.getCalls()
-            .filter(call => call.args[0] === 'lint-tab');
-
-          expect(calls).to.have.lengthOf(1);
+          expect(onImportSpy).to.have.been.calledOnce;
         });
+
+        instance.handleLinting.flush();
 
         // when
         const { editor } = instance.getCached();
@@ -263,13 +271,13 @@ describe('<RPAEditor>', function() {
           editor.eventBus.fire('model.changed');
         });
 
-        await waitFor(() => {
-          const calls = onActionSpy.getCalls()
-            .filter(call => call.args[0] === 'lint-tab');
+        instance.handleLinting.flush();
 
-          // then
-          expect(calls).to.have.lengthOf(2);
-        });
+        // then
+        const calls = onActionSpy.getCalls()
+          .filter(call => call.args[0] === 'lint-tab');
+
+        expect(calls).to.have.lengthOf(2);
       });
 
 
@@ -277,13 +285,21 @@ describe('<RPAEditor>', function() {
 
         // given
         const onActionSpy = sinon.spy();
+        const onImportSpy = sinon.spy();
 
         const {
           instance,
           unmount
         } = renderEditor(RPA, {
-          onAction: onActionSpy
+          onAction: onActionSpy,
+          onImport: onImportSpy
         });
+
+        await waitFor(() => {
+          expect(onImportSpy).to.have.been.calledOnce;
+        });
+
+        instance.handleLinting.flush();
 
         const { editor } = instance.getCached();
 
@@ -292,13 +308,11 @@ describe('<RPAEditor>', function() {
 
         editor.eventBus.fire('model.changed');
 
-        await waitFor(() => {
-          const calls = onActionSpy.getCalls()
-            .filter(call => call.args[0] === 'lint-tab');
+        // then
+        const calls = onActionSpy.getCalls()
+          .filter(call => call.args[0] === 'lint-tab');
 
-          // then
-          expect(calls).to.have.lengthOf(1);
-        });
+        expect(calls).to.have.lengthOf(1);
       });
 
 
