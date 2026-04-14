@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import Fill from 'camunda-modeler-plugin-helpers/components/Fill';
 
@@ -140,9 +140,6 @@ export default function TestClient(props) {
   const [ showModal, setShowModal ] = useState(false);
   const [ color, setColor ] = useState('#10ad73');
   const [ heartbeat, setHeartbeat ] = useState(true);
-
-  const saveCounterRef = useRef(saveCounter);
-  saveCounterRef.current = saveCounter;
 
   useEffect(() => {
     settings.register(PLUGIN_SETTINGS);
