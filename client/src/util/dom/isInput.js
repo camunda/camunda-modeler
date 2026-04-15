@@ -16,6 +16,17 @@ export function isInput(element) {
   );
 }
 
+/**
+ * Check if given element or any ancestor is a text input.
+ *
+ * @param {Element} element
+ *
+ * @returns {boolean}
+ */
+export function isTextInput(element) {
+  return element.closest('input, textarea, [contenteditable="true"]') !== null;
+}
+
 export function active(element) {
   element = element || document.activeElement;
 
