@@ -937,6 +937,71 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
   });
 
 
+  describe('#handleContextMenu', function() {
+
+    it('should call onContextMenu for non-input elements', async function() {
+
+      // given
+      const onContextMenuSpy = spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        onContextMenu: onContextMenuSpy
+      });
+
+      const div = document.createElement('div');
+      const event = { target: div };
+
+      // when
+      instance.handleContextMenu(event);
+
+      // then
+      expect(onContextMenuSpy).to.have.been.calledOnceWith(event);
+    });
+
+
+    it('should NOT call onContextMenu for text inputs', async function() {
+
+      // given
+      const onContextMenuSpy = spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        onContextMenu: onContextMenuSpy
+      });
+
+      const textarea = document.createElement('textarea');
+      const event = { target: textarea };
+
+      // when
+      instance.handleContextMenu(event);
+
+      // then
+      expect(onContextMenuSpy).to.not.have.been.called;
+    });
+
+
+    it('should NOT call onContextMenu for contentEditable elements', async function() {
+
+      // given
+      const onContextMenuSpy = spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        onContextMenu: onContextMenuSpy
+      });
+
+      const div = document.createElement('div');
+      div.setAttribute('contenteditable', 'true');
+      const event = { target: div };
+
+      // when
+      instance.handleContextMenu(event);
+
+      // then
+      expect(onContextMenuSpy).to.not.have.been.called;
+    });
+
+  });
+
+
   describe('#triggerAction', function() {
 
     it('should return value of editor action', async function() {

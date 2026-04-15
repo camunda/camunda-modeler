@@ -34,7 +34,7 @@ import PropertiesPanelTabActionItem from '../../resizable-container/PropertiesPa
 
 import BpmnModeler from './modeler';
 
-import { active as isInputActive } from '../../../util/dom/isInput';
+import { active as isInputActive, isTextInput } from '../../../util/dom/isInput';
 
 import getBpmnContextMenu from './getBpmnContextMenu';
 
@@ -779,6 +779,12 @@ export class BpmnEditor extends CachedComponent {
   };
 
   handleContextMenu = (event) => {
+
+    // allow default context menu for text inputs,
+    // e.g. FEEL popup or direct editing
+    if (isTextInput(event.target)) {
+      return;
+    }
 
     const {
       onContextMenu
