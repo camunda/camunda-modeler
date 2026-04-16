@@ -34,14 +34,14 @@ const TIMER_CHIPS = [
  * @param {function} props.onBack    - called when user goes back to the type picker
  * @param {function} props.onSkip   - called when user skips config (place with no config)
  */
-export default function StartEventWizard({ eventTypeId, onConfirm, onBack, onSkip }) {
+export default function StartEventWizard({ eventTypeId, onConfirm, onBack, onSkip, startEventTemplates = [] }) {
   const sharedProps = { onConfirm, onBack, onSkip };
 
   switch (eventTypeId) {
     case 'timer':   return <TimerWizard   { ...sharedProps } />;
     case 'message': return <MessageWizard { ...sharedProps } />;
     case 'signal':  return <SignalWizard  { ...sharedProps } />;
-    case 'webhook': return <WebhookWizard { ...sharedProps } />;
+    case 'webhook': return <WebhookWizard { ...sharedProps } templates={ startEventTemplates } />;
     default:        return null;
   }
 }
@@ -283,47 +283,61 @@ function SignalWizard({ onConfirm, onBack, onSkip }) {
 
 // ─── Webhook ─────────────────────────────────────────────────────────────────
 
-function WebhookWizard({ onConfirm, onBack, onSkip }) {
-  const [ webhookId, setWebhookId ] = useState(
-    () => `webhook-${Math.random().toString(36).slice(2, 8)}`
-  );
-  const [ method, setMethod ] = useState('POST');
+function WebhookWizard({ templates, onConfirm, onBack, onSkip }) {
+  const [ selected, setSelected ] = useState(null);
+
+  const handleConfirm = () => {
+    if (!selected) return;
+    onConfirm({ template: selected });
+  };
+
+  // No templates installed — skip straight to canvas (connector not available)
+  if (!templates || templates.length === 0) {
+    return (
+      <WizardShell
+        heading="No inbound connector templates found"
+        onBack={ onBack }
+        onSkip={ onSkip }
+        onConfirm={ () => onConfirm({}) }
+        confirmLabel="Add plain message start event"
+      >
+        <p className={ css.fieldHelp }>
+          No connector templates are installed for this modeler. A plain Message Start Event will be placed.
+          You can configure it further in the properties panel.
+        </p>
+      </WizardShell>
+    );
+  }
 
   return (
     <WizardShell
-      heading="Configure the webhook"
+      heading="Which connector should trigger this?"
       onBack={ onBack }
       onSkip={ onSkip }
-      onConfirm={ () => onConfirm({ webhookId: webhookId.trim(), webhookMethod: method }) }
-      confirmDisabled={ !webhookId.trim() }
+      onConfirm={ handleConfirm }
+      confirmDisabled={ !selected }
     >
-      <p className={ css.fieldLabel }>Webhook path</p>
-      <input
-        className={ css.wizardInput }
-        value={ webhookId }
-        onChange={ e => setWebhookId(e.target.value) }
-        placeholder="e.g. new-order"
-        autoFocus
-      />
-      <p className={ css.fieldHelp }>
-        This becomes part of the URL external tools call. The full URL is shown in the properties panel after deployment.
+      <p className={ css.fieldHelp } style={ { marginBottom: 10 } }>
+        These are the inbound connector templates available in this modeler.
       </p>
 
-      <p className={ css.fieldLabel } style={ { marginTop: 16 } }>HTTP method</p>
-      <select
-        className={ css.wizardInput }
-        value={ method }
-        onChange={ e => setMethod(e.target.value) }
-      >
-        <option value="POST">POST</option>
-        <option value="GET">GET</option>
-        <option value="PUT">PUT</option>
-        <option value="PATCH">PATCH</option>
-        <option value="any">Any</option>
-      </select>
-      <p className={ css.fieldHelp }>
-        Most integrations use POST. Change this only if you know the calling system requires something different.
-      </p>
+      <ul className={ css.templateList }>
+        { templates.map(t => (
+          <li
+            key={ t.id }
+            className={ `${css.templateItem} ${selected && selected.id === t.id ? css.templateItemSelected : ''}` }
+            onClick={ () => setSelected(t) }
+            tabIndex={ 0 }
+            onKeyDown={ e => (e.key === 'Enter' || e.key === ' ') && setSelected(t) }
+          >
+            { t.icon
+              ? <img className={ css.templateIcon } src={ t.icon.contents } alt="" />
+              : <span className={ css.templateIconFallback }>⚡</span>
+            }
+            <span className={ css.templateName }>{ t.name }</span>
+          </li>
+        )) }
+      </ul>
     </WizardShell>
   );
 }

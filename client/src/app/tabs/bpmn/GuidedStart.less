@@ -483,6 +483,65 @@
   margin-left: 4px;
 }
 
+:local(.templateList) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+:local(.templateItem) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.1s, background 0.1s;
+
+  &:hover {
+    border-color: #1a6ed8;
+    background: #f0f5ff;
+  }
+
+  &:focus {
+    outline: 2px solid #1a6ed8;
+    outline-offset: -2px;
+  }
+}
+
+:local(.templateItemSelected) {
+  border-color: #1a6ed8;
+  background: #e8f0fd;
+}
+
+:local(.templateIcon) {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+:local(.templateIconFallback) {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  font-size: 14px;
+  text-align: center;
+  line-height: 20px;
+}
+
+:local(.templateName) {
+  font-size: 13px;
+  font-family: var(--font-family, sans-serif);
+  color: #1a1a1a;
+}
+
 :local(.infoBox) {
   margin-top: 12px;
   padding: 10px 12px;

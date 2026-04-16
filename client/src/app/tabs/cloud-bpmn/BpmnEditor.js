@@ -302,25 +302,17 @@ export class BpmnEditor extends CachedComponent {
       y: Math.round(viewbox.y + viewbox.height / 2)
     };
 
-    // For webhook, try to use the Webhook Start Event Connector template if available
-    if (eventTypeId === 'webhook' && elementTemplates) {
-      const webhookTemplate = elementTemplates.getAll().find(t =>
-        t.name && t.name.toLowerCase().includes('webhook') &&
-        t.appliesTo && t.appliesTo.some(a => a.includes('StartEvent'))
-      );
+    // If the wizard selected a specific connector template, use it directly
+    if (config.template && elementTemplates) {
+      const shape = elementTemplates.createElement(config.template);
+      modeling.createShape(shape, position, rootElement);
 
-      if (webhookTemplate) {
-        const shape = elementTemplates.createElement(webhookTemplate);
-        modeling.createShape(shape, position, rootElement);
-
-        // Auto-open properties panel
-        const { layout } = this.props;
-        const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
-        this.handleLayoutChange({
-          sidePanel: { ...SIDE_PANEL_DEFAULT_LAYOUT, ...sidePanelLayout, open: true, tab: 'properties' }
-        });
-        return;
-      }
+      const { layout } = this.props;
+      const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+      this.handleLayoutChange({
+        sidePanel: { ...SIDE_PANEL_DEFAULT_LAYOUT, ...sidePanelLayout, open: true, tab: 'properties' }
+      });
+      return;
     }
 
     const EVENT_DEFINITION_MAP = {
@@ -1011,6 +1003,14 @@ export class BpmnEditor extends CachedComponent {
       aiPanelOpen
     } = this.state;
 
+    // Collect all start event connector templates available in this modeler instance
+    const elementTemplates = modeler.get('elementTemplates', false);
+    const startEventTemplates = elementTemplates
+      ? elementTemplates.getLatest().filter(t =>
+          t.appliesTo && t.appliesTo.some(a => a === 'bpmn:StartEvent')
+        )
+      : [];
+
     return (
       <div className={ css.BpmnEditor }>
 
@@ -1029,6 +1029,7 @@ export class BpmnEditor extends CachedComponent {
               <EmptyCanvasOverlay
                 onStartEventSelect={ this.handleStartEventSelect }
                 onOpenAiPanel={ this.openAiPanel }
+                startEventTemplates={ startEventTemplates }
               />
             ) }
           </div>

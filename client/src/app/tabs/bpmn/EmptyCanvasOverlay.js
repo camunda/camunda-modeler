@@ -26,7 +26,7 @@ const WIZARD_TYPES = new Set([ 'timer', 'message', 'signal', 'webhook' ]);
  * @param {function} props.onStartEventSelect - called with (eventTypeId, config)
  * @param {function} props.onOpenAiPanel
  */
-export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel }) {
+export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel, startEventTemplates = [] }) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ wizardType, setWizardType ] = useState(null);
 
@@ -98,6 +98,7 @@ export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel }
           onConfirm={ handleWizardConfirm }
           onBack={ handleWizardBack }
           onSkip={ handleWizardSkip }
+          startEventTemplates={ startEventTemplates }
         />
       ) }
     </div>
