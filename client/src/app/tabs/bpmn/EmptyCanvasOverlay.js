@@ -11,27 +11,54 @@
 import React, { useState } from 'react';
 
 import StartEventDialog from './StartEventDialog';
+import StartEventWizard from './StartEventWizard';
 
 import * as css from './GuidedStart.less';
 
+// Types that have a Step 2 wizard
+const WIZARD_TYPES = new Set([ 'timer', 'message', 'signal', 'webhook' ]);
 
 /**
- * Overlay shown on an empty BPMN canvas offering two equal entry points:
- * - Guided start: pick a start event type
- * - Start with AI: open the AI assistance panel
+ * Overlay shown on an empty BPMN canvas offering two equal entry points.
+ * Manages a two-step flow: type picker (Step 1) → mini-wizard (Step 2).
  *
  * @param {object} props
- * @param {function} props.onStartEventSelect - called with the selected event type id
- * @param {function} props.onOpenAiPanel - called when "Start with AI" is clicked
+ * @param {function} props.onStartEventSelect - called with (eventTypeId, config)
+ * @param {function} props.onOpenAiPanel
  */
 export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel }) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
+  const [ wizardType, setWizardType ] = useState(null);
 
-  const handleDialogClose = () => setDialogOpen(false);
-
-  const handleSelect = (eventTypeId) => {
+  // Step 1 → Step 2
+  const handleTypeSelect = (typeId) => {
     setDialogOpen(false);
-    onStartEventSelect(eventTypeId);
+    if (WIZARD_TYPES.has(typeId)) {
+      setWizardType(typeId);
+    } else {
+      // form / manual — place immediately with no config
+      onStartEventSelect(typeId, {});
+    }
+  };
+
+  // Step 2 confirm — place with collected config
+  const handleWizardConfirm = (config) => {
+    const type = wizardType;
+    setWizardType(null);
+    onStartEventSelect(type, config);
+  };
+
+  // Step 2 → Step 1
+  const handleWizardBack = () => {
+    setWizardType(null);
+    setDialogOpen(true);
+  };
+
+  // Skip wizard — place with no config
+  const handleWizardSkip = () => {
+    const type = wizardType;
+    setWizardType(null);
+    onStartEventSelect(type, {});
   };
 
   return (
@@ -60,8 +87,17 @@ export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel }
 
       { dialogOpen && (
         <StartEventDialog
-          onSelect={ handleSelect }
-          onClose={ handleDialogClose }
+          onSelect={ handleTypeSelect }
+          onClose={ () => setDialogOpen(false) }
+        />
+      ) }
+
+      { wizardType && (
+        <StartEventWizard
+          eventTypeId={ wizardType }
+          onConfirm={ handleWizardConfirm }
+          onBack={ handleWizardBack }
+          onSkip={ handleWizardSkip }
         />
       ) }
     </div>

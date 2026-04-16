@@ -288,7 +288,7 @@ export class BpmnEditor extends CachedComponent {
     this.setState({ isCanvasEmpty });
   };
 
-  handleStartEventSelect = (eventTypeId) => {
+  handleStartEventSelect = (eventTypeId, config = {}) => {
     const modeler = this.getModeler();
     const modeling = modeler.get('modeling');
     const elementFactory = modeler.get('elementFactory');
@@ -337,8 +337,11 @@ export class BpmnEditor extends CachedComponent {
       shapeAttrs.eventDefinitionType = eventDefinitionType;
     }
 
-    const shape = elementFactory.createShape(shapeAttrs);
-    modeling.createShape(shape, position, rootElement);
+    const shapeElement = elementFactory.createShape(shapeAttrs);
+    const placedShape = modeling.createShape(shapeElement, position, rootElement);
+
+    // Apply wizard config to the placed element
+    this._applyStartEventConfig(placedShape, eventTypeId, config);
 
     // Auto-open properties panel so the user can configure the element immediately
     const { layout } = this.props;
@@ -351,6 +354,39 @@ export class BpmnEditor extends CachedComponent {
         tab: 'properties'
       }
     });
+  };
+
+  _applyStartEventConfig = (shape, eventTypeId, config) => {
+    if (!config || !Object.keys(config).length) return;
+
+    const modeler = this.getModeler();
+    const modeling = modeler.get('modeling');
+    const bpmnFactory = modeler.get('bpmnFactory');
+
+    // Timer: write timeCycle / timeDate onto the event definition
+    if (config.timer) {
+      const eventDef = shape.businessObject.eventDefinitions &&
+                       shape.businessObject.eventDefinitions[0];
+      if (eventDef) {
+        modeling.updateModdleProperties(shape, eventDef, {
+          [config.timer.type]: bpmnFactory.create('bpmn:FormalExpression', {
+            body: config.timer.value
+          })
+        });
+      }
+    }
+
+    // Message / Signal: set a readable label on the element
+    if (config.messageName) {
+      modeling.updateProperties(shape, { name: config.messageName });
+    }
+
+    if (config.signalName) {
+      modeling.updateProperties(shape, { name: config.signalName });
+    }
+
+    // Webhook: connector template is already applied — nothing more to do here
+    // (webhookId / webhookMethod are set in the connector template properties panel)
   };
 
   openAiPanel = () => {
