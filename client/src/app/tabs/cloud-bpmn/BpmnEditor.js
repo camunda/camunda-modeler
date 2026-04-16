@@ -26,7 +26,10 @@ import {
   CachedComponent
 } from '../../cached';
 
-import { Settings } from '@carbon/icons-react';
+import { Bot, Settings } from '@carbon/icons-react';
+
+import EmptyCanvasOverlay from '../bpmn/EmptyCanvasOverlay';
+import AiSidePanelTab from '../bpmn/AiSidePanelTab';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
@@ -90,7 +93,9 @@ export class BpmnEditor extends CachedComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      isCanvasEmpty: true
+    };
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
@@ -255,6 +260,9 @@ export class BpmnEditor extends CachedComponent {
       modeler[fn](event, this.handleChanged);
     });
 
+    modeler[fn]('import.done', this.checkCanvasEmpty);
+    modeler[fn]('commandStack.changed', this.checkCanvasEmpty);
+
     modeler[fn]('propertiesPanel.showEntry', this.handleShowEntry);
 
     modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
@@ -271,6 +279,58 @@ export class BpmnEditor extends CachedComponent {
       modeler[ fn ]('commandStack.changed', this.handleLintingDebounced);
     }
   }
+
+  checkCanvasEmpty = () => {
+    const modeler = this.getModeler();
+    const elementRegistry = modeler.get('elementRegistry');
+    const isCanvasEmpty = elementRegistry.getAll().length <= 1;
+    this.setState({ isCanvasEmpty });
+  };
+
+  handleStartEventSelect = (eventTypeId) => {
+    const modeler = this.getModeler();
+    const modeling = modeler.get('modeling');
+    const elementFactory = modeler.get('elementFactory');
+    const canvas = modeler.get('canvas');
+
+    const rootElement = canvas.getRootElement();
+    const viewbox = canvas.viewbox();
+    const position = {
+      x: Math.round(viewbox.x + viewbox.width / 2),
+      y: Math.round(viewbox.y + viewbox.height / 2)
+    };
+
+    const EVENT_DEFINITION_MAP = {
+      timer: 'bpmn:TimerEventDefinition',
+      message: 'bpmn:MessageEventDefinition',
+      webhook: 'bpmn:MessageEventDefinition',
+      signal: 'bpmn:SignalEventDefinition'
+    };
+
+    const eventDefinitionType = EVENT_DEFINITION_MAP[eventTypeId];
+    const shapeAttrs = { type: 'bpmn:StartEvent' };
+
+    if (eventDefinitionType) {
+      shapeAttrs.eventDefinitionType = eventDefinitionType;
+    }
+
+    const shape = elementFactory.createShape(shapeAttrs);
+    modeling.createShape(shape, position, rootElement);
+  };
+
+  openAiPanel = () => {
+    const { layout } = this.props;
+    const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+
+    this.handleLayoutChange({
+      sidePanel: {
+        ...SIDE_PANEL_DEFAULT_LAYOUT,
+        ...sidePanelLayout,
+        open: true,
+        tab: 'ai-start'
+      }
+    });
+  };
 
   handlePropertiesPanelLayoutChange(e) {
     this.handleLayoutChange({
@@ -876,7 +936,8 @@ export class BpmnEditor extends CachedComponent {
     const injector = modeler.get('injector');
 
     const {
-      importing
+      importing,
+      isCanvasEmpty
     } = this.state;
 
     return (
@@ -885,12 +946,21 @@ export class BpmnEditor extends CachedComponent {
         <Loader hidden={ imported && !importing } />
 
         <div className="editor">
-          <div
-            className="diagram"
-            ref={ this.ref }
-            onFocus={ this.handleChanged }
-            onContextMenu={ this.handleContextMenu }
-          ></div>
+          <div className="diagram-area">
+            <div
+              className="diagram"
+              ref={ this.ref }
+              onFocus={ this.handleChanged }
+              onContextMenu={ this.handleContextMenu }
+            ></div>
+
+            { imported && !importing && isCanvasEmpty && (
+              <EmptyCanvasOverlay
+                onStartEventSelect={ this.handleStartEventSelect }
+                onOpenAiPanel={ this.openAiPanel }
+              />
+            ) }
+          </div>
 
           <VariablesSidePanel
             injector={ injector }
@@ -938,6 +1008,9 @@ export class BpmnEditor extends CachedComponent {
                 startInstance={ startInstance }
                 zeebeApi={ zeebeApi }
               />
+            </SidePanel.Tab>
+            <SidePanel.Tab id="ai-start" label="AI" icon={ Bot }>
+              <AiSidePanelTab />
             </SidePanel.Tab>
           </SidePanel>
 

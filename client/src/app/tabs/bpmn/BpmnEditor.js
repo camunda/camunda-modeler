@@ -886,19 +886,21 @@ export class BpmnEditor extends CachedComponent {
         <Loader hidden={ imported && !importing } />
 
         <div className="editor">
-          <div
-            className="diagram"
-            ref={ this.ref }
-            onFocus={ this.handleChanged }
-            onContextMenu={ this.handleContextMenu }
-          ></div>
+          <div className="diagram-area">
+            <div
+              className="diagram"
+              ref={ this.ref }
+              onFocus={ this.handleChanged }
+              onContextMenu={ this.handleContextMenu }
+            ></div>
 
-          { imported && !importing && isCanvasEmpty && (
-            <EmptyCanvasOverlay
-              onStartEventSelect={ this.handleStartEventSelect }
-              onOpenAiPanel={ this.openAiPanel }
-            />
-          ) }
+            { imported && !importing && isCanvasEmpty && (
+              <EmptyCanvasOverlay
+                onStartEventSelect={ this.handleStartEventSelect }
+                onOpenAiPanel={ this.openAiPanel }
+              />
+            ) }
+          </div>
 
           <SidePanel
             layout={ layout }
