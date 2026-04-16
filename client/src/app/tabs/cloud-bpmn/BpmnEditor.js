@@ -332,6 +332,15 @@ export class BpmnEditor extends CachedComponent {
   };
 
   openAiPanel = () => {
+    const { layout } = this.props;
+    const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+    this.handleLayoutChange({
+      sidePanel: {
+        ...SIDE_PANEL_DEFAULT_LAYOUT,
+        ...sidePanelLayout,
+        open: false
+      }
+    });
     this.setState({ aiPanelOpen: true });
   };
 

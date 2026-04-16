@@ -76,8 +76,8 @@ export default function AiPanel({ onClose }) {
         </ul>
 
         <div className={ css.aiSidePanelFooter }>
-          <p>⚡ Available in <strong>Web Modeler</strong> today</p>
-          <p>📅 Coming to Desktop Modeler in <strong>8.10</strong></p>
+          <p>⚡ Available in <strong>Web Modeler</strong> in 8.10</p>
+          <p>📅 Coming to Desktop Modeler later</p>
         </div>
       </div>
     </div>
