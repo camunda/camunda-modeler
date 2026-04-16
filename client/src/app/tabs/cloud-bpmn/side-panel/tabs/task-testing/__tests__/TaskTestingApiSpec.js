@@ -48,6 +48,35 @@ describe('<TaskTestingApi>', function() {
     });
 
 
+    it('should return Operate URL for SaaS 8.9', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/v2'
+            };
+          }
+        }),
+        null,
+        null,
+        {
+          path: 'path/to/file.bpmn'
+        },
+        null
+      );
+
+
+      // when
+      const operateUrl = await api.getOperateUrl();
+
+      // then
+      expect(operateUrl).to.equal('https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/operate');
+    });
+
+
     it('should return Operate URL for SM', async function() {
 
       // given
@@ -193,6 +222,35 @@ describe('<TaskTestingApi>', function() {
 
       // then
       expect(tasklistUrl).to.equal('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should return Tasklist URL for SaaS 8.9', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/v2'
+            };
+          }
+        }),
+        null,
+        null,
+        {
+          path: 'path/to/file.bpmn'
+        },
+        null
+      );
+
+
+      // when
+      const tasklistUrl = await api.getTasklistUrl();
+
+      // then
+      expect(tasklistUrl).to.equal('https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/tasklist');
     });
 
 
