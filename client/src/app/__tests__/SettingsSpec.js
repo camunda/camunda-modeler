@@ -179,6 +179,17 @@ describe('Settings', function() {
     });
 
 
+    it('should allow re-registration after unregistration', function() {
+
+      // given
+      settings.register(settingsMock);
+      settings.unregister(settingsMock.id);
+
+      // when / then
+      expect(() => settings.register(settingsMock)).not.to.throw();
+    });
+
+
     it('should throw error when property ID does not start with group ID', function() {
 
       // given

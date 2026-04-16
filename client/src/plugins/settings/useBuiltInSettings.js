@@ -25,6 +25,7 @@ export default function useBuiltInSettings(settings) {
 
   useEffect(() => {
     settings.register(schema);
+    return () => settings.unregister(schema.id);
   }, []);
 }
 

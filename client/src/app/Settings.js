@@ -177,6 +177,22 @@ export default class Settings {
   }
 
   /**
+   * Unregister a settings group and all its properties.
+   *
+   * @param {string} id
+   */
+  unregister(id) {
+    const group = this._settings[id];
+    if (!group) return;
+
+    forEach(group.properties, (_, key) => {
+      delete this._defaults[key];
+    });
+
+    delete this._settings[id];
+  }
+
+  /**
    * Get value for the specified setting or all settings if no key is provided.
    *
    * If a setting is controlled by a flag and the flag is set,
