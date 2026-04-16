@@ -60,7 +60,7 @@ const REGEXES = {
   URL: /^(http|grpc)s?:\/\//,
   OPTIONAL_HTTP_URL: /^$|^https?:\/\/\S+$/,
   CAMUNDA_CLOUD_GRPC_URL: /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?$/,
-  CAMUNDA_CLOUD_REST_URL: /^https:\/\/[a-z]+-\d+\.(zeebe|api)\.camunda\.io(:443|)\/[a-z\d-]+\/?$/
+  CAMUNDA_CLOUD_REST_URL: /^https:\/\/[a-z]+-\d+\.(zeebe|api)\.camunda\.io(:443|)\/[a-z\d-]+(?:\/v2)?\/?$/
 };
 REGEXES.CAMUNDA_CLOUD_URL = new RegExp(
   `${REGEXES.CAMUNDA_CLOUD_GRPC_URL.source}|${REGEXES.CAMUNDA_CLOUD_REST_URL.source}`
