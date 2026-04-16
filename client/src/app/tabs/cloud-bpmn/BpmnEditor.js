@@ -293,6 +293,7 @@ export class BpmnEditor extends CachedComponent {
     const modeling = modeler.get('modeling');
     const elementFactory = modeler.get('elementFactory');
     const canvas = modeler.get('canvas');
+    const elementTemplates = modeler.get('elementTemplates', false);
 
     const rootElement = canvas.getRootElement();
     const viewbox = canvas.viewbox();
@@ -300,6 +301,27 @@ export class BpmnEditor extends CachedComponent {
       x: Math.round(viewbox.x + viewbox.width / 2),
       y: Math.round(viewbox.y + viewbox.height / 2)
     };
+
+    // For webhook, try to use the Webhook Start Event Connector template if available
+    if (eventTypeId === 'webhook' && elementTemplates) {
+      const webhookTemplate = elementTemplates.getAll().find(t =>
+        t.name && t.name.toLowerCase().includes('webhook') &&
+        t.appliesTo && t.appliesTo.some(a => a.includes('StartEvent'))
+      );
+
+      if (webhookTemplate) {
+        const shape = elementTemplates.createElement(webhookTemplate);
+        modeling.createShape(shape, position, rootElement);
+
+        // Auto-open properties panel
+        const { layout } = this.props;
+        const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+        this.handleLayoutChange({
+          sidePanel: { ...SIDE_PANEL_DEFAULT_LAYOUT, ...sidePanelLayout, open: true, tab: 'properties' }
+        });
+        return;
+      }
+    }
 
     const EVENT_DEFINITION_MAP = {
       timer: 'bpmn:TimerEventDefinition',
