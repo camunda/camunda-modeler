@@ -131,14 +131,16 @@ export class FormEditor extends CachedComponent {
   componentWillUnmount() {
     this._isMounted = false;
 
-    const { form } = this.getCached();
+    const { form, lastSchema } = this.getCached();
 
     form.detach();
 
-    // notify current dragula instance to properly destroy from editor
-    form.getEditor().get('eventBus').fire('detach');
+    if (lastSchema) {
 
-    this.listen('off');
+      // notify current dragula instance to properly destroy from editor
+      form.getEditor().get('eventBus').fire('detach');
+      this.listen('off');
+    }
   }
 
   componentDidUpdate(prevProps) {
