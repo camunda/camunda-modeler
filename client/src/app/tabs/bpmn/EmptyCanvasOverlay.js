@@ -42,7 +42,7 @@ export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel }
           className={ css.primaryBtn }
           onClick={ handleStartProcess }
         >
-          + Start a process
+          Start modeling
         </button>
 
         <button

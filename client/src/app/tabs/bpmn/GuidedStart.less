@@ -169,37 +169,121 @@
 }
 
 
-// ---- AI side panel tab ----
+// ---- AI standalone side panel ----
 
-:local(.aiPanel) {
+:local(.aiSidePanel) {
   display: flex;
   flex-direction: column;
+  width: 272px;
+  min-width: 272px;
+  background: white;
+  border-left: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+:local(.aiSidePanelHeader) {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 32px 24px;
-  height: 100%;
-  box-sizing: border-box;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
 }
 
-:local(.aiPanelIcon) {
-  font-size: 32px;
-  margin-bottom: 16px;
-  color: #1a6ed8;
-}
-
-:local(.aiPanelHeading) {
-  font-size: 15px;
+:local(.aiSidePanelTitle) {
+  font-size: 13px;
   font-weight: 600;
   font-family: var(--font-family, sans-serif);
   color: #1a1a1a;
+}
+
+:local(.aiSidePanelClose) {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: #999;
+  padding: 0 2px;
+  line-height: 1;
+
+  &:hover {
+    color: #1a1a1a;
+  }
+}
+
+:local(.aiSidePanelBody) {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px;
+}
+
+:local(.aiSidePanelIntro) {
+  font-size: 12px;
+  font-family: var(--font-family, sans-serif);
+  color: #888;
   margin: 0 0 12px;
 }
 
-:local(.aiPanelText) {
-  font-size: 13px;
-  font-family: var(--font-family, sans-serif);
-  color: #555;
-  line-height: 1.6;
+:local(.aiOptionList) {
+  list-style: none;
   margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+:local(.aiOption) {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  cursor: default;
+
+  &:hover {
+    border-color: #1a6ed8;
+    background: #f0f5ff;
+  }
+}
+
+:local(.aiOptionIcon) {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+:local(.aiOptionText) {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+:local(.aiOptionLabel) {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family, sans-serif);
+  color: #1a1a1a;
+}
+
+:local(.aiOptionDesc) {
+  font-size: 11px;
+  font-family: var(--font-family, sans-serif);
+  color: #666;
+  line-height: 1.4;
+}
+
+:local(.aiSidePanelFooter) {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid #e8e8e8;
+  font-size: 12px;
+  font-family: var(--font-family, sans-serif);
+  color: #888;
+  line-height: 1.8;
+
+  p {
+    margin: 0;
+  }
 }

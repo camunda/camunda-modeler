@@ -26,10 +26,10 @@ import {
   CachedComponent
 } from '../../cached';
 
-import { Bot, Settings } from '@carbon/icons-react';
+import { Settings } from '@carbon/icons-react';
 
 import EmptyCanvasOverlay from '../bpmn/EmptyCanvasOverlay';
-import AiSidePanelTab from '../bpmn/AiSidePanelTab';
+import AiPanel from '../bpmn/AiPanel';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
@@ -94,7 +94,8 @@ export class BpmnEditor extends CachedComponent {
     super(props);
 
     this.state = {
-      isCanvasEmpty: true
+      isCanvasEmpty: true,
+      aiPanelOpen: false
     };
 
     this.ref = React.createRef();
@@ -316,20 +317,22 @@ export class BpmnEditor extends CachedComponent {
 
     const shape = elementFactory.createShape(shapeAttrs);
     modeling.createShape(shape, position, rootElement);
-  };
 
-  openAiPanel = () => {
+    // Auto-open properties panel so the user can configure the element immediately
     const { layout } = this.props;
     const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
-
     this.handleLayoutChange({
       sidePanel: {
         ...SIDE_PANEL_DEFAULT_LAYOUT,
         ...sidePanelLayout,
         open: true,
-        tab: 'ai-start'
+        tab: 'properties'
       }
     });
+  };
+
+  openAiPanel = () => {
+    this.setState({ aiPanelOpen: true });
   };
 
   handlePropertiesPanelLayoutChange(e) {
@@ -937,7 +940,8 @@ export class BpmnEditor extends CachedComponent {
 
     const {
       importing,
-      isCanvasEmpty
+      isCanvasEmpty,
+      aiPanelOpen
     } = this.state;
 
     return (
@@ -1009,10 +1013,11 @@ export class BpmnEditor extends CachedComponent {
                 zeebeApi={ zeebeApi }
               />
             </SidePanel.Tab>
-            <SidePanel.Tab id="ai-start" label="AI" icon={ Bot }>
-              <AiSidePanelTab />
-            </SidePanel.Tab>
           </SidePanel>
+
+          { aiPanelOpen && (
+            <AiPanel onClose={ () => this.setState({ aiPanelOpen: false }) } />
+          ) }
 
           <PropertiesPanelTabActionItem
             layout={ layout }
