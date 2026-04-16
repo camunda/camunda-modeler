@@ -59,6 +59,18 @@ describe('ConnectionConfigValidator', function() {
       });
 
 
+      it('should validate valid Camunda Cloud REST (8.9) with v2 suffix', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+          camundaCloudClientId: 'client-id',
+          camundaCloudClientSecret: 'client-secret',
+          camundaCloudClusterUrl: 'https://region-1.api.camunda.io/cluster-name/v2'
+        });
+
+        expect(errors).to.deep.equal({});
+      });
+
+
       it('should return error for missing clientId', function() {
         const errors = validateConnectionConfig({
           targetType: TARGET_TYPES.CAMUNDA_CLOUD,
