@@ -354,6 +354,8 @@ export class BpmnEditor extends CachedComponent {
     const modeler = this.getModeler();
     const modeling = modeler.get('modeling');
     const bpmnFactory = modeler.get('bpmnFactory');
+    const commandStack = modeler.get('commandStack');
+    const definitions = modeler.getDefinitions();
 
     // Timer: write timeCycle / timeDate onto the event definition
     if (config.timer) {
@@ -368,17 +370,74 @@ export class BpmnEditor extends CachedComponent {
       }
     }
 
-    // Message / Signal: set a readable label on the element
+    // Message: create a global bpmn:Message and link it via messageRef
+    // (mirrors the "Create new..." action in the properties panel)
     if (config.messageName) {
-      modeling.updateProperties(shape, { name: config.messageName });
+      const eventDef = shape.businessObject.eventDefinitions &&
+                       shape.businessObject.eventDefinitions[0];
+      if (eventDef) {
+        const message = bpmnFactory.create('bpmn:Message', {
+          name: config.messageName
+        });
+        message.$parent = definitions;
+
+        commandStack.execute('properties-panel.multi-command-executor', [
+          {
+            cmd: 'element.updateModdleProperties',
+            context: {
+              element: shape,
+              moddleElement: definitions,
+              properties: {
+                rootElements: [ ...definitions.get('rootElements'), message ]
+              }
+            }
+          },
+          {
+            cmd: 'element.updateModdleProperties',
+            context: {
+              element: shape,
+              moddleElement: eventDef,
+              properties: { messageRef: message }
+            }
+          }
+        ]);
+      }
     }
 
+    // Signal: create a global bpmn:Signal and link it via signalRef
     if (config.signalName) {
-      modeling.updateProperties(shape, { name: config.signalName });
+      const eventDef = shape.businessObject.eventDefinitions &&
+                       shape.businessObject.eventDefinitions[0];
+      if (eventDef) {
+        const signal = bpmnFactory.create('bpmn:Signal', {
+          name: config.signalName
+        });
+        signal.$parent = definitions;
+
+        commandStack.execute('properties-panel.multi-command-executor', [
+          {
+            cmd: 'element.updateModdleProperties',
+            context: {
+              element: shape,
+              moddleElement: definitions,
+              properties: {
+                rootElements: [ ...definitions.get('rootElements'), signal ]
+              }
+            }
+          },
+          {
+            cmd: 'element.updateModdleProperties',
+            context: {
+              element: shape,
+              moddleElement: eventDef,
+              properties: { signalRef: signal }
+            }
+          }
+        ]);
+      }
     }
 
-    // Webhook: connector template is already applied — nothing more to do here
-    // (webhookId / webhookMethod are set in the connector template properties panel)
+    // Webhook / template: connector template already applied upstream — nothing to do here
   };
 
   openAiPanel = () => {

@@ -232,8 +232,8 @@ function MessageWizard({ onConfirm, onBack, onSkip }) {
         onKeyDown={ e => e.key === 'Enter' && handleConfirm() }
       />
       <p className={ css.fieldHelp }>
-        A unique name that identifies what this process listens for.
-        The system sending the message must use this exact name — think of it as a channel.
+        This creates a global message in the BPMN model and links it to the start event.
+        The system or process sending the message must use this exact name — think of it as a channel.
       </p>
       <div className={ css.infoBox }>
         ℹ️ <strong>Avoiding duplicates:</strong> The sender can optionally include a correlation key (e.g. an order ID) to prevent duplicate instances. You configure that on the sending side, not here.
@@ -271,7 +271,8 @@ function SignalWizard({ onConfirm, onBack, onSkip }) {
         onKeyDown={ e => e.key === 'Enter' && handleConfirm() }
       />
       <p className={ css.fieldHelp }>
-        When any process broadcasts a signal with this name, a new instance of your process starts.
+        This creates a global signal in the BPMN model and links it to the start event.
+        When any process or system broadcasts a signal with this name, a new instance starts.
       </p>
       <div className={ css.infoBox }>
         ℹ️ <strong>Signals vs. messages:</strong> A signal is a broadcast — every process listening for this name starts at once. Use a message instead for 1-to-1 notifications targeting a specific instance.
