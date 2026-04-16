@@ -107,7 +107,11 @@ function TimerWizard({ onConfirm, onBack, onSkip }) {
   const getConfig = () => {
     if (mode === 'once') {
       if (!dateTime) return null;
-      return { timer: { type: 'timeDate', value: new Date(dateTime).toISOString() } };
+
+      // datetime-local gives "2026-04-24T15:54" — pad to full seconds, no UTC conversion
+      // Zeebe validates ISO 8601 date-time; milliseconds (.000) cause a validation error
+      const iso = dateTime.length === 16 ? `${dateTime}:00` : dateTime;
+      return { timer: { type: 'timeDate', value: iso } };
     }
     if (!intervalValue) return null;
     const prefix = (limit && !isNaN(limit) && parseInt(limit) > 0) ? `R${parseInt(limit)}/` : 'R/';
