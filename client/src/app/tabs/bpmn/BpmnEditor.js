@@ -26,11 +26,14 @@ import {
   CachedComponent
 } from '../../cached';
 
-import { Settings } from '@carbon/icons-react';
+import { Bot, Settings } from '@carbon/icons-react';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
 import PropertiesPanelTabActionItem from '../../resizable-container/PropertiesPanelTabActionItem';
+
+import EmptyCanvasOverlay from './EmptyCanvasOverlay';
+import AiSidePanelTab from './AiSidePanelTab';
 
 import BpmnModeler from './modeler';
 
@@ -93,7 +96,9 @@ export class BpmnEditor extends CachedComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      isCanvasEmpty: true
+    };
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
@@ -243,6 +248,9 @@ export class BpmnEditor extends CachedComponent {
     ].forEach((event) => {
       modeler[fn](event, this.handleChanged);
     });
+
+    modeler[fn]('import.done', this.checkCanvasEmpty);
+    modeler[fn]('commandStack.changed', this.checkCanvasEmpty);
 
     modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
 
@@ -798,6 +806,58 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
+  checkCanvasEmpty = () => {
+    const modeler = this.getModeler();
+    const elementRegistry = modeler.get('elementRegistry');
+    const isCanvasEmpty = elementRegistry.getAll().length <= 1;
+    this.setState({ isCanvasEmpty });
+  };
+
+  handleStartEventSelect = (eventTypeId) => {
+    const modeler = this.getModeler();
+    const modeling = modeler.get('modeling');
+    const elementFactory = modeler.get('elementFactory');
+    const canvas = modeler.get('canvas');
+
+    const rootElement = canvas.getRootElement();
+    const viewbox = canvas.viewbox();
+    const position = {
+      x: Math.round(viewbox.x + viewbox.width / 2),
+      y: Math.round(viewbox.y + viewbox.height / 2)
+    };
+
+    const EVENT_DEFINITION_MAP = {
+      timer: 'bpmn:TimerEventDefinition',
+      message: 'bpmn:MessageEventDefinition',
+      webhook: 'bpmn:MessageEventDefinition',
+      signal: 'bpmn:SignalEventDefinition'
+    };
+
+    const eventDefinitionType = EVENT_DEFINITION_MAP[eventTypeId];
+    const shapeAttrs = { type: 'bpmn:StartEvent' };
+
+    if (eventDefinitionType) {
+      shapeAttrs.eventDefinitionType = eventDefinitionType;
+    }
+
+    const shape = elementFactory.createShape(shapeAttrs);
+    modeling.createShape(shape, position, rootElement);
+  };
+
+  openAiPanel = () => {
+    const { layout } = this.props;
+    const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+
+    this.handleLayoutChange({
+      sidePanel: {
+        ...SIDE_PANEL_DEFAULT_LAYOUT,
+        ...sidePanelLayout,
+        open: true,
+        tab: 'ai-start'
+      }
+    });
+  };
+
   handleResize = () => {
     const modeler = this.getModeler();
 
@@ -816,7 +876,8 @@ export class BpmnEditor extends CachedComponent {
     const imported = this.getModeler().getDefinitions();
 
     const {
-      importing
+      importing,
+      isCanvasEmpty
     } = this.state;
 
     return (
@@ -832,12 +893,22 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
+          { imported && !importing && isCanvasEmpty && (
+            <EmptyCanvasOverlay
+              onStartEventSelect={ this.handleStartEventSelect }
+              onOpenAiPanel={ this.openAiPanel }
+            />
+          ) }
+
           <SidePanel
             layout={ layout }
             onLayoutChanged={ this.handleLayoutChange }
           >
             <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
               <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
+            </SidePanel.Tab>
+            <SidePanel.Tab id="ai-start" label="AI" icon={ Bot }>
+              <AiSidePanelTab />
             </SidePanel.Tab>
           </SidePanel>
         </div>
