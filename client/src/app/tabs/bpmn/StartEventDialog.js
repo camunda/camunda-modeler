@@ -74,6 +74,16 @@ export default function StartEventDialog({ onSelect, onClose }) {
     searchRef.current && searchRef.current.focus();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [ onClose ]);
+
   const filtered = query.trim()
     ? START_EVENTS.filter(({ label, description, aliases }) => {
       const q = query.toLowerCase();
