@@ -62,7 +62,7 @@ function createOperateBaseUrl(endpoint) {
     return null;
   }
 
-  return new URL(`https://${ clusterRegion }.operate.camunda.io/${ clusterId }`);
+  return createCamundaCloudWebAppUrl(camundaCloudClusterUrl, 'operate');
 }
 
 /**
@@ -113,7 +113,43 @@ function createTasklistBaseUrl(endpoint) {
     return null;
   }
 
-  return new URL(`https://${ clusterRegion }.tasklist.camunda.io/${ clusterId }`);
+  return createCamundaCloudWebAppUrl(camundaCloudClusterUrl, 'tasklist');
+}
+
+function createCamundaCloudWebAppUrl(clusterURL, appName) {
+  const clusterId = getClusterId(clusterURL);
+
+  if (!clusterId) {
+    return null;
+  }
+
+  if (isUnifiedCamundaCloudUrl(clusterURL)) {
+    try {
+      const url = new URL(clusterURL);
+
+      return new URL(`${ url.origin }/${ clusterId }/${ appName }`);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  const clusterRegion = getClusterRegion(clusterURL);
+
+  if (!clusterRegion) {
+    return null;
+  }
+
+  return new URL(`https://${ clusterRegion }.${ appName }.camunda.io/${ clusterId }`);
+}
+
+function isUnifiedCamundaCloudUrl(clusterURL) {
+  try {
+    const url = new URL(clusterURL);
+
+    return url.hostname.endsWith('.api.camunda.io');
+  } catch (error) {
+    return false;
+  }
 }
 
 /**
@@ -184,6 +220,7 @@ function getClusterId(clusterURL) {
  *
  * https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443
  * https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ * https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
  *
  * @example
  *
