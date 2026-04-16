@@ -16,11 +16,17 @@ import {
   getTasklistBaseUrl
 } from '../util';
 
+import sinon from 'sinon';
+
 import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 
 describe('operate-url', function() {
 
   describe('getOperateBaseUrl', function() {
+
+    afterEach(function() {
+      sinon.restore();
+    });
 
     it('should get Camunda Operate URL (gRPC)', function() {
 
@@ -61,6 +67,110 @@ describe('operate-url', function() {
         targetType: TARGET_TYPES.CAMUNDA_CLOUD,
         camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/v2/'
       };
+
+      // when
+      const url = getOperateBaseUrl(endpoint);
+
+      // then
+      expect(url).to.eql('https://yyy-1.operate.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should get Camunda Operate URL (REST 8.9)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/v2'
+      };
+
+      // when
+      const url = getOperateBaseUrl(endpoint);
+
+      // then
+      expect(url).to.eql('https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/operate');
+    });
+
+
+    it('should not get Camunda Operate URL if cluster ID cannot be extracted during SaaS URL generation', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'https://region-1.zeebe.camunda.io/cluster-name'
+      };
+
+      const originalMatch = String.prototype.match;
+      let clusterIdCalls = 0;
+
+      sinon.stub(String.prototype, 'match').callsFake(function(regex) {
+        if (this.toString() !== endpoint.camundaCloudClusterUrl) {
+          return originalMatch.call(this, regex);
+        }
+
+        if (regex.source === /([a-z\d]+-){2,}[a-z\d]+/g.source) {
+          return clusterIdCalls++ === 0 ? [ 'xxxx-xxxx-xxxx' ] : null;
+        }
+
+        if (regex.source === /(?:(?<=\.)|(?<=:\/\/))[a-z]+-\d+(?=\.)/g.source) {
+          return [ 'region-1' ];
+        }
+
+        return originalMatch.call(this, regex);
+      });
+
+      // when
+      const url = getOperateBaseUrl(endpoint);
+
+      // then
+      expect(url).to.be.null;
+    });
+
+
+    it('should not get Camunda Operate URL if unified SaaS URL generation throws', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/v2'
+      };
+
+      let callCount = 0;
+
+      sinon.stub(globalThis, 'URL').callsFake(function() {
+        if (++callCount === 1) {
+          return { hostname: 'yyy-1.api.camunda.io' };
+        }
+
+        throw new Error('failed to parse unified URL');
+      });
+
+      // when
+      const url = getOperateBaseUrl(endpoint);
+
+      // then
+      expect(url).to.be.null;
+    });
+
+
+    it('should fall back to classic SaaS URL generation if unified SaaS detection throws', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      };
+
+      const OriginalURL = globalThis.URL;
+      let callCount = 0;
+
+      sinon.stub(globalThis, 'URL').callsFake(function(input) {
+        if (++callCount === 1) {
+          throw new Error('failed to inspect URL');
+        }
+
+        return new OriginalURL(input);
+      });
 
       // when
       const url = getOperateBaseUrl(endpoint);
@@ -200,6 +310,22 @@ describe('operate-url', function() {
 
       // then
       expect(url).to.eql('https://yyy-1.tasklist.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+    });
+
+
+    it('should get Camunda Tasklist URL (REST 8.9)', function() {
+
+      // given
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClusterUrl: 'https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/v2'
+      };
+
+      // when
+      const url = getTasklistBaseUrl(endpoint);
+
+      // then
+      expect(url).to.eql('https://yyy-1.api.camunda.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/tasklist');
     });
 
 
