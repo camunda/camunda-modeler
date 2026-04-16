@@ -4016,6 +4016,36 @@ describe('<App>', function() {
       });
     });
 
+    it('should use latest stable linting profile for cloud alpha versions', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const lintSpy = sinon.stub().resolves([]);
+
+      sinon.stub(tabsProvider.getProvider('cloud-bpmn'), 'getLinter').resolves({
+        lint: lintSpy
+      });
+
+      const { app } = createApp({ tabsProvider });
+
+      const cloudBpmn = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:modeler="http://camunda.org/schema/modeler/1.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0" />`;
+
+      const [ currentTab ] = await app.openFiles([
+        createFile('1.bpmn', {
+          contents: cloudBpmn
+        })
+      ]);
+
+      // when
+      await app.lintTab(currentTab);
+
+      // then
+      expect(lintSpy).to.have.been.calledOnce;
+      expect(lintSpy.firstCall.args[0]).to.include('modeler:executionPlatformVersion="8.9.0"');
+    });
+
 
     it('should not lint tab (no linter)', async function() {
 

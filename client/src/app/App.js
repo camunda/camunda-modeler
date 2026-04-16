@@ -11,6 +11,7 @@
 import React, { PureComponent } from 'react';
 
 import debug from 'debug';
+import semver from 'semver';
 
 import {
   assign,
@@ -28,6 +29,7 @@ import EventEmitter from 'events';
 import defaultPlugins from '../plugins';
 
 import executeOnce from './util/executeOnce';
+import parseExecutionPlatform from './util/parseExecutionPlatform';
 
 import { WithCache } from './cached';
 
@@ -71,6 +73,7 @@ import * as css from './App.less';
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
 import { EventsContext } from './EventsContext';
+import { ENGINES, getLatestStable } from '../util/Engines';
 
 const log = debug('App');
 
@@ -87,6 +90,7 @@ const FILTER_ALL_EXTENSIONS = {
 };
 
 const EMPTY_LINTING_STATE = [];
+const C8_LINTING_PROFILE_VERSION = getLatestStable(ENGINES.CLOUD);
 
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
@@ -1054,6 +1058,8 @@ export class App extends PureComponent {
     if (!contents) {
       contents = tab.file.contents;
     }
+
+    contents = replaceWithC8LintingProfileVersion(type, contents);
 
     const results = await linter.lint(contents);
 
@@ -2564,6 +2570,36 @@ export class App extends PureComponent {
 
     return tabsProvider.getTabIcon(type);
   };
+}
+
+function replaceWithC8LintingProfileVersion(type, contents) {
+  if (type !== 'cloud-bpmn' || !isString(contents)) {
+    return contents;
+  }
+
+  const executionPlatformDetails = parseExecutionPlatform(contents);
+
+  if (!executionPlatformDetails || executionPlatformDetails.executionPlatform !== ENGINES.CLOUD) {
+    return contents;
+  }
+
+  const { executionPlatformVersion } = executionPlatformDetails;
+
+  if (!executionPlatformVersion) {
+    return contents;
+  }
+
+  const currentVersion = semver.coerce(executionPlatformVersion);
+  const latestStableVersion = semver.coerce(C8_LINTING_PROFILE_VERSION);
+
+  if (!currentVersion || semver.compare(currentVersion, latestStableVersion) <= 0) {
+    return contents;
+  }
+
+  return contents.replace(
+    /(modeler:executionPlatformVersion\s*=\s*["'])[^"']*(["'])/,
+    `$1${ C8_LINTING_PROFILE_VERSION }$2`
+  );
 }
 
 

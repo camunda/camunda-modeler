@@ -20,4 +20,16 @@ describe('useBuiltInSettings', function() {
     expect(schema.properties['app.defaultC7Version'].default).to.equal('7.24.0');
   });
 
+  it('should include alpha version in C8 engine options', function() {
+
+    // when
+    const [ firstOption ] = schema.properties['app.defaultC8Version'].options;
+
+    // then
+    expect(firstOption).to.eql({
+      label: '8.10 (alpha)',
+      value: '8.10.0'
+    });
+  });
+
 });
