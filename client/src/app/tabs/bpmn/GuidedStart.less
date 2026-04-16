@@ -15,46 +15,55 @@
   z-index: 10;
 }
 
-:local(.overlayContent) {
+:local(.cardRow) {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
+  flex-direction: row;
+  gap: 16px;
   pointer-events: all;
 }
 
-:local(.primaryBtn) {
-  padding: 10px 20px;
-  font-size: 14px;
-  font-family: var(--font-family, sans-serif);
-  font-weight: 500;
-  color: white;
-  background: #1a6ed8;
-  border: none;
-  border-radius: 4px;
+:local(.entryCard) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 180px;
+  padding: 24px 16px;
+
+  background: white;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  transition: background 0.15s ease;
+  text-align: center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
   &:hover {
-    background: #1558b0;
+    border-color: #1a6ed8;
+    box-shadow: 0 2px 8px rgba(26, 110, 216, 0.15);
   }
 }
 
-:local(.aiBtn) {
-  padding: 6px 14px;
-  font-size: 12px;
-  font-family: var(--font-family, sans-serif);
-  color: #555;
-  background: transparent;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+:local(.cardIcon) {
+  font-size: 22px;
+  color: #1a6ed8;
+  line-height: 1;
+}
 
-  &:hover {
-    color: #1a6ed8;
-    border-color: #1a6ed8;
-  }
+:local(.cardLabel) {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-family, sans-serif);
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+
+:local(.cardHint) {
+  font-size: 11px;
+  font-family: var(--font-family, sans-serif);
+  color: #888;
+  line-height: 1.4;
 }
 
 

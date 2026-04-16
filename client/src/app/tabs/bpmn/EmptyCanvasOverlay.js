@@ -16,9 +16,9 @@ import * as css from './GuidedStart.less';
 
 
 /**
- * Overlay shown on an empty BPMN canvas offering guided entry points:
- * - "Start a process" opens a dialog to choose a start event type
- * - "Start with AI" opens the AI side panel
+ * Overlay shown on an empty BPMN canvas offering two equal entry points:
+ * - Guided start: pick a start event type
+ * - Start with AI: open the AI assistance panel
  *
  * @param {object} props
  * @param {function} props.onStartEventSelect - called with the selected event type id
@@ -27,7 +27,6 @@ import * as css from './GuidedStart.less';
 export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel }) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
 
-  const handleStartProcess = () => setDialogOpen(true);
   const handleDialogClose = () => setDialogOpen(false);
 
   const handleSelect = (eventTypeId) => {
@@ -37,20 +36,26 @@ export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel }
 
   return (
     <div className={ css.overlay }>
-      <div className={ css.overlayContent }>
+      <div className={ css.cardRow }>
+
         <button
-          className={ css.primaryBtn }
-          onClick={ handleStartProcess }
+          className={ css.entryCard }
+          onClick={ () => setDialogOpen(true) }
         >
-          How does your process start?
+          <span className={ css.cardIcon }>◎</span>
+          <span className={ css.cardLabel }>How does your process start?</span>
+          <span className={ css.cardHint }>Choose a trigger — form, schedule, message&hellip;</span>
         </button>
 
         <button
-          className={ css.aiBtn }
+          className={ css.entryCard }
           onClick={ onOpenAiPanel }
         >
-          ✦ Start with AI
+          <span className={ css.cardIcon }>✦</span>
+          <span className={ css.cardLabel }>Start with AI</span>
+          <span className={ css.cardHint }>Describe what you want to build</span>
         </button>
+
       </div>
 
       { dialogOpen && (
