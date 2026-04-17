@@ -218,6 +218,44 @@ export class TabsProvider {
           };
         },
         getIcon() { return null; }
+      },
+      'cloud-form': {
+        name: 'FORM',
+        encoding: ENCODING_UTF8,
+        exports: {},
+        extensions: [ 'form' ],
+        getLinter() {
+          return {
+            lint(contents) {
+              if (contents === 'linting-errors') {
+                return [
+                  {
+                    id: 'Field_1',
+                    path: [],
+                    message: 'foo'
+                  }
+                ];
+              }
+
+              return [];
+            }
+          };
+        },
+        getIcon() { return null; }
+      },
+      rpa: {
+        name: 'RPA',
+        encoding: ENCODING_UTF8,
+        exports: {},
+        extensions: [ 'rpa' ],
+        getLinter() {
+          return {
+            lint() {
+              return [];
+            }
+          };
+        },
+        getIcon() { return null; }
       }
     };
   }
