@@ -15,28 +15,30 @@ import StartEventWizard from './StartEventWizard';
 
 import * as css from './GuidedStart.less';
 
-// Types that have a Step 2 wizard
+// Types that have a Step 2 wizard (process name is collected there)
 const WIZARD_TYPES = new Set([ 'timer', 'message', 'signal', 'webhook' ]);
 
 /**
  * Overlay shown on an empty BPMN canvas offering two equal entry points.
  * Manages a two-step flow: type picker (Step 1) → mini-wizard (Step 2).
+ * Form and manual trigger types are placed immediately with no wizard.
  *
  * @param {object} props
  * @param {function} props.onStartEventSelect - called with (eventTypeId, config)
  * @param {function} props.onOpenAiPanel
+ * @param {Array}    props.startEventTemplates
  */
 export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel, startEventTemplates = [] }) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ wizardType, setWizardType ] = useState(null);
 
-  // Step 1 → Step 2
+  // Step 1 → Step 2 or immediate placement
   const handleTypeSelect = (typeId) => {
     setDialogOpen(false);
     if (WIZARD_TYPES.has(typeId)) {
       setWizardType(typeId);
     } else {
-      // form / manual — place immediately with no config
+      // form / manual — place immediately, no wizard
       onStartEventSelect(typeId, {});
     }
   };

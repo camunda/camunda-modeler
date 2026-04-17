@@ -30,6 +30,8 @@ import { Settings } from '@carbon/icons-react';
 
 import EmptyCanvasOverlay from '../bpmn/EmptyCanvasOverlay';
 import AiPanel from '../bpmn/AiPanel';
+import AppendWizard from '../bpmn/AppendWizard';
+import { ELEMENT_SHAPE_MAP } from '../bpmn/appendCatalog';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
@@ -79,6 +81,15 @@ import {
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
 
+import {
+  applyName,
+  applyTimer,
+  applyMessage,
+  applySignal,
+  applyUserTaskForm,
+  applyCalledElement
+} from './applyConfig';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 export const DEFAULT_ENGINE_PROFILE = {
@@ -95,7 +106,8 @@ export class BpmnEditor extends CachedComponent {
 
     this.state = {
       isCanvasEmpty: true,
-      aiPanelOpen: false
+      aiPanelOpen: false,
+      appendWizardSource: null
     };
 
     this.ref = React.createRef();
@@ -184,6 +196,15 @@ export class BpmnEditor extends CachedComponent {
 
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
+    // Subscribe to the guided-append context-pad entry so the "+" tile
+    // opens the React-side AppendWizard.
+    const guidedAppend = modeler.get('guidedAppend', false);
+    if (guidedAppend) {
+      this._unsubscribeGuidedAppend = guidedAppend.on('open', (element) => {
+        this.setState({ appendWizardSource: element });
+      });
+    }
+
     try {
       await this.loadTemplates();
     } catch (error) {
@@ -205,6 +226,11 @@ export class BpmnEditor extends CachedComponent {
     const propertiesPanel = modeler.get('propertiesPanel');
 
     propertiesPanel.detach();
+
+    if (this._unsubscribeGuidedAppend) {
+      this._unsubscribeGuidedAppend();
+      this._unsubscribeGuidedAppend = null;
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -274,6 +300,11 @@ export class BpmnEditor extends CachedComponent {
 
     modeler[fn]('propertiesPanel.layoutChanged', this.handlePropertiesPanelLayoutChange);
 
+    // Guided start: auto-open the properties panel only when the user
+    // selects a concrete element. Fresh files land with the panel closed
+    // (see handleImport) so newcomers aren't greeted with a dense form.
+    modeler[fn]('selection.changed', this.handleSelectionAutoOpenPanel);
+
     if (fn === 'on') {
       modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
     } else if (fn === 'off') {
@@ -305,7 +336,10 @@ export class BpmnEditor extends CachedComponent {
     // If the wizard selected a specific connector template, use it directly
     if (config.template && elementTemplates) {
       const shape = elementTemplates.createElement(config.template);
-      modeling.createShape(shape, position, rootElement);
+      const placedTemplateShape = modeling.createShape(shape, position, rootElement);
+
+      // Still apply process name / version tag from the NameTagStep
+      this._applyStartEventConfig(placedTemplateShape, eventTypeId, config);
 
       const { layout } = this.props;
       const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
@@ -352,92 +386,159 @@ export class BpmnEditor extends CachedComponent {
     if (!config || !Object.keys(config).length) return;
 
     const modeler = this.getModeler();
-    const modeling = modeler.get('modeling');
-    const bpmnFactory = modeler.get('bpmnFactory');
-    const commandStack = modeler.get('commandStack');
-    const definitions = modeler.getDefinitions();
 
-    // Timer: write timeCycle / timeDate onto the event definition
-    if (config.timer) {
-      const eventDef = shape.businessObject.eventDefinitions &&
-                       shape.businessObject.eventDefinitions[0];
-      if (eventDef) {
-        modeling.updateModdleProperties(shape, eventDef, {
-          [config.timer.type]: bpmnFactory.create('bpmn:FormalExpression', {
-            body: config.timer.value
-          })
-        });
-      }
+    // Timer / Message / Signal / Name are applied via shared helpers so the
+    // start-event and append flows can't drift. The Webhook / template path
+    // is already applied upstream in handleStartEventSelect.
+    applyTimer(modeler, shape, config);
+    applyMessage(modeler, shape, config);
+    applySignal(modeler, shape, config);
+    applyName(modeler, shape, config);
+  };
+
+  handleAppendWizardClose = () => {
+    this.setState({ appendWizardSource: null });
+  };
+
+  /**
+   * Called by AppendWizard when the user confirms a leaf + its config.
+   * Creates the shape, appends it via autoPlace (so a sequence flow is
+   * drawn from the source), then applies config via shared helpers.
+   */
+  handleAppend = (elementId, config = {}) => {
+    const source = this.state.appendWizardSource;
+    this.setState({ appendWizardSource: null });
+    if (!source) return;
+
+    const modeler = this.getModeler();
+    const autoPlace = modeler.get('autoPlace');
+    const elementFactory = modeler.get('elementFactory');
+    const elementTemplates = modeler.get('elementTemplates', false);
+    const selection = modeler.get('selection');
+
+    const shapeAttrs = this._buildAppendShapeAttrs(elementId, config);
+    if (!shapeAttrs) return;
+
+    // AI Agent sub-process: if an AI Agent element template is loaded, apply
+    // it to get a pre-configured agent. Falls back to a plain expanded
+    // ad-hoc sub-process otherwise.
+    let appliedTemplate = config.template;
+    if (!appliedTemplate && elementId === 'ai-agent-subprocess' && elementTemplates) {
+      appliedTemplate = this._findAiAgentAdHocTemplate(elementTemplates);
     }
 
-    // Message: create a global bpmn:Message and link it via messageRef
-    // (mirrors the "Create new..." action in the properties panel)
-    if (config.messageName) {
-      const eventDef = shape.businessObject.eventDefinitions &&
-                       shape.businessObject.eventDefinitions[0];
-      if (eventDef) {
-        const message = bpmnFactory.create('bpmn:Message', {
-          name: config.messageName
-        });
-        message.$parent = definitions;
+    let placedShape;
 
-        commandStack.execute('properties-panel.multi-command-executor', [
-          {
-            cmd: 'element.updateModdleProperties',
-            context: {
-              element: shape,
-              moddleElement: definitions,
-              properties: {
-                rootElements: [ ...definitions.get('rootElements'), message ]
-              }
-            }
-          },
-          {
-            cmd: 'element.updateModdleProperties',
-            context: {
-              element: shape,
-              moddleElement: eventDef,
-              properties: { messageRef: message }
-            }
-          }
-        ]);
+    // Template-driven placement (connector / ai-connector / ai-agent-subprocess)
+    if (appliedTemplate && elementTemplates) {
+      const templatedShape = elementTemplates.createElement(appliedTemplate);
+
+      // When the template produced an ad-hoc sub-process (the expected case
+      // for Camunda's agentic AI connector), ensure it renders expanded at
+      // a sensible size. Templates don't always carry DI sizing / isExpanded.
+      if (elementId === 'ai-agent-subprocess'
+          && templatedShape.type === 'bpmn:AdHocSubProcess') {
+        templatedShape.isExpanded = true;
+        templatedShape.width = shapeAttrs.width;
+        templatedShape.height = shapeAttrs.height;
       }
+
+      placedShape = autoPlace.append(source, templatedShape);
+    } else {
+      const newShape = elementFactory.createShape(shapeAttrs);
+      placedShape = autoPlace.append(source, newShape);
     }
 
-    // Signal: create a global bpmn:Signal and link it via signalRef
-    if (config.signalName) {
-      const eventDef = shape.businessObject.eventDefinitions &&
-                       shape.businessObject.eventDefinitions[0];
-      if (eventDef) {
-        const signal = bpmnFactory.create('bpmn:Signal', {
-          name: config.signalName
-        });
-        signal.$parent = definitions;
+    this._applyAppendConfig(placedShape, elementId, config);
 
-        commandStack.execute('properties-panel.multi-command-executor', [
-          {
-            cmd: 'element.updateModdleProperties',
-            context: {
-              element: shape,
-              moddleElement: definitions,
-              properties: {
-                rootElements: [ ...definitions.get('rootElements'), signal ]
-              }
-            }
-          },
-          {
-            cmd: 'element.updateModdleProperties',
-            context: {
-              element: shape,
-              moddleElement: eventDef,
-              properties: { signalRef: signal }
-            }
-          }
-        ]);
+    // Select the placed shape and open properties panel
+    selection.select(placedShape);
+    const { layout } = this.props;
+    const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+    this.handleLayoutChange({
+      sidePanel: {
+        ...SIDE_PANEL_DEFAULT_LAYOUT,
+        ...sidePanelLayout,
+        open: true,
+        tab: 'properties'
       }
+    });
+  };
+
+  /**
+   * Translate the catalog leaf's elementId (plus wizard-specific config like
+   * the intermediate-event trigger type) into bpmn element shape attrs.
+   */
+  _buildAppendShapeAttrs = (elementId, config) => {
+    const base = ELEMENT_SHAPE_MAP[elementId];
+    if (!base) return null;
+
+    // Intermediate event: pick a catch event with the chosen trigger
+    if (elementId === 'intermediate-event') {
+      const trigger = config && config._trigger;
+      const TRIGGER_MAP = {
+        timer:   'bpmn:TimerEventDefinition',
+        message: 'bpmn:MessageEventDefinition',
+        signal:  'bpmn:SignalEventDefinition'
+      };
+      const eventDefinitionType = trigger && TRIGGER_MAP[trigger];
+      return {
+        type: eventDefinitionType ? 'bpmn:IntermediateCatchEvent' : 'bpmn:IntermediateThrowEvent',
+        ...(eventDefinitionType ? { eventDefinitionType } : {})
+      };
     }
 
-    // Webhook / template: connector template already applied upstream — nothing to do here
+    return { ...base };
+  };
+
+  _applyAppendConfig = (shape, elementId, config) => {
+    if (!config || !Object.keys(config).length) return;
+
+    const modeler = this.getModeler();
+
+    // Name first so the shape is labelled even on early-return config types
+    applyName(modeler, shape, config);
+
+    // Per-type helpers — each is a no-op when its config key is absent
+    applyTimer(modeler, shape, config);
+    applyMessage(modeler, shape, config);
+    applySignal(modeler, shape, config);
+
+    if (elementId === 'user-task') {
+      applyUserTaskForm(modeler, shape, config);
+    }
+    if (elementId === 'call-activity') {
+      applyCalledElement(modeler, shape, config);
+    }
+
+    // Template is already applied by elementTemplates.createElement upstream
+  };
+
+  /**
+   * Find Camunda's "AI Agent Sub-process" element template.
+   *
+   * Match is by name/id rather than `appliesTo` because the agentic AI
+   * connector template's `appliesTo` has shifted between versions (sometimes
+   * `bpmn:AdHocSubProcess`, sometimes `bpmn:Task` + an `elementType` override).
+   * The name pairing "ai agent" + "sub-process/subprocess" is stable and
+   * distinctive enough to target just the sub-process variant without also
+   * matching the plain "AI Agent" task template.
+   *
+   * Returns the template object for `elementTemplates.createElement`, or null.
+   */
+  _findAiAgentAdHocTemplate = (elementTemplates) => {
+    const all = elementTemplates.getLatest();
+    if (!all || !all.length) return null;
+    const match = all.find(t => {
+      const name = (t.name || '').toLowerCase();
+      const id = (t.id || '').toLowerCase();
+      const mentionsSubprocess =
+        name.includes('sub-process') || name.includes('subprocess') || name.includes('sub process') ||
+        id.includes('adhoc') || id.includes('subprocess');
+      const mentionsAgent = name.includes('agent') || id.includes('agent');
+      return mentionsAgent && mentionsSubprocess;
+    });
+    return match || null;
   };
 
   openAiPanel = () => {
@@ -451,6 +552,38 @@ export class BpmnEditor extends CachedComponent {
       }
     });
     this.setState({ aiPanelOpen: true });
+  };
+
+  /**
+   * Open the properties panel (on the Properties tab) when the user selects
+   * a single concrete element. Fresh files stay clean — the panel only
+   * appears once the user has something to configure.
+   */
+  handleSelectionAutoOpenPanel = (event) => {
+    const newSelection = (event && event.newSelection) || [];
+    if (newSelection.length !== 1) return;
+
+    const element = newSelection[0];
+    const type = element && element.type;
+
+    // Skip root-ish shapes (process/collaboration) and plain labels.
+    if (!type || type === 'label') return;
+    if (type === 'bpmn:Process' || type === 'bpmn:Collaboration') return;
+
+    const { layout } = this.props;
+    const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+
+    // Already open on the properties tab — don't fight the user's layout.
+    if (sidePanelLayout.open && sidePanelLayout.tab === 'properties') return;
+
+    this.handleLayoutChange({
+      sidePanel: {
+        ...SIDE_PANEL_DEFAULT_LAYOUT,
+        ...sidePanelLayout,
+        open: true,
+        tab: 'properties'
+      }
+    });
   };
 
   handlePropertiesPanelLayoutChange(e) {
@@ -621,6 +754,21 @@ export class BpmnEditor extends CachedComponent {
     this.setState({
       importing: false
     });
+
+    // Guided start: land on a clean canvas with the properties panel closed.
+    // It will re-open automatically when the user selects an element (see
+    // handleSelectionAutoOpenPanel) or places one via the guided wizards.
+    if (!error) {
+      const { layout } = this.props;
+      const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+      this.handleLayoutChange({
+        sidePanel: {
+          ...SIDE_PANEL_DEFAULT_LAYOUT,
+          ...sidePanelLayout,
+          open: false
+        }
+      });
+    }
 
     onImport(error, warnings);
   };
@@ -1059,16 +1207,29 @@ export class BpmnEditor extends CachedComponent {
     const {
       importing,
       isCanvasEmpty,
-      aiPanelOpen
+      aiPanelOpen,
+      appendWizardSource
     } = this.state;
 
     // Collect all start event connector templates available in this modeler instance
     const elementTemplates = modeler.get('elementTemplates', false);
     const startEventTemplates = elementTemplates
       ? elementTemplates.getLatest().filter(t =>
-          t.appliesTo && t.appliesTo.some(a => a === 'bpmn:StartEvent')
-        )
+        t.appliesTo && t.appliesTo.some(a => a === 'bpmn:StartEvent')
+      )
       : [];
+
+    // Filter templates for the guided-append ServiceTask / AI-connector wizards
+    const allTemplates = elementTemplates ? elementTemplates.getLatest() : [];
+    const serviceTaskTemplates = allTemplates.filter(t =>
+      t.appliesTo && t.appliesTo.some(a => a === 'bpmn:Task' || a === 'bpmn:ServiceTask')
+    );
+    const aiConnectorTemplates = serviceTaskTemplates.filter(t => {
+      const name = (t.name || '').toLowerCase();
+      const id = (t.id || '').toLowerCase();
+      return name.includes('ai') || name.includes('llm') || name.includes('agent') ||
+             id.includes('ai') || id.includes('llm') || id.includes('agent');
+    });
 
     return (
       <div className={ css.BpmnEditor }>
@@ -1089,6 +1250,15 @@ export class BpmnEditor extends CachedComponent {
                 onStartEventSelect={ this.handleStartEventSelect }
                 onOpenAiPanel={ this.openAiPanel }
                 startEventTemplates={ startEventTemplates }
+              />
+            ) }
+
+            { appendWizardSource && (
+              <AppendWizard
+                onConfirm={ this.handleAppend }
+                onClose={ this.handleAppendWizardClose }
+                serviceTaskTemplates={ serviceTaskTemplates }
+                aiConnectorTemplates={ aiConnectorTemplates }
               />
             ) }
           </div>

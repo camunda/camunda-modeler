@@ -83,8 +83,8 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 101;
-  width: 380px;
-  max-height: 480px;
+  width: 420px;
+  max-height: min(580px, 90vh);
   overflow-y: auto;
   pointer-events: all;
 
@@ -92,11 +92,11 @@
   border: 1px solid #d0d0d0;
   border-radius: 6px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  padding: 16px;
+  padding: 20px;
 }
 
 :local(.dialogHeading) {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   font-family: var(--font-family, sans-serif);
   color: #1a1a1a;
@@ -316,7 +316,7 @@
 :local(.wizardFooter) {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 20px;
   padding-top: 14px;
   border-top: 1px solid #e8e8e8;
@@ -483,6 +483,18 @@
   margin-left: 4px;
 }
 
+:local(.sectionLabel) {
+  font-size: 11px;
+  font-family: var(--font-family, sans-serif);
+  font-weight: 600;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 20px 0 12px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
 :local(.templateList) {
   list-style: none;
   margin: 0;
@@ -569,4 +581,339 @@
   p {
     margin: 0;
   }
+}
+
+
+// ---- Guided append — context pad polish ------------------------------------
+//
+// Two zones around a selected element, subject-based split:
+//
+//   1. Maintain strip (above element)  — replace, color, annotate, delete
+//      Quiet chrome, subordinate to the element. Built by ElementActionsStrip.
+//
+//   2. Progress cluster (right of element) — primary "+" + primitive append
+//      tiles (task / gateway / intermediate / end) + connect arrow (offset tail).
+//      Stronger chrome, primary focal point.
+//
+// Both zones fade-in gently on open and carry a zone-level tooltip that
+// surfaces after a deliberate hover pause (users who mean to click a tile
+// never see it; users who linger because they're unsure get the hint).
+//
+// Timing constants — tuned together so both zones feel like the same thing:
+//   - pad open animation:  180ms  cubic-bezier(.2,.7,.2,1)
+//   - tile hover:          120ms  ease
+//   - zone tooltip delay:  900ms  on hover-in, instant on hover-out
+
+
+// ---- Shared animations -----------------------------------------------------
+
+@keyframes guidedPadFadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+// ---- Zone 2: Progress cluster ---------------------------------------------
+//
+// Vertical stack to the right of the element, built from bpmn-js' own
+// `<div class="group" data-group="X">` wrappers as layout rows:
+//
+//   data-group="guided"  → primary "+" pill (full-width blue CTA)
+//   data-group="model"   → primitive tiles (flex row of quick-append shapes)
+//   data-group="connect" → connect tail (offset bottom-right, peels away)
+//
+// Why groups-as-rows: the set of primitive append entries varies by source
+// element (message-start vs. task vs. gateway get different primitives).
+// Styling entries by `data-action` would require enumerating every variant;
+// styling the group container just says "whatever bpmn-js puts in 'model',
+// lay it out as a row." Resilient to inventory changes by construction.
+//
+// Other groups that may appear (`edit`, color, lane-insert-*) are left to
+// style themselves — the ElementActionsStrip has already pulled the important
+// ones (replace, color, annotate, delete) into the top strip. Anything
+// residual renders with default bpmn-js chrome and a subtle opacity.
+
+:global(.djs-context-pad.open) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: fit-content !important;
+  max-width: none !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  animation: guidedPadFadeIn 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  // Zone-level tooltip — fades in after a 900ms hover pause so confident
+  // users never see it, but anyone who lingers gets the hint.
+  &::after {
+    content: 'Add next step';
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background: rgba(28, 28, 28, 0.92);
+    color: white;
+    font-size: 11px;
+    font-family: var(--font-family, sans-serif);
+    white-space: nowrap;
+    border-radius: 3px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    transition: opacity 160ms ease 900ms;
+  }
+
+  // ---- Group: "guided" — primary "+" button -----------------------------
+  //
+  // Compact primary action — visually distinct through colour, not size.
+  // Centered above the primitive row so its axis lines up with the middle
+  // of the tiles, keeping the cluster balanced.
+  //
+  // `order: -1` forces this group to the top of the flex column regardless
+  // of the order bpmn-js writes it into the DOM. (Our provider runs at low
+  // priority so its entry is added last; without explicit order it would
+  // render below the primitives.)
+  :global(.group[data-group="guided"]) {
+    display: flex;
+    justify-content: center;
+    order: -1;
+  }
+
+  :global(.djs-context-pad-entry--primary) {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a6ed8;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(26, 110, 216, 0.3);
+    cursor: pointer;
+    transition: background 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+
+    &:hover {
+      background: #1558b0;
+      transform: scale(1.08);
+      box-shadow: 0 2px 5px rgba(26, 110, 216, 0.4);
+    }
+
+    &:active {
+      transform: scale(1);
+      box-shadow: 0 1px 3px rgba(26, 110, 216, 0.3);
+    }
+  }
+
+  // ---- Group: "model" — primitive tiles + connect (as 4th element) ------
+  //
+  // Single horizontal row: task / gateway / intermediate-event / connect.
+  // No backgrounds — the BPMN silhouettes carry their own weight and an
+  // extra card around each tile just reads as visual noise. A subtle hover
+  // tint confirms the hit-area when needed.
+  //
+  // The connect entry is moved into this group by GuidedAppendContextPadProvider
+  // so it renders as the row's 4th tile rather than floating on its own line.
+  :global(.group[data-group="model"]) {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    order: 0;
+
+    :global(.entry) {
+      width: 28px;
+      height: 28px;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      border-radius: 4px;
+      transition: background 120ms ease;
+
+      &:hover {
+        background: #f3f6fb;
+      }
+    }
+  }
+
+  // Any residual groups (edit leftovers, color picker group if not moved,
+  // lane-insert-*) render with default bpmn-js chrome but at low opacity so
+  // they don't compete with the primary cluster. These should be rare once
+  // ElementActionsStrip has pulled the main ones into the top strip.
+  :global(.group:not([data-group="guided"]):not([data-group="model"])) {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    opacity: 0.75;
+  }
+}
+
+
+// ---- Zone 1: Maintain strip ------------------------------------------------
+//
+// Populated at runtime by ElementActionsStrip: replace / color / annotate /
+// delete entries are moved out of the bpmn-js pad DOM into this floating
+// container, centered above the element. The node sits in the canvas
+// container so it shares the pad's coordinate system.
+//
+// Quieter chrome than the progress cluster — this zone is subordinate. Tiles
+// sit at reduced opacity at rest so the eye skips over them and lands on the
+// blue "+" instead. Full opacity returns on hover.
+
+:global(.element-actions-strip) {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 5px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #ececec;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  pointer-events: auto;
+  z-index: 50;
+  animation: guidedPadFadeIn 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  // Zone-level tooltip (mirror of the progress cluster).
+  &::after {
+    content: 'Edit element';
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background: rgba(28, 28, 28, 0.92);
+    color: white;
+    font-size: 11px;
+    font-family: var(--font-family, sans-serif);
+    white-space: nowrap;
+    border-radius: 3px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    transition: opacity 160ms ease 900ms;
+  }
+
+  :global(.entry) {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    opacity: 0.6;
+    border-radius: 3px;
+    transition: opacity 120ms ease, background 120ms ease;
+
+    &:hover {
+      opacity: 1;
+      background: #f3f6fb;
+    }
+  }
+}
+
+
+// ---- Guided append: unified picker list (Step 1 groups + Step 2 leaves) ----
+//
+// Single vertical-list pattern used for both the top-level group picker and
+// the per-group drill-down. Each row: boxed icon on the left, stacked title +
+// description, trailing arrow to signal "drill down". Reuses `.searchInput`
+// and `.noResults` from the Start Event wizard.
+
+:local(.pickerList) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+:local(.pickerItem) {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover {
+    background: #f0f5ff;
+  }
+
+  &:focus {
+    outline: 2px solid #1a6ed8;
+    outline-offset: -2px;
+  }
+}
+
+:local(.pickerIcon) {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d6d6d6;
+  border-radius: 4px;
+  background: white;
+  color: #444;
+  font-size: 15px;
+  line-height: 1;
+
+  // bpmn-font glyphs render as ::before content; bump size up so they
+  // fill the icon tile nicely without needing per-element overrides.
+  :global([class^="bpmn-icon-"]),
+  :global([class*=" bpmn-icon-"]) {
+    font-size: 22px;
+    line-height: 1;
+    color: #444;
+  }
+}
+
+:local(.pickerText) {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+:local(.pickerTitle) {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-family, sans-serif);
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+
+:local(.pickerDesc) {
+  font-size: 12px;
+  font-family: var(--font-family, sans-serif);
+  color: #777;
+  line-height: 1.4;
+}
+
+:local(.pickerArrow) {
+  flex-shrink: 0;
+  color: #999;
+  font-size: 14px;
+  line-height: 1;
+  padding-right: 4px;
 }

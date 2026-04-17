@@ -29,6 +29,8 @@ import paletteTracking from 'bpmn-js-tracking/lib/features/palette';
 
 import { BpmnImprovedCanvasModule } from '../../bpmn/modeler/features/improved-canvas';
 
+import guidedAppendModule from './features/guided-append';
+
 import Flags, {
   DISABLE_ADJUST_ORIGIN,
 } from '../../../../util/Flags';
@@ -84,5 +86,6 @@ CloudBpmnModeler.prototype._modules = [
   feelPopupTracking,
   modelingTracking,
   popupMenuTracking,
-  paletteTracking
+  paletteTracking,
+  guidedAppendModule
 ];

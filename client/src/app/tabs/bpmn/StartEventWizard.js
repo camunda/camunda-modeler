@@ -14,14 +14,14 @@ import * as css from './GuidedStart.less';
 
 
 const TIMER_CHIPS = [
-  { label: 'Every minute',  value: 'PT1M' },
-  { label: 'Every 5 min',   value: 'PT5M' },
-  { label: 'Every 15 min',  value: 'PT15M' },
-  { label: 'Every hour',    value: 'PT1H' },
+  { label: 'Every minute', value: 'PT1M' },
+  { label: 'Every 5 min', value: 'PT5M' },
+  { label: 'Every 15 min', value: 'PT15M' },
+  { label: 'Every hour', value: 'PT1H' },
   { label: 'Every 6 hours', value: 'PT6H' },
-  { label: 'Every day',     value: 'P1D' },
-  { label: 'Every week',    value: 'P1W' },
-  { label: 'Every month',   value: 'P1M' },
+  { label: 'Every day', value: 'P1D' },
+  { label: 'Every week', value: 'P1W' },
+  { label: 'Every month', value: 'P1M' },
 ];
 
 /**
@@ -38,18 +38,18 @@ export default function StartEventWizard({ eventTypeId, onConfirm, onBack, onSki
   const sharedProps = { onConfirm, onBack, onSkip };
 
   switch (eventTypeId) {
-    case 'timer':   return <TimerWizard   { ...sharedProps } />;
-    case 'message': return <MessageWizard { ...sharedProps } />;
-    case 'signal':  return <SignalWizard  { ...sharedProps } />;
-    case 'webhook': return <WebhookWizard { ...sharedProps } templates={ startEventTemplates } />;
-    default:        return null;
+  case 'timer': return <TimerWizard { ...sharedProps } />;
+  case 'message': return <MessageWizard { ...sharedProps } />;
+  case 'signal': return <SignalWizard { ...sharedProps } />;
+  case 'webhook': return <WebhookWizard { ...sharedProps } templates={ startEventTemplates } />;
+  default: return null;
   }
 }
 
 
 // ─── Shared shell ────────────────────────────────────────────────────────────
 
-function WizardShell({ heading, onBack, onSkip, onConfirm, confirmLabel = 'Add to canvas', confirmDisabled, children }) {
+export function WizardShell({ heading, onBack, onSkip, onConfirm, confirmLabel = 'Add to canvas', confirmDisabled, children }) {
 
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onBack(); };
@@ -74,9 +74,11 @@ function WizardShell({ heading, onBack, onSkip, onConfirm, confirmLabel = 'Add t
         </div>
 
         <div className={ css.wizardFooter }>
-          <button className={ css.skipLink } onClick={ onSkip }>
-            Skip — configure in properties panel
-          </button>
+          { onSkip && (
+            <button className={ css.skipLink } onClick={ onSkip }>
+              Skip
+            </button>
+          ) }
           <button
             className={ css.wizardConfirmBtn }
             onClick={ onConfirm }
@@ -94,17 +96,21 @@ function WizardShell({ heading, onBack, onSkip, onConfirm, confirmLabel = 'Add t
 
 // ─── Timer ───────────────────────────────────────────────────────────────────
 
-function TimerWizard({ onConfirm, onBack, onSkip }) {
-  const [ mode, setMode ]           = useState('repeating');
+export function TimerWizard({ onConfirm, onBack, onSkip }) {
+  const [ mode, setMode ] = useState('repeating');
   const [ selectedChip, setSelectedChip ] = useState('PT1H');
-  const [ customValue, setCustomValue ]   = useState('');
-  const [ limit, setLimit ]         = useState('');
-  const [ dateTime, setDateTime ]   = useState('');
+  const [ customValue, setCustomValue ] = useState('');
+  const [ limit, setLimit ] = useState('');
+  const [ dateTime, setDateTime ] = useState('');
+  const [ name, setName ] = useState('');
+  const nameRef = useRef(null);
+
+  useEffect(() => { nameRef.current && nameRef.current.focus(); }, []);
 
   const isCustom = selectedChip === '__custom__';
   const intervalValue = isCustom ? customValue.trim() : selectedChip;
 
-  const getConfig = () => {
+  const getTimerConfig = () => {
     if (mode === 'once') {
       if (!dateTime) return null;
 
@@ -118,16 +124,29 @@ function TimerWizard({ onConfirm, onBack, onSkip }) {
     return { timer: { type: 'timeCycle', value: `${prefix}${intervalValue}` } };
   };
 
-  const config = getConfig();
+  const timerConfig = getTimerConfig();
 
   return (
     <WizardShell
-      heading="Configure the schedule"
+      heading="When should this process run?"
       onBack={ onBack }
       onSkip={ onSkip }
-      onConfirm={ () => onConfirm(config) }
-      confirmDisabled={ !config }
+      onConfirm={ () => onConfirm({ ...timerConfig, name: name.trim() }) }
+      confirmDisabled={ !timerConfig }
     >
+      <p className={ css.fieldLabel }>
+        Name <span className={ css.optionalBadge }>optional</span>
+      </p>
+      <input
+        ref={ nameRef }
+        className={ css.wizardInput }
+        placeholder="e.g. Daily report"
+        value={ name }
+        onChange={ e => setName(e.target.value) }
+      />
+
+      <p className={ css.sectionLabel }>Schedule</p>
+
       <div className={ css.segmentedControl }>
         <button
           className={ `${css.segmentBtn} ${mode === 'repeating' ? css.segmentBtnActive : ''}` }
@@ -156,7 +175,7 @@ function TimerWizard({ onConfirm, onBack, onSkip }) {
             >Custom…</button>
           </div>
 
-          { isCustom ? (
+          { isCustom && (
             <input
               className={ css.wizardInput }
               placeholder="ISO 8601 duration, e.g. PT30S"
@@ -164,10 +183,6 @@ function TimerWizard({ onConfirm, onBack, onSkip }) {
               onChange={ e => setCustomValue(e.target.value) }
               autoFocus
             />
-          ) : (
-            <p className={ css.fieldHint }>
-              Value written to BPMN: <code>{ `R/${intervalValue}` }</code>
-            </p>
           ) }
 
           <p className={ css.fieldLabel } style={ { marginTop: 16 } }>
@@ -186,13 +201,12 @@ function TimerWizard({ onConfirm, onBack, onSkip }) {
 
       { mode === 'once' && (
         <>
-          <p className={ css.fieldLabel }>When should it run?</p>
+          <p className={ css.fieldLabel }>Date and time</p>
           <input
             className={ css.wizardInput }
             type="datetime-local"
             value={ dateTime }
             onChange={ e => setDateTime(e.target.value) }
-            autoFocus
           />
           <p className={ css.fieldHelp }>
             The process starts exactly once at this date and time.
@@ -206,37 +220,50 @@ function TimerWizard({ onConfirm, onBack, onSkip }) {
 
 // ─── Message ─────────────────────────────────────────────────────────────────
 
-function MessageWizard({ onConfirm, onBack, onSkip }) {
+export function MessageWizard({ onConfirm, onBack }) {
+  const [ messageName, setMessageName ] = useState('');
   const [ name, setName ] = useState('');
-  const inputRef = useRef(null);
+  const nameRef = useRef(null);
 
-  useEffect(() => { inputRef.current && inputRef.current.focus(); }, []);
+  useEffect(() => { nameRef.current && nameRef.current.focus(); }, []);
 
-  const handleConfirm = () => name.trim() && onConfirm({ messageName: name.trim() });
+  const handleConfirm = () => messageName.trim() && onConfirm({ messageName: messageName.trim(), name: name.trim() });
 
   return (
     <WizardShell
-      heading="Name this message"
+      heading="What message should start this process?"
       onBack={ onBack }
-      onSkip={ onSkip }
+      onSkip={ null }
       onConfirm={ handleConfirm }
-      confirmDisabled={ !name.trim() }
+      confirmDisabled={ !messageName.trim() }
     >
-      <p className={ css.fieldLabel }>What is this message called?</p>
+      <p className={ css.fieldLabel }>
+        Name <span className={ css.optionalBadge }>optional</span>
+      </p>
       <input
-        ref={ inputRef }
+        ref={ nameRef }
         className={ css.wizardInput }
-        placeholder="e.g. order-placed"
+        placeholder="e.g. Order received"
         value={ name }
         onChange={ e => setName(e.target.value) }
         onKeyDown={ e => e.key === 'Enter' && handleConfirm() }
       />
+
+      <p className={ css.sectionLabel }>Message</p>
+
+      <p className={ css.fieldLabel }>Message name</p>
+      <input
+        className={ css.wizardInput }
+        placeholder="e.g. order-placed"
+        value={ messageName }
+        onChange={ e => setMessageName(e.target.value) }
+        onKeyDown={ e => e.key === 'Enter' && handleConfirm() }
+      />
       <p className={ css.fieldHelp }>
-        This creates a global message in the BPMN model and links it to the start event.
-        The system or process sending the message must use this exact name — think of it as a channel.
+        The sender must use this exact name — think of it as a channel.
       </p>
       <div className={ css.infoBox }>
-        ℹ️ <strong>Avoiding duplicates:</strong> The sender can optionally include a correlation key (e.g. an order ID) to prevent duplicate instances. You configure that on the sending side, not here.
+        ℹ️ <strong>Correlation:</strong> The sender can include a correlation key (e.g. order ID) to prevent duplicate instances. You configure that on the sending side.
       </div>
     </WizardShell>
   );
@@ -245,37 +272,50 @@ function MessageWizard({ onConfirm, onBack, onSkip }) {
 
 // ─── Signal ──────────────────────────────────────────────────────────────────
 
-function SignalWizard({ onConfirm, onBack, onSkip }) {
+export function SignalWizard({ onConfirm, onBack }) {
+  const [ signalName, setSignalName ] = useState('');
   const [ name, setName ] = useState('');
-  const inputRef = useRef(null);
+  const nameRef = useRef(null);
 
-  useEffect(() => { inputRef.current && inputRef.current.focus(); }, []);
+  useEffect(() => { nameRef.current && nameRef.current.focus(); }, []);
 
-  const handleConfirm = () => name.trim() && onConfirm({ signalName: name.trim() });
+  const handleConfirm = () => signalName.trim() && onConfirm({ signalName: signalName.trim(), name: name.trim() });
 
   return (
     <WizardShell
-      heading="Name this signal"
+      heading="What signal should start this process?"
       onBack={ onBack }
-      onSkip={ onSkip }
+      onSkip={ null }
       onConfirm={ handleConfirm }
-      confirmDisabled={ !name.trim() }
+      confirmDisabled={ !signalName.trim() }
     >
-      <p className={ css.fieldLabel }>What signal should this process listen for?</p>
+      <p className={ css.fieldLabel }>
+        Name <span className={ css.optionalBadge }>optional</span>
+      </p>
       <input
-        ref={ inputRef }
+        ref={ nameRef }
         className={ css.wizardInput }
-        placeholder="e.g. company-holiday-announced"
+        placeholder="e.g. Holiday announced"
         value={ name }
         onChange={ e => setName(e.target.value) }
         onKeyDown={ e => e.key === 'Enter' && handleConfirm() }
       />
+
+      <p className={ css.sectionLabel }>Signal</p>
+
+      <p className={ css.fieldLabel }>Signal name</p>
+      <input
+        className={ css.wizardInput }
+        placeholder="e.g. company-holiday-announced"
+        value={ signalName }
+        onChange={ e => setSignalName(e.target.value) }
+        onKeyDown={ e => e.key === 'Enter' && handleConfirm() }
+      />
       <p className={ css.fieldHelp }>
-        This creates a global signal in the BPMN model and links it to the start event.
-        When any process or system broadcasts a signal with this name, a new instance starts.
+        When any process or system broadcasts this signal, a new instance starts.
       </p>
       <div className={ css.infoBox }>
-        ℹ️ <strong>Signals vs. messages:</strong> A signal is a broadcast — every process listening for this name starts at once. Use a message instead for 1-to-1 notifications targeting a specific instance.
+        ℹ️ <strong>Signals vs. messages:</strong> A signal is a broadcast — every process listening for this name starts at once. Use a message for 1-to-1 notifications.
       </div>
     </WizardShell>
   );
@@ -284,27 +324,31 @@ function SignalWizard({ onConfirm, onBack, onSkip }) {
 
 // ─── Webhook ─────────────────────────────────────────────────────────────────
 
-function WebhookWizard({ templates, onConfirm, onBack, onSkip }) {
+export function WebhookWizard({ templates, onConfirm, onBack, onSkip }) {
   const [ selected, setSelected ] = useState(null);
+  const [ name, setName ] = useState('');
+  const nameRef = useRef(null);
+
+  useEffect(() => { nameRef.current && nameRef.current.focus(); }, []);
 
   const handleConfirm = () => {
     if (!selected) return;
-    onConfirm({ template: selected });
+    onConfirm({ template: selected, name: name.trim() });
   };
 
   // No templates installed — skip straight to canvas (connector not available)
   if (!templates || templates.length === 0) {
     return (
       <WizardShell
-        heading="No inbound connector templates found"
+        heading="No connector templates installed"
         onBack={ onBack }
         onSkip={ onSkip }
         onConfirm={ () => onConfirm({}) }
-        confirmLabel="Add plain message start event"
+        confirmLabel="Add to canvas"
       >
         <p className={ css.fieldHelp }>
-          No connector templates are installed for this modeler. A plain Message Start Event will be placed.
-          You can configure it further in the properties panel.
+          No inbound connector templates are installed. A plain Message Start Event will be placed —
+          you can configure it further in the properties panel.
         </p>
       </WizardShell>
     );
@@ -318,9 +362,18 @@ function WebhookWizard({ templates, onConfirm, onBack, onSkip }) {
       onConfirm={ handleConfirm }
       confirmDisabled={ !selected }
     >
-      <p className={ css.fieldHelp } style={ { marginBottom: 10 } }>
-        These are the inbound connector templates available in this modeler.
+      <p className={ css.fieldLabel }>
+        Name <span className={ css.optionalBadge }>optional</span>
       </p>
+      <input
+        ref={ nameRef }
+        className={ css.wizardInput }
+        placeholder="e.g. New PR opened"
+        value={ name }
+        onChange={ e => setName(e.target.value) }
+      />
+
+      <p className={ css.sectionLabel }>Connector</p>
 
       <ul className={ css.templateList }>
         { templates.map(t => (
@@ -342,3 +395,4 @@ function WebhookWizard({ templates, onConfirm, onBack, onSkip }) {
     </WizardShell>
   );
 }
+
