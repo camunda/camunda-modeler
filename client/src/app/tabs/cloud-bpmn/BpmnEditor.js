@@ -324,6 +324,7 @@ export class BpmnEditor extends CachedComponent {
     const modeling = modeler.get('modeling');
     const elementFactory = modeler.get('elementFactory');
     const canvas = modeler.get('canvas');
+    const selection = modeler.get('selection');
     const elementTemplates = modeler.get('elementTemplates', false);
 
     const rootElement = canvas.getRootElement();
@@ -340,6 +341,10 @@ export class BpmnEditor extends CachedComponent {
 
       // Still apply process name / version tag from the NameTagStep
       this._applyStartEventConfig(placedTemplateShape, eventTypeId, config);
+
+      // Select so the context pad appears immediately — user can continue
+      // modeling or configure without having to click the element first.
+      selection.select(placedTemplateShape);
 
       const { layout } = this.props;
       const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
@@ -368,6 +373,10 @@ export class BpmnEditor extends CachedComponent {
 
     // Apply wizard config to the placed element
     this._applyStartEventConfig(placedShape, eventTypeId, config);
+
+    // Select so the context pad appears immediately — user can continue
+    // modeling or configure without having to click the element first.
+    selection.select(placedShape);
 
     // Auto-open properties panel so the user can configure the element immediately
     const { layout } = this.props;
