@@ -103,6 +103,19 @@ export class FormEditor extends CachedComponent {
         const modeling = editor.get('modeling');
 
         modeling.editFormField(root, engineProfile);
+
+        const {
+          executionPlatform,
+          executionPlatformVersion
+        } = engineProfile;
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
       },
       getCached: () => this.getCached(),
       setCached: (state) => this.setCached(state)
@@ -252,6 +265,18 @@ export class FormEditor extends CachedComponent {
         lastSchema: schema,
         stackIdx
       });
+
+      if (engineProfile) {
+        const { executionPlatform, executionPlatformVersion } = engineProfile;
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
+      }
 
       this.handleLinting(engineProfile);
     }
@@ -591,6 +616,15 @@ export class FormEditor extends CachedComponent {
 
     if (action === 'showLintError') {
       editorActions.trigger('selectFormField', context);
+    }
+
+    if (action === 'set-engine-profile') {
+      const currentProfile = this.engineProfile.get();
+
+      return this.engineProfile.set({
+        executionPlatform: currentProfile.executionPlatform,
+        executionPlatformVersion: context.executionPlatformVersion
+      });
     }
 
     if (editorActions.isRegistered(action)) {

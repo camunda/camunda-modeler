@@ -64,6 +64,29 @@
       }
     }
 
+    .linting-tab-item__button {
+      margin-left: 4px;
+      margin-right: 4px;
+
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-decoration: underline;
+      font: inherit;
+
+      color: var(--color-blue-205-100-50);
+
+      &:hover {
+        color: var(--color-blue-205-100-45);
+      }
+
+      &:focus {
+        outline: 2px solid #0066cc;
+        outline-offset: 2px;
+      }
+    }
+
     &.linting-tab-item__content--empty {
       font-weight: bold;
     }

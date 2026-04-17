@@ -342,6 +342,63 @@ describe('<RPAEditor>', function() {
 
   });
 
+
+  describe('engine profile', function() {
+
+    it('should emit tab.engineProfileChanged event on import', async function() {
+
+      // given
+      const onActionSpy = sinon.spy();
+
+      // when
+      renderEditor(RPA, {
+        onAction: onActionSpy
+      });
+
+      // then
+      await waitFor(() => {
+        expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.8.0'
+          }
+        });
+      });
+    });
+
+
+    it('should emit tab.engineProfileChanged event on set engine profile', async function() {
+
+      // given
+      const onActionSpy = sinon.spy();
+
+      const { instance } = renderEditor(RPA, {
+        onAction: onActionSpy
+      });
+
+      onActionSpy.resetHistory();
+
+      // when
+      instance.engineProfile.set({
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '8.9.0'
+      });
+
+      // then
+      await waitFor(() => {
+        expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.9.0'
+          }
+        });
+      });
+    });
+
+  });
+
 });
 
 // helpers //////////

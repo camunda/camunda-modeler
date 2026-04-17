@@ -27,6 +27,8 @@ import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
 
+import VersionMismatchChecker from './linting/VersionMismatchChecker';
+
 import executeOnce from './util/executeOnce';
 
 import { WithCache } from './cached';
@@ -98,6 +100,8 @@ const INITIAL_STATE = {
   tabGroups: {},
   tabState: {},
   lintingState: {},
+  connectionCheckResult: null,
+  engineProfiles: {},
   logEntries: [],
   notifications: [],
   currentModal: null
@@ -157,6 +161,12 @@ export class App extends PureComponent {
     });
 
     this.tabRef = React.createRef();
+
+    this.on('connectionManager.connectionStatusChanged',
+      this._handleConnectionStatusChanged);
+    this.on('connectionManager.connectionCheckStarted', this._handleConnectionCheckStarted);
+    this.on('tab.engineProfileChanged',
+      this._handleEngineProfileChanged);
 
     const userPlugins = this.getPlugins('client');
 
@@ -600,6 +610,11 @@ export class App extends PureComponent {
 
     delete newOpenedTabs[tab.id];
 
+    const {
+      [ tab.id ]: _removedProfile,
+      ...newEngineProfiles
+    } = this.state.engineProfiles;
+
     const newTabs = tabs.filter(t => t !== tab);
 
     navigationHistory.purge(tab);
@@ -627,7 +642,8 @@ export class App extends PureComponent {
     return new Promise((resolve) => {
       this.setState({
         tabs: newTabs,
-        openedTabs: newOpenedTabs
+        openedTabs: newOpenedTabs,
+        engineProfiles: newEngineProfiles
       }, () => {
         this.props.cache.destroy(tab.id);
         resolve();
@@ -1048,17 +1064,74 @@ export class App extends PureComponent {
 
     const linter = await tabProvider.getLinter(plugins, tab, this.getConfig);
 
-    if (!linter) {
+    let results = [];
+
+    if (linter) {
+      if (!contents) {
+        contents = tab.file.contents;
+      }
+
+      results = await linter.lint(contents);
+    }
+
+    const getWarnings = VersionMismatchChecker({
+      connectionCheckResult: this.state.connectionCheckResult,
+      engineProfiles: this.state.engineProfiles
+    });
+
+    const warnings = getWarnings(tab);
+
+    if (warnings.length) {
+      results = [ ...results, ...warnings ];
+    }
+
+    this.setLintingState(tab, results);
+  };
+
+  _handleConnectionCheckStarted = () => {
+    this.setState({ connectionCheckResult: null });
+  };
+
+  _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
+    const prev = this.state.connectionCheckResult;
+
+    // Only re-lint when the data relevant to version mismatch
+    // warning actually changes, not on every periodic poll
+    const prevVersion = prev && prev.success && prev.response
+      ? prev.response.gatewayVersion : null;
+    const nextVersion = connectionCheckResult.success && connectionCheckResult.response
+      ? connectionCheckResult.response.gatewayVersion : null;
+    const relevantChange = (prev && prev.success) !== connectionCheckResult.success
+      || prevVersion !== nextVersion;
+
+    this.setState({ connectionCheckResult }, () => {
+      if (!relevantChange) {
+        return;
+      }
+
+      const { activeTab } = this.state;
+
+      if (activeTab && activeTab !== EMPTY_TAB) {
+        this.lintTab(activeTab);
+      }
+    });
+  };
+
+  _handleEngineProfileChanged = ({ tab, executionPlatform, executionPlatformVersion }) => {
+    if (!tab || !tab.id) {
       return;
     }
 
-    if (!contents) {
-      contents = tab.file.contents;
-    }
+    this.setState(state => ({
+      engineProfiles: {
+        ...state.engineProfiles,
+        [ tab.id ]: { executionPlatform, executionPlatformVersion }
+      }
+    }), () => {
 
-    const results = await linter.lint(contents);
-
-    this.setLintingState(tab, results);
+      // Re-lint to pick up version mismatch warning
+      this.lintTab(tab);
+    });
   };
 
   getLintingState = (tab) => {
