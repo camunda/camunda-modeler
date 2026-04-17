@@ -185,6 +185,8 @@ export class BpmnEditor extends CachedComponent {
     }
 
     this.checkImport();
+
+    this.emitVariablesSidePanelLayoutChanged(layout.variablesSidePanel.open);
   }
 
   componentWillUnmount() {
@@ -859,12 +861,24 @@ export class BpmnEditor extends CachedComponent {
 
   handleLayoutChange(newLayout) {
     const {
+      layout,
       onLayoutChanged
     } = this.props;
+
+    if (newLayout.variablesSidePanel && newLayout.variablesSidePanel.open !== layout.variablesSidePanel?.open) {
+      this.emitVariablesSidePanelLayoutChanged(newLayout.variablesSidePanel.open);
+    }
 
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged(newLayout);
     }
+  }
+
+  emitVariablesSidePanelLayoutChanged(open) {
+    this.props.onAction('emit-event', {
+      type: 'variableOutline:layoutChanged',
+      payload: { open }
+    });
   }
 
   handleResize = () => {

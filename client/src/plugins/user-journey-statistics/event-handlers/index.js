@@ -17,6 +17,7 @@ import TabEventHandler from './TabEventHandler';
 import FormEditorEventHandler from './FormEditorEventHandler';
 import ModelingEventHandler from './ModelingEventHandler';
 import TaskTestingEventHandler from './TaskTestingEventHandler';
+import VariablesPanelEventHandler from './VariablesPanelEventHandler';
 
 export default [
   ConnectionEventHandler,
@@ -27,5 +28,6 @@ export default [
   PingEventHandler,
   TabEventHandler,
   ModelingEventHandler,
-  TaskTestingEventHandler
+  TaskTestingEventHandler,
+  VariablesPanelEventHandler
 ];
