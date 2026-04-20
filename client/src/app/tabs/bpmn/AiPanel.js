@@ -14,7 +14,6 @@ import classNames from 'classnames';
 
 import { SCENARIOS } from './copilotScenarios';
 import { CopilotPlayer } from './CopilotPlayer';
-import CopilotPreview from './CopilotPreview';
 import CopilotActionLog from './CopilotActionLog';
 import CopilotNarration from './CopilotNarration';
 
@@ -28,31 +27,50 @@ const PHASE_READY = 'ready';
  * Interactive AI Copilot pane. Replaces the previous informational stub.
  * Marionetted — no LLM calls.
  *
+ * Playback is performed on the host editor's real canvas via the
+ * onPlayStart / onPlayStep / onPlayReset callbacks. The panel itself
+ * shows the prompt, chips, narration, action log, and accept controls.
+ *
  * Props:
  *   - onClose: () => void
  *   - onAccept: (xml, log) => void    // invoked on "Use this"
- *   - canvasIsEmpty: boolean          // controls locked-state rendering
+ *   - onPlayStart: () => void         // invoked once before the first step
+ *   - onPlayStep: (partialXml) => Promise<void>  // invoked per step
+ *   - onPlayReset: () => Promise<void>|void      // clears the real canvas
+ *   - canvasIsEmpty: boolean          // snapshotted on mount for lock-state
  */
-export default function AiPanel({ onClose, onAccept, canvasIsEmpty }) {
+export default function AiPanel({
+  onClose,
+  onAccept,
+  onPlayStart,
+  onPlayStep,
+  onPlayReset,
+  canvasIsEmpty
+}) {
+
+  // Snapshot on mount. Once playback begins, the real canvas will fill up
+  // with elements and `canvasIsEmpty` flips to false — but we don't want the
+  // panel to swap itself out for the "locked" state mid-playback.
+  const [ wasEmptyOnOpen ] = useState(canvasIsEmpty);
+
   const [ phase, setPhase ] = useState(PHASE_IDLE);
   const [ prompt, setPrompt ] = useState('');
   const [ activeScenario, setActiveScenario ] = useState(null);
   const [ narration, setNarration ] = useState('');
   const [ log, setLog ] = useState([]);
 
-  const previewRef = useRef(null);
   const playerRef = useRef(null);
 
   const resetState = useCallback(() => {
     if (playerRef.current) playerRef.current.stop();
     playerRef.current = null;
-    if (previewRef.current) previewRef.current.reset();
     setPhase(PHASE_IDLE);
     setPrompt('');
     setActiveScenario(null);
     setNarration('');
     setLog([]);
-  }, []);
+    if (onPlayReset) onPlayReset();
+  }, [ onPlayReset ]);
 
   // Cleanup on unmount
   useEffect(() => () => {
@@ -70,6 +88,8 @@ export default function AiPanel({ onClose, onAccept, canvasIsEmpty }) {
     setNarration('');
     setPhase(PHASE_PLAYING);
 
+    if (onPlayStart) onPlayStart();
+
     const player = new CopilotPlayer(activeScenario);
     playerRef.current = player;
 
@@ -77,8 +97,8 @@ export default function AiPanel({ onClose, onAccept, canvasIsEmpty }) {
       setNarration(step.narration);
       setLog(prev => [ ...prev, step ]);
       const xml = player.getPartialXml(step.index);
-      if (previewRef.current) {
-        try { await previewRef.current.showXml(xml); } catch (_) { /* swallow parse errors on partial XML */ }
+      if (onPlayStep) {
+        try { await onPlayStep(xml); } catch (_) { /* swallow parse errors on partial XML */ }
       }
     });
 
@@ -87,7 +107,7 @@ export default function AiPanel({ onClose, onAccept, canvasIsEmpty }) {
     });
 
     await player.start();
-  }, [ activeScenario ]);
+  }, [ activeScenario, onPlayStart, onPlayStep ]);
 
   const handleRegenerate = useCallback(() => {
     resetState();
@@ -107,7 +127,7 @@ export default function AiPanel({ onClose, onAccept, canvasIsEmpty }) {
     }
   }, [ phase, activeScenario, handleGenerate, handleRegenerate ]);
 
-  if (!canvasIsEmpty) {
+  if (!wasEmptyOnOpen) {
     return (
       <div className={ css.aiSidePanel }>
         <div className={ css.aiSidePanelHeader }>
@@ -166,7 +186,6 @@ export default function AiPanel({ onClose, onAccept, canvasIsEmpty }) {
 
         { phase !== PHASE_IDLE && (
           <>
-            <CopilotPreview ref={ previewRef } />
             <CopilotNarration text={ narration } />
             <CopilotActionLog entries={ log } interactive={ false } />
             { phase === PHASE_READY && (

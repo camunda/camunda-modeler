@@ -108,6 +108,7 @@ export class BpmnEditor extends CachedComponent {
     this.state = {
       isCanvasEmpty: true,
       aiPanelOpen: false,
+      copilotPlaying: false,
       appendWizardSource: null,
       copilotLog: []
     };
@@ -315,6 +316,13 @@ export class BpmnEditor extends CachedComponent {
   }
 
   checkCanvasEmpty = () => {
+
+    // While the copilot is playing (or the AI panel is open) the canvas is
+    // being scripted by the AI scenario — element counts transiently climb
+    // from zero. Don't let that flip the lock gate: the panel owns its own
+    // view of emptiness (snapshotted on open).
+    if (this.state.copilotPlaying || this.state.aiPanelOpen) return;
+
     const modeler = this.getModeler();
     const elementRegistry = modeler.get('elementRegistry');
     const isCanvasEmpty = elementRegistry.getAll().length <= 1;
@@ -565,24 +573,77 @@ export class BpmnEditor extends CachedComponent {
     this.setState({ aiPanelOpen: true });
   };
 
-  handleCopilotAccept = async (xml, log) => {
+  /**
+   * Playback step from AiPanel — import the partial XML into the real
+   * modeler so the user sees elements pop in on the main canvas.
+   *
+   * Errors are swallowed (logged only) because partial XML during early
+   * steps can occasionally fail to parse cleanly.
+   */
+  handleCopilotStep = async (partialXml) => {
     const modeler = this.getModeler();
     if (!modeler) return;
 
     try {
-      await modeler.importXML(xml);
+      await modeler.importXML(partialXml);
+      modeler.get('canvas').zoom('fit-viewport', 'auto');
     } catch (err) {
       /* eslint-disable-next-line no-console */
-      console.error('Copilot accept: importXML failed', err);
-      return;
+      console.error('Copilot step: importXML failed', err);
+    }
+  };
+
+  handleCopilotPlayStart = () => {
+    this.setState({ copilotPlaying: true });
+  };
+
+  /**
+   * Reset the real canvas back to an empty Camunda 8 diagram. Called
+   * when the panel closes mid-playback, or when the user clicks
+   * Regenerate.
+   */
+  handleCopilotPlayReset = async () => {
+    const modeler = this.getModeler();
+    if (!modeler) return;
+
+    const EMPTY_C8_XML = '<?xml version="1.0" encoding="UTF-8"?>\n'
+      + '<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" '
+      + 'xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" '
+      + 'xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" '
+      + 'xmlns:modeler="http://camunda.org/schema/modeler/1.0" '
+      + 'id="Definitions_copilot_reset" '
+      + 'targetNamespace="http://bpmn.io/schema/bpmn" '
+      + 'modeler:executionPlatform="Camunda Cloud" '
+      + 'modeler:executionPlatformVersion="8.5.0">\n'
+      + '  <bpmn:process id="Process_copilot_reset" isExecutable="true" />\n'
+      + '  <bpmndi:BPMNDiagram id="BPMNDiagram_1">\n'
+      + '    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_copilot_reset" />\n'
+      + '  </bpmndi:BPMNDiagram>\n'
+      + '</bpmn:definitions>';
+
+    try {
+      await modeler.importXML(EMPTY_C8_XML);
+      modeler.get('canvas').zoom('fit-viewport', 'auto');
+    } catch (err) {
+      /* eslint-disable-next-line no-console */
+      console.error('Copilot reset: importXML failed', err);
     }
 
-    const canvas = modeler.get('canvas');
-    canvas.zoom('fit-viewport', 'auto');
+    this.setState({ copilotPlaying: false });
+  };
+
+  handleCopilotAccept = async (xml, log) => {
+    const modeler = this.getModeler();
+    if (!modeler) return;
+
+    // The canvas already holds the fully played-out scenario from the last
+    // step, so we intentionally skip re-importing `xml` here. Trust the
+    // playback and just capture the log + close the panel.
 
     // Close copilot, remember log, reopen properties panel
     this.setState({
       aiPanelOpen: false,
+      copilotPlaying: false,
       copilotLog: log,
       isCanvasEmpty: false
     });
@@ -1385,8 +1446,18 @@ export class BpmnEditor extends CachedComponent {
 
           { aiPanelOpen && (
             <AiPanel
-              onClose={ () => this.setState({ aiPanelOpen: false }) }
+              onClose={ async () => {
+
+                // If the user closes the panel mid-playback, roll the real
+                // canvas back to the empty diagram so they don't end up
+                // with half-drafted elements stuck on screen.
+                await this.handleCopilotPlayReset();
+                this.setState({ aiPanelOpen: false });
+              } }
               onAccept={ this.handleCopilotAccept }
+              onPlayStart={ this.handleCopilotPlayStart }
+              onPlayStep={ this.handleCopilotStep }
+              onPlayReset={ this.handleCopilotPlayReset }
               canvasIsEmpty={ isCanvasEmpty }
             />
           ) }
