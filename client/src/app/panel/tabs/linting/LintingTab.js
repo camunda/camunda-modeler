@@ -72,6 +72,7 @@ export default function LintingTab(props) {
             key={ index }
             report={ report }
             onClick={ onClick(report) }
+            onAction={ onAction }
           />;
         }))
       }
@@ -86,7 +87,8 @@ export default function LintingTab(props) {
 function LintingTabItem(props) {
   const {
     report,
-    onClick
+    onClick,
+    onAction
   } = props;
 
   const {
@@ -138,6 +140,20 @@ function LintingTabItem(props) {
             <LaunchIcon width="12" height="12" viewBox="0 0 12 12" />
           </a>
         </>
+      }
+      {
+        report.action && (
+          <button
+            className="linting-tab-item__button"
+            onClick={ (event) => {
+              event.preventDefault();
+              stopPropagation(event);
+              onAction(report.action.handler, report.action.options);
+            } }
+            title={ report.action.label }>
+            { report.action.label }
+          </button>
+        )
       }
     </div>
   </div>;

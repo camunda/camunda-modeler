@@ -80,6 +80,19 @@ export class RPAEditor extends CachedComponent {
           key: 'executionPlatformVersion',
           value: engineProfile.executionPlatformVersion
         });
+
+        const {
+          executionPlatform,
+          executionPlatformVersion
+        } = engineProfile;
+
+        this.props.onAction('emit-event', {
+          type: 'tab.engineProfileChanged',
+          payload: {
+            executionPlatform,
+            executionPlatformVersion
+          }
+        });
       },
       getCached: () => this.getCached(),
       setCached: (state) => this.setCached(state)
@@ -187,6 +200,19 @@ export class RPAEditor extends CachedComponent {
       this.setCached({
         engineProfile,
       });
+
+      const {
+        executionPlatform,
+        executionPlatformVersion
+      } = engineProfile;
+
+      this.props.onAction('emit-event', {
+        type: 'tab.engineProfileChanged',
+        payload: {
+          executionPlatform,
+          executionPlatformVersion
+        }
+      });
     }
   }
 
@@ -275,7 +301,7 @@ export class RPAEditor extends CachedComponent {
     }
   }
 
-  triggerAction(action) {
+  triggerAction(action, context) {
     const {
       editor
     } = this.getCached();
@@ -283,6 +309,15 @@ export class RPAEditor extends CachedComponent {
     const {
       editor: monaco
     } = editor;
+
+    if (action === 'set-engine-profile') {
+      const currentProfile = this.engineProfile.get();
+
+      return this.engineProfile.set({
+        executionPlatform: currentProfile.executionPlatform,
+        executionPlatformVersion: context.executionPlatformVersion
+      });
+    }
 
     if (action === 'undo') {
       monaco.trigger('menu', 'undo');
