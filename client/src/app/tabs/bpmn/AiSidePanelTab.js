@@ -20,10 +20,11 @@ import * as css from './GuidedStart.less';
  */
 export default function AiSidePanelTab() {
   return (
-    <div className={ css.aiPanel }>
-      <div className={ css.aiPanelIcon }>✦</div>
-      <h3 className={ css.aiPanelHeading }>Start with AI</h3>
-      <p className={ css.aiPanelText }>
+    <div className={ css.aiSidePanel }>
+      <div className={ css.aiSidePanelHeader }>
+        <h3 className={ css.aiSidePanelTitle }>Start with AI</h3>
+      </div>
+      <p className={ css.aiSidePanelIntro }>
         AI-assisted process modeling is available in <strong>Web Modeler</strong> today and is coming to Desktop Modeler in a future release (planned 8.10).
       </p>
     </div>

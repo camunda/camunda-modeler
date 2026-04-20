@@ -1,0 +1,178 @@
+[
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "REST Outbound Connector",
+    "id": "io.camunda.prototype.HttpJson",
+    "description": "Demo template for the AI copilot prototype. Renders the grouped field structure the stepper rationales reference.",
+    "appliesTo": [ "bpmn:ServiceTask" ],
+    "elementType": { "value": "bpmn:ServiceTask" },
+    "groups": [
+      { "id": "httpEndpoint", "label": "HTTP Endpoint" },
+      { "id": "authentication", "label": "Authentication" },
+      { "id": "payload", "label": "Payload" },
+      { "id": "headers", "label": "HTTP Headers" },
+      { "id": "output", "label": "Output mapping" }
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "io.camunda:http-json:1",
+        "binding": { "type": "zeebe:taskDefinition:type" }
+      },
+      {
+        "label": "Method",
+        "group": "httpEndpoint",
+        "description": "HTTP method",
+        "type": "Dropdown",
+        "value": "GET",
+        "choices": [
+          { "name": "GET", "value": "GET" },
+          { "name": "POST", "value": "POST" },
+          { "name": "PUT", "value": "PUT" },
+          { "name": "PATCH", "value": "PATCH" },
+          { "name": "DELETE", "value": "DELETE" }
+        ],
+        "binding": { "type": "zeebe:input", "name": "method" }
+      },
+      {
+        "label": "URL",
+        "group": "httpEndpoint",
+        "description": "Full endpoint URL. Prefix with = to write a FEEL expression.",
+        "type": "String",
+        "feel": "optional",
+        "binding": { "type": "zeebe:input", "name": "url" },
+        "constraints": { "notEmpty": true }
+      },
+      {
+        "label": "Type",
+        "group": "authentication",
+        "description": "Authentication scheme",
+        "type": "Dropdown",
+        "value": "noAuth",
+        "choices": [
+          { "name": "None", "value": "noAuth" },
+          { "name": "Basic", "value": "basic" },
+          { "name": "Bearer token", "value": "bearer" },
+          { "name": "API key", "value": "apiKey" }
+        ],
+        "binding": { "type": "zeebe:input", "name": "authentication.type" }
+      },
+      {
+        "label": "Bearer token",
+        "group": "authentication",
+        "description": "Wrap secrets in {{secrets.NAME}} so Zeebe resolves them at runtime.",
+        "type": "String",
+        "optional": true,
+        "binding": { "type": "zeebe:input", "name": "authentication.token" }
+      },
+      {
+        "label": "API key — Name",
+        "group": "authentication",
+        "description": "Header name for the API key (e.g. X-API-Key).",
+        "type": "String",
+        "optional": true,
+        "binding": { "type": "zeebe:input", "name": "authentication.apiKeyName" }
+      },
+      {
+        "label": "API key — Value",
+        "group": "authentication",
+        "description": "Header value. Wrap secrets in {{secrets.NAME}}.",
+        "type": "String",
+        "optional": true,
+        "binding": { "type": "zeebe:input", "name": "authentication.apiKeyValue" }
+      },
+      {
+        "label": "Request body",
+        "group": "payload",
+        "description": "FEEL expression producing the request body. Maps use { key: value }.",
+        "type": "Text",
+        "feel": "optional",
+        "optional": true,
+        "binding": { "type": "zeebe:input", "name": "body" }
+      },
+      {
+        "label": "Result Variable",
+        "group": "output",
+        "description": "Name of a single variable that holds the full response. Prefer Result Expression for named top-level vars.",
+        "type": "String",
+        "optional": true,
+        "binding": { "type": "zeebe:taskHeader", "key": "resultVariable" }
+      },
+      {
+        "label": "Result Expression",
+        "group": "output",
+        "description": "FEEL map that extracts named variables from response. Prefix with =.",
+        "type": "Text",
+        "feel": "optional",
+        "optional": true,
+        "binding": { "type": "zeebe:taskHeader", "key": "resultExpression" }
+      }
+    ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Slack Outbound Connector",
+    "id": "io.camunda.prototype.Slack",
+    "description": "Demo template for the AI copilot prototype. Posts messages to a Slack channel via bot token.",
+    "appliesTo": [ "bpmn:ServiceTask" ],
+    "elementType": { "value": "bpmn:ServiceTask" },
+    "groups": [
+      { "id": "authentication", "label": "Authentication" },
+      { "id": "method", "label": "Method" },
+      { "id": "data", "label": "Message" }
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "io.camunda:slack:1",
+        "binding": { "type": "zeebe:taskDefinition:type" }
+      },
+      {
+        "label": "OAuth token",
+        "group": "authentication",
+        "description": "Bot token with chat:write scope. Wrap in {{secrets.SLACK_BOT_TOKEN}}.",
+        "type": "String",
+        "binding": { "type": "zeebe:input", "name": "token" },
+        "constraints": { "notEmpty": true }
+      },
+      {
+        "label": "Method",
+        "group": "method",
+        "type": "Dropdown",
+        "value": "chat.postMessage",
+        "choices": [
+          { "name": "Post message", "value": "chat.postMessage" }
+        ],
+        "binding": { "type": "zeebe:input", "name": "method" }
+      },
+      {
+        "label": "Channel/User name",
+        "group": "data",
+        "description": "Channel with # prefix (e.g. #customer-success) or @username for DMs.",
+        "type": "String",
+        "binding": { "type": "zeebe:input", "name": "data.channel" },
+        "constraints": { "notEmpty": true }
+      },
+      {
+        "label": "Message type",
+        "group": "data",
+        "type": "Dropdown",
+        "value": "plainText",
+        "choices": [
+          { "name": "Plain text", "value": "plainText" },
+          { "name": "Message block", "value": "messageBlock" }
+        ],
+        "binding": { "type": "zeebe:input", "name": "data.messageType" }
+      },
+      {
+        "label": "Message",
+        "group": "data",
+        "description": "Plain text message. Prefix with = for a FEEL expression. Cast numbers with string(x) when concatenating.",
+        "type": "Text",
+        "feel": "optional",
+        "binding": { "type": "zeebe:input", "name": "data.text" },
+        "constraints": { "notEmpty": true }
+      }
+    ]
+  }
+]
