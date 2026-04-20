@@ -1085,50 +1085,143 @@
   p { margin: 0 0 8px 0; }
 }
 
-:local(.copilotLogStrip) {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  width: 320px;
-  max-height: 280px;
+// ---- AI Copilot floating stepper (post-accept walkthrough) -----------------
+
+:local(.copilotStepper) {
+  position: fixed;
+  z-index: 100;
+  width: 380px;
   background: white;
-  border: 1px solid #d0d4dc;
-  border-radius: 6px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 20;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  transition: top 0.18s ease, left 0.18s ease;
+
+  // Small pointer arrow on the top-left corner pointing toward the canvas element
+  &::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 8px solid var(--color-blue-base-40, #205dff);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
-:local(.copilotLogStripHeader) {
+:local(.copilotStepperStepNumber) {
+  font-size: 11px;
+  font-family: var(--font-family, sans-serif);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-blue-base-40, #205dff);
+  margin-bottom: 4px;
+}
+
+:local(.copilotStepperHeader) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+:local(.copilotStepperHeading) {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-family, sans-serif);
+  color: #1a1a1a;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:local(.copilotStepperClose) {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
-  padding: 6px 8px;
-  border-bottom: 1px solid #eceef2;
-  background: #f8fafc;
-}
-
-:local(.copilotLogStripToggle) {
-  flex: 1;
+  justify-content: center;
   background: transparent;
   border: 0;
-  text-align: left;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 500;
+  border-radius: 4px;
+  font-size: 18px;
+  line-height: 1;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    color: #1a1a1a;
+    background: #f3f3f3;
+  }
+}
+
+:local(.copilotStepperBody) {
+  white-space: pre-wrap;
+  font-size: 13px;
+  font-family: var(--font-family, sans-serif);
+  line-height: 1.5;
+  color: #333;
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 14px;
+}
+
+:local(.copilotStepperFooter) {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+:local(.copilotStepperPrev) {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-family: var(--font-family, sans-serif);
+  background: white;
+  border: 1px solid #d0d4dc;
+  border-radius: 4px;
   color: #1a1f27;
   cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #f3f6fb;
+    border-color: #b0b8c8;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
 }
 
-:local(.copilotLogStripDismiss) {
-  background: transparent;
+:local(.copilotStepperNext) {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-family: var(--font-family, sans-serif);
+  background: var(--color-blue-base-40, #205dff);
   border: 0;
-  color: #697180;
-  font-size: 14px;
+  border-radius: 4px;
+  color: white;
   cursor: pointer;
-  padding: 2px 6px;
-  &:hover { color: #1a1f27; }
-}
 
-:local(.copilotLogStrip.isCollapsed) :local(.copilotActionLog) { display: none; }
+  &:hover:not(:disabled) {
+    background: #1a4fd6;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}

@@ -31,7 +31,7 @@ import { Settings } from '@carbon/icons-react';
 import EmptyCanvasOverlay from '../bpmn/EmptyCanvasOverlay';
 import AiPanel from '../bpmn/AiPanel';
 import AppendWizard from '../bpmn/AppendWizard';
-import CopilotLogStrip from '../bpmn/CopilotLogStrip';
+import CopilotStepper from '../bpmn/CopilotStepper';
 import { ELEMENT_SHAPE_MAP } from '../bpmn/appendCatalog';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
@@ -606,31 +606,6 @@ export class BpmnEditor extends CachedComponent {
     if (startEvent) {
       selection.select(startEvent);
     }
-  };
-
-  handleCopilotLogClick = (entry) => {
-    const modeler = this.getModeler();
-    if (!modeler) return;
-
-    const elementRegistry = modeler.get('elementRegistry');
-    const selection = modeler.get('selection');
-    const canvas = modeler.get('canvas');
-    const shape = elementRegistry.get(entry.elementId);
-    if (!shape) return;
-
-    selection.select(shape);
-    try { canvas.scrollToElement(shape, { left: 80, right: 80, top: 80, bottom: 80 }); } catch (_) { /* no-op */ }
-
-    const { layout } = this.props;
-    const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
-    this.handleLayoutChange({
-      sidePanel: {
-        ...SIDE_PANEL_DEFAULT_LAYOUT,
-        ...sidePanelLayout,
-        open: true,
-        tab: 'properties'
-      }
-    });
   };
 
   /**
@@ -1350,10 +1325,11 @@ export class BpmnEditor extends CachedComponent {
             ) }
 
             { !aiPanelOpen && copilotLog && copilotLog.length > 0 && (
-              <CopilotLogStrip
+              <CopilotStepper
                 entries={ copilotLog }
-                onEntryClick={ this.handleCopilotLogClick }
+                modeler={ this.getModeler() }
                 onDismiss={ () => this.setState({ copilotLog: [] }) }
+                onLayoutChanged={ this.handleLayoutChange }
               />
             ) }
           </div>
