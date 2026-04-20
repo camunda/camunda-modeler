@@ -27,3 +27,305 @@
 .djs-search-highlight {
   font-weight: bold;
 }
+
+/* Dark theme overrides for diagram canvases */
+:root[data-theme="dark"] {
+
+  /* BPMN / DMN diagram canvas */
+  .djs-container {
+    background-color: hsl(225, 10%, 18%) !important;
+
+    svg {
+      color: hsl(225, 10%, 85%);
+    }
+
+    /* Connection lines (sequence flows, message flows, associations) */
+    .djs-connection .djs-visual path,
+    .djs-connection .djs-visual polyline {
+      stroke: hsl(225, 10%, 80%) !important;
+    }
+
+    /* Arrowhead markers on connections */
+    marker path,
+    marker polygon,
+    marker circle {
+      stroke: hsl(225, 10%, 80%) !important;
+      fill: hsl(225, 10%, 80%) !important;
+    }
+
+    /* Shape borders (tasks, events, gateways, subprocesses) */
+    .djs-shape .djs-visual > rect,
+    .djs-shape .djs-visual > circle,
+    .djs-shape .djs-visual > polygon,
+    .djs-shape .djs-visual > path {
+      stroke: hsl(225, 10%, 70%) !important;
+    }
+
+    /* Task type icons (user, envelope, gear, etc.) — white */
+    .djs-shape .djs-visual > path {
+      fill: #e0e0e0 !important;
+    }
+
+    /* Shape fills — dark background, white text */
+    .djs-shape .djs-visual > rect,
+    .djs-shape .djs-visual > circle,
+    .djs-shape .djs-visual > polygon {
+      fill: hsl(225, 10%, 20%) !important;
+    }
+
+    /* Text inside shapes (task names) — white for contrast on dark box */
+    .djs-shape .djs-visual text,
+    .djs-shape .djs-visual tspan {
+      fill: #f0f0f0 !important;
+    }
+
+    /* External labels (event names, flow labels on canvas) — light for contrast */
+    .djs-element.djs-shape .djs-label text,
+    .djs-element.djs-shape .djs-label tspan {
+      fill: hsl(225, 10%, 90%) !important;
+    }
+  }
+
+  /* Palette / toolbox, context pad, popup */
+  .djs-parent {
+    /* Base color overrides */
+    --color-grey-225-10-15: hsl(225, 10%, 90%);
+    --color-grey-225-10-35: hsl(225, 10%, 75%);
+    --color-grey-225-10-55: hsl(225, 10%, 60%);
+    --color-grey-225-10-75: hsl(225, 10%, 35%);
+    --color-grey-225-10-80: hsl(225, 10%, 30%);
+    --color-grey-225-10-85: hsl(225, 10%, 22%);
+    --color-grey-225-10-90: hsl(225, 10%, 25%);
+    --color-grey-225-10-95: hsl(225, 10%, 20%);
+    --color-grey-225-10-97: hsl(225, 10%, 18%);
+    --color-white: hsl(225, 10%, 14%);
+    --color-black: hsl(0, 0%, 100%);
+    --color-black-opacity-10: hsla(0, 0%, 100%, 10%);
+    --color-black-opacity-30: hsla(0, 0%, 100%, 30%);
+    --color-blue-205-100-95: hsl(205, 60%, 20%);
+    --color-red-360-100-92: hsl(360, 40%, 25%);
+    --color-red-360-100-97: hsl(360, 40%, 18%);
+
+    /* Canvas */
+    --canvas-fill-color: hsl(225, 10%, 18%);
+
+    /* Palette */
+    --palette-background-color: hsl(225, 10%, 16%);
+    --palette-border-color: hsl(225, 10%, 30%);
+    --palette-separator-color: hsl(225, 10%, 30%);
+    --palette-entry-color: hsl(225, 10%, 80%);
+    --palette-entry-hover-color: hsl(205, 100%, 60%);
+    --palette-entry-selected-color: hsl(205, 100%, 55%);
+    --palette-toggle-hover-background-color: hsl(225, 10%, 28%);
+
+    /* Context pad */
+    --context-pad-entry-background-color: hsl(225, 10%, 22%);
+    --context-pad-entry-hover-background-color: hsl(225, 10%, 30%);
+
+    /* Popup menu */
+    --popup-background-color: hsl(225, 10%, 20%);
+    --popup-border-color: hsl(225, 10%, 30%);
+    --popup-shadow-color: hsla(0, 0%, 0%, 40%);
+    --popup-disabled-color: hsl(225, 10%, 45%);
+    --popup-description-color: hsl(225, 10%, 60%);
+    --popup-no-results-color: hsl(225, 10%, 55%);
+    --popup-entry-title-color: hsl(225, 10%, 65%);
+    --popup-entry-hover-color: hsl(225, 10%, 28%);
+    --popup-header-group-divider-color: hsl(225, 10%, 35%);
+    --popup-search-border-color: hsl(225, 10%, 35%);
+    --popup-search-focus-background-color: hsl(205, 60%, 20%);
+  }
+
+  /* Context pad icon color */
+  .djs-context-pad .entry {
+    color: hsl(225, 10%, 85%);
+  }
+
+  /* Popup menu text color */
+  .djs-popup {
+    color: hsl(225, 10%, 85%);
+
+    input {
+      color: hsl(225, 10%, 85%);
+      background-color: hsl(225, 10%, 18%);
+    }
+  }
+
+  /* Properties panel */
+  .bio-properties-panel {
+    /* Text */
+    --text-base-color: hsl(225, 10%, 85%);
+    --description-color: hsl(225, 10%, 60%);
+    --placeholder-color: hsl(225, 10%, 50%);
+    --link-color: hsl(205, 100%, 60%);
+
+    /* Header */
+    --header-background-color: hsl(225, 10%, 20%);
+    --header-icon-fill-color: hsl(225, 10%, 80%);
+    --header-bottom-border-color: hsl(225, 10%, 30%);
+
+    /* Groups / sections */
+    --group-background-color: hsl(225, 10%, 18%);
+    --group-bottom-border-color: hsl(225, 10%, 28%);
+    --sticky-group-background-color: hsl(225, 10%, 20%);
+    --sticky-group-bottom-border-color: hsl(225, 10%, 28%);
+
+    /* Inputs */
+    --input-background-color: hsl(225, 10%, 22%);
+    --input-border-color: hsl(225, 10%, 35%);
+    --input-focus-background-color: hsl(225, 10%, 25%);
+    --input-focus-border-color: hsl(205, 100%, 50%);
+    --input-disabled-color: hsl(225, 10%, 45%);
+    --input-disabled-background-color: hsl(225, 10%, 20%);
+    --input-disabled-border-color: hsl(225, 10%, 28%);
+
+    /* Arrows, dots, buttons */
+    --arrow-fill-color: hsl(225, 10%, 60%);
+    --arrow-hover-background-color: hsl(225, 10%, 25%);
+    --add-entry-fill-color: hsl(225, 10%, 60%);
+    --dot-color: hsl(225, 10%, 50%);
+    --remove-entry-fill-color: hsl(0, 80%, 55%);
+
+    /* Dropdowns */
+    --dropdown-item-background-color: hsl(225, 10%, 22%);
+    --dropdown-item-hover-background-color: hsl(225, 10%, 28%);
+    --dropdown-separator-background-color: hsl(225, 10%, 30%);
+
+    /* Placeholder area */
+    --placeholder-background-color: hsl(225, 10%, 18%);
+
+    /* Description code blocks */
+    --description-code-background-color: hsl(225, 10%, 22%);
+    --description-code-border-color: hsl(225, 10%, 30%);
+
+    /* FEEL */
+    --feel-hover-background-color: hsl(225, 10%, 25%);
+    --feel-inactive-color: hsl(225, 10%, 50%);
+    --feel-hover-color: hsl(225, 10%, 80%);
+    --feel-open-popup-color: hsl(225, 10%, 60%);
+    --feel-open-popup-background-color: hsl(225, 10%, 22%);
+    --feel-indicator-background-color: hsl(225, 10%, 28%);
+
+    /* Toggle switch */
+    --toggle-switch-off-background-color: hsl(225, 10%, 40%);
+    --toggle-switch-switcher-background-color: hsl(225, 10%, 85%);
+
+    /* Side lines */
+    --side-line-background-color: hsl(225, 10%, 35%);
+    --side-line-extension-background-color: hsl(225, 10%, 35%);
+
+    /* List entries */
+    --list-entry-header-button-fill-color: hsl(225, 10%, 60%);
+    --list-badge-background-color: hsl(225, 10%, 35%);
+
+    color: hsl(225, 10%, 85%);
+  }
+
+  /* Form playground */
+  .cfp-root {
+    background-color: hsl(225, 10%, 18%);
+    color: hsl(225, 10%, 85%);
+  }
+
+  /* DMN shared color overrides (the library defines its own variables on .dmn-js-parent) */
+  .dmn-js-parent {
+    --color-grey-225-10-15: hsl(225, 10%, 90%);
+    --color-grey-225-10-35: hsl(225, 10%, 75%);
+    --color-grey-225-10-55: hsl(225, 10%, 60%);
+    --color-grey-225-10-75: hsl(225, 10%, 35%);
+    --color-grey-225-10-80: hsl(225, 10%, 30%);
+    --color-grey-225-10-85: hsl(225, 10%, 22%);
+    --color-grey-225-10-90: hsl(225, 10%, 25%);
+    --color-grey-225-10-95: hsl(225, 10%, 20%);
+    --color-grey-225-10-97: hsl(225, 10%, 18%);
+    --color-blue-205-100-45-opacity-30: hsl(205, 100%, 45%, 30%);
+    --color-blue-205-100-95: hsl(205, 60%, 20%);
+    --color-red-360-100-92: hsl(360, 40%, 25%);
+    --color-red-360-100-97: hsl(360, 40%, 18%);
+    --color-white: hsl(225, 10%, 14%);
+    --color-black: hsl(0, 0%, 100%);
+    --color-black-opacity-10: hsla(0, 0%, 100%, 10%);
+    --color-black-opacity-20: hsla(0, 0%, 100%, 20%);
+  }
+
+  /* DMN decision table dark overrides */
+  .dmn-decision-table-container {
+    --decision-table-background-color: hsl(225, 10%, 18%);
+    --decision-table-color: hsl(225, 10%, 90%);
+    --table-cell-color: hsl(225, 10%, 85%);
+    --table-cell-border-color: hsl(225, 10%, 30%);
+    --table-head-border-color: hsl(225, 10%, 35%);
+    --table-head-clause-color: hsl(225, 10%, 65%);
+    --table-head-separator-color: hsl(225, 10%, 35%);
+    --table-head-variable-color: hsl(225, 10%, 65%);
+    --table-row-alternative-background-color: hsl(225, 10%, 16%);
+    --table-foot-add-rule-border-color: hsl(225, 10%, 35%);
+    --table-foot-add-rule-color: hsl(225, 10%, 50%);
+    --table-foot-add-rule-hover-border-color: hsl(225, 10%, 70%);
+    --table-foot-add-rule-hover-color: hsl(225, 10%, 70%);
+    --decision-table-properties-color: hsl(225, 10%, 85%);
+    --add-column-icon-background-color: hsl(225, 10%, 50%);
+    --hit-policy-explanation-color: hsl(225, 10%, 60%);
+    --simple-mode-button-color: hsl(225, 10%, 85%);
+    --simple-mode-button-background-color: hsl(225, 10%, 22%);
+    --simple-mode-button-border-color: hsl(225, 10%, 35%);
+    --simple-mode-button-disabled-color: hsl(225, 10%, 40%);
+    --view-drd-button-background-color: hsl(225, 10%, 22%);
+    --view-drd-button-border-color: hsl(225, 10%, 35%);
+    --view-drd-button-color: hsl(225, 10%, 85%);
+    --view-drd-button-hover-background-color: hsl(225, 10%, 28%);
+    --drag-and-drop-drag-color: hsl(225, 10%, 60%);
+    --drag-and-drop-drop-marker-color: hsl(225, 10%, 50%);
+    --context-menu-background-color: hsl(225, 10%, 22%);
+    --context-menu-border-color: hsl(225, 10%, 35%);
+    --context-menu-color: hsl(225, 10%, 85%);
+    --context-menu-group-entry-hover-background-color: hsl(225, 10%, 28%);
+    --context-menu-group-entry-border-color: hsl(225, 10%, 35%);
+    --context-menu-group-entry-disabled-color: hsl(225, 10%, 40%);
+    --create-inputs-border-color: hsl(225, 10%, 35%);
+    --create-inputs-color: hsl(225, 10%, 55%);
+    --create-inputs-hover-color: hsl(225, 10%, 80%);
+    --edit-button-color: hsl(225, 10%, 85%);
+    --edit-button-background-color: hsl(225, 10%, 22%);
+    --edit-button-border-color: hsl(225, 10%, 35%);
+    --edit-button-disabled-color: hsl(225, 10%, 40%);
+    --allowed-values-placeholder-color: hsl(225, 10%, 50%);
+    --cell-description-editor-border-color: hsl(225, 10%, 35%);
+    --drag-and-drop-handle-color: hsl(225, 10%, 50%);
+    --drag-and-drop-handle-hover-color: hsl(225, 10%, 80%);
+    --form-control-label-color: hsl(225, 10%, 85%);
+    --hint-color: hsl(225, 10%, 65%);
+  }
+
+  /* DMN literal expression dark overrides */
+  .dmn-literal-expression-container {
+    --decision-properties-background-color: hsl(225, 10%, 18%);
+    --decision-properties-border-color: hsl(225, 10%, 30%);
+    --decision-properties-color: hsl(225, 10%, 85%);
+    --literal-expression-color: hsl(225, 10%, 85%);
+    --literal-expression-properties-border-color: hsl(225, 10%, 30%);
+    --literal-expression-properties-color: hsl(225, 10%, 85%);
+    --textarea-border-color: hsl(225, 10%, 30%);
+    --textarea-color: hsl(225, 10%, 85%);
+    --view-drd-button-background-color: hsl(225, 10%, 22%);
+    --view-drd-button-border-color: hsl(225, 10%, 35%);
+    --view-drd-button-color: hsl(225, 10%, 85%);
+    --view-drd-button-hover-background-color: hsl(225, 10%, 28%);
+  }
+
+  /* DMN boxed expression dark overrides */
+  .dmn-boxed-expression-container {
+    --element-properties-background-color: hsl(225, 10%, 18%);
+    --element-properties-border-color: hsl(225, 10%, 30%);
+    --element-properties-color: hsl(225, 10%, 85%);
+    --boxed-expression-color: hsl(225, 10%, 85%);
+    --boxed-expression-properties-border-color: hsl(225, 10%, 30%);
+    --boxed-expression-properties-color: hsl(225, 10%, 85%);
+    --textarea-border-color: hsl(225, 10%, 30%);
+    --textarea-color: hsl(225, 10%, 85%);
+    --view-drd-button-background-color: hsl(225, 10%, 22%);
+    --view-drd-button-border-color: hsl(225, 10%, 35%);
+    --view-drd-button-color: hsl(225, 10%, 85%);
+    --view-drd-button-hover-background-color: hsl(225, 10%, 28%);
+  }
+}
