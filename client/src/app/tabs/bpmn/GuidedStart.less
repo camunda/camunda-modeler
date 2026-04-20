@@ -917,3 +917,170 @@
   line-height: 1;
   padding-right: 4px;
 }
+
+
+// ---- AI Copilot interactive content ----
+
+:local(.copilotPrompt) {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 13px;
+  border: 1px solid #c6cbd4;
+  border-radius: 4px;
+  resize: vertical;
+  margin-bottom: 8px;
+
+  &:focus {
+    outline: none;
+    border-color: #2a7de1;
+    box-shadow: 0 0 0 2px rgba(42, 125, 225, 0.2);
+  }
+}
+
+:local(.copilotChips) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+:local(.copilotChip) {
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid #d0d4dc;
+  border-radius: 16px;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms, border-color 120ms;
+
+  &:hover { background: #f3f6fb; border-color: #c6cbd4; }
+  &:focus-visible { outline: 2px solid #2a7de1; outline-offset: 1px; }
+
+  &:local(.isActive) {
+    background: #eaf3fe;
+    border-color: #2a7de1;
+  }
+}
+
+:local(.copilotGenerate) {
+  width: 100%;
+  padding: 8px 12px;
+  background: #2a7de1;
+  color: white;
+  border: 0;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:disabled { background: #b8c4d4; cursor: default; }
+  &:hover:not(:disabled) { background: #2068c1; }
+}
+
+:local(.copilotNarration) {
+  margin: 8px 0;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: #4d5563;
+  font-style: italic;
+  min-height: 18px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:local(.copilotActionLog) {
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+:local(.copilotActionLogEntry) {
+  padding: 0;
+  button {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 4px;
+    background: transparent;
+    border: 0;
+    text-align: left;
+    cursor: default;
+    font: inherit;
+  }
+  &:local(.isClickable) button {
+    cursor: pointer;
+    &:hover { background: #f3f6fb; }
+  }
+}
+
+:local(.copilotActionLogIcon) {
+  font-size: 16px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+:local(.copilotActionLogText) {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+:local(.copilotActionLogName) {
+  font-size: 12px;
+  font-weight: 500;
+  color: #1a1f27;
+}
+
+:local(.copilotActionLogRationale) {
+  font-size: 11px;
+  color: #697180;
+  line-height: 1.4;
+}
+
+:local(.copilotActions) {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+:local(.copilotRegenerate),
+:local(.copilotUseThis) {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  border: 0;
+}
+
+:local(.copilotRegenerate) {
+  background: white;
+  border: 1px solid #d0d4dc;
+  color: #1a1f27;
+  &:hover { background: #f3f6fb; }
+}
+
+:local(.copilotUseThis) {
+  background: #2a7de1;
+  color: white;
+  &:hover { background: #2068c1; }
+}
+
+:local(.aiSidePanelLocked) {
+  padding: 16px;
+  font-size: 13px;
+  color: #4d5563;
+  p { margin: 0 0 8px 0; }
+}

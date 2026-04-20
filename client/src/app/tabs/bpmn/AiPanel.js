@@ -8,77 +8,175 @@
  * except in compliance with the MIT License.
  */
 
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import classNames from 'classnames';
+
+import { SCENARIOS } from './copilotScenarios';
+import { CopilotPlayer } from './CopilotPlayer';
+import CopilotPreview from './CopilotPreview';
+import CopilotActionLog from './CopilotActionLog';
+import CopilotNarration from './CopilotNarration';
 
 import * as css from './GuidedStart.less';
 
-
-const AI_OPTIONS = [
-  {
-    id: 'describe',
-    icon: '✏️',
-    label: 'Describe your process',
-    description: 'Explain what the process should do in plain language — AI generates the initial flow.'
-  },
-  {
-    id: 'pattern',
-    icon: '📋',
-    label: 'Start from a pattern',
-    description: 'Pick a common process template — approval, onboarding, incident response — as a starting point.'
-  },
-  {
-    id: 'improve',
-    icon: '✦',
-    label: 'Improve the current diagram',
-    description: 'Let AI review what you have and suggest additions, simplifications, or missing error paths.'
-  },
-  {
-    id: 'ask',
-    icon: '💬',
-    label: 'Ask a modeling question',
-    description: 'Not sure how to model something in BPMN? Get guidance without leaving the canvas.'
-  }
-];
-
+const PHASE_IDLE = 'idle';
+const PHASE_PLAYING = 'playing';
+const PHASE_READY = 'ready';
 
 /**
- * Standalone AI assistance panel — rendered as a separate side panel,
- * not a tab inside the properties panel.
+ * Interactive AI Copilot pane. Replaces the previous informational stub.
+ * Marionetted — no LLM calls.
  *
- * @param {object} props
- * @param {function} props.onClose
+ * Props:
+ *   - onClose: () => void
+ *   - onAccept: (xml, log) => void    // invoked on "Use this"
+ *   - canvasIsEmpty: boolean          // controls locked-state rendering
  */
-export default function AiPanel({ onClose }) {
+export default function AiPanel({ onClose, onAccept, canvasIsEmpty }) {
+  const [ phase, setPhase ] = useState(PHASE_IDLE);
+  const [ prompt, setPrompt ] = useState('');
+  const [ activeScenario, setActiveScenario ] = useState(null);
+  const [ narration, setNarration ] = useState('');
+  const [ log, setLog ] = useState([]);
+
+  const previewRef = useRef(null);
+  const playerRef = useRef(null);
+
+  const resetState = useCallback(() => {
+    if (playerRef.current) playerRef.current.stop();
+    playerRef.current = null;
+    if (previewRef.current) previewRef.current.reset();
+    setPhase(PHASE_IDLE);
+    setPrompt('');
+    setActiveScenario(null);
+    setNarration('');
+    setLog([]);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => () => {
+    if (playerRef.current) playerRef.current.stop();
+  }, []);
+
+  const handleChipClick = useCallback((scenario) => {
+    setPrompt(scenario.chip.prompt);
+    setActiveScenario(scenario);
+  }, []);
+
+  const handleGenerate = useCallback(async () => {
+    if (!activeScenario) return;
+    setLog([]);
+    setNarration('');
+    setPhase(PHASE_PLAYING);
+
+    const player = new CopilotPlayer(activeScenario);
+    playerRef.current = player;
+
+    player.on('step', async (step) => {
+      setNarration(step.narration);
+      setLog(prev => [ ...prev, step ]);
+      const xml = player.getPartialXml(step.index);
+      if (previewRef.current) {
+        try { await previewRef.current.showXml(xml); } catch (_) { /* swallow parse errors on partial XML */ }
+      }
+    });
+
+    player.on('complete', () => {
+      setPhase(PHASE_READY);
+    });
+
+    await player.start();
+  }, [ activeScenario ]);
+
+  const handleRegenerate = useCallback(() => {
+    resetState();
+  }, [ resetState ]);
+
+  const handleUseThis = useCallback(() => {
+    if (!activeScenario) return;
+    onAccept(activeScenario.resultXml, log);
+  }, [ activeScenario, log, onAccept ]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter' && !e.shiftKey && phase === PHASE_IDLE && activeScenario) {
+      e.preventDefault();
+      handleGenerate();
+    } else if (e.key === 'Escape' && phase === PHASE_PLAYING) {
+      handleRegenerate();
+    }
+  }, [ phase, activeScenario, handleGenerate, handleRegenerate ]);
+
+  if (!canvasIsEmpty) {
+    return (
+      <div className={ css.aiSidePanel }>
+        <div className={ css.aiSidePanelHeader }>
+          <span className={ css.aiSidePanelTitle }>✦  AI assistance</span>
+          <button className={ css.aiSidePanelClose } onClick={ onClose } aria-label="Close AI panel">✕</button>
+        </div>
+        <div className={ css.aiSidePanelLocked }>
+          <p><strong>AI draft mode is only available on a fresh canvas.</strong></p>
+          <p>Start from a new file (File → New → BPMN Diagram) to use the AI draft assistant.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={ css.aiSidePanel }>
       <div className={ css.aiSidePanelHeader }>
         <span className={ css.aiSidePanelTitle }>✦  AI assistance</span>
-        <button
-          className={ css.aiSidePanelClose }
-          onClick={ onClose }
-          aria-label="Close AI panel"
-        >✕</button>
+        <button className={ css.aiSidePanelClose } onClick={ onClose } aria-label="Close AI panel">✕</button>
       </div>
 
       <div className={ css.aiSidePanelBody }>
-        <p className={ css.aiSidePanelIntro }>What would you like to do?</p>
+        <textarea
+          className={ css.copilotPrompt }
+          value={ prompt }
+          placeholder="Describe the process you want to build…"
+          onChange={ e => setPrompt(e.target.value) }
+          onKeyDown={ handleKeyDown }
+          rows={ 3 }
+          disabled={ phase === PHASE_PLAYING }
+        />
 
-        <ul className={ css.aiOptionList }>
-          { AI_OPTIONS.map(({ id, icon, label, description }) => (
-            <li key={ id } className={ css.aiOption }>
-              <span className={ css.aiOptionIcon }>{ icon }</span>
-              <span className={ css.aiOptionText }>
-                <span className={ css.aiOptionLabel }>{ label }</span>
-                <span className={ css.aiOptionDesc }>{ description }</span>
-              </span>
-            </li>
-          )) }
-        </ul>
+        { phase === PHASE_IDLE && (
+          <div className={ css.copilotChips }>
+            { SCENARIOS.map(s => (
+              <button
+                key={ s.id }
+                type="button"
+                className={ classNames(css.copilotChip, { [css.isActive]: activeScenario && activeScenario.id === s.id }) }
+                onClick={ () => handleChipClick(s) }
+              >
+                { s.chip.label }
+              </button>
+            )) }
+          </div>
+        ) }
 
-        <div className={ css.aiSidePanelFooter }>
-          <p>⚡ Available in <strong>Web Modeler</strong> in 8.10</p>
-          <p>📅 Coming to Desktop Modeler later</p>
-        </div>
+        { phase === PHASE_IDLE && (
+          <button
+            type="button"
+            className={ css.copilotGenerate }
+            onClick={ handleGenerate }
+            disabled={ !activeScenario }
+          >Generate</button>
+        ) }
+
+        { phase !== PHASE_IDLE && (
+          <>
+            <CopilotPreview ref={ previewRef } />
+            <CopilotNarration text={ narration } />
+            <CopilotActionLog entries={ log } interactive={ false } />
+            { phase === PHASE_READY && (
+              <div className={ css.copilotActions }>
+                <button type="button" className={ css.copilotRegenerate } onClick={ handleRegenerate }>Regenerate</button>
+                <button type="button" className={ css.copilotUseThis } onClick={ handleUseThis }>Use this</button>
+              </div>
+            ) }
+          </>
+        ) }
       </div>
     </div>
   );
