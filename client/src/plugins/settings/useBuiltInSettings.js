@@ -24,7 +24,12 @@ import { utmTag } from '../../util/utmTag';
 export default function useBuiltInSettings(settings) {
 
   useEffect(() => {
-    settings.register(schema);
+    try {
+      settings.register(schema);
+    } catch (e) {
+
+      // ignore duplicate registration (e.g. React StrictMode double-mount)
+    }
   }, []);
 }
 
@@ -35,12 +40,26 @@ export const schema = {
     general: {
       title: 'Global settings'
     },
+    appearance: {
+      title: 'Appearance'
+    },
     versions: {
       title: 'Default Camunda versions',
       description: 'Engine version to be used for new diagrams.'
     }
   },
   properties: {
+    'app.theme': {
+      type: 'select',
+      options: [
+        { label: 'Light', value: 'light' },
+        { label: 'Dark', value: 'dark' },
+        { label: 'System', value: 'system' }
+      ],
+      default: 'light',
+      label: 'Theme',
+      section: 'appearance'
+    },
     'app.newContextPad': {
       type: 'boolean',
       default: false,
