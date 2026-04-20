@@ -13,6 +13,8 @@ import React, { useState } from 'react';
 import StartEventDialog from './StartEventDialog';
 import StartEventWizard from './StartEventWizard';
 
+import Flags, { DISABLE_AI_COPILOT } from '../../../util/Flags';
+
 import * as css from './GuidedStart.less';
 
 // Types that have a Step 2 wizard (process name is collected there)
@@ -68,6 +70,7 @@ export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel, 
       <div className={ css.cardRow }>
 
         <button
+          type="button"
           className={ css.entryCard }
           onClick={ () => setDialogOpen(true) }
         >
@@ -76,14 +79,17 @@ export default function EmptyCanvasOverlay({ onStartEventSelect, onOpenAiPanel, 
           <span className={ css.cardHint }>Choose a trigger — form, schedule, message&hellip;</span>
         </button>
 
-        <button
-          className={ css.entryCard }
-          onClick={ onOpenAiPanel }
-        >
-          <span className={ css.cardIcon }>✦</span>
-          <span className={ css.cardLabel }>Start with AI</span>
-          <span className={ css.cardHint }>Describe what you want to build</span>
-        </button>
+        { !Flags.get(DISABLE_AI_COPILOT) && (
+          <button
+            type="button"
+            className={ css.entryCard }
+            onClick={ onOpenAiPanel }
+          >
+            <span className={ css.cardIcon }>✦</span>
+            <span className={ css.cardLabel }>Start with AI</span>
+            <span className={ css.cardHint }>Describe what you want to build</span>
+          </button>
+        ) }
 
       </div>
 

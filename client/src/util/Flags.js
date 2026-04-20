@@ -35,6 +35,7 @@ export const DISABLE_DMN = 'disable-dmn';
 export const DISABLE_FORM = 'disable-form';
 export const DISABLE_PLATFORM = 'disable-platform';
 export const DISABLE_ZEEBE = 'disable-zeebe';
+export const DISABLE_AI_COPILOT = 'disable-ai-copilot';
 export const DISABLE_ADJUST_ORIGIN = 'disable-adjust-origin';
 export const DISABLE_PLUGINS = 'disable-plugins';
 export const RELAUNCH = 'relaunch';
