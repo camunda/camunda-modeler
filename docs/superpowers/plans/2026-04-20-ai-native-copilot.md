@@ -14,6 +14,17 @@
 
 ---
 
+## Post-implementation pivot (2026-04-20)
+
+After user feedback during UAT of Task 9 output, two decisions superseded the plan below:
+
+1. **Floating stepper replaces the log strip.** `CopilotLogStrip.js` was removed in favour of `CopilotStepper.js` — a floating popover anchored to the currently-active canvas element, showing `Step N of M` + prev/next/dismiss, advancing through steps one at a time (not a scrollable list). Portals to `document.body`, respects `prefers-reduced-motion`, re-selects the step's element in the canvas on advance. Task 9 references to `CopilotLogStrip` are superseded by the stepper implementation (commit `ea291704`).
+2. **`customer-onboarding-rest` is now the headline scenario; `order-approval` demotes to secondary.** Job-worker Service Tasks have nothing interesting to teach in the stepper's "what to configure" rationales. The new 6-step linear scenario drives every step through **REST Outbound Connector + Slack Connector** (real `zeebe:modelerTemplate`, `zeebe:ioMapping`, FEEL maps, secrets, retries) so each step's rationale exposes concrete properties-panel configuration grounded in the Camunda docs. Task 12 is superseded: `customer-onboarding-rest.json` is registered first in `copilotScenarios/index.js`, `order-approval.json` remains as a second chip.
+
+Rationale content in the new scenario follows a fixed shape: `**Configure in the properties panel:** <bullet list of field paths and values>` followed by `**Why:** <2–3 sentences grounded in Camunda 8 docs>`. This is the pattern future scenarios should adopt.
+
+---
+
 ## Resolved planning-phase decisions (from spec's "Open questions")
 
 1. **Capability flag name:** `DISABLE_AI_COPILOT` following the `DISABLE_ZEEBE` / `DISABLE_PLATFORM` pattern in `client/src/app/TabsProvider.js`. Default absence → AI copilot enabled. Flag added to `client/src/util/Flags.js` (or equivalent flags module discovered in Task 1).
