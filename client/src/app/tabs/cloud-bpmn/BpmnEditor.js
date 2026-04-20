@@ -107,7 +107,8 @@ export class BpmnEditor extends CachedComponent {
     this.state = {
       isCanvasEmpty: true,
       aiPanelOpen: false,
-      appendWizardSource: null
+      appendWizardSource: null,
+      copilotLog: []
     };
 
     this.ref = React.createRef();
@@ -561,6 +562,49 @@ export class BpmnEditor extends CachedComponent {
       }
     });
     this.setState({ aiPanelOpen: true });
+  };
+
+  handleCopilotAccept = async (xml, log) => {
+    const modeler = this.getModeler();
+    if (!modeler) return;
+
+    try {
+      await modeler.importXML(xml);
+    } catch (err) {
+      /* eslint-disable-next-line no-console */
+      console.error('Copilot accept: importXML failed', err);
+      return;
+    }
+
+    const canvas = modeler.get('canvas');
+    canvas.zoom('fit-viewport', 'auto');
+
+    // Close copilot, remember log, reopen properties panel
+    this.setState({
+      aiPanelOpen: false,
+      copilotLog: log,
+      isCanvasEmpty: false
+    });
+
+    const { layout } = this.props;
+    const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+    this.handleLayoutChange({
+      sidePanel: {
+        ...SIDE_PANEL_DEFAULT_LAYOUT,
+        ...sidePanelLayout,
+        open: true,
+        tab: 'properties'
+      }
+    });
+
+    // Select the Start Event so the existing selection → open-properties
+    // behaviour lands focused on it.
+    const elementRegistry = modeler.get('elementRegistry');
+    const selection = modeler.get('selection');
+    const startEvent = elementRegistry.getAll().find(e => e.type === 'bpmn:StartEvent');
+    if (startEvent) {
+      selection.select(startEvent);
+    }
   };
 
   /**
@@ -1217,7 +1261,8 @@ export class BpmnEditor extends CachedComponent {
       importing,
       isCanvasEmpty,
       aiPanelOpen,
-      appendWizardSource
+      appendWizardSource,
+      copilotLog
     } = this.state;
 
     // Collect all start event connector templates available in this modeler instance
@@ -1322,7 +1367,11 @@ export class BpmnEditor extends CachedComponent {
           </SidePanel>
 
           { aiPanelOpen && (
-            <AiPanel onClose={ () => this.setState({ aiPanelOpen: false }) } />
+            <AiPanel
+              onClose={ () => this.setState({ aiPanelOpen: false }) }
+              onAccept={ this.handleCopilotAccept }
+              canvasIsEmpty={ isCanvasEmpty }
+            />
           ) }
 
           <PropertiesPanelTabActionItem
