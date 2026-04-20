@@ -1225,3 +1225,54 @@
     cursor: default;
   }
 }
+
+// ---- Per-field substep card inside the stepper ------------------------------
+//
+// Replaces the dense multi-bullet rationale. One field at a time, with a
+// "group -> field" path label, optional value sample, and a short why.
+// Stays inside the 380px-wide callout — no wider breakout.
+
+:local(.copilotStepperSubstep) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f7f9fc;
+  border: 1px solid #e3e8f0;
+  border-radius: 6px;
+}
+
+:local(.copilotStepperFieldPath) {
+  font-size: 10px;
+  font-family: var(--font-family, sans-serif);
+  font-weight: 600;
+  color: #697180;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+:local(.copilotStepperFieldValue) {
+  padding: 6px;
+  background: #eef2f8;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #1a1f27;
+  line-height: 1.4;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+
+  &[data-monospace="true"] {
+    font-family: var(--monospace-font-family, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace);
+    font-size: 11.5px;
+  }
+}
+
+:local(.copilotStepperFieldWhy) {
+  font-size: 12px;
+  font-family: var(--font-family, sans-serif);
+  color: #4d5563;
+  line-height: 1.5;
+  margin: 0;
+}

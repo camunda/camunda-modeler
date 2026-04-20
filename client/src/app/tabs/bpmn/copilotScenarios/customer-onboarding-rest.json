@@ -13,7 +13,15 @@
       "narration": "Placing a None Start Event bound to a public form — the process starts when the signup form is submitted.",
       "rationale": "Configure in the properties panel:\n• Form → Type: Camunda Form (linked)\n• Form → Form ID: customer-signup-form\n\nWhy: The prompt says the trigger is a form submission, not a message from another system. In Camunda 8 this is a None Start Event with a linked Camunda Form (zeebe:formDefinition formId=...). The form's field keys (email, firstName, lastName, company) become top-level process variables — you'll reference them as =email, =company, etc. in the next steps' Result Expression and request bodies.",
       "targetField": "properties-panel.form.formId",
-      "durationMs": 1000
+      "durationMs": 1000,
+      "substeps": [
+        {
+          "groupId": "form",
+          "field": "Form ID",
+          "value": "customer-signup-form",
+          "why": "The form's field keys (email, firstName, lastName, company) become top-level process variables consumed by later steps."
+        }
+      ]
     },
     {
       "type": "element",
@@ -23,7 +31,39 @@
       "narration": "Adding a REST Outbound Connector task — GETs the customer's enrichment data so later steps have a richer profile to work with.",
       "rationale": "Configure in the properties panel:\n• Template: REST Outbound Connector (applied automatically)\n• HTTP Endpoint → Method: GET\n• HTTP Endpoint → URL: =\"https://api.crm.example.com/lookup?email=\" + email\n• Authentication → Type: Bearer token\n• Authentication → Bearer token: {{secrets.CRM_API_TOKEN}}\n• Output mapping → Result Expression: ={ enrichedProfile: response.body.profile, leadScore: response.body.score }\n\nWhy: REST calls use FEEL — prefix with = to evaluate. String concatenation uses +, and email comes from the form in the previous step. Secrets are injected via {{secrets.NAME}} and must stay inside the double quotes so Zeebe resolves them at runtime rather than at design time. Use Result Expression (not Result Variable) when you want named top-level variables — Result Variable would dump the entire response object under one key, forcing nested access downstream.",
       "targetField": "properties-panel.connector.url",
-      "durationMs": 1200
+      "durationMs": 1200,
+      "substeps": [
+        {
+          "groupId": "httpEndpoint",
+          "field": "Method",
+          "value": "GET",
+          "why": "GET is idempotent and has no side effects — a safe default for a profile lookup."
+        },
+        {
+          "groupId": "httpEndpoint",
+          "field": "URL",
+          "value": "=\"https://api.crm.example.com/lookup?email=\" + email",
+          "why": "REST calls use FEEL — prefix with = to evaluate. String concat with +, and email was emitted by the form in step 1."
+        },
+        {
+          "groupId": "authentication",
+          "field": "Type",
+          "value": "Bearer token",
+          "why": "The CRM expects an Authorization: Bearer header."
+        },
+        {
+          "groupId": "authentication",
+          "field": "Bearer token",
+          "value": "{{secrets.CRM_API_TOKEN}}",
+          "why": "Secrets must be wrapped in {{secrets.NAME}} so Zeebe resolves them at runtime, not design time. Never paste raw tokens into the XML."
+        },
+        {
+          "groupId": "output",
+          "field": "Result Expression",
+          "value": "={ enrichedProfile: response.body.profile, leadScore: response.body.score }",
+          "why": "Use Result Expression (not Result Variable) to extract named top-level vars — Result Variable would dump the whole response under one key, forcing nested access downstream."
+        }
+      ]
     },
     {
       "type": "element",
@@ -33,7 +73,39 @@
       "narration": "Another REST call — POST to the CRM to actually create the account record.",
       "rationale": "Configure in the properties panel:\n• HTTP Endpoint → Method: POST\n• HTTP Endpoint → URL: \"https://api.crm.example.com/customers\"\n• Payload → Body: ={ email: email, firstName: firstName, lastName: lastName, company: company, leadScore: leadScore, source: \"onboarding-flow\" }\n• Authentication → Bearer token: {{secrets.CRM_API_TOKEN}}\n• Output mapping → Result Expression: ={ customerId: response.body.id }\n\nWhy: POST bodies are FEEL maps — the whole expression is prefixed with = and the map uses { key: value } syntax (JSON-looking but FEEL). You can reference any variable that's in scope, including leadScore which step 2 just emitted via its Result Expression. Avoid naming any output variable body, url, method, headers, or authentication — those are reserved for the connector's own inputs and would clobber them on the next call.",
       "targetField": "properties-panel.connector.body",
-      "durationMs": 1200
+      "durationMs": 1200,
+      "substeps": [
+        {
+          "groupId": "httpEndpoint",
+          "field": "Method",
+          "value": "POST",
+          "why": "POST creates a new resource — the CRM will allocate a customer ID and return it in the response body."
+        },
+        {
+          "groupId": "httpEndpoint",
+          "field": "URL",
+          "value": "https://api.crm.example.com/customers",
+          "why": "A static URL this time — no FEEL prefix needed because there's nothing to interpolate."
+        },
+        {
+          "groupId": "authentication",
+          "field": "Bearer token",
+          "value": "{{secrets.CRM_API_TOKEN}}",
+          "why": "Same CRM, same secret — always reference via {{secrets.NAME}} so the token never lands in the BPMN XML."
+        },
+        {
+          "groupId": "payload",
+          "field": "Request body",
+          "value": "={ email: email, firstName: firstName, lastName: lastName, company: company, leadScore: leadScore, source: \"onboarding-flow\" }",
+          "why": "POST bodies are FEEL maps — prefix with = and use { key: value } syntax. leadScore is in scope because step 2's Result Expression emitted it as a top-level variable."
+        },
+        {
+          "groupId": "output",
+          "field": "Result Expression",
+          "value": "={ customerId: response.body.id }",
+          "why": "Avoid naming outputs body, url, method, headers, or authentication — those are reserved for the connector's inputs and would clobber them on the next call."
+        }
+      ]
     },
     {
       "type": "element",
@@ -43,7 +115,39 @@
       "narration": "Third REST call — enrolls the new customer in the marketing welcome campaign.",
       "rationale": "Configure in the properties panel:\n• HTTP Endpoint → Method: POST\n• HTTP Endpoint → URL: =\"https://api.marketing.example.com/campaigns/welcome/enroll\"\n• Payload → Body: ={ customerId: customerId, email: email }\n• Authentication → API key header → Name: X-API-Key, Value: {{secrets.MARKETING_API_KEY}}\n• Task definition → Retries: 5\n\nWhy: Third-party marketing APIs have transient failures — bumping retries from the default 3 to 5 lets Zeebe auto-retry on 5xx / network errors without raising an incident. The task only fails (incident) after retries are exhausted, at which point the operator can inspect and resume. The customerId used here was produced by step 3's Result Expression — the previous-step-output chain is how Camunda connectors stay stateless without you passing anything explicitly.",
       "targetField": "properties-panel.taskDefinition.retries",
-      "durationMs": 1200
+      "durationMs": 1200,
+      "substeps": [
+        {
+          "groupId": "httpEndpoint",
+          "field": "Method",
+          "value": "POST",
+          "why": "Enrollment creates a subscription record on the marketing side — POST is the right verb."
+        },
+        {
+          "groupId": "httpEndpoint",
+          "field": "URL",
+          "value": "https://api.marketing.example.com/campaigns/welcome/enroll",
+          "why": "Static endpoint — the campaign ID is embedded in the path, so no interpolation needed."
+        },
+        {
+          "groupId": "authentication",
+          "field": "API key — Name",
+          "value": "X-API-Key",
+          "why": "The marketing platform authenticates via a custom header, not Bearer — the header name is fixed by their API."
+        },
+        {
+          "groupId": "authentication",
+          "field": "API key — Value",
+          "value": "{{secrets.MARKETING_API_KEY}}",
+          "why": "Different vendor, different secret — keep marketing credentials separate from CRM credentials so rotation is independent."
+        },
+        {
+          "groupId": "taskDefinition",
+          "field": "Retries",
+          "value": "5",
+          "why": "Third-party marketing APIs have transient failures — bumping retries from the default 3 to 5 lets Zeebe auto-retry on 5xx / network errors before raising an incident."
+        }
+      ]
     },
     {
       "type": "element",
@@ -53,14 +157,46 @@
       "narration": "Slack Outbound Connector — posts the welcome message to the customer-success channel.",
       "rationale": "Configure in the properties panel:\n• Template: Slack Outbound Connector\n• Authentication → OAuth token: {{secrets.SLACK_BOT_TOKEN}}\n• Method: Post Message\n• Channel/User name: #customer-success\n• Message type: Plain text\n• Message: =\"👋 New customer onboarded: \" + firstName + \" \" + lastName + \" (\" + company + \") — lead score \" + string(leadScore)\n\nWhy: Slack requires a bot token with the chat:write scope — OAuth token must be wrapped in {{secrets.NAME}} so it's never committed to the BPMN XML. Channel names start with # (or @username for DMs). Use Plain text for simple strings; Message block is the switch you'd flip if you wanted Block Kit JSON. Note the string(leadScore) cast — FEEL's + is both numeric addition and string concatenation, and it throws a type error if you try to concatenate a number directly to a string.",
       "targetField": "properties-panel.connector.message",
-      "durationMs": 1200
+      "durationMs": 1200,
+      "substeps": [
+        {
+          "groupId": "authentication",
+          "field": "OAuth token",
+          "value": "{{secrets.SLACK_BOT_TOKEN}}",
+          "why": "Slack requires a bot token with the chat:write scope. Wrap in {{secrets.NAME}} so the raw token never hits the BPMN XML."
+        },
+        {
+          "groupId": "method",
+          "field": "Method",
+          "value": "Post Message",
+          "why": "Post Message maps to Slack's chat.postMessage API — the standard way to deliver a one-shot notification to a channel or DM."
+        },
+        {
+          "groupId": "data",
+          "field": "Channel/User name",
+          "value": "#customer-success",
+          "why": "Channel names start with # — use @username for DMs instead. The bot must be invited to private channels before it can post."
+        },
+        {
+          "groupId": "data",
+          "field": "Message type",
+          "value": "Plain text",
+          "why": "Plain text for simple strings; Message block is the switch you'd flip if you wanted Block Kit JSON."
+        },
+        {
+          "groupId": "data",
+          "field": "Message",
+          "value": "=\"👋 New customer onboarded: \" + firstName + \" \" + lastName + \" (\" + company + \") — lead score \" + string(leadScore)",
+          "why": "Note the string(leadScore) cast — FEEL's + is both numeric addition and string concatenation, and it throws a type error if you concatenate a number directly to a string."
+        }
+      ]
     },
     {
       "type": "element",
       "elementId": "EndEvent_onboarded",
       "bpmnType": "bpmn:EndEvent",
       "name": "Customer onboarded",
-      "narration": "End Event — the process completes successfully.",
+      "narration": "End Event — the process completes successfully. Nothing to configure for a None End Event; if you later wanted to publish a 'customer.onboarded' event for downstream processes to react to, you'd change the type to Message End Event here and leave the rest of the diagram alone.",
       "rationale": "Configure in the properties panel: nothing required for a None End Event.\n\nWhy: Every BPMN path must terminate. A None End Event marks successful completion with no side effects — no message published, no error thrown. If you later wanted to publish a 'customer.onboarded' event for downstream processes to react to, you'd change the type to Message End Event here and leave the rest of the diagram alone.",
       "durationMs": 700
     }

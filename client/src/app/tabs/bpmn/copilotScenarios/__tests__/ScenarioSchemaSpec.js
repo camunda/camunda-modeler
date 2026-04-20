@@ -34,6 +34,27 @@ describe('copilot scenario schema', () => {
         });
       });
 
+      it('every substep (when present) has a non-empty field and why', () => {
+        scenario.steps.forEach(step => {
+          if (!('substeps' in step)) return;
+
+          expect(step.substeps).to.be.an('array');
+
+          step.substeps.forEach(substep => {
+            expect(substep).to.have.property('field').that.is.a('string').and.has.length.greaterThan(0);
+            expect(substep).to.have.property('why').that.is.a('string').and.has.length.greaterThan(0);
+
+            // groupId and value are optional, but if present must be strings.
+            if ('groupId' in substep) {
+              expect(substep.groupId).to.be.a('string');
+            }
+            if ('value' in substep) {
+              expect(substep.value).to.be.a('string');
+            }
+          });
+        });
+      });
+
       it('resultXml starts with BPMN definitions root', () => {
         expect(scenario.resultXml).to.match(/<bpmn:definitions/);
       });
