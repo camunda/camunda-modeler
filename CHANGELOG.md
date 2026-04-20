@@ -9,6 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FIX`: show default context menu for text inputs in diagram ([#5803](https://github.com/camunda/camunda-modeler/issues/5803))
+* `FEAT`: show warning on selected version and connection version mismatch ([#5652](https://github.com/camunda/camunda-modeler/issues/5652))
 
 ## 5.46.1
 
