@@ -1084,3 +1084,51 @@
   color: #4d5563;
   p { margin: 0 0 8px 0; }
 }
+
+:local(.copilotLogStrip) {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 320px;
+  max-height: 280px;
+  background: white;
+  border: 1px solid #d0d4dc;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 20;
+}
+
+:local(.copilotLogStripHeader) {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-bottom: 1px solid #eceef2;
+  background: #f8fafc;
+}
+
+:local(.copilotLogStripToggle) {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1a1f27;
+  cursor: pointer;
+}
+
+:local(.copilotLogStripDismiss) {
+  background: transparent;
+  border: 0;
+  color: #697180;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  &:hover { color: #1a1f27; }
+}
+
+:local(.copilotLogStrip.isCollapsed) :local(.copilotActionLog) { display: none; }

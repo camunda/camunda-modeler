@@ -31,6 +31,7 @@ import { Settings } from '@carbon/icons-react';
 import EmptyCanvasOverlay from '../bpmn/EmptyCanvasOverlay';
 import AiPanel from '../bpmn/AiPanel';
 import AppendWizard from '../bpmn/AppendWizard';
+import CopilotLogStrip from '../bpmn/CopilotLogStrip';
 import { ELEMENT_SHAPE_MAP } from '../bpmn/appendCatalog';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
@@ -607,6 +608,31 @@ export class BpmnEditor extends CachedComponent {
     }
   };
 
+  handleCopilotLogClick = (entry) => {
+    const modeler = this.getModeler();
+    if (!modeler) return;
+
+    const elementRegistry = modeler.get('elementRegistry');
+    const selection = modeler.get('selection');
+    const canvas = modeler.get('canvas');
+    const shape = elementRegistry.get(entry.elementId);
+    if (!shape) return;
+
+    selection.select(shape);
+    try { canvas.scrollToElement(shape, { left: 80, right: 80, top: 80, bottom: 80 }); } catch (_) { /* no-op */ }
+
+    const { layout } = this.props;
+    const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+    this.handleLayoutChange({
+      sidePanel: {
+        ...SIDE_PANEL_DEFAULT_LAYOUT,
+        ...sidePanelLayout,
+        open: true,
+        tab: 'properties'
+      }
+    });
+  };
+
   /**
    * Open the properties panel (on the Properties tab) when the user selects
    * a single concrete element. Fresh files stay clean — the panel only
@@ -738,6 +764,13 @@ export class BpmnEditor extends CachedComponent {
       onImport,
       xml
     } = this.props;
+
+    // Clear any stale copilot log when a new file is imported.
+    // Note: handleCopilotAccept also runs its own setState with the new log
+    // after this fires, and React state updates are batched — the later call wins.
+    if (this.state.copilotLog && this.state.copilotLog.length > 0) {
+      this.setState({ copilotLog: [] });
+    }
 
     let {
       defaultTemplatesApplied
@@ -1313,6 +1346,14 @@ export class BpmnEditor extends CachedComponent {
                 onClose={ this.handleAppendWizardClose }
                 serviceTaskTemplates={ serviceTaskTemplates }
                 aiConnectorTemplates={ aiConnectorTemplates }
+              />
+            ) }
+
+            { !aiPanelOpen && copilotLog && copilotLog.length > 0 && (
+              <CopilotLogStrip
+                entries={ copilotLog }
+                onEntryClick={ this.handleCopilotLogClick }
+                onDismiss={ () => this.setState({ copilotLog: [] }) }
               />
             ) }
           </div>
