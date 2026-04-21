@@ -52,3 +52,26 @@
   }
 }
 
+/* Dark theme overrides for SidePanelHeader */
+:global(:root[data-theme="dark"]) :local(.SidePanelHeader) {
+  background-color: var(--color-grey-225-10-95);
+  border-bottom-color: var(--color-grey-225-10-75);
+  color: hsl(225, 10%, 90%);
+
+  .side-panel-header__icon {
+    fill: hsl(225, 10%, 90%) !important;
+
+    svg, svg * {
+      fill: hsl(225, 10%, 90%) !important;
+    }
+  }
+
+  .side-panel-header__type {
+    color: hsl(225, 10%, 70%) !important;
+  }
+
+  .side-panel-header__name {
+    color: hsl(225, 10%, 90%) !important;
+  }
+}
+

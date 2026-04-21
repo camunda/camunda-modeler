@@ -32,3 +32,114 @@
 
   }
 }
+
+:global(:root[data-theme="dark"]) :local(.VariablesSidePanel) {
+  /* Override the base color variable that bio-vo-bg uses */
+  --color-white: hsl(225, 10%, 14%);
+  
+  --bio-vo-bg: hsl(225, 10%, 14%);
+  --bio-vo-header-bg: hsl(225, 10%, 18%);
+  --bio-vo-text-primary: hsl(225, 10%, 90%);
+  --bio-vo-text-secondary: hsl(225, 10%, 70%);
+  --bio-vo-text-muted: hsl(225, 10%, 60%);
+  --bio-vo-border-color: hsl(225, 10%, 30%);
+
+  /* Carbon Design System overrides */
+  --cds-background: hsl(225, 10%, 14%);
+  --cds-layer-01: hsl(225, 10%, 18%);
+  --cds-layer-02: hsl(225, 10%, 22%);
+  --cds-layer-hover: hsl(225, 10%, 22%);
+  --cds-field-01: hsl(225, 10%, 18%);
+  --cds-field-02: hsl(225, 10%, 22%);
+  --cds-text-primary: hsl(225, 10%, 90%);
+  --cds-text-secondary: hsl(225, 10%, 70%);
+  --cds-text-helper: hsl(225, 10%, 60%);
+  --cds-icon-secondary: hsl(225, 10%, 70%);
+  --cds-icon-primary: hsl(225, 10%, 90%);
+  --cds-border-subtle: hsl(225, 10%, 30%);
+  --cds-border-subtle-01: hsl(225, 10%, 30%);
+  --cds-link-primary: hsl(205, 100%, 60%);
+  --cds-focus: hsl(205, 100%, 50%);
+  --cds-highlight: hsl(205, 40%, 25%);
+
+  /* Input field overrides */
+  --input-border-color: hsl(225, 10%, 35%);
+  --input-background-color: hsl(225, 10%, 18%);
+  --input-focus-border-color: hsl(205, 100%, 50%);
+  --input-focus-background-color: hsl(225, 10%, 22%);
+  --placeholder-color: hsl(225, 10%, 50%);
+
+  background-color: hsl(225, 10%, 14%) !important;
+
+  .variables-side-panel__body {
+    background-color: hsl(225, 10%, 14%) !important;
+  }
+
+  .bio-vo-empty-state__icon-container {
+    background-color: hsl(225, 10%, 18%) !important;
+  }
+
+  .vd-context-menu {
+    --bio-vo-context-menu-background-color: hsl(225, 10%, 18%);
+    --bio-vo-context-menu-item-hover-background-color: hsl(225, 10%, 22%);
+    --bio-vo-context-menu-separator-background-color: hsl(225, 10%, 30%);
+    --bio-vo-context-menu-shadow-color-1: hsla(0, 0%, 0%, 35%);
+    --bio-vo-context-menu-shadow-color-2: hsla(0, 0%, 0%, 55%);
+  }
+
+  /* Force all backgrounds and text colors throughout the component */
+  * {
+    color: hsl(225, 10%, 90%);
+  }
+
+  .variables-side-panel__body,
+  .bio-vo-tab-content,
+  .variable-list-container,
+  .variable-list-inner,
+  .variable-section-header,
+  .variable-row-header,
+  .variable-scope-group,
+  .bio-vo-search-container,
+  .bio-vo-filter-bar,
+  .bio-vo-tabs,
+  .bio-vo-tab,
+  div[class*="bio-vo"],
+  div[class*="variable"] {
+    background-color: hsl(225, 10%, 14%) !important;
+  }
+
+  .variable-section-header,
+  .variable-row-header {
+    color: hsl(225, 10%, 90%) !important;
+  }
+
+  .variable-section-name,
+  .variable-section-name * {
+    color: hsl(225, 10%, 90%) !important;
+  }
+
+  /* Make SVG icons white */
+  svg,
+  svg *,
+  .bio-va-element-icon,
+  .bio-va-element-icon * {
+    fill: hsl(225, 10%, 90%) !important;
+    color: hsl(225, 10%, 90%) !important;
+  }
+
+  /* Make toggle/minimap button white */
+  .toggle,
+  .toggle::before,
+  .toggle::after {
+    background-color: hsl(225, 10%, 90%) !important;
+    border-color: hsl(225, 10%, 90%) !important;
+  }
+
+  .bio-vo-search-container {
+    background-color: var(--bio-vo-header-bg) !important;
+  }
+
+  .bio-vo-filter-bar {
+    background-color: var(--bio-vo-header-bg) !important;
+  }
+}

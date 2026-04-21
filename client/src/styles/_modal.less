@@ -195,7 +195,27 @@
     }
   }
 
+  .modal-header {
+    color: hsl(225, 10%, 90%);
+  }
+
+  .modal-title {
+    color: hsl(225, 10%, 90%) !important;
+  }
+
   .modal-body {
+    color: hsl(225, 10%, 90%);
+
+    /* All text elements white */
+    h1, h2, h3, h4, h5, h6,
+    p, span, label, a, div,
+    .section__header,
+    .section__description,
+    .custom-control-label,
+    .custom-control-option,
+    .custom-control-description {
+      color: hsl(225, 10%, 90%) !important;
+    }
 
     select.form-control {
       color: hsl(225, 10%, 90%);
@@ -212,6 +232,21 @@
     textarea.form-control {
       color: hsl(225, 10%, 90%);
       background-color: hsl(225, 10%, 18%);
+    }
+
+    /* Table text */
+    table, td, th {
+      color: hsl(225, 10%, 90%);
+    }
+
+    /* SVG icons */
+    svg {
+      fill: hsl(225, 10%, 90%);
+    }
+
+    /* Links */
+    a {
+      color: hsl(205, 100%, 60%);
     }
   }
 

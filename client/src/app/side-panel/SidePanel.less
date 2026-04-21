@@ -100,3 +100,79 @@
      pointer-events: none;
    }
 }
+
+/* Dark theme overrides for Details panel (Properties Panel) */
+:global(:root[data-theme="dark"]) :local(.SidePanel) {
+  --cds-background: hsl(225, 10%, 14%);
+  --cds-layer-01: hsl(225, 10%, 18%);
+  --cds-layer-02: hsl(225, 10%, 22%);
+  --cds-field-01: hsl(225, 10%, 18%);
+  --cds-field-02: hsl(225, 10%, 22%);
+  --cds-text-primary: hsl(225, 10%, 90%);
+  --cds-text-secondary: hsl(225, 10%, 70%);
+  --cds-icon-primary: hsl(225, 10%, 90%);
+  --cds-icon-secondary: hsl(225, 10%, 70%);
+  --cds-border-subtle-01: hsl(225, 10%, 30%);
+
+  background-color: hsl(225, 10%, 14%) !important;
+
+  /* Tab buttons - make text and icons white */
+  .side-panel__tab {
+    color: hsl(225, 10%, 70%) !important;
+
+    &:hover {
+      color: hsl(225, 10%, 90%) !important;
+    }
+
+    &.side-panel__tab--active {
+      color: hsl(225, 10%, 90%) !important;
+    }
+
+    svg {
+      fill: currentColor;
+    }
+
+    span {
+      color: inherit;
+    }
+  }
+
+  .side-panel__content {
+    background-color: hsl(225, 10%, 14%) !important;
+  }
+
+  .properties-container {
+    background-color: hsl(225, 10%, 14%) !important;
+  }
+
+  .bio-properties-panel {
+    background: hsl(225, 10%, 14%) !important;
+    background-color: hsl(225, 10%, 14%) !important;
+  }
+
+  /* Ensure all text and icons are light colored */
+  .side-panel__content,
+  .properties-container,
+  .bio-properties-panel {
+    color: hsl(225, 10%, 90%) !important;
+    
+    * {
+      color: hsl(225, 10%, 90%) !important;
+    }
+    
+    svg, svg * {
+      fill: hsl(225, 10%, 90%) !important;
+      color: hsl(225, 10%, 90%) !important;
+    }
+
+    input, textarea, select {
+      background-color: hsl(225, 10%, 18%) !important;
+      color: hsl(225, 10%, 90%) !important;
+      border-color: hsl(225, 10%, 30%) !important;
+    }
+
+    label, span, div, p {
+      color: hsl(225, 10%, 90%) !important;
+    }
+  }
+}
