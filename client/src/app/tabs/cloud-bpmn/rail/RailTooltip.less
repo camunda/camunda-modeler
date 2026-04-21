@@ -1,0 +1,45 @@
+/* Rail tooltip — singleton portal; positioned by inline style. */
+
+:local(.tooltip) {
+  position: fixed;
+  transform: translateY(-50%);
+  z-index: 300;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 10px;
+  background: #1f2937;
+  color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(16, 24, 40, 0.2);
+
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+
+  pointer-events: none;
+
+  animation: rail-tooltip-in 80ms ease-out;
+}
+
+@keyframes rail-tooltip-in {
+  from { opacity: 0; transform: translateY(-50%) translateX(-4px); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+:local(.label) {
+  font-weight: 500;
+}
+
+:local(.hotkey) {
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  padding: 1px 5px;
+}

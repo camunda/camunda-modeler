@@ -10,7 +10,16 @@
 
 import React from 'react';
 
+import {
+  Pen,
+  Code,
+  PlayFilledAlt,
+  CheckmarkOutline
+} from '@carbon/icons-react';
+
 import modeConfig, { MODES } from '../mode/modeConfig';
+
+import { useRailTooltipAnchor } from './RailTooltip';
 
 import * as css from './ModeRail.less';
 
@@ -20,6 +29,10 @@ import * as css from './ModeRail.less';
  * themeClass. Tooltip includes the keyboard hint.
  */
 export default function RailModesSection({ mode, onSelect }) {
+  const isMac = typeof navigator !== 'undefined'
+    && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+  const modKey = isMac ? '⌘' : 'Ctrl+';
+
   return (
     <div
       className={ css.modesSection }
@@ -30,51 +43,56 @@ export default function RailModesSection({ mode, onSelect }) {
         const cfg = modeConfig[m];
         const isActive = m === mode;
         return (
-          <button
+          <ModeButton
             key={ m }
-            type="button"
-            role="tab"
-            aria-selected={ isActive }
-            className={ `${css.modeButton} ${css['modeButton--' + m]} ${isActive ? css['modeButton--active'] : ''}` }
-            title={ `${cfg.label} mode (⌘${cfg.hotkey} / Ctrl+${cfg.hotkey})` }
-            onClick={ () => onSelect(m) }
-          >
-            <ModeIcon mode={ m } />
-            <span className={ css.modeLabel }>{ cfg.label }</span>
-          </button>
+            modeId={ m }
+            cfg={ cfg }
+            isActive={ isActive }
+            hotkey={ `${modKey}${cfg.hotkey}` }
+            onSelect={ () => onSelect(m) }
+          />
         );
       }) }
     </div>
   );
 }
 
+function ModeButton({ modeId, cfg, isActive, hotkey, onSelect }) {
+  const tooltipProps = useRailTooltipAnchor({
+    label: `${cfg.label} mode`,
+    hotkey
+  });
+
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={ isActive }
+      className={ `${css.modeButton} ${css['modeButton--' + modeId]} ${isActive ? css['modeButton--active'] : ''}` }
+      { ...tooltipProps }
+      onClick={ onSelect }
+    >
+      <ModeIcon mode={ modeId } />
+      <span className={ css.modeLabel }>{ cfg.label }</span>
+    </button>
+  );
+}
+
 function ModeIcon({ mode }) {
+
+  // Carbon icons — already used throughout the editor, so modelers see
+  // familiar iconography rather than bespoke rail-only glyphs.
+  const props = { size: 18, 'aria-hidden': true };
+
   switch (mode) {
   case 'design':
-    return (
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 20l4-1 11-11a2 2 0 0 0 0-3l-0-0a2 2 0 0 0-3 0L5 16l-1 4z" />
-      </svg>
-    );
+    return <Pen { ...props } />;
   case 'implement':
-    return (
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M8 5l-5 7 5 7M16 5l5 7-5 7M13 4l-2 16" />
-      </svg>
-    );
+    return <Code { ...props } />;
   case 'simulate':
-    return (
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="8" />
-        <path d="M10 9l5 3-5 3V9z" fill="currentColor" stroke="none" />
-      </svg>
-    );
+    return <PlayFilledAlt { ...props } />;
   case 'test':
-    return (
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9 3h6v4l4 8a4 4 0 0 1-4 6H9a4 4 0 0 1-4-6l4-8V3z" />
-      </svg>
-    );
+    return <CheckmarkOutline { ...props } />;
   default:
     return null;
   }

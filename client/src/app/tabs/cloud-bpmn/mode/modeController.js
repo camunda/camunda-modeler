@@ -10,7 +10,7 @@
 
 import { useEffect, useState } from 'react';
 
-import modeConfig, { MODES, getModeConfig } from './modeConfig';
+import { MODES, getModeConfig } from './modeConfig';
 
 /**
  * modeController — tiny per-editor observable store for the current mode.
@@ -58,7 +58,7 @@ export function createModeController(options = {}) {
 
 /**
  * React hook for functional components (rail, palette).
- * Returns { mode, setMode, config, modes }.
+ * Returns { mode, setMode, config }.
  *
  * Re-renders when the controller's mode changes.
  */
@@ -74,8 +74,6 @@ export function useMode(controller) {
   return {
     mode,
     setMode: next => controller && controller.set(next),
-    config: getModeConfig(mode),
-    modes: MODES,
-    allConfigs: modeConfig
+    config: getModeConfig(mode)
   };
 }

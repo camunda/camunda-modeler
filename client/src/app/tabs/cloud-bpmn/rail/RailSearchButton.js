@@ -10,6 +10,8 @@
 
 import React from 'react';
 
+import { useRailTooltipAnchor } from './RailTooltip';
+
 import * as css from './ModeRail.less';
 
 /**
@@ -21,18 +23,35 @@ export default function RailSearchButton({ onOpen }) {
     && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
   const hint = isMac ? '⌘E' : 'Ctrl+E';
 
+  const tooltipProps = useRailTooltipAnchor({
+    label: 'Search & commands',
+    hotkey: hint
+  });
+
   return (
     <div className={ css.section } role="group" aria-label="Command palette">
       <button
         type="button"
         className={ `${css.button} ${css['button--search']}` }
-        title={ `Search & commands (${hint})` }
         aria-label="Open command palette"
+        { ...tooltipProps }
         onClick={ onOpen }
       >
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="10.5" cy="10.5" r="6.5" />
-          <path d="M20 20l-4.5-4.5" />
+        { /* Hero treatment: filled lens + thicker handle gives the search
+             button more visual weight than the stroke-only tool glyphs
+             above it. Users' eye lands on the "jump to anywhere" affordance
+             first — reinforces CMD+E as the power-user path without shouting.
+             Same 24×24 viewBox as the prior stroke version, so alignment
+             with the other rail buttons is unchanged. */ }
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" fill="currentColor" />
+          <path
+            d="M20 20l-4.5-4.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.6"
+            strokeLinecap="round"
+          />
         </svg>
       </button>
     </div>

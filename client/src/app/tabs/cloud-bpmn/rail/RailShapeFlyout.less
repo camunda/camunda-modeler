@@ -1,0 +1,86 @@
+/* Rail shape-variant flyout — portal, positioned by inline style. */
+
+:local(.flyout) {
+  position: fixed;
+  transform: translateY(-50%);
+  z-index: 250;
+
+  min-width: 220px;
+  max-width: 280px;
+
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.14), 0 0 1px rgba(16, 24, 40, 0.06);
+
+  padding: 6px;
+
+  animation: rail-flyout-in 100ms ease-out;
+
+  &:focus-visible {
+    outline: 2px solid #2a7de1;
+    outline-offset: 2px;
+  }
+}
+
+@keyframes rail-flyout-in {
+  from { opacity: 0; transform: translateY(-50%) translateX(-6px); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+:local(.header) {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8792a1;
+  padding: 6px 10px 4px;
+}
+
+:local(.variants) {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+:local(.variant) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+
+  text-align: left;
+  color: #1f2937;
+  font-size: 13px;
+
+  transition: background 80ms;
+
+  &:focus { outline: 0; }
+  &:hover { background: #f6f8fb; }
+}
+
+:local(.variantFocused) {
+  background: #eaf2fd;
+}
+
+:local(.variantIcon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  color: #3b4252;
+
+  &::before {
+    font-size: 20px;
+    line-height: 1;
+  }
+}
+
+:local(.variantLabel) {
+  flex: 1;
+}

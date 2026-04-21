@@ -9,6 +9,15 @@
  */
 
 import modeConfig, { MODES, IMPLEMENT_SHAPES } from '../mode/modeConfig';
+import { buildVariantAttrs } from '../rail/shapeVariants';
+
+// Intermediate events need an event-definition type to render; Message is the
+// most common trigger, so the palette defaults to it. Users pick other triggers
+// via the rail's Intermediate-event flyout.
+const PALETTE_EVENT_DEFAULTS = {
+  'bpmn:IntermediateCatchEvent': 'bpmn:MessageEventDefinition',
+  'bpmn:IntermediateThrowEvent': 'bpmn:MessageEventDefinition'
+};
 
 /**
  * Command categories (rendered in this order in the palette).
@@ -269,10 +278,12 @@ function insertShapeAtCenter(modeler, shapeType) {
   const modeling = modeler.get('modeling');
   const selection = modeler.get('selection');
 
-  const attrs = { type: shapeType };
-  if (shapeType === 'bpmn:SubProcess') attrs.isExpanded = true;
-  if (shapeType === 'bpmn:IntermediateCatchEvent') attrs.eventDefinitionType = 'bpmn:MessageEventDefinition';
-  if (shapeType === 'bpmn:IntermediateThrowEvent') attrs.eventDefinitionType = 'bpmn:MessageEventDefinition';
+  // Shared with RailShapeFlyout — single source of truth for SubProcess
+  // expansion, event-definition type, etc. See rail/shapeVariants.js.
+  const attrs = buildVariantAttrs({
+    type: shapeType,
+    eventDefinitionType: PALETTE_EVENT_DEFAULTS[shapeType] || null
+  });
 
   const root = canvas.getRootElement();
   const viewbox = canvas.viewbox();

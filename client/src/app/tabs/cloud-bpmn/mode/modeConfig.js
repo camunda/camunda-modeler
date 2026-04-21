@@ -17,7 +17,6 @@
  *   - sidePanelTab:         which side-panel tab a mode switch auto-opens (null = keep current)
  *   - sidePanelOpen:        whether mode switch forces the side panel open
  *   - visibleShapes:        shape IDs the rail renders; empty = rail shapes section collapsed
- *   - visiblePropertyGroups:data-group-id prefixes that remain visible; [] = show all (no filter)
  *   - canvasChip:           inline chip shown near the canvas (e.g. Test mode hint), null = none
  *   - canvasOverlay:        full overlay (e.g. Simulate placeholder), null = none
  *
@@ -37,21 +36,20 @@ export const DESIGN_SHAPES = [
   'bpmn:TextAnnotation'
 ];
 
+// Implement mode surfaces *primary* shapes only. Variant-rich primaries
+// (Task, Gateway, Intermediate event) open a flyout — see `shapeVariants.js`
+// for the per-primary variant taxonomy. Keeping the rail at 7 primaries
+// trades a wall of glyphs for scannable categories (Figma-toolbar pattern).
+//
+// Primaries not listed here have no rail presence in Implement mode — the
+// command palette and Guided Append cover the long tail.
 export const IMPLEMENT_SHAPES = [
   'bpmn:StartEvent',
-  'bpmn:EndEvent',
-  'bpmn:Task',
-  'bpmn:ServiceTask',
-  'bpmn:UserTask',
-  'bpmn:ScriptTask',
-  'bpmn:BusinessRuleTask',
-  'bpmn:CallActivity',
-  'bpmn:IntermediateCatchEvent',
-  'bpmn:IntermediateThrowEvent',
-  'bpmn:ExclusiveGateway',
-  'bpmn:ParallelGateway',
-  'bpmn:EventBasedGateway',
+  'bpmn:Task', // flyout: tasks group
   'bpmn:SubProcess',
+  'bpmn:ExclusiveGateway', // flyout: gateways group
+  'bpmn:IntermediateCatchEvent', // flyout: intermediate-event variants
+  'bpmn:EndEvent',
   'bpmn:TextAnnotation'
 ];
 
@@ -63,16 +61,6 @@ const modeConfig = {
     sidePanelTab: 'properties',
     sidePanelOpen: false,
     visibleShapes: DESIGN_SHAPES,
-
-    // Only high-level, outcome-oriented property groups.
-    // CSS selector hides everything that isn't in this list.
-    visiblePropertyGroups: [
-      'general',
-      'documentation',
-      'multiInstance',
-      'errors'
-    ],
-
     canvasChip: null,
     canvasOverlay: null
   },
@@ -84,10 +72,6 @@ const modeConfig = {
     sidePanelTab: 'properties',
     sidePanelOpen: true,
     visibleShapes: IMPLEMENT_SHAPES,
-
-    // Empty list = no CSS filter = show every property group.
-    visiblePropertyGroups: [],
-
     canvasChip: null,
     canvasOverlay: null
   },
@@ -99,7 +83,6 @@ const modeConfig = {
     sidePanelTab: null,
     sidePanelOpen: false,
     visibleShapes: [],
-    visiblePropertyGroups: [ 'general' ],
     canvasChip: null,
     canvasOverlay: {
       title: 'Token simulation coming soon',
@@ -114,10 +97,6 @@ const modeConfig = {
     sidePanelTab: 'test',
     sidePanelOpen: true,
     visibleShapes: [],
-
-    // Only the properties relevant to running a task test.
-    visiblePropertyGroups: [ 'general', 'inputOutput' ],
-
     canvasChip: {
       label: 'Test mode',
       hint: 'Click a task to run it with inputs.'

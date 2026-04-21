@@ -15,6 +15,8 @@ import RailShapesSection from './RailShapesSection';
 import RailSearchButton from './RailSearchButton';
 import RailModesSection from './RailModesSection';
 
+import { RailTooltipProvider } from './RailTooltip';
+
 import { useMode } from '../mode/modeController';
 
 import * as css from './ModeRail.less';
@@ -36,30 +38,32 @@ export default function ModeRail(props) {
   if (!modeler) return null;
 
   return (
-    <aside
-      className={ `${css.rail} ${css['rail--mode-' + mode]}` }
-      aria-label="Modeler tools and mode rail"
-    >
-      <RailToolsSection modeler={ modeler } />
+    <RailTooltipProvider>
+      <aside
+        className={ `${css.rail} ${css['rail--mode-' + mode]}` }
+        aria-label="Modeler tools and mode rail"
+      >
+        <RailToolsSection modeler={ modeler } />
 
-      <div className={ css.divider } />
+        <div className={ css.divider } />
 
-      <RailShapesSection
-        modeler={ modeler }
-        shapes={ config.visibleShapes }
-        mode={ mode }
-      />
+        <RailShapesSection
+          modeler={ modeler }
+          shapes={ config.visibleShapes }
+          mode={ mode }
+        />
 
-      <div className={ css.divider } />
+        <div className={ css.divider } />
 
-      <RailSearchButton onOpen={ onOpenPalette } />
+        <RailSearchButton onOpen={ onOpenPalette } />
 
-      <div className={ css.spacer } />
+        <div className={ css.spacer } />
 
-      <RailModesSection
-        mode={ mode }
-        onSelect={ setMode }
-      />
-    </aside>
+        <RailModesSection
+          mode={ mode }
+          onSelect={ setMode }
+        />
+      </aside>
+    </RailTooltipProvider>
   );
 }

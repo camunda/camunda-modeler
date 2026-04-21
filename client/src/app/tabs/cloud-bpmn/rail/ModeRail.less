@@ -36,6 +36,12 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06), 0 0 1px rgba(16, 24, 40, 0.04);
 
+  /* Clip any overflow — the shapes section is the elastic one and scrolls
+     internally when the viewport can't fit the full set. Without this, a
+     short viewport pushes the modes section below the status bar. */
+  overflow: hidden;
+  min-height: 0;
+
   z-index: 50;
 
   /* Active-mode colored band on the whole rail's left edge. Subtle, 2px. */
@@ -54,11 +60,16 @@
 }
 
 /* Per-mode accent colors applied as separate classes (CSS Modules exports
-   each as its own key so the React component can stack them). */
-:local(.rail--mode-design)    { color: @accent-design; }
-:local(.rail--mode-implement) { color: @accent-implement; }
-:local(.rail--mode-simulate)  { color: @accent-simulate; }
-:local(.rail--mode-test)      { color: @accent-test; }
+   each as its own key so the React component can stack them).
+   We plumb the accent through *both* `color` (for the rail's left band and
+   mode chips that read currentColor) *and* a CSS variable `--rail-accent`
+   so descendants that reset `color` — like `.button` — can still reach the
+   mode tint for their active state. Keeps the "confident on/off" read
+   consistent across the rail without a per-mode selector explosion. */
+:local(.rail--mode-design)    { color: @accent-design;    --rail-accent: @accent-design; }
+:local(.rail--mode-implement) { color: @accent-implement; --rail-accent: @accent-implement; }
+:local(.rail--mode-simulate)  { color: @accent-simulate;  --rail-accent: @accent-simulate; }
+:local(.rail--mode-test)      { color: @accent-test;      --rail-accent: @accent-test; }
 
 :local(.section) {
   display: flex;
@@ -66,6 +77,19 @@
   align-items: center;
   gap: 2px;
   padding: 2px 6px;
+  flex-shrink: 0;
+}
+
+/* Shapes section is the elastic one — it shrinks and scrolls internally so
+   the modes section below it stays visible on short viewports. */
+:local(.sectionShapes) {
+  flex-shrink: 1;
+  min-height: 0;
+  overflow-y: auto;
+
+  /* Hide scrollbar chrome — still scrollable via wheel / trackpad. */
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 }
 
 :local(.sectionCollapsed) {
@@ -75,8 +99,12 @@
 }
 
 :local(.spacer) {
-  flex: 1;
-  min-height: 8px;
+  flex: 1 1 auto;
+  min-height: 4px;
+
+  /* Spacer should give first, so that shapes section gets the real estate;
+     but on tall viewports it absorbs the extra space. */
+  flex-shrink: 1;
 }
 
 :local(.divider) {
@@ -97,7 +125,16 @@
   justify-content: center;
   cursor: pointer;
   padding: 0;
+  position: relative;       /* anchor for caret + future adornments */
   transition: background 80ms, color 80ms, transform 80ms;
+
+  /* bpmn-js icon-font glyphs used in shape / tool buttons. Color follows
+     currentColor; size tuned to match the previous 18×18 SVGs. */
+  [class^="bpmn-icon-"]::before,
+  [class*=" bpmn-icon-"]::before {
+    font-size: 22px;
+    line-height: 1;
+  }
 
   &:hover {
     background: @rail-hover;
@@ -116,9 +153,46 @@
 
 /* Modifier classes — exported as distinct CSS-Modules keys and applied
    alongside `.button` by the React component. */
+
+/* Confident active state — replaces the previous pale `#eaf2fd` tint.
+   Reads the mode accent via the CSS variable plumbed on `.rail--mode-*`;
+   falls back to the legacy blue if the variable is missing (defensive).
+   `color-mix` gives us a translucent accent fill that stays legible across
+   the four mode palettes without hand-picking 4 RGBA values. */
 :local(.button--active) {
-  background: @rail-active-bg;
-  color: @rail-active-fg;
+  background: color-mix(in srgb, var(--rail-accent, @rail-active-fg) 14%, transparent);
+  color: var(--rail-accent, @rail-active-fg);
+
+  /* Browsers without color-mix (older Safari/Edge) fall back to this flat
+     tint. Same visual weight as the prior state — no regression. */
+  @supports not (background: color-mix(in srgb, red, blue)) {
+    background: @rail-active-bg;
+  }
+}
+
+/* Primary shape with variants — click opens a flyout. The caret adornment
+   signals "there's more here", same language as Figma / macOS menu pickers.
+   No extra padding on the button itself — caret sits in the corner so the
+   glyph stays centered (important for scanning a column of icons). */
+:local(.button--hasVariants) {
+  /* identity — exported for className stacking; caret positioning lives on
+     :local(.caret) itself. */
+}
+
+:local(.caret) {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  color: @rail-fg-muted;
+  opacity: 0.75;
+  pointer-events: none;     /* clicks go to the parent button */
+  transition: color 80ms, opacity 80ms;
+}
+
+:local(.button):hover :local(.caret),
+:local(.button--active) :local(.caret) {
+  color: currentColor;
+  opacity: 1;
 }
 
 :local(.button--search) {
@@ -133,6 +207,9 @@
   align-items: stretch;
   gap: 2px;
   padding: 4px 6px 2px;
+
+  /* Modes must always be visible — never shrink, never scroll away. */
+  flex-shrink: 0;
 }
 
 :local(.modeButton) {
@@ -140,7 +217,7 @@
   background: transparent;
   border-radius: 8px;
   color: @rail-fg-muted;
-  padding: 6px 2px;
+  padding: 4px 2px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -163,9 +240,19 @@
 :local(.modeButton--test) {}
 
 :local(.modeButton--active) {
-  background: rgba(0, 0, 0, 0.02);
+  /* Matches the tool/shape active-state treatment — confident fill in the
+     mode accent so "which mode am I in?" reads at a glance. The combined
+     `:local(.modeButton--<mode>):local(.modeButton--active)` rules below
+     set `color` to the per-mode accent; `currentColor` in color-mix picks
+     it up for the background tint automatically. */
+  background: color-mix(in srgb, currentColor 14%, transparent);
 
-  /* Accent band along the chip's left edge */
+  @supports not (background: color-mix(in srgb, red, blue)) {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  /* Accent band along the chip's left edge — kept as a secondary signal
+     beyond the fill, so active mode reads even at small sizes. */
   &::before {
     content: '';
     position: absolute;
@@ -187,7 +274,7 @@
 :local(.modeButton--test):local(.modeButton--active)      { color: @accent-test; }
 
 :local(.modeLabel) {
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.02em;
   line-height: 1;
