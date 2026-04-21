@@ -182,3 +182,81 @@
     fill: var(--color-grey-225-10-35);
   }
 }
+
+/* Dark theme overrides for modal / settings page */
+:root[data-theme="dark"] {
+
+  .modal-dialog {
+    color: hsl(225, 10%, 90%);
+
+    code {
+      color: hsl(205, 100%, 70%);
+      background-color: hsl(225, 10%, 22%);
+    }
+  }
+
+  .modal-header {
+    color: hsl(225, 10%, 90%);
+  }
+
+  .modal-title {
+    color: hsl(225, 10%, 90%) !important;
+  }
+
+  .modal-body {
+    color: hsl(225, 10%, 90%);
+
+    /* All text elements white */
+    h1, h2, h3, h4, h5, h6,
+    p, span, label, a, div,
+    .section__header,
+    .section__description,
+    .custom-control-label,
+    .custom-control-option,
+    .custom-control-description {
+      color: hsl(225, 10%, 90%) !important;
+    }
+
+    select.form-control {
+      color: hsl(225, 10%, 90%);
+      background-color: hsl(225, 10%, 18%);
+
+      option {
+        color: hsl(225, 10%, 90%);
+        background-color: hsl(225, 10%, 18%);
+      }
+    }
+
+    input[type=text].form-control,
+    input[type=password].form-control,
+    textarea.form-control {
+      color: hsl(225, 10%, 90%);
+      background-color: hsl(225, 10%, 18%);
+    }
+
+    /* Table text */
+    table, td, th {
+      color: hsl(225, 10%, 90%);
+    }
+
+    /* SVG icons */
+    svg {
+      fill: hsl(225, 10%, 90%);
+    }
+
+    /* Links */
+    a {
+      color: hsl(205, 100%, 60%);
+    }
+  }
+
+  /* Checkbox checkmark — light color for dark backgrounds */
+  .custom-checkbox .custom-control-input:checked + .custom-control-option:after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill='%23e0e4e8' fill-rule='evenodd' points='5.743 14.314 1 9.57 2.897 7.673 5.743 10.519 13.103 3.16 15 5.057'/%3E%3C/svg%3E%0A");
+  }
+
+  /* Toggle switch handle — keep it light on dark track */
+  .toggle-switch .toggle-switch__switcher .toggle-switch__slider:before {
+    background-color: hsl(0, 0%, 100%);
+  }
+}
