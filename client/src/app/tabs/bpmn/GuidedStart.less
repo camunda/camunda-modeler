@@ -183,8 +183,8 @@
 :local(.aiSidePanel) {
   display: flex;
   flex-direction: column;
-  width: 272px;
-  min-width: 272px;
+  width: 340px;
+  min-width: 340px;
   background: white;
   border-left: 1px solid #e0e0e0;
   overflow: hidden;
@@ -994,38 +994,72 @@
   white-space: nowrap;
 }
 
+:local(.copilotLogHint) {
+  margin: 10px 0 4px 0;
+  font-size: 11px;
+  color: #4a5261;
+  font-style: italic;
+}
+
 :local(.copilotActionLog) {
   list-style: none;
-  margin: 8px 0 0 0;
+  margin: 4px 0 0 0;
   padding: 0;
-  max-height: 160px;
+  max-height: 320px;
   overflow-y: auto;
 }
 
 :local(.copilotActionLogEntry) {
   padding: 0;
+  border-radius: 4px;
   button {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
     width: 100%;
-    padding: 6px 4px;
+    padding: 6px 6px;
     background: transparent;
     border: 0;
     text-align: left;
     cursor: default;
     font: inherit;
+    border-radius: 4px;
   }
   &:local(.isClickable) button {
     cursor: pointer;
-    &:hover { background: #f3f6fb; }
+    &:hover {
+      background: #eef3fb;
+      :local(.copilotActionLogChevron) {
+        color: #205dff;
+        transform: translateX(2px);
+      }
+    }
   }
+  &:local(.isActive) button {
+    background: #e6efff;
+    :local(.copilotActionLogBullet) { color: #205dff; }
+  }
+  &:local(.isPulsing) {
+    animation: copilotLogPulse 1.2s ease-in-out 2;
+  }
+}
+
+@keyframes copilotLogPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(32, 93, 255, 0); }
+  50%      { box-shadow: 0 0 0 3px rgba(32, 93, 255, 0.25); }
+}
+
+:local(.copilotActionLogBullet) {
+  flex: 0 0 auto;
+  width: 14px;
+  text-align: center;
+  color: #8a94a6;
+  font-size: 12px;
 }
 
 :local(.copilotActionLogIcon) {
   font-size: 16px;
   flex: 0 0 auto;
-  margin-top: 2px;
 }
 
 :local(.copilotActionLogText) {
@@ -1042,10 +1076,21 @@
   color: #1a1f27;
 }
 
-:local(.copilotActionLogRationale) {
+:local(.copilotActionLogMeta) {
   font-size: 11px;
   color: #697180;
   line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:local(.copilotActionLogChevron) {
+  flex: 0 0 auto;
+  color: #b5bcc9;
+  font-size: 16px;
+  transition: color 0.15s ease, transform 0.15s ease;
+  @media (prefers-reduced-motion: reduce) { transition: none; }
 }
 
 :local(.copilotActions) {
@@ -1085,6 +1130,361 @@
   p { margin: 0 0 8px 0; }
 }
 
+// ---- Chat-window shell around the Copilot interaction ----------------------
+//
+// The underlying interaction (prompt → scenario chips → log → clickable rows
+// → floating stepper) is unchanged. This shell wraps it in a familiar chat
+// surface: header with assistant identity, scrolling conversation of user
+// and assistant messages, and a composer at the bottom.
+
+:local(.chatHeader) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+:local(.chatHeaderIcon) {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5f8cff 0%, #8853ff 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}
+
+:local(.chatHeaderInfo) {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+:local(.chatHeaderTitleRow) {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+:local(.chatHeaderTitle) {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1f27;
+  line-height: 1.2;
+}
+
+:local(.chatHeaderBadge) {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  background: #eef0fb;
+  color: #4f56c4;
+  font-size: 10px;
+  font-weight: 500;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+:local(.chatHeaderSubtitle) {
+  font-size: 11px;
+  color: #697180;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:local(.chatHeaderActions) {
+  display: flex;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+:local(.chatHeaderIconButton) {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: #697180;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover { background: #f0f2f7; color: #1a1f27; }
+  &:focus-visible { outline: 2px solid #2a7de1; outline-offset: 1px; }
+}
+
+// ---- Messages scroll area ---------------------------------------------------
+
+:local(.chatMessages) {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+:local(.chatMessage) {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+
+:local(.chatMessageUser) {
+  align-items: flex-end;
+}
+
+:local(.chatMessageAssistant) {
+  align-items: flex-start;
+}
+
+:local(.chatMessageBubble) {
+  max-width: 92%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #1a1f27;
+  word-wrap: break-word;
+
+  :local(.chatMessageUser) & {
+    background: #eaf1ff;
+    border: 1px solid #d4e1fa;
+    border-bottom-right-radius: 3px;
+  }
+
+  :local(.chatMessageAssistant) & {
+    background: white;
+    border: 1px solid #e5e8ef;
+    border-bottom-left-radius: 3px;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+:local(.chatMessageTimestamp) {
+  font-size: 10px;
+  color: #9098a5;
+  margin-top: 3px;
+  padding: 0 4px;
+}
+
+:local(.chatMessageAssistantIntro) {
+  font-size: 12px;
+  color: #3a414d;
+  margin: 0 0 6px 0;
+  line-height: 1.4;
+}
+
+:local(.chatThinking) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: white;
+  border: 1px solid #e5e8ef;
+  border-radius: 10px;
+  border-bottom-left-radius: 3px;
+  font-size: 12px;
+  color: #697180;
+  font-style: italic;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #d4dae6;
+    border-top-color: #5f8cff;
+    border-radius: 50%;
+    animation: copilotThinkingSpin 0.8s linear infinite;
+    @media (prefers-reduced-motion: reduce) { animation: none; }
+  }
+}
+
+@keyframes copilotThinkingSpin {
+  to { transform: rotate(360deg); }
+}
+
+// ---- Quick suggestions (idle state) ----------------------------------------
+
+:local(.chatSuggestions) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+:local(.chatSuggestionsLabel) {
+  font-size: 11px;
+  color: #697180;
+  margin-bottom: 2px;
+}
+
+:local(.chatSuggestion) {
+  padding: 8px 10px;
+  background: white;
+  border: 1px solid #d0d4dc;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 12px;
+  color: #1a1f27;
+  text-align: left;
+  cursor: pointer;
+  line-height: 1.3;
+  transition: background-color 120ms, border-color 120ms;
+
+  &:hover { background: #f3f6fb; border-color: #c6cbd4; }
+  &:focus-visible { outline: 2px solid #2a7de1; outline-offset: 1px; }
+
+  &:local(.isActive) {
+    background: #eaf3fe;
+    border-color: #2a7de1;
+  }
+}
+
+// ---- Inline actions under the assistant response ---------------------------
+
+:local(.chatInlineActions) {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eef0f4;
+}
+
+:local(.chatInlineButton) {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  line-height: 1.2;
+
+  &:focus-visible { outline: 2px solid #2a7de1; outline-offset: 1px; }
+}
+
+:local(.chatInlineButtonSecondary) {
+  background: white;
+  border-color: #d0d4dc;
+  color: #1a1f27;
+  &:hover { background: #f3f6fb; }
+}
+
+:local(.chatInlineButtonPrimary) {
+  background: #2a7de1;
+  color: white;
+  &:hover { background: #2068c1; }
+}
+
+// ---- Composer --------------------------------------------------------------
+
+:local(.chatComposer) {
+  flex-shrink: 0;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px 12px;
+  background: #fafbfd;
+}
+
+:local(.chatContextChip) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  margin-bottom: 8px;
+  padding: 3px 8px;
+  background: white;
+  border: 1px solid #d0d4dc;
+  border-radius: 12px;
+  font-size: 11px;
+  color: #4d5563;
+  line-height: 1.3;
+
+  & > :local(.chatContextChipLabel) {
+    color: #8b93a3;
+    margin-right: 2px;
+  }
+
+  & > :local(.chatContextChipValue) {
+    color: #1a1f27;
+    font-weight: 500;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+:local(.chatInputRow) {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  min-height: 72px;
+  background: white;
+  border: 1px solid #c6cbd4;
+  border-radius: 8px;
+  padding: 8px 8px 8px 10px;
+  transition: border-color 120ms, box-shadow 120ms;
+
+  &:focus-within {
+    border-color: #2a7de1;
+    box-shadow: 0 0 0 2px rgba(42, 125, 225, 0.15);
+  }
+}
+
+:local(.chatInput) {
+  flex: 1;
+  min-height: 56px;
+  max-height: 200px;
+  padding: 4px 2px;
+  border: 0;
+  resize: none;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #1a1f27;
+  background: transparent;
+  outline: none;
+
+  &::placeholder { color: #9098a5; }
+}
+
+:local(.chatSendButton) {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: #2a7de1;
+  color: white;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled { background: #cbd3df; cursor: default; }
+  &:hover:not(:disabled) { background: #2068c1; }
+  &:focus-visible { outline: 2px solid #2a7de1; outline-offset: 2px; }
+}
+
 // ---- AI Copilot floating stepper (post-accept walkthrough) -----------------
 
 :local(.copilotStepper) {
@@ -1097,17 +1497,28 @@
   padding: 16px;
   transition: top 0.18s ease, left 0.18s ease;
 
-  // Small pointer arrow on the top-left corner pointing toward the canvas element
+  // Pointer arrow — direction swaps based on which side of the anchor the
+  // callout sits on. `--arrow-top` (px) is set inline so the arrow aligns
+  // vertically with the middle of the anchor element.
   &::before {
     content: '';
     position: absolute;
-    top: 16px;
-    left: -8px;
+    top: var(--arrow-top, 16px);
+    margin-top: -5px;
     width: 0;
     height: 0;
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;
+  }
+
+  &[data-arrow-side='left']::before {
+    left: -8px;
     border-right: 8px solid var(--color-blue-base-40, #205dff);
+  }
+
+  &[data-arrow-side='right']::before {
+    right: -8px;
+    border-left: 8px solid var(--color-blue-base-40, #205dff);
   }
 
   @media (prefers-reduced-motion: reduce) {

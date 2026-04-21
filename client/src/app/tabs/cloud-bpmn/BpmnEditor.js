@@ -110,7 +110,9 @@ export class BpmnEditor extends CachedComponent {
       aiPanelOpen: false,
       copilotPlaying: false,
       appendWizardSource: null,
-      copilotLog: []
+      copilotLog: [],
+      copilotActiveEntryIndex: null,
+      selectedElementId: null
     };
 
     this.ref = React.createRef();
@@ -308,6 +310,10 @@ export class BpmnEditor extends CachedComponent {
     // (see handleImport) so newcomers aren't greeted with a dense form.
     modeler[fn]('selection.changed', this.handleSelectionAutoOpenPanel);
 
+    // Track the currently-selected element ID so the AI panel can show
+    // it in the composer's context chip ("Element: Task_abc").
+    modeler[fn]('selection.changed', this.handleSelectionForCopilot);
+
     if (fn === 'on') {
       modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
     } else if (fn === 'off') {
@@ -317,12 +323,10 @@ export class BpmnEditor extends CachedComponent {
 
   checkCanvasEmpty = () => {
 
-    // While the copilot is playing (or the AI panel is open) the canvas is
-    // being scripted by the AI scenario — element counts transiently climb
-    // from zero. Don't let that flip the lock gate: the panel owns its own
-    // view of emptiness (snapshotted on open).
-    if (this.state.copilotPlaying || this.state.aiPanelOpen) return;
-
+    // Always reflect real canvas state. AiPanel keeps its own `wasEmptyOnOpen`
+    // snapshot for its lock-state decision, so we don't need to freeze this
+    // flag during playback — and freezing it kept EmptyCanvasOverlay visible
+    // while the scenario was being drawn.
     const modeler = this.getModeler();
     const elementRegistry = modeler.get('elementRegistry');
     const isCanvasEmpty = elementRegistry.getAll().length <= 1;
@@ -597,6 +601,38 @@ export class BpmnEditor extends CachedComponent {
     this.setState({ copilotPlaying: true });
   };
 
+  handleCopilotLogChange = (log) => {
+    this.setState({ copilotLog: log });
+  };
+
+  handleCopilotActivateEntry = (i) => {
+    this.setState({ copilotActiveEntryIndex: i });
+  };
+
+  /**
+   * Mirror the current selection into `selectedElementId` so AiPanel can
+   * display a context chip in its composer. Root shapes / labels are
+   * ignored so the chip stays meaningful.
+   */
+  handleSelectionForCopilot = (event) => {
+    const newSelection = (event && event.newSelection) || [];
+    if (newSelection.length !== 1) {
+      if (this.state.selectedElementId !== null) {
+        this.setState({ selectedElementId: null });
+      }
+      return;
+    }
+    const element = newSelection[0];
+    const type = element && element.type;
+    if (!type || type === 'label' || type === 'bpmn:Process' || type === 'bpmn:Collaboration') {
+      if (this.state.selectedElementId !== null) {
+        this.setState({ selectedElementId: null });
+      }
+      return;
+    }
+    this.setState({ selectedElementId: element.id || null });
+  };
+
   /**
    * Reset the real canvas back to an empty Camunda 8 diagram. Called
    * when the panel closes mid-playback, or when the user clicks
@@ -629,7 +665,7 @@ export class BpmnEditor extends CachedComponent {
       console.error('Copilot reset: importXML failed', err);
     }
 
-    this.setState({ copilotPlaying: false });
+    this.setState({ copilotPlaying: false, copilotLog: [], copilotActiveEntryIndex: null });
   };
 
   handleCopilotAccept = async (xml, log) => {
@@ -637,15 +673,11 @@ export class BpmnEditor extends CachedComponent {
     if (!modeler) return;
 
     // The canvas already holds the fully played-out scenario from the last
-    // step, so we intentionally skip re-importing `xml` here. Trust the
-    // playback and just capture the log + close the panel.
-
-    // Close copilot, remember log, reopen properties panel
+    // step, so we intentionally skip re-importing `xml` here. The log is
+    // already synced to state via onLogChange during playback; the only
+    // flag we flip here is copilotPlaying.
     this.setState({
-      aiPanelOpen: false,
-      copilotPlaying: false,
-      copilotLog: log,
-      isCanvasEmpty: false
+      copilotPlaying: false
     });
 
     const { layout } = this.props;
@@ -1331,8 +1363,16 @@ export class BpmnEditor extends CachedComponent {
       isCanvasEmpty,
       aiPanelOpen,
       appendWizardSource,
-      copilotLog
+      copilotLog,
+      copilotActiveEntryIndex,
+      selectedElementId
     } = this.state;
+
+    // Derive a friendly process name for the chat header subtitle from the
+    // open file. Strip the extension so it reads as a process title rather
+    // than a filename.
+    const fileName = (this.props.file && this.props.file.name) || '';
+    const processName = fileName.replace(/\.(bpmn|xml)$/i, '') || 'Untitled process';
 
     // Collect all start event connector templates available in this modeler instance
     const elementTemplates = modeler.get('elementTemplates', false);
@@ -1368,7 +1408,7 @@ export class BpmnEditor extends CachedComponent {
               onContextMenu={ this.handleContextMenu }
             ></div>
 
-            { imported && !importing && isCanvasEmpty && (
+            { imported && !importing && isCanvasEmpty && !aiPanelOpen && (
               <EmptyCanvasOverlay
                 onStartEventSelect={ this.handleStartEventSelect }
                 onOpenAiPanel={ this.openAiPanel }
@@ -1385,11 +1425,12 @@ export class BpmnEditor extends CachedComponent {
               />
             ) }
 
-            { !aiPanelOpen && copilotLog && copilotLog.length > 0 && (
+            { copilotLog && copilotLog.length > 0 && copilotActiveEntryIndex !== null && (
               <CopilotStepper
                 entries={ copilotLog }
+                scopedEntryIndex={ copilotActiveEntryIndex }
                 modeler={ this.getModeler() }
-                onDismiss={ () => this.setState({ copilotLog: [] }) }
+                onDismiss={ () => this.setState({ copilotActiveEntryIndex: null }) }
                 onLayoutChanged={ this.handleLayoutChange }
               />
             ) }
@@ -1452,13 +1493,18 @@ export class BpmnEditor extends CachedComponent {
                 // canvas back to the empty diagram so they don't end up
                 // with half-drafted elements stuck on screen.
                 await this.handleCopilotPlayReset();
-                this.setState({ aiPanelOpen: false });
+                this.setState({ aiPanelOpen: false, copilotActiveEntryIndex: null });
               } }
               onAccept={ this.handleCopilotAccept }
               onPlayStart={ this.handleCopilotPlayStart }
               onPlayStep={ this.handleCopilotStep }
               onPlayReset={ this.handleCopilotPlayReset }
+              onLogChange={ this.handleCopilotLogChange }
+              onActivateEntry={ this.handleCopilotActivateEntry }
+              activeEntryIndex={ copilotActiveEntryIndex }
               canvasIsEmpty={ isCanvasEmpty }
+              processName={ processName }
+              selectedElementId={ selectedElementId }
             />
           ) }
 

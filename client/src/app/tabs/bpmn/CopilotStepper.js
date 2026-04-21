@@ -21,82 +21,102 @@ function looksLikeCode(value) {
   return value.startsWith('=') || value.includes('{{') || value.includes('->');
 }
 
-// Flatten entries into a single ordered list of { entry, substep, entryIndex }.
-// Entries with no substeps contribute a single { entry, substep: null } item.
-function flattenSubsteps(entries) {
-  if (!entries) return [];
-
-  const flat = [];
-  entries.forEach((entry, entryIndex) => {
-    const substeps = Array.isArray(entry.substeps) ? entry.substeps : [];
-    if (substeps.length === 0) {
-      flat.push({ entry, substep: null, entryIndex });
-    } else {
-      substeps.forEach(substep => {
-        flat.push({ entry, substep, entryIndex });
-      });
-    }
-  });
-  return flat;
+// Build the flat substep list for a single scoped entry. Returns
+// [{ entry, substep }, ...]. Entries without substeps contribute one
+// item with substep: null so they still render a single summary card.
+function substepsForEntry(entry) {
+  if (!entry) return [];
+  const substeps = Array.isArray(entry.substeps) ? entry.substeps : [];
+  if (substeps.length === 0) {
+    return [ { entry, substep: null } ];
+  }
+  return substeps.map(substep => ({ entry, substep }));
 }
 
-// Try to find and open a properties-panel group by id, then scroll it into
-// view. Wrapped in try/catch so DOM absence never blows up the stepper.
-function focusPropertiesGroup(groupId) {
-  if (!groupId) return;
+// Resolve the DOM node we want the callout to anchor to. Preference order:
+//   1. The specific properties-panel entry (field input row) matching
+//      group + field label.
+//   2. The properties-panel group container (section).
+//   3. null → caller falls back to the canvas element.
+//
+// Also ensures the group is expanded and scrolls the field into view so the
+// callout pointer actually lands on something the user can see.
+function focusPropertiesField(groupId, fieldLabel) {
+  if (!groupId) return null;
   try {
-    const selector = `[data-group-id="group-${ groupId }"]`;
-    const el = document.querySelector(selector);
-    if (!el) return;
+    // bpmn-js-properties-panel wraps element-template custom groups with
+    // `group-ElementTemplates__CustomProperties-<groupId>`; native groups use
+    // the plain `group-<groupId>`. Try both, template form first.
+    const group =
+      document.querySelector(`[data-group-id="group-ElementTemplates__CustomProperties-${ groupId }"]`)
+      || document.querySelector(`[data-group-id="group-${ groupId }"]`);
+    if (!group) return null;
 
-    // bpmn-js-properties-panel: header toggles via click; `.open` on the
-    // header indicates current open state.
-    const header = el.querySelector('.bio-properties-panel-group-header');
+    const header = group.querySelector('.bio-properties-panel-group-header');
     if (header && !header.classList.contains('open')) {
       header.click();
     }
 
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!fieldLabel) {
+      group.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return group;
+    }
+
+    // Find the entry whose visible label matches the substep field. bpmn-js-
+    // properties-panel renders labels either on <label> or as an element with
+    // the label class; try both.
+    const entries = group.querySelectorAll('.bio-properties-panel-entry');
+    const target = Array.from(entries).find(el => {
+      const labelEl = el.querySelector('label, .bio-properties-panel-label');
+      if (!labelEl) return false;
+      const text = labelEl.textContent.trim();
+      return text === fieldLabel || text.startsWith(fieldLabel);
+    });
+
+    const anchor = target || group;
+    anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return anchor;
   } catch (_) {
 
     // no-op — DOM can be gone mid-teardown.
+    return null;
   }
 }
 
 /**
- * Floating callout stepper shown after the user accepts a Copilot-generated
- * process. Anchors to each element in turn, driving selection +
- * scrollToElement + properties panel open. One substep at a time.
+ * Floating callout stepper shown after the user clicks a log entry in the AI
+ * panel. Scoped to a single copilotLog entry: the callout walks that entry's
+ * substeps only. The callout anchors to the matching properties-panel field;
+ * if no field match is found it falls back to the canvas element.
  *
  * @param {object} props
- * @param {Array}  props.entries         copilotLog entries
- * @param {object} props.modeler         bpmn-js Modeler instance
- * @param {Function} props.onDismiss     called when the user closes the stepper
- * @param {Function} props.onLayoutChanged  called with layout patch to open props panel
+ * @param {Array}  props.entries              copilotLog entries
+ * @param {number} props.scopedEntryIndex     index into entries to walk
+ * @param {object} props.modeler              bpmn-js Modeler instance
+ * @param {Function} props.onDismiss          called when the user closes the stepper
+ * @param {Function} props.onLayoutChanged    called with layout patch to open props panel
  */
-export default function CopilotStepper({ entries, modeler, onDismiss, onLayoutChanged }) {
+export default function CopilotStepper({ entries, scopedEntryIndex, modeler, onDismiss, onLayoutChanged }) {
   const [ currentIndex, setCurrentIndex ] = useState(0);
-  const [ position, setPosition ] = useState({ top: 120, left: 120 });
+  const [ position, setPosition ] = useState({ top: 120, left: 120, arrowSide: 'left', arrowTop: 16 });
   const positionTimerRef = useRef(null);
-  const groupFocusTimerRef = useRef(null);
+  const fieldFocusTimerRef = useRef(null);
   const resizeHandlerRef = useRef(null);
-  const lastEntryIndexRef = useRef(null);
 
-  const flatSteps = useMemo(() => flattenSubsteps(entries), [ entries ]);
+  const entry = entries && entries[scopedEntryIndex];
+  const flatSteps = useMemo(() => substepsForEntry(entry), [ entry ]);
   const total = flatSteps.length;
 
-  // Select and scroll-to the element for a flat step index. Only re-navigates
-  // if the underlying element changed since the last step — substeps within
-  // the same element don't re-select.
-  const navigateToStep = useCallback((index) => {
-    if (!modeler || !flatSteps[index]) return;
+  // Reset to substep 1 whenever the scoped entry changes.
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [ scopedEntryIndex ]);
 
-    const { entry, entryIndex } = flatSteps[index];
-
-    if (lastEntryIndexRef.current === entryIndex) {
-      return; // same element — don't re-select
-    }
-    lastEntryIndexRef.current = entryIndex;
+  // Select + scroll-to the canvas element + open the properties panel.
+  // Scoped mode always targets the same element, so this runs once per
+  // scope change (driven by scopedEntryIndex).
+  useEffect(() => {
+    if (!modeler || !entry) return;
 
     const elementRegistry = modeler.get('elementRegistry');
     const selection = modeler.get('selection');
@@ -121,74 +141,102 @@ export default function CopilotStepper({ entries, modeler, onDismiss, onLayoutCh
         }
       });
     }
-  }, [ modeler, flatSteps, onLayoutChanged ]);
+  }, [ modeler, entry, onLayoutChanged ]);
 
-  // Compute pixel position for the callout based on the current entry's element
+  // Compute pixel position for the callout. Preferred anchor is the
+  // properties-panel field DOM node for the current substep; falls back to
+  // the group container, then to the canvas element.
   const computePosition = useCallback((index) => {
-    if (!modeler || !flatSteps[index]) return;
+    if (!modeler || !entry || !flatSteps[index]) return;
 
-    const { entry } = flatSteps[index];
-    const elementRegistry = modeler.get('elementRegistry');
-    const canvas = modeler.get('canvas');
+    const { substep } = flatSteps[index];
 
-    const element = elementRegistry.get(entry.elementId);
-    if (!element) return;
+    let anchorRect = null;
+    let anchorSide = 'right'; // which side of the anchor to place the callout
 
-    const graphics = canvas.getGraphics(element);
-    if (!graphics) return;
-
-    const elRect = graphics.getBoundingClientRect();
-    const CALLOUT_WIDTH = 380;
-    const CALLOUT_GAP = 12;
-    const CALLOUT_MAX_HEIGHT = 360; // approximate max
-
-    let left = elRect.right + CALLOUT_GAP;
-    let top = elRect.top;
-
-    // Overflow right — align right edge of callout to viewport right with 16px margin
-    if (left + CALLOUT_WIDTH > window.innerWidth - 16) {
-      left = Math.max(16, elRect.left - CALLOUT_WIDTH - CALLOUT_GAP);
+    // Try properties-panel field first
+    if (substep && substep.groupId) {
+      const fieldEl = focusPropertiesField(substep.groupId, substep.field);
+      if (fieldEl) {
+        anchorRect = fieldEl.getBoundingClientRect();
+        anchorSide = 'left'; // properties panel is on the right, so the callout sits to the left of it
+      }
     }
 
-    // Overflow bottom — flip above
+    // Fallback: canvas element
+    if (!anchorRect) {
+      const elementRegistry = modeler.get('elementRegistry');
+      const canvas = modeler.get('canvas');
+      const element = elementRegistry.get(entry.elementId);
+      if (!element) return;
+      const graphics = canvas.getGraphics(element);
+      if (!graphics) return;
+      anchorRect = graphics.getBoundingClientRect();
+      anchorSide = 'right';
+    }
+
+    const CALLOUT_WIDTH = 380;
+    const CALLOUT_GAP = 12;
+    const CALLOUT_MAX_HEIGHT = 360;
+
+    // The arrow's side on the callout is the *opposite* of which side of the
+    // anchor the callout sits on. If the callout is to the LEFT of the anchor
+    // (anchorSide='left'), the arrow lives on the callout's RIGHT edge
+    // pointing right. Track it so we can flip later if we overflow.
+    let arrowSide = anchorSide === 'left' ? 'right' : 'left';
+
+    let left;
+    if (anchorSide === 'left') {
+      left = anchorRect.left - CALLOUT_WIDTH - CALLOUT_GAP;
+      if (left < 16) {
+        // Not enough room on the left — flip the callout to the right of the anchor.
+        left = anchorRect.right + CALLOUT_GAP;
+        arrowSide = 'left';
+      }
+    } else {
+      left = anchorRect.right + CALLOUT_GAP;
+      if (left + CALLOUT_WIDTH > window.innerWidth - 16) {
+        left = Math.max(16, anchorRect.left - CALLOUT_WIDTH - CALLOUT_GAP);
+        arrowSide = 'right';
+      }
+    }
+
+    // Align the arrow vertically with the middle of the anchor element, so
+    // it points at the field/shape rather than landing at an arbitrary offset.
+    let top = anchorRect.top;
     if (top + CALLOUT_MAX_HEIGHT > window.innerHeight - 16) {
       top = Math.max(16, window.innerHeight - CALLOUT_MAX_HEIGHT - 16);
     }
+    const anchorCenterY = anchorRect.top + anchorRect.height / 2;
+    const arrowTop = Math.max(12, Math.min(anchorCenterY - top, CALLOUT_MAX_HEIGHT - 12));
 
-    setPosition({ top, left });
-  }, [ modeler, flatSteps ]);
+    setPosition({ top, left, arrowSide, arrowTop });
+  }, [ modeler, entry, flatSteps ]);
 
-  // On index change: navigate (if element changed) + focus group + schedule
-  // position recompute after scroll settles.
+  // On substep change: focus the field (also expands the group) and compute
+  // the callout position twice — once immediately, once after the scroll
+  // animation settles.
   useEffect(() => {
     if (total === 0) return;
 
-    navigateToStep(currentIndex);
+    // Initial position compute (focuses the field as a side effect)
+    if (fieldFocusTimerRef.current) clearTimeout(fieldFocusTimerRef.current);
+    fieldFocusTimerRef.current = setTimeout(() => {
+      computePosition(currentIndex);
+    }, 100);
 
-    // Focus the matching properties-panel group after selection has a chance
-    // to rerender the panel.
-    const substep = flatSteps[currentIndex] && flatSteps[currentIndex].substep;
-    if (groupFocusTimerRef.current) clearTimeout(groupFocusTimerRef.current);
-    if (substep && substep.groupId) {
-      groupFocusTimerRef.current = setTimeout(() => {
-        focusPropertiesGroup(substep.groupId);
-      }, 100);
-    }
-
-    // Immediate position compute
     computePosition(currentIndex);
 
-    // Re-check after scroll animation (200ms)
     if (positionTimerRef.current) clearTimeout(positionTimerRef.current);
     positionTimerRef.current = setTimeout(() => {
       computePosition(currentIndex);
-    }, 200);
+    }, 300);
 
     return () => {
       if (positionTimerRef.current) clearTimeout(positionTimerRef.current);
-      if (groupFocusTimerRef.current) clearTimeout(groupFocusTimerRef.current);
+      if (fieldFocusTimerRef.current) clearTimeout(fieldFocusTimerRef.current);
     };
-  }, [ currentIndex, navigateToStep, computePosition, flatSteps, total ]);
+  }, [ currentIndex, computePosition, total ]);
 
   // Recompute position on window resize
   useEffect(() => {
@@ -214,9 +262,9 @@ export default function CopilotStepper({ entries, modeler, onDismiss, onLayoutCh
     return () => document.removeEventListener('keydown', handleKey);
   }, [ total, onDismiss ]);
 
-  if (total === 0) return null;
+  if (total === 0 || !entry) return null;
 
-  const { entry, substep } = flatSteps[currentIndex];
+  const { substep } = flatSteps[currentIndex];
   const stepLabel = `Step ${ currentIndex + 1 } of ${ total }`;
 
   // Build field-path label like "HTTP ENDPOINT → URL". Fallback to just
@@ -232,7 +280,8 @@ export default function CopilotStepper({ entries, modeler, onDismiss, onLayoutCh
   const callout = (
     <div
       className={ css.copilotStepper }
-      style={{ top: position.top, left: position.left }}
+      style={{ top: position.top, left: position.left, '--arrow-top': `${ position.arrowTop }px` }}
+      data-arrow-side={ position.arrowSide }
       role="dialog"
       aria-label={ `Copilot walkthrough — ${ stepLabel }` }
     >
