@@ -1,0 +1,195 @@
+/* Mode Rail — narrow vertical strip docked to the left edge of the canvas.
+   Coexists with the default bpmn-js palette (which BpmnEditor hides via a
+   sibling CSS rule when the rail is active). */
+
+@rail-width: 56px;
+@rail-bg: #ffffff;
+@rail-border: #e3e6ea;
+@rail-fg: #3b4252;
+@rail-fg-muted: #8792a1;
+@rail-hover: #f2f4f7;
+@rail-active-bg: #eaf2fd;
+@rail-active-fg: #2a7de1;
+@rail-divider: #edeff2;
+
+/* Per-mode accent colors. Chosen to read as distinct but not jarring. */
+@accent-design: #2a7de1;       /* blue — exploration / framing */
+@accent-implement: #8b5cf6;    /* violet — technical configuration */
+@accent-simulate: #f59e0b;     /* amber — runtime, playback */
+@accent-test: #10b981;         /* green — verification, pass/fail */
+
+:local(.rail) {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  bottom: 12px;
+  width: @rail-width;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 8px 0;
+  gap: 4px;
+
+  background: @rail-bg;
+  border: 1px solid @rail-border;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06), 0 0 1px rgba(16, 24, 40, 0.04);
+
+  z-index: 50;
+
+  /* Active-mode colored band on the whole rail's left edge. Subtle, 2px. */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10%;
+    bottom: 10%;
+    width: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    opacity: 0.75;
+  }
+
+}
+
+/* Per-mode accent colors applied as separate classes (CSS Modules exports
+   each as its own key so the React component can stack them). */
+:local(.rail--mode-design)    { color: @accent-design; }
+:local(.rail--mode-implement) { color: @accent-implement; }
+:local(.rail--mode-simulate)  { color: @accent-simulate; }
+:local(.rail--mode-test)      { color: @accent-test; }
+
+:local(.section) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+}
+
+:local(.sectionCollapsed) {
+  /* Shapes section collapses in simulate/test — leave a faint divider space
+     so the rail keeps its rhythm. */
+  height: 8px;
+}
+
+:local(.spacer) {
+  flex: 1;
+  min-height: 8px;
+}
+
+:local(.divider) {
+  height: 1px;
+  margin: 4px 10px;
+  background: @rail-divider;
+}
+
+:local(.button) {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  color: @rail-fg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 80ms, color 80ms, transform 80ms;
+
+  &:hover {
+    background: @rail-hover;
+    color: @rail-fg;
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &:focus-visible {
+    outline: 2px solid @rail-active-fg;
+    outline-offset: 2px;
+  }
+}
+
+/* Modifier classes — exported as distinct CSS-Modules keys and applied
+   alongside `.button` by the React component. */
+:local(.button--active) {
+  background: @rail-active-bg;
+  color: @rail-active-fg;
+}
+
+:local(.button--search) {
+  color: @rail-fg-muted;
+
+  &:hover { color: @rail-fg; }
+}
+
+:local(.modesSection) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  padding: 4px 6px 2px;
+}
+
+:local(.modeButton) {
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  color: @rail-fg-muted;
+  padding: 6px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: background 80ms, color 80ms;
+  position: relative;
+
+  &:hover { color: @rail-fg; background: @rail-hover; }
+
+  &:focus-visible {
+    outline: 2px solid @rail-active-fg;
+    outline-offset: 2px;
+  }
+}
+
+:local(.modeButton--design) { /* identity — tint is applied when combined with --active */ }
+:local(.modeButton--implement) {}
+:local(.modeButton--simulate) {}
+:local(.modeButton--test) {}
+
+:local(.modeButton--active) {
+  background: rgba(0, 0, 0, 0.02);
+
+  /* Accent band along the chip's left edge */
+  &::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    border-radius: 2px;
+    background: currentColor;
+  }
+}
+
+/* Combined tints — each mode's active chip uses its own accent color. Uses
+   :global escape hatches so multiple :local classes can be chained. The
+   className is applied as `${modeButton} ${modeButton--<mode>} ${modeButton--active}`. */
+:local(.modeButton--design):local(.modeButton--active)    { color: @accent-design; }
+:local(.modeButton--implement):local(.modeButton--active) { color: @accent-implement; }
+:local(.modeButton--simulate):local(.modeButton--active)  { color: @accent-simulate; }
+:local(.modeButton--test):local(.modeButton--active)      { color: @accent-test; }
+
+:local(.modeLabel) {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: inherit;
+}

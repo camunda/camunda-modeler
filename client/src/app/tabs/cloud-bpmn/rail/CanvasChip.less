@@ -1,0 +1,43 @@
+/* Inline floating chip above the canvas (Test mode). */
+
+:local(.chip) {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 999px;
+  padding: 6px 14px 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #374151;
+  box-shadow: 0 1px 4px rgba(16, 24, 40, 0.06);
+  z-index: 35;
+  pointer-events: none;
+}
+
+:local(.chipDot) {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+:local(.chipLabel) {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+:local(.chipHint) {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* Accent modifiers — stacked with `.chip`. */
+:local(.chip--test)      { color: #10b981; }
+:local(.chip--design)    { color: #2a7de1; }
+:local(.chip--implement) { color: #8b5cf6; }
+:local(.chip--simulate)  { color: #f59e0b; }

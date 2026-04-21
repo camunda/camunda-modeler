@@ -34,6 +34,13 @@ import AppendWizard from '../bpmn/AppendWizard';
 import CopilotStepper from '../bpmn/CopilotStepper';
 import { ELEMENT_SHAPE_MAP } from '../bpmn/appendCatalog';
 
+import ModeRail from './rail/ModeRail';
+import SimulateOverlay from './rail/SimulateOverlay';
+import CanvasChip from './rail/CanvasChip';
+import CommandPaletteHost from './command-palette/CommandPaletteHost';
+import { createModeController } from './mode/modeController';
+import { getModeConfig } from './mode/modeConfig';
+
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
@@ -112,8 +119,18 @@ export class BpmnEditor extends CachedComponent {
       appendWizardSource: null,
       copilotLog: [],
       copilotActiveEntryIndex: null,
-      selectedElementId: null
+      selectedElementId: null,
+
+      // Left-rail revamp: mode (design/implement/simulate/test). Mirrored into
+      // component state so render() can apply a root className without having
+      // to subscribe to the controller.
+      mode: 'design'
     };
+
+    // Shared observable that the rail, command palette, and bpmn-js
+    // `modeManager` service all read from. Single source of truth.
+    this.modeController = createModeController({ initial: 'design' });
+    this._openCommandPalette = null;
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
@@ -210,6 +227,18 @@ export class BpmnEditor extends CachedComponent {
       });
     }
 
+    // Left-rail revamp: keep local state, the bpmn-js `modeManager` service,
+    // and the side-panel tab in sync whenever the mode changes.
+    const modeManager = modeler.get('modeManager', false);
+    if (modeManager) {
+      modeManager.set(this.modeController.get());
+    }
+    this._unsubscribeMode = this.modeController.subscribe((next) => {
+      this.setState({ mode: next });
+      if (modeManager) modeManager.set(next);
+      this._applyModeSideEffects(next);
+    });
+
     try {
       await this.loadTemplates();
     } catch (error) {
@@ -236,7 +265,42 @@ export class BpmnEditor extends CachedComponent {
       this._unsubscribeGuidedAppend();
       this._unsubscribeGuidedAppend = null;
     }
+
+    if (this._unsubscribeMode) {
+      this._unsubscribeMode();
+      this._unsubscribeMode = null;
+    }
   }
+
+  /**
+   * _applyModeSideEffects — when the mode changes, nudge the side panel onto
+   * the right tab and open/close as per the mode's config. Design keeps the
+   * panel optional; Implement/Test force it open.
+   */
+  _applyModeSideEffects = (nextMode) => {
+    const cfg = getModeConfig(nextMode);
+    if (!cfg.sidePanelTab) return;
+
+    const { layout } = this.props;
+    const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+
+    this.handleLayoutChange({
+      sidePanel: {
+        ...SIDE_PANEL_DEFAULT_LAYOUT,
+        ...sidePanelLayout,
+        open: cfg.sidePanelOpen || sidePanelLayout.open,
+        tab: cfg.sidePanelTab
+      }
+    });
+  };
+
+  _registerCommandPaletteOpener = (fn) => {
+    this._openCommandPalette = fn;
+  };
+
+  _openCommandPaletteFromRail = () => {
+    if (this._openCommandPalette) this._openCommandPalette();
+  };
 
   componentDidUpdate(prevProps) {
     this.checkImport(prevProps);
@@ -1365,8 +1429,11 @@ export class BpmnEditor extends CachedComponent {
       appendWizardSource,
       copilotLog,
       copilotActiveEntryIndex,
-      selectedElementId
+      selectedElementId,
+      mode
     } = this.state;
+
+    const modeCfg = getModeConfig(mode);
 
     // Derive a friendly process name for the chat header subtitle from the
     // open file. Strip the extension so it reads as a process title rather
@@ -1394,8 +1461,14 @@ export class BpmnEditor extends CachedComponent {
              id.includes('ai') || id.includes('llm') || id.includes('agent');
     });
 
+    const rootClassName = [
+      css.BpmnEditor,
+      'bpmn-editor--rail-active',
+      `bpmn-editor--mode-${mode}`
+    ].join(' ');
+
     return (
-      <div className={ css.BpmnEditor }>
+      <div className={ rootClassName }>
 
         <Loader hidden={ imported && !importing } />
 
@@ -1407,6 +1480,29 @@ export class BpmnEditor extends CachedComponent {
               onFocus={ this.handleChanged }
               onContextMenu={ this.handleContextMenu }
             ></div>
+
+            { imported && !importing && (
+              <ModeRail
+                modeler={ modeler }
+                modeController={ this.modeController }
+                onOpenPalette={ this._openCommandPaletteFromRail }
+              />
+            ) }
+
+            { imported && !importing && modeCfg.canvasChip && (
+              <CanvasChip
+                label={ modeCfg.canvasChip.label }
+                hint={ modeCfg.canvasChip.hint }
+                accent={ mode }
+              />
+            ) }
+
+            { imported && !importing && modeCfg.canvasOverlay && (
+              <SimulateOverlay
+                config={ modeCfg.canvasOverlay }
+                onExit={ (next) => this.modeController.set(next) }
+              />
+            ) }
 
             { imported && !importing && isCanvasEmpty && !aiPanelOpen && (
               <EmptyCanvasOverlay
@@ -1517,6 +1613,16 @@ export class BpmnEditor extends CachedComponent {
             onLayoutChanged={ this.handleLayoutChange }
           />
         </div>
+
+        { imported && !importing && (
+          <CommandPaletteHost
+            modeler={ modeler }
+            modeController={ this.modeController }
+            openAiPanel={ this.openAiPanel }
+            templates={ allTemplates }
+            registerOpen={ this._registerCommandPaletteOpener }
+          />
+        ) }
 
         { engineProfile && <EngineProfile
           type="bpmn"

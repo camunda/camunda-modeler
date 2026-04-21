@@ -1,0 +1,71 @@
+/* SimulateOverlay — centered card over the canvas when Simulate mode is on. */
+
+:local(.overlayRoot) {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  background: rgba(255, 248, 230, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+}
+
+:local(.overlayCard) {
+  background: #fff;
+  border: 1px solid #f0d890;
+  border-top: 3px solid #f59e0b;
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 440px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.12);
+}
+
+:local(.overlayIcon) {
+  color: #f59e0b;
+  margin-bottom: 8px;
+}
+
+:local(.overlayTitle) {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: #1f2937;
+}
+
+:local(.overlayBody) {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #4b5563;
+  margin: 0 0 18px;
+}
+
+:local(.overlayActions) {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+:local(.overlayActionPrimary),
+:local(.overlayActionSecondary) {
+  width: auto !important;
+  height: 34px !important;
+  padding: 0 14px !important;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+:local(.overlayActionPrimary) {
+  background: #2a7de1 !important;
+  color: #fff !important;
+
+  &:hover { background: #1e64c1 !important; }
+}
+
+:local(.overlayActionSecondary) {
+  background: #f2f4f7 !important;
+  color: #374151 !important;
+
+  &:hover { background: #e3e6ea !important; }
+}

@@ -88,3 +88,65 @@
   width: 64px;
   height: 16px;
 }
+
+/* -------------------------------------------------------------------------
+ * Left-rail revamp — global rules scoped to the editor's mode classes.
+ *
+ * The editor root carries:
+ *   - `bpmn-editor--rail-active` whenever the rail is mounted
+ *   - `bpmn-editor--mode-design` / `--implement` / `--simulate` / `--test`
+ *
+ * These classes are applied in addition to the CSS-Modules local root class,
+ * so we address them as plain globals (`:global(...)` not needed — they are
+ * unhashed strings from the React JSX).
+ * ------------------------------------------------------------------------- */
+
+:global(.bpmn-editor--rail-active) {
+  /* Hide the bpmn-js default palette when the new rail is active. */
+  .djs-palette {
+    display: none !important;
+  }
+}
+
+/* -----------------------
+ * Design mode — show only general / documentation / multiInstance / errors
+ * property groups. Everything else is hidden.
+ * ----------------------- */
+:global(.bpmn-editor--mode-design) {
+  [data-group-id]:not([data-group-id="group-general"]):not([data-group-id="group-documentation"]):not([data-group-id="group-multiInstance"]):not([data-group-id="group-errors"]) {
+    display: none;
+  }
+}
+
+/* -----------------------
+ * Implement mode — show everything (no filter).
+ * ----------------------- */
+:global(.bpmn-editor--mode-implement) {
+  [data-group-id] { display: block; }
+}
+
+/* -----------------------
+ * Simulate mode — dim and mute the bpmn-js canvas so the placeholder overlay
+ * feels like the focal surface. Properties-panel shows general only.
+ * ----------------------- */
+:global(.bpmn-editor--mode-simulate) {
+  .djs-container { filter: saturate(0.55) opacity(0.85); }
+
+  [data-group-id]:not([data-group-id="group-general"]) {
+    display: none;
+  }
+}
+
+/* -----------------------
+ * Test mode — subtle green border on the canvas; properties shrink to the
+ * "run a task" essentials.
+ * ----------------------- */
+:global(.bpmn-editor--mode-test) {
+  .djs-container {
+    box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.35);
+  }
+
+  [data-group-id]:not([data-group-id="group-general"]):not([data-group-id="group-inputOutput"]):not([data-group-id^="group-test"]) {
+    display: none;
+  }
+}
