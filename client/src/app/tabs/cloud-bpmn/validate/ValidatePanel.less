@@ -1,0 +1,46 @@
+:local(.panel) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px 0;
+}
+
+:local(.emptyState) {
+  padding: 14px 12px;
+  border: 1px dashed var(--color-grey-225-10-80, #d9dee4);
+  border-radius: 6px;
+  color: var(--color-grey-225-10-50, #8792a1);
+  font-size: 12px;
+  text-align: center;
+  margin: 0 0 8px 0;
+}
+
+:local(.banner) {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 9px 11px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0 0 8px 0;
+}
+
+:local(.banner--disabled) {
+  background: var(--color-grey-225-10-95, #f0f2f5);
+  border: 1px solid var(--color-grey-225-10-80, #d9dee4);
+  color: var(--color-grey-225-10-25, #3b4252);
+}
+
+:local(.banner--advisory) {
+  background: #fff7ed;
+  border: 1px solid #fde0a8;
+  color: #7c2d12;
+}
+
+:local(.bannerIcon) {
+  flex: 0 0 auto;
+  line-height: 1;
+  font-size: 14px;
+  margin-top: 1px;
+}
