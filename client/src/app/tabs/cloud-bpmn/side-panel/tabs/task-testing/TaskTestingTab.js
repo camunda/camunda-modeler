@@ -25,6 +25,8 @@ import * as css from './TaskTestingTab.less';
 import { utmTag } from '../../../../../../util/utmTag';
 import { EventsContext } from '../../../../../EventsContext';
 
+import ValidatePanel, { composeOnTestTask } from '../../../validate/ValidatePanel';
+
 
 export const TAB_ID = 'task-testing';
 
@@ -176,7 +178,7 @@ export default function TaskTestingTab(props) {
 
   const isConnectionConfigured = canConnectToCluster(connectionCheckResult);
 
-  const handleTestTask = useCallback(() => {
+  const connectionGuard = useCallback(async () => {
     if (!isConnectionConfigured) {
       handleConfigureConnection();
       return false;
@@ -185,10 +187,16 @@ export default function TaskTestingTab(props) {
     return true;
   }, [ isConnectionConfigured, handleConfigureConnection ]);
 
+  const handleTestTask = useMemo(
+    () => composeOnTestTask({ injector, connectionGuard }),
+    [ injector, connectionGuard ]
+  );
+
   const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult);
   const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult);
 
   return <div className={ css.TaskTestingTab }>
+    <ValidatePanel injector={ injector } />
     <TaskTesting
       injector={ injector }
       config={ taskTestingConfig }
