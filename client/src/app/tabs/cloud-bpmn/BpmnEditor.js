@@ -1599,7 +1599,7 @@ export class BpmnEditor extends CachedComponent {
             <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
               <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
             </SidePanel.Tab>
-            <SidePanel.Tab id="test" label="Test" icon={ TaskTestingIcon }>
+            <SidePanel.Tab id="test" label="Validate" icon={ TaskTestingIcon }>
               <TaskTestingTab
                 config={ config }
                 deployment={ deployment }

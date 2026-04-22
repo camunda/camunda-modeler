@@ -90,16 +90,17 @@ const modeConfig = {
     }
   },
 
+  // UI says "Validate"; internal mode key stays 'test' to avoid codebase churn.
   test: {
-    label: 'Test',
+    label: 'Validate',
     hotkey: '4',
     themeClass: 'bpmn-editor--mode-test',
     sidePanelTab: 'test',
     sidePanelOpen: true,
     visibleShapes: [],
     canvasChip: {
-      label: 'Test mode',
-      hint: 'Click a task to run it with inputs.'
+      label: 'Validate mode',
+      hint: 'Click an element to review it; runnable ones show Run.'
     },
     canvasOverlay: null
   }
