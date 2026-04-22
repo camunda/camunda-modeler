@@ -8,22 +8,22 @@
 @rail-fg: #3b4252;
 @rail-fg-muted: #8792a1;
 @rail-hover: #f2f4f7;
-@rail-active-bg: #eaf2fd;
-@rail-active-fg: #2a7de1;
+@rail-active-bg: #f2f4f7;   /* neutral gray — replaces any blue-tinted fallback */
+@rail-active-fg: #0f62fe;   /* Carbon blue-60 — focus rings only (interactive semantic) */
 @rail-divider: #edeff2;
 
 /* Per-mode accent colors. Chosen to read as distinct but not jarring. */
-@accent-design: #2a7de1;       /* blue — exploration / framing */
-@accent-implement: #8b5cf6;    /* violet — technical configuration */
-@accent-simulate: #f59e0b;     /* amber — runtime, playback */
-@accent-test: #10b981;         /* green — verification, pass/fail */
+@accent-design:    #525866;   /* graphite — neutral default, no collision with Carbon blue */
+@accent-implement: #7c4dff;   /* indigo-violet — deepened for better contrast */
+@accent-simulate:  #d97706;   /* amber-700 — deepened for AA at small text sizes */
+@accent-test:      #0f9d6c;   /* emerald-600 — deepened for AA */
 
 :local(.rail) {
   position: absolute;
   top: 12px;
   left: 12px;
-  bottom: 12px;
   width: @rail-width;
+  max-height: calc(100% - 24px);   /* ceiling; shapes section scrolls internally */
 
   display: flex;
   flex-direction: column;
@@ -96,15 +96,6 @@
   /* Shapes section collapses in simulate/test — leave a faint divider space
      so the rail keeps its rhythm. */
   height: 8px;
-}
-
-:local(.spacer) {
-  flex: 1 1 auto;
-  min-height: 4px;
-
-  /* Spacer should give first, so that shapes section gets the real estate;
-     but on tall viewports it absorbs the extra space. */
-  flex-shrink: 1;
 }
 
 :local(.divider) {

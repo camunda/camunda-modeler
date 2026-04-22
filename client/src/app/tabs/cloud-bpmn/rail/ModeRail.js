@@ -57,8 +57,6 @@ export default function ModeRail(props) {
 
         <RailSearchButton onOpen={ onOpenPalette } />
 
-        <div className={ css.spacer } />
-
         <RailModesSection
           mode={ mode }
           onSelect={ setMode }
