@@ -319,12 +319,12 @@ describe('template-updater - TemplateUpdater', function() {
         // then
         expect(hasNew).to.be.true;
         expect(warnings).to.have.length(1);
-        expect(warnings[0]).to.eql('Failed to fetch template foo version 1 from https://foo.com/ootb-connectors?id=foo&version=1 (HTTP 404)');
+        expect(warnings[0]).to.eql('Failed to fetch or parse template foo version 1 from https://foo.com/ootb-connectors?id=foo&version=1 (HTTP 404)');
 
         expect(doneSpy).to.have.been.calledWith(
           true,
           [
-            'Failed to fetch template foo version 1 from https://foo.com/ootb-connectors?id=foo&version=1 (HTTP 404)'
+            'Failed to fetch or parse template foo version 1 from https://foo.com/ootb-connectors?id=foo&version=1 (HTTP 404)'
           ]
         );
 
@@ -386,12 +386,12 @@ describe('template-updater - TemplateUpdater', function() {
         // then
         expect(hasNew).to.be.true;
         expect(warnings).to.have.length(1);
-        expect(warnings[0]).to.eql('Failed to parse template foo version 1 fetched from https://foo.com/ootb-connectors?id=foo&version=1: Expected property name or \'}\' in JSON at position 2 (line 1 column 3)');
+        expect(warnings[0]).to.eql('Failed to fetch or parse template foo version 1 from https://foo.com/ootb-connectors?id=foo&version=1 (Expected property name or \'}\' in JSON at position 2 (line 1 column 3))');
 
         expect(doneSpy).to.have.been.calledWith(
           true,
           [
-            'Failed to parse template foo version 1 fetched from https://foo.com/ootb-connectors?id=foo&version=1: Expected property name or \'}\' in JSON at position 2 (line 1 column 3)'
+            'Failed to fetch or parse template foo version 1 from https://foo.com/ootb-connectors?id=foo&version=1 (Expected property name or \'}\' in JSON at position 2 (line 1 column 3))'
           ]
         );
 
