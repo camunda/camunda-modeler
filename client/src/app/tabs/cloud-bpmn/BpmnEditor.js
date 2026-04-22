@@ -1004,6 +1004,23 @@ export class BpmnEditor extends CachedComponent {
     onImport(error, warnings);
   };
 
+  // Wraps the host app's onAction so we can intercept `taskTesting.finished`
+  // events and record a Validate-mode badge on the task. Defined as a class
+  // method (not inside render) so its identity is stable across renders —
+  // otherwise TaskTestingTab's memoized `taskTestingApi` is invalidated every
+  // render cycle.
+  handleTaskTestingAction = (type, payload) => {
+    if (
+      type === 'emit-event'
+      && payload
+      && payload.type === 'taskTesting.finished'
+      && this._validateBadges
+    ) {
+      this._validateBadges.record(payload.payload);
+    }
+    return this.props.onAction(type, payload);
+  };
+
   handleChanged = () => {
     const modeler = this.getModeler();
 
@@ -1448,18 +1465,6 @@ export class BpmnEditor extends CachedComponent {
 
     const modeCfg = getModeConfig(mode);
 
-    const validateAwareOnAction = (type, payload) => {
-      if (
-        type === 'emit-event'
-        && payload
-        && payload.type === 'taskTesting.finished'
-        && this._validateBadges
-      ) {
-        this._validateBadges.record(payload.payload);
-      }
-      return onAction(type, payload);
-    };
-
     // Derive a friendly process name for the chat header subtitle from the
     // open file. Strip the extension so it reads as a process title rather
     // than a filename.
@@ -1607,7 +1612,7 @@ export class BpmnEditor extends CachedComponent {
                 id={ id }
                 injector={ injector }
                 layout={ layout }
-                onAction={ validateAwareOnAction }
+                onAction={ this.handleTaskTestingAction }
                 startInstance={ startInstance }
                 zeebeApi={ zeebeApi }
               />

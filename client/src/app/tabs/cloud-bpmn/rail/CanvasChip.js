@@ -13,8 +13,14 @@ import React from 'react';
 import * as css from './CanvasChip.less';
 
 /**
- * CanvasChip — small floating label used by Test mode (e.g. "Test mode — click
- * a task to run it"). Appears top-center above the canvas, below any tab bar.
+ * CanvasChip — small floating label pinned above the canvas. Rendered per mode
+ * when `modeConfig[mode].canvasChip` is set; currently used by Validate mode.
+ *
+ * Props:
+ *   label   required  primary text ("Validate mode")
+ *   hint    optional  secondary muted text ("Click an element to review it…")
+ *   accent  optional  'test' | 'design' | 'implement' | 'simulate' — color dot
+ *   action  optional  { label, onClick } — inline link rendered to the right
  */
 export default function CanvasChip({ label, hint, accent = 'test', action = null }) {
   return (

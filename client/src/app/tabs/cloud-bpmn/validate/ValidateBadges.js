@@ -47,9 +47,17 @@ export default class ValidateBadges {
     const status = deriveStatus({ success, incident });
     this._clearBadge(element.id);
 
+    // Build as a DOM node (not an HTML string) so any future contributor who
+    // extends this to include element-derived text (name, error message) can't
+    // accidentally open an XSS hole. Current `status` and `glyph` are safe
+    // today, but the string-interpolation form invites regressions.
+    const node = document.createElement('div');
+    node.className = `validate-badge validate-badge--${status}`;
+    node.textContent = glyph(status);
+
     const overlayId = this._overlays.add(element.id, 'validate-badge', {
       position: { top: -10, right: 8 },
-      html: `<div class="validate-badge validate-badge--${status}">${glyph(status)}</div>`
+      html: node
     });
     this._badges.set(element.id, overlayId);
   }

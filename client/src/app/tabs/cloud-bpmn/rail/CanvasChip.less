@@ -1,5 +1,11 @@
-/* Inline floating chip above the canvas (Test mode). */
+/* Inline floating chip above the canvas (rendered per-mode from modeConfig). */
 
+/*
+ * Invariant: `.chip` is `pointer-events: none` so it never eats canvas clicks.
+ * Any interactive child (e.g. `.action` below) MUST re-enable pointer events
+ * on itself via `pointer-events: auto`. Adding a new interactive child without
+ * that line will silently make it unclickable.
+ */
 :local(.chip) {
   position: absolute;
   top: 16px;

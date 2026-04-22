@@ -23,7 +23,7 @@
  */
 
 const ADVISORY_USER_TASK = 'User tasks require manual claim & complete in Tasklist — this run will hang until someone picks it up.';
-const ADVISORY_AGENTIC = 'Agentic subprocess validation is best-effort in Camunda 8.9. Treat results as indicative.';
+const ADVISORY_AGENTIC = 'Agentic subprocess validation is best-effort. Treat results as indicative.';
 const ADVISORY_CALL_ACTIVITY = 'Called process must also be deployed for this to succeed.';
 
 const EXPLAIN_GATEWAY = 'Gateways route, they don\u2019t execute — validate the task on either side.';
