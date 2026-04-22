@@ -1519,6 +1519,14 @@ export class BpmnEditor extends CachedComponent {
                 label={ modeCfg.canvasChip.label }
                 hint={ modeCfg.canvasChip.hint }
                 accent={ mode }
+                action={
+                  mode === 'test' && this._validateBadges
+                    ? {
+                      label: 'Clear all results',
+                      onClick: () => this._validateBadges.clearAll()
+                    }
+                    : null
+                }
               />
             ) }
 

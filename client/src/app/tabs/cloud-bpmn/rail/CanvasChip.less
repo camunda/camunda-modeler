@@ -41,3 +41,21 @@
 :local(.chip--design)    { color: #2a7de1; }
 :local(.chip--implement) { color: #8b5cf6; }
 :local(.chip--simulate)  { color: #f59e0b; }
+
+:local(.action) {
+  margin-left: 10px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--color-link, #2a7de1);
+  font-size: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+:local(.action):hover,
+:local(.action):focus-visible {
+  color: var(--color-link-hover, #1d4ed8);
+  outline: none;
+}
