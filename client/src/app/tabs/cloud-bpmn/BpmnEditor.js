@@ -309,7 +309,9 @@ export class BpmnEditor extends CachedComponent {
           this._validateBadges.showRunnableIndicators(elementRegistry.getAll());
         } catch (e) { /* modeler not ready */ }
       } else {
-        this._validateBadges.hideRunnableIndicators();
+        try {
+          this._validateBadges.hideRunnableIndicators();
+        } catch (e) { /* modeler not ready */ }
       }
     }
 
