@@ -40,6 +40,7 @@ import CanvasChip from './rail/CanvasChip';
 import CommandPaletteHost from './command-palette/CommandPaletteHost';
 import { createModeController } from './mode/modeController';
 import { getModeConfig } from './mode/modeConfig';
+import ValidateBadges from './validate/ValidateBadges';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
@@ -130,6 +131,7 @@ export class BpmnEditor extends CachedComponent {
     // Shared observable that the rail, command palette, and bpmn-js
     // `modeManager` service all read from. Single source of truth.
     this.modeController = createModeController({ initial: 'design' });
+    this._validateBadges = null;
     this._openCommandPalette = null;
 
     this.ref = React.createRef();
@@ -204,6 +206,12 @@ export class BpmnEditor extends CachedComponent {
 
     modeler.attachTo(this.ref.current);
 
+    // Per-modeler overlay manager for Validate mode. Instantiated once we
+    // have a modeler; torn down in componentWillUnmount.
+    if (modeler && !this._validateBadges) {
+      this._validateBadges = new ValidateBadges(modeler);
+    }
+
     const minimap = modeler.get('minimap');
 
     minimap.toggle(layout.minimap?.open === true);
@@ -269,6 +277,11 @@ export class BpmnEditor extends CachedComponent {
     if (this._unsubscribeMode) {
       this._unsubscribeMode();
       this._unsubscribeMode = null;
+    }
+
+    if (this._validateBadges) {
+      this._validateBadges.destroy();
+      this._validateBadges = null;
     }
   }
 
@@ -1435,6 +1448,18 @@ export class BpmnEditor extends CachedComponent {
 
     const modeCfg = getModeConfig(mode);
 
+    const validateAwareOnAction = (type, payload) => {
+      if (
+        type === 'emit-event'
+        && payload
+        && payload.type === 'taskTesting.finished'
+        && this._validateBadges
+      ) {
+        this._validateBadges.record(payload.payload);
+      }
+      return onAction(type, payload);
+    };
+
     // Derive a friendly process name for the chat header subtitle from the
     // open file. Strip the extension so it reads as a process title rather
     // than a filename.
@@ -1574,7 +1599,7 @@ export class BpmnEditor extends CachedComponent {
                 id={ id }
                 injector={ injector }
                 layout={ layout }
-                onAction={ onAction }
+                onAction={ validateAwareOnAction }
                 startInstance={ startInstance }
                 zeebeApi={ zeebeApi }
               />
