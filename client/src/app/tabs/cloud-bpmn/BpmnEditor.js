@@ -41,6 +41,7 @@ import CommandPaletteHost from './command-palette/CommandPaletteHost';
 import { createModeController } from './mode/modeController';
 import { getModeConfig } from './mode/modeConfig';
 import ValidateBadges from './validate/ValidateBadges';
+import ValidateSession from './validate/ValidateSession';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
@@ -132,6 +133,7 @@ export class BpmnEditor extends CachedComponent {
     // `modeManager` service all read from. Single source of truth.
     this.modeController = createModeController({ initial: 'design' });
     this._validateBadges = null;
+    this._validateSession = null;
     this._openCommandPalette = null;
 
     this.ref = React.createRef();
@@ -211,6 +213,9 @@ export class BpmnEditor extends CachedComponent {
     if (modeler && !this._validateBadges) {
       this._validateBadges = new ValidateBadges(modeler);
     }
+    if (!this._validateSession) {
+      this._validateSession = new ValidateSession();
+    }
 
     const minimap = modeler.get('minimap');
 
@@ -282,6 +287,10 @@ export class BpmnEditor extends CachedComponent {
     if (this._validateBadges) {
       this._validateBadges.destroy();
       this._validateBadges = null;
+    }
+    if (this._validateSession) {
+      this._validateSession.destroy();
+      this._validateSession = null;
     }
   }
 
@@ -1010,13 +1019,17 @@ export class BpmnEditor extends CachedComponent {
   // otherwise TaskTestingTab's memoized `taskTestingApi` is invalidated every
   // render cycle.
   handleTaskTestingAction = (type, payload) => {
-    if (
-      type === 'emit-event'
-      && payload
-      && payload.type === 'taskTesting.finished'
-      && this._validateBadges
-    ) {
-      this._validateBadges.record(payload.payload);
+    if (type === 'emit-event' && payload && payload.type === 'taskTesting.finished') {
+      const p = payload.payload;
+      if (this._validateBadges) {
+        this._validateBadges.record(p);
+      }
+      if (this._validateSession && p && p.success && p.output && p.element) {
+        const label = p.element.businessObject && p.element.businessObject.name
+          ? p.element.businessObject.name
+          : (p.element.id || 'task');
+        this._validateSession.recordOutput(p.element.id, p.output, label);
+      }
     }
     return this.props.onAction(type, payload);
   };
@@ -1528,7 +1541,10 @@ export class BpmnEditor extends CachedComponent {
                   mode === 'test' && this._validateBadges
                     ? {
                       label: 'Clear all results',
-                      onClick: () => this._validateBadges.clearAll()
+                      onClick: () => {
+                        this._validateBadges.clearAll();
+                        if (this._validateSession) this._validateSession.clear();
+                      }
                     }
                     : null
                 }
@@ -1614,6 +1630,7 @@ export class BpmnEditor extends CachedComponent {
                 layout={ layout }
                 onAction={ this.handleTaskTestingAction }
                 startInstance={ startInstance }
+                validateSession={ this._validateSession }
                 zeebeApi={ zeebeApi }
               />
             </SidePanel.Tab>

@@ -60,6 +60,7 @@ export default function TaskTestingTab(props) {
     id,
     onAction,
     startInstance,
+    validateSession,
     zeebeApi
   } = props;
 
@@ -176,6 +177,13 @@ export default function TaskTestingTab(props) {
     onAction('open-connection-selector');
   }, [ onAction ]);
 
+  const handleUseInputs = useCallback((variables) => {
+    setTaskTestingConfig(prev => ({
+      ...prev,
+      input: { ...prev.input, ...variables }
+    }));
+  }, []);
+
   const isConnectionConfigured = canConnectToCluster(connectionCheckResult);
 
   const connectionGuard = useCallback(async () => {
@@ -196,7 +204,11 @@ export default function TaskTestingTab(props) {
   const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult);
 
   return <div className={ css.TaskTestingTab }>
-    <ValidatePanel injector={ injector } />
+    <ValidatePanel
+      injector={ injector }
+      validateSession={ validateSession }
+      onUseInputs={ handleUseInputs }
+    />
     <TaskTesting
       injector={ injector }
       config={ taskTestingConfig }
