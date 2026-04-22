@@ -199,6 +199,23 @@ export class DmnEditor extends CachedComponent {
       this.attachPropertiesPanel();
     }
 
+    // Attach overview after view changed from DRD to non-DRD once the
+    // OverviewContainer has been rendered and the ref is available
+    const prevActiveView = prevProps.cachedState?.activeView;
+    const currentActiveView = this.getCached().activeView;
+
+    if (prevActiveView?.type === 'drd' &&
+      currentActiveView && currentActiveView.type !== 'drd' &&
+      this.overviewRef.current) {
+      const modeler = this.getModeler();
+
+      modeler.attachOverviewTo(this.overviewRef.current);
+
+      if (isOverviewOpen(this.props)) {
+        modeler._emit('overviewOpen');
+      }
+    }
+
     // We can only notify interested parties about overview open once its parent component was
     // rendered
     if (isOverviewOpened(prevProps, this.props)) {
@@ -384,10 +401,12 @@ export class DmnEditor extends CachedComponent {
     if (activeView.type === 'drd') {
       modeler.detachOverview();
     } else if (previousActiveView && previousActiveView.type === 'drd') {
-      modeler.attachOverviewTo(this.overviewRef.current);
+      if (this.overviewRef.current) {
+        modeler.attachOverviewTo(this.overviewRef.current);
 
-      if (isOverviewOpen(this.props)) {
-        modeler._emit('overviewOpen');
+        if (isOverviewOpen(this.props)) {
+          modeler._emit('overviewOpen');
+        }
       }
     }
 

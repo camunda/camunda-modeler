@@ -1236,7 +1236,9 @@ describe('<DmnEditor>', function() {
       });
 
       // then
-      expect(overviewAttachSpy).to.have.been.called;
+      await waitFor(() => {
+        expect(overviewAttachSpy).to.have.been.called;
+      });
     });
 
 

@@ -305,6 +305,10 @@ export default class CamundaDmnModeler extends DmnModeler {
   };
 
   attachOverviewTo = (parentNode) => {
+    if (!parentNode) {
+      return;
+    }
+
     this.detachOverview();
 
     const activeViewer = this._overview.getActiveViewer();
