@@ -35,7 +35,9 @@ export const APPEND_GROUPS = [
       { elementId: 'service-task', label: 'Service task', wizard: 'service-task', hint: 'A system does something', icon: 'bpmn-icon-service-task' },
       { elementId: 'script-task', label: 'Script task', wizard: null, hint: 'Run a script inline', icon: 'bpmn-icon-script-task' },
       { elementId: 'send-task', label: 'Send task', wizard: null, hint: 'Send something outbound', icon: 'bpmn-icon-send-task' },
-      { elementId: 'receive-task', label: 'Receive task', wizard: null, hint: 'Wait for something inbound', icon: 'bpmn-icon-receive-task' }
+      { elementId: 'receive-task', label: 'Receive task', wizard: null, hint: 'Wait for something inbound', icon: 'bpmn-icon-receive-task' },
+      { elementId: 'business-rule-task', label: 'Business rule task', wizard: null, hint: 'Evaluate a DMN table or RPA bot', icon: 'bpmn-icon-business-rule-task' },
+      { elementId: 'manual-task', label: 'Manual task', wizard: null, hint: 'Work done offline — no system involved', icon: 'bpmn-icon-manual-task' }
     ]
   },
   {
@@ -115,6 +117,8 @@ export const ELEMENT_SHAPE_MAP = {
   'script-task':        { type: 'bpmn:ScriptTask' },
   'send-task':          { type: 'bpmn:SendTask' },
   'receive-task':       { type: 'bpmn:ReceiveTask' },
+  'business-rule-task': { type: 'bpmn:BusinessRuleTask' },
+  'manual-task':        { type: 'bpmn:ManualTask' },
   'exclusive-gateway':  { type: 'bpmn:ExclusiveGateway' },
   'parallel-gateway':   { type: 'bpmn:ParallelGateway' },
   'inclusive-gateway':  { type: 'bpmn:InclusiveGateway' },
