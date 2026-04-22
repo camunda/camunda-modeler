@@ -803,9 +803,13 @@ export class BpmnEditor extends CachedComponent {
   };
 
   /**
-   * Open the properties panel (on the Properties tab) when the user selects
-   * a single concrete element. Fresh files stay clean — the panel only
-   * appears once the user has something to configure.
+   * Open the side panel on the appropriate tab when the user selects a single
+   * concrete element. The target tab is mode-dependent:
+   *   - Validate mode → 'test' tab (so the user can run the selected element)
+   *   - All other modes → 'properties' tab (default)
+   *
+   * Fresh files stay clean — the panel only appears once the user has
+   * something to configure.
    */
   handleSelectionAutoOpenPanel = (event) => {
     const newSelection = (event && event.newSelection) || [];
@@ -820,8 +824,24 @@ export class BpmnEditor extends CachedComponent {
 
     const { layout } = this.props;
     const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+    const { mode } = this.state;
 
-    // Already open on the properties tab — don't fight the user's layout.
+    // In Validate mode, keep the user on the task-testing tab so they can run
+    // the selected element without manually switching tabs.
+    if (mode === 'test') {
+      if (sidePanelLayout.open && sidePanelLayout.tab === 'test') return;
+      this.handleLayoutChange({
+        sidePanel: {
+          ...SIDE_PANEL_DEFAULT_LAYOUT,
+          ...sidePanelLayout,
+          open: true,
+          tab: 'test'
+        }
+      });
+      return;
+    }
+
+    // All other modes: already open on properties — don't fight the user's layout.
     if (sidePanelLayout.open && sidePanelLayout.tab === 'properties') return;
 
     this.handleLayoutChange({
@@ -1070,6 +1090,20 @@ export class BpmnEditor extends CachedComponent {
     if (next) {
       selection.select(next);
       canvas.scrollToElement(next);
+
+      // Open the side panel on the task-testing tab so the user can run
+      // immediately — selecting silently was the original bug (nothing
+      // visible happened from the user's perspective).
+      const { layout } = this.props;
+      const sidePanelLayout = (layout && layout.sidePanel) || SIDE_PANEL_DEFAULT_LAYOUT;
+      this.handleLayoutChange({
+        sidePanel: {
+          ...SIDE_PANEL_DEFAULT_LAYOUT,
+          ...sidePanelLayout,
+          open: true,
+          tab: 'test'
+        }
+      });
     }
   };
 
