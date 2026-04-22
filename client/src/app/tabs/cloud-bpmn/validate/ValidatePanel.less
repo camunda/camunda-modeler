@@ -44,3 +44,62 @@
   font-size: 14px;
   margin-top: 1px;
 }
+
+:local(.suggestedInputs) {
+  border: 1px solid #d1fae5;
+  background: #f0fdf4;
+  border-radius: 6px;
+  padding: 9px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 8px 0;
+  font-size: 12px;
+}
+
+:local(.suggestedHeader) {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+:local(.suggestedTitle) {
+  font-weight: 600;
+  color: #065f46;
+}
+
+:local(.suggestedSource) {
+  color: #6b7280;
+  font-size: 11px;
+}
+
+:local(.suggestedKeys) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+:local(.suggestedKey) {
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+:local(.suggestedUseButton) {
+  align-self: flex-start;
+  background: #059669;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+:local(.suggestedUseButton):hover {
+  background: #047857;
+}
