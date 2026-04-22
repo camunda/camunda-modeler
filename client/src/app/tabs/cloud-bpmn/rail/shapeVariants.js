@@ -105,13 +105,28 @@ const INTERMEDIATE_EVENT_VARIANTS = [
     label: 'None (throw)',
     iconClass: 'bpmn-icon-intermediate-event-none',
     eventDefinitionType: null
-  }
+  },
+  { type: 'bpmn:IntermediateCatchEvent', label: 'Conditional catch', iconClass: 'bpmn-icon-intermediate-event-catch-condition', eventDefinitionType: 'bpmn:ConditionalEventDefinition' },
+  { type: 'bpmn:IntermediateCatchEvent', label: 'Link catch',        iconClass: 'bpmn-icon-intermediate-event-catch-link',      eventDefinitionType: 'bpmn:LinkEventDefinition' },
+  { type: 'bpmn:IntermediateThrowEvent', label: 'Escalation throw',  iconClass: 'bpmn-icon-intermediate-event-throw-escalation', eventDefinitionType: 'bpmn:EscalationEventDefinition' },
+  { type: 'bpmn:IntermediateThrowEvent', label: 'Compensation throw', iconClass: 'bpmn-icon-intermediate-event-throw-compensation', eventDefinitionType: 'bpmn:CompensationEventDefinition' },
+  { type: 'bpmn:IntermediateThrowEvent', label: 'Link throw',        iconClass: 'bpmn-icon-intermediate-event-throw-link',      eventDefinitionType: 'bpmn:LinkEventDefinition' },
 ];
 
 /**
  * Primary-shape → { label, variants[] } map. Undefined primaries render flat.
  */
 const VARIANT_MAP = {
+  'bpmn:StartEvent': {
+    label: 'Start event',
+    variants: [
+      { type: 'bpmn:StartEvent', label: 'None (plain)', iconClass: 'bpmn-icon-start-event-none', eventDefinitionType: null },
+      { type: 'bpmn:StartEvent', label: 'Message start', iconClass: 'bpmn-icon-start-event-message', eventDefinitionType: 'bpmn:MessageEventDefinition' },
+      { type: 'bpmn:StartEvent', label: 'Timer start', iconClass: 'bpmn-icon-start-event-timer', eventDefinitionType: 'bpmn:TimerEventDefinition' },
+      { type: 'bpmn:StartEvent', label: 'Signal start', iconClass: 'bpmn-icon-start-event-signal', eventDefinitionType: 'bpmn:SignalEventDefinition' },
+      { type: 'bpmn:StartEvent', label: 'Conditional start', iconClass: 'bpmn-icon-start-event-condition', eventDefinitionType: 'bpmn:ConditionalEventDefinition' },
+    ]
+  },
   'bpmn:Task': {
     label: 'Task',
     variants: variantsFromGroup('tasks')
@@ -123,7 +138,46 @@ const VARIANT_MAP = {
   'bpmn:IntermediateCatchEvent': {
     label: 'Intermediate event',
     variants: INTERMEDIATE_EVENT_VARIANTS
-  }
+  },
+  'bpmn:SubProcess': {
+    label: 'Sub-process',
+    variants: [
+      { type: 'bpmn:SubProcess', label: 'Expanded', iconClass: 'bpmn-icon-subprocess-expanded', attrs: { isExpanded: true } },
+      { type: 'bpmn:SubProcess', label: 'Collapsed', iconClass: 'bpmn-icon-subprocess-collapsed', attrs: { isExpanded: false } },
+      { type: 'bpmn:SubProcess', label: 'Event sub-process', iconClass: 'bpmn-icon-event-subprocess-expanded', attrs: { isExpanded: true, triggeredByEvent: true } },
+    ]
+  },
+  'bpmn:EndEvent': {
+    label: 'End event',
+    variants: [
+      { type: 'bpmn:EndEvent', label: 'None (plain)', iconClass: 'bpmn-icon-end-event-none', eventDefinitionType: null },
+      { type: 'bpmn:EndEvent', label: 'Message end', iconClass: 'bpmn-icon-end-event-message', eventDefinitionType: 'bpmn:MessageEventDefinition' },
+      { type: 'bpmn:EndEvent', label: 'Error end', iconClass: 'bpmn-icon-end-event-error', eventDefinitionType: 'bpmn:ErrorEventDefinition' },
+      { type: 'bpmn:EndEvent', label: 'Escalation end', iconClass: 'bpmn-icon-end-event-escalation', eventDefinitionType: 'bpmn:EscalationEventDefinition' },
+      { type: 'bpmn:EndEvent', label: 'Signal end', iconClass: 'bpmn-icon-end-event-signal', eventDefinitionType: 'bpmn:SignalEventDefinition' },
+      { type: 'bpmn:EndEvent', label: 'Compensation end', iconClass: 'bpmn-icon-end-event-compensation', eventDefinitionType: 'bpmn:CompensationEventDefinition' },
+      { type: 'bpmn:EndEvent', label: 'Terminate', iconClass: 'bpmn-icon-end-event-terminate', eventDefinitionType: 'bpmn:TerminateEventDefinition' },
+    ]
+  },
+  'bpmn:AdHocSubProcess': {
+    label: 'AI Agents',
+    variants: [
+      {
+        type: 'bpmn:AdHocSubProcess',
+        label: 'AI Agent sub-process',
+        iconClass: 'bpmn-icon-ad-hoc-marker',
+        attrs: { isExpanded: true, width: 350, height: 200 },
+        templateId: 'io.camunda.connectors.agenticai.aiagent.subprocess.v1'
+      },
+      {
+        type: 'bpmn:ServiceTask',
+        label: 'AI Agent task',
+        iconClass: 'bpmn-icon-service-task',
+        attrs: {},
+        templateId: 'io.camunda.connectors.agenticai.aiagent.v1'
+      },
+    ]
+  },
 };
 
 /**
@@ -142,12 +196,9 @@ export function getShapeVariants(primaryType) {
  * an event-definition type).
  */
 export function buildVariantAttrs(variant) {
-  const attrs = { type: variant.type };
-  if (variant.eventDefinitionType) {
-    attrs.eventDefinitionType = variant.eventDefinitionType;
-  }
-  if (variant.type === 'bpmn:SubProcess') {
-    attrs.isExpanded = true;
-  }
-  return attrs;
+  return {
+    type: variant.type,
+    ...(variant.eventDefinitionType ? { eventDefinitionType: variant.eventDefinitionType } : {}),
+    ...(variant.attrs || {})
+  };
 }
