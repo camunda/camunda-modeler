@@ -12,6 +12,8 @@ import { useEffect } from 'react';
 
 import { active as isInputActive } from '../../../../util/dom/isInput';
 
+import { MODES } from '../mode/modeConfig';
+
 /**
  * useCommandPaletteShortcut — window-level CMD+E / Ctrl+E listener that opens
  * the palette. We deliberately DON'T route through KeyboardBindings.js (that's
@@ -54,8 +56,7 @@ export default function useCommandPaletteShortcut({
         if (isInputActive()) return;
         if (onModeHotkey) {
           e.preventDefault();
-          const modes = [ 'design', 'implement', 'simulate', 'test' ];
-          onModeHotkey(modes[parseInt(e.key, 10) - 1]);
+          onModeHotkey(MODES[parseInt(e.key, 10) - 1]);
         }
       }
     };

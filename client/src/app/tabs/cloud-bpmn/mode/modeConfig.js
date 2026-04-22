@@ -24,7 +24,7 @@
  * element factories.
  */
 
-export const MODES = [ 'design', 'implement', 'simulate', 'test' ];
+export const MODES = [ 'design', 'simulate', 'implement', 'test' ];
 
 export const DESIGN_SHAPES = [
   'bpmn:StartEvent',
@@ -67,7 +67,7 @@ const modeConfig = {
 
   implement: {
     label: 'Implement',
-    hotkey: '2',
+    hotkey: '3',
     themeClass: 'bpmn-editor--mode-implement',
     sidePanelTab: 'properties',
     sidePanelOpen: true,
@@ -78,7 +78,7 @@ const modeConfig = {
 
   simulate: {
     label: 'Simulate',
-    hotkey: '3',
+    hotkey: '2',
     themeClass: 'bpmn-editor--mode-simulate',
     sidePanelTab: null,
     sidePanelOpen: false,
