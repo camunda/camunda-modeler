@@ -10,6 +10,8 @@
 
 import React, { useCallback, useState } from 'react';
 
+import { Bot } from '@carbon/icons-react';
+
 import { useRailTooltipAnchor } from './RailTooltip';
 import RailShapeFlyout from './RailShapeFlyout';
 import { getShapeVariants } from './shapeVariants';
@@ -82,9 +84,17 @@ const PRIMARY_DEFS = {
     label: 'Sub-process',
     iconClass: 'bpmn-icon-subprocess-expanded'
   },
+  'bpmn:ManualTask': {
+    label: 'Manual task',
+    iconClass: 'bpmn-icon-manual-task'
+  },
   'bpmn:TextAnnotation': {
     label: 'Text annotation',
     iconClass: 'bpmn-icon-text-annotation'
+  },
+  'bpmn:AdHocSubProcess': {
+    label: 'AI Agents',
+    Icon: Bot
   }
 };
 
@@ -192,7 +202,10 @@ function PrimaryShapeButton({ def, hasVariants, isActive, onFlat, onFlyout }) {
       onMouseDown={ handleMouseDown }
       onClick={ hasVariants ? handleClick : undefined }
     >
-      <span className={ def.iconClass } aria-hidden="true" />
+      { def.Icon
+        ? <def.Icon size={ 20 } aria-hidden="true" />
+        : <span className={ def.iconClass } aria-hidden="true" />
+      }
       { hasVariants && <Caret /> }
     </button>
   );
