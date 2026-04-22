@@ -198,15 +198,51 @@ describe('DmnModeler', function() {
   });
 
 
-  it('#getStackIdx', async function() {
+  describe('#getStackIdx', function() {
 
-    // when
-    const modeler = await createModeler({
-      container: modelerContainer
+    it('should return -1 initially', async function() {
+
+      // when
+      const modeler = await createModeler({
+        container: modelerContainer
+      });
+
+      // then
+      expect(modeler.getStackIdx()).to.equal(-1);
     });
 
-    // then
-    expect(modeler.getStackIdx()).to.equal(-1);
+
+    it('should return -1 when no active viewer', async function() {
+
+      // given
+      const modeler = await createModeler({
+        container: modelerContainer
+      });
+
+      sinon.stub(modeler, 'getActiveViewer').returns(null);
+
+      // then
+      expect(modeler.getStackIdx()).to.equal(-1);
+    });
+
+
+    it('should return -1 when there is no command stack', async function() {
+
+      // given
+      const modeler = await createModeler({
+        container: modelerContainer
+      });
+
+      const viewer = modeler.getActiveViewer();
+
+      sinon.stub(viewer, 'get')
+        .withArgs('commandStack', false)
+        .returns(null);
+
+      // then
+      expect(modeler.getStackIdx()).to.equal(-1);
+    });
+
   });
 
 
