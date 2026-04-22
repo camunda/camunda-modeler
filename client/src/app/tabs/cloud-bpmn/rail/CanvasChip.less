@@ -66,3 +66,25 @@
   color: var(--color-link-hover, #1d4ed8);
   outline: none;
 }
+
+:local(.counts) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+:local(.count) {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+:local(.count--pass)     { color: #047857; background: #d1fae5; }
+:local(.count--incident) { color: #b45309; background: #fef3c7; }
+:local(.count--fail)     { color: #b91c1c; background: #fee2e2; }
+
+:local(.countNotRun) {
+  font-size: 11px;
+  color: #9ca3af;
+}

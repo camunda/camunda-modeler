@@ -42,6 +42,7 @@ import { createModeController } from './mode/modeController';
 import { getModeConfig } from './mode/modeConfig';
 import ValidateBadges from './validate/ValidateBadges';
 import ValidateSession from './validate/ValidateSession';
+import { isRunnable } from './validate/runnability';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
@@ -300,6 +301,18 @@ export class BpmnEditor extends CachedComponent {
    * panel optional; Implement/Test force it open.
    */
   _applyModeSideEffects = (nextMode) => {
+    // Show/hide runnable indicators when entering/leaving Validate mode.
+    if (this._validateBadges) {
+      if (nextMode === 'test') {
+        try {
+          const elementRegistry = this.getModeler().get('elementRegistry');
+          this._validateBadges.showRunnableIndicators(elementRegistry.getAll());
+        } catch (e) { /* modeler not ready */ }
+      } else {
+        this._validateBadges.hideRunnableIndicators();
+      }
+    }
+
     const cfg = getModeConfig(nextMode);
     if (!cfg.sidePanelTab) return;
 
@@ -1034,6 +1047,57 @@ export class BpmnEditor extends CachedComponent {
     return this.props.onAction(type, payload);
   };
 
+  handleRunNext = () => {
+    if (!this._validateBadges) return;
+    const modeler = this.getModeler();
+    const elementRegistry = modeler.get('elementRegistry');
+    const selection = modeler.get('selection');
+    const canvas = modeler.get('canvas');
+    const results = this._validateBadges.getResults();
+
+    const elements = elementRegistry.getAll();
+    const next = elements.find(el => {
+      try {
+        const { enabled } = isRunnable(el);
+        return enabled && !results.has(el.id);
+      } catch (e) {
+        return false;
+      }
+    });
+
+    if (next) {
+      selection.select(next);
+      canvas.scrollToElement(next);
+    }
+  };
+
+  _getValidateCounts() {
+    if (!this._validateBadges) return null;
+    let pass = 0, fail = 0, incident = 0, notRun = 0;
+    try {
+      const modeler = this.getModeler();
+      const elementRegistry = modeler.get('elementRegistry');
+      const results = this._validateBadges.getResults();
+      for (const el of elementRegistry.getAll()) {
+        let enabled = false;
+        try {
+          enabled = isRunnable(el).enabled;
+        } catch (e) {
+          continue;
+        }
+        if (!enabled) continue;
+        const status = results.get(el.id);
+        if (!status) notRun++;
+        else if (status === 'pass') pass++;
+        else if (status === 'fail') fail++;
+        else if (status === 'incident') incident++;
+      }
+    } catch (e) {
+      return null;
+    }
+    return { pass, fail, incident, notRun };
+  }
+
   handleChanged = () => {
     const modeler = this.getModeler();
 
@@ -1537,16 +1601,22 @@ export class BpmnEditor extends CachedComponent {
                 label={ modeCfg.canvasChip.label }
                 hint={ modeCfg.canvasChip.hint }
                 accent={ mode }
-                action={
-                  mode === 'test' && this._validateBadges
-                    ? {
-                      label: 'Clear all results',
+                counts={ mode === 'test' ? this._getValidateCounts() : null }
+                actions={ mode === 'test' && this._validateBadges
+                  ? [
+                    {
+                      label: 'Run next',
+                      onClick: this.handleRunNext
+                    },
+                    {
+                      label: 'Clear',
                       onClick: () => {
                         this._validateBadges.clearAll();
                         if (this._validateSession) this._validateSession.clear();
                       }
                     }
-                    : null
+                  ]
+                  : []
                 }
               />
             ) }
