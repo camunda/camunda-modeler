@@ -16,6 +16,35 @@ import { buildVariantAttrs } from './shapeVariants';
 import * as css from './RailShapeFlyout.less';
 
 /**
+ * Start a create interaction for a variant, applying a connector template when
+ * the variant has a `templateId` and the template is available in the modeler.
+ * Falls back to bare shape placement when the template is not found.
+ */
+function startCreate(event, variant, modeler) {
+  const create = modeler.get('create');
+  const elementFactory = modeler.get('elementFactory');
+
+  if (variant.templateId) {
+    const elementTemplates = modeler.get('elementTemplates', false);
+    if (elementTemplates) {
+      const templates = elementTemplates.getLatest ? elementTemplates.getLatest() : [];
+      const template = templates.find(t => t.id === variant.templateId);
+      if (template) {
+        const shape = elementTemplates.createElement(template);
+        create.start(event, shape);
+        return;
+      }
+    }
+    // Fall through to bare placement if template not found (graceful degradation)
+  }
+
+  // Normal path
+  const attrs = buildVariantAttrs(variant);
+  const shape = elementFactory.createShape(attrs);
+  create.start(event, shape);
+}
+
+/**
  * RailShapeFlyout — click-triggered popover listing shape variants.
  *
  * Design notes:
@@ -73,11 +102,7 @@ export default function RailShapeFlyout({ anchorRect, variants, label, modeler, 
 
   const handleStart = (event, variant) => {
     if (!modeler) return;
-    const create = modeler.get('create');
-    const elementFactory = modeler.get('elementFactory');
-
-    const shape = elementFactory.createShape(buildVariantAttrs(variant));
-    create.start(event, shape);
+    startCreate(event, variant, modeler);
 
     // Close after drag starts so the flyout doesn't linger over the canvas.
     onClose && onClose();

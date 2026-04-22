@@ -38,19 +38,21 @@ export const DESIGN_SHAPES = [
 
 // Implement mode surfaces *primary* shapes only. Variant-rich primaries
 // (Task, Gateway, Intermediate event) open a flyout — see `shapeVariants.js`
-// for the per-primary variant taxonomy. Keeping the rail at 7 primaries
+// for the per-primary variant taxonomy. Keeping the rail at 9 primaries
 // trades a wall of glyphs for scannable categories (Figma-toolbar pattern).
 //
 // Primaries not listed here have no rail presence in Implement mode — the
 // command palette and Guided Append cover the long tail.
 export const IMPLEMENT_SHAPES = [
-  'bpmn:StartEvent',
-  'bpmn:Task', // flyout: tasks group
-  'bpmn:SubProcess',
-  'bpmn:ExclusiveGateway', // flyout: gateways group
-  'bpmn:IntermediateCatchEvent', // flyout: intermediate-event variants
-  'bpmn:EndEvent',
-  'bpmn:TextAnnotation'
+  'bpmn:StartEvent',           // flyout: 5 variants
+  'bpmn:Task',                 // flyout: 8 variants
+  'bpmn:CallActivity',         // flat
+  'bpmn:SubProcess',           // flyout: 3 variants
+  'bpmn:AdHocSubProcess',      // flyout: 2 variants (AI Agents)
+  'bpmn:ExclusiveGateway',     // flyout: 4 variants
+  'bpmn:IntermediateCatchEvent', // flyout: 11 variants
+  'bpmn:EndEvent',             // flyout: 7 variants
+  'bpmn:TextAnnotation'        // flat
 ];
 
 const modeConfig = {
