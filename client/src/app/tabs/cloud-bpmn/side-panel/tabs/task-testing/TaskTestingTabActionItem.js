@@ -46,7 +46,7 @@ export default function TaskTestingTabActionItem(props) {
       kind="ghost"
       size="sm"
       isSelected={ isActive }
-      label="Test"
+      label="Validate"
       onClick={ onClick }
     >
       <TaskTestingIcon />
