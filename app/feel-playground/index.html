@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Try out and learn DMN FEEL - FEEL Playground</title>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive app to try out and learn the DMN FEEL language. Evaluate complex DMN FEEL expressions, unary tests, and built-in functions.">
+  <meta name="theme-color" content="#4682b4">
+
+  <link rel="icon" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <meta name="og:title" content="DMN FEEL Playground" />
+  <meta name="og:image" content="https://nikku.github.io/feel-playground/preview.png" />
+  <meta name="og:url" content="https://nikku.github.io/feel-playground/" />
+
+  <link rel="manifest" href="manifest.json" />
+
+  <link rel="stylesheet" href="global.css" />
+  <link rel="stylesheet" href="bundle.css" />
+</head>
+<body class="vcontainer">
+
+  <script>
+    // Unregister any cached service workers (not compatible with file:// protocol)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        registrations.forEach(function(reg) { reg.unregister(); });
+      });
+    }
+  </script>
+
+  <script src="bundle.js"></script>
+
+</body>
+</html>

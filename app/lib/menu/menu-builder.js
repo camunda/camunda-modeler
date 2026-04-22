@@ -33,6 +33,7 @@ const {
 } = require('min-dash');
 
 const browserOpen = require('../util/browser-open');
+const { openFeelPlayground } = require('../util/open-feel-playground');
 
 const log = require('../log')('app:menu');
 
@@ -672,6 +673,11 @@ class MenuBuilder {
       {
         label: 'FEEL Reference',
         click: () => browserOpen('https://docs.camunda.io/docs/components/modeler/feel/what-is-feel/?utm_source=modeler&utm_medium=referral')
+      },
+      {
+        label: 'FEEL Playground',
+        accelerator: 'CommandOrControl+Shift+F',
+        click: () => openFeelPlayground()
       },
       getSeparatorTemplate(),
       {
