@@ -38,11 +38,11 @@ describe('<VariablesPanelEventHandler>', function() {
   });
 
 
-  it('should subscribe to variableOutline:layoutChanged', function() {
+  it('should subscribe to layout.changed', function() {
 
     // then
     expect(subscribe.calledOnce).to.be.true;
-    expect(subscribe.getCall(0).args[0]).to.eql('variableOutline:layoutChanged');
+    expect(subscribe.getCall(0).args[0]).to.eql('layout.changed');
   });
 
 
@@ -52,7 +52,10 @@ describe('<VariablesPanelEventHandler>', function() {
     const callback = subscribe.getCall(0).args[1];
 
     // when
-    callback({ open: true });
+    callback({
+      prevLayout: { variablesSidePanel: { open: false } },
+      layout: { variablesSidePanel: { open: true } }
+    });
 
     // then
     expect(track).to.have.been.calledWith(VARIABLE_OUTLINE_OPENED_EVENT_NAME);
@@ -65,7 +68,58 @@ describe('<VariablesPanelEventHandler>', function() {
     const callback = subscribe.getCall(0).args[1];
 
     // when
-    callback({ open: false });
+    callback({
+      prevLayout: { variablesSidePanel: { open: true } },
+      layout: { variablesSidePanel: { open: false } }
+    });
+
+    // then
+    expect(track).to.have.been.calledWith(VARIABLE_OUTLINE_CLOSED_EVENT_NAME);
+  });
+
+
+  it('should NOT track when open state is unchanged', function() {
+
+    // given
+    const callback = subscribe.getCall(0).args[1];
+
+    // when
+    callback({
+      prevLayout: { variablesSidePanel: { open: true, width: 280 } },
+      layout: { variablesSidePanel: { open: true, width: 350 } }
+    });
+
+    // then
+    expect(track).not.to.have.been.called;
+  });
+
+
+  it('should NOT track when layout has no variablesSidePanel', function() {
+
+    // given
+    const callback = subscribe.getCall(0).args[1];
+
+    // when
+    callback({
+      prevLayout: { panel: { open: true } },
+      layout: { panel: { open: false } }
+    });
+
+    // then
+    expect(track).not.to.have.been.called;
+  });
+
+
+  it('should use default open state when variablesSidePanel is not set', function() {
+
+    // given
+    const callback = subscribe.getCall(0).args[1];
+
+    // when
+    callback({
+      prevLayout: {},
+      layout: { variablesSidePanel: { open: false } }
+    });
 
     // then
     expect(track).to.have.been.calledWith(VARIABLE_OUTLINE_CLOSED_EVENT_NAME);
