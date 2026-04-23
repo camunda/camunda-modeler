@@ -17,9 +17,7 @@ import {
   debounce,
   forEach,
   groupBy,
-  isString,
   map,
-  merge,
   reduce
 } from 'min-dash';
 
@@ -27,7 +25,7 @@ import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
 
-import VersionMismatchChecker from './linting/VersionMismatchChecker';
+import { NotificationService, LayoutService, LintingService } from './services';
 
 import executeOnce from './util/executeOnce';
 
@@ -70,7 +68,7 @@ import { PluginsRoot } from './plugins';
 
 import * as css from './App.less';
 
-import Notifications, { NOTIFICATION_TYPES } from './notifications';
+import Notifications from './notifications';
 import { RecentTabs } from './RecentTabs';
 import { EventsContext } from './EventsContext';
 
@@ -87,8 +85,6 @@ const FILTER_ALL_EXTENSIONS = {
   name: 'All Files',
   extensions: [ '*' ]
 };
-
-const EMPTY_LINTING_STATE = [];
 
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
@@ -161,11 +157,39 @@ export class App extends PureComponent {
 
     this.tabRef = React.createRef();
 
+    // -- Initialize services --
+
+    const serviceDeps = {
+      setState: (...args) => this.setState(...args),
+      getState: () => this.state
+    };
+
+    this._layoutService = new LayoutService(serviceDeps);
+
+    this._notificationService = new NotificationService({
+      ...serviceDeps,
+      openPanel: (...args) => this.openPanel(...args)
+    });
+
+    this._lintingService = new LintingService({
+      ...serviceDeps,
+      tabsProvider: props.tabsProvider,
+      getPlugins: (...args) => this.getPlugins(...args),
+      getConfig: (...args) => this.getConfig(...args)
+    });
+
+    // Wire delegate functions so the service routes lintTab/setLintingState
+    // calls through App (important for test spying).
+    this._lintingService.setDelegates({
+      lintTab: (...args) => this.lintTab(...args),
+      setLintingState: (...args) => this.setLintingState(...args)
+    });
+
     this.on('connectionManager.connectionStatusChanged',
-      this._handleConnectionStatusChanged);
-    this.on('connectionManager.connectionCheckStarted', this._handleConnectionCheckStarted);
+      this._lintingService.handleConnectionStatusChanged);
+    this.on('connectionManager.connectionCheckStarted', this._lintingService.handleConnectionCheckStarted);
     this.on('tab.engineProfileChanged',
-      this._handleEngineProfileChanged);
+      this._lintingService.handleEngineProfileChanged);
 
     const userPlugins = this.getPlugins('client');
 
@@ -958,11 +982,7 @@ export class App extends PureComponent {
   };
 
   handleLayoutChanged = (newLayout) => {
-    this.setState(({ layout }) => {
-      const latestLayout = merge({}, layout, newLayout);
-
-      return { layout: latestLayout };
-    });
+    this._layoutService.handleLayoutChanged(newLayout);
   };
 
 
@@ -1052,110 +1072,28 @@ export class App extends PureComponent {
     });
   };
 
-  lintTab = async (tab, contents) => {
-    const { tabsProvider } = this.props;
-
-    const { type } = tab;
-
-    const tabProvider = tabsProvider.getProvider(type);
-
-    const plugins = this.getPlugins(`lintRules.${ type }`);
-
-    const linter = await tabProvider.getLinter(plugins, tab, this.getConfig);
-
-    let results = [];
-
-    if (linter) {
-      if (!contents) {
-        contents = tab.file.contents;
-      }
-
-      results = await linter.lint(contents);
-    }
-
-    const getWarnings = VersionMismatchChecker({
-      connectionCheckResult: this.state.connectionCheckResult,
-      engineProfiles: this.state.engineProfiles
-    });
-
-    const warnings = getWarnings(tab);
-
-    if (warnings.length) {
-      results = [ ...results, ...warnings ];
-    }
-
-    this.setLintingState(tab, results);
+  lintTab = (tab, contents) => {
+    return this._lintingService.lintTab(tab, contents);
   };
 
   _handleConnectionCheckStarted = () => {
-    this.setState({ connectionCheckResult: null });
+    this._lintingService.handleConnectionCheckStarted();
   };
 
-  _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
-    const prev = this.state.connectionCheckResult;
-
-    // Only re-lint when the data relevant to version mismatch
-    // warning actually changes, not on every periodic poll
-    const prevVersion = prev && prev.success && prev.response
-      ? prev.response.gatewayVersion : null;
-    const nextVersion = connectionCheckResult.success && connectionCheckResult.response
-      ? connectionCheckResult.response.gatewayVersion : null;
-    const relevantChange = (prev && prev.success) !== connectionCheckResult.success
-      || prevVersion !== nextVersion;
-
-    this.setState({ connectionCheckResult }, () => {
-      if (!relevantChange) {
-        return;
-      }
-
-      const { activeTab } = this.state;
-
-      if (activeTab && activeTab !== EMPTY_TAB) {
-        this.lintTab(activeTab);
-      }
-    });
+  _handleConnectionStatusChanged = (params) => {
+    this._lintingService.handleConnectionStatusChanged(params);
   };
 
-  _handleEngineProfileChanged = ({ tab, executionPlatform, executionPlatformVersion }) => {
-    if (!tab || !tab.id) {
-      return;
-    }
-
-    this.setState(state => ({
-      engineProfiles: {
-        ...state.engineProfiles,
-        [ tab.id ]: { executionPlatform, executionPlatformVersion }
-      }
-    }), () => {
-
-      // Re-lint to pick up version mismatch warning
-      this.lintTab(tab);
-    });
+  _handleEngineProfileChanged = (params) => {
+    this._lintingService.handleEngineProfileChanged(params);
   };
 
   getLintingState = (tab) => {
-    return this.state.lintingState[ tab.id ] || EMPTY_LINTING_STATE;
+    return this._lintingService.getLintingState(tab);
   };
 
   setLintingState = (tab, results) => {
-    const { tabs } = this.state;
-
-    const lintingState = reduce(tabs, (lintingState, t) => {
-      if (t === tab) {
-        return lintingState;
-      }
-
-      return {
-        ...lintingState,
-        [ t.id ]: this.getLintingState(t)
-      };
-    }, {
-      [ tab.id ]: results
-    });
-
-    this.setState({
-      lintingState
-    });
+    this._lintingService.applyLintingState(tab, results);
   };
 
   resizeTab = () => {
@@ -1434,35 +1372,7 @@ export class App extends PureComponent {
    * @param {boolean} silent - Log without opening the panel.
    */
   logEntry(message, category, action, silent) {
-
-    if (!silent) {
-      this.openPanel('log');
-    }
-
-    const logEntry = {
-      category,
-      message
-    };
-
-    if (action) {
-      assign(logEntry, {
-        action
-      });
-    }
-
-    this.setState((state) => {
-
-      const {
-        logEntries
-      } = state;
-
-      return {
-        logEntries: [
-          ...logEntries,
-          logEntry
-        ]
-      };
-    });
+    this._notificationService.logEntry(message, category, action, silent);
   }
 
   /**
@@ -1476,75 +1386,24 @@ export class App extends PureComponent {
    *
    * @returns {{ update: (options: object) => void, close: () => void }}
    */
-  displayNotification({ type = 'info', title, content, duration = 4000 }) {
-    const { notifications } = this.state;
-
-    if (!NOTIFICATION_TYPES.includes(type)) {
-      throw new Error('Unknown notification type');
-    }
-
-    if (!isString(title)) {
-      throw new Error('Title should be string');
-    }
-
-    const id = this.currentNotificationId++;
-
-    const close = () => {
-      this._closeNotification(id);
-    };
-
-    const update = newProps => {
-      this._updateNotification(id, newProps);
-    };
-
-    const notification = {
-      content,
-      duration,
-      id,
-      close,
-      title,
-      type
-    };
-
-    this.setState({
-      notifications: [
-        ...notifications,
-        notification
-      ]
-    });
-
-    return {
-      close,
-      update
-    };
+  displayNotification(options) {
+    return this._notificationService.displayNotification(options);
   }
 
   closeNotifications() {
-    this.setState({
-      notifications: []
-    });
+    this._notificationService.closeNotifications();
   }
 
   _updateNotification(id, options) {
-    const notifications = this.state.notifications.map(notification => {
-      const { id: currentId } = notification;
-
-      return currentId !== id ? notification : { ...notification, ...options };
-    });
-
-    this.setState({ notifications });
+    this._notificationService._updateNotification(id, options);
   }
 
   _closeNotification(id) {
-    const notifications = this.state.notifications.filter(({ id: currentId }) => currentId !== id);
-
-    this.setState({ notifications });
+    this._notificationService._closeNotification(id);
   }
 
   setLayout(layout) {
-    this.setState({
-      layout
-    });
+    this._layoutService.setLayout(layout);
   }
 
   /**
@@ -1852,63 +1711,23 @@ export class App extends PureComponent {
   };
 
   clearLog = () => {
-    this.setState({
-      logEntries: []
-    });
+    this._notificationService.clearLog();
   };
 
   openPanel = (tab = 'log') => {
-    const { layout = {} } = this.state;
-
-    const { panel = {} } = layout;
-
-    this.handleLayoutChanged({
-      panel: {
-        ...panel,
-        open: true,
-        tab
-      }
-    });
+    this._layoutService.openPanel(tab);
   };
 
   closePanel() {
-    const { layout = {} } = this.state;
-
-    const { panel = {} } = layout;
-
-    this.handleLayoutChanged({
-      panel: {
-        ...panel,
-        open: false
-      }
-    });
+    this._layoutService.closePanel();
   }
 
   openSidePanel = (tab = 'properties') => {
-    const { layout = {} } = this.state;
-
-    const { sidePanel = {} } = layout;
-
-    this.handleLayoutChanged({
-      sidePanel: {
-        ...sidePanel,
-        open: true,
-        tab
-      }
-    });
+    this._layoutService.openSidePanel(tab);
   };
 
   closeSidePanel() {
-    const { layout = {} } = this.state;
-
-    const { sidePanel = {} } = layout;
-
-    this.handleLayoutChanged({
-      sidePanel: {
-        ...sidePanel,
-        open: false
-      }
-    });
+    this._layoutService.closeSidePanel();
   }
 
   closeTabs = (matcher) => {
