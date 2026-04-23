@@ -255,7 +255,7 @@ describe('DmnModeler', function() {
         container: modelerContainer
       });
 
-      modeler.attachOverviewTo(overviewContainer);
+      modeler.updateOverview(overviewContainer, true);
     });
 
 
@@ -428,6 +428,97 @@ describe('DmnModeler', function() {
         // then
         expect(openDrgElement.canOpenDrgElement(decision)).to.be.false;
       });
+    });
+
+
+    describe('#updateOverview', function() {
+
+      it('should detach overview when parentNode is null', async function() {
+
+        // assume
+        expect(modeler._overview._container.parentNode).to.exist;
+
+        // when
+        modeler.updateOverview(null, true);
+
+        // then
+        expect(modeler._overview._container.parentNode).to.not.exist;
+      });
+
+
+      it('should not re-attach if already attached to same parent', async function() {
+
+        // given
+        const spy = sinon.spy(modeler._overview, 'attachTo');
+
+        // when
+        modeler.updateOverview(overviewContainer, true);
+
+        // then
+        expect(spy).to.not.have.been.called;
+      });
+
+
+      it('should emit overviewOpen when open is true', async function() {
+
+        // given
+        modeler.updateOverview(null, false);
+
+        const spy = sinon.spy();
+        modeler.on('overviewOpen', spy);
+
+        // when
+        modeler.updateOverview(overviewContainer, true);
+
+        // then
+        expect(spy).to.have.been.calledOnce;
+      });
+
+
+      it('should not emit overviewOpen when open is false', async function() {
+
+        // given
+        modeler.updateOverview(null, false);
+
+        const spy = sinon.spy();
+        modeler.on('overviewOpen', spy);
+
+        // when
+        modeler.updateOverview(overviewContainer, false);
+
+        // then
+        expect(spy).to.not.have.been.called;
+      });
+
+
+      it('should not emit overviewOpen when already attached', async function() {
+
+        // given
+        const spy = sinon.spy();
+        modeler.on('overviewOpen', spy);
+
+        // when
+        modeler.updateOverview(overviewContainer, true);
+
+        // then
+        expect(spy).to.not.have.been.called;
+      });
+
+
+      it('should not detach if already detached', async function() {
+
+        // given
+        modeler.updateOverview(null, false);
+
+        const spy = sinon.spy(modeler._overview, 'detach');
+
+        // when
+        modeler.updateOverview(null, false);
+
+        // then
+        expect(spy).to.not.have.been.called;
+      });
+
     });
   });
 

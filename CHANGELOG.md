@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: correct bug opening DMN decision table ([#5880](https://github.com/camunda/camunda-modeler/issues/5880), [#5898](https://github.com/camunda/camunda-modeler/pull/5898))
+
 ## 5.46.1
 
 ### General
