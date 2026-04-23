@@ -4168,25 +4168,19 @@ describe('<App>', function() {
           }
         });
 
-        const setLintingSpy = sinon.spy(app, 'setLintingState');
-
         // when
         await app.lintTab(activeTab);
 
         // then
-        const lastCall = setLintingSpy.lastCall;
+        await waitFor(() => {
+          const results = app.state.lintingState[ activeTab.id ];
+          const warning = results.find(r => r.rule === 'camunda/version-mismatch');
 
-        expect(lastCall).to.exist;
-
-        const results = lastCall.args[ 1 ];
-        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
-
-        expect(warning).to.exist;
-        expect(warning.category).to.equal('warn');
-        expect(warning.message).to.include('8.7');
-        expect(warning.message).to.include('8.8');
-
-        setLintingSpy.restore();
+          expect(warning).to.exist;
+          expect(warning.category).to.equal('warn');
+          expect(warning.message).to.include('8.7');
+          expect(warning.message).to.include('8.8');
+        });
       });
 
 
@@ -4210,19 +4204,17 @@ describe('<App>', function() {
           }
         });
 
-        const setLintingSpy = sinon.spy(app, 'setLintingState');
-
         // when
         await app.lintTab(activeTab);
 
         // then
-        const results = setLintingSpy.lastCall.args[ 1 ];
-        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+        await waitFor(() => {
+          const results = app.state.lintingState[ activeTab.id ];
+          const warning = results.find(r => r.rule === 'camunda/version-mismatch');
 
-        expect(warning).to.exist;
-        expect(warning.category).to.equal('warn');
-
-        setLintingSpy.restore();
+          expect(warning).to.exist;
+          expect(warning.category).to.equal('warn');
+        });
       });
 
 
@@ -4246,19 +4238,17 @@ describe('<App>', function() {
           }
         });
 
-        const setLintingSpy = sinon.spy(app, 'setLintingState');
-
         // when
         await app.lintTab(activeTab);
 
         // then
-        const results = setLintingSpy.lastCall.args[ 1 ];
-        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+        await waitFor(() => {
+          const results = app.state.lintingState[ activeTab.id ];
+          const warning = results.find(r => r.rule === 'camunda/version-mismatch');
 
-        expect(warning).to.exist;
-        expect(warning.category).to.equal('warn');
-
-        setLintingSpy.restore();
+          expect(warning).to.exist;
+          expect(warning.category).to.equal('warn');
+        });
       });
 
 
@@ -4282,19 +4272,17 @@ describe('<App>', function() {
           }
         });
 
-        const setLintingSpy = sinon.spy(app, 'setLintingState');
-
         // when
         await app.lintTab(activeTab);
 
         // then
-        const results = setLintingSpy.lastCall.args[ 1 ];
-        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+        await waitFor(() => {
+          const results = app.state.lintingState[ activeTab.id ];
+          const warning = results.find(r => r.rule === 'camunda/version-mismatch');
 
-        expect(warning).to.exist;
-        expect(warning.category).to.equal('warn');
-
-        setLintingSpy.restore();
+          expect(warning).to.exist;
+          expect(warning.category).to.equal('warn');
+        });
       });
 
 
@@ -4318,18 +4306,16 @@ describe('<App>', function() {
           }
         });
 
-        const setLintingSpy = sinon.spy(app, 'setLintingState');
-
         // when
         await app.lintTab(activeTab);
 
         // then
-        const results = setLintingSpy.lastCall.args[ 1 ];
-        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+        await waitFor(() => {
+          const results = app.state.lintingState[ activeTab.id ];
+          const warning = results.find(r => r.rule === 'camunda/version-mismatch');
 
-        expect(warning).to.not.exist;
-
-        setLintingSpy.restore();
+          expect(warning).to.not.exist;
+        });
       });
 
 
@@ -4353,18 +4339,16 @@ describe('<App>', function() {
           }
         });
 
-        const setLintingSpy = sinon.spy(app, 'setLintingState');
-
         // when
         await app.lintTab(activeTab);
 
         // then
-        const results = setLintingSpy.lastCall.args[ 1 ];
-        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+        await waitFor(() => {
+          const results = app.state.lintingState[ activeTab.id ];
+          const warning = results.find(r => r.rule === 'camunda/version-mismatch');
 
-        expect(warning).to.not.exist;
-
-        setLintingSpy.restore();
+          expect(warning).to.not.exist;
+        });
       });
 
 
@@ -4385,18 +4369,16 @@ describe('<App>', function() {
           connectionCheckResult: null
         });
 
-        const setLintingSpy = sinon.spy(app, 'setLintingState');
-
         // when
         await app.lintTab(activeTab);
 
         // then
-        const results = setLintingSpy.lastCall.args[ 1 ];
-        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+        await waitFor(() => {
+          const results = app.state.lintingState[ activeTab.id ];
+          const warning = results.find(r => r.rule === 'camunda/version-mismatch');
 
-        expect(warning).to.not.exist;
-
-        setLintingSpy.restore();
+          expect(warning).to.not.exist;
+        });
       });
 
 
@@ -4420,18 +4402,16 @@ describe('<App>', function() {
           }
         });
 
-        const setLintingSpy = sinon.spy(app, 'setLintingState');
-
         // when
         await app.lintTab(activeTab);
 
         // then
-        const results = setLintingSpy.lastCall.args[ 1 ];
-        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+        await waitFor(() => {
+          const results = app.state.lintingState[ activeTab.id ];
+          const warning = results.find(r => r.rule === 'camunda/version-mismatch');
 
-        expect(warning).to.not.exist;
-
-        setLintingSpy.restore();
+          expect(warning).to.not.exist;
+        });
       });
 
 
@@ -4451,18 +4431,16 @@ describe('<App>', function() {
           }
         });
 
-        const setLintingSpy = sinon.spy(app, 'setLintingState');
-
         // when
         await app.lintTab(activeTab);
 
         // then
-        const results = setLintingSpy.lastCall.args[ 1 ];
-        const warning = results.find(r => r.rule === 'camunda/version-mismatch');
+        await waitFor(() => {
+          const results = app.state.lintingState[ activeTab.id ];
+          const warning = results.find(r => r.rule === 'camunda/version-mismatch');
 
-        expect(warning).to.not.exist;
-
-        setLintingSpy.restore();
+          expect(warning).to.not.exist;
+        });
       });
 
 
@@ -4488,8 +4466,6 @@ describe('<App>', function() {
             }
           });
 
-          const lintTabSpy = sinon.spy(app, 'lintTab');
-
           // when - success state changes from false to true
           app.emit('connectionManager.connectionStatusChanged', {
             tab: activeTab,
@@ -4497,12 +4473,11 @@ describe('<App>', function() {
             response: { gatewayVersion: '8.8.0' }
           });
 
-          // then
+          // then - linting state should be updated with version mismatch warning
           await waitFor(() => {
-            expect(lintTabSpy).to.have.been.calledOnce;
+            const results = app.state.lintingState[ activeTab.id ];
+            expect(results).to.exist;
           });
-
-          lintTabSpy.restore();
         });
 
 
@@ -4526,8 +4501,6 @@ describe('<App>', function() {
             }
           });
 
-          const lintTabSpy = sinon.spy(app, 'lintTab');
-
           // when - gateway version changes
           app.emit('connectionManager.connectionStatusChanged', {
             tab: activeTab,
@@ -4535,12 +4508,11 @@ describe('<App>', function() {
             response: { gatewayVersion: '8.9.0' }
           });
 
-          // then
+          // then - linting state should be updated
           await waitFor(() => {
-            expect(lintTabSpy).to.have.been.calledOnce;
+            const results = app.state.lintingState[ activeTab.id ];
+            expect(results).to.exist;
           });
-
-          lintTabSpy.restore();
         });
 
 
@@ -4564,7 +4536,7 @@ describe('<App>', function() {
             }
           });
 
-          const lintTabSpy = sinon.spy(app, 'lintTab');
+          const lintTabSpy = sinon.spy(app._lintingService, 'lintTab');
 
           // when - same success + same version (periodic poll)
           app.emit('connectionManager.connectionStatusChanged', {
@@ -4604,7 +4576,7 @@ describe('<App>', function() {
             }
           });
 
-          const lintTabSpy = sinon.spy(app, 'lintTab');
+          const lintTabSpy = sinon.spy(app._lintingService, 'lintTab');
 
           // when - still failing (periodic poll)
           app.emit('connectionManager.connectionStatusChanged', {

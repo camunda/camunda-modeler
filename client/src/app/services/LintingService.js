@@ -34,24 +34,6 @@ export default class LintingService {
     this._tabsProvider = tabsProvider;
     this._getPlugins = getPlugins;
     this._getConfig = getConfig;
-
-    // These are set after construction so that they can route through App
-    // delegation wrappers (important for test spying).
-    this._lintTabFn = (tab, contents) => this.lintTab(tab, contents);
-    this._setLintingStateFn = (tab, results) => this.setLintingState(tab, results);
-  }
-
-  /**
-   * Wire up delegation functions that route through the host (App).
-   * This allows tests to spy on App.lintTab / App.setLintingState.
-   *
-   * @param {object} fns
-   * @param {function} fns.lintTab
-   * @param {function} fns.setLintingState
-   */
-  setDelegates({ lintTab, setLintingState }) {
-    this._lintTabFn = lintTab;
-    this._setLintingStateFn = setLintingState;
   }
 
   /**
@@ -90,8 +72,7 @@ export default class LintingService {
       results = [ ...results, ...warnings ];
     }
 
-    // Use delegate to route through App (for test spying compatibility)
-    this._setLintingStateFn(tab, results);
+    this.setLintingState(tab, results);
   };
 
   /**
@@ -106,23 +87,11 @@ export default class LintingService {
 
   /**
    * Set the linting state for a tab.
-   * This is the public API that delegates use.
    *
    * @param {object} tab
    * @param {Array} results
    */
   setLintingState = (tab, results) => {
-    this.applyLintingState(tab, results);
-  };
-
-  /**
-   * Internal implementation that writes linting state.
-   * Called by App.setLintingState and directly by the service.
-   *
-   * @param {object} tab
-   * @param {Array} results
-   */
-  applyLintingState(tab, results) {
     const { tabs } = this._getState();
 
     const lintingState = reduce(tabs, (lintingState, t) => {
@@ -177,7 +146,7 @@ export default class LintingService {
       const { activeTab } = this._getState();
 
       if (activeTab && activeTab.id !== '__empty') {
-        this._lintTabFn(activeTab);
+        this.lintTab(activeTab);
       }
     });
   };
@@ -204,7 +173,7 @@ export default class LintingService {
     }), () => {
 
       // Re-lint to pick up version mismatch warning
-      this._lintTabFn(tab);
+      this.lintTab(tab);
     });
   };
 }

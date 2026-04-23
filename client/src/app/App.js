@@ -179,13 +179,6 @@ export class App extends PureComponent {
       getConfig: (...args) => this.getConfig(...args)
     });
 
-    // Wire delegate functions so the service routes lintTab/setLintingState
-    // calls through App (important for test spying).
-    this._lintingService.setDelegates({
-      lintTab: (...args) => this.lintTab(...args),
-      setLintingState: (...args) => this.setLintingState(...args)
-    });
-
     this.on('connectionManager.connectionStatusChanged',
       this._lintingService.handleConnectionStatusChanged);
     this.on('connectionManager.connectionCheckStarted', this._lintingService.handleConnectionCheckStarted);
@@ -1098,7 +1091,7 @@ export class App extends PureComponent {
   };
 
   setLintingState = (tab, results) => {
-    this._lintingService.applyLintingState(tab, results);
+    this._lintingService.setLintingState(tab, results);
   };
 
   resizeTab = () => {
