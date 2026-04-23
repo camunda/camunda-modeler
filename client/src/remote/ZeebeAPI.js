@@ -236,6 +236,7 @@ export function getEndpointForTargetType(endpoint) {
       url: camundaCloudClusterUrl,
       clientId: camundaCloudClientId,
       clientSecret: camundaCloudClientSecret,
+      tenantId
     };
   }
 

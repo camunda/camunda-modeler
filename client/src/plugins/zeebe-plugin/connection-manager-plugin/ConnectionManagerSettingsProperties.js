@@ -126,7 +126,6 @@ export const properties = [
     type: 'text',
     label: LABELS.TENANT_ID,
     hint: HINTS.TENANT_ID,
-    condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
     constraints: {
       pattern: {
         value: REGEXES.TENANT_ID,
