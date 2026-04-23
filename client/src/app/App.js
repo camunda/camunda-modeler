@@ -1399,14 +1399,6 @@ export class App extends PureComponent {
     this._notificationService.closeNotifications();
   }
 
-  _updateNotification(id, options) {
-    this._notificationService._updateNotification(id, options);
-  }
-
-  _closeNotification(id) {
-    this._notificationService._closeNotification(id);
-  }
-
   setLayout(layout) {
     this._layoutService.setLayout(layout);
   }
@@ -1567,7 +1559,7 @@ export class App extends PureComponent {
 
     const MAX_SAVE_RETRIES = 3;
 
-    for (let attempt = 0; attempt <= MAX_SAVE_RETRIES; attempt++) {
+    for (let attempt = 0; attempt < MAX_SAVE_RETRIES; attempt++) {
 
       try {
 
@@ -1586,7 +1578,7 @@ export class App extends PureComponent {
         return this.tabSaved(tab, savedFile);
       } catch (err) {
 
-        if (attempt >= MAX_SAVE_RETRIES) {
+        if (attempt >= MAX_SAVE_RETRIES - 1) {
           this.handleError(err);
           return false;
         }
@@ -1881,7 +1873,7 @@ export class App extends PureComponent {
 
     const MAX_EXPORT_RETRIES = 3;
 
-    for (let attempt = 0; attempt <= MAX_EXPORT_RETRIES; attempt++) {
+    for (let attempt = 0; attempt < MAX_EXPORT_RETRIES; attempt++) {
 
       try {
 
@@ -1891,7 +1883,7 @@ export class App extends PureComponent {
       } catch (err) {
         console.error('Tab export failed', err);
 
-        if (attempt >= MAX_EXPORT_RETRIES) {
+        if (attempt >= MAX_EXPORT_RETRIES - 1) {
           this.handleError(err);
           return;
         }
