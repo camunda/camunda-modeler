@@ -232,9 +232,7 @@ export default class Modeler {
 
   detach() {}
 
-  attachOverviewTo() {}
-
-  detachOverview() {}
+  updateOverview() {}
 
   on(event, priority, callback) {
     if (!callback) {

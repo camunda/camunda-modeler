@@ -1229,7 +1229,7 @@ describe('<DmnEditor>', function() {
 
       sinon.stub(modeler, 'getActiveView').callsFake(() => decisionTableView);
 
-      const overviewAttachSpy = sinon.spy(modeler, 'attachOverviewTo');
+      const overviewUpdateSpy = sinon.spy(modeler, 'updateOverview');
 
       // when
       instance.viewsChanged({
@@ -1238,23 +1238,31 @@ describe('<DmnEditor>', function() {
       });
 
       // then
-      expect(overviewAttachSpy).to.have.been.called;
+      await waitFor(() => {
+        expect(overviewUpdateSpy).to.have.been.called;
+      });
     });
 
 
     it('should detach overview when switching to DRD', async function() {
 
       // given
+      const modeler = instance.getModeler();
+
+      modeler.open(decisionTableView);
+
       instance.viewsChanged({
         activeView: decisionTableView,
         views
       });
 
-      const modeler = instance.getModeler();
+      await waitFor(() => {
+        expect(instance.getCached().activeView).to.eql(decisionTableView);
+      });
 
       sinon.stub(modeler, 'getActiveView').callsFake(() => drdView);
 
-      const overviewDetachSpy = sinon.spy(modeler, 'detachOverview');
+      const overviewUpdateSpy = sinon.spy(modeler, 'updateOverview');
 
       // when
       instance.viewsChanged({
@@ -1263,7 +1271,9 @@ describe('<DmnEditor>', function() {
       });
 
       // then
-      expect(overviewDetachSpy).to.have.been.called;
+      await waitFor(() => {
+        expect(overviewUpdateSpy).to.have.been.called;
+      });
     });
 
   });
