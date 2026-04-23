@@ -150,19 +150,19 @@ export default class CamundaDmnModeler extends DmnModeler {
   /**
    * Get stack index of active viewer.
    *
-   * @returns {?number} Stack index or null.
+   * @returns {number} Stack index or -1.
    */
   getStackIdx() {
     const viewer = this.getActiveViewer();
 
     if (!viewer) {
-      return null;
+      return -1;
     }
 
     const commandStack = viewer.get('commandStack', false);
 
     if (!commandStack) {
-      return null;
+      return -1;
     }
 
     return commandStack._stackIdx;
