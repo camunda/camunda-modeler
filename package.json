@@ -77,8 +77,8 @@
     "sinon-chai": "^3.7.0",
     "tar-stream": "^3.1.8",
     "undici": "^7.22.0",
-    "webpack": "^5.105.2",
-    "webpack-cli": "^7.0.0",
+    "webpack": "^5.106.2",
+    "webpack-cli": "^7.0.2",
     "yauzl": "^3.2.0"
   },
   "remarkConfig": {
