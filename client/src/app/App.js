@@ -1565,9 +1565,9 @@ export class App extends PureComponent {
 
     options = options || {};
 
-    // do as long as it was successful or cancelled
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
+    const MAX_SAVE_RETRIES = 3;
+
+    for (let attempt = 0; attempt <= MAX_SAVE_RETRIES; attempt++) {
 
       try {
 
@@ -1585,6 +1585,11 @@ export class App extends PureComponent {
 
         return this.tabSaved(tab, savedFile);
       } catch (err) {
+
+        if (attempt >= MAX_SAVE_RETRIES) {
+          this.handleError(err);
+          return false;
+        }
 
         const { button } = await this.askForSaveRetry(tab, err, getSaveFileErrorDialog);
 
@@ -1874,10 +1879,9 @@ export class App extends PureComponent {
 
   async exportAs(tab) {
 
-    // do as long as it was successful or cancelled
-    const infinite = true;
+    const MAX_EXPORT_RETRIES = 3;
 
-    while (infinite) {
+    for (let attempt = 0; attempt <= MAX_EXPORT_RETRIES; attempt++) {
 
       try {
 
@@ -1886,6 +1890,11 @@ export class App extends PureComponent {
         return exportOptions ? await this.exportAsFile(exportOptions) : false;
       } catch (err) {
         console.error('Tab export failed', err);
+
+        if (attempt >= MAX_EXPORT_RETRIES) {
+          this.handleError(err);
+          return;
+        }
 
         const { button } = await this.askForSaveRetry(tab, err, getExportFileErrorDialog);
 
