@@ -319,6 +319,57 @@ describe('ConnectionManagerSettingsComponent', function() {
     });
 
 
+    it('should display tenant ID field for SaaS connections', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Test Connection',
+          targetType: 'camundaCloud',
+          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io',
+          camundaCloudClientId: 'test-client-id'
+        }
+      ];
+
+      const { container } = createComponent({ initialValues: connections });
+
+      // when
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // then
+      await waitFor(() => {
+        expect(container.querySelector('input[name*="tenantId"]')).to.exist;
+      });
+    });
+
+
+    it('should display tenant ID field for self-hosted connections', async function() {
+
+      // given
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Test Connection',
+          targetType: 'selfHosted',
+          contactPoint: 'http://localhost:26500'
+        }
+      ];
+
+      const { container } = createComponent({ initialValues: connections });
+
+      // when
+      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      fireEvent.click(expandButton);
+
+      // then
+      await waitFor(() => {
+        expect(container.querySelector('input[name*="tenantId"]')).to.exist;
+      });
+    });
+
+
     it('should show target type radio buttons', async function() {
 
       // given

@@ -123,8 +123,7 @@ export const properties = [
   { key: 'tenantId',
     type: 'text',
     label: LABELS.TENANT_ID,
-    hint: HINTS.TENANT_ID,
-    condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+    hint: HINTS.TENANT_ID
   },
 
   { key: 'operateUrl',
