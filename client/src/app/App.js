@@ -26,6 +26,7 @@ import EventEmitter from 'events';
 import defaultPlugins from '../plugins';
 
 import { NotificationService, LayoutService, LintingService } from './services';
+import ActionRegistry from './services/ActionRegistry';
 
 import executeOnce from './util/executeOnce';
 
@@ -190,6 +191,10 @@ export class App extends PureComponent {
     this.on('connectionManager.connectionCheckStarted', this._lintingService.handleConnectionCheckStarted);
     this.on('tab.engineProfileChanged',
       this._lintingService.handleEngineProfileChanged);
+
+    // -- Initialize action registry --
+    this._actionRegistry = new ActionRegistry();
+    this._registerActions();
 
     const userPlugins = this.getPlugins('client');
 
@@ -1900,242 +1905,136 @@ export class App extends PureComponent {
     return this.getGlobal('dialog').show(options);
   }
 
-  triggerAction = failSafe((action, options = {}) => {
+  /**
+   * Register all action handlers with the action registry.
+   * Called once during construction.
+   */
+  _registerActions() {
+    const r = this._actionRegistry;
 
-    const {
-      activeTab
-    } = this.state;
-
-
-    log('App#triggerAction %s %o', action, options);
-
-    if (action === 'set-tab-group') {
-      const {
-        id,
-        group
-      } = options;
-
+    // Tab management
+    r.register('set-tab-group', (options) => {
+      const { id, group } = options;
       return this.setTabGroup(id, group);
-    }
+    });
 
-    if (action === 'lint-tab') {
-      const {
-        tab,
-        contents
-      } = options;
-
+    r.register('lint-tab', (options) => {
+      const { tab, contents } = options;
       return this.lintTab(tab, contents);
-    }
+    });
 
-    if (action === 'select-tab') {
+    r.register('select-tab', (options) => {
       if (options === 'next') {
         this.navigate(1);
       }
-
       if (options === 'previous') {
         this.navigate(-1);
       }
+    });
 
-      return;
-    }
+    // Diagram creation
+    r.register('create-bpmn-diagram', () => this.createDiagram('bpmn'));
+    r.register('create-dmn-diagram', () => this.createDiagram('dmn'));
+    r.register('create-form', () => this.createDiagram('form'));
+    r.register('create-cloud-form', () => this.createDiagram('cloud-form'));
+    r.register('create-cloud-bpmn-diagram', () => this.createDiagram('cloud-bpmn'));
+    r.register('create-cloud-dmn-diagram', () => this.createDiagram('cloud-dmn'));
+    r.register('create-diagram', (options) => this.createDiagram(options.type));
 
-    if (action === 'create-bpmn-diagram') {
-      return this.createDiagram('bpmn');
-    }
-
-    if (action === 'create-dmn-diagram') {
-      return this.createDiagram('dmn');
-    }
-
-    if (action === 'create-form') {
-      return this.createDiagram('form');
-    }
-
-    if (action === 'create-cloud-form') {
-      return this.createDiagram('cloud-form');
-    }
-
-    if (action === 'create-cloud-bpmn-diagram') {
-      return this.createDiagram('cloud-bpmn');
-    }
-
-    if (action === 'create-cloud-dmn-diagram') {
-      return this.createDiagram('cloud-dmn');
-    }
-
-    if (action === 'create-diagram') {
-      return this.createDiagram(options.type);
-    }
-
-    if (action === 'reopen-file') {
-      return this.openFiles([ options.file ]);
-    }
-
-    if (action === 'open-diagram') {
+    // File operations
+    r.register('reopen-file', (options) => this.openFiles([ options.file ]));
+    r.register('open-diagram', (options) => {
       const { path } = options;
-
       if (path) {
         return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
       }
-
       return this.showOpenFilesDialog();
-    }
+    });
+    r.register('save-all', () => this.saveAllTabs());
+    r.register('save-tab', (options) => this.saveTab(options.tab));
 
-    if (action === 'save-all') {
-      return this.saveAllTabs();
-    }
+    // Save (uses activeTab at dispatch time)
+    r.register('save', () => this.saveTab(this.state.activeTab));
+    r.register('save-as', () => this.saveTab(this.state.activeTab, { saveAs: true }));
 
-    if (action === 'save-tab') {
-      return this.saveTab(options.tab);
-    }
+    // Window events
+    r.register('window-focused', () => this.emit('app.focused'));
+    r.register('window-blurred', () => this.emit('app.blurred'));
+    r.register('quit', () => this.quit());
 
-    if (action === 'save') {
-      return this.saveTab(activeTab);
-    }
-
-    if (action === 'save-as') {
-      return this.saveTab(activeTab, { saveAs: true });
-    }
-
-    if (action === 'window-focused') {
-      return this.emit('app.focused');
-    }
-
-    if (action === 'window-blurred') {
-      return this.emit('app.blurred');
-    }
-
-    if (action === 'quit') {
-      return this.quit();
-    }
-
-    if (action === 'close-all-tabs') {
-      return this.closeTabs(t => true);
-    }
-
-    if (action === 'close-tab') {
-      return this.closeTabs(t => options && t.id === options.tabId);
-    }
-
-    if (action === 'close-active-tab') {
+    // Tab closing
+    r.register('close-all-tabs', () => this.closeTabs(t => true));
+    r.register('close-tab', (options) => this.closeTabs(t => options && t.id === options.tabId));
+    r.register('close-active-tab', () => {
       let activeId = this.state.activeTab.id;
-
       return this.closeTabs(t => t.id === activeId);
-    }
-
-    if (action === 'close-other-tabs') {
+    });
+    r.register('close-other-tabs', (options) => {
       let activeId = options && options.tabId || this.state.activeTab.id;
-
       return this.closeTabs(t => t.id !== activeId);
-    }
+    });
 
-    if (action === 'reopen-last-tab') {
-      return this.reopenLastTab();
-    }
+    // Tab history
+    r.register('reopen-last-tab', () => this.reopenLastTab());
 
-    if (action === 'reveal-in-file-explorer') {
-      return this.revealInFileExplorer(options.filePath);
-    }
+    // Misc
+    r.register('reveal-in-file-explorer', (options) => this.revealInFileExplorer(options.filePath));
+    r.register('show-shortcuts', () => this.showShortcuts());
+    r.register('update-menu', (options) => this.updateMenu(options));
+    r.register('export-as', () => this.exportAs(this.state.activeTab));
+    r.register('show-dialog', (options) => this.showDialog(options));
 
-    if (action === 'show-shortcuts') {
-      return this.showShortcuts();
-    }
+    // Modals
+    r.register('open-modal', (options) => this.setModal(options));
+    r.register('close-modal', () => this.setModal(null));
 
-    if (action === 'update-menu') {
-      return this.updateMenu(options);
-    }
+    // External
+    r.register('open-external-url', (options) => this.openExternalUrl(options));
+    r.register('check-file-changed', () => this.checkFileChanged(this.state.activeTab));
+    r.register('resize', () => this.resizeTab());
 
-    if (action === 'export-as') {
-      return this.exportAs(activeTab);
-    }
+    // Reload
+    r.register('reload-modeler', () => this.reloadModeler());
+    r.register('restart-modeler', () => this.reloadModeler(true));
 
-    if (action === 'show-dialog') {
-      return this.showDialog(options);
-    }
-
-    if (action === 'open-modal') {
-      return this.setModal(options);
-    }
-
-    if (action === 'close-modal') {
-      return this.setModal(null);
-    }
-
-    if (action === 'open-external-url') {
-      return this.openExternalUrl(options);
-    }
-
-    if (action === 'check-file-changed') {
-      return this.checkFileChanged(activeTab);
-    }
-
-    if (action === 'resize') {
-      return this.resizeTab();
-    }
-
-    if (action === 'reload-modeler') {
-      return this.reloadModeler();
-    }
-
-    if (action === 'restart-modeler') {
-      return this.reloadModeler(true);
-    }
-
-    if (action === 'log') {
-      const {
-        action,
-        category,
-        message,
-        silent
-      } = options;
-
+    // Logging & notifications
+    r.register('log', (options) => {
+      const { action, category, message, silent } = options;
       return this.logEntry(message, category, action, silent);
-    }
+    });
+    r.register('open-log', () => this.openPanel('log'));
+    r.register('open-panel', (options) => this.openPanel(options.tab));
+    r.register('close-panel', () => this.closePanel());
+    r.register('display-notification', (options) => this.displayNotification(options));
 
-    if (action === 'open-log') {
-      return this.openPanel('log');
-    }
-
-    if (action === 'open-panel') {
-      const { tab } = options;
-
-      return this.openPanel(tab);
-    }
-
-    if (action === 'close-panel') {
-      return this.closePanel();
-    }
-
-    if (action === 'display-notification') {
-      return this.displayNotification(options);
-    }
-
-    if (action === 'emit-event') {
-      const {
-        type,
-        payload
-      } = options;
-
-      return this.emitWithTab(type, activeTab, payload);
-    }
-
-    if (action === 'toggle-panel') {
+    // Events
+    r.register('emit-event', (options) => {
+      const { type, payload } = options;
+      return this.emitWithTab(type, this.state.activeTab, payload);
+    });
+    r.register('toggle-panel', () => {
       const { panel } = this.state.layout;
       return panel.open ? this.closePanel() : this.openPanel(panel.tab);
+    });
+    r.register('settings-open', (options) => this.emit('app.settings-open', options));
+
+    // Deployment
+    r.register('open-deployment', () =>
+      this.emitWithTab('app.open-deployment', this.state.activeTab));
+    r.register('open-connection-selector', () =>
+      this.emitWithTab('app.open-connection-selector', this.state.activeTab));
+  }
+
+  triggerAction = failSafe((action, options = {}) => {
+
+    log('App#triggerAction %s %o', action, options);
+
+    // Try the registry first
+    if (this._actionRegistry.has(action)) {
+      return this._actionRegistry.dispatch(action, options);
     }
 
-    if (action === 'settings-open') {
-      return this.emit('app.settings-open', options);
-    }
-
-    if (action === 'open-deployment') {
-      return this.emitWithTab('app.open-deployment', activeTab);
-    }
-
-    if (action === 'open-connection-selector') {
-      return this.emitWithTab('app.open-connection-selector', activeTab);
-    }
-
+    // Fallback: forward to active tab
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
