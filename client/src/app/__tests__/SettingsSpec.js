@@ -71,6 +71,10 @@ describe('Settings', function() {
 
   describe('schema', function() {
 
+    afterEach(function() {
+      sinon.restore();
+    });
+
     it('should return the registered schema for all settings', function() {
 
       // given
@@ -164,8 +168,6 @@ describe('Settings', function() {
         'Setting with key test.enabled is already registered. Skipping.'
       );
       expect(settings.getSchema('test.enabled').label).to.equal('Enabled');
-
-      warnSpy.restore();
     });
 
 
