@@ -862,8 +862,27 @@ export class BpmnEditor extends CachedComponent {
       onLayoutChanged
     } = this.props;
 
+    this.trackVariablesPanelToggle(newLayout);
+
     if (isFunction(onLayoutChanged)) {
       onLayoutChanged(newLayout);
+    }
+  }
+
+  trackVariablesPanelToggle(newLayout) {
+    const { layout } = this.props;
+
+    if (!newLayout.variablesSidePanel) {
+      return;
+    }
+
+    const isVariablesPanelOpen = layout.variablesSidePanel?.open ?? VARIABLES_PANEL_DEFAULT_LAYOUT.open;
+
+    if (newLayout.variablesSidePanel.open !== isVariablesPanelOpen) {
+      this.props.onAction('emit-event', {
+        type: 'variableOutline:layoutChanged',
+        payload: { open: newLayout.variablesSidePanel.open }
+      });
     }
   }
 
