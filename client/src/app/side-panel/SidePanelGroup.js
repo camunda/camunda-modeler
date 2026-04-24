@@ -30,7 +30,11 @@ const SidePanelGroupContext = createContext(null);
  *
  * @example
  * ```jsx
- * <SidePanelGroup layout={layout} onLayoutChanged={onLayoutChanged}>
+ * <SidePanelGroup
+ *   panelIds={['variablesSidePanel', 'sidePanel']}
+ *   layout={layout}
+ *   onLayoutChanged={onLayoutChanged}
+ * >
  *   <SidePanelConsumer panelId="variablesSidePanel">
  *     {({ maxWidth, onLayoutChanged }) => (
  *       <VariablesSidePanel maxWidth={maxWidth} onLayoutChanged={onLayoutChanged} />
@@ -40,22 +44,19 @@ const SidePanelGroupContext = createContext(null);
  * ```
  *
  * @param {Object} props
+ * @param {string[]} props.panelIds layout keys for all panels in this group
  * @param {Object} props.layout
  * @param {Function} props.onLayoutChanged
  * @param {React.ReactNode} props.children
  */
 export function SidePanelGroup({
+  panelIds,
   layout,
   onLayoutChanged,
   children
 }) {
   const containerRef = useRef();
   const containerWidth = useParentWidth(containerRef);
-
-  const panelIds = useMemo(() => {
-    return React.Children.toArray(children)
-      .map(child => child.props.panelId);
-  }, [ children ]);
 
   const getMaxWidth = (panelId) => {
     const siblingsWidth = getSiblingsWidth(panelId, panelIds, layout);
