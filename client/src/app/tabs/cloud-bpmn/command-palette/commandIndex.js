@@ -178,7 +178,7 @@ export function scoreCommand(command, query) {
   return score > 0 ? score : -Infinity;
 }
 
-function subsequenceScore(haystack, needle) {
+export function subsequenceScore(haystack, needle) {
   let h = 0, n = 0, score = 0, prevMatch = -2, wordStart = true;
   while (h < haystack.length && n < needle.length) {
     const hc = haystack[h];
