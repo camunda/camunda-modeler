@@ -590,6 +590,44 @@ export class BpmnEditor extends CachedComponent {
   };
 
   /**
+   * Fast-path append: place the element (or template) without opening the
+   * properties panel. Called by the picker's Enter-on-Append keystroke.
+   * Skips Step-2 wizards and skips the auto-open of the side panel.
+   *
+   * For templates, the caller passes the template object directly — we
+   * apply it and place, same as handleAppend's template branch.
+   */
+  handleAppendQuick = ({ elementId, template }) => {
+    const source = this.state.appendWizardSource;
+    this.setState({ appendWizardSource: null });
+    if (!source) return;
+
+    const modeler = this.getModeler();
+    const autoPlace = modeler.get('autoPlace');
+    const elementFactory = modeler.get('elementFactory');
+    const elementTemplates = modeler.get('elementTemplates', false);
+    const selection = modeler.get('selection');
+
+    let placedShape;
+
+    if (template && elementTemplates) {
+      const templatedShape = elementTemplates.createElement(template);
+      placedShape = autoPlace.append(source, templatedShape);
+    } else if (elementId) {
+      const shapeAttrs = this._buildAppendShapeAttrs(elementId, {});
+      if (!shapeAttrs) return;
+      const newShape = elementFactory.createShape(shapeAttrs);
+      placedShape = autoPlace.append(source, newShape);
+    } else {
+      return;
+    }
+
+    // Select the placed shape so the user can immediately continue modeling —
+    // but DO NOT open the properties panel. This is the fast path.
+    selection.select(placedShape);
+  };
+
+  /**
    * Translate the catalog leaf's elementId (plus wizard-specific config like
    * the intermediate-event trigger type) into bpmn element shape attrs.
    */
@@ -1676,8 +1714,11 @@ export class BpmnEditor extends CachedComponent {
               <AppendWizard
                 onConfirm={ this.handleAppend }
                 onClose={ this.handleAppendWizardClose }
+                onQuickAppend={ this.handleAppendQuick }
                 serviceTaskTemplates={ serviceTaskTemplates }
                 aiConnectorTemplates={ aiConnectorTemplates }
+                templates={ allTemplates }
+                sourceElementType={ this.state.appendWizardSource && this.state.appendWizardSource.type }
               />
             ) }
 
