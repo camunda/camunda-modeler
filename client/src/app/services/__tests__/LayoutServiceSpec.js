@@ -9,6 +9,7 @@
  */
 
 import LayoutService from '../LayoutService';
+import ActionRegistry from '../ActionRegistry';
 
 
 describe('LayoutService', function() {
@@ -149,6 +150,59 @@ describe('LayoutService', function() {
 
       // then
       expect(state.layout.sidePanel.open).to.be.false;
+    });
+
+  });
+
+
+  describe('#registerActions', function() {
+
+    it('should register open-log action', function() {
+
+      // given
+      const { service } = createLayoutService();
+      const actionRegistry = new ActionRegistry();
+
+      // when
+      service.registerActions(actionRegistry);
+      actionRegistry.dispatch('open-log');
+
+      // then
+      expect(actionRegistry.has('open-log')).to.be.true;
+    });
+
+
+    it('should register open-panel action', function() {
+
+      // given
+      const { service } = createLayoutService();
+      const actionRegistry = new ActionRegistry();
+      const openPanelSpy = sinon.spy(service, 'openPanel');
+
+      // when
+      service.registerActions(actionRegistry);
+      actionRegistry.dispatch('open-panel', { tab: 'linting' });
+
+      // then
+      expect(openPanelSpy).to.have.been.calledWith('linting');
+    });
+
+
+    it('should register close-panel action', function() {
+
+      // given
+      const { service } = createLayoutService({
+        layout: { panel: { open: true, tab: 'log' } }
+      });
+      const actionRegistry = new ActionRegistry();
+      const closePanelSpy = sinon.spy(service, 'closePanel');
+
+      // when
+      service.registerActions(actionRegistry);
+      actionRegistry.dispatch('close-panel');
+
+      // then
+      expect(closePanelSpy).to.have.been.called;
     });
 
   });

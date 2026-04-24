@@ -9,6 +9,7 @@
  */
 
 import NotificationService from '../NotificationService';
+import ActionRegistry from '../ActionRegistry';
 
 
 describe('NotificationService', function() {
@@ -198,6 +199,44 @@ describe('NotificationService', function() {
 
       // then
       expect(state.logEntries).to.have.length(0);
+    });
+
+  });
+
+
+  describe('#registerActions', function() {
+
+    it('should register log action', function() {
+
+      // given
+      const { service } = createNotificationService();
+      const actionRegistry = new ActionRegistry();
+      const logEntrySpy = sinon.spy(service, 'logEntry');
+
+      // when
+      service.registerActions(actionRegistry);
+      actionRegistry.dispatch('log', {
+        message: 'hello', category: 'test', action: null, silent: false
+      });
+
+      // then
+      expect(logEntrySpy).to.have.been.calledWith('hello', 'test', null, false);
+    });
+
+
+    it('should register display-notification action', function() {
+
+      // given
+      const { service } = createNotificationService();
+      const actionRegistry = new ActionRegistry();
+      const displaySpy = sinon.spy(service, 'displayNotification');
+
+      // when
+      service.registerActions(actionRegistry);
+      actionRegistry.dispatch('display-notification', { title: 'Test' });
+
+      // then
+      expect(displaySpy).to.have.been.calledWith({ title: 'Test' });
     });
 
   });

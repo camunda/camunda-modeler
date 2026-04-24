@@ -118,4 +118,15 @@ export default class LayoutService {
       }
     });
   }
+
+  /**
+   * Register layout-related actions on the given action registry.
+   *
+   * @param {ActionRegistry} actionRegistry
+   */
+  registerActions(actionRegistry) {
+    actionRegistry.register('open-log', () => this.openPanel('log'));
+    actionRegistry.register('open-panel', (options) => this.openPanel(options.tab));
+    actionRegistry.register('close-panel', () => this.closePanel());
+  }
 }

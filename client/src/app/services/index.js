@@ -13,5 +13,4 @@ export { default as LayoutService } from './LayoutService';
 export { default as LintingService } from './LintingService';
 
 export { default as createDefaultServices } from './createDefaultServices';
-export { default as wireServices } from './wireServices';
 export { default as ServicesContext, useServices } from './ServicesContext';

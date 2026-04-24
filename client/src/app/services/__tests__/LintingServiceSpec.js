@@ -9,6 +9,7 @@
  */
 
 import LintingService from '../LintingService';
+import ActionRegistry from '../ActionRegistry';
 
 
 describe('LintingService', function() {
@@ -242,6 +243,91 @@ describe('LintingService', function() {
 
       // then
       expect(state.engineProfiles).to.eql({});
+    });
+
+  });
+
+
+  describe('#registerActions', function() {
+
+    it('should register lint-tab action', function() {
+
+      // given
+      const { service } = createLintingService();
+      const actionRegistry = new ActionRegistry();
+      const lintTabSpy = sinon.spy(service, 'lintTab');
+
+      // when
+      service.registerActions(actionRegistry);
+      actionRegistry.dispatch('lint-tab', { tab: { id: '1' }, contents: 'xml' });
+
+      // then
+      expect(lintTabSpy).to.have.been.calledWith({ id: '1' }, 'xml');
+    });
+
+  });
+
+
+  describe('#subscribeEvents', function() {
+
+    function createEventEmitter() {
+      const listeners = {};
+
+      return {
+        on(event, handler) {
+          listeners[event] = listeners[event] || [];
+          listeners[event].push(handler);
+        },
+        off(event, handler) {
+          listeners[event] = (listeners[event] || []).filter(h => h !== handler);
+        },
+        emit(event, ...args) {
+          (listeners[event] || []).forEach(h => h(...args));
+        },
+        listeners
+      };
+    }
+
+
+    it('should subscribe to connection and engine events', function() {
+
+      // given
+      const { service } = createLintingService();
+      const emitter = createEventEmitter();
+      const statusChangedSpy = sinon.spy(service, 'handleConnectionStatusChanged');
+      const checkStartedSpy = sinon.spy(service, 'handleConnectionCheckStarted');
+      const profileChangedSpy = sinon.spy(service, 'handleEngineProfileChanged');
+
+      // when
+      service.subscribeEvents(emitter);
+
+      emitter.emit('connectionManager.connectionStatusChanged', { success: true });
+      emitter.emit('connectionManager.connectionCheckStarted');
+      emitter.emit('tab.engineProfileChanged', { tab: { id: '1' } });
+
+      // then
+      expect(statusChangedSpy).to.have.been.calledWith({ success: true });
+      expect(checkStartedSpy).to.have.been.called;
+      expect(profileChangedSpy).to.have.been.calledWith({ tab: { id: '1' } });
+    });
+
+
+    it('should return destroy function that removes subscriptions', function() {
+
+      // given
+      const { service } = createLintingService();
+      const emitter = createEventEmitter();
+      const statusChangedSpy = sinon.spy(service, 'handleConnectionStatusChanged');
+
+      const destroy = service.subscribeEvents(emitter);
+
+      // when
+      destroy();
+
+      emitter.emit('connectionManager.connectionStatusChanged', 'payload');
+
+      // then
+      expect(statusChangedSpy).not.to.have.been.called;
     });
 
   });

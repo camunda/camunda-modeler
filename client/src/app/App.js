@@ -27,7 +27,6 @@ import defaultPlugins from '../plugins';
 
 import {
   createDefaultServices,
-  wireServices,
   ServicesContext
 } from './services';
 import ActionRegistry from './services/ActionRegistry';
@@ -180,12 +179,13 @@ export class App extends PureComponent {
     this._lintingService = services.linting;
     this._services = services;
 
-    // Wire service actions and event subscriptions
-    this._destroyServices = wireServices({
-      services,
-      actionRegistry: this._actionRegistry,
-      eventEmitter: this
-    });
+    // Have services register their own actions
+    services.layout.registerActions(this._actionRegistry);
+    services.notification.registerActions(this._actionRegistry);
+    services.linting.registerActions(this._actionRegistry);
+
+    // Subscribe to events
+    this._destroyServices = services.linting.subscribeEvents(this);
 
     // Register remaining (non-service) actions
     this._registerActions();

@@ -151,4 +151,18 @@ export default class NotificationService {
       logEntries: []
     });
   };
+
+  /**
+   * Register notification-related actions on the given action registry.
+   *
+   * @param {ActionRegistry} actionRegistry
+   */
+  registerActions(actionRegistry) {
+    actionRegistry.register('log', (options) => {
+      const { action, category, message, silent } = options;
+      return this.logEntry(message, category, action, silent);
+    });
+    actionRegistry.register('display-notification', (options) =>
+      this.displayNotification(options));
+  }
 }

@@ -176,4 +176,44 @@ export default class LintingService {
       this.lintTab(tab);
     });
   };
+
+  /**
+   * Register linting-related actions on the given action registry.
+   *
+   * @param {ActionRegistry} actionRegistry
+   */
+  registerActions(actionRegistry) {
+    actionRegistry.register('lint-tab', (options) => {
+      const { tab, contents } = options;
+      return this.lintTab(tab, contents);
+    });
+  }
+
+  /**
+   * Subscribe to application events relevant to linting.
+   *
+   * @param {object} eventEmitter - object with `on(event, handler)` / `off(event, handler)`
+   * @returns {Function} destroy — call to unsubscribe all events
+   */
+  subscribeEvents(eventEmitter) {
+    const subscriptions = [];
+
+    function on(event, handler) {
+      eventEmitter.on(event, handler);
+      subscriptions.push({ event, handler });
+    }
+
+    on('connectionManager.connectionStatusChanged',
+      this.handleConnectionStatusChanged);
+    on('connectionManager.connectionCheckStarted',
+      this.handleConnectionCheckStarted);
+    on('tab.engineProfileChanged',
+      this.handleEngineProfileChanged);
+
+    return function destroy() {
+      for (const { event, handler } of subscriptions) {
+        eventEmitter.off(event, handler);
+      }
+    };
+  }
 }
