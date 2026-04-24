@@ -26,10 +26,9 @@ import EventEmitter from 'events';
 import defaultPlugins from '../plugins';
 
 import {
-  ServiceContainer,
-  layoutDescriptor,
-  notificationDescriptor,
-  lintingDescriptor
+  createDefaultServices,
+  wireServices,
+  ServicesContext
 } from './services';
 import ActionRegistry from './services/ActionRegistry';
 
@@ -166,29 +165,27 @@ export class App extends PureComponent {
     // -- Initialize action registry --
     this._actionRegistry = new ActionRegistry();
 
-    // -- Initialize services via container --
-
-    this._services = new ServiceContainer({
-      descriptors: props.serviceDescriptors || [
-        layoutDescriptor,
-        notificationDescriptor,
-        lintingDescriptor
-      ],
-      deps: {
-        setState: (...args) => this.setState(...args),
-        getState: () => this.state,
-        tabsProvider: props.tabsProvider,
-        getPlugins: (...args) => this.getPlugins(...args),
-        getConfig: (...args) => this.getConfig(...args)
-      },
-      eventEmitter: this,
-      actionRegistry: this._actionRegistry
+    // -- Initialize services --
+    // Accept pre-created services via props, or create the default set.
+    const services = props.services || createDefaultServices({
+      setState: (...args) => this.setState(...args),
+      getState: () => this.state,
+      tabsProvider: props.tabsProvider,
+      getPlugins: (...args) => this.getPlugins(...args),
+      getConfig: (...args) => this.getConfig(...args)
     });
 
-    // Convenience aliases for internal use
-    this._layoutService = this._services.get('layout');
-    this._notificationService = this._services.get('notification');
-    this._lintingService = this._services.get('linting');
+    this._layoutService = services.layout;
+    this._notificationService = services.notification;
+    this._lintingService = services.linting;
+    this._services = services;
+
+    // Wire service actions and event subscriptions
+    this._destroyServices = wireServices({
+      services,
+      actionRegistry: this._actionRegistry,
+      eventEmitter: this
+    });
 
     // Register remaining (non-service) actions
     this._registerActions();
@@ -2177,7 +2174,9 @@ export class App extends PureComponent {
 
           <EventsContext.Provider value={ this.eventsContext }>
 
-            <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
+            <ServicesContext.Provider value={ this._services }>
+
+              <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
 
               <SlotFillRoot>
 
@@ -2267,6 +2266,8 @@ export class App extends PureComponent {
                 /> : null }
 
             </KeyboardInteractionTrapContext.Provider>
+
+            </ServicesContext.Provider>
 
           </EventsContext.Provider>
 
