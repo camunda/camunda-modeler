@@ -914,7 +914,7 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
-          <SidePanelGroup layout={ layout } onLayoutChanged={ this.handleLayoutChange }>
+          <SidePanelGroup panelIds={ [ 'variablesSidePanel', 'sidePanel' ] } layout={ layout } onLayoutChanged={ this.handleLayoutChange }>
             <SidePanelConsumer panelId="variablesSidePanel">
               { ({ maxWidth, onLayoutChanged }) => (
                 <VariablesSidePanel
