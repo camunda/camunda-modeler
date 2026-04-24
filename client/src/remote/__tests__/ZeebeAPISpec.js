@@ -201,7 +201,122 @@ describe('<ZeebeAPI>', function() {
     });
 
 
-    it('should check connection (SaaS)', function() {
+    it('should check connection (self-managed, no auth, with tenant id)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const tenantId = 'my-tenant';
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500',
+        tenantId
+      };
+
+      // when
+      zeebeAPI.checkConnection(endpoint);
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: 'my-tenant'
+        }
+      });
+    });
+
+
+    it('should check connection (self-managed, basic auth, with tenant id)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const tenantId = 'my-tenant';
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.BASIC,
+        contactPoint: 'http://localhost:26500',
+        basicAuthUsername: 'username',
+        basicAuthPassword: 'password',
+        tenantId
+      };
+
+      // when
+      zeebeAPI.checkConnection(endpoint);
+
+      // then
+      expect(backend.send).to.have.been.calledOnce;
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.BASIC,
+          url: endpoint.contactPoint,
+          basicAuthUsername: 'username',
+          basicAuthPassword: 'password',
+          tenantId: 'my-tenant'
+        }
+      });
+    });
+
+
+    it('should check connection (self-managed, oauth, with tenant id)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const tenantId = 'my-tenant';
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.OAUTH,
+        contactPoint: 'http://localhost:26500',
+        oauthURL: 'foo.com',
+        audience: 'bar.com',
+        scope: 'baz',
+        clientId: 'foo',
+        clientSecret: 'bar',
+        tenantId
+      };
+
+      // when
+      zeebeAPI.checkConnection(endpoint);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.OAUTH,
+          url: endpoint.contactPoint,
+          oauthURL: endpoint.oauthURL,
+          audience: endpoint.audience,
+          scope: endpoint.scope,
+          clientId: endpoint.clientId,
+          clientSecret: endpoint.clientSecret,
+          tenantId: 'my-tenant'
+        }
+      });
+    });
+
+
+    it('should check connection (SaaS, with tenant id)', function() {
 
       // given
       const backend = new MockBackend({
@@ -214,7 +329,8 @@ describe('<ZeebeAPI>', function() {
         targetType: TARGET_TYPES.CAMUNDA_CLOUD,
         camundaCloudClientId: 'foo',
         camundaCloudClientSecret: 'bar',
-        camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443'
+        camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443',
+        tenantId: 'my-tenant'
       };
 
       // when
@@ -226,7 +342,39 @@ describe('<ZeebeAPI>', function() {
           type: TARGET_TYPES.CAMUNDA_CLOUD,
           url: endpoint.camundaCloudClusterUrl,
           clientId: endpoint.camundaCloudClientId,
-          clientSecret: endpoint.camundaCloudClientSecret
+          clientSecret: endpoint.camundaCloudClientSecret,
+          tenantId: endpoint.tenantId
+        }
+      });
+    });
+
+    it('should check connection (SaaS, without tenant id)', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.CAMUNDA_CLOUD,
+        camundaCloudClientId: 'foo',
+        camundaCloudClientSecret: 'bar',
+        camundaCloudClusterUrl: 'https://xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.yyy-1.zeebe.example.io:443',
+      };
+
+      // when
+      zeebeAPI.checkConnection(endpoint);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:checkConnection', {
+        endpoint: {
+          type: TARGET_TYPES.CAMUNDA_CLOUD,
+          url: endpoint.camundaCloudClusterUrl,
+          clientId: endpoint.camundaCloudClientId,
+          clientSecret: endpoint.camundaCloudClientSecret,
+          tenantId: undefined
         }
       });
     });
