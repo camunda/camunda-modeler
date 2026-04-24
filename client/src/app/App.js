@@ -17,9 +17,7 @@ import {
   debounce,
   forEach,
   groupBy,
-  isString,
   map,
-  merge,
   reduce
 } from 'min-dash';
 
@@ -27,7 +25,11 @@ import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
 
-import VersionMismatchChecker from './linting/VersionMismatchChecker';
+import {
+  createDefaultServices,
+  ServicesContext
+} from './services';
+import ActionRegistry from './services/ActionRegistry';
 
 import executeOnce from './util/executeOnce';
 
@@ -70,7 +72,7 @@ import { PluginsRoot } from './plugins';
 
 import * as css from './App.less';
 
-import Notifications, { NOTIFICATION_TYPES } from './notifications';
+import Notifications from './notifications';
 import { RecentTabs } from './RecentTabs';
 import { EventsContext } from './EventsContext';
 
@@ -87,8 +89,6 @@ const FILTER_ALL_EXTENSIONS = {
   name: 'All Files',
   extensions: [ '*' ]
 };
-
-const EMPTY_LINTING_STATE = [];
 
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
@@ -161,11 +161,34 @@ export class App extends PureComponent {
 
     this.tabRef = React.createRef();
 
-    this.on('connectionManager.connectionStatusChanged',
-      this._handleConnectionStatusChanged);
-    this.on('connectionManager.connectionCheckStarted', this._handleConnectionCheckStarted);
-    this.on('tab.engineProfileChanged',
-      this._handleEngineProfileChanged);
+    // -- Initialize action registry --
+    this._actionRegistry = new ActionRegistry();
+
+    // -- Initialize services --
+    // Accept pre-created services via props, or create the default set.
+    const services = props.services || createDefaultServices({
+      setState: (...args) => this.setState(...args),
+      getState: () => this.state,
+      tabsProvider: props.tabsProvider,
+      getPlugins: (...args) => this.getPlugins(...args),
+      getConfig: (...args) => this.getConfig(...args)
+    });
+
+    this._layoutService = services.layout;
+    this._notificationService = services.notification;
+    this._lintingService = services.linting;
+    this._services = services;
+
+    // Have services register their own actions
+    services.layout.registerActions(this._actionRegistry);
+    services.notification.registerActions(this._actionRegistry);
+    services.linting.registerActions(this._actionRegistry);
+
+    // Subscribe to events
+    this._destroyServices = services.linting.subscribeEvents(this);
+
+    // Register remaining (non-service) actions
+    this._registerActions();
 
     const userPlugins = this.getPlugins('client');
 
@@ -958,11 +981,7 @@ export class App extends PureComponent {
   };
 
   handleLayoutChanged = (newLayout) => {
-    this.setState(({ layout }) => {
-      const latestLayout = merge({}, layout, newLayout);
-
-      return { layout: latestLayout };
-    });
+    this._layoutService.handleLayoutChanged(newLayout);
   };
 
 
@@ -1052,110 +1071,16 @@ export class App extends PureComponent {
     });
   };
 
-  lintTab = async (tab, contents) => {
-    const { tabsProvider } = this.props;
-
-    const { type } = tab;
-
-    const tabProvider = tabsProvider.getProvider(type);
-
-    const plugins = this.getPlugins(`lintRules.${ type }`);
-
-    const linter = await tabProvider.getLinter(plugins, tab, this.getConfig);
-
-    let results = [];
-
-    if (linter) {
-      if (!contents) {
-        contents = tab.file.contents;
-      }
-
-      results = await linter.lint(contents);
-    }
-
-    const getWarnings = VersionMismatchChecker({
-      connectionCheckResult: this.state.connectionCheckResult,
-      engineProfiles: this.state.engineProfiles
-    });
-
-    const warnings = getWarnings(tab);
-
-    if (warnings.length) {
-      results = [ ...results, ...warnings ];
-    }
-
-    this.setLintingState(tab, results);
-  };
-
-  _handleConnectionCheckStarted = () => {
-    this.setState({ connectionCheckResult: null });
-  };
-
-  _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
-    const prev = this.state.connectionCheckResult;
-
-    // Only re-lint when the data relevant to version mismatch
-    // warning actually changes, not on every periodic poll
-    const prevVersion = prev && prev.success && prev.response
-      ? prev.response.gatewayVersion : null;
-    const nextVersion = connectionCheckResult.success && connectionCheckResult.response
-      ? connectionCheckResult.response.gatewayVersion : null;
-    const relevantChange = (prev && prev.success) !== connectionCheckResult.success
-      || prevVersion !== nextVersion;
-
-    this.setState({ connectionCheckResult }, () => {
-      if (!relevantChange) {
-        return;
-      }
-
-      const { activeTab } = this.state;
-
-      if (activeTab && activeTab !== EMPTY_TAB) {
-        this.lintTab(activeTab);
-      }
-    });
-  };
-
-  _handleEngineProfileChanged = ({ tab, executionPlatform, executionPlatformVersion }) => {
-    if (!tab || !tab.id) {
-      return;
-    }
-
-    this.setState(state => ({
-      engineProfiles: {
-        ...state.engineProfiles,
-        [ tab.id ]: { executionPlatform, executionPlatformVersion }
-      }
-    }), () => {
-
-      // Re-lint to pick up version mismatch warning
-      this.lintTab(tab);
-    });
+  lintTab = (tab, contents) => {
+    return this._lintingService.lintTab(tab, contents);
   };
 
   getLintingState = (tab) => {
-    return this.state.lintingState[ tab.id ] || EMPTY_LINTING_STATE;
+    return this._lintingService.getLintingState(tab);
   };
 
   setLintingState = (tab, results) => {
-    const { tabs } = this.state;
-
-    const lintingState = reduce(tabs, (lintingState, t) => {
-      if (t === tab) {
-        return lintingState;
-      }
-
-      return {
-        ...lintingState,
-        [ t.id ]: this.getLintingState(t)
-      };
-    }, {
-      [ tab.id ]: results
-    });
-
-    this.setState({
-      lintingState
-    });
+    this._lintingService.setLintingState(tab, results);
   };
 
   resizeTab = () => {
@@ -1271,11 +1196,11 @@ export class App extends PureComponent {
     }
 
     this.on('app.activeTabChanged', () => {
-      this.closeNotifications();
+      this._notificationService.closeNotifications();
     });
 
     this.on('tab.activeSheetChanged', () => {
-      this.closeNotifications();
+      this._notificationService.closeNotifications();
     });
   }
 
@@ -1434,35 +1359,7 @@ export class App extends PureComponent {
    * @param {boolean} silent - Log without opening the panel.
    */
   logEntry(message, category, action, silent) {
-
-    if (!silent) {
-      this.openPanel('log');
-    }
-
-    const logEntry = {
-      category,
-      message
-    };
-
-    if (action) {
-      assign(logEntry, {
-        action
-      });
-    }
-
-    this.setState((state) => {
-
-      const {
-        logEntries
-      } = state;
-
-      return {
-        logEntries: [
-          ...logEntries,
-          logEntry
-        ]
-      };
-    });
+    this._notificationService.logEntry(message, category, action, silent);
   }
 
   /**
@@ -1476,75 +1373,16 @@ export class App extends PureComponent {
    *
    * @returns {{ update: (options: object) => void, close: () => void }}
    */
-  displayNotification({ type = 'info', title, content, duration = 4000 }) {
-    const { notifications } = this.state;
-
-    if (!NOTIFICATION_TYPES.includes(type)) {
-      throw new Error('Unknown notification type');
-    }
-
-    if (!isString(title)) {
-      throw new Error('Title should be string');
-    }
-
-    const id = this.currentNotificationId++;
-
-    const close = () => {
-      this._closeNotification(id);
-    };
-
-    const update = newProps => {
-      this._updateNotification(id, newProps);
-    };
-
-    const notification = {
-      content,
-      duration,
-      id,
-      close,
-      title,
-      type
-    };
-
-    this.setState({
-      notifications: [
-        ...notifications,
-        notification
-      ]
-    });
-
-    return {
-      close,
-      update
-    };
+  displayNotification(options) {
+    return this._notificationService.displayNotification(options);
   }
 
   closeNotifications() {
-    this.setState({
-      notifications: []
-    });
-  }
-
-  _updateNotification(id, options) {
-    const notifications = this.state.notifications.map(notification => {
-      const { id: currentId } = notification;
-
-      return currentId !== id ? notification : { ...notification, ...options };
-    });
-
-    this.setState({ notifications });
-  }
-
-  _closeNotification(id) {
-    const notifications = this.state.notifications.filter(({ id: currentId }) => currentId !== id);
-
-    this.setState({ notifications });
+    this._notificationService.closeNotifications();
   }
 
   setLayout(layout) {
-    this.setState({
-      layout
-    });
+    this._layoutService.setLayout(layout);
   }
 
   /**
@@ -1701,9 +1539,9 @@ export class App extends PureComponent {
 
     options = options || {};
 
-    // do as long as it was successful or cancelled
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
+    const MAX_SAVE_RETRIES = 3;
+
+    for (let attempt = 0; attempt < MAX_SAVE_RETRIES; attempt++) {
 
       try {
 
@@ -1721,6 +1559,11 @@ export class App extends PureComponent {
 
         return this.tabSaved(tab, savedFile);
       } catch (err) {
+
+        if (attempt >= MAX_SAVE_RETRIES - 1) {
+          this.handleError(err);
+          return false;
+        }
 
         const { button } = await this.askForSaveRetry(tab, err, getSaveFileErrorDialog);
 
@@ -1827,7 +1670,7 @@ export class App extends PureComponent {
 
     console.error(`failed to auto-save tab ${tab.name}`, err);
 
-    this.displayNotification({
+    this._notificationService.displayNotification({
       type: 'error',
       title: 'Auto-save failed',
       content: `Could not auto-save "${tab.name}": ${err.message}`,
@@ -1852,63 +1695,23 @@ export class App extends PureComponent {
   };
 
   clearLog = () => {
-    this.setState({
-      logEntries: []
-    });
+    this._notificationService.clearLog();
   };
 
   openPanel = (tab = 'log') => {
-    const { layout = {} } = this.state;
-
-    const { panel = {} } = layout;
-
-    this.handleLayoutChanged({
-      panel: {
-        ...panel,
-        open: true,
-        tab
-      }
-    });
+    this._layoutService.openPanel(tab);
   };
 
   closePanel() {
-    const { layout = {} } = this.state;
-
-    const { panel = {} } = layout;
-
-    this.handleLayoutChanged({
-      panel: {
-        ...panel,
-        open: false
-      }
-    });
+    this._layoutService.closePanel();
   }
 
   openSidePanel = (tab = 'properties') => {
-    const { layout = {} } = this.state;
-
-    const { sidePanel = {} } = layout;
-
-    this.handleLayoutChanged({
-      sidePanel: {
-        ...sidePanel,
-        open: true,
-        tab
-      }
-    });
+    this._layoutService.openSidePanel(tab);
   };
 
   closeSidePanel() {
-    const { layout = {} } = this.state;
-
-    const { sidePanel = {} } = layout;
-
-    this.handleLayoutChanged({
-      sidePanel: {
-        ...sidePanel,
-        open: false
-      }
-    });
+    this._layoutService.closeSidePanel();
   }
 
   closeTabs = (matcher) => {
@@ -1997,7 +1800,7 @@ export class App extends PureComponent {
         fileType: exportType
       });
     } catch (err) {
-      this.logEntry(err.message, 'ERROR');
+      this._notificationService.logEntry(err.message, 'ERROR');
     }
   }
 
@@ -2050,10 +1853,9 @@ export class App extends PureComponent {
 
   async exportAs(tab) {
 
-    // do as long as it was successful or cancelled
-    const infinite = true;
+    const MAX_EXPORT_RETRIES = 3;
 
-    while (infinite) {
+    for (let attempt = 0; attempt < MAX_EXPORT_RETRIES; attempt++) {
 
       try {
 
@@ -2062,6 +1864,11 @@ export class App extends PureComponent {
         return exportOptions ? await this.exportAsFile(exportOptions) : false;
       } catch (err) {
         console.error('Tab export failed', err);
+
+        if (attempt >= MAX_EXPORT_RETRIES - 1) {
+          this.handleError(err);
+          return;
+        }
 
         const { button } = await this.askForSaveRetry(tab, err, getExportFileErrorDialog);
 
@@ -2081,242 +1888,123 @@ export class App extends PureComponent {
     return this.getGlobal('dialog').show(options);
   }
 
-  triggerAction = failSafe((action, options = {}) => {
+  /**
+   * Register all action handlers with the action registry.
+   * Called once during construction.
+   */
+  _registerActions() {
+    const r = this._actionRegistry;
 
-    const {
-      activeTab
-    } = this.state;
-
-
-    log('App#triggerAction %s %o', action, options);
-
-    if (action === 'set-tab-group') {
-      const {
-        id,
-        group
-      } = options;
-
+    // Tab management
+    r.register('set-tab-group', (options) => {
+      const { id, group } = options;
       return this.setTabGroup(id, group);
-    }
+    });
 
-    if (action === 'lint-tab') {
-      const {
-        tab,
-        contents
-      } = options;
-
-      return this.lintTab(tab, contents);
-    }
-
-    if (action === 'select-tab') {
+    r.register('select-tab', (options) => {
       if (options === 'next') {
         this.navigate(1);
       }
-
       if (options === 'previous') {
         this.navigate(-1);
       }
+    });
 
-      return;
-    }
+    // Diagram creation
+    r.register('create-bpmn-diagram', () => this.createDiagram('bpmn'));
+    r.register('create-dmn-diagram', () => this.createDiagram('dmn'));
+    r.register('create-form', () => this.createDiagram('form'));
+    r.register('create-cloud-form', () => this.createDiagram('cloud-form'));
+    r.register('create-cloud-bpmn-diagram', () => this.createDiagram('cloud-bpmn'));
+    r.register('create-cloud-dmn-diagram', () => this.createDiagram('cloud-dmn'));
+    r.register('create-diagram', (options) => this.createDiagram(options.type));
 
-    if (action === 'create-bpmn-diagram') {
-      return this.createDiagram('bpmn');
-    }
-
-    if (action === 'create-dmn-diagram') {
-      return this.createDiagram('dmn');
-    }
-
-    if (action === 'create-form') {
-      return this.createDiagram('form');
-    }
-
-    if (action === 'create-cloud-form') {
-      return this.createDiagram('cloud-form');
-    }
-
-    if (action === 'create-cloud-bpmn-diagram') {
-      return this.createDiagram('cloud-bpmn');
-    }
-
-    if (action === 'create-cloud-dmn-diagram') {
-      return this.createDiagram('cloud-dmn');
-    }
-
-    if (action === 'create-diagram') {
-      return this.createDiagram(options.type);
-    }
-
-    if (action === 'reopen-file') {
-      return this.openFiles([ options.file ]);
-    }
-
-    if (action === 'open-diagram') {
+    // File operations
+    r.register('reopen-file', (options) => this.openFiles([ options.file ]));
+    r.register('open-diagram', (options) => {
       const { path } = options;
-
       if (path) {
         return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
       }
-
       return this.showOpenFilesDialog();
-    }
+    });
+    r.register('save-all', () => this.saveAllTabs());
+    r.register('save-tab', (options) => this.saveTab(options.tab));
 
-    if (action === 'save-all') {
-      return this.saveAllTabs();
-    }
+    // Save (uses activeTab at dispatch time)
+    r.register('save', () => this.saveTab(this.state.activeTab));
+    r.register('save-as', () => this.saveTab(this.state.activeTab, { saveAs: true }));
 
-    if (action === 'save-tab') {
-      return this.saveTab(options.tab);
-    }
+    // Window events
+    r.register('window-focused', () => this.emit('app.focused'));
+    r.register('window-blurred', () => this.emit('app.blurred'));
+    r.register('quit', () => this.quit());
 
-    if (action === 'save') {
-      return this.saveTab(activeTab);
-    }
-
-    if (action === 'save-as') {
-      return this.saveTab(activeTab, { saveAs: true });
-    }
-
-    if (action === 'window-focused') {
-      return this.emit('app.focused');
-    }
-
-    if (action === 'window-blurred') {
-      return this.emit('app.blurred');
-    }
-
-    if (action === 'quit') {
-      return this.quit();
-    }
-
-    if (action === 'close-all-tabs') {
-      return this.closeTabs(t => true);
-    }
-
-    if (action === 'close-tab') {
-      return this.closeTabs(t => options && t.id === options.tabId);
-    }
-
-    if (action === 'close-active-tab') {
+    // Tab closing
+    r.register('close-all-tabs', () => this.closeTabs(t => true));
+    r.register('close-tab', (options) => this.closeTabs(t => options && t.id === options.tabId));
+    r.register('close-active-tab', () => {
       let activeId = this.state.activeTab.id;
-
       return this.closeTabs(t => t.id === activeId);
-    }
-
-    if (action === 'close-other-tabs') {
+    });
+    r.register('close-other-tabs', (options) => {
       let activeId = options && options.tabId || this.state.activeTab.id;
-
       return this.closeTabs(t => t.id !== activeId);
-    }
+    });
 
-    if (action === 'reopen-last-tab') {
-      return this.reopenLastTab();
-    }
+    // Tab history
+    r.register('reopen-last-tab', () => this.reopenLastTab());
 
-    if (action === 'reveal-in-file-explorer') {
-      return this.revealInFileExplorer(options.filePath);
-    }
+    // Misc
+    r.register('reveal-in-file-explorer', (options) => this.revealInFileExplorer(options.filePath));
+    r.register('show-shortcuts', () => this.showShortcuts());
+    r.register('update-menu', (options) => this.updateMenu(options));
+    r.register('export-as', () => this.exportAs(this.state.activeTab));
+    r.register('show-dialog', (options) => this.showDialog(options));
 
-    if (action === 'show-shortcuts') {
-      return this.showShortcuts();
-    }
+    // Modals
+    r.register('open-modal', (options) => this.setModal(options));
+    r.register('close-modal', () => this.setModal(null));
 
-    if (action === 'update-menu') {
-      return this.updateMenu(options);
-    }
+    // External
+    r.register('open-external-url', (options) => this.openExternalUrl(options));
+    r.register('check-file-changed', () => this.checkFileChanged(this.state.activeTab));
+    r.register('resize', () => this.resizeTab());
 
-    if (action === 'export-as') {
-      return this.exportAs(activeTab);
-    }
+    // Reload
+    r.register('reload-modeler', () => this.reloadModeler());
+    r.register('restart-modeler', () => this.reloadModeler(true));
 
-    if (action === 'show-dialog') {
-      return this.showDialog(options);
-    }
-
-    if (action === 'open-modal') {
-      return this.setModal(options);
-    }
-
-    if (action === 'close-modal') {
-      return this.setModal(null);
-    }
-
-    if (action === 'open-external-url') {
-      return this.openExternalUrl(options);
-    }
-
-    if (action === 'check-file-changed') {
-      return this.checkFileChanged(activeTab);
-    }
-
-    if (action === 'resize') {
-      return this.resizeTab();
-    }
-
-    if (action === 'reload-modeler') {
-      return this.reloadModeler();
-    }
-
-    if (action === 'restart-modeler') {
-      return this.reloadModeler(true);
-    }
-
-    if (action === 'log') {
-      const {
-        action,
-        category,
-        message,
-        silent
-      } = options;
-
-      return this.logEntry(message, category, action, silent);
-    }
-
-    if (action === 'open-log') {
-      return this.openPanel('log');
-    }
-
-    if (action === 'open-panel') {
-      const { tab } = options;
-
-      return this.openPanel(tab);
-    }
-
-    if (action === 'close-panel') {
-      return this.closePanel();
-    }
-
-    if (action === 'display-notification') {
-      return this.displayNotification(options);
-    }
-
-    if (action === 'emit-event') {
-      const {
-        type,
-        payload
-      } = options;
-
-      return this.emitWithTab(type, activeTab, payload);
-    }
-
-    if (action === 'toggle-panel') {
+    // Panel toggle (reads this.state.layout directly for React-batching compat)
+    r.register('toggle-panel', () => {
       const { panel } = this.state.layout;
-      return panel.open ? this.closePanel() : this.openPanel(panel.tab);
+      return panel.open ? this._layoutService.closePanel() : this._layoutService.openPanel(panel.tab);
+    });
+
+    // Events
+    r.register('emit-event', (options) => {
+      const { type, payload } = options;
+      return this.emitWithTab(type, this.state.activeTab, payload);
+    });
+    r.register('settings-open', (options) => this.emit('app.settings-open', options));
+
+    // Deployment
+    r.register('open-deployment', () =>
+      this.emitWithTab('app.open-deployment', this.state.activeTab));
+    r.register('open-connection-selector', () =>
+      this.emitWithTab('app.open-connection-selector', this.state.activeTab));
+  }
+
+  triggerAction = failSafe((action, options = {}) => {
+
+    log('App#triggerAction %s %o', action, options);
+
+    // Try the registry first
+    if (this._actionRegistry.has(action)) {
+      return this._actionRegistry.dispatch(action, options);
     }
 
-    if (action === 'settings-open') {
-      return this.emit('app.settings-open', options);
-    }
-
-    if (action === 'open-deployment') {
-      return this.emitWithTab('app.open-deployment', activeTab);
-    }
-
-    if (action === 'open-connection-selector') {
-      return this.emitWithTab('app.open-connection-selector', activeTab);
-    }
-
+    // Fallback: forward to active tab
     const tab = this.tabRef.current;
 
     return tab.triggerAction(action, options);
@@ -2486,7 +2174,9 @@ export class App extends PureComponent {
 
           <EventsContext.Provider value={ this.eventsContext }>
 
-            <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
+            <ServicesContext.Provider value={ this._services }>
+
+              <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
 
               <SlotFillRoot>
 
@@ -2515,12 +2205,12 @@ export class App extends PureComponent {
                         key={ activeTab.id }
                         tab={ activeTab }
                         layout={ layout }
-                        linting={ this.getLintingState(activeTab) }
+                        linting={ this._lintingService.getLintingState(activeTab) }
                         onChanged={ this.handleTabChanged }
                         onError={ this.handleTabError }
                         onWarning={ this.handleTabWarning }
                         onShown={ this.handleTabShown }
-                        onLayoutChanged={ this.handleLayoutChanged }
+                        onLayoutChanged={ this._layoutService.handleLayoutChanged }
                         onContextMenu={ this.openTabMenu }
                         onAction={ this.triggerAction }
                         onModal={ this.openModal }
@@ -2542,21 +2232,21 @@ export class App extends PureComponent {
 
                 <PanelContainer
                   layout={ layout }
-                  onLayoutChanged={ this.handleLayoutChanged }>
+                  onLayoutChanged={ this._layoutService.handleLayoutChanged }>
                   <Panel
                     layout={ layout }
-                    onLayoutChanged={ this.handleLayoutChanged }
+                    onLayoutChanged={ this._layoutService.handleLayoutChanged }
                     onUpdateMenu={ this.updateMenu } />
 
                   <LogTab
                     layout={ layout }
                     entries={ logEntries }
-                    onClear={ this.clearLog }
+                    onClear={ this._notificationService.clearLog }
                     onAction={ this.triggerAction } />
 
                   <LintingTab
                     layout={ layout }
-                    linting={ this.getLintingState(activeTab) }
+                    linting={ this._lintingService.getLintingState(activeTab) }
                     onAction={ this.triggerAction } />
                 </PanelContainer>
 
@@ -2576,6 +2266,8 @@ export class App extends PureComponent {
                 /> : null }
 
             </KeyboardInteractionTrapContext.Provider>
+
+            </ServicesContext.Provider>
 
           </EventsContext.Provider>
 
