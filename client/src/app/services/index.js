@@ -8,7 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-export { default as AppStore } from './AppStore';
 export { default as NotificationService } from './NotificationService';
 export { default as LayoutService } from './LayoutService';
 export { default as LintingService } from './LintingService';

@@ -25,7 +25,7 @@ import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
 
-import { AppStore, NotificationService, LayoutService, LintingService } from './services';
+import { NotificationService, LayoutService, LintingService } from './services';
 import ActionRegistry from './services/ActionRegistry';
 
 import executeOnce from './util/executeOnce';
@@ -158,22 +158,22 @@ export class App extends PureComponent {
 
     this.tabRef = React.createRef();
 
-    // -- Initialize store and services --
+    // -- Initialize services --
 
-    this._store = new AppStore({
+    const serviceDeps = {
       setState: (...args) => this.setState(...args),
       getState: () => this.state
-    });
+    };
 
-    this._layoutService = new LayoutService({ store: this._store });
+    this._layoutService = new LayoutService(serviceDeps);
 
     this._notificationService = new NotificationService({
-      store: this._store,
-      openPanel: (...args) => this.openPanel(...args)
+      ...serviceDeps,
+      openPanel: (...args) => this._layoutService.openPanel(...args)
     });
 
     this._lintingService = new LintingService({
-      store: this._store,
+      ...serviceDeps,
       tabsProvider: props.tabsProvider,
       getPlugins: (...args) => this.getPlugins(...args),
       getConfig: (...args) => this.getConfig(...args)
@@ -1074,18 +1074,6 @@ export class App extends PureComponent {
     return this._lintingService.lintTab(tab, contents);
   };
 
-  _handleConnectionCheckStarted = () => {
-    this._lintingService.handleConnectionCheckStarted();
-  };
-
-  _handleConnectionStatusChanged = (params) => {
-    this._lintingService.handleConnectionStatusChanged(params);
-  };
-
-  _handleEngineProfileChanged = (params) => {
-    this._lintingService.handleEngineProfileChanged(params);
-  };
-
   getLintingState = (tab) => {
     return this._lintingService.getLintingState(tab);
   };
@@ -1207,11 +1195,11 @@ export class App extends PureComponent {
     }
 
     this.on('app.activeTabChanged', () => {
-      this.closeNotifications();
+      this._notificationService.closeNotifications();
     });
 
     this.on('tab.activeSheetChanged', () => {
-      this.closeNotifications();
+      this._notificationService.closeNotifications();
     });
   }
 
@@ -1681,7 +1669,7 @@ export class App extends PureComponent {
 
     console.error(`failed to auto-save tab ${tab.name}`, err);
 
-    this.displayNotification({
+    this._notificationService.displayNotification({
       type: 'error',
       title: 'Auto-save failed',
       content: `Could not auto-save "${tab.name}": ${err.message}`,
@@ -1811,7 +1799,7 @@ export class App extends PureComponent {
         fileType: exportType
       });
     } catch (err) {
-      this.logEntry(err.message, 'ERROR');
+      this._notificationService.logEntry(err.message, 'ERROR');
     }
   }
 
@@ -1914,7 +1902,7 @@ export class App extends PureComponent {
 
     r.register('lint-tab', (options) => {
       const { tab, contents } = options;
-      return this.lintTab(tab, contents);
+      return this._lintingService.lintTab(tab, contents);
     });
 
     r.register('select-tab', (options) => {
@@ -1994,12 +1982,12 @@ export class App extends PureComponent {
     // Logging & notifications
     r.register('log', (options) => {
       const { action, category, message, silent } = options;
-      return this.logEntry(message, category, action, silent);
+      return this._notificationService.logEntry(message, category, action, silent);
     });
-    r.register('open-log', () => this.openPanel('log'));
-    r.register('open-panel', (options) => this.openPanel(options.tab));
-    r.register('close-panel', () => this.closePanel());
-    r.register('display-notification', (options) => this.displayNotification(options));
+    r.register('open-log', () => this._layoutService.openPanel('log'));
+    r.register('open-panel', (options) => this._layoutService.openPanel(options.tab));
+    r.register('close-panel', () => this._layoutService.closePanel());
+    r.register('display-notification', (options) => this._notificationService.displayNotification(options));
 
     // Events
     r.register('emit-event', (options) => {
@@ -2008,7 +1996,7 @@ export class App extends PureComponent {
     });
     r.register('toggle-panel', () => {
       const { panel } = this.state.layout;
-      return panel.open ? this.closePanel() : this.openPanel(panel.tab);
+      return panel.open ? this._layoutService.closePanel() : this._layoutService.openPanel(panel.tab);
     });
     r.register('settings-open', (options) => this.emit('app.settings-open', options));
 
@@ -2227,12 +2215,12 @@ export class App extends PureComponent {
                         key={ activeTab.id }
                         tab={ activeTab }
                         layout={ layout }
-                        linting={ this.getLintingState(activeTab) }
+                        linting={ this._lintingService.getLintingState(activeTab) }
                         onChanged={ this.handleTabChanged }
                         onError={ this.handleTabError }
                         onWarning={ this.handleTabWarning }
                         onShown={ this.handleTabShown }
-                        onLayoutChanged={ this.handleLayoutChanged }
+                        onLayoutChanged={ this._layoutService.handleLayoutChanged }
                         onContextMenu={ this.openTabMenu }
                         onAction={ this.triggerAction }
                         onModal={ this.openModal }
@@ -2254,21 +2242,21 @@ export class App extends PureComponent {
 
                 <PanelContainer
                   layout={ layout }
-                  onLayoutChanged={ this.handleLayoutChanged }>
+                  onLayoutChanged={ this._layoutService.handleLayoutChanged }>
                   <Panel
                     layout={ layout }
-                    onLayoutChanged={ this.handleLayoutChanged }
+                    onLayoutChanged={ this._layoutService.handleLayoutChanged }
                     onUpdateMenu={ this.updateMenu } />
 
                   <LogTab
                     layout={ layout }
                     entries={ logEntries }
-                    onClear={ this.clearLog }
+                    onClear={ this._notificationService.clearLog }
                     onAction={ this.triggerAction } />
 
                   <LintingTab
                     layout={ layout }
-                    linting={ this.getLintingState(activeTab) }
+                    linting={ this._lintingService.getLintingState(activeTab) }
                     onAction={ this.triggerAction } />
                 </PanelContainer>
 

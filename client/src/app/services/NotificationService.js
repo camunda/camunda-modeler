@@ -17,13 +17,15 @@ const NOTIFICATION_TYPES = [ 'info', 'success', 'error', 'warning' ];
  * Service for managing notifications and log entries.
  *
  * @param {object} deps
- * @param {import('./AppStore').default} deps.store - Application state store.
+ * @param {function} deps.setState - State update function.
+ * @param {function} deps.getState - Returns current state snapshot.
  * @param {function} deps.openPanel - Opens a panel (e.g., 'log')
  */
 export default class NotificationService {
 
-  constructor({ store, openPanel }) {
-    this._store = store;
+  constructor({ setState, getState, openPanel }) {
+    this._setState = setState;
+    this._getState = getState;
     this._openPanel = openPanel;
     this._currentNotificationId = 0;
   }
@@ -40,7 +42,7 @@ export default class NotificationService {
    * @returns {{ update: (options: object) => void, close: () => void }}
    */
   displayNotification({ type = 'info', title, content, duration = 4000 }) {
-    const { notifications } = this._store.getState();
+    const { notifications } = this._getState();
 
     if (!NOTIFICATION_TYPES.includes(type)) {
       throw new Error('Unknown notification type');
@@ -69,7 +71,7 @@ export default class NotificationService {
       type
     };
 
-    this._store.setState({
+    this._setState({
       notifications: [
         ...notifications,
         notification
@@ -83,25 +85,25 @@ export default class NotificationService {
   }
 
   closeNotifications() {
-    this._store.setState({
+    this._setState({
       notifications: []
     });
   }
 
   _updateNotification(id, options) {
-    const notifications = this._store.getState().notifications.map(notification => {
+    const notifications = this._getState().notifications.map(notification => {
       const { id: currentId } = notification;
 
       return currentId !== id ? notification : { ...notification, ...options };
     });
 
-    this._store.setState({ notifications });
+    this._setState({ notifications });
   }
 
   _closeNotification(id) {
-    const notifications = this._store.getState().notifications.filter(({ id: currentId }) => currentId !== id);
+    const notifications = this._getState().notifications.filter(({ id: currentId }) => currentId !== id);
 
-    this._store.setState({ notifications });
+    this._setState({ notifications });
   }
 
   /**
@@ -129,7 +131,7 @@ export default class NotificationService {
       });
     }
 
-    this._store.setState((state) => {
+    this._setState((state) => {
 
       const {
         logEntries
@@ -144,9 +146,9 @@ export default class NotificationService {
     });
   }
 
-  clearLog() {
-    this._store.setState({
+  clearLog = () => {
+    this._setState({
       logEntries: []
     });
-  }
+  };
 }

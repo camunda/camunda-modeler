@@ -8,7 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import AppStore from '../AppStore';
 import LayoutService from '../LayoutService';
 
 
@@ -16,15 +15,17 @@ describe('LayoutService', function() {
 
   function createLayoutService(initialState = {}) {
     const state = { layout: {}, ...initialState };
-    const store = new AppStore({
-      setState: (updater) => {
-        const patch = typeof updater === 'function' ? updater(state) : updater;
-        Object.assign(state, patch);
-      },
-      getState: () => state
-    });
 
-    return { service: new LayoutService({ store }), state };
+    return {
+      service: new LayoutService({
+        setState: (updater) => {
+          const patch = typeof updater === 'function' ? updater(state) : updater;
+          Object.assign(state, patch);
+        },
+        getState: () => state
+      }),
+      state
+    };
   }
 
 

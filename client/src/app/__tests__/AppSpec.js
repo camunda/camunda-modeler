@@ -1576,7 +1576,7 @@ describe('<App>', function() {
       const err = new Error('write failed');
       fileSystem.setWriteFileResponse(Promise.reject(err));
 
-      const displayNotificationSpy = spy(app, 'displayNotification');
+      const displayNotificationSpy = spy(app._notificationService, 'displayNotification');
 
       // when
       await app.autoSave(tab);

@@ -20,15 +20,17 @@ const EMPTY_LINTING_STATE = [];
  * Service for managing linting state and connection checking.
  *
  * @param {object} deps
- * @param {import('./AppStore').default} deps.store - Application state store.
+ * @param {function} deps.setState - State update function.
+ * @param {function} deps.getState - Returns current state snapshot.
  * @param {object} deps.tabsProvider - Tab provider for accessing linters
  * @param {function} deps.getPlugins - Gets plugins by type
  * @param {function} deps.getConfig - Gets configuration values
  */
 export default class LintingService {
 
-  constructor({ store, tabsProvider, getPlugins, getConfig }) {
-    this._store = store;
+  constructor({ setState, getState, tabsProvider, getPlugins, getConfig }) {
+    this._setState = setState;
+    this._getState = getState;
     this._tabsProvider = tabsProvider;
     this._getPlugins = getPlugins;
     this._getConfig = getConfig;
@@ -60,8 +62,8 @@ export default class LintingService {
     }
 
     const getWarnings = VersionMismatchChecker({
-      connectionCheckResult: this._store.getState().connectionCheckResult,
-      engineProfiles: this._store.getState().engineProfiles
+      connectionCheckResult: this._getState().connectionCheckResult,
+      engineProfiles: this._getState().engineProfiles
     });
 
     const warnings = getWarnings(tab);
@@ -80,7 +82,7 @@ export default class LintingService {
    * @returns {Array} Linting results.
    */
   getLintingState = (tab) => {
-    return this._store.getState().lintingState[ tab.id ] || EMPTY_LINTING_STATE;
+    return this._getState().lintingState[ tab.id ] || EMPTY_LINTING_STATE;
   };
 
   /**
@@ -90,7 +92,7 @@ export default class LintingService {
    * @param {Array} results
    */
   setLintingState = (tab, results) => {
-    const { tabs } = this._store.getState();
+    const { tabs } = this._getState();
 
     const lintingState = reduce(tabs, (lintingState, t) => {
       if (t === tab) {
@@ -105,7 +107,7 @@ export default class LintingService {
       [ tab.id ]: results
     });
 
-    this._store.setState({
+    this._setState({
       lintingState
     });
   };
@@ -114,7 +116,7 @@ export default class LintingService {
    * Handle connection check started event.
    */
   handleConnectionCheckStarted = () => {
-    this._store.setState({ connectionCheckResult: null });
+    this._setState({ connectionCheckResult: null });
   };
 
   /**
@@ -125,7 +127,7 @@ export default class LintingService {
    * @param {object} params.tab
    */
   handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
-    const prev = this._store.getState().connectionCheckResult;
+    const prev = this._getState().connectionCheckResult;
 
     // Only re-lint when the data relevant to version mismatch
     // warning actually changes, not on every periodic poll
@@ -136,12 +138,12 @@ export default class LintingService {
     const relevantChange = (prev && prev.success) !== connectionCheckResult.success
       || prevVersion !== nextVersion;
 
-    this._store.setState({ connectionCheckResult }, () => {
+    this._setState({ connectionCheckResult }, () => {
       if (!relevantChange) {
         return;
       }
 
-      const { activeTab } = this._store.getState();
+      const { activeTab } = this._getState();
 
       if (activeTab && activeTab.id !== '__empty') {
         this.lintTab(activeTab);
@@ -163,7 +165,7 @@ export default class LintingService {
       return;
     }
 
-    this._store.setState(state => ({
+    this._setState(state => ({
       engineProfiles: {
         ...state.engineProfiles,
         [ tab.id ]: { executionPlatform, executionPlatformVersion }

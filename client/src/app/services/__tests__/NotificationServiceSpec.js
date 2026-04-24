@@ -8,7 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import AppStore from '../AppStore';
 import NotificationService from '../NotificationService';
 
 
@@ -17,16 +16,13 @@ describe('NotificationService', function() {
   function createNotificationService(options = {}) {
     const state = { notifications: [], logEntries: [], ...options.initialState };
     const openPanelSpy = sinon.spy();
-    const store = new AppStore({
+
+    const service = new NotificationService({
       setState: (updater) => {
         const patch = typeof updater === 'function' ? updater(state) : updater;
         Object.assign(state, patch);
       },
-      getState: () => state
-    });
-
-    const service = new NotificationService({
-      store,
+      getState: () => state,
       openPanel: openPanelSpy
     });
 

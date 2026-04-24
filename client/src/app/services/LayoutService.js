@@ -15,12 +15,14 @@ import { merge } from 'min-dash';
  * Service for managing application layout (panels, side panels).
  *
  * @param {object} deps
- * @param {import('./AppStore').default} deps.store - Application state store.
+ * @param {function} deps.setState - State update function.
+ * @param {function} deps.getState - Returns current state snapshot.
  */
 export default class LayoutService {
 
-  constructor({ store }) {
-    this._store = store;
+  constructor({ setState, getState }) {
+    this._setState = setState;
+    this._getState = getState;
   }
 
   /**
@@ -29,7 +31,7 @@ export default class LayoutService {
    * @param {object} newLayout
    */
   handleLayoutChanged = (newLayout) => {
-    this._store.setState(({ layout }) => {
+    this._setState(({ layout }) => {
       const latestLayout = merge({}, layout, newLayout);
 
       return { layout: latestLayout };
@@ -42,7 +44,7 @@ export default class LayoutService {
    * @param {object} layout
    */
   setLayout(layout) {
-    this._store.setState({
+    this._setState({
       layout
     });
   }
@@ -53,7 +55,7 @@ export default class LayoutService {
    * @param {string} [tab='log'] - The panel tab to open.
    */
   openPanel = (tab = 'log') => {
-    const { layout = {} } = this._store.getState();
+    const { layout = {} } = this._getState();
 
     const { panel = {} } = layout;
 
@@ -70,7 +72,7 @@ export default class LayoutService {
    * Close the bottom panel.
    */
   closePanel() {
-    const { layout = {} } = this._store.getState();
+    const { layout = {} } = this._getState();
 
     const { panel = {} } = layout;
 
@@ -88,7 +90,7 @@ export default class LayoutService {
    * @param {string} [tab='properties'] - The side panel tab to open.
    */
   openSidePanel = (tab = 'properties') => {
-    const { layout = {} } = this._store.getState();
+    const { layout = {} } = this._getState();
 
     const { sidePanel = {} } = layout;
 
@@ -105,7 +107,7 @@ export default class LayoutService {
    * Close the side panel.
    */
   closeSidePanel() {
-    const { layout = {} } = this._store.getState();
+    const { layout = {} } = this._getState();
 
     const { sidePanel = {} } = layout;
 

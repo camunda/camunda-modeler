@@ -8,7 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import AppStore from '../AppStore';
 import LintingService from '../LintingService';
 
 
@@ -25,16 +24,6 @@ describe('LintingService', function() {
     };
 
     let stateCallback = null;
-    const store = new AppStore({
-      setState: (updater, callback) => {
-        const patch = typeof updater === 'function' ? updater(state) : updater;
-        Object.assign(state, patch);
-        if (callback) {
-          stateCallback = callback;
-        }
-      },
-      getState: () => state
-    });
 
     const tabsProvider = options.tabsProvider || {
       getProvider: () => ({
@@ -43,7 +32,14 @@ describe('LintingService', function() {
     };
 
     const service = new LintingService({
-      store,
+      setState: (updater, callback) => {
+        const patch = typeof updater === 'function' ? updater(state) : updater;
+        Object.assign(state, patch);
+        if (callback) {
+          stateCallback = callback;
+        }
+      },
+      getState: () => state,
       tabsProvider,
       getPlugins: options.getPlugins || (() => []),
       getConfig: options.getConfig || (() => ({}))
