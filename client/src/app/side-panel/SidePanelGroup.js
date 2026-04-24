@@ -20,23 +20,23 @@ import useParentWidth from './useParentWidth';
 export const MIN_CANVAS_WIDTH = 200;
 export const MIN_PANEL_WIDTH = 280;
 
-const SidePanelContainerContext = createContext(null);
+const SidePanelGroupContext = createContext(null);
 
 /**
- * Container that coordinates multiple resizable side panels.
+ * Group of resizable side panels arranged next to each other.
  *
- * Wrap each panel in a `SidePanelSlot` to receive
+ * Wrap each panel in a `SidePanelConsumer` to receive
  * computed `maxWidth` and a width-limiting `onLayoutChanged`.
  *
  * @example
  * ```jsx
- * <SidePanelContainer layout={layout} onLayoutChanged={onLayoutChanged}>
- *   <SidePanelSlot panelId="variablesSidePanel">
+ * <SidePanelGroup layout={layout} onLayoutChanged={onLayoutChanged}>
+ *   <SidePanelConsumer panelId="variablesSidePanel">
  *     {({ maxWidth, onLayoutChanged }) => (
  *       <VariablesSidePanel maxWidth={maxWidth} onLayoutChanged={onLayoutChanged} />
  *     )}
- *   </SidePanelSlot>
- * </SidePanelContainer>
+ *   </SidePanelConsumer>
+ * </SidePanelGroup>
  * ```
  *
  * @param {Object} props
@@ -44,7 +44,7 @@ const SidePanelContainerContext = createContext(null);
  * @param {Function} props.onLayoutChanged
  * @param {React.ReactNode} props.children
  */
-export function SidePanelContainer({
+export function SidePanelGroup({
   layout,
   onLayoutChanged,
   children
@@ -68,11 +68,11 @@ export function SidePanelContainer({
   }), [ getMaxWidth, onLayoutChanged ]);
 
   return (
-    <SidePanelContainerContext.Provider value={ contextValue }>
+    <SidePanelGroupContext.Provider value={ contextValue }>
       <div ref={ containerRef } style={ { display: 'contents' } }>
         { children }
       </div>
-    </SidePanelContainerContext.Provider>
+    </SidePanelGroupContext.Provider>
   );
 }
 
@@ -82,22 +82,22 @@ export function SidePanelContainer({
  *
  * @example
  * ```jsx
- * <SidePanelSlot panelId="variablesSidePanel">
+ * <SidePanelConsumer panelId="variablesSidePanel">
  *   {({ maxWidth, onLayoutChanged }) => (
  *     <VariablesSidePanel maxWidth={maxWidth} onLayoutChanged={onLayoutChanged} ... />
  *   )}
- * </SidePanelSlot>
+ * </SidePanelConsumer>
  * ```
  *
  * @param {Object} props
  * @param {string} props.panelId layout key for this panel
  * @param {Function} props.children render-prop receiving { maxWidth, onLayoutChanged }
  */
-export function SidePanelSlot({ panelId, children }) {
+export function SidePanelConsumer({ panelId, children }) {
   const {
     getMaxWidth,
     onLayoutChanged: ctxOnLayoutChanged
-  } = useContext(SidePanelContainerContext);
+  } = useContext(SidePanelGroupContext);
 
   const maxWidth = getMaxWidth(panelId);
 

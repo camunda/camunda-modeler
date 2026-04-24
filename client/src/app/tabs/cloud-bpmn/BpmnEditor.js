@@ -41,7 +41,7 @@ import SidePanelHeader from './side-panel/SidePanelHeader';
 import VariablesSidePanel, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT } from './variables-side-panel/VariablesSidePanel';
 import VariablesTabActionItem from './variables-side-panel/VariablesTabActionItem';
 
-import { SidePanelContainer, SidePanelSlot } from '../../side-panel/SidePanelContainer';
+import { SidePanelGroup, SidePanelConsumer } from '../../side-panel/SidePanelGroup';
 
 import BpmnModeler from './modeler';
 
@@ -894,8 +894,8 @@ export class BpmnEditor extends CachedComponent {
             onContextMenu={ this.handleContextMenu }
           ></div>
 
-          <SidePanelContainer layout={ layout } onLayoutChanged={ this.handleLayoutChange }>
-            <SidePanelSlot panelId="variablesSidePanel">
+          <SidePanelGroup layout={ layout } onLayoutChanged={ this.handleLayoutChange }>
+            <SidePanelConsumer panelId="variablesSidePanel">
               { ({ maxWidth, onLayoutChanged }) => (
                 <VariablesSidePanel
                   injector={ injector }
@@ -905,9 +905,9 @@ export class BpmnEditor extends CachedComponent {
                   onLayoutChanged={ onLayoutChanged }
                 />
               ) }
-            </SidePanelSlot>
+            </SidePanelConsumer>
 
-            <SidePanelSlot panelId="sidePanel">
+            <SidePanelConsumer panelId="sidePanel">
               { ({ maxWidth, onLayoutChanged }) => (
                 <SidePanel
                   layout={ layout }
@@ -947,8 +947,8 @@ export class BpmnEditor extends CachedComponent {
                   </SidePanel.Tab>
                 </SidePanel>
               ) }
-            </SidePanelSlot>
-          </SidePanelContainer>
+            </SidePanelConsumer>
+          </SidePanelGroup>
 
           <VariablesTabActionItem
             layout={ layout }
