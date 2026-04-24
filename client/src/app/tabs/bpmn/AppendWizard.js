@@ -8,9 +8,11 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 
 import { APPEND_GROUPS, findLeaf } from './appendCatalog';
+
+import { buildAppendResults } from './appendSearch';
 
 import { WizardShell } from './StartEventWizard';
 
@@ -44,14 +46,36 @@ function PickerIcon({ icon }) {
  * @param {object}   props
  * @param {function} props.onConfirm  - called with (elementId, config)
  * @param {function} props.onClose    - called when the dialog should close (Escape, backdrop, or back from step 1)
+ * @param {function} props.onQuickAppend - called for one-shot append from the search-results view (no Step 2)
  * @param {Array}    props.serviceTaskTemplates - pre-filtered templates for ServiceTaskWizard
  * @param {Array}    props.aiConnectorTemplates - pre-filtered templates for the AI connector leaf
+ * @param {Array}    props.templates - full template corpus for search results
+ * @param {string}   props.sourceElementType - BPMN type of the element being appended from (e.g. 'bpmn:Task')
  */
-export default function AppendWizard({ onConfirm, onClose, serviceTaskTemplates = [], aiConnectorTemplates = [] }) {
+export default function AppendWizard({
+  onConfirm,
+  onClose,
+  onQuickAppend,
+  serviceTaskTemplates = [],
+  aiConnectorTemplates = [],
+  templates = [],
+  sourceElementType
+}) {
   const [ groupId, setGroupId ] = useState(null); // null = showing groups
   const [ leafId, setLeafId ] = useState(null); // null = no wizard open
   const [ nameOnly, setNameOnly ] = useState(null); // leaf being placed with just a name prompt
   const [ search, setSearch ] = useState('');
+
+  // activeIdx — which search result is primary-focused (arrow-key nav).
+  const [ activeIdx, setActiveIdx ] = useState(0);
+
+  // primaryAction — 'append' or 'configure'; Tab flips this on the active row.
+  const [ primaryAction, setPrimaryAction ] = useState('append');
+
+  const searchResults = useMemo(
+    () => buildAppendResults({ query: search, templates, sourceElementType }),
+    [ search, templates, sourceElementType ]
+  );
 
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
@@ -61,6 +85,9 @@ export default function AppendWizard({ onConfirm, onClose, serviceTaskTemplates 
 
   // Reset search whenever we step between views so each screen starts fresh.
   useEffect(() => { setSearch(''); }, [ groupId ]);
+
+  // Reset active row whenever the query changes.
+  useEffect(() => { setActiveIdx(0); setPrimaryAction('append'); }, [ search ]);
 
   // ─── Step 2: leaf with a full wizard ────────────────────────────────────
 
@@ -117,6 +144,158 @@ export default function AppendWizard({ onConfirm, onClose, serviceTaskTemplates 
         onConfirm={ (config) => { const id = nameOnly.elementId; setNameOnly(null); onConfirm(id, config); } }
       />
     );
+  }
+
+  // ─── Search results: flat ranked list across leaves + templates ────────
+  //
+  // Activates when the user types into the top-level search input. Drill-down
+  // (groupId !== null) keeps its own in-group filter, and Step-2 wizards
+  // (leafId / nameOnly) take priority, so this branch only wins when we're
+  // at the top level with a non-empty query.
+  if (!groupId && search.trim()) {
+    return renderSearchResults();
+  }
+
+  function renderSearchResults() {
+
+    // Group results by section for rendering, preserving rank order.
+    const sections = [];
+    let currentSection = null;
+    for (const r of searchResults) {
+      if (!currentSection || currentSection.id !== r.section) {
+        currentSection = { id: r.section, label: r.sectionLabel, items: [] };
+        sections.push(currentSection);
+      }
+      currentSection.items.push(r);
+    }
+
+    const activeResult = searchResults[activeIdx] || null;
+
+    const runAppend = (r) => {
+      if (r.source === 'template') onQuickAppend({ template: r.template });
+      else onQuickAppend({ elementId: r.leaf.elementId });
+    };
+
+    const runConfigure = (r) => {
+      if (r.source === 'template') {
+
+        // Templates have no Step-2 wizard; apply + open properties panel.
+        onConfirm(inferElementIdForTemplate(r.template), { template: r.template });
+      } else if (r.leaf.wizard) {
+        setLeafId(r.leaf.elementId);
+      } else {
+
+        // No wizard: place + open properties panel (onConfirm does both).
+        onConfirm(r.leaf.elementId, {});
+      }
+    };
+
+    const runPrimary = () => {
+      if (!activeResult) return;
+      if (primaryAction === 'append') runAppend(activeResult);
+      else runConfigure(activeResult);
+    };
+
+    const onKeyDown = (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setActiveIdx(i => Math.min(i + 1, searchResults.length - 1));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActiveIdx(i => Math.max(i - 1, 0));
+      } else if (e.key === 'Tab') {
+
+        // preventDefault is load-bearing: without it focus leaves the input
+        // and the whole keyboard flow breaks.
+        e.preventDefault();
+        setPrimaryAction(p => p === 'append' ? 'configure' : 'append');
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        runPrimary();
+      }
+    };
+
+    return (
+      <PickerShell
+        heading="What happens next?"
+        onClose={ onClose }
+      >
+        <input
+          className={ css.searchInput }
+          placeholder="Search"
+          autoFocus
+          value={ search }
+          onChange={ e => setSearch(e.target.value) }
+          onKeyDown={ onKeyDown }
+          aria-activedescendant={ activeResult ? `append-result-${activeIdx}` : undefined }
+          aria-controls="append-results"
+        />
+        <div id="append-results" role="listbox" className={ css.resultsList }>
+          { sections.length === 0 && (
+            <div className={ css.empty }>No matches for "{ search }"</div>
+          ) }
+          { sections.map(section => (
+            <div key={ section.id } className={ css.section }>
+              <div className={ css.resultsSectionLabel }>{ section.label }</div>
+              { section.items.map(r => {
+                const globalIdx = searchResults.indexOf(r);
+                const isActive = globalIdx === activeIdx;
+                return (
+                  <div
+                    key={ r.id }
+                    id={ `append-result-${globalIdx}` }
+                    role="option"
+                    aria-selected={ isActive }
+                    className={ isActive ? `${css.resultRow} ${css.resultRowActive}` : css.resultRow }
+                    onMouseEnter={ () => setActiveIdx(globalIdx) }
+                    onClick={ () => runAppend(r) }
+                  >
+                    <span className={ `${css.resultIcon} ${r.icon || ''}` } aria-hidden="true" />
+                    <span className={ css.resultLabel }>{ r.label }</span>
+                    { r.hint && <span className={ css.resultHint }>{ r.hint }</span> }
+                    { isActive && (
+                      <span className={ css.resultActions }>
+                        <button
+                          type="button"
+                          className={ primaryAction === 'append' ? css.actionPrimary : css.actionSecondary }
+                          onClick={ (e) => { e.stopPropagation(); runAppend(r); } }
+                        >
+                          Append { primaryAction === 'append' && <kbd>↵</kbd> }
+                        </button>
+                        <button
+                          type="button"
+                          className={ primaryAction === 'configure' ? css.actionPrimary : css.actionSecondary }
+                          onClick={ (e) => { e.stopPropagation(); runConfigure(r); } }
+                        >
+                          Configure { primaryAction === 'configure' && <kbd>↵</kbd> }
+                        </button>
+                      </span>
+                    ) }
+                  </div>
+                );
+              }) }
+            </div>
+          )) }
+        </div>
+        <div className={ css.footer }>
+          <span>↑↓ navigate</span>
+          <span>Tab switch action</span>
+          <span>↵ { primaryAction === 'append' ? 'append' : 'configure' }</span>
+          <span>esc close</span>
+        </div>
+      </PickerShell>
+    );
+  }
+
+  function inferElementIdForTemplate(template) {
+
+    // Pick a leaf elementId that matches the template's primary appliesTo.
+    // Falls through to 'service-task' for connector-like templates.
+    const appliesTo = template.appliesTo || [];
+    if (appliesTo.includes('bpmn:UserTask')) return 'user-task';
+    if (appliesTo.includes('bpmn:BusinessRuleTask')) return 'business-rule-task';
+    if (appliesTo.includes('bpmn:CallActivity')) return 'call-activity';
+    return 'service-task';
   }
 
   // ─── Step 1: drill-down leaves ──────────────────────────────────────────
@@ -182,6 +361,9 @@ export default function AppendWizard({ onConfirm, onClose, serviceTaskTemplates 
 
   // ─── Step 1: top-level groups ───────────────────────────────────────────
 
+  // NOTE: when `search` is non-empty, renderSearchResults() handles the view.
+  // This group-level filter now only runs for empty search, which means it's
+  // a no-op. Kept for now to keep the diff small.
   const q = search.trim().toLowerCase();
   const filteredGroups = q
     ? APPEND_GROUPS.filter(g =>
