@@ -25,7 +25,7 @@ import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
 
-import { NotificationService, LayoutService, LintingService } from './services';
+import { AppStore, NotificationService, LayoutService, LintingService } from './services';
 import ActionRegistry from './services/ActionRegistry';
 
 import executeOnce from './util/executeOnce';
@@ -158,22 +158,22 @@ export class App extends PureComponent {
 
     this.tabRef = React.createRef();
 
-    // -- Initialize services --
+    // -- Initialize store and services --
 
-    const serviceDeps = {
+    this._store = new AppStore({
       setState: (...args) => this.setState(...args),
       getState: () => this.state
-    };
+    });
 
-    this._layoutService = new LayoutService(serviceDeps);
+    this._layoutService = new LayoutService({ store: this._store });
 
     this._notificationService = new NotificationService({
-      ...serviceDeps,
+      store: this._store,
       openPanel: (...args) => this.openPanel(...args)
     });
 
     this._lintingService = new LintingService({
-      ...serviceDeps,
+      store: this._store,
       tabsProvider: props.tabsProvider,
       getPlugins: (...args) => this.getPlugins(...args),
       getConfig: (...args) => this.getConfig(...args)
