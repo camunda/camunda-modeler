@@ -11,3 +11,9 @@
 export { default as NotificationService } from './NotificationService';
 export { default as LayoutService } from './LayoutService';
 export { default as LintingService } from './LintingService';
+
+export { default as ServiceContainer } from './ServiceContainer';
+
+export { default as layoutDescriptor } from './layoutDescriptor';
+export { default as notificationDescriptor } from './notificationDescriptor';
+export { default as lintingDescriptor } from './lintingDescriptor';

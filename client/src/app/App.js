@@ -25,7 +25,12 @@ import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
 
-import { NotificationService, LayoutService, LintingService } from './services';
+import {
+  ServiceContainer,
+  layoutDescriptor,
+  notificationDescriptor,
+  lintingDescriptor
+} from './services';
 import ActionRegistry from './services/ActionRegistry';
 
 import executeOnce from './util/executeOnce';
@@ -158,35 +163,34 @@ export class App extends PureComponent {
 
     this.tabRef = React.createRef();
 
-    // -- Initialize services --
-
-    const serviceDeps = {
-      setState: (...args) => this.setState(...args),
-      getState: () => this.state
-    };
-
-    this._layoutService = new LayoutService(serviceDeps);
-
-    this._notificationService = new NotificationService({
-      ...serviceDeps,
-      openPanel: (...args) => this._layoutService.openPanel(...args)
-    });
-
-    this._lintingService = new LintingService({
-      ...serviceDeps,
-      tabsProvider: props.tabsProvider,
-      getPlugins: (...args) => this.getPlugins(...args),
-      getConfig: (...args) => this.getConfig(...args)
-    });
-
-    this.on('connectionManager.connectionStatusChanged',
-      this._lintingService.handleConnectionStatusChanged);
-    this.on('connectionManager.connectionCheckStarted', this._lintingService.handleConnectionCheckStarted);
-    this.on('tab.engineProfileChanged',
-      this._lintingService.handleEngineProfileChanged);
-
     // -- Initialize action registry --
     this._actionRegistry = new ActionRegistry();
+
+    // -- Initialize services via container --
+
+    this._services = new ServiceContainer({
+      descriptors: props.serviceDescriptors || [
+        layoutDescriptor,
+        notificationDescriptor,
+        lintingDescriptor
+      ],
+      deps: {
+        setState: (...args) => this.setState(...args),
+        getState: () => this.state,
+        tabsProvider: props.tabsProvider,
+        getPlugins: (...args) => this.getPlugins(...args),
+        getConfig: (...args) => this.getConfig(...args)
+      },
+      eventEmitter: this,
+      actionRegistry: this._actionRegistry
+    });
+
+    // Convenience aliases for internal use
+    this._layoutService = this._services.get('layout');
+    this._notificationService = this._services.get('notification');
+    this._lintingService = this._services.get('linting');
+
+    // Register remaining (non-service) actions
     this._registerActions();
 
     const userPlugins = this.getPlugins('client');
@@ -1900,11 +1904,6 @@ export class App extends PureComponent {
       return this.setTabGroup(id, group);
     });
 
-    r.register('lint-tab', (options) => {
-      const { tab, contents } = options;
-      return this._lintingService.lintTab(tab, contents);
-    });
-
     r.register('select-tab', (options) => {
       if (options === 'next') {
         this.navigate(1);
@@ -1979,24 +1978,16 @@ export class App extends PureComponent {
     r.register('reload-modeler', () => this.reloadModeler());
     r.register('restart-modeler', () => this.reloadModeler(true));
 
-    // Logging & notifications
-    r.register('log', (options) => {
-      const { action, category, message, silent } = options;
-      return this._notificationService.logEntry(message, category, action, silent);
+    // Panel toggle (reads this.state.layout directly for React-batching compat)
+    r.register('toggle-panel', () => {
+      const { panel } = this.state.layout;
+      return panel.open ? this._layoutService.closePanel() : this._layoutService.openPanel(panel.tab);
     });
-    r.register('open-log', () => this._layoutService.openPanel('log'));
-    r.register('open-panel', (options) => this._layoutService.openPanel(options.tab));
-    r.register('close-panel', () => this._layoutService.closePanel());
-    r.register('display-notification', (options) => this._notificationService.displayNotification(options));
 
     // Events
     r.register('emit-event', (options) => {
       const { type, payload } = options;
       return this.emitWithTab(type, this.state.activeTab, payload);
-    });
-    r.register('toggle-panel', () => {
-      const { panel } = this.state.layout;
-      return panel.open ? this._layoutService.closePanel() : this._layoutService.openPanel(panel.tab);
     });
     r.register('settings-open', (options) => this.emit('app.settings-open', options));
 
