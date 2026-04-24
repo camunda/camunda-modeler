@@ -75,9 +75,18 @@ export default function AppendWizard({
   // primaryAction — 'append' or 'configure'; Tab flips this on the active row.
   const [ primaryAction, setPrimaryAction ] = useState('append');
 
+  // searchResults is now a { sections: [...] } shape — each section carries
+  // its own label and may have overflow (N more beyond the per-section cap).
   const searchResults = useMemo(
     () => buildAppendResults({ query: search, templates, sourceElementType }),
     [ search, templates, sourceElementType ]
+  );
+
+  // Flattened items in render order — used for arrow-key navigation.
+  // Overflow pseudo-rows are NOT navigable (they're hints, not selectable).
+  const flatResults = useMemo(
+    () => searchResults.sections.flatMap(s => s.items),
+    [ searchResults ]
   );
 
   useEffect(() => {
@@ -161,18 +170,10 @@ export default function AppendWizard({
 
   function renderSearchResults() {
 
-    // Group results by section for rendering, preserving rank order.
-    const sections = [];
-    let currentSection = null;
-    for (const r of searchResults) {
-      if (!currentSection || currentSection.id !== r.section) {
-        currentSection = { id: r.section, label: r.sectionLabel, items: [] };
-        sections.push(currentSection);
-      }
-      currentSection.items.push(r);
-    }
-
-    const activeResult = searchResults[activeIdx] || null;
+    // searchResults.sections are already in the canonical product order
+    // (Elements → AI Agents → Connectors → RPA) with per-section cap applied.
+    const { sections } = searchResults;
+    const activeResult = flatResults[activeIdx] || null;
 
     const runAppend = (r) => {
       if (r.source === 'template') onQuickAppend({ template: r.template });
@@ -202,7 +203,7 @@ export default function AppendWizard({
     const onKeyDown = (e) => {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setActiveIdx(i => Math.min(i + 1, searchResults.length - 1));
+        setActiveIdx(i => Math.min(i + 1, flatResults.length - 1));
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         setActiveIdx(i => Math.max(i - 1, 0));
@@ -235,13 +236,13 @@ export default function AppendWizard({
         />
         <div id="append-results" role="listbox" className={ css.resultsList }>
           { sections.length === 0 && (
-            <div className={ css.empty }>No matches for "{ search }"</div>
+            <div className={ css.empty }>No matches for &quot;{ search }&quot;</div>
           ) }
           { sections.map(section => (
             <div key={ section.id } className={ css.section }>
               <div className={ css.resultsSectionLabel }>{ section.label }</div>
               { section.items.map(r => {
-                const globalIdx = searchResults.indexOf(r);
+                const globalIdx = flatResults.indexOf(r);
                 const isActive = globalIdx === activeIdx;
                 return (
                   <div
@@ -277,6 +278,11 @@ export default function AppendWizard({
                   </div>
                 );
               }) }
+              { section.overflow > 0 && (
+                <div className={ css.overflowHint } aria-hidden="true">
+                  +{ section.overflow } more — narrow your search
+                </div>
+              ) }
             </div>
           )) }
         </div>
