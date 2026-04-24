@@ -69,6 +69,9 @@ export default function AppendWizard({
   // activeIdx — which search result is primary-focused (arrow-key nav).
   const [ activeIdx, setActiveIdx ] = useState(0);
 
+  // activeGroupIdx — which group row is highlighted in the empty-state view.
+  const [ activeGroupIdx, setActiveGroupIdx ] = useState(0);
+
   // primaryAction — 'append' or 'configure'; Tab flips this on the active row.
   const [ primaryAction, setPrimaryAction ] = useState('append');
 
@@ -388,15 +391,28 @@ export default function AppendWizard({
         value={ search }
         onChange={ e => setSearch(e.target.value) }
         autoFocus
+        onKeyDown={ (e) => {
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActiveGroupIdx(i => Math.min(i + 1, APPEND_GROUPS.length - 1));
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActiveGroupIdx(i => Math.max(i - 1, 0));
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const g = APPEND_GROUPS[activeGroupIdx];
+            if (g) setGroupId(g.id);
+          }
+        } }
       />
       { filteredGroups.length === 0
         ? <p className={ css.noResults }>No matches.</p>
         : (
           <ul className={ css.pickerList }>
-            { filteredGroups.map(group => (
+            { filteredGroups.map((group, idx) => (
               <li
                 key={ group.id }
-                className={ css.pickerItem }
+                className={ idx === activeGroupIdx ? `${css.pickerItem} ${css.pickerItemActive}` : css.pickerItem }
                 onClick={ () => setGroupId(group.id) }
                 tabIndex={ 0 }
                 onKeyDown={ e => (e.key === 'Enter' || e.key === ' ') && setGroupId(group.id) }
