@@ -15,22 +15,22 @@ import React from 'react';
 import { render } from '@testing-library/react';
 
 import {
-  SidePanelContainer,
+  SidePanelGroup,
   getSiblingsWidth,
   MIN_PANEL_WIDTH,
-  SidePanelSlot
-} from '../SidePanelContainer';
+  SidePanelConsumer
+} from '../SidePanelGroup';
 
 const { spy } = sinon;
 
-describe('SidePanelContainer', function() {
+describe('SidePanelGroup', function() {
 
-  describe('<SidePanelContainer>', function() {
+  describe('<SidePanelGroup>', function() {
 
     it('should render', function() {
 
       // when
-      const { container } = renderSidePanelContainer();
+      const { container } = renderSidePanelGroup();
 
       // then
       expect(container.firstChild).to.exist;
@@ -40,7 +40,7 @@ describe('SidePanelContainer', function() {
     it('should render children', function() {
 
       // when
-      const { container } = renderSidePanelContainer({
+      const { container } = renderSidePanelGroup({
         children: [
           <PanelStub key="a" panelId="panelA">A</PanelStub>,
           <PanelStub key="b" panelId="panelB">B</PanelStub>
@@ -56,7 +56,7 @@ describe('SidePanelContainer', function() {
     it('should inject maxWidth into children', function() {
 
       // when
-      const { container } = renderSidePanelContainer({
+      const { container } = renderSidePanelGroup({
         layout: {
           panelA: { open: true, width: 300 }
         },
@@ -83,15 +83,15 @@ describe('SidePanelContainer', function() {
       // when
       let injectedCallback;
 
-      renderSidePanelContainer({
+      renderSidePanelGroup({
         onLayoutChanged,
         children: [
-          <SidePanelSlot key="a" panelId="panelA">
+          <SidePanelConsumer key="a" panelId="panelA">
             { ({ onLayoutChanged: injected }) => {
               injectedCallback = injected;
               return <div data-panel-id="panelA" />;
             } }
-          </SidePanelSlot>
+          </SidePanelConsumer>
         ]
       });
 
@@ -114,16 +114,16 @@ describe('SidePanelContainer', function() {
       // We use a layout where sibling is open with width 0 to keep it simple.
       // maxWidth = containerWidth(0) - siblingsWidth(0) - MIN_CANVAS_WIDTH(200) = -200
       // Any positive width should be capped.
-      renderSidePanelContainer({
+      renderSidePanelGroup({
         onLayoutChanged,
         layout: {},
         children: [
-          <SidePanelSlot key="a" panelId="panelA">
+          <SidePanelConsumer key="a" panelId="panelA">
             { ({ onLayoutChanged: injected }) => {
               injectedCallback = injected;
               return <div data-panel-id="panelA" />;
             } }
-          </SidePanelSlot>
+          </SidePanelConsumer>
         ]
       });
 
@@ -146,15 +146,15 @@ describe('SidePanelContainer', function() {
 
       let injectedCallback;
 
-      renderSidePanelContainer({
+      renderSidePanelGroup({
         onLayoutChanged,
         children: [
-          <SidePanelSlot key="a" panelId="panelA">
+          <SidePanelConsumer key="a" panelId="panelA">
             { ({ onLayoutChanged: injected }) => {
               injectedCallback = injected;
               return <div data-panel-id="panelA" />;
             } }
-          </SidePanelSlot>
+          </SidePanelConsumer>
         ]
       });
 
@@ -174,7 +174,7 @@ describe('SidePanelContainer', function() {
     it('should not return negative maxWidth when container is unmeasured', function() {
 
       // when
-      const { container } = renderSidePanelContainer({
+      const { container } = renderSidePanelGroup({
         layout: {
           panelA: { open: true, width: 400 },
           panelB: { open: true, width: 300 }
@@ -291,7 +291,7 @@ describe('SidePanelContainer', function() {
 
 // helpers //////////
 
-function renderSidePanelContainer(options = {}) {
+function renderSidePanelGroup(options = {}) {
   const {
     layout = {},
     onLayoutChanged = noop,
@@ -300,16 +300,18 @@ function renderSidePanelContainer(options = {}) {
     ]
   } = options;
 
+  const panelIds = React.Children.toArray(children).map(c => c.props.panelId);
+
   return render(
-    <SidePanelContainer layout={ layout } onLayoutChanged={ onLayoutChanged }>
+    <SidePanelGroup panelIds={ panelIds } layout={ layout } onLayoutChanged={ onLayoutChanged }>
       { children }
-    </SidePanelContainer>
+    </SidePanelGroup>
   );
 }
 
 function PanelStub({ panelId, children }) {
   return (
-    <SidePanelSlot panelId={ panelId }>
+    <SidePanelConsumer panelId={ panelId }>
       { ({ maxWidth }) => (
         <div
           data-panel-id={ panelId }
@@ -318,7 +320,7 @@ function PanelStub({ panelId, children }) {
           { children }
         </div>
       ) }
-    </SidePanelSlot>
+    </SidePanelConsumer>
   );
 }
 
