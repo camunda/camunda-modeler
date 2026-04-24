@@ -30,14 +30,14 @@ export const APPEND_GROUPS = [
     outcome: 'Something needs to happen',
     icon: 'bpmn-icon-task',
     leaves: [
-      { elementId: 'task', label: 'Plain task', wizard: null, hint: 'Generic task — configure later', icon: 'bpmn-icon-task' },
-      { elementId: 'user-task', label: 'User task', wizard: 'user-task', hint: 'A person does something', icon: 'bpmn-icon-user-task' },
-      { elementId: 'service-task', label: 'Service task', wizard: 'service-task', hint: 'A system does something', icon: 'bpmn-icon-service-task' },
-      { elementId: 'script-task', label: 'Script task', wizard: null, hint: 'Run a script inline', icon: 'bpmn-icon-script-task' },
-      { elementId: 'send-task', label: 'Send task', wizard: null, hint: 'Send something outbound', icon: 'bpmn-icon-send-task' },
-      { elementId: 'receive-task', label: 'Receive task', wizard: null, hint: 'Wait for something inbound', icon: 'bpmn-icon-receive-task' },
-      { elementId: 'business-rule-task', label: 'Business rule task', wizard: null, hint: 'Evaluate a DMN table or RPA bot', icon: 'bpmn-icon-business-rule-task' },
-      { elementId: 'manual-task', label: 'Manual task', wizard: null, hint: 'Work done offline — no system involved', icon: 'bpmn-icon-manual-task' }
+      { elementId: 'task', label: 'Plain task', wizard: null, hint: 'Generic task — configure later', icon: 'bpmn-icon-task', keywords: 'generic placeholder' },
+      { elementId: 'user-task', label: 'User task', wizard: 'user-task', hint: 'A person does something', icon: 'bpmn-icon-user-task', keywords: 'human person approve review assign form' },
+      { elementId: 'service-task', label: 'Service task', wizard: 'service-task', hint: 'A system does something', icon: 'bpmn-icon-service-task', keywords: 'system job worker automated' },
+      { elementId: 'script-task', label: 'Script task', wizard: null, hint: 'Run a script inline', icon: 'bpmn-icon-script-task', keywords: 'code feel expression inline' },
+      { elementId: 'send-task', label: 'Send task', wizard: null, hint: 'Send something outbound', icon: 'bpmn-icon-send-task', keywords: 'publish emit message outbound' },
+      { elementId: 'receive-task', label: 'Receive task', wizard: null, hint: 'Wait for something inbound', icon: 'bpmn-icon-receive-task', keywords: 'wait inbound subscribe correlate' },
+      { elementId: 'business-rule-task', label: 'Business rule task', wizard: null, hint: 'Evaluate a DMN table or RPA bot', icon: 'bpmn-icon-business-rule-task', keywords: 'dmn decision rule rpa evaluate' },
+      { elementId: 'manual-task', label: 'Manual task', wizard: null, hint: 'Work done offline — no system involved', icon: 'bpmn-icon-manual-task', keywords: 'offline paper human no-system' }
     ]
   },
   {
@@ -46,10 +46,10 @@ export const APPEND_GROUPS = [
     outcome: 'Decide which path to take',
     icon: 'bpmn-icon-gateway-none',
     leaves: [
-      { elementId: 'exclusive-gateway', label: 'Exclusive gateway', wizard: null, hint: 'One path wins — XOR', icon: 'bpmn-icon-gateway-xor' },
-      { elementId: 'parallel-gateway', label: 'Parallel gateway', wizard: null, hint: 'All paths run — AND', icon: 'bpmn-icon-gateway-parallel' },
-      { elementId: 'inclusive-gateway', label: 'Inclusive gateway', wizard: null, hint: 'Some paths run — OR', icon: 'bpmn-icon-gateway-or' },
-      { elementId: 'event-gateway', label: 'Event-based gateway', wizard: null, hint: 'First event wins', icon: 'bpmn-icon-gateway-eventbased' }
+      { elementId: 'exclusive-gateway', label: 'Exclusive gateway', wizard: null, hint: 'One path wins — XOR', icon: 'bpmn-icon-gateway-xor', keywords: 'xor branch if-else decision one' },
+      { elementId: 'parallel-gateway', label: 'Parallel gateway', wizard: null, hint: 'All paths run — AND', icon: 'bpmn-icon-gateway-parallel', keywords: 'and fork split all' },
+      { elementId: 'inclusive-gateway', label: 'Inclusive gateway', wizard: null, hint: 'Some paths run — OR', icon: 'bpmn-icon-gateway-or', keywords: 'or some conditional multi' },
+      { elementId: 'event-gateway', label: 'Event-based gateway', wizard: null, hint: 'First event wins', icon: 'bpmn-icon-gateway-eventbased', keywords: 'event-based race first wins' }
     ]
   },
   {
@@ -58,8 +58,8 @@ export const APPEND_GROUPS = [
     outcome: 'Pause, wait, or signal something',
     icon: 'bpmn-icon-intermediate-event-none',
     leaves: [
-      { elementId: 'intermediate-event', label: 'Intermediate event', wizard: 'intermediate-event', hint: 'Wait for a timer, message, or signal', icon: 'bpmn-icon-intermediate-event-none' },
-      { elementId: 'end-event', label: 'End event', wizard: null, hint: 'End this path', icon: 'bpmn-icon-end-event-none' }
+      { elementId: 'intermediate-event', label: 'Intermediate event', wizard: 'intermediate-event', hint: 'Wait for a timer, message, or signal', icon: 'bpmn-icon-intermediate-event-none', keywords: 'timer message signal wait catch throw' },
+      { elementId: 'end-event', label: 'End event', wizard: null, hint: 'End this path', icon: 'bpmn-icon-end-event-none', keywords: 'terminate finish complete done' }
     ]
   },
   {
@@ -68,7 +68,7 @@ export const APPEND_GROUPS = [
     outcome: 'Call another process',
     icon: 'bpmn-icon-call-activity',
     leaves: [
-      { elementId: 'call-activity', label: 'Call activity', wizard: 'call-activity', hint: 'Invoke another BPMN process', icon: 'bpmn-icon-call-activity' }
+      { elementId: 'call-activity', label: 'Call activity', wizard: 'call-activity', hint: 'Invoke another BPMN process', icon: 'bpmn-icon-call-activity', keywords: 'subprocess reuse invoke nested' }
     ]
   },
   {
@@ -77,7 +77,7 @@ export const APPEND_GROUPS = [
     outcome: 'Talk to an external system',
     icon: 'bpmn-icon-service-task',
     leaves: [
-      { elementId: 'connector', label: 'Connector', wizard: 'service-task', hint: 'Pick a REST / Slack / Email / … template', icon: 'bpmn-icon-service-task' }
+      { elementId: 'connector', label: 'Connector', wizard: 'service-task', hint: 'Pick a REST / Slack / Email / … template', icon: 'bpmn-icon-service-task', keywords: 'integration rest http api external' }
     ]
   },
   {
@@ -86,8 +86,8 @@ export const APPEND_GROUPS = [
     outcome: 'Use AI in this step',
     icon: 'bpmn-icon-subprocess-expanded',
     leaves: [
-      { elementId: 'ai-agent-subprocess', label: 'AI Agent sub-process', wizard: null, hint: 'Let an AI agent orchestrate multiple steps', icon: 'bpmn-icon-subprocess-expanded' },
-      { elementId: 'ai-connector', label: 'Single AI action', wizard: 'service-task', hint: 'One call to an AI connector template', icon: 'bpmn-icon-service-task' }
+      { elementId: 'ai-agent-subprocess', label: 'AI Agent sub-process', wizard: null, hint: 'Let an AI agent orchestrate multiple steps', icon: 'bpmn-icon-subprocess-expanded', keywords: 'agentic llm orchestrate tool calls' },
+      { elementId: 'ai-connector', label: 'Single AI action', wizard: 'service-task', hint: 'One call to an AI connector template', icon: 'bpmn-icon-service-task', keywords: 'llm prompt completion one-shot' }
     ]
   },
   {
