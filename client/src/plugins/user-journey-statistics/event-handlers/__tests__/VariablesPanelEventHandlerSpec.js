@@ -21,7 +21,7 @@ import {
 
 describe('<VariablesPanelEventHandler>', function() {
 
-  let subscribe, track;
+  let subscribe, track, emitEvent;
 
   beforeEach(function() {
 
@@ -35,6 +35,8 @@ describe('<VariablesPanelEventHandler>', function() {
     });
 
     MixpanelHandler.getInstance().enable('token', 'id', 'stage');
+
+    emitEvent = subscribe.getCall(0).args[1];
   });
 
 
@@ -48,11 +50,8 @@ describe('<VariablesPanelEventHandler>', function() {
 
   it('should track panel opened', function() {
 
-    // given
-    const callback = subscribe.getCall(0).args[1];
-
     // when
-    callback({
+    emitEvent({
       prevLayout: { variablesSidePanel: { open: false } },
       layout: { variablesSidePanel: { open: true } }
     });
@@ -64,11 +63,8 @@ describe('<VariablesPanelEventHandler>', function() {
 
   it('should track panel closed', function() {
 
-    // given
-    const callback = subscribe.getCall(0).args[1];
-
     // when
-    callback({
+    emitEvent({
       prevLayout: { variablesSidePanel: { open: true } },
       layout: { variablesSidePanel: { open: false } }
     });
@@ -80,11 +76,8 @@ describe('<VariablesPanelEventHandler>', function() {
 
   it('should NOT track when open state is unchanged', function() {
 
-    // given
-    const callback = subscribe.getCall(0).args[1];
-
     // when
-    callback({
+    emitEvent({
       prevLayout: { variablesSidePanel: { open: true, width: 280 } },
       layout: { variablesSidePanel: { open: true, width: 350 } }
     });
@@ -96,11 +89,8 @@ describe('<VariablesPanelEventHandler>', function() {
 
   it('should NOT track when layout has no variablesSidePanel', function() {
 
-    // given
-    const callback = subscribe.getCall(0).args[1];
-
     // when
-    callback({
+    emitEvent({
       prevLayout: { panel: { open: true } },
       layout: { panel: { open: false } }
     });
@@ -112,11 +102,8 @@ describe('<VariablesPanelEventHandler>', function() {
 
   it('should use default open state when variablesSidePanel is not set', function() {
 
-    // given
-    const callback = subscribe.getCall(0).args[1];
-
     // when
-    callback({
+    emitEvent({
       prevLayout: {},
       layout: { variablesSidePanel: { open: false } }
     });
