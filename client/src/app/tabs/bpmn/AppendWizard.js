@@ -86,8 +86,8 @@ export default function AppendWizard({
     return () => document.removeEventListener('keydown', handler);
   }, [ onClose ]);
 
-  // Reset search whenever we step between views so each screen starts fresh.
-  useEffect(() => { setSearch(''); }, [ groupId ]);
+  // Reset search + active-group selection whenever we step between views so each screen starts fresh.
+  useEffect(() => { setSearch(''); setActiveGroupIdx(0); }, [ groupId ]);
 
   // Reset active row whenever the query changes.
   useEffect(() => { setActiveIdx(0); setPrimaryAction('append'); }, [ search ]);
