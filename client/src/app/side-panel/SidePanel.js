@@ -14,7 +14,7 @@ import classNames from 'classnames';
 
 import ResizableContainer from '../resizable-container/ResizableContainer';
 
-import { MIN_CANVAS_WIDTH } from './SidePanelContainer';
+import { MIN_CANVAS_WIDTH } from './SidePanelGroup';
 import useParentWidth from './useParentWidth';
 
 import * as css from './SidePanel.less';
