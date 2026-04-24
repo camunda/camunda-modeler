@@ -15,31 +15,38 @@
  * Each descriptor declares:
  *
  *   - `name`            — unique identifier used to retrieve the service
+ *   - `deps`            — (optional) array of service names this descriptor depends on
  *   - `create(deps)`    — factory; receives resolved dependencies, returns the instance
  *   - `actions(service)` — (optional) map of action-name → handler, registered on the ActionRegistry
  *   - `events(service)`  — (optional) map of event-name → handler, subscribed via the EventEmitter
  *
+ * The container automatically resolves the instantiation order from declared
+ * `deps` — callers can pass descriptors in any order.
+ *
  * Dependencies available to every factory:
  *   `setState`, `getState` — app-level state helpers
- *   any named service created *before* this one (order matters)
+ *   any named service resolved via `deps`
  *   any extra deps passed via `options.deps`
  */
 export default class ServiceContainer {
 
   /**
    * @param {object} options
-   * @param {Array<object>} options.descriptors  - ordered list of service descriptors
+   * @param {Array<object>} options.descriptors  - service descriptors (any order)
    * @param {object}        options.deps         - shared dependencies (setState, getState, …)
    * @param {object}        options.eventEmitter - object with `on(event, handler)` method
    * @param {object}        options.actionRegistry - ActionRegistry instance
    */
   constructor({ descriptors, deps, eventEmitter, actionRegistry }) {
+
     /** @type {Map<string, object>} */
     this._services = new Map();
 
     this._subscriptions = [];
 
-    for (const descriptor of descriptors) {
+    const sorted = sortDescriptors(descriptors);
+
+    for (const descriptor of sorted) {
       const { name, create, actions, events } = descriptor;
 
       // Build resolution bag: shared deps + already-created services
@@ -97,4 +104,52 @@ export default class ServiceContainer {
 
     this._subscriptions = [];
   }
+}
+
+
+// helpers ///////////////
+
+/**
+ * Topological sort of descriptors based on declared `deps`.
+ *
+ * @param {Array<object>} descriptors
+ * @returns {Array<object>} sorted descriptors
+ */
+function sortDescriptors(descriptors) {
+  const byName = new Map(descriptors.map(d => [ d.name, d ]));
+  const visited = new Set();
+  const visiting = new Set();
+  const sorted = [];
+
+  function visit(descriptor) {
+    const { name, deps: serviceDeps = [] } = descriptor;
+
+    if (visited.has(name)) {
+      return;
+    }
+
+    if (visiting.has(name)) {
+      throw new Error(`Circular dependency detected: ${ name }`);
+    }
+
+    visiting.add(name);
+
+    for (const depName of serviceDeps) {
+      const dep = byName.get(depName);
+
+      if (dep) {
+        visit(dep);
+      }
+    }
+
+    visiting.delete(name);
+    visited.add(name);
+    sorted.push(descriptor);
+  }
+
+  for (const descriptor of descriptors) {
+    visit(descriptor);
+  }
+
+  return sorted;
 }

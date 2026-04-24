@@ -12,9 +12,6 @@ import LayoutService from './LayoutService';
 
 /**
  * Descriptor for the layout service.
- *
- * Must be registered **before** the notification descriptor because
- * NotificationService depends on `layout.openPanel`.
  */
 export default {
   name: 'layout',

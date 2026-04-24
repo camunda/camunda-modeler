@@ -13,10 +13,12 @@ import NotificationService from './NotificationService';
 /**
  * Descriptor for the notification service.
  *
- * Depends on `layout` service (must be registered after `layoutDescriptor`).
+ * Depends on `layout` service.
  */
 export default {
   name: 'notification',
+
+  deps: [ 'layout' ],
 
   create({ setState, getState, layout }) {
     return new NotificationService({

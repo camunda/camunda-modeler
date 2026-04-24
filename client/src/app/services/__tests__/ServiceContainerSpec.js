@@ -114,6 +114,93 @@ describe('ServiceContainer', function() {
       expect(receivedDeps.first).to.equal(firstService);
     });
 
+
+    it('should auto-resolve order from declared deps', function() {
+
+      // given
+      const layoutService = { id: 'layout' };
+      let receivedDeps;
+
+      const notification = {
+        name: 'notification',
+        deps: [ 'layout' ],
+        create(deps) {
+          receivedDeps = deps;
+          return { id: 'notification' };
+        }
+      };
+
+      const layout = {
+        name: 'layout',
+        create() {
+          return layoutService;
+        }
+      };
+
+      // when — notification listed before layout
+      new ServiceContainer({
+        descriptors: [ notification, layout ],
+        deps: {}
+      });
+
+      // then — layout was still resolved first
+      expect(receivedDeps.layout).to.equal(layoutService);
+    });
+
+
+    it('should throw on circular dependency', function() {
+
+      // given
+      const a = {
+        name: 'a',
+        deps: [ 'b' ],
+        create() {
+          return {};
+        }
+      };
+
+      const b = {
+        name: 'b',
+        deps: [ 'a' ],
+        create() {
+          return {};
+        }
+      };
+
+      // then
+      expect(() => {
+        new ServiceContainer({
+          descriptors: [ a, b ],
+          deps: {}
+        });
+      }).to.throw(/Circular dependency detected/);
+    });
+
+
+    it('should ignore deps that reference external (non-descriptor) names', function() {
+
+      // given
+      let receivedDeps;
+
+      const descriptor = {
+        name: 'test',
+        deps: [ 'unknownService' ],
+        create(deps) {
+          receivedDeps = deps;
+          return {};
+        }
+      };
+
+      // when — should not throw
+      new ServiceContainer({
+        descriptors: [ descriptor ],
+        deps: { foo: 'bar' }
+      });
+
+      // then
+      expect(receivedDeps.foo).to.equal('bar');
+    });
+
   });
 
 
