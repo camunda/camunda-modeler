@@ -326,7 +326,7 @@ describe('<UserJourneyStatistics>', function() {
     const eventHandlers = instance._eventHandlers;
 
     // expect
-    expect(eventHandlers).to.have.length(9);
+    expect(eventHandlers).to.have.length(10);
     expectHandler(eventHandlers[0], 'ConnectionEventHandler');
     expectHandler(eventHandlers[1], 'DeploymentEventHandler');
     expectHandler(eventHandlers[2], 'FormEditorEventHandler');
@@ -336,6 +336,7 @@ describe('<UserJourneyStatistics>', function() {
     expectHandler(eventHandlers[6], 'TabEventHandler');
     expectHandler(eventHandlers[7], 'ModelingEventHandler');
     expectHandler(eventHandlers[8], 'TaskTestingEventHandler');
+    expectHandler(eventHandlers[9], 'VariablesPanelEventHandler');
   });
 
 });

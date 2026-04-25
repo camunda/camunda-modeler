@@ -71,6 +71,10 @@ describe('Settings', function() {
 
   describe('schema', function() {
 
+    afterEach(function() {
+      sinon.restore();
+    });
+
     it('should return the registered schema for all settings', function() {
 
       // given
@@ -141,6 +145,32 @@ describe('Settings', function() {
     });
 
 
+    it('should skip already registered properties and warn', function() {
+
+      // given
+      settings.register(settingsMock);
+      const warnSpy = sinon.spy(console, 'warn');
+
+      // when
+      settings.register({
+        ...settingsMock,
+        properties: {
+          'test.enabled': {
+            type: 'boolean',
+            label: 'Overridden',
+            default: false,
+          }
+        }
+      });
+
+      // then
+      expect(warnSpy).to.have.been.calledWith(
+        'Setting with key test.enabled is already registered. Skipping.'
+      );
+      expect(settings.getSchema('test.enabled').label).to.equal('Enabled');
+    });
+
+
     it('should add new properties to an existing group', function() {
 
       // given
@@ -164,18 +194,6 @@ describe('Settings', function() {
       // then
       const expected = { ...settingsMock.properties, ...newProperty };
       expect(schema[settingsMock.id].properties).to.deep.equal(expected);
-    });
-
-
-    it('should throw error when duplicate group is registered', function() {
-
-      // given
-      settings.register(settingsMock);
-
-      // then
-      expect(() => {
-        settings.register(settingsMock);
-      }).to.throw();
     });
 
 
@@ -315,6 +333,23 @@ describe('Settings', function() {
 
       // then
       expect(listener).to.have.been.calledWith({ value: 'test' });
+    });
+
+
+    it('should unsubscribe the listener', function() {
+
+      // given
+      const listener = sinon.spy();
+
+      settings.register(settingsMock);
+      const unsubscribe = settings.subscribe('test.name', listener);
+
+      // when
+      unsubscribe();
+      settings.set({ 'test.name': 'foo' });
+
+      // then
+      expect(listener).to.not.have.been.called;
     });
 
   });

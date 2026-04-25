@@ -38,6 +38,7 @@ export default function VariablesSidePanel(props) {
   const {
     injector,
     layout,
+    maxWidth,
     onLayoutChanged
   } = props;
 
@@ -76,7 +77,7 @@ export default function VariablesSidePanel(props) {
       open={ open }
       width={ width }
       minWidth={ MIN_WIDTH }
-      maxWidth={ MAX_WIDTH }
+      maxWidth={ maxWidth || MAX_WIDTH }
       onResized={ onResized }
     >
       <SidePanelTitleBar title="Variables" onClose={ onClose } />

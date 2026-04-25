@@ -3850,6 +3850,65 @@ describe('<App>', function() {
   });
 
 
+  describe('layout', function() {
+
+    it('should emit <layout.changed> event on layout update', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const eventSpy = sinon.spy();
+
+      app.on('layout.changed', eventSpy);
+
+      // when
+      app.handleLayoutChanged({ panel: { open: true } });
+
+      // then
+      await waitFor(() => {
+        expect(eventSpy).to.have.been.calledOnce;
+      });
+
+      const { prevLayout, layout } = eventSpy.getCall(0).args[0];
+
+      expect(prevLayout).to.exist;
+      expect(layout).to.exist;
+      expect(layout.panel).to.include({ open: true });
+    });
+
+
+    it('should include previous layout in <layout.changed> event', async function() {
+
+      // given
+      const { app } = createApp();
+
+      app.handleLayoutChanged({ variablesSidePanel: { open: true, width: 280 } });
+
+      await waitFor(() => {
+        expect(app.state.layout.variablesSidePanel).to.include({ open: true });
+      });
+
+      const eventSpy = sinon.spy();
+
+      app.on('layout.changed', eventSpy);
+
+      // when
+      app.handleLayoutChanged({ variablesSidePanel: { open: false, width: 280 } });
+
+      // then
+      await waitFor(() => {
+        expect(eventSpy).to.have.been.calledOnce;
+      });
+
+      const { prevLayout, layout } = eventSpy.getCall(0).args[0];
+
+      expect(prevLayout.variablesSidePanel).to.include({ open: true });
+      expect(layout.variablesSidePanel).to.include({ open: false });
+    });
+
+  });
+
+
   describe('dialogs', function() {
 
     describe('#getOpenFileErrorDialog', function() {

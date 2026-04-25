@@ -8,16 +8,18 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import classNames from 'classnames';
 
 import ResizableContainer from '../resizable-container/ResizableContainer';
 
+import { MIN_CANVAS_WIDTH } from './SidePanelGroup';
+import useParentWidth from './useParentWidth';
+
 import * as css from './SidePanel.less';
 
 export const MIN_WIDTH = 280;
-export const MAX_WIDTH = MIN_WIDTH * 3;
 
 export const DEFAULT_OPEN = true;
 export const DEFAULT_WIDTH = MIN_WIDTH;
@@ -62,8 +64,13 @@ export default function SidePanel(props) {
   const {
     children,
     layout,
+    maxWidth,
     onLayoutChanged
   } = props;
+
+  const containerRef = useRef();
+  const parentWidth = useParentWidth(containerRef);
+  const effectiveMaxWidth = Math.max(0, maxWidth || (parentWidth - MIN_CANVAS_WIDTH));
 
   const { sidePanel = DEFAULT_LAYOUT } = layout;
 
@@ -115,6 +122,18 @@ export default function SidePanel(props) {
     }
   }, [ activeTabId, tab, onLayoutChanged, sidePanel ]);
 
+  useEffect(() => {
+    if (open && effectiveMaxWidth > 0 && width > effectiveMaxWidth) {
+      onLayoutChanged({
+        sidePanel: {
+          ...DEFAULT_LAYOUT,
+          ...sidePanel,
+          width: effectiveMaxWidth
+        }
+      });
+    }
+  }, [ effectiveMaxWidth, width, open ]);
+
   const onResized = useCallback(({ open, width }) => {
     onLayoutChanged({
       sidePanel: {
@@ -143,48 +162,50 @@ export default function SidePanel(props) {
   }, [ onLayoutChanged, sidePanel, tab, open ]);
 
   return (
-    <ResizableContainer
-      className={ classNames(css.SidePanel, 'side-panel') }
-      direction="left"
-      open={ open }
-      width={ width }
-      minWidth={ MIN_WIDTH }
-      maxWidth={ MAX_WIDTH }
-      onResized={ onResized }
-    >
-      { headers }
+    <div ref={ containerRef } style={ { display: 'contents' } }>
+      <ResizableContainer
+        className={ classNames(css.SidePanel, 'side-panel') }
+        direction="left"
+        open={ open }
+        width={ width }
+        minWidth={ MIN_WIDTH }
+        maxWidth={ effectiveMaxWidth }
+        onResized={ onResized }
+      >
+        { headers }
 
-      { showTabs && (
-        <div className="side-panel__tabs-bar">
-          { tabs.map(({ id: tabId, label, icon: Icon }) => (
-            <button
+        { showTabs && (
+          <div className="side-panel__tabs-bar">
+            { tabs.map(({ id: tabId, label, icon: Icon }) => (
+              <button
+                key={ tabId }
+                className={ classNames('side-panel__tab', {
+                  'side-panel__tab--active': activeTabId === tabId
+                }) }
+                onClick={ () => onTabClick(tabId) }
+                title={ label }
+              >
+                { Icon && <Icon className="side-panel__tab-icon" /> }
+                <span>{ label }</span>
+              </button>
+            )) }
+          </div>
+        ) }
+
+        <div className="side-panel__body">
+          { tabs.map(({ id: tabId, content }) => (
+            <div
               key={ tabId }
-              className={ classNames('side-panel__tab', {
-                'side-panel__tab--active': activeTabId === tabId
+              className={ classNames('side-panel__content', {
+                'side-panel__content--active': activeTabId === tabId
               }) }
-              onClick={ () => onTabClick(tabId) }
-              title={ label }
             >
-              { Icon && <Icon className="side-panel__tab-icon" /> }
-              <span>{ label }</span>
-            </button>
+              { content }
+            </div>
           )) }
         </div>
-      ) }
-
-      <div className="side-panel__body">
-        { tabs.map(({ id: tabId, content }) => (
-          <div
-            key={ tabId }
-            className={ classNames('side-panel__content', {
-              'side-panel__content--active': activeTabId === tabId
-            }) }
-          >
-            { content }
-          </div>
-        )) }
-      </div>
-    </ResizableContainer>
+      </ResizableContainer>
+    </div>
   );
 }
 

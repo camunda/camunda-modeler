@@ -167,17 +167,11 @@ export class DmnEditor extends CachedComponent {
         propertiesPanel.attachTo(this.propertiesPanelRef.current);
       }
 
-      // attach overview
-      if (this.overviewRef.current) {
-        modeler.attachOverviewTo(this.overviewRef.current);
-
-        if (isOverviewOpen(this.props)) {
-          modeler._emit('overviewOpen');
-        }
-      }
     }
 
     this.gridBehavior.update(this.props.layout);
+
+    this._updateOverview();
 
     this.checkImport();
   }
@@ -199,19 +193,19 @@ export class DmnEditor extends CachedComponent {
       this.attachPropertiesPanel();
     }
 
-    // We can only notify interested parties about overview open once its parent component was
-    // rendered
-    if (isOverviewOpened(prevProps, this.props)) {
-      const modeler = this.getModeler();
-
-      modeler._emit('overviewOpen');
-    }
+    this._updateOverview();
 
     this.gridBehavior.checkUpdate(prevProps.layout, this.props.layout);
 
     if (isCachedStateChange(prevProps, this.props)) {
       this.handleChanged();
     }
+  }
+
+  _updateOverview() {
+    const modeler = this.getModeler();
+
+    modeler.updateOverview(this.overviewRef.current, isOverviewOpen(this.props));
   }
 
   attachPropertiesPanel() {
@@ -379,17 +373,6 @@ export class DmnEditor extends CachedComponent {
     }
 
     this.gridBehavior.update(this.props.layout);
-
-    // attach or detach overview
-    if (activeView.type === 'drd') {
-      modeler.detachOverview();
-    } else if (previousActiveView && previousActiveView.type === 'drd') {
-      modeler.attachOverviewTo(this.overviewRef.current);
-
-      if (isOverviewOpen(this.props)) {
-        modeler._emit('overviewOpen');
-      }
-    }
 
     // must be called last
     this.setCached({
@@ -1164,16 +1147,4 @@ function isOverviewOpen(props) {
   const dmnOverview = layout.dmnOverview;
 
   return !dmnOverview || dmnOverview.open;
-}
-
-/**
- * Check layout whether overview was opened.
- *
- * @param {Object} prevProps
- * @param {Object} props
- *
- * @returns {boolean}
- */
-function isOverviewOpened(prevProps, props) {
-  return isOverviewOpen(prevProps) === false && isOverviewOpen(props) === true;
 }
