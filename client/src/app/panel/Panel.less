@@ -88,3 +88,28 @@
     }
   }
 }
+
+/* Dark theme override for Panel */
+:global(:root[data-theme="dark"]) :local(.Panel) {
+  background-color: hsl(225, 10%, 16%);
+
+  .panel__body {
+    background-color: hsl(225, 10%, 16%);
+
+    .panel__inner {
+      background-color: hsl(225, 10%, 16%);
+    }
+  }
+
+  .panel__header {
+    .panel__action {
+      svg path:not([fill="none"]) {
+        fill: hsl(225, 10%, 70%) !important;
+      }
+
+      &:hover svg path:not([fill="none"]) {
+        fill: hsl(225, 10%, 95%) !important;
+      }
+    }
+  }
+}

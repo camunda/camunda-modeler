@@ -61,15 +61,23 @@
       stroke: hsl(225, 10%, 70%) !important;
     }
 
-    /* Task type icons (user, envelope, gear, etc.) — white */
-    .djs-shape .djs-visual > path {
+    /* DataObject, DataStore, and similar shapes using path as their visual body */
+    /* Only override default white fill — skip user-set custom colors */
+    .djs-shape .djs-visual:not(:has(> rect, > circle, > polygon)) > path[style*="fill: white"] {
+      fill: hsl(225, 10%, 20%) !important;
+    }
+
+    /* Task type icons (user, envelope, gear, etc.) inside shapes with rect/circle/polygon body */
+    .djs-shape .djs-visual:has(> rect) > path,
+    .djs-shape .djs-visual:has(> circle) > path,
+    .djs-shape .djs-visual:has(> polygon) > path {
       fill: #e0e0e0 !important;
     }
 
-    /* Shape fills — dark background, white text */
-    .djs-shape .djs-visual > rect,
-    .djs-shape .djs-visual > circle,
-    .djs-shape .djs-visual > polygon {
+    /* Shape fills — only override default white fill, preserve user-set custom colors */
+    .djs-shape .djs-visual > rect[style*="fill: white"],
+    .djs-shape .djs-visual > circle[style*="fill: white"],
+    .djs-shape .djs-visual > polygon[style*="fill: white"] {
       fill: hsl(225, 10%, 20%) !important;
     }
 
@@ -83,6 +91,26 @@
     .djs-element.djs-shape .djs-label text,
     .djs-element.djs-shape .djs-label tspan {
       fill: hsl(225, 10%, 90%) !important;
+    }
+
+    /* Custom-colored shapes: text should be black for readability.
+       Shapes with a user-set color have style="fill: #somecolor" (not "fill: white").
+       The DOM style attribute is unchanged by our CSS !important override,
+       so [style*="fill: white"] reliably identifies default (uncolored) shapes. */
+    .djs-shape .djs-visual:has(> rect:not([style*="fill: white"])) text,
+    .djs-shape .djs-visual:has(> rect:not([style*="fill: white"])) tspan,
+    .djs-shape .djs-visual:has(> circle:not([style*="fill: white"])) text,
+    .djs-shape .djs-visual:has(> circle:not([style*="fill: white"])) tspan,
+    .djs-shape .djs-visual:has(> polygon:not([style*="fill: white"])) text,
+    .djs-shape .djs-visual:has(> polygon:not([style*="fill: white"])) tspan,
+    .djs-shape .djs-visual:not(:has(> rect, > circle, > polygon)):has(> path:not([style*="fill: white"])) text,
+    .djs-shape .djs-visual:not(:has(> rect, > circle, > polygon)):has(> path:not([style*="fill: white"])) tspan {
+      fill: #000000 !important;
+    }
+
+    /* Inline text editor (double-click to edit) — always black text regardless of theme */
+    .djs-direct-editing-parent .djs-direct-editing-content {
+      color: #000000 !important;
     }
   }
 
@@ -139,6 +167,21 @@
   /* Context pad icon color */
   .djs-context-pad .entry {
     color: hsl(225, 10%, 85%);
+  }
+
+  /* Context pad container background */
+  .djs-context-pad {
+    background-color: hsl(225, 10%, 22%) !important;
+    border-color: hsl(225, 10%, 35%) !important;
+    box-shadow: 0 2px 8px hsla(225, 10%, 5%, 0.6) !important;
+
+    .entry {
+      background-color: hsl(225, 10%, 22%) !important;
+
+      &:hover {
+        background-color: hsl(225, 10%, 30%) !important;
+      }
+    }
   }
 
   /* Popup menu text color */
@@ -327,5 +370,71 @@
     --view-drd-button-border-color: hsl(225, 10%, 35%);
     --view-drd-button-color: hsl(225, 10%, 85%);
     --view-drd-button-hover-background-color: hsl(225, 10%, 28%);
+  }
+
+  /* Minimap dark theme */
+  .djs-minimap {
+    border-color: hsl(225, 10%, 28%) !important;
+    background-color: hsl(225, 10%, 16%) !important;
+
+    .map {
+      background-color: hsl(225, 10%, 18%);
+    }
+
+    .map svg {
+      background-color: hsl(225, 10%, 18%);
+
+      /* All shape element strokes → visible on dark */
+      .djs-visual > rect,
+      .djs-visual > circle,
+      .djs-visual > polygon,
+      .djs-visual > path {
+        stroke: hsl(225, 10%, 55%) !important;
+      }
+
+      /* Shape body fills (first child, default white only) → dark */
+      .djs-visual > rect:first-child[style*="fill: white"],
+      .djs-visual > polygon:first-child[style*="fill: white"] {
+        fill: hsl(225, 10%, 22%) !important;
+      }
+
+      .djs-visual > circle:first-child[style*="fill: white"] {
+        fill: hsl(225, 10%, 22%) !important;
+      }
+
+      /* DataObject/DataStore body paths (no rect/circle/polygon sibling, not a connection) */
+      .djs-visual:not(:has(> rect, > circle, > polygon)) > path:not([data-corner-radius])[style*="fill: white"] {
+        fill: hsl(225, 10%, 22%) !important;
+      }
+
+      /* Connection and association paths — keep fill:none, fix stroke */
+      path[data-corner-radius] {
+        fill: none !important;
+        stroke: hsl(225, 10%, 55%) !important;
+      }
+
+      /* Secondary circles: terminate event markers, intermediate event inner rings */
+      .djs-visual > circle:not(:first-child) {
+        fill: hsl(225, 10%, 60%) !important;
+      }
+
+      /* Icon/marker paths inside shapes that have a rect/circle/polygon body */
+      .djs-visual:has(> rect) > path,
+      .djs-visual:has(> circle) > path,
+      .djs-visual:has(> polygon) > path {
+        fill: hsl(225, 10%, 55%) !important;
+      }
+
+      /* Text labels */
+      text, tspan {
+        fill: hsl(225, 10%, 80%) !important;
+      }
+
+      /* Viewport rectangle (the navigation overlay) */
+      .viewport {
+        stroke: hsl(205, 100%, 55%) !important;
+        fill: hsla(205, 100%, 50%, 0.15) !important;
+      }
+    }
   }
 }

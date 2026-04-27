@@ -135,3 +135,38 @@
     }
   }
 }
+
+/* Dark theme overrides for Welcome page */
+:global(:root[data-theme="dark"]) :local(.EmptyTab) {
+  background-color: hsl(225, 10%, 14%);
+
+  h2.welcome-header {
+    color: hsl(225, 10%, 85%);
+  }
+
+  .welcome-card {
+    background-color: hsl(225, 10%, 20%);
+    color: hsl(225, 10%, 85%);
+    border: 1px solid hsl(225, 10%, 28%);
+
+    h3 {
+      color: hsl(225, 10%, 85%);
+    }
+
+    p {
+      color: hsl(225, 10%, 70%);
+    }
+
+    a {
+      color: hsl(205, 100%, 65%);
+    }
+
+    .engine-icon {
+      color: hsl(225, 10%, 60%);
+    }
+
+    .learn-more .top {
+      border-bottom-color: hsl(225, 10%, 30%);
+    }
+  }
+}

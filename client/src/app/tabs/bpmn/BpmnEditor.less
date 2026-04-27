@@ -80,3 +80,45 @@
   width: 64px;
   height: 16px;
 }
+
+:global(:root[data-theme="dark"]) :local(.BpmnEditor) {
+  .djs-minimap {
+    .toggle {
+      color: hsl(225, 10%, 90%) !important;
+      background-color: hsl(225, 10%, 30%) !important;
+
+      svg, svg * {
+        fill: hsl(225, 10%, 90%) !important;
+      }
+    }
+
+    .toggle:hover {
+      color: hsl(225, 10%, 90%) !important;
+      background-color: hsl(225, 10%, 35%) !important;
+
+      svg, svg * {
+        fill: hsl(225, 10%, 90%) !important;
+      }
+    }
+
+    &.open {
+      .toggle {
+        color: hsl(225, 10%, 90%) !important;
+        background-color: hsl(225, 10%, 30%) !important;
+
+        svg, svg * {
+          fill: hsl(225, 10%, 90%) !important;
+        }
+      }
+
+      .toggle:hover {
+        color: hsl(225, 10%, 90%) !important;
+        background-color: hsl(225, 10%, 35%) !important;
+
+        svg, svg * {
+          fill: hsl(225, 10%, 90%) !important;
+        }
+      }
+    }
+  }
+}

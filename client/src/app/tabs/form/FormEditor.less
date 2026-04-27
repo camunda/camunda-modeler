@@ -52,3 +52,353 @@
     }
   }
 }
+
+/* Dark theme overrides for Form editor */
+:global(:root[data-theme="dark"]) :local(.FormEditor) {
+
+  /* Form Definition panel title */
+  .cfp-collapsible-panel-title {
+    background-color: hsl(225, 10%, 20%);
+    border-color: hsl(225, 10%, 30%);
+    color: hsl(225, 10%, 85%);
+
+    h1, h2, h3 {
+      color: hsl(225, 10%, 85%);
+    }
+  }
+
+  /* Form playground root */
+  .cfp-root {
+    background-color: hsl(225, 10%, 18%);
+    color: hsl(225, 10%, 85%);
+  }
+
+  /* Main form design canvas */
+  .cfp-editor-container {
+    background-color: hsl(225, 10%, 16%);
+
+    .fjs-container,
+    .fjs-editor-container,
+    .fjs-form-editor,
+    .fjs-form-container {
+      background-color: hsl(225, 10%, 16%);
+
+      --cds-background: hsl(225, 10%, 16%);
+      --cds-layer-01: hsl(225, 10%, 20%);
+      --cds-layer-02: hsl(225, 10%, 22%);
+      --cds-field-01: hsl(225, 10%, 20%);
+      --cds-field-02: hsl(225, 10%, 22%);
+      --cds-text-primary: hsl(225, 10%, 85%);
+      --cds-text-secondary: hsl(225, 10%, 65%);
+      --cds-text-disabled: hsl(225, 10%, 50%);
+      --cds-border-subtle-01: hsl(225, 10%, 30%);
+      --cds-border-strong-01: hsl(225, 10%, 35%);
+      --cds-icon-primary: hsl(225, 10%, 85%);
+    }
+
+    /* Drop zone / canvas rows */
+    .fjs-drop-container-vertical,
+    .fjs-drop-container-horizontal,
+    .fjs-children,
+    .fjs-layout-row,
+    .fjs-drag-row-move {
+      background-color: transparent;
+    }
+
+    /* Hovered/selected element outlines */
+    .fjs-editor-hovered,
+    .fjs-element-container:hover {
+      outline-color: hsl(205, 100%, 50%);
+    }
+
+    /* Powered by link */
+    .fjs-powered-by-link {
+      color: hsl(225, 10%, 50%) !important;
+
+      svg path { fill: hsl(225, 10%, 50%) !important; }
+    }
+
+    /* Table component */
+    .fjs-table-th {
+      background-color: hsl(225, 10%, 24%) !important;
+      color: hsl(225, 10%, 85%) !important;
+      border-color: hsl(225, 10%, 32%) !important;
+    }
+
+    .fjs-table-tr {
+      border-color: hsl(225, 10%, 28%) !important;
+
+      &:nth-child(even) {
+        background-color: hsl(225, 10%, 20%) !important;
+      }
+
+      &:hover {
+        background-color: hsl(225, 10%, 26%) !important;
+      }
+    }
+
+    .fjs-table-td {
+      color: hsl(225, 10%, 80%) !important;
+      border-color: hsl(225, 10%, 28%) !important;
+    }
+
+    .fjs-table,
+    .fjs-table-inner {
+      background-color: hsl(225, 10%, 18%) !important;
+      border-color: hsl(225, 10%, 32%) !important;
+    }
+  }
+
+  /* Form properties panel (cfp-properties / fjs-properties-panel) */
+  .cfp-properties,
+  .fjs-properties-container,
+  .fjs-properties-panel {
+    background-color: hsl(225, 10%, 14%);
+    color: hsl(225, 10%, 85%);
+
+    .bio-properties-panel {
+      background-color: hsl(225, 10%, 14%) !important;
+
+      /* Text */
+      --text-base-color: hsl(225, 10%, 85%);
+      --description-color: hsl(225, 10%, 60%);
+      --placeholder-color: hsl(225, 10%, 50%);
+      --link-color: hsl(205, 100%, 60%);
+
+      /* Header */
+      --header-background-color: hsl(225, 10%, 20%);
+      --header-icon-fill-color: hsl(225, 10%, 80%);
+      --header-bottom-border-color: hsl(225, 10%, 30%);
+
+      /* Groups */
+      --group-background-color: hsl(225, 10%, 18%);
+      --group-bottom-border-color: hsl(225, 10%, 28%);
+      --sticky-group-background-color: hsl(225, 10%, 20%);
+      --sticky-group-bottom-border-color: hsl(225, 10%, 28%);
+
+      /* Inputs */
+      --input-background-color: hsl(225, 10%, 22%);
+      --input-border-color: hsl(225, 10%, 35%);
+      --input-focus-background-color: hsl(225, 10%, 25%);
+      --input-focus-border-color: hsl(205, 100%, 50%);
+      --input-disabled-color: hsl(225, 10%, 45%);
+      --input-disabled-background-color: hsl(225, 10%, 20%);
+      --input-disabled-border-color: hsl(225, 10%, 28%);
+
+      /* Arrows, dots, buttons */
+      --arrow-fill-color: hsl(225, 10%, 60%);
+      --arrow-hover-background-color: hsl(225, 10%, 25%);
+      --add-entry-fill-color: hsl(225, 10%, 60%);
+      --dot-color: hsl(225, 10%, 50%);
+      --remove-entry-fill-color: hsl(0, 80%, 55%);
+
+      /* Dropdowns */
+      --dropdown-item-background-color: hsl(225, 10%, 22%);
+      --dropdown-item-hover-background-color: hsl(225, 10%, 28%);
+      --dropdown-separator-background-color: hsl(225, 10%, 30%);
+
+      /* Placeholder */
+      --placeholder-background-color: hsl(225, 10%, 18%);
+
+      /* FEEL */
+      --feel-hover-background-color: hsl(225, 10%, 25%);
+      --feel-inactive-color: hsl(225, 10%, 50%);
+      --feel-hover-color: hsl(225, 10%, 80%);
+      --feel-open-popup-color: hsl(225, 10%, 60%);
+      --feel-open-popup-background-color: hsl(225, 10%, 22%);
+      --feel-indicator-background-color: hsl(225, 10%, 28%);
+
+      /* Toggle */
+      --toggle-switch-off-background-color: hsl(225, 10%, 40%);
+      --toggle-switch-switcher-background-color: hsl(225, 10%, 85%);
+
+      /* List entries */
+      --list-entry-header-button-fill-color: hsl(225, 10%, 60%);
+      --list-badge-background-color: hsl(225, 10%, 35%);
+
+      color: hsl(225, 10%, 85%);
+    }
+  }
+
+  /* Right side panels: Form Preview + Form Output */
+  .cfp-right {
+    background-color: hsl(225, 10%, 16%);
+
+    /* Collapsed preview strip */
+    .cfp-collapsed-preview {
+      background-color: hsl(225, 10%, 20%);
+      border-color: hsl(225, 10%, 30%);
+      color: hsl(225, 10%, 75%);
+
+      .cfp-collapsed-preview-title h1 {
+        color: hsl(225, 10%, 75%);
+      }
+
+      .cfp-collapsed-preview-action {
+        background: none;
+        border: none;
+        color: hsl(225, 10%, 70%);
+
+        svg path { fill: hsl(225, 10%, 70%) !important; }
+
+        &:hover {
+          color: hsl(225, 10%, 90%);
+          svg path { fill: hsl(225, 10%, 90%) !important; }
+        }
+      }
+    }
+
+    /* Collapsible panel (Form Preview / Form Output) */
+    .cfp-collapsible-panel {
+      border-color: hsl(225, 10%, 28%);
+
+      .cfp-collapsible-panel-title {
+        background-color: hsl(225, 10%, 20%);
+        border-color: hsl(225, 10%, 30%);
+        color: hsl(225, 10%, 85%);
+
+        h1 { color: hsl(225, 10%, 85%); }
+
+        .cfp-collapsible-panel-action {
+          background: none;
+          border: none;
+          color: hsl(225, 10%, 70%);
+
+          svg path { fill: hsl(225, 10%, 70%) !important; }
+
+          &:hover {
+            color: hsl(225, 10%, 90%);
+            svg path { fill: hsl(225, 10%, 90%) !important; }
+          }
+        }
+      }
+
+      .cfp-collapsible-panel-content {
+        background-color: hsl(225, 10%, 16%);
+
+        /* Form Preview renderer */
+        .cfp-preview-container {
+          background-color: hsl(225, 10%, 16%);
+
+          .fjs-container {
+            --cds-background: hsl(225, 10%, 16%);
+            --cds-layer-01: hsl(225, 10%, 20%);
+            --cds-layer-02: hsl(225, 10%, 22%);
+            --cds-field-01: hsl(225, 10%, 20%);
+            --cds-field-02: hsl(225, 10%, 22%);
+            --cds-text-primary: hsl(225, 10%, 85%);
+            --cds-text-secondary: hsl(225, 10%, 65%);
+            --cds-text-disabled: hsl(225, 10%, 50%);
+            --cds-border-subtle-01: hsl(225, 10%, 30%);
+            --cds-border-strong-01: hsl(225, 10%, 35%);
+            --cds-icon-primary: hsl(225, 10%, 85%);
+            background-color: hsl(225, 10%, 16%);
+            color: hsl(225, 10%, 85%);
+          }
+
+          /* Powered by bpmn.io link */
+          .fjs-powered-by-link {
+            color: hsl(225, 10%, 55%) !important;
+
+            svg path { fill: hsl(225, 10%, 55%) !important; }
+          }
+
+          /* Table component in preview */
+          .fjs-table-th {
+            background-color: hsl(225, 10%, 24%) !important;
+            color: hsl(225, 10%, 85%) !important;
+            border-color: hsl(225, 10%, 32%) !important;
+          }
+
+          .fjs-table-tr {
+            border-color: hsl(225, 10%, 28%) !important;
+
+            &:nth-child(even) {
+              background-color: hsl(225, 10%, 20%) !important;
+            }
+
+            &:hover {
+              background-color: hsl(225, 10%, 26%) !important;
+            }
+          }
+
+          .fjs-table-td {
+            color: hsl(225, 10%, 80%) !important;
+            border-color: hsl(225, 10%, 28%) !important;
+          }
+
+          .fjs-table,
+          .fjs-table-inner {
+            background-color: hsl(225, 10%, 18%) !important;
+            border-color: hsl(225, 10%, 32%) !important;
+          }
+        }
+
+        /* Form Output CodeMirror editor */
+        .cfp-result-container,
+        .fjs-json-editor {
+          background-color: hsl(225, 10%, 16%);
+
+          .cm-editor {
+            background-color: hsl(225, 10%, 16%);
+            color: hsl(225, 10%, 85%);
+
+            .cm-gutters {
+              background-color: hsl(225, 10%, 20%);
+              border-color: hsl(225, 10%, 30%);
+              color: hsl(225, 10%, 55%);
+            }
+
+            .cm-activeLineGutter {
+              background-color: hsl(225, 10%, 24%);
+            }
+
+            .cm-content {
+              color: hsl(225, 10%, 85%);
+            }
+
+            .cm-activeLine {
+              background-color: hsl(225, 10%, 20%);
+            }
+
+            /* JSON token colours */
+            .cm-string { color: hsl(120, 50%, 60%) !important; }
+            .cm-number { color: hsl(205, 100%, 65%) !important; }
+            .cm-keyword { color: hsl(290, 60%, 70%) !important; }
+            .cm-propertyName { color: hsl(200, 70%, 70%) !important; }
+            .cm-punctuation { color: hsl(225, 10%, 65%) !important; }
+            .cm-bracket { color: hsl(225, 10%, 75%) !important; }
+          }
+        }
+      }
+    }
+  }
+
+  /* Empty editor illustration */
+  .fjs-empty-editor {
+    h2 {
+      color: hsl(225, 10%, 85%);
+    }
+
+    span {
+      color: hsl(225, 10%, 60%);
+    }
+
+    svg {
+      /* cursor/pointer body paths (originally #393939) */
+      [fill="#393939"] {
+        fill: hsl(225, 10%, 80%) !important;
+      }
+
+      /* paper background rect (originally #E5E5E5) */
+      [fill="#E5E5E5"] {
+        fill: hsl(225, 10%, 28%) !important;
+      }
+
+      /* cursor stroke lines (originally stroke="#000") */
+      [stroke="#000"] {
+        stroke: hsl(225, 10%, 80%) !important;
+      }
+    }
+  }
+}

@@ -86,6 +86,11 @@
 
 /* Dark theme overrides for minimap toggle */
 :global(:root[data-theme="dark"]) :local(.BpmnEditor) {
+  /* Element template header icon (img tag with SVG data URL - black by default) */
+  .bio-properties-panel-header-template-icon {
+    filter: invert(1) brightness(1.8);
+  }
+
   .djs-minimap {
     .toggle {
       color: hsl(225, 10%, 90%) !important;

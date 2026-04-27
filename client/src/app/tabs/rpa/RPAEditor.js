@@ -177,6 +177,18 @@ export class RPAEditor extends CachedComponent {
     });
     this.handleLinting();
     this.props.onImport();
+
+    // Watch for app theme changes and update Monaco accordingly
+    this._themeObserver = new MutationObserver(() => this._applyMonacoTheme());
+    this._themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: [ 'data-theme' ]
+    });
+  }
+
+  _applyMonacoTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    Monaco.editor.setTheme(isDark ? 'vs-dark' : 'vs');
   }
 
   handleEngineProfile() {
@@ -251,6 +263,9 @@ export class RPAEditor extends CachedComponent {
       fontFamily: 'var(--font-family-monospace)'
     });
 
+    // Apply Monaco theme to match the current app theme
+    this._applyMonacoTheme();
+
     document.fonts.ready.then(() => {
       Monaco.editor.remeasureFonts();
     });
@@ -292,6 +307,11 @@ export class RPAEditor extends CachedComponent {
     }
 
     this.handleListeners(editor, true);
+
+    if (this._themeObserver) {
+      this._themeObserver.disconnect();
+      this._themeObserver = null;
+    }
   }
 
   componentDidUpdate(prevProps) {
