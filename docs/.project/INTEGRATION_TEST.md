@@ -105,6 +105,25 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] Reference the form in the user task via `Camunda Forms -> reference=foo`
 * [ ] Verify that deployment of BPMN + Form file works
 
+#### Engine Connection
+
+Test the following scenarios against **all three** cluster types with the engine version matching the modeler release:
+
+* **Local (c8run):** download latest version and start via `./c8run start`
+* **SaaS:** use an internal or trial cluster on [console.camunda.io](https://console.camunda.io)
+* **Self-Managed (SM):** use an internal `dev`/`int` cluster or setup your own locally
+
+To test per cluster type:
+
+* [ ] Create a new process application in the folder containing the BPMN and form file
+* [ ] Configure and select the engine connection
+* [ ] Deploy the process application (bpmn + form)
+* [ ] Start a process instance, verify link to Operate works
+* [ ] Test the previously created `User Task`
+  * [ ] Select it and start testing
+  * [ ] Open the linked form in tasklist and complete it
+  * [ ] Verify the task completes successfully
+
 #### File system integration (platform specific)
 
 * [ ] bindings register:
