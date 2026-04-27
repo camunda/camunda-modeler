@@ -150,19 +150,19 @@ export default class CamundaDmnModeler extends DmnModeler {
   /**
    * Get stack index of active viewer.
    *
-   * @returns {?number} Stack index or null.
+   * @returns {number} Stack index or -1.
    */
   getStackIdx() {
     const viewer = this.getActiveViewer();
 
     if (!viewer) {
-      return null;
+      return -1;
     }
 
     const commandStack = viewer.get('commandStack', false);
 
     if (!commandStack) {
-      return null;
+      return -1;
     }
 
     return commandStack._stackIdx;
@@ -240,7 +240,7 @@ export default class CamundaDmnModeler extends DmnModeler {
       if (activeView.type !== 'drd') {
         const activeViewer = overview.getActiveViewer();
 
-        if (activeViewer) {
+        if (activeViewer && overview._container.parentNode) {
           activeViewer.get('eventBus').fire('drgElementOpened', {
             id: activeView.element.id
           });
@@ -304,33 +304,64 @@ export default class CamundaDmnModeler extends DmnModeler {
     }
   };
 
-  attachOverviewTo = (parentNode) => {
-    this.detachOverview();
+  updateOverview = (parentNode, open) => {
+    if (!parentNode) {
+      this._detachOverview();
+      return;
+    }
 
+    const attached = this._attachOverview(parentNode);
+
+    if (attached && open) {
+      this._emit('overviewOpen');
+    }
+  };
+
+  _attachOverview(parentNode) {
     const activeViewer = this._overview.getActiveViewer();
 
     if (!activeViewer) {
-      return;
+      return false;
     }
+
+    if (this._overview._container.parentNode === parentNode) {
+      return false;
+    }
+
+    this._detachOverview();
 
     this._emit('attachOverview');
 
     this._overview.attachTo(parentNode);
 
     activeViewer.get('canvas').resized();
-  };
 
-  detachOverview = () => {
+    const activeView = this.getActiveView();
+
+    if (activeView && activeView.type !== 'drd') {
+      activeViewer.get('eventBus').fire('drgElementOpened', {
+        id: activeView.element.id
+      });
+    }
+
+    return true;
+  }
+
+  _detachOverview() {
     const activeViewer = this._overview.getActiveViewer();
 
     if (!activeViewer) {
       return;
     }
 
+    if (!this._overview._container.parentNode) {
+      return;
+    }
+
     this._emit('detachOverview');
 
     this._overview.detach();
-  };
+  }
 }
 
 

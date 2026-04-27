@@ -43,9 +43,12 @@ import {
 
 import EngineProfileHelper from '../EngineProfileHelper';
 import { ENGINES } from '../../../util/Engines';
+
 export const DEFAULT_ENGINE_PROFILE = {
   executionPlatform: ENGINES.CLOUD
 };
+
+export const LINTING_DEBOUNCE_WAIT = 500;
 
 
 export class RPAEditor extends CachedComponent {
@@ -61,7 +64,7 @@ export class RPAEditor extends CachedComponent {
     this.propertiesPanelRef = React.createRef();
 
     this.handleLayoutChange = this.handleLayoutChange.bind(this);
-    this.handleLinting = debounce(this.handleLinting.bind(this), 500);
+    this.handleLinting = debounce(this.handleLinting.bind(this), LINTING_DEBOUNCE_WAIT);
 
     this.engineProfile = new EngineProfileHelper({
       get: () => {
@@ -389,9 +392,15 @@ export class RPAEditor extends CachedComponent {
       return;
     }
 
+    const model = monaco.editor.getModel();
+
+    if (!model) {
+      return;
+    }
+
     const undoState = {
-      redo: monaco.editor.getModel().canRedo(),
-      undo: monaco.editor.getModel().canUndo()
+      redo: model.canRedo(),
+      undo: model.canUndo()
     };
 
     const editMenu = getRPAEditMenu(undoState);
