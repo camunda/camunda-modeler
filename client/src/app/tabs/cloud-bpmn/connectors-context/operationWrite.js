@@ -76,6 +76,7 @@ function writeZeebeInput(modeling, moddle, element, targetName, value) {
   let extensionElements = businessObject.get('extensionElements');
   if (!extensionElements) {
     extensionElements = moddle.create('bpmn:ExtensionElements', { values: [] });
+    extensionElements.$parent = businessObject;
     modeling.updateProperties(element, { extensionElements });
   }
 
@@ -88,14 +89,20 @@ function writeZeebeInput(modeling, moddle, element, targetName, value) {
       inputParameters: [],
       outputParameters: []
     });
+    ioMapping.$parent = extensionElements;
     modeling.updateModdleProperties(element, extensionElements, {
       values: [ ...values, ioMapping ]
     });
   }
 
   // Find existing input parameter with matching target, or create one.
+  // Cover both common moddle accessors — older bpmn-io builds expose direct
+  // property access on Input, newer ones go through `.get()`.
   const inputs = ioMapping.get('inputParameters') || [];
-  const existing = inputs.find(p => p && p.get('target') === targetName);
+  const existing = inputs.find(p => p && (
+    (typeof p.get === 'function' && p.get('target') === targetName)
+    || p.target === targetName
+  ));
 
   if (existing) {
     modeling.updateModdleProperties(element, existing, { source: value });
@@ -106,6 +113,7 @@ function writeZeebeInput(modeling, moddle, element, targetName, value) {
     target: targetName,
     source: value
   });
+  input.$parent = ioMapping;
   modeling.updateModdleProperties(element, ioMapping, {
     inputParameters: [ ...inputs, input ]
   });

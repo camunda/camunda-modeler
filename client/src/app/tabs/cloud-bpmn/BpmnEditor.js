@@ -644,17 +644,13 @@ export class BpmnEditor extends CachedComponent {
 
     this._applyAppendConfig(placedShape, elementId, config);
 
-    // ─── connectors-context: honor wizard payload ────────────────────────
-    // ConnectorWizard returns `opHint` (operation Dropdown value) and an
-    // optional `connectionId`. Persist both so the placed task lands in a
-    // configured state — operation selected in the Method Dropdown,
-    // Connection bound in the sticky card.
-    if (config.opHint && appliedTemplate) {
-      const opMeta = findOperationProperty(appliedTemplate);
-      if (opMeta) {
-        writeOperationValue(modeler, placedShape, opMeta.property, config.opHint);
-      }
-    }
+    // ─── connectors-context: honor wizard payload (connection now,
+    // operation after select) ────────────────────────────────────────────
+    // The Connection binding is mock-store state, so it can be set anytime.
+    // The Operation write goes through bpmn-js modeling; doing it AFTER
+    // selection.select ensures the bpmn-io properties panel is already
+    // mounted for this element, so its commandStack.changed listener
+    // re-renders the panel with the new method value visible.
     if (config.connectionId && placedShape && placedShape.id) {
       bindConnection(placedShape.id, config.connectionId);
     }
@@ -672,6 +668,15 @@ export class BpmnEditor extends CachedComponent {
         tab: 'properties'
       }
     });
+
+    // Operation write — runs AFTER select so the panel has mounted for
+    // this element and will re-render in response to commandStack.changed.
+    if (config.opHint && appliedTemplate && placedShape) {
+      const opMeta = findOperationProperty(appliedTemplate);
+      if (opMeta) {
+        writeOperationValue(modeler, placedShape, opMeta.property, config.opHint);
+      }
+    }
   };
 
   /**
