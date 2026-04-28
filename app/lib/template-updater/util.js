@@ -19,7 +19,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const pLimit = require('p-limit');
+const pLimit = require('p-limit').default;
 const semver = require('semver');
 
 const log = require('../log')('app:template-updater:util');
