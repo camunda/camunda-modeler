@@ -156,6 +156,7 @@ export function buildAppendResults({ query, templates = [], synonymIndex /*, sou
       label: friendlyName,
       hint: t.description || '',
       icon: iconForTemplate(t, section),
+      iconSrc: getTemplateIconSrc(t),
       section,
       source: 'template',
       template: t,
@@ -226,11 +227,30 @@ function shortenTemplateId(id) {
 }
 
 /**
- * Icon class per section. Future refinement: connector templates may carry
- * their own icon URL in `t.icon.contents` — swap in an <img> when present.
+ * Font-icon class per section. Used as the fallback when a template doesn't
+ * carry its own image icon (see getTemplateIconSrc) — every template gets
+ * one or the other, never both at render time.
  */
 function iconForTemplate(template, section) {
   if (section === 'ai-agents') return 'bpmn-icon-subprocess-expanded';
   if (section === 'rpa') return 'bpmn-icon-business-rule-task';
   return 'bpmn-icon-service-task';
+}
+
+/**
+ * Pull a renderable image src from a template's `icon` field. Element
+ * templates may carry a brand SVG either as a data URL (the common case for
+ * connector templates — see ~/Downloads/Native Ops PRD/element-templates/*)
+ * or as a regular URL. We accept both.
+ *
+ * Returns null when the template has no usable icon — the caller falls back
+ * to the section font-icon class from iconForTemplate.
+ */
+function getTemplateIconSrc(template) {
+  const icon = template && template.icon;
+  if (!icon) return null;
+  if (typeof icon === 'string') return icon;
+  if (typeof icon.contents === 'string') return icon.contents;
+  if (typeof icon.url === 'string') return icon.url;
+  return null;
 }

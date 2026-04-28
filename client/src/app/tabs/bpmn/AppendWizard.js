@@ -265,7 +265,16 @@ export default function AppendWizard({
                     onMouseEnter={ () => setActiveIdx(globalIdx) }
                     onClick={ () => runAppend(r) }
                   >
-                    <span className={ `${css.resultIcon} ${r.icon || ''}` } aria-hidden="true" />
+                    { r.iconSrc ? (
+                      <img
+                        className={ css.resultIcon }
+                        src={ r.iconSrc }
+                        alt=""
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <span className={ `${css.resultIcon} ${r.icon || ''}` } aria-hidden="true" />
+                    ) }
                     <span className={ css.resultLabel }>{ r.label }</span>
                     { r.hint && <span className={ css.resultHint }>{ r.hint }</span> }
                     { isActive && (

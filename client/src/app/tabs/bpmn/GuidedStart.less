@@ -1771,6 +1771,16 @@
   flex: 0 0 auto;
 }
 
+// When the icon is an <img> (template brand SVG carried in icon.contents),
+// it sits in the same row as font-icon <span>s and must match their visual
+// weight. Force a 16px box so connector logos line up with bpmn-icon-*
+// glyphs across rows.
+img:local(.resultIcon) {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
 :local(.resultLabel) {
   font-weight: 500;
   flex: 0 0 auto;
