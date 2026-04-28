@@ -188,10 +188,10 @@ export default function AppendWizard({
         template={ connectorWizardTemplate }
         app={ appNameFromTemplate(connectorWizardTemplate) }
         onCancel={ () => setConnectorWizardTemplate(null) }
-        onConfirm={ ({ template, opHint, connectionId }) => {
+        onConfirm={ ({ template, opHint, connectionId, name }) => {
           const elementId = inferElementIdForTemplate(template);
           setConnectorWizardTemplate(null);
-          onConfirm(elementId, { template, opHint, connectionId });
+          onConfirm(elementId, { template, opHint, connectionId, name });
         } }
       />
     );

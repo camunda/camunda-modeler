@@ -654,17 +654,7 @@ export class BpmnEditor extends CachedComponent {
     if (config.connectionId && placedShape && placedShape.id) {
       bindConnection(placedShape.id, config.connectionId);
     }
-    if (config.name && placedShape) {
-      // Set the BPMN element name so the canvas + properties panel reflect
-      // the user's chosen label. Goes through bpmn-js modeling so undo/redo
-      // and save/reopen work.
-      try {
-        modeler.get('modeling').updateProperties(placedShape, { name: config.name });
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn('[connectors-context] name write failed', err);
-      }
-    }
+    // config.name is applied by _applyAppendConfig above via applyName().
 
     // Select the placed shape and open properties panel
     selection.select(placedShape);
