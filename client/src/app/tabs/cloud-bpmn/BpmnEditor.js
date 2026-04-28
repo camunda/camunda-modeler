@@ -146,18 +146,23 @@ function readOperationValueFromBusinessObject(element, template) {
     return v != null ? String(v) : null;
   }
 
-  // zeebe:input bindings live in extensionElements > zeebe:IoMapping > inputParameters[].
+  // zeebe:input bindings live in extensionElements > zeebe:IoMapping >
+  // inputParameters[]. zeebe:Input uses `target` (variable name, matches
+  // binding.name) and `source` (the value/expression). NOT `name`/`value` —
+  // that was the bug that kept the sticky OperationSelector showing
+  // "Choose an operation" even after the bpmn-io panel had picked up the
+  // value via the same write.
   if (binding.type === 'zeebe:input' && typeof binding.name === 'string') {
     const ext = businessObject.get && businessObject.get('extensionElements');
-    const values = (ext && ext.values) || [];
+    const values = (ext && ext.values) || (ext && ext.get && ext.get('values')) || [];
     for (const v of values) {
-      // ZeebeIoMapping or similar — look for a `inputParameters` array.
-      const inputs = v && (v.inputParameters || (v.get && v.get('inputParameters'))) || [];
+      if (!v || v.$type !== 'zeebe:IoMapping') continue;
+      const inputs = (v.inputParameters || (v.get && v.get('inputParameters'))) || [];
       for (const ip of inputs) {
-        const name = ip && (ip.name || (ip.get && ip.get('name')));
-        if (name === binding.name) {
-          const value = ip.value != null ? ip.value : (ip.get && ip.get('value'));
-          return value != null ? String(value) : null;
+        const target = ip && (ip.target || (ip.get && ip.get('target')));
+        if (target === binding.name) {
+          const source = ip.source != null ? ip.source : (ip.get && ip.get('source'));
+          return source != null ? String(source) : null;
         }
       }
     }
