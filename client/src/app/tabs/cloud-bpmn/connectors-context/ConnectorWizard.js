@@ -31,12 +31,15 @@ import * as css from './ConnectorWizard.less';
  *                   picks one. Skipped when findOperationProperty is null.
  *   2. connection — list connections fuzzy-filtered to the template's app;
  *                   user picks an existing one or hands off to Hub via
- *                   `openHubCreate(app)`. Can be skipped (placeholder
- *                   "Skip for now").
+ *                   `openHubCreate(app)`. Can be skipped ("Connect later").
+ *   3. name       — name the new task. Pre-filled from the picked operation
+ *                   (or template) so the user can hit Enter to accept the
+ *                   smart default. Last step before placement.
  *
- * On confirm, calls `onConfirm({ template, opHint, connectionId })`. The
- * caller (AppendWizard / BpmnEditor) is responsible for applying the
- * template, persisting the operation pick, and binding the connection.
+ * On confirm, calls `onConfirm({ template, opHint, connectionId, name })`.
+ * The caller (AppendWizard / BpmnEditor) is responsible for applying the
+ * template, persisting the operation pick, binding the connection, and
+ * setting the element name.
  *
  * @param {object} props
  * @param {object} props.template     - element template selected in the search
@@ -51,6 +54,7 @@ export default function ConnectorWizard({ template, app, onConfirm, onCancel }) 
   const initialPhase = hasOperations ? 'operation' : 'connection';
   const [ phase, setPhase ] = useState(initialPhase);
   const [ opHint, setOpHint ] = useState(null);
+  const [ connectionId, setConnectionId ] = useState(null);
 
   const handleOperationPicked = (value) => {
     setOpHint(value);
@@ -58,21 +62,39 @@ export default function ConnectorWizard({ template, app, onConfirm, onCancel }) 
   };
 
   const handleConnectionPicked = (connection) => {
-    onConfirm({ template, opHint, connectionId: connection ? connection.id : null });
+    setConnectionId(connection ? connection.id : null);
+    setPhase('name');
   };
 
   const handleSkipConnection = () => {
-    onConfirm({ template, opHint, connectionId: null });
+    setConnectionId(null);
+    setPhase('name');
+  };
+
+  const handleNameConfirmed = (name) => {
+    onConfirm({ template, opHint, connectionId, name });
   };
 
   const handleBack = () => {
-    if (phase === 'connection' && hasOperations) {
+    if (phase === 'name') {
+      setPhase('connection');
+    } else if (phase === 'connection' && hasOperations) {
       setPhase('operation');
       setOpHint(null);
     } else {
       onCancel();
     }
   };
+
+  // Smart-default name for the final phase. Prefers the picked operation's
+  // friendly label ("Post message"), falls back to the template name.
+  const defaultName = (() => {
+    if (opHint && opMeta) {
+      const choice = opMeta.choices.find(c => c.value === opHint);
+      if (choice && choice.name) return choice.name;
+    }
+    return template.name || 'Connector task';
+  })();
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onCancel(); };
@@ -111,6 +133,13 @@ export default function ConnectorWizard({ template, app, onConfirm, onCancel }) 
             opHint={ opHint }
             onPick={ handleConnectionPicked }
             onSkip={ handleSkipConnection }
+          />
+        ) }
+
+        { phase === 'name' && (
+          <NamePhase
+            defaultName={ defaultName }
+            onConfirm={ handleNameConfirmed }
           />
         ) }
       </div>
@@ -227,9 +256,9 @@ function ConnectionPhase({ app, opHint, onPick, onSkip }) {
 
   const handleCreate = () => {
     openHubCreate(app);
-    // We don't auto-confirm — the user comes back to the modeler manually
-    // and picks the new connection from the refreshed list. Leave the
-    // wizard open on the connection phase.
+    // Leave the wizard open on the connection phase. The user comes back
+    // to the modeler manually and re-engages — refresh() is wired on the
+    // store + window-focus elsewhere.
   };
 
   return (
@@ -282,6 +311,62 @@ function ConnectionPhase({ app, opHint, onPick, onSkip }) {
         <button type="button" className={ css.ghostBtn } onClick={ handleCreate }>
           + Create new connection ↗
         </button>
+      </div>
+    </>
+  );
+}
+
+// ─── Name phase ───────────────────────────────────────────────────────────
+
+function NamePhase({ defaultName, onConfirm }) {
+  const [ name, setName ] = useState(defaultName || '');
+  const inputRef = useRef(null);
+
+  // Auto-focus and select-all so Enter accepts the smart default and
+  // typing replaces it. Matches NamePromptWizard's flow in AppendWizard.js.
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, []);
+
+  const trimmed = name.trim();
+  const handleSubmit = () => {
+    onConfirm(trimmed || defaultName || '');
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+  return (
+    <>
+      <p className={ css.phaseTitle }>Name this step</p>
+      <input
+        ref={ inputRef }
+        className={ css.search }
+        value={ name }
+        onChange={ e => setName(e.target.value) }
+        onKeyDown={ onKeyDown }
+        placeholder={ defaultName }
+      />
+      <p className={ css.helpText }>
+        This is the label that shows on the canvas and in process listings.
+      </p>
+      <div className={ css.footerSplit }>
+        <span className={ css.footerHints }>
+          <span>↵ done</span>
+          <span>esc cancel</span>
+        </span>
+        <button
+          type="button"
+          className={ css.primaryBtn }
+          onClick={ handleSubmit }
+        >Done</button>
       </div>
     </>
   );

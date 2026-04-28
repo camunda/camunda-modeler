@@ -225,3 +225,34 @@
 
   &:hover { background: #e5edff; }
 }
+
+// ───── Name phase ─────
+
+:local(.helpText) {
+  margin: 6px 2px 0;
+  font-size: 11px;
+  color: #6f6f6f;
+}
+
+:local(.footerHints) {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: #6f6f6f;
+}
+
+:local(.primaryBtn) {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  color: #ffffff;
+  background: #0f62fe;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+
+  &:hover { background: #0353e9; }
+  &:focus-visible { outline: 2px solid #0f62fe; outline-offset: 2px; }
+}
