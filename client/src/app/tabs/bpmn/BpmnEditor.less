@@ -80,3 +80,45 @@
   width: 64px;
   height: 16px;
 }
+
+:global(:root[data-theme="dark"]) :local(.BpmnEditor) {
+  .djs-minimap {
+    .toggle {
+      color: var(--bio-text-primary) !important;
+      background-color: var(--bio-border) !important;
+
+      svg, svg * {
+        fill: var(--bio-text-primary) !important;
+      }
+    }
+
+    .toggle:hover {
+      color: var(--bio-text-primary) !important;
+      background-color: var(--bio-border-strong) !important;
+
+      svg, svg * {
+        fill: var(--bio-text-primary) !important;
+      }
+    }
+
+    &.open {
+      .toggle {
+        color: var(--bio-text-primary) !important;
+        background-color: var(--bio-border) !important;
+
+        svg, svg * {
+          fill: var(--bio-text-primary) !important;
+        }
+      }
+
+      .toggle:hover {
+        color: var(--bio-text-primary) !important;
+        background-color: var(--bio-border-strong) !important;
+
+        svg, svg * {
+          fill: var(--bio-text-primary) !important;
+        }
+      }
+    }
+  }
+}

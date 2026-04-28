@@ -100,3 +100,82 @@
      pointer-events: none;
    }
 }
+
+/* Dark theme overrides for Details panel (Properties Panel) */
+:global(:root[data-theme="dark"]) :local(.SidePanel) {
+  /* Carbon Design System variables — consumed by Carbon components */
+  --cds-background: var(--bio-background);
+  --cds-layer-01: var(--bio-surface-1);
+  --cds-layer-02: var(--bio-surface-3);
+  --cds-field-01: var(--bio-surface-1);
+  --cds-field-02: var(--bio-surface-3);
+  --cds-text-primary: var(--bio-text-primary);
+  --cds-text-secondary: var(--bio-text-secondary);
+  --cds-icon-primary: var(--bio-text-primary);
+  --cds-icon-secondary: var(--bio-text-secondary);
+  --cds-border-subtle-01: var(--bio-border);
+
+  /* Properties panel (@bpmn-io/properties-panel) variables */
+  --text-base-color: var(--bio-text-primary);
+  --description-color: var(--bio-text-muted);
+  --placeholder-color: var(--bio-text-placeholder);
+  --link-color: var(--bio-accent);
+  --header-background-color: var(--bio-surface-2);
+  --header-icon-fill-color: var(--bio-icon);
+  --header-bottom-border-color: var(--bio-border);
+  --group-background-color: var(--bio-surface-1);
+  --group-bottom-border-color: var(--bio-border-subtle);
+  --sticky-group-background-color: var(--bio-surface-2);
+  --sticky-group-bottom-border-color: var(--bio-border-subtle);
+  --input-background-color: var(--bio-surface-3);
+  --input-border-color: var(--bio-border-strong);
+  --input-focus-background-color: var(--bio-surface-4);
+  --input-focus-border-color: var(--bio-accent);
+  --input-disabled-color: var(--bio-text-disabled);
+  --input-disabled-background-color: var(--bio-surface-2);
+  --input-disabled-border-color: var(--bio-border-subtle);
+  --arrow-fill-color: var(--bio-text-muted);
+  --arrow-hover-background-color: var(--bio-surface-4);
+  --add-entry-fill-color: var(--bio-text-muted);
+  --dot-color: var(--bio-text-placeholder);
+  --remove-entry-fill-color: var(--bio-error);
+  --dropdown-item-background-color: var(--bio-surface-3);
+  --dropdown-item-hover-background-color: var(--bio-border-subtle);
+  --dropdown-separator-background-color: var(--bio-border);
+  --placeholder-background-color: var(--bio-surface-1);
+  --feel-hover-background-color: var(--bio-surface-4);
+  --feel-inactive-color: var(--bio-text-placeholder);
+  --feel-hover-color: var(--bio-icon);
+  --feel-open-popup-color: var(--bio-text-muted);
+  --feel-open-popup-background-color: var(--bio-surface-3);
+  --feel-indicator-background-color: var(--bio-border-subtle);
+  --toggle-switch-off-background-color: var(--bio-control-off);
+  --toggle-switch-switcher-background-color: var(--bio-text-primary);
+  --list-entry-header-button-fill-color: var(--bio-text-muted);
+  --list-badge-background-color: var(--bio-border-strong);
+
+  /* Side panel tab buttons */
+  .side-panel__tab {
+    color: var(--bio-text-secondary);
+
+    &:hover {
+      color: var(--bio-text-primary);
+    }
+
+    &.side-panel__tab--active {
+      color: var(--bio-text-primary);
+    }
+
+    svg {
+      fill: currentColor;
+    }
+
+    span {
+      color: inherit;
+    }
+  }
+
+  .bio-properties-panel {
+    background: var(--bio-background);
+  }
+}

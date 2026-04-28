@@ -83,3 +83,51 @@
   width: 64px;
   height: 16px;
 }
+
+/* Dark theme overrides for minimap toggle */
+:global(:root[data-theme="dark"]) :local(.BpmnEditor) {
+  /* Element template header icon (img tag with SVG data URL - black by default) */
+  .bio-properties-panel-header-template-icon {
+    filter: invert(1) brightness(1.8);
+  }
+
+  .djs-minimap {
+    .toggle {
+      color: var(--bio-text-primary) !important;
+      background-color: var(--bio-border) !important;
+
+      svg, svg * {
+        fill: var(--bio-text-primary) !important;
+      }
+    }
+
+    .toggle:hover {
+      color: var(--bio-text-primary) !important;
+      background-color: var(--bio-border-strong) !important;
+
+      svg, svg * {
+        fill: var(--bio-text-primary) !important;
+      }
+    }
+
+    &.open {
+      .toggle {
+        color: var(--bio-text-primary) !important;
+        background-color: var(--bio-border) !important;
+
+        svg, svg * {
+          fill: var(--bio-text-primary) !important;
+        }
+      }
+
+      .toggle:hover {
+        color: var(--bio-text-primary) !important;
+        background-color: var(--bio-border-strong) !important;
+
+        svg, svg * {
+          fill: var(--bio-text-primary) !important;
+        }
+      }
+    }
+  }
+}

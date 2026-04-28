@@ -52,3 +52,349 @@
     }
   }
 }
+
+/* Dark theme overrides for Form editor */
+:global(:root[data-theme="dark"]) :local(.FormEditor) {
+
+  /* Form Definition panel title */
+  .cfp-collapsible-panel-title {
+    background-color: var(--bio-surface-2);
+    border-color: var(--bio-border);
+    color: var(--bio-text-primary);
+
+    h1, h2, h3 {
+      color: var(--bio-text-primary);
+    }
+  }
+
+  /* Form playground root */
+  .cfp-root {
+    background-color: var(--bio-surface-1);
+    color: var(--bio-text-primary);
+  }
+
+  /* Main form design canvas */
+  .cfp-editor-container {
+    background-color: var(--bio-panel);
+
+    .fjs-container,
+    .fjs-editor-container,
+    .fjs-form-editor,
+    .fjs-form-container {
+      background-color: var(--bio-panel);
+
+      --cds-background: var(--bio-panel);
+      --cds-layer-01: var(--bio-surface-2);
+      --cds-layer-02: var(--bio-surface-3);
+      --cds-field-01: var(--bio-surface-2);
+      --cds-field-02: var(--bio-surface-3);
+      --cds-text-primary: var(--bio-text-primary);
+      --cds-text-secondary: var(--bio-text-muted);
+      --cds-text-disabled: var(--bio-text-placeholder);
+      --cds-border-subtle-01: var(--bio-border);
+      --cds-border-strong-01: var(--bio-border-strong);
+      --cds-icon-primary: var(--bio-text-primary);
+    }
+
+    /* Drop zone / canvas rows */
+    .fjs-drop-container-vertical,
+    .fjs-drop-container-horizontal,
+    .fjs-children,
+    .fjs-layout-row,
+    .fjs-drag-row-move {
+      background-color: transparent;
+    }
+
+    /* Hovered/selected element outlines */
+    .fjs-editor-hovered,
+    .fjs-element-container:hover {
+      outline-color: var(--bio-accent);
+    }
+
+    /* Powered by link */
+    .fjs-powered-by-link {
+      color: var(--bio-text-placeholder);
+
+      svg { fill: currentColor; }
+    }
+
+    /* Table component */
+    .fjs-table-th {
+      background-color: var(--bio-surface-3);
+      color: var(--bio-text-primary);
+      border-color: var(--bio-border);
+    }
+
+    .fjs-table-tr {
+      border-color: var(--bio-border-subtle);
+
+      &:nth-child(even) {
+        background-color: var(--bio-surface-2);
+      }
+
+      &:hover {
+        background-color: var(--bio-surface-4);
+      }
+    }
+
+    .fjs-table-td {
+      color: var(--bio-icon);
+      border-color: var(--bio-border-subtle);
+    }
+
+    .fjs-table,
+    .fjs-table-inner {
+      background-color: var(--bio-surface-1);
+      border-color: var(--bio-border);
+    }
+  }
+
+  /* Form properties panel (cfp-properties / fjs-properties-panel) */
+  .cfp-properties,
+  .fjs-properties-container,
+  .fjs-properties-panel {
+    background-color: var(--bio-background);
+    color: var(--bio-text-primary);
+
+    .bio-properties-panel {
+      /* Text */
+      --text-base-color: var(--bio-text-primary);
+      --description-color: var(--bio-text-muted);
+      --placeholder-color: var(--bio-text-placeholder);
+      --link-color: var(--bio-accent);
+
+      /* Header */
+      --header-background-color: var(--bio-surface-2);
+      --header-icon-fill-color: var(--bio-icon);
+      --header-bottom-border-color: var(--bio-border);
+
+      /* Groups */
+      --group-background-color: var(--bio-surface-1);
+      --group-bottom-border-color: var(--bio-border-subtle);
+      --sticky-group-background-color: var(--bio-surface-2);
+      --sticky-group-bottom-border-color: var(--bio-border-subtle);
+
+      /* Inputs */
+      --input-background-color: var(--bio-surface-3);
+      --input-border-color: var(--bio-border-strong);
+      --input-focus-background-color: var(--bio-surface-4);
+      --input-focus-border-color: var(--bio-accent);
+      --input-disabled-color: var(--bio-text-disabled);
+      --input-disabled-background-color: var(--bio-surface-2);
+      --input-disabled-border-color: var(--bio-border-subtle);
+
+      /* Arrows, dots, buttons */
+      --arrow-fill-color: var(--bio-text-muted);
+      --arrow-hover-background-color: var(--bio-surface-4);
+      --add-entry-fill-color: var(--bio-text-muted);
+      --dot-color: var(--bio-text-placeholder);
+      --remove-entry-fill-color: var(--bio-error);
+
+      /* Dropdowns */
+      --dropdown-item-background-color: var(--bio-surface-3);
+      --dropdown-item-hover-background-color: var(--bio-border-subtle);
+      --dropdown-separator-background-color: var(--bio-border);
+
+      /* Placeholder */
+      --placeholder-background-color: var(--bio-surface-1);
+
+      /* FEEL */
+      --feel-hover-background-color: var(--bio-surface-4);
+      --feel-inactive-color: var(--bio-text-placeholder);
+      --feel-hover-color: var(--bio-icon);
+      --feel-open-popup-color: var(--bio-text-muted);
+      --feel-open-popup-background-color: var(--bio-surface-3);
+      --feel-indicator-background-color: var(--bio-border-subtle);
+
+      /* Toggle */
+      --toggle-switch-off-background-color: var(--bio-control-off);
+      --toggle-switch-switcher-background-color: var(--bio-text-primary);
+
+      /* List entries */
+      --list-entry-header-button-fill-color: var(--bio-text-muted);
+      --list-badge-background-color: var(--bio-border-strong);
+
+      color: var(--bio-text-primary);
+    }
+  }
+
+  /* Right side panels: Form Preview + Form Output */
+  .cfp-right {
+    background-color: var(--bio-panel);
+
+    /* Collapsed preview strip */
+    .cfp-collapsed-preview {
+      background-color: var(--bio-surface-2);
+      border-color: var(--bio-border);
+      color: var(--bio-icon);
+
+      .cfp-collapsed-preview-title h1 {
+        color: var(--bio-icon);
+      }
+
+      .cfp-collapsed-preview-action {
+        background: none;
+        border: none;
+        color: var(--bio-text-secondary);
+
+        svg { fill: currentColor; }
+
+        &:hover {
+          color: var(--bio-text-primary);
+        }
+      }
+    }
+
+    /* Collapsible panel (Form Preview / Form Output) */
+    .cfp-collapsible-panel {
+      border-color: var(--bio-border-subtle);
+
+      .cfp-collapsible-panel-title {
+        background-color: var(--bio-surface-2);
+        border-color: var(--bio-border);
+        color: var(--bio-text-primary);
+
+        h1 { color: var(--bio-text-primary); }
+
+        .cfp-collapsible-panel-action {
+          background: none;
+          border: none;
+          color: var(--bio-text-secondary);
+
+          svg { fill: currentColor; }
+
+          &:hover {
+            color: var(--bio-text-primary);
+          }
+        }
+      }
+
+      .cfp-collapsible-panel-content {
+        background-color: var(--bio-panel);
+
+        /* Form Preview renderer */
+        .cfp-preview-container {
+          background-color: var(--bio-panel);
+
+          .fjs-container {
+            --cds-background: var(--bio-panel);
+            --cds-layer-01: var(--bio-surface-2);
+            --cds-layer-02: var(--bio-surface-3);
+            --cds-field-01: var(--bio-surface-2);
+            --cds-field-02: var(--bio-surface-3);
+            --cds-text-primary: var(--bio-text-primary);
+            --cds-text-secondary: var(--bio-text-muted);
+            --cds-text-disabled: var(--bio-text-placeholder);
+            --cds-border-subtle-01: var(--bio-border);
+            --cds-border-strong-01: var(--bio-border-strong);
+            --cds-icon-primary: var(--bio-text-primary);
+            background-color: var(--bio-panel);
+            color: var(--bio-text-primary);
+          }
+
+          /* Powered by bpmn.io link */
+          .fjs-powered-by-link {
+            color: var(--bio-text-muted);
+
+            svg { fill: currentColor; }
+          }
+
+          /* Table component in preview */
+          .fjs-table-th {
+            background-color: var(--bio-surface-3);
+            color: var(--bio-text-primary);
+            border-color: var(--bio-border);
+          }
+
+          .fjs-table-tr {
+            border-color: var(--bio-border-subtle);
+
+            &:nth-child(even) {
+              background-color: var(--bio-surface-2);
+            }
+
+            &:hover {
+              background-color: var(--bio-surface-4);
+            }
+          }
+
+          .fjs-table-td {
+            color: var(--bio-icon);
+            border-color: var(--bio-border-subtle);
+          }
+
+          .fjs-table,
+          .fjs-table-inner {
+            background-color: var(--bio-surface-1);
+            border-color: var(--bio-border);
+          }
+        }
+
+        /* Form Output CodeMirror editor */
+        .cfp-result-container,
+        .fjs-json-editor {
+          background-color: var(--bio-panel);
+
+          .cm-editor {
+            background-color: var(--bio-panel);
+            color: var(--bio-text-primary);
+
+            .cm-gutters {
+              background-color: var(--bio-surface-2);
+              border-color: var(--bio-border);
+              color: var(--bio-text-muted);
+            }
+
+            .cm-activeLineGutter {
+              background-color: var(--bio-surface-3);
+            }
+
+            .cm-content {
+              color: var(--bio-text-primary);
+            }
+
+            .cm-activeLine {
+              background-color: var(--bio-surface-2);
+            }
+
+            /* JSON token colours */
+            .cm-string { color: hsl(120, 50%, 60%) !important; }
+            .cm-number { color: hsl(205, 100%, 65%) !important; }
+            .cm-keyword { color: hsl(290, 60%, 70%) !important; }
+            .cm-propertyName { color: hsl(200, 70%, 70%) !important; }
+            .cm-punctuation { color: var(--bio-text-muted) !important; }
+            .cm-bracket { color: var(--bio-icon) !important; }
+          }
+        }
+      }
+    }
+  }
+
+  /* Empty editor illustration */
+  .fjs-empty-editor {
+    h2 {
+      color: var(--bio-text-primary);
+    }
+
+    span {
+      color: var(--bio-text-muted);
+    }
+
+    svg {
+      /* cursor/pointer body paths (originally #393939) */
+      [fill="#393939"] {
+        fill: var(--bio-icon);
+      }
+
+      /* paper background rect (originally #E5E5E5) */
+      [fill="#E5E5E5"] {
+        fill: var(--bio-border-subtle);
+      }
+
+      /* cursor stroke lines (originally stroke="#000") */
+      [stroke="#000"] {
+        stroke: var(--bio-icon);
+      }
+    }
+  }
+}

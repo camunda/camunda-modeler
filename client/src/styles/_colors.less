@@ -60,3 +60,55 @@
   --cds-button-primary: var(--color-blue-205-100-50);
   --cds-button-tertiary: var(--color-blue-205-100-50);
 }
+
+/* Dark theme overrides */
+:root[data-theme="dark"] {
+  /* Reverse the grey scale — light values in dark mode map to dark values in light */
+  --color-grey-225-10-15: var(--bio-text-primary);
+  --color-grey-225-10-35: var(--bio-icon);
+  --color-grey-225-10-55: var(--bio-text-muted);
+  --color-grey-225-10-70: var(--bio-text-disabled);
+  --color-grey-225-10-75: var(--bio-border-strong);
+  --color-grey-225-10-80: var(--bio-border);
+  --color-grey-225-10-85: var(--bio-surface-3);
+  --color-grey-225-10-90: var(--bio-surface-4);
+  --color-grey-225-10-95: var(--bio-surface-2);
+  --color-grey-225-10-97: var(--bio-surface-1);
+
+  --color-blue-205-100-95: hsl(205, 60%, 20%);
+
+  --color-red-360-100-92: hsl(360, 40%, 25%);
+  --color-red-360-100-97: hsl(360, 40%, 18%);
+
+  --color-yellow-47-86-91: hsl(47, 40%, 22%);
+
+  --color-white: var(--bio-background);
+  --color-white-opacity-80: hsla(225, 10%, 14%, 80%);
+  --color-black: hsl(0, 0%, 100%);
+  --color-black-opacity-10: hsla(0, 0%, 100%, 10%);
+  --color-black-opacity-30: hsla(0, 0%, 100%, 30%);
+
+  /* Carbon Design System dark overrides */
+  --cds-background: var(--bio-background);
+  --cds-background-hover: var(--bio-surface-2);
+  --cds-background-active: var(--bio-surface-4);
+  --cds-background-selected: var(--bio-surface-3);
+  --cds-layer-01: var(--bio-surface-1);
+  --cds-layer-02: var(--bio-surface-3);
+  --cds-layer-hover-01: var(--bio-surface-3);
+  --cds-layer-hover-02: var(--bio-surface-4);
+  --cds-field-01: var(--bio-surface-1);
+  --cds-field-02: var(--bio-surface-3);
+  --cds-border-subtle-00: var(--bio-border-subtle);
+  --cds-border-subtle-01: var(--bio-border);
+  --cds-border-strong-01: var(--bio-control-off);
+  --cds-text-primary: var(--bio-text-primary);
+  --cds-text-secondary: var(--bio-text-secondary);
+  --cds-text-placeholder: var(--bio-text-placeholder);
+  --cds-text-on-color: hsl(0, 0%, 100%);
+  --cds-icon-primary: var(--bio-text-primary);
+  --cds-icon-secondary: var(--bio-text-secondary);
+  --cds-button-secondary: var(--bio-border);
+
+  color-scheme: dark;
+}

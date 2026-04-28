@@ -52,3 +52,26 @@
   }
 }
 
+/* Dark theme overrides for SidePanelHeader */
+:global(:root[data-theme="dark"]) :local(.SidePanelHeader) {
+  background-color: var(--color-grey-225-10-95);
+  border-bottom-color: var(--color-grey-225-10-75);
+  color: var(--bio-text-primary);
+
+  .side-panel-header__icon {
+    fill: var(--bio-text-primary) !important;
+
+    svg, svg * {
+      fill: var(--bio-text-primary) !important;
+    }
+  }
+
+  .side-panel-header__type {
+    color: var(--bio-text-secondary) !important;
+  }
+
+  .side-panel-header__name {
+    color: var(--bio-text-primary) !important;
+  }
+}
+

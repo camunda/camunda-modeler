@@ -88,3 +88,28 @@
     }
   }
 }
+
+/* Dark theme override for Panel */
+:global(:root[data-theme="dark"]) :local(.Panel) {
+  background-color: var(--bio-panel);
+
+  .panel__body {
+    background-color: var(--bio-panel);
+
+    .panel__inner {
+      background-color: var(--bio-panel);
+    }
+  }
+
+  .panel__header {
+    .panel__action {
+      svg path:not([fill="none"]) {
+        fill: var(--bio-text-secondary) !important;
+      }
+
+      &:hover svg path:not([fill="none"]) {
+        fill: var(--bio-text-primary) !important;
+      }
+    }
+  }
+}

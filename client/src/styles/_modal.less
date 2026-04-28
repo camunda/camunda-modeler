@@ -182,3 +182,81 @@
     fill: var(--color-grey-225-10-35);
   }
 }
+
+/* Dark theme overrides for modal / settings page */
+:root[data-theme="dark"] {
+
+  .modal-dialog {
+    color: var(--bio-text-primary);
+
+    code {
+      color: hsl(205, 100%, 70%);
+      background-color: var(--bio-surface-3);
+    }
+  }
+
+  .modal-header {
+    color: var(--bio-text-primary);
+  }
+
+  .modal-title {
+    color: var(--bio-text-primary) !important;
+  }
+
+  .modal-body {
+    color: var(--bio-text-primary);
+
+    /* All text elements white */
+    h1, h2, h3, h4, h5, h6,
+    p, span, label, a, div,
+    .section__header,
+    .section__description,
+    .custom-control-label,
+    .custom-control-option,
+    .custom-control-description {
+      color: var(--bio-text-primary) !important;
+    }
+
+    select.form-control {
+      color: var(--bio-text-primary);
+      background-color: var(--bio-surface-1);
+
+      option {
+        color: var(--bio-text-primary);
+        background-color: var(--bio-surface-1);
+      }
+    }
+
+    input[type=text].form-control,
+    input[type=password].form-control,
+    textarea.form-control {
+      color: var(--bio-text-primary);
+      background-color: var(--bio-surface-1);
+    }
+
+    /* Table text */
+    table, td, th {
+      color: var(--bio-text-primary);
+    }
+
+    /* SVG icons */
+    svg {
+      fill: var(--bio-text-primary);
+    }
+
+    /* Links */
+    a {
+      color: var(--bio-accent);
+    }
+  }
+
+  /* Checkbox checkmark — light color for dark backgrounds */
+  .custom-checkbox .custom-control-input:checked + .custom-control-option:after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpolygon fill='%23e0e4e8' fill-rule='evenodd' points='5.743 14.314 1 9.57 2.897 7.673 5.743 10.519 13.103 3.16 15 5.057'/%3E%3C/svg%3E%0A");
+  }
+
+  /* Toggle switch handle — keep it light on dark track */
+  .toggle-switch .toggle-switch__switcher .toggle-switch__slider:before {
+    background-color: hsl(0, 0%, 100%);
+  }
+}

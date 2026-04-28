@@ -1,0 +1,84 @@
+/**
+ * Semantic design tokens for the bpmn-io / Camunda Modeler theming system.
+ *
+ * Light theme is the default. Dark overrides are applied when the
+ * [data-theme="dark"] attribute is set on the <html> element.
+ *
+ * Future intent: extract to a standalone @bpmn-io/theme package and consume
+ * these tokens from upstream libraries (properties-panel, form-js, diagram-js)
+ * instead of maintaining consumer-side overrides.
+ *
+ * Token naming convention:
+ *   --bio-background         deepest background layer (page root)
+ *   --bio-panel              slightly elevated (log panel, minimap)
+ *   --bio-surface-{1-4}      progressively elevated surfaces
+ *   --bio-canvas             diagram canvas fill
+ *   --bio-border-subtle      group separators / dividers
+ *   --bio-border             standard element borders
+ *   --bio-border-strong      input / focused borders
+ *   --bio-text-primary       main readable text
+ *   --bio-text-secondary     secondary / dimmer text
+ *   --bio-text-muted         hints, descriptions, captions
+ *   --bio-text-disabled      disabled state text
+ *   --bio-text-placeholder   input placeholder text
+ *   --bio-icon               standard icon fill
+ *   --bio-control-off        toggle / checkbox off-state track
+ *   --bio-accent             primary interactive / brand colour
+ *   --bio-accent-hover       primary colour on hover
+ *   --bio-error              error / danger colour
+ */
+
+/* ─── Light (default) ──────────────────────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --bio-background:        hsl(0, 0%, 100%);
+  --bio-panel:             hsl(225, 10%, 97%);
+  --bio-surface-1:         hsl(225, 10%, 97%);
+  --bio-surface-2:         hsl(225, 10%, 95%);
+  --bio-surface-3:         hsl(225, 10%, 90%);
+  --bio-surface-4:         hsl(225, 10%, 85%);
+  --bio-canvas:            hsl(0, 0%, 100%);
+
+  --bio-border-subtle:     hsl(225, 10%, 85%);
+  --bio-border:            hsl(225, 10%, 75%);
+  --bio-border-strong:     hsl(225, 10%, 55%);
+
+  --bio-text-primary:      hsl(225, 10%, 15%);
+  --bio-text-secondary:    hsl(225, 10%, 35%);
+  --bio-text-muted:        hsl(225, 10%, 55%);
+  --bio-text-disabled:     hsl(225, 10%, 55%);
+  --bio-text-placeholder:  hsl(225, 10%, 55%);
+  --bio-icon:              hsl(225, 10%, 35%);
+  --bio-control-off:       hsl(225, 10%, 75%);
+
+  --bio-accent:            hsl(205, 100%, 50%);
+  --bio-accent-hover:      hsl(205, 100%, 45%);
+  --bio-error:             hsl(360, 100%, 45%);
+}
+
+/* ─── Dark ─────────────────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bio-background:        hsl(225, 10%, 14%);
+  --bio-panel:             hsl(225, 10%, 16%);
+  --bio-surface-1:         hsl(225, 10%, 18%);
+  --bio-surface-2:         hsl(225, 10%, 20%);
+  --bio-surface-3:         hsl(225, 10%, 22%);
+  --bio-surface-4:         hsl(225, 10%, 25%);
+  --bio-canvas:            hsl(225, 10%, 18%);
+
+  --bio-border-subtle:     hsl(225, 10%, 28%);
+  --bio-border:            hsl(225, 10%, 30%);
+  --bio-border-strong:     hsl(225, 10%, 35%);
+
+  --bio-text-primary:      hsl(225, 10%, 90%);
+  --bio-text-secondary:    hsl(225, 10%, 70%);
+  --bio-text-muted:        hsl(225, 10%, 60%);
+  --bio-text-disabled:     hsl(225, 10%, 45%);
+  --bio-text-placeholder:  hsl(225, 10%, 50%);
+  --bio-icon:              hsl(225, 10%, 80%);
+  --bio-control-off:       hsl(225, 10%, 40%);
+
+  --bio-accent:            hsl(205, 100%, 60%);
+  --bio-accent-hover:      hsl(205, 100%, 55%);
+  --bio-error:             hsl(0, 80%, 55%);
+}

@@ -88,3 +88,36 @@
     }
   }
 }
+
+/* Dark theme overrides */
+:global(:root[data-theme="dark"]) :local(.ProcessApplicationsButton) {
+  svg path {
+    fill: var(--bio-icon) !important;
+  }
+
+  &.has-process-application {
+    svg path {
+      fill: white !important;
+    }
+  }
+}
+
+:global(:root[data-theme="dark"]) :local(.ProcessApplicationsOverlay) {
+  background-color: var(--bio-surface-1);
+  border-color: var(--bio-border);
+  color: var(--bio-text-primary);
+
+  .section__body {
+    a, button {
+      color: var(--bio-icon);
+
+      &:hover {
+        background-color: var(--bio-surface-4);
+      }
+    }
+  }
+
+  ul.files li.file button {
+    color: var(--bio-icon);
+  }
+}

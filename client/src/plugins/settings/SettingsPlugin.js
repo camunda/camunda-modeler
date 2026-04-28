@@ -26,6 +26,8 @@ import { SettingsForm } from './SettingsForm';
 
 import useBuiltInSettings from './useBuiltInSettings';
 
+import useTheme from './useTheme';
+
 import * as css from './SettingsPlugin.less';
 
 const log = debug('Settings');
@@ -56,6 +58,8 @@ export default function SettingsPlugin(props) {
   const [ targetElement, setTargetElement ] = useState(null);
 
   useBuiltInSettings(settings);
+
+  useTheme(settings);
 
   useEffect(() => {
     const subscription = subscribe('app.settings-open', (options) => {

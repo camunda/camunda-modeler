@@ -16,7 +16,11 @@ import { EditorView } from '@codemirror/view';
 
 import { EditorState, Compartment } from '@codemirror/state';
 
-import { vscodeLight } from '@uiw/codemirror-theme-vscode';
+import { vscodeLight, vscodeDark } from '@uiw/codemirror-theme-vscode';
+
+function getCodeMirrorTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? vscodeDark : vscodeLight;
+}
 
 import {
   undo,
@@ -62,7 +66,7 @@ export default function create() {
           'tabindex': 0
         }),
         EditorView.lineWrapping,
-        vscodeLight,
+        getCodeMirrorTheme(),
         EditorView.theme({
           '.cm-content': {
             fontFamily: 'var(--font-family-monospace)'

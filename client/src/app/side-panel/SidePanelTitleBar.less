@@ -54,3 +54,30 @@
     }
   }
 }
+
+/* Dark theme overrides for SidePanelTitleBar */
+:global(:root[data-theme="dark"]) :local(.SidePanelTitleBar) {
+  background-color: var(--color-grey-225-10-95);
+  border-bottom-color: var(--color-grey-225-10-75);
+
+  .side-panel-title-bar__title {
+    color: var(--bio-text-primary) !important;
+    
+    span {
+      color: var(--bio-text-primary) !important;
+    }
+  }
+
+  .side-panel-title-bar__action {
+    color: var(--bio-text-primary) !important;
+
+    svg, svg * {
+      fill: var(--bio-text-primary) !important;
+      color: var(--bio-text-primary) !important;
+    }
+
+    &:hover {
+      background-color: var(--color-grey-225-10-85);
+    }
+  }
+}

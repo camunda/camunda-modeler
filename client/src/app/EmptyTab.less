@@ -135,3 +135,38 @@
     }
   }
 }
+
+/* Dark theme overrides for Welcome page */
+:global(:root[data-theme="dark"]) :local(.EmptyTab) {
+  background-color: var(--bio-background);
+
+  h2.welcome-header {
+    color: var(--bio-text-primary);
+  }
+
+  .welcome-card {
+    background-color: var(--bio-surface-2);
+    color: var(--bio-text-primary);
+    border: 1px solid var(--bio-border-subtle);
+
+    h3 {
+      color: var(--bio-text-primary);
+    }
+
+    p {
+      color: var(--bio-text-secondary);
+    }
+
+    a {
+      color: var(--bio-accent);
+    }
+
+    .engine-icon {
+      color: var(--bio-text-muted);
+    }
+
+    .learn-more .top {
+      border-bottom-color: var(--bio-border);
+    }
+  }
+}

@@ -32,3 +32,114 @@
 
   }
 }
+
+:global(:root[data-theme="dark"]) :local(.VariablesSidePanel) {
+  /* Override the base color variable that bio-vo-bg uses */
+  --color-white: var(--bio-background);
+  
+  --bio-vo-bg: var(--bio-background);
+  --bio-vo-header-bg: var(--bio-surface-1);
+  --bio-vo-text-primary: var(--bio-text-primary);
+  --bio-vo-text-secondary: var(--bio-text-secondary);
+  --bio-vo-text-muted: var(--bio-text-muted);
+  --bio-vo-border-color: var(--bio-border);
+
+  /* Carbon Design System overrides */
+  --cds-background: var(--bio-background);
+  --cds-layer-01: var(--bio-surface-1);
+  --cds-layer-02: var(--bio-surface-3);
+  --cds-layer-hover: var(--bio-surface-3);
+  --cds-field-01: var(--bio-surface-1);
+  --cds-field-02: var(--bio-surface-3);
+  --cds-text-primary: var(--bio-text-primary);
+  --cds-text-secondary: var(--bio-text-secondary);
+  --cds-text-helper: var(--bio-text-muted);
+  --cds-icon-secondary: var(--bio-text-secondary);
+  --cds-icon-primary: var(--bio-text-primary);
+  --cds-border-subtle: var(--bio-border);
+  --cds-border-subtle-01: var(--bio-border);
+  --cds-link-primary: var(--bio-accent);
+  --cds-focus: var(--bio-accent);
+  --cds-highlight: hsl(205, 40%, 25%);
+
+  /* Input field overrides */
+  --input-border-color: var(--bio-border-strong);
+  --input-background-color: var(--bio-surface-1);
+  --input-focus-border-color: var(--bio-accent);
+  --input-focus-background-color: var(--bio-surface-3);
+  --placeholder-color: var(--bio-text-placeholder);
+
+  background-color: var(--bio-background) !important;
+
+  .variables-side-panel__body {
+    background-color: var(--bio-background) !important;
+  }
+
+  .bio-vo-empty-state__icon-container {
+    background-color: var(--bio-surface-1) !important;
+  }
+
+  .vd-context-menu {
+    --bio-vo-context-menu-background-color: var(--bio-surface-1);
+    --bio-vo-context-menu-item-hover-background-color: var(--bio-surface-3);
+    --bio-vo-context-menu-separator-background-color: var(--bio-border);
+    --bio-vo-context-menu-shadow-color-1: hsla(0, 0%, 0%, 35%);
+    --bio-vo-context-menu-shadow-color-2: hsla(0, 0%, 0%, 55%);
+  }
+
+  /* Force all backgrounds and text colors throughout the component */
+  * {
+    color: var(--bio-text-primary);
+  }
+
+  .variables-side-panel__body,
+  .bio-vo-tab-content,
+  .variable-list-container,
+  .variable-list-inner,
+  .variable-section-header,
+  .variable-row-header,
+  .variable-scope-group,
+  .bio-vo-search-container,
+  .bio-vo-filter-bar,
+  .bio-vo-tabs,
+  .bio-vo-tab,
+  div[class*="bio-vo"],
+  div[class*="variable"] {
+    background-color: var(--bio-background) !important;
+  }
+
+  .variable-section-header,
+  .variable-row-header {
+    color: var(--bio-text-primary) !important;
+  }
+
+  .variable-section-name,
+  .variable-section-name * {
+    color: var(--bio-text-primary) !important;
+  }
+
+  /* Make SVG icons white */
+  svg,
+  svg *,
+  .bio-va-element-icon,
+  .bio-va-element-icon * {
+    fill: var(--bio-text-primary) !important;
+    color: var(--bio-text-primary) !important;
+  }
+
+  /* Make toggle/minimap button white */
+  .toggle,
+  .toggle::before,
+  .toggle::after {
+    background-color: var(--bio-text-primary) !important;
+    border-color: var(--bio-text-primary) !important;
+  }
+
+  .bio-vo-search-container {
+    background-color: var(--bio-vo-header-bg) !important;
+  }
+
+  .bio-vo-filter-bar {
+    background-color: var(--bio-vo-header-bg) !important;
+  }
+}

@@ -152,3 +152,25 @@
     }
   }
 }
+
+/* Dark theme overrides for RPA Editor */
+:global(:root[data-theme="dark"]) :local(.RPAEditor) {
+  background-color: var(--bio-background);
+  color: var(--bio-text-primary);
+
+  .editor {
+    background-color: var(--bio-background);
+  }
+
+  .crpa-file-actions .crpa-file-actions-menu {
+    background-color: var(--bio-surface-3);
+    color: var(--bio-text-primary);
+    border-color: var(--bio-border);
+  }
+
+  .crpa-properties-panel-files {
+    li.selected, li:hover:not(.additional-files) {
+      background-color: var(--bio-surface-4);
+    }
+  }
+}

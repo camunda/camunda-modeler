@@ -79,3 +79,10 @@
     display: none;
   }
 }
+
+/* Dark theme overrides for DMN buttons */
+:global(:root[data-theme="dark"]) :local(.DmnEditor) {
+  .button {
+    color: var(--bio-text-primary) !important;
+  }
+}

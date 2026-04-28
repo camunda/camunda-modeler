@@ -31,7 +31,11 @@ import {
   redoDepth
 } from '@codemirror/commands';
 
-import { vscodeLight } from '@uiw/codemirror-theme-vscode';
+import { vscodeLight, vscodeDark } from '@uiw/codemirror-theme-vscode';
+
+function getCodeMirrorTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? vscodeDark : vscodeLight;
+}
 
 import FormFeedback from './FormFeedback';
 import DocumentationIcon from './DocumentationIcon';
@@ -128,7 +132,7 @@ function create() {
           'tabindex': 0
         }),
         EditorView.lineWrapping,
-        vscodeLight,
+        getCodeMirrorTheme(),
         EditorView.theme({
           '&': {
             fontSize: '13px'

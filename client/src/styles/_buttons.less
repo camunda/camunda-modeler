@@ -75,3 +75,10 @@
 .btn + .btn {
   margin-left: 15px;
 }
+
+/* Dark theme overrides for buttons */
+:root[data-theme="dark"] {
+  .btn-secondary {
+    color: var(--bio-text-primary) !important;
+  }
+}
