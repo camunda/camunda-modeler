@@ -8,23 +8,30 @@
  * except in compliance with the MIT License.
  */
 
-// Sits inside a SidePanel.Header row. Centered horizontally with a small
-// vertical padding so it doesn't crowd the "Details" title bar above or the
-// element-name header below. Carbon's ContentSwitcher carries its own
-// styling; we just constrain width so the pill doesn't stretch.
+// Sits inline with the "Details" title in the SidePanelTitleBar's center
+// slot. Compact pill, centered horizontally by the title bar's flex layout.
+// Carbon's ContentSwitcher carries its own styling; we just cap width and
+// override the default 0px radius to 2px to match prototype chrome.
 
 :local(.configureValidateToggle) {
   display: flex;
+  align-items: center;
+  width: 100%;
   justify-content: center;
-  padding: 6px 10px;
 
-  // Constrain so the switcher reads as a compact mode toggle, not a banner.
-  // Override Carbon's default 0px radius on the switcher to 2px so it
-  // visually aligns with the rest of the prototype's chrome.
   :global(.cds--content-switcher) {
-    max-width: 220px;
+    max-width: 200px;
     width: 100%;
     border-radius: 2px;
     overflow: hidden;
+    height: 24px;
+  }
+
+  // Tighten the buttons inside the switcher so they fit the title bar's
+  // 32px min-height comfortably.
+  :global(.cds--content-switcher-btn) {
+    min-height: 24px;
+    padding: 0 10px;
+    font-size: 12px;
   }
 }

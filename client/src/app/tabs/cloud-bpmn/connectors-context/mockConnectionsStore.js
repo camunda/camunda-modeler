@@ -84,6 +84,7 @@ const SEED_CONNECTIONS = [
 let connections = SEED_CONNECTIONS.slice();
 const bindings = new Map();
 const listeners = new Set();
+const pickerRequestListeners = new Set();
 
 function notify() {
   listeners.forEach(fn => {
@@ -131,6 +132,23 @@ export function unbind(elementId) {
 export function subscribe(fn) {
   listeners.add(fn);
   return () => listeners.delete(fn);
+}
+
+/**
+ * Request the StickyConnectorRegion to open its Connection picker for a
+ * specific element. Used by the canvas chip — clicking the "⚠ Connect"
+ * chip on an unbound connector task selects the element AND fires this
+ * request so the picker opens without a second user action.
+ */
+export function requestPicker(elementId) {
+  pickerRequestListeners.forEach(fn => {
+    try { fn(elementId); } catch (e) { /* prototype */ }
+  });
+}
+
+export function onPickerRequest(fn) {
+  pickerRequestListeners.add(fn);
+  return () => pickerRequestListeners.delete(fn);
 }
 
 /**

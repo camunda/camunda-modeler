@@ -15,12 +15,15 @@ import TabCloseIcon from '../../../resources/icons/TabClose.svg';
 import * as css from './SidePanelTitleBar.less';
 
 
-export default function SidePanelTitleBar({ title, onClose }) {
+export default function SidePanelTitleBar({ title, onClose, center }) {
   return (
     <div className={ css.SidePanelTitleBar }>
       <div className="side-panel-title-bar__title">
         <span>{ title }</span>
       </div>
+      { center && (
+        <div className="side-panel-title-bar__center">{ center }</div>
+      ) }
       { onClose && (
         <div className="side-panel-title-bar__actions">
           <button

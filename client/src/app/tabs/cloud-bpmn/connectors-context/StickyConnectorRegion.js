@@ -16,6 +16,7 @@ import OperationSelector, { findOperationProperty } from './OperationSelector';
 import {
   bind,
   getBoundConnection,
+  onPickerRequest,
   refresh,
   subscribe
 } from './mockConnectionsStore';
@@ -62,6 +63,17 @@ export default function StickyConnectorRegion({
   useEffect(() => {
     return subscribe(() => forceUpdate(n => n + 1));
   }, []);
+
+  // Open the picker when the canvas chip requests it for our element. The
+  // chip already calls selection.select(element) before firing, so by the
+  // time this fires we are the rendered StickyConnectorRegion for that
+  // element.
+  useEffect(() => {
+    if (!element) return undefined;
+    return onPickerRequest(requestedId => {
+      if (requestedId === element.id) setPickerOpen(true);
+    });
+  }, [ element ]);
 
   if (!element || !appliedTemplate) return null;
   const id = (appliedTemplate.id || '').toLowerCase();

@@ -46,6 +46,7 @@ import { isRunnable } from './validate/runnability';
 
 import ConfigureValidateToggle from './connectors-context/ConfigureValidateToggle';
 import StickyConnectorRegion from './connectors-context/StickyConnectorRegion';
+import ConnectionChips from './connectors-context/ConnectionChips';
 import { writeOperationValue } from './connectors-context/operationWrite';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
@@ -189,6 +190,7 @@ export class BpmnEditor extends CachedComponent {
     this.modeController = createModeController({ initial: 'design' });
     this._validateBadges = null;
     this._validateSession = null;
+    this._connectionChips = null;
     this._openCommandPalette = null;
 
     this.ref = React.createRef();
@@ -271,6 +273,9 @@ export class BpmnEditor extends CachedComponent {
     if (!this._validateSession) {
       this._validateSession = new ValidateSession();
     }
+    if (modeler && !this._connectionChips) {
+      this._connectionChips = new ConnectionChips(modeler);
+    }
 
     const minimap = modeler.get('minimap');
 
@@ -346,6 +351,10 @@ export class BpmnEditor extends CachedComponent {
     if (this._validateSession) {
       this._validateSession.destroy();
       this._validateSession = null;
+    }
+    if (this._connectionChips) {
+      this._connectionChips.destroy();
+      this._connectionChips = null;
     }
   }
 
@@ -1832,6 +1841,18 @@ export class BpmnEditor extends CachedComponent {
             <SidePanel.Header>
               <SidePanelTitleBar
                 title="Details"
+                center={
+                  <ConfigureValidateToggle
+                    activeTab={ (layout.sidePanel && layout.sidePanel.tab) || 'properties' }
+                    onSwitchTab={ (nextTab) => {
+                      // Drive the existing modeController so the canvas
+                      // (chip, runnable indicators, overlays) and the
+                      // SidePanel tab stay in sync. _applyModeSideEffects
+                      // handles the rest.
+                      this.modeController.set(nextTab === 'test' ? 'test' : 'design');
+                    } }
+                  />
+                }
                 onClose={ () => this.handleLayoutChange({
                   sidePanel: {
                     ...SIDE_PANEL_DEFAULT_LAYOUT,
@@ -1839,17 +1860,6 @@ export class BpmnEditor extends CachedComponent {
                     open: false
                   }
                 }) }
-              />
-            </SidePanel.Header>
-            <SidePanel.Header>
-              <ConfigureValidateToggle
-                activeTab={ (layout.sidePanel && layout.sidePanel.tab) || 'properties' }
-                onSwitchTab={ (nextTab) => {
-                  // Drive the existing modeController so the canvas (chip,
-                  // runnable indicators, overlays) and the SidePanel tab
-                  // stay in sync. _applyModeSideEffects handles the rest.
-                  this.modeController.set(nextTab === 'test' ? 'test' : 'design');
-                } }
               />
             </SidePanel.Header>
             <SidePanel.Header>

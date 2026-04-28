@@ -1,0 +1,56 @@
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+// Carbon-style chip rendered as a bpmn-js overlay below connector tasks
+// that don't yet have a bound Connection. Acts as both a hint and the
+// one-click affordance to open the picker.
+
+.connectors-context-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  font-family: var(--font-family, "IBM Plex Sans", sans-serif);
+  font-size: 11px;
+  font-weight: 400;
+  color: #6f6f6f;
+  background: #ffffff;
+  border: 1px solid #c6c6c6;
+  border-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
+
+  &:hover {
+    color: #161616;
+    border-color: #0f62fe;
+    background: #ffffff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0f62fe;
+    outline-offset: -2px;
+  }
+}
+
+.connectors-context-chip__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #f1c21b;
+  color: #1f1f1f;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 1;
+}
