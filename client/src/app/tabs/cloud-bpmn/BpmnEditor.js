@@ -173,7 +173,11 @@ export class BpmnEditor extends CachedComponent {
     super(props);
 
     this.state = {
-      isCanvasEmpty: true,
+      // Default to false so EmptyCanvasOverlay only renders once we've
+      // verified the canvas is actually empty (via checkCanvasEmpty on
+      // import.done). Initializing to true caused the guided-start cards
+      // to flash for ~100ms when switching to a non-empty BPMN tab.
+      isCanvasEmpty: false,
       aiPanelOpen: false,
       copilotPlaying: false,
       appendWizardSource: null,
