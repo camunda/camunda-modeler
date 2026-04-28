@@ -45,6 +45,7 @@ import ValidateSession from './validate/ValidateSession';
 import { isRunnable } from './validate/runnability';
 
 import ConfigureValidateToggle from './connectors-context/ConfigureValidateToggle';
+import StickyConnectorRegion from './connectors-context/StickyConnectorRegion';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
@@ -110,6 +111,56 @@ export const DEFAULT_ENGINE_PROFILE = {
 };
 
 const LOW_PRIORITY = 500;
+
+/**
+ * connectors-context: best-effort read of the current value of the operation
+ * Dropdown property from the element's businessObject. Walks zeebe:input
+ * parameters and direct businessObject attributes — the two surfaces most
+ * connector templates use for operation bindings.
+ *
+ * Returns the string value or null when nothing is set / detectable.
+ *
+ * Intentionally read-only. Writing back is deferred to a follow-up; until
+ * then the canonical surface for changing the operation is the bpmn-io
+ * Dropdown rendered below the sticky region.
+ */
+function readOperationValueFromBusinessObject(element, template) {
+  if (!element || !template || !Array.isArray(template.properties)) return null;
+  const opProp = template.properties.find(p =>
+    p && p.type === 'Dropdown' && Array.isArray(p.choices) && p.choices.length >= 2
+  );
+  if (!opProp || !opProp.binding) return null;
+
+  const businessObject = element.businessObject;
+  if (!businessObject) return null;
+
+  const binding = opProp.binding;
+
+  // Direct attribute bindings (e.g., `property` type) live on businessObject.
+  if (binding.type === 'property' && typeof binding.name === 'string') {
+    const v = businessObject.get && businessObject.get(binding.name);
+    return v != null ? String(v) : null;
+  }
+
+  // zeebe:input bindings live in extensionElements > zeebe:IoMapping > inputParameters[].
+  if (binding.type === 'zeebe:input' && typeof binding.name === 'string') {
+    const ext = businessObject.get && businessObject.get('extensionElements');
+    const values = (ext && ext.values) || [];
+    for (const v of values) {
+      // ZeebeIoMapping or similar — look for a `inputParameters` array.
+      const inputs = v && (v.inputParameters || (v.get && v.get('inputParameters'))) || [];
+      for (const ip of inputs) {
+        const name = ip && (ip.name || (ip.get && ip.get('name')));
+        if (name === binding.name) {
+          const value = ip.value != null ? ip.value : (ip.get && ip.get('value'));
+          return value != null ? String(value) : null;
+        }
+      }
+    }
+  }
+
+  return null;
+}
 
 
 export class BpmnEditor extends CachedComponent {
@@ -1644,6 +1695,32 @@ export class BpmnEditor extends CachedComponent {
              id.includes('ai') || id.includes('llm') || id.includes('agent');
     });
 
+    // ─── connectors-context: sticky region inputs ─────────────────────────
+    // Resolve the selected element + its applied template so the sticky
+    // Connection card / Operation selector can render. Best-effort: if the
+    // modeler isn't fully initialized yet, the lookups return null and the
+    // sticky region simply doesn't render.
+    let connectorContextElement = null;
+    let connectorContextTemplate = null;
+    let connectorContextInitialOperation = null;
+    if (selectedElementId && elementTemplates) {
+      try {
+        const elementRegistry = modeler.get('elementRegistry', false);
+        const element = elementRegistry && elementRegistry.get(selectedElementId);
+        if (element) {
+          const applied = elementTemplates.get(element);
+          if (applied) {
+            connectorContextElement = element;
+            connectorContextTemplate = applied;
+            connectorContextInitialOperation = readOperationValueFromBusinessObject(element, applied);
+          }
+        }
+      } catch (e) {
+        // Modeler not ready yet, or registry returned null. Sticky region
+        // will simply not render — fail open.
+      }
+    }
+
     const rootClassName = [
       css.BpmnEditor,
       'bpmn-editor--rail-active',
@@ -1778,6 +1855,24 @@ export class BpmnEditor extends CachedComponent {
               <SidePanelHeader injector={ injector } />
             </SidePanel.Header>
             <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
+              { connectorContextTemplate && (
+                <StickyConnectorRegion
+                  element={ connectorContextElement }
+                  appliedTemplate={ connectorContextTemplate }
+                  initialOperation={ connectorContextInitialOperation }
+                  onPickOperation={ (property, nextValue) => {
+                    // Write-back deferred — the bpmn-io Dropdown below
+                    // remains the canonical write surface. Logged here so
+                    // engineering can verify the pick UX during demos.
+                    // eslint-disable-next-line no-console
+                    console.log('[connectors-context] operation picked', {
+                      element: connectorContextElement && connectorContextElement.id,
+                      property: property && property.id,
+                      value: nextValue
+                    });
+                  } }
+                />
+              ) }
               <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
             </SidePanel.Tab>
             <SidePanel.Tab id="test" label="Validate" icon={ TaskTestingIcon }>
