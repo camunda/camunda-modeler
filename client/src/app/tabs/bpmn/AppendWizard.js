@@ -16,6 +16,7 @@ import { buildAppendResults } from './appendSearch';
 
 import { buildSynonymIndex } from '../cloud-bpmn/connectors-context/synonymIndex';
 import { SYNONYM_OVERRIDES } from '../cloud-bpmn/connectors-context/synonymOverrides';
+import ConnectorWizard from '../cloud-bpmn/connectors-context/ConnectorWizard';
 
 import { WizardShell } from './StartEventWizard';
 
@@ -68,6 +69,10 @@ export default function AppendWizard({
   const [ leafId, setLeafId ] = useState(null); // null = no wizard open
   const [ nameOnly, setNameOnly ] = useState(null); // leaf being placed with just a name prompt
   const [ search, setSearch ] = useState('');
+  // connectorWizardTemplate — when set, the guided two-phase ConnectorWizard
+  // is open for that template. Triggered by the user clicking Configure on
+  // a connector template in the search results (see runConfigure below).
+  const [ connectorWizardTemplate, setConnectorWizardTemplate ] = useState(null);
 
   // activeIdx — which search result is primary-focused (arrow-key nav).
   const [ activeIdx, setActiveIdx ] = useState(0);
@@ -170,6 +175,28 @@ export default function AppendWizard({
     );
   }
 
+  // ─── Step 2: guided ConnectorWizard (operation + connection) ───────────
+  //
+  // Triggered by Configure on a connector-template result in the search
+  // list. Walks the user through op pick → connection pick before the
+  // template is applied to the diagram. Single-op templates skip the op
+  // phase automatically (handled inside the wizard).
+
+  if (connectorWizardTemplate) {
+    return (
+      <ConnectorWizard
+        template={ connectorWizardTemplate }
+        app={ appNameFromTemplate(connectorWizardTemplate) }
+        onCancel={ () => setConnectorWizardTemplate(null) }
+        onConfirm={ ({ template, opHint, connectionId }) => {
+          const elementId = inferElementIdForTemplate(template);
+          setConnectorWizardTemplate(null);
+          onConfirm(elementId, { template, opHint, connectionId });
+        } }
+      />
+    );
+  }
+
   // ─── Search results: flat ranked list across leaves + templates ────────
   //
   // Activates when the user types into the top-level search input. Drill-down
@@ -195,7 +222,15 @@ export default function AppendWizard({
     const runConfigure = (r) => {
       if (r.source === 'template') {
 
-        // Templates have no Step-2 wizard; apply + open properties panel.
+        // Connector templates get the guided two-phase ConnectorWizard
+        // (operation pick → connection pick) before placement. Other
+        // templates fall through to the immediate apply + open path.
+        if (isConnectorTemplate(r.template)) {
+          setConnectorWizardTemplate(r.template);
+          return;
+        }
+
+        // Plain templates: apply + open properties panel.
         onConfirm(inferElementIdForTemplate(r.template), { template: r.template });
       } else if (r.leaf.wizard) {
         setLeafId(r.leaf.elementId);
@@ -315,6 +350,20 @@ export default function AppendWizard({
         </div>
       </PickerShell>
     );
+  }
+
+  function isConnectorTemplate(template) {
+    const id = (template && template.id || '').toLowerCase();
+    return id.indexOf('io.camunda.connectors.') === 0
+      || id.indexOf('io.camunda.hub.connectors.') === 0
+      || id.indexOf('io.camunda.agenticai.') === 0;
+  }
+
+  function appNameFromTemplate(template) {
+    const id = (template && template.id) || '';
+    const m = id.match(/^io\.camunda\.(?:hub\.)?connectors\.([^.]+)/i);
+    if (m) return m[1];
+    return template && template.name || '';
   }
 
   function inferElementIdForTemplate(template) {

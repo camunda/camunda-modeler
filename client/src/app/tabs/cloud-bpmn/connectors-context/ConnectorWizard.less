@@ -1,0 +1,227 @@
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+// Two-phase guided wizard for connector templates. Visually aligns with
+// the existing AppendWizard PickerShell — backdrop + centered dialog —
+// using local styles rather than reaching into GuidedStart.less.
+
+:local(.backdrop) {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: transparent;
+  pointer-events: all;
+}
+
+:local(.dialog) {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 101;
+  width: 460px;
+  max-height: min(560px, 90vh);
+  display: flex;
+  flex-direction: column;
+  pointer-events: all;
+  background: #ffffff;
+  border: 1px solid #c6c6c6;
+  border-radius: 2px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 16px 18px;
+  font-family: var(--font-family, "IBM Plex Sans", sans-serif);
+}
+
+:local(.header) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+:local(.backBtn) {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: #6f6f6f;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:hover { color: #0f62fe; }
+}
+
+:local(.titleRow) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+:local(.titleIcon) {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+:local(.titleText) {
+  font-size: 14px;
+  font-weight: 600;
+  color: #161616;
+}
+
+:local(.phaseTitle) {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #161616;
+}
+
+:local(.phaseSub) {
+  font-weight: 400;
+  color: #6f6f6f;
+  font-size: 12px;
+}
+
+:local(.search) {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  border: 1px solid #c6c6c6;
+  border-radius: 2px;
+  outline: none;
+  margin-bottom: 8px;
+
+  &:focus { border-color: #0f62fe; }
+}
+
+:local(.list) {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+}
+
+:local(.empty) {
+  padding: 12px 8px;
+  font-size: 12.5px;
+  color: #6f6f6f;
+  text-align: center;
+}
+
+:local(.row) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+  color: #161616;
+  font-family: inherit;
+
+  &:hover { background: #f4f4f4; }
+}
+
+:local(.rowActive) {
+  background: #e5edff;
+  &:hover { background: #d8e3ff; }
+}
+
+:local(.rowBody) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+:local(.rowLabel) {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:local(.rowMeta) {
+  font-size: 11px;
+  color: #6f6f6f;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ───── Status dots — match StickyConnectorRegion palette ─────
+
+:local(.statusDot) {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: #c6c6c6;
+}
+
+:local(.status--active)   { background: #24a148; }
+:local(.status--warning)  { background: #f1c21b; }
+:local(.status--error)    { background: #da1e28; }
+:local(.status--pending)  { background: #6f6f6f; }
+
+// ───── Footer ─────
+
+:local(.footer) {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #e0e0e0;
+  font-size: 11px;
+  color: #6f6f6f;
+}
+
+:local(.footerSplit) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #e0e0e0;
+}
+
+:local(.linkBtn) {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12.5px;
+  color: #6f6f6f;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:hover { color: #0f62fe; text-decoration: underline; }
+}
+
+:local(.ghostBtn) {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 4px 8px;
+  font-size: 12.5px;
+  color: #0f62fe;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: 2px;
+
+  &:hover { background: #e5edff; }
+}

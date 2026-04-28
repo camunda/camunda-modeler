@@ -48,6 +48,8 @@ import ConfigureValidateToggle from './connectors-context/ConfigureValidateToggl
 import StickyConnectorRegion from './connectors-context/StickyConnectorRegion';
 import ConnectionChips from './connectors-context/ConnectionChips';
 import { writeOperationValue } from './connectors-context/operationWrite';
+import { findOperationProperty } from './connectors-context/OperationSelector';
+import { bind as bindConnection } from './connectors-context/mockConnectionsStore';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
@@ -637,6 +639,21 @@ export class BpmnEditor extends CachedComponent {
     }
 
     this._applyAppendConfig(placedShape, elementId, config);
+
+    // ─── connectors-context: honor wizard payload ────────────────────────
+    // ConnectorWizard returns `opHint` (operation Dropdown value) and an
+    // optional `connectionId`. Persist both so the placed task lands in a
+    // configured state — operation selected in the Method Dropdown,
+    // Connection bound in the sticky card.
+    if (config.opHint && appliedTemplate) {
+      const opMeta = findOperationProperty(appliedTemplate);
+      if (opMeta) {
+        writeOperationValue(modeler, placedShape, opMeta.property, config.opHint);
+      }
+    }
+    if (config.connectionId && placedShape && placedShape.id) {
+      bindConnection(placedShape.id, config.connectionId);
+    }
 
     // Select the placed shape and open properties panel
     selection.select(placedShape);
