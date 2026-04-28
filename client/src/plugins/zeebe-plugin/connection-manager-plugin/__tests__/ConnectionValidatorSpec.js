@@ -227,6 +227,102 @@ describe('ConnectionConfigValidator', function() {
         expect(errors).to.have.property('tasklistUrl');
       });
 
+
+      it('should allow empty optional tenantId', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tenantId: ''
+        });
+
+        expect(errors).to.not.have.property('tenantId');
+      });
+
+
+      it('should allow valid tenantId with alphanumeric characters', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tenantId: 'myTenant123'
+        });
+
+        expect(errors).to.not.have.property('tenantId');
+      });
+
+
+      it('should allow valid tenantId with dots, dashes, and underscores', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tenantId: 'my.tenant-id_1'
+        });
+
+        expect(errors).to.not.have.property('tenantId');
+      });
+
+
+      it('should allow tenantId of exactly 31 characters', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tenantId: 'a'.repeat(31)
+        });
+
+        expect(errors).to.not.have.property('tenantId');
+      });
+
+
+      it('should return error for tenantId longer than 31 characters', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tenantId: 'a'.repeat(32)
+        });
+
+        expect(errors).to.have.property('tenantId');
+      });
+
+
+      it('should return error for tenantId with invalid characters', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tenantId: 'tenant id!'
+        });
+
+        expect(errors).to.have.property('tenantId');
+      });
+
+
+      it('should return error for tenantId that is only whitespace', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tenantId: '   '
+        });
+
+        expect(errors).to.have.property('tenantId');
+      });
+
+
+      it('should return error for tenantId with mixed valid and whitespace characters', function() {
+        const errors = validateConnectionConfig({
+          targetType: TARGET_TYPES.SELF_HOSTED,
+          contactPoint: 'http://localhost:8080',
+          authType: AUTH_TYPES.NONE,
+          tenantId: 'tenant id'
+        });
+
+        expect(errors).to.have.property('tenantId');
+      });
+
     });
 
 
