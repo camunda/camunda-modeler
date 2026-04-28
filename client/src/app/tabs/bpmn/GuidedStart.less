@@ -86,6 +86,9 @@
   width: 420px;
   max-height: min(580px, 90vh);
   overflow-y: auto;
+  // Belt-and-suspenders: even if a deeply nested row's contents try to
+  // exceed the dialog width, never produce a horizontal scrollbar.
+  overflow-x: hidden;
   pointer-events: all;
 
   background: white;
@@ -1733,6 +1736,10 @@
 :local(.resultsList) {
   max-height: 360px;
   overflow-y: auto;
+  // Same belt-and-suspenders as the dialog: rows truncate via flex
+  // `min-width: 0` below, but if anything slips through we never produce
+  // a horizontal scrollbar inside the list.
+  overflow-x: hidden;
   padding: 6px 0;
 }
 
@@ -1757,6 +1764,11 @@
   cursor: pointer;
   color: #1f2937;
   font-size: 14px;
+  // min-width: 0 lets flex children (label, hint) actually shrink to fit
+  // the row instead of pushing the row past its container width. Without
+  // this, long labels + hint + active-row action buttons cause the
+  // dialog to scroll horizontally.
+  min-width: 0;
 
   &:hover { background: #f6f8fb; }
 }
@@ -1783,13 +1795,22 @@ img:local(.resultIcon) {
 
 :local(.resultLabel) {
   font-weight: 500;
-  flex: 0 0 auto;
+  // Allow shrink-to-fit so a long label like "Microsoft Teams Outbound
+  // Connector" can truncate when the row also needs space for hint +
+  // action buttons. min-width: 0 is the standard CSS-modules trick that
+  // lets ellipsis actually engage on a flex child.
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 :local(.resultHint) {
   color: #6b7280;
   font-size: 12.5px;
   flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
