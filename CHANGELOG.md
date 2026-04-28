@@ -6,15 +6,45 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.47.0
+
 ### General
 
 * `FEAT`: show warning on selected version and connection version mismatch ([#5652](https://github.com/camunda/camunda-modeler/issues/5652))
+* `FEAT`: use JSON editor for example data ([#5855](https://github.com/camunda/camunda-modeler/issues/5855))
+* `FEAT`: improve text rendering and diagram import performance ([bpmn-io/diagram-js#1026](https://github.com/bpmn-io/diagram-js/issues/1026))
+* `FEAT`: add a variable group with type selector in DMN ([bpmn-io/dmn-js-properties-panel#135](https://github.com/bpmn-io/dmn-js-properties-panel/pull/135))
+* `FEAT`: track variable outline panel open/close events ([#5878](https://github.com/camunda/camunda-modeler/pull/5878))
 * `FIX`: show default context menu for text inputs in diagram ([#5803](https://github.com/camunda/camunda-modeler/issues/5803))
-* `FIX`: correct bug opening DMN decision table ([#5880](https://github.com/camunda/camunda-modeler/issues/5880), [#5898](https://github.com/camunda/camunda-modeler/pull/5898))
+* `FIX`: fix bug opening DMN decision table ([#5880](https://github.com/camunda/camunda-modeler/issues/5880), [#5898](https://github.com/camunda/camunda-modeler/pull/5898))
 * `FIX`: correctly handle backslash in FEEL string and identifier tokens ([#5844](https://github.com/camunda/camunda-modeler/issues/5844))
-* `CHORE`: track variable outline panel open/close events ([#5878](https://github.com/camunda/camunda-modeler/pull/5878))
+* `FIX`: fix tabs section height change on first open ([#5887](https://github.com/camunda/camunda-modeler/issues/5887))
+* `FIX`: fix side panel resize UI glitch ([#5729](https://github.com/camunda/camunda-modeler/issues/5729))
+* `FIX`: fix error on keyboard navigation in DMN popups without menu entries ([#4958](https://github.com/camunda/camunda-modeler/issues/4958))
+* `FIX`: clear ghost error entries when validating fields inside nested dynamic lists ([bpmn-io/form-js#1494](https://github.com/bpmn-io/form-js/issues/1494))
+* `DEPS`: update to `@bpmn-io/form-js@1.21.3`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.41.2`
 * `DEPS`: update to `@camunda/linting@3.49.0`
-* `DEPS`: update to `camunda-bpmn-js@5.26.1`
+* `DEPS`: update to `bpmn-js@18.15.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.24.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.54.0`
+* `DEPS`: update to `camunda-bpmn-js@5.27.0`
+* `DEPS`: update to `diagram-js@15.13.0`
+* `DEPS`: update to `dmn-js@17.8.0`
+* `DEPS`: update to `dmn-js-shared@17.8.0`
+* `DEPS`: update to `dmn-js-properties-panel@3.11.0`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.13.0`
+
+### BPMN
+
+* `FEAT`: add execution listener headers configuration ([#5817](https://github.com/camunda/camunda-modeler/issues/5817))
+* `FEAT`: show outline around lasso-selected elements ([bpmn-io/bpmn-js#173](https://github.com/bpmn-io/bpmn-js/issues/173))
+* `FEAT`: move enclosed artifacts with participants / sub-processes ([bpmn-io/bpmn-js#1929](https://github.com/bpmn-io/bpmn-js/issues/1929))
+* `FEAT`: deprecate optional element template property for input mappings ([#5840](https://github.com/camunda/camunda-modeler/issues/5840))
+* `FEAT`: mark job worker user tasks managed by Camunda as unsupported in 8.10 onwards ([#5833](https://github.com/camunda/camunda-modeler/issues/5833))
+* `FIX`: fix element template length validation displaying "undefined" if label is missing ([#5859](https://github.com/camunda/camunda-modeler/issues/5859))
+* `FIX`: fix enabled copy as image action on unsupported elements ([#5690](https://github.com/camunda/camunda-modeler/issues/5690))
+* `FIX`: ignore broken `BPMNDI` when setting label colors ([bpmn-io/bpmn-js#2418](https://github.com/bpmn-io/bpmn-js/pull/2418))
 
 ## 5.46.1
 
