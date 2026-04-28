@@ -46,6 +46,7 @@ import { isRunnable } from './validate/runnability';
 
 import ConfigureValidateToggle from './connectors-context/ConfigureValidateToggle';
 import StickyConnectorRegion from './connectors-context/StickyConnectorRegion';
+import { writeOperationValue } from './connectors-context/operationWrite';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
@@ -1862,15 +1863,12 @@ export class BpmnEditor extends CachedComponent {
                   appliedTemplate={ connectorContextTemplate }
                   initialOperation={ connectorContextInitialOperation }
                   onPickOperation={ (property, nextValue) => {
-                    // Write-back deferred — the bpmn-io Dropdown below
-                    // remains the canonical write surface. Logged here so
-                    // engineering can verify the pick UX during demos.
-                    // eslint-disable-next-line no-console
-                    console.log('[connectors-context] operation picked', {
-                      element: connectorContextElement && connectorContextElement.id,
-                      property: property && property.id,
-                      value: nextValue
-                    });
+                    // Persist the pick to the BPMN model via bpmn-js
+                    // modeling APIs so save/reopen preserves it and the
+                    // bpmn-io Dropdown below stays in sync. See
+                    // connectors-context/operationWrite.js for the
+                    // zeebe:input + property binding handlers.
+                    writeOperationValue(modeler, connectorContextElement, property, nextValue);
                   } }
                 />
               ) }

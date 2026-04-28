@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { ComboBox } from '@carbon/react';
 
@@ -58,10 +58,11 @@ export function findOperationProperty(template) {
  * alignment with the rest of the modeler chrome (2px radius via Carbon
  * tokens overridden in the wrapping CSS).
  *
- * NOTE — write-back to BPMN XML is intentionally deferred. This component
- * tracks the picked value in local state (so the UX feels responsive) and
- * fires `onPick` for observability. The bpmn-io Dropdown rendered below
- * remains the canonical write surface until write-back lands.
+ * Picks update local state immediately AND fire `onPick(property, value)`
+ * for the parent to persist via bpmn-js modeling APIs (see
+ * connectors-context/operationWrite.js). Save/reopen preserves picks.
+ * The bpmn-io Dropdown rendered below stays in sync via the
+ * commandStack.changed → re-render → initialValue path.
  *
  * Renders nothing when the template has no operation Dropdown property.
  *
@@ -73,6 +74,13 @@ export function findOperationProperty(template) {
 export default function OperationSelector({ template, initialValue, onPick }) {
   const opMeta = useMemo(() => findOperationProperty(template), [ template ]);
   const [ value, setValue ] = useState(initialValue || null);
+
+  // Sync local state when the underlying BPMN value changes — e.g. when the
+  // user picks via the bpmn-io Dropdown rendered below this selector, or
+  // when our own write-back round-trips through commandStack.changed.
+  useEffect(() => {
+    setValue(initialValue || null);
+  }, [ initialValue ]);
 
   if (!opMeta) return null;
 

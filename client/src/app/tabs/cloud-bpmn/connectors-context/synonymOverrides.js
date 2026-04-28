@@ -80,15 +80,17 @@ export const SYNONYM_OVERRIDES = {
     'manage repository'
   ],
 
-  // Generic REST connector — hits a lot of "call API" intents.
-  'io.camunda.http-json.v1': [
+  // Generic REST / HTTP-JSON connector — hits a lot of "call API" intents.
+  'io.camunda.connectors.HttpJson.v2': [
     'call api',
     'http request',
     'rest call',
     'webhook call',
     'invoke endpoint',
     'fetch data',
-    'post json'
+    'post json',
+    'get request',
+    'put request'
   ],
 
   // Microsoft Teams — same "notify channel" family as Slack.
