@@ -8,24 +8,42 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
+
+import { ComboBox } from '@carbon/react';
 
 import * as css from './StickyConnectorRegion.less';
 
 /**
- * Find the "operation property" on an element template — the Dropdown
- * whose choices represent the connector's operations (e.g. Salesforce's
- * `salesforceOperationType`, GitHub's method picker).
+ * Find the operation Dropdown property on an element template.
  *
- * Heuristic for the prototype: the first Dropdown property with 2+ choices.
- * Templates without such a property (e.g. single-op Slack outbound) get no
- * Operation selector — the bpmn-io properties panel still owns the canonical
- * value, we just don't surface a fancy peer picker.
+ * Priority:
+ *   1. A property whose `id` is exactly 'method' or 'operation' (the
+ *      conventional ids used by all marketplace connector templates we've
+ *      inspected — Slack, Salesforce, GitHub, REST, etc.).
+ *   2. Fallback: the first Dropdown property with 2+ choices, for any
+ *      template that uses a non-standard id.
+ *
+ * Templates without a matching property (e.g. single-op connectors) get
+ * no Operation selector — the bpmn-io properties panel still owns the
+ * canonical value, we just don't surface a fancy peer picker.
  *
  * Returns { property, choices } or null.
  */
 export function findOperationProperty(template) {
   if (!template || !Array.isArray(template.properties)) return null;
+
+  // Pass 1: well-known ids.
+  for (const prop of template.properties) {
+    if (!prop || prop.type !== 'Dropdown') continue;
+    if (!Array.isArray(prop.choices) || prop.choices.length < 2) continue;
+    const id = (prop.id || '').toLowerCase();
+    if (id === 'method' || id === 'operation' || id.endsWith('operationtype')) {
+      return { property: prop, choices: prop.choices };
+    }
+  }
+
+  // Pass 2: first multi-choice Dropdown.
   for (const prop of template.properties) {
     if (prop && prop.type === 'Dropdown' && Array.isArray(prop.choices) && prop.choices.length >= 2) {
       return { property: prop, choices: prop.choices };
@@ -35,129 +53,56 @@ export function findOperationProperty(template) {
 }
 
 /**
- * Searchable Operation selector. Evergreen `SelectMenu` shape — filter input
- * at the top, scrollable choice list below, click-to-pick, click-outside or
- * Esc to close.
+ * Searchable Operation selector. Carbon `ComboBox` for the filterable
+ * picker — gives us free typeahead, keyboard navigation, and visual
+ * alignment with the rest of the modeler chrome (2px radius via Carbon
+ * tokens overridden in the wrapping CSS).
  *
- * Mirror approach (per locked design Q2): the bpmn-io Dropdown for this same
- * property still exists in the panel below; this selector reflects the
- * current value and writes back via the `onPick` callback so the parent can
- * call `modeling.updateProperties` and keep BPMN XML in sync.
- *
- * Renders nothing when the template has no multi-choice Dropdown property
- * (single-op connectors like Slack outbound).
- *
- * NOTE — write-back to BPMN XML is intentionally deferred. The first cut
+ * NOTE — write-back to BPMN XML is intentionally deferred. This component
  * tracks the picked value in local state (so the UX feels responsive) and
- * fires `onPick` for observability. Persisting picks via bpmn-js
- * `modeling.updateProperties` (or the bpmn-io Dropdown DOM mirror) is the
- * follow-up. Until then, the canonical value still lives in the bpmn-io
- * Dropdown below — pick there to actually persist.
+ * fires `onPick` for observability. The bpmn-io Dropdown rendered below
+ * remains the canonical write surface until write-back lands.
+ *
+ * Renders nothing when the template has no operation Dropdown property.
  *
  * @param {object} props
  * @param {object} props.template          - applied element template
- * @param {string} [props.initialValue]    - current value of the operation property (from businessObject)
- * @param {function} [props.onPick]        - optional callback (propertyMeta, nextValue) for parent observability
+ * @param {string} [props.initialValue]    - current value of the operation property (read from businessObject)
+ * @param {function} [props.onPick]        - optional (propertyMeta, nextValue) callback for parent observability
  */
 export default function OperationSelector({ template, initialValue, onPick }) {
-  const [ open, setOpen ] = useState(false);
-  const [ query, setQuery ] = useState('');
-  const [ value, setValue ] = useState(initialValue || null);
-  const containerRef = useRef(null);
-  const inputRef = useRef(null);
-
   const opMeta = useMemo(() => findOperationProperty(template), [ template ]);
-
-  // Auto-focus the filter input when the dropdown opens.
-  useEffect(() => {
-    if (open && inputRef.current) inputRef.current.focus();
-  }, [ open ]);
-
-  // Click-outside closes; Esc closes.
-  useEffect(() => {
-    if (!open) return undefined;
-    const onDocClick = e => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    const onKey = e => { if (e.key === 'Escape') setOpen(false); };
-    document.addEventListener('mousedown', onDocClick);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDocClick);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [ open ]);
+  const [ value, setValue ] = useState(initialValue || null);
 
   if (!opMeta) return null;
 
   const { property, choices } = opMeta;
 
-  const matches = useMemo(() => {
-    if (!query) return choices;
-    const q = query.toLowerCase();
-    return choices.filter(c => (c.name || '').toLowerCase().indexOf(q) !== -1);
-  }, [ choices, query ]);
+  const items = useMemo(
+    () => choices.map(c => ({ id: c.value, text: c.name })),
+    [ choices ]
+  );
 
-  const currentLabel = (() => {
-    if (!value) return null;
-    const hit = choices.find(c => c.value === value);
-    return hit ? hit.name : value;
-  })();
+  const selectedItem = items.find(it => it.id === value) || null;
 
-  const handlePick = choice => {
-    setValue(choice.value);
-    if (typeof onPick === 'function') onPick(property, choice.value);
-    setOpen(false);
-    setQuery('');
+  const handleChange = ({ selectedItem: next }) => {
+    if (!next) return;
+    setValue(next.id);
+    if (typeof onPick === 'function') onPick(property, next.id);
   };
 
   return (
-    <div className={ css.opSelector } ref={ containerRef }>
-      <label className={ css.opSelectorLabel }>{ property.label || 'Operation' }</label>
-      <button
-        type="button"
-        className={ css.opSelectorTrigger }
-        onClick={ () => setOpen(o => !o) }
-        aria-haspopup="listbox"
-        aria-expanded={ open }
-      >
-        <span>{ currentLabel || 'Choose an operation' }</span>
-        <span className={ css.opSelectorChevron } aria-hidden="true">▾</span>
-      </button>
-      { open && (
-        <div className={ css.opSelectorMenu } role="listbox">
-          <input
-            ref={ inputRef }
-            className={ css.opSelectorFilter }
-            placeholder="Filter operations"
-            value={ query }
-            onChange={ e => setQuery(e.target.value) }
-          />
-          <div className={ css.opSelectorList }>
-            { matches.length === 0 && (
-              <div className={ css.pickerEmpty }>No matches</div>
-            ) }
-            { matches.map(c => {
-              const isCurrent = c.value === value;
-              return (
-                <button
-                  type="button"
-                  key={ c.value }
-                  role="option"
-                  aria-selected={ isCurrent }
-                  className={ `${css.opSelectorItem} ${isCurrent ? css.opSelectorItemActive : ''}` }
-                  onClick={ () => handlePick(c) }
-                >
-                  <span>{ c.name }</span>
-                  { isCurrent && <span className={ css.opSelectorCheck } aria-hidden="true">✓</span> }
-                </button>
-              );
-            }) }
-          </div>
-        </div>
-      ) }
+    <div className={ css.opSelector }>
+      <ComboBox
+        id={ `connectors-context-op-${property.id || 'method'}` }
+        size="sm"
+        titleText={ property.label || 'Method' }
+        placeholder="Choose an operation"
+        items={ items }
+        itemToString={ it => (it ? it.text : '') }
+        selectedItem={ selectedItem }
+        onChange={ handleChange }
+      />
     </div>
   );
 }

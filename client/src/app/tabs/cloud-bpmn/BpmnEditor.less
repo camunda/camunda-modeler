@@ -150,3 +150,13 @@
     display: none;
   }
 }
+
+/* -----------------------
+ * connectors-context prototype: the new Configure/Validate header toggle
+ * (in the SidePanel header) replaces the auto-rendered tab strip
+ * (`.side-panel__tabs-bar`). Scope this hide to the cloud-bpmn editor's
+ * SidePanel only — RPA / DMN editors keep their strip.
+ * ----------------------- */
+:local(.BpmnEditor) :global(.side-panel .side-panel__tabs-bar) {
+  display: none;
+}

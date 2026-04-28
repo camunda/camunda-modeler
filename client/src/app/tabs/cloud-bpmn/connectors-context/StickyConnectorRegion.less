@@ -8,209 +8,126 @@
  * except in compliance with the MIT License.
  */
 
-// ───── Sticky region (sits above the bpmn-io properties body) ─────
+// Sticky region above the bpmn-io properties body. Visually aligns with the
+// bpmn-io panel's neutral palette: thin 1px borders, 2px radius, no drop
+// shadows. Carbon tokens drive the typography and dimensions of the embedded
+// ComboBox; we just constrain spacing.
 
-.stickyRegion {
+:local(.stickyRegion) {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 10px;
+  padding: 10px 14px 12px;
   background: #ffffff;
   border-bottom: 1px solid #e0e0e0;
-  // Sit above the bpmn-io panel content. The properties-container below
-  // scrolls; this stays put.
   flex: 0 0 auto;
 }
 
-.fieldGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+// ───── Connection card ─────
 
-.fieldLabel {
-  font-size: 12px;
-  font-weight: 500;
-  color: #525866;
-  font-family: var(--font-family, sans-serif);
-}
-
-// ───── Connection card (bound + empty states) ─────
-
-.connCard {
+:local(.connCard) {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  width: 100%;
+  padding: 8px 10px;
   background: #ffffff;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
+  border: 1px solid #c6c6c6;
+  border-radius: 2px;
   text-align: left;
   cursor: pointer;
   font-family: var(--font-family, sans-serif);
-  transition: border-color 0.15s ease;
+  transition: border-color 0.12s ease, background 0.12s ease;
+  box-sizing: border-box;
 
-  &:hover {
-    border-color: #1a6ed8;
-  }
+  &:hover { border-color: #0f62fe; }
+  &:focus-visible { outline: 2px solid #0f62fe; outline-offset: -2px; }
 }
 
-.connCardEmpty {
+:local(.connCardEmpty) {
   border-style: dashed;
-  background: #fafbfc;
+  background: #f4f4f4;
+  &:hover { background: #ffffff; }
 }
 
-.connCardBody {
+:local(.connCardLabel) {
+  font-size: 11px;
+  font-weight: 400;
+  color: #525252;
+  margin-bottom: 4px;
+  font-family: var(--font-family, sans-serif);
+}
+
+:local(.connCardBody) {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.connCardName {
+:local(.connCardName) {
   font-size: 13px;
   font-weight: 500;
-  color: #1a1a1a;
+  color: #161616;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.connCardMeta {
+:local(.connCardMeta) {
   font-size: 11px;
-  color: #6b7280;
+  color: #6f6f6f;
   margin-top: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.connCardChange {
+:local(.connCardChange) {
   font-size: 12px;
-  color: #1a6ed8;
+  color: #0f62fe;
   flex: 0 0 auto;
 }
 
 // ───── Status dot (connection card + picker rows) ─────
 
-.statusDot {
+:local(.statusDot) {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   flex: 0 0 auto;
-  background: #d0d0d0;
+  background: #c6c6c6;
 }
 
-.status--active   { background: #16a34a; }
-.status--warning  { background: #f59e0b; }
-.status--error    { background: #dc2626; }
-.status--pending  { background: #6b7280; }
+:local(.status--active)   { background: #24a148; }
+:local(.status--warning)  { background: #f1c21b; }
+:local(.status--error)    { background: #da1e28; }
+:local(.status--pending)  { background: #6f6f6f; }
 
-// ───── Operation selector (Evergreen SelectMenu shape) ─────
+// ───── Operation selector wrapper (Carbon ComboBox lives inside) ─────
 
-.opSelector {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+:local(.opSelector) {
+  // Carbon ComboBox carries its own styling. Override radius to 2px so it
+  // matches the Connection card and the rest of the prototype's chrome
+  // (Carbon defaults to 0px on inputs in the white theme).
+  :global(.cds--list-box),
+  :global(.cds--text-input) {
+    border-radius: 2px;
+  }
+
+  :global(.cds--label) {
+    font-size: 11px;
+    color: #525252;
+  }
 }
 
-.opSelectorLabel {
-  font-size: 12px;
-  font-weight: 500;
-  color: #525866;
-  font-family: var(--font-family, sans-serif);
-}
+// ───── Picker overlay ─────
 
-.opSelectorTrigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  width: 100%;
-  padding: 8px 12px;
-  background: #ffffff;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
-  font-size: 13px;
-  font-family: var(--font-family, sans-serif);
-  color: #1a1a1a;
-  cursor: pointer;
-  text-align: left;
-
-  &:hover { border-color: #1a6ed8; }
-  &:focus { outline: 2px solid #1a6ed8; outline-offset: -2px; }
-}
-
-.opSelectorChevron {
-  color: #6b7280;
-  font-size: 11px;
-}
-
-.opSelectorMenu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  z-index: 30;
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
-  max-height: 320px;
-}
-
-.opSelectorFilter {
-  padding: 8px 12px;
-  border: none;
-  border-bottom: 1px solid #e8e8e8;
-  font-size: 13px;
-  font-family: var(--font-family, sans-serif);
-  outline: none;
-}
-
-.opSelectorList {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  padding: 4px 0;
-}
-
-.opSelectorItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  width: 100%;
-  padding: 7px 12px;
-  background: transparent;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  font-size: 13px;
-  font-family: var(--font-family, sans-serif);
-  color: #1a1a1a;
-
-  &:hover { background: #f5f7fa; }
-}
-
-.opSelectorItemActive {
-  background: #eef4fc;
-  &:hover { background: #e2ecf8; }
-}
-
-.opSelectorCheck {
-  color: #1a6ed8;
-}
-
-// ───── Picker overlay (Connection picker) ─────
-
-.pickerBackdrop {
+:local(.pickerBackdrop) {
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba(0, 0, 0, 0.16);
+  background: rgba(0, 0, 0, 0.32);
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -218,41 +135,44 @@
   pointer-events: all;
 }
 
-.picker {
+:local(.picker) {
   width: 360px;
   max-height: 520px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
+  border: 1px solid #c6c6c6;
+  border-radius: 2px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   font-family: var(--font-family, sans-serif);
   overflow: hidden;
 }
 
-.pickerSearch {
+:local(.pickerSearch) {
   padding: 10px 14px;
   border: none;
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid #e0e0e0;
   font-size: 13px;
   outline: none;
+  font-family: var(--font-family, sans-serif);
+
+  &:focus { background: #f4f4f4; }
 }
 
-.pickerList {
+:local(.pickerList) {
   flex: 1 1 auto;
   overflow-y: auto;
-  padding: 6px 0;
+  padding: 4px 0;
 }
 
-.pickerEmpty {
+:local(.pickerEmpty) {
   padding: 16px;
   font-size: 12.5px;
-  color: #888;
+  color: #6f6f6f;
   text-align: center;
 }
 
-.pickerItem {
+:local(.pickerItem) {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -263,53 +183,55 @@
   cursor: pointer;
   text-align: left;
   font-size: 13px;
-  color: #1a1a1a;
+  color: #161616;
   font-family: var(--font-family, sans-serif);
 
-  &:hover { background: #f5f7fa; }
+  &:hover { background: #e8e8e8; }
 }
 
-.pickerItemBody {
+:local(.pickerItemBody) {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.pickerItemName {
+:local(.pickerItemName) {
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.pickerItemMeta {
+:local(.pickerItemMeta) {
   font-size: 11px;
-  color: #6b7280;
+  color: #6f6f6f;
   margin-top: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.pickerFooter {
-  border-top: 1px solid #e8e8e8;
-  padding: 8px 14px;
+:local(.pickerFooter) {
+  border-top: 1px solid #e0e0e0;
+  padding: 6px 8px;
   display: flex;
   justify-content: flex-end;
-  background: #fafbfc;
+  background: #ffffff;
 }
 
-// Carbon-style ghost button for the Hub deep-link.
-.ghostBtn {
+// Ghost button for the Hub deep-link. Carbon ghost-button look, kept
+// lightweight in custom CSS to avoid pulling another @carbon/react
+// component into a single-purpose row.
+:local(.ghostBtn) {
   background: transparent;
   border: 1px solid transparent;
   padding: 4px 8px;
   font-size: 12.5px;
-  color: #1a6ed8;
+  color: #0f62fe;
   cursor: pointer;
   font-family: var(--font-family, sans-serif);
-  border-radius: 3px;
+  border-radius: 2px;
 
-  &:hover { background: #eef4fc; }
+  &:hover { background: #e5edff; }
 }

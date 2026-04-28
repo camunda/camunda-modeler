@@ -8,20 +8,23 @@
  * except in compliance with the MIT License.
  */
 
-/**
- * Sits inside a SidePanel.Header row. Centered horizontally with a small
- * vertical padding so it doesn't crowd the "Details" title bar above or the
- * element-name header below. Carbon's ContentSwitcher carries its own styling;
- * we just constrain width so the pill doesn't stretch to fill the header.
- */
-.configureValidateToggle {
+// Sits inside a SidePanel.Header row. Centered horizontally with a small
+// vertical padding so it doesn't crowd the "Details" title bar above or the
+// element-name header below. Carbon's ContentSwitcher carries its own
+// styling; we just constrain width so the pill doesn't stretch.
+
+:local(.configureValidateToggle) {
   display: flex;
   justify-content: center;
   padding: 6px 10px;
 
-  // Constrain the switcher so it reads as a compact mode toggle, not a banner.
+  // Constrain so the switcher reads as a compact mode toggle, not a banner.
+  // Override Carbon's default 0px radius on the switcher to 2px so it
+  // visually aligns with the rest of the prototype's chrome.
   :global(.cds--content-switcher) {
     max-width: 220px;
     width: 100%;
+    border-radius: 2px;
+    overflow: hidden;
   }
 }

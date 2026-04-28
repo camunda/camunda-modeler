@@ -15,6 +15,7 @@ import { APPEND_GROUPS, findLeaf } from './appendCatalog';
 import { buildAppendResults } from './appendSearch';
 
 import { buildSynonymIndex } from '../cloud-bpmn/connectors-context/synonymIndex';
+import { SYNONYM_OVERRIDES } from '../cloud-bpmn/connectors-context/synonymOverrides';
 
 import { WizardShell } from './StartEventWizard';
 
@@ -82,7 +83,7 @@ export default function AppendWizard({
   // so phrases like "send message" surface Slack, Kafka, Twilio, etc. across
   // the catalog (Native Ops PRD pattern).
   const synonymIndex = useMemo(
-    () => buildSynonymIndex(templates),
+    () => buildSynonymIndex(templates, SYNONYM_OVERRIDES),
     [ templates ]
   );
 

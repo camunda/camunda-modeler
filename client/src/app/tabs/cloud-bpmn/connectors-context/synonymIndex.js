@@ -71,6 +71,10 @@ export function normalize(input) {
  * Build the synonym index from a list of element templates.
  *
  * @param {ElementTemplate[]} templates
+ * @param {Object<string, string[]>} [overrides] - optional per-template-id
+ *   synonym map (see synonymOverrides.js). Folded in alongside any `keywords`
+ *   on the template. Use this to backfill synonym coverage for marketplace
+ *   templates we can't edit directly.
  * @returns {{
  *   entries: SynonymEntry[],
  *   byTemplate: Map<string, SynonymEntry[]>,
@@ -78,7 +82,7 @@ export function normalize(input) {
  *   findMatches: (query: string) => SynonymEntry[]
  * }}
  */
-export function buildSynonymIndex(templates) {
+export function buildSynonymIndex(templates, overrides) {
   const entries = [];
   const byTemplate = new Map();
 
@@ -120,6 +124,21 @@ export function buildSynonymIndex(templates) {
           templateId,
           term: keyword,
           normalized: normalize(keyword),
+          source: 'keyword'
+        });
+      });
+    }
+
+    // Per-id overrides — backfill synonyms for marketplace templates we can't
+    // edit directly. Same shape as `keywords` (flat string list).
+    const idOverrides = overrides && overrides[templateId];
+    if (Array.isArray(idOverrides)) {
+      idOverrides.forEach(term => {
+        if (typeof term !== 'string') return;
+        addEntry({
+          templateId,
+          term,
+          normalized: normalize(term),
           source: 'keyword'
         });
       });
