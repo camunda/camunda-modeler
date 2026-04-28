@@ -639,12 +639,12 @@
   align-items: stretch !important;
   width: fit-content !important;
   max-width: none !important;
-  gap: 6px !important;
-  // Contained surface so the affordances inside read as UI chrome rather
-  // than as canvas content. Visual language is shared with the top
-  // maintenance strip (.element-actions-strip) — same bg, border,
-  // radius, and shadow so the two surfaces feel like one system.
-  padding: 6px !important;
+  // Tighter inter-group gap and tighter padding than the top strip:
+  // the side pad is the more compact, more-tightly-grouped surface,
+  // anchored to the selected element. Visual language otherwise
+  // matches .element-actions-strip — same bg, border, radius, shadow.
+  gap: 4px !important;
+  padding: 4px !important;
   background: #ffffff !important;
   border: 1px solid #e0e0e0 !important;
   border-radius: 12px !important;
@@ -694,14 +694,17 @@
   }
 
   :global(.djs-context-pad-entry--primary) {
-    width: 32px;
-    height: 32px;
+    // 28x28: still slightly larger than the 24x24 primitives below to
+    // carry primary-CTA weight, but small enough to keep the side pad
+    // tightly proportioned to the element height.
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #1a6ed8;
     color: white;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 600;
     line-height: 1;
     // Rounded square aligns with the prototype's recurring tile language
@@ -746,8 +749,8 @@
     order: 0;
 
     :global(.entry) {
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       background: transparent;
       border: none;
       box-shadow: none;
@@ -756,6 +759,11 @@
 
       &:hover {
         background: #f3f6fb;
+      }
+
+      &:focus-visible {
+        outline: 2px solid #2a7de1;
+        outline-offset: 1px;
       }
     }
   }
@@ -834,13 +842,19 @@
     width: 24px;
     height: 24px;
     cursor: pointer;
-    opacity: 0.6;
-    border-radius: 3px;
-    transition: opacity 120ms ease, background 120ms ease;
+    // No rest-state opacity dim: the top bar is action-oriented, not
+    // subordinate to the side pad. Both bars present their entries at
+    // full presence; hover gives the same tinted-background feedback.
+    border-radius: 4px;
+    transition: background 120ms ease;
 
     &:hover {
-      opacity: 1;
       background: #f3f6fb;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #2a7de1;
+      outline-offset: 1px;
     }
   }
 }
