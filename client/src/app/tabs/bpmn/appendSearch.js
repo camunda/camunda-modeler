@@ -79,9 +79,13 @@ export function classifyTemplate(template) {
  * @param {string} opts.query               - search text (non-empty; caller should short-circuit on empty)
  * @param {Array}  opts.templates           - element templates from elementTemplates service
  * @param {string} opts.sourceElementType   - reserved for future per-source filtering
+ * @param {object} [opts.synonymIndex]      - optional Synonym Index built from connectors-context/synonymIndex.js;
+ *                                            when present, per-operation synonyms are folded into each template's
+ *                                            search keywords so phrases like "send message" match Slack, Kafka,
+ *                                            Twilio, etc. across the catalog (Native Ops PRD pattern).
  * @returns {{ sections: Array<{ id, label, items: Array, overflow: number }> }}
  */
-export function buildAppendResults({ query, templates = [] /*, sourceElementType */ }) {
+export function buildAppendResults({ query, templates = [], synonymIndex /*, sourceElementType */ }) {
   const q = (query || '').trim();
   if (!q) return { sections: [] };
 
@@ -126,10 +130,20 @@ export function buildAppendResults({ query, templates = [] /*, sourceElementType
     if (!section || section === 'elements') continue;
 
     // Friendly name only; NEVER include the raw id namespace — too much noise.
-    // Template JSON schema supports a `metadata.keywords` field; use it if present.
+    // Pull synonym terms from three surfaces (in priority order):
+    //   1. top-level `keywords: string[]` — the surface used by Hub-prototype
+    //      connector templates (Native Ops PRD, ~120 of 122 templates).
+    //   2. `metadata.keywords: string` — the legacy curated-keyword field.
+    //   3. `description` — last-resort fallback.
+    // Per-operation `synonyms` are folded in at template-load time via the
+    // optional `synonymIndex` arg — see `getSynonymTerms()` below.
     const friendlyName = t.name || shortenTemplateId(t.id);
+    const topLevelKeywords = Array.isArray(t.keywords) ? t.keywords.join(' ') : null;
+    const synonymTerms = synonymIndex ? getSynonymTerms(synonymIndex, t.id) : null;
     const kw = [
+      topLevelKeywords,
       t.metadata && t.metadata.keywords,
+      synonymTerms,
       t.description
     ].filter(Boolean).join(' ');
 
@@ -165,6 +179,24 @@ export function buildAppendResults({ query, templates = [] /*, sourceElementType
   }
 
   return { sections };
+}
+
+/**
+ * Pull all indexed synonym terms for a template id and join them into one
+ * keyword blob the existing scorer can consume. Returns null if the index
+ * has no entries for that template.
+ */
+function getSynonymTerms(synonymIndex, templateId) {
+  if (!synonymIndex || !synonymIndex.byTemplate) return null;
+  const entries = synonymIndex.byTemplate.get(templateId);
+  if (!entries || entries.length === 0) return null;
+  // Skip 'name' and 'description' sources — those are already represented
+  // in friendlyName and t.description respectively. We only want the extra
+  // synonym surface (keywords + per-operation synonyms).
+  const extra = entries
+    .filter(e => e.source === 'keyword' || e.source === 'synonym')
+    .map(e => e.term);
+  return extra.length ? extra.join(' ') : null;
 }
 
 function isTemplateAppendable(template) {

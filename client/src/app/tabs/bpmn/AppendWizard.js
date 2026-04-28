@@ -14,6 +14,8 @@ import { APPEND_GROUPS, findLeaf } from './appendCatalog';
 
 import { buildAppendResults } from './appendSearch';
 
+import { buildSynonymIndex } from '../cloud-bpmn/connectors-context/synonymIndex';
+
 import { WizardShell } from './StartEventWizard';
 
 import {
@@ -75,11 +77,20 @@ export default function AppendWizard({
   // primaryAction — 'append' or 'configure'; Tab flips this on the active row.
   const [ primaryAction, setPrimaryAction ] = useState('append');
 
+  // Synonym Index for connectors-context prototype: lets the search corpus
+  // match per-template `keywords` arrays and per-operation `synonyms` blocks
+  // so phrases like "send message" surface Slack, Kafka, Twilio, etc. across
+  // the catalog (Native Ops PRD pattern).
+  const synonymIndex = useMemo(
+    () => buildSynonymIndex(templates),
+    [ templates ]
+  );
+
   // searchResults is now a { sections: [...] } shape — each section carries
   // its own label and may have overflow (N more beyond the per-section cap).
   const searchResults = useMemo(
-    () => buildAppendResults({ query: search, templates, sourceElementType }),
-    [ search, templates, sourceElementType ]
+    () => buildAppendResults({ query: search, templates, sourceElementType, synonymIndex }),
+    [ search, templates, sourceElementType, synonymIndex ]
   );
 
   // Flattened items in render order — used for arrow-key navigation.

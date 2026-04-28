@@ -44,6 +44,8 @@ import ValidateBadges from './validate/ValidateBadges';
 import ValidateSession from './validate/ValidateSession';
 import { isRunnable } from './validate/runnability';
 
+import ConfigureValidateToggle from './connectors-context/ConfigureValidateToggle';
+
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import SidePanelTitleBar from '../../side-panel/SidePanelTitleBar';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';
@@ -1759,6 +1761,17 @@ export class BpmnEditor extends CachedComponent {
                     open: false
                   }
                 }) }
+              />
+            </SidePanel.Header>
+            <SidePanel.Header>
+              <ConfigureValidateToggle
+                activeTab={ (layout.sidePanel && layout.sidePanel.tab) || 'properties' }
+                onSwitchTab={ (nextTab) => {
+                  // Drive the existing modeController so the canvas (chip,
+                  // runnable indicators, overlays) and the SidePanel tab
+                  // stay in sync. _applyModeSideEffects handles the rest.
+                  this.modeController.set(nextTab === 'test' ? 'test' : 'design');
+                } }
               />
             </SidePanel.Header>
             <SidePanel.Header>
