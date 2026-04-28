@@ -640,10 +640,15 @@
   width: fit-content !important;
   max-width: none !important;
   gap: 6px !important;
-  padding: 0 !important;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
+  // Contained surface so the affordances inside read as UI chrome rather
+  // than as canvas content. Visual language is shared with the top
+  // maintenance strip (.element-actions-strip) — same bg, border,
+  // radius, and shadow so the two surfaces feel like one system.
+  padding: 6px !important;
+  background: #ffffff !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04) !important;
   overflow: visible !important;
   animation: guidedPadFadeIn 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
 
@@ -699,8 +704,15 @@
     font-size: 17px;
     font-weight: 600;
     line-height: 1;
-    border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(26, 110, 216, 0.3);
+    // Rounded square aligns with the prototype's recurring tile language
+    // (entry cards, picker icons, dialog corners). Primary-CTA hierarchy
+    // is carried by color + size, not by shape, so the circle was doing
+    // redundant work. 6px keeps the button less-rounded than its 12px
+    // container — children less rounded than parents.
+    border-radius: 6px;
+    // No at-rest shadow: the pill container already carries elevation. An
+    // inner shadow inside a shadowed surface reads as noise. Hover/active
+    // shadows stay for tactile press feedback.
     cursor: pointer;
     transition: background 120ms ease, transform 120ms ease, box-shadow 120ms ease;
 
@@ -716,18 +728,20 @@
     }
   }
 
-  // ---- Group: "model" — primitive tiles + connect (as 4th element) ------
+  // ---- Group: "model" — primitive tiles + connect (vertical column) -----
   //
-  // Single horizontal row: task / gateway / intermediate-event / connect.
-  // No backgrounds — the BPMN silhouettes carry their own weight and an
-  // extra card around each tile just reads as visual noise. A subtle hover
+  // Vertical stack: task / gateway / intermediate-event / connect, sitting
+  // below the primary "+" inside the same contained surface. No backgrounds
+  // on individual tiles — the BPMN silhouettes carry their own weight and
+  // an extra card around each just reads as visual noise. A subtle hover
   // tint confirms the hit-area when needed.
   //
   // The connect entry is moved into this group by GuidedAppendContextPadProvider
-  // so it renders as the row's 4th tile rather than floating on its own line.
+  // so it renders as the column's last tile rather than floating on its own row.
   :global(.group[data-group="model"]) {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
     gap: 2px;
     order: 0;
 
@@ -775,11 +789,15 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  padding: 3px 5px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid #ececec;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  // Visual language matches the append pad (.djs-context-pad.open): same
+  // bg, border, radius, and shadow so the two surfaces feel like one
+  // system. Subordination comes from entry-level opacity, not from a
+  // softer container.
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
   pointer-events: auto;
   z-index: 50;
   animation: guidedPadFadeIn 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
