@@ -53,14 +53,16 @@ const VALIDATION_ERROR_MESSAGES = {
   CLUSTER_URL_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
   CLUSTER_URL_MUST_START_WITH_PROTOCOL: 'Cluster URL must start with "http://", "grpc://", "https://", or "grpcs://".',
   MUST_PROVIDE_A_VALUE: 'Must provide a value.',
-  OAUTH_URL_MUST_NOT_BE_EMPTY: 'OAuth URL must not be empty.'
+  OAUTH_URL_MUST_NOT_BE_EMPTY: 'OAuth URL must not be empty.',
+  TENANT_ID_INVALID: 'Tenant ID must be 31 characters or fewer and contain only alphanumeric characters, dots (.), dashes (-), or underscores (_).'
 };
 
 const REGEXES = {
   URL: /^(http|grpc)s?:\/\//,
   OPTIONAL_HTTP_URL: /^$|^https?:\/\/\S+$/,
   CAMUNDA_CLOUD_GRPC_URL: /^((https|grpcs):\/\/|)[a-z\d-]+\.[a-z]+-\d+\.zeebe\.camunda\.io(:443|)\/?$/,
-  CAMUNDA_CLOUD_REST_URL: /^https:\/\/[a-z]+-\d+\.(zeebe|api)\.camunda\.io(:443|)\/[a-z\d-]+(?:\/v2)?\/?$/
+  CAMUNDA_CLOUD_REST_URL: /^https:\/\/[a-z]+-\d+\.(zeebe|api)\.camunda\.io(:443|)\/[a-z\d-]+(?:\/v2)?\/?$/,
+  TENANT_ID: /^$|^[a-zA-Z0-9._-]{1,31}$/
 };
 REGEXES.CAMUNDA_CLOUD_URL = new RegExp(
   `${REGEXES.CAMUNDA_CLOUD_GRPC_URL.source}|${REGEXES.CAMUNDA_CLOUD_REST_URL.source}`
@@ -125,6 +127,12 @@ export const properties = [
     label: LABELS.TENANT_ID,
     hint: HINTS.TENANT_ID,
     condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
+    constraints: {
+      pattern: {
+        value: REGEXES.TENANT_ID,
+        message: VALIDATION_ERROR_MESSAGES.TENANT_ID_INVALID
+      }
+    }
   },
 
   { key: 'operateUrl',
