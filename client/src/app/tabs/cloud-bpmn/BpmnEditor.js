@@ -1855,6 +1855,7 @@ export class BpmnEditor extends CachedComponent {
               <SidePanelHeader injector={ injector } />
             </SidePanel.Header>
             <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
+              <div className={ css.propertiesPaneInner }>
               { connectorContextTemplate && (
                 <StickyConnectorRegion
                   element={ connectorContextElement }
@@ -1874,6 +1875,7 @@ export class BpmnEditor extends CachedComponent {
                 />
               ) }
               <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
+              </div>
             </SidePanel.Tab>
             <SidePanel.Tab id="test" label="Validate" icon={ TaskTestingIcon }>
               <TaskTestingTab

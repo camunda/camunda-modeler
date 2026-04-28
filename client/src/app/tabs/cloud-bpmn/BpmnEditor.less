@@ -160,3 +160,25 @@
 :local(.BpmnEditor) :global(.side-panel .side-panel__tabs-bar) {
   display: none;
 }
+
+/* -----------------------
+ * connectors-context prototype: PropertiesTab body now renders our sticky
+ * region above the bpmn-io properties panel. Without intervention this
+ * stacks two scrollbars (the side-panel__content's outer scroll + bpmn-io's
+ * own internal scroll). This wrapper turns the tab body into a flex column
+ * where the bpmn-io panel takes remaining space and scrolls internally —
+ * the outer side-panel__content scroll never engages. Scoped to the
+ * properties tab only (Validate tab is unaffected).
+ * ----------------------- */
+:local(.propertiesPaneInner) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:local(.propertiesPaneInner) :global(.properties-container) {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto;  // override the global "height: 100%" inherited from SidePanel.less
+  overflow: hidden;
+}
