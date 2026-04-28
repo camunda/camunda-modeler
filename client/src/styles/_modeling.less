@@ -33,24 +33,24 @@
 
   /* BPMN / DMN diagram canvas */
   .djs-container {
-    background-color: hsl(225, 10%, 18%) !important;
+    background-color: var(--bio-canvas) !important;
 
     svg {
-      color: hsl(225, 10%, 85%);
+      color: var(--bio-text-primary);
     }
 
     /* Connection lines (sequence flows, message flows, associations) */
     .djs-connection .djs-visual path,
     .djs-connection .djs-visual polyline {
-      stroke: hsl(225, 10%, 80%) !important;
+      stroke: var(--bio-icon) !important;
     }
 
     /* Arrowhead markers on connections */
     marker path,
     marker polygon,
     marker circle {
-      stroke: hsl(225, 10%, 80%) !important;
-      fill: hsl(225, 10%, 80%) !important;
+      stroke: var(--bio-icon) !important;
+      fill: var(--bio-icon) !important;
     }
 
     /* Shape borders (tasks, events, gateways, subprocesses) */
@@ -58,13 +58,13 @@
     .djs-shape .djs-visual > circle,
     .djs-shape .djs-visual > polygon,
     .djs-shape .djs-visual > path {
-      stroke: hsl(225, 10%, 70%) !important;
+      stroke: var(--bio-text-secondary) !important;
     }
 
     /* DataObject, DataStore, and similar shapes using path as their visual body */
     /* Only override default white fill — skip user-set custom colors */
     .djs-shape .djs-visual:not(:has(> rect, > circle, > polygon)) > path[style*="fill: white"] {
-      fill: hsl(225, 10%, 20%) !important;
+      fill: var(--bio-surface-2) !important;
     }
 
     /* Task type icons (user, envelope, gear, etc.) inside shapes with rect/circle/polygon body */
@@ -78,7 +78,7 @@
     .djs-shape .djs-visual > rect[style*="fill: white"],
     .djs-shape .djs-visual > circle[style*="fill: white"],
     .djs-shape .djs-visual > polygon[style*="fill: white"] {
-      fill: hsl(225, 10%, 20%) !important;
+      fill: var(--bio-surface-2) !important;
     }
 
     /* Text inside shapes (task names) — white for contrast on dark box */
@@ -90,7 +90,7 @@
     /* External labels (event names, flow labels on canvas) — light for contrast */
     .djs-element.djs-shape .djs-label text,
     .djs-element.djs-shape .djs-label tspan {
-      fill: hsl(225, 10%, 90%) !important;
+      fill: var(--bio-text-primary) !important;
     }
 
     /* Custom-colored shapes: text should be black for readability.
@@ -116,17 +116,17 @@
 
   /* Palette / toolbox, context pad, popup */
   .djs-parent {
-    /* Base color overrides */
-    --color-grey-225-10-15: hsl(225, 10%, 90%);
-    --color-grey-225-10-35: hsl(225, 10%, 75%);
-    --color-grey-225-10-55: hsl(225, 10%, 60%);
-    --color-grey-225-10-75: hsl(225, 10%, 35%);
-    --color-grey-225-10-80: hsl(225, 10%, 30%);
-    --color-grey-225-10-85: hsl(225, 10%, 22%);
-    --color-grey-225-10-90: hsl(225, 10%, 25%);
-    --color-grey-225-10-95: hsl(225, 10%, 20%);
-    --color-grey-225-10-97: hsl(225, 10%, 18%);
-    --color-white: hsl(225, 10%, 14%);
+    /* Base color overrides — reverse-mapped from the library's numeric scale tokens */
+    --color-grey-225-10-15: var(--bio-text-primary);
+    --color-grey-225-10-35: var(--bio-icon);
+    --color-grey-225-10-55: var(--bio-text-muted);
+    --color-grey-225-10-75: var(--bio-border-strong);
+    --color-grey-225-10-80: var(--bio-border);
+    --color-grey-225-10-85: var(--bio-surface-3);
+    --color-grey-225-10-90: var(--bio-surface-4);
+    --color-grey-225-10-95: var(--bio-surface-2);
+    --color-grey-225-10-97: var(--bio-surface-1);
+    --color-white: var(--bio-background);
     --color-black: hsl(0, 0%, 100%);
     --color-black-opacity-10: hsla(0, 0%, 100%, 10%);
     --color-black-opacity-30: hsla(0, 0%, 100%, 30%);
@@ -135,157 +135,157 @@
     --color-red-360-100-97: hsl(360, 40%, 18%);
 
     /* Canvas */
-    --canvas-fill-color: hsl(225, 10%, 18%);
+    --canvas-fill-color: var(--bio-canvas);
 
     /* Palette */
-    --palette-background-color: hsl(225, 10%, 16%);
-    --palette-border-color: hsl(225, 10%, 30%);
-    --palette-separator-color: hsl(225, 10%, 30%);
-    --palette-entry-color: hsl(225, 10%, 80%);
-    --palette-entry-hover-color: hsl(205, 100%, 60%);
-    --palette-entry-selected-color: hsl(205, 100%, 55%);
-    --palette-toggle-hover-background-color: hsl(225, 10%, 28%);
+    --palette-background-color: var(--bio-panel);
+    --palette-border-color: var(--bio-border);
+    --palette-separator-color: var(--bio-border);
+    --palette-entry-color: var(--bio-icon);
+    --palette-entry-hover-color: var(--bio-accent);
+    --palette-entry-selected-color: var(--bio-accent-hover);
+    --palette-toggle-hover-background-color: var(--bio-border-subtle);
 
     /* Context pad */
-    --context-pad-entry-background-color: hsl(225, 10%, 22%);
-    --context-pad-entry-hover-background-color: hsl(225, 10%, 30%);
+    --context-pad-entry-background-color: var(--bio-surface-3);
+    --context-pad-entry-hover-background-color: var(--bio-border);
 
     /* Popup menu */
-    --popup-background-color: hsl(225, 10%, 20%);
-    --popup-border-color: hsl(225, 10%, 30%);
+    --popup-background-color: var(--bio-surface-2);
+    --popup-border-color: var(--bio-border);
     --popup-shadow-color: hsla(0, 0%, 0%, 40%);
-    --popup-disabled-color: hsl(225, 10%, 45%);
-    --popup-description-color: hsl(225, 10%, 60%);
-    --popup-no-results-color: hsl(225, 10%, 55%);
-    --popup-entry-title-color: hsl(225, 10%, 65%);
-    --popup-entry-hover-color: hsl(225, 10%, 28%);
-    --popup-header-group-divider-color: hsl(225, 10%, 35%);
-    --popup-search-border-color: hsl(225, 10%, 35%);
+    --popup-disabled-color: var(--bio-text-disabled);
+    --popup-description-color: var(--bio-text-muted);
+    --popup-no-results-color: var(--bio-text-muted);
+    --popup-entry-title-color: var(--bio-text-muted);
+    --popup-entry-hover-color: var(--bio-border-subtle);
+    --popup-header-group-divider-color: var(--bio-border-strong);
+    --popup-search-border-color: var(--bio-border-strong);
     --popup-search-focus-background-color: hsl(205, 60%, 20%);
   }
 
   /* Context pad icon color */
   .djs-context-pad .entry {
-    color: hsl(225, 10%, 85%);
+    color: var(--bio-text-primary);
   }
 
   /* Context pad container background */
   .djs-context-pad {
-    background-color: hsl(225, 10%, 22%) !important;
-    border-color: hsl(225, 10%, 35%) !important;
+    background-color: var(--bio-surface-3) !important;
+    border-color: var(--bio-border-strong) !important;
     box-shadow: 0 2px 8px hsla(225, 10%, 5%, 0.6) !important;
 
     .entry {
-      background-color: hsl(225, 10%, 22%) !important;
+      background-color: var(--bio-surface-3) !important;
 
       &:hover {
-        background-color: hsl(225, 10%, 30%) !important;
+        background-color: var(--bio-border) !important;
       }
     }
   }
 
   /* Popup menu text color */
   .djs-popup {
-    color: hsl(225, 10%, 85%);
+    color: var(--bio-text-primary);
 
     input {
-      color: hsl(225, 10%, 85%);
-      background-color: hsl(225, 10%, 18%);
+      color: var(--bio-text-primary);
+      background-color: var(--bio-surface-1);
     }
   }
 
   /* Properties panel */
   .bio-properties-panel {
     /* Text */
-    --text-base-color: hsl(225, 10%, 85%);
-    --description-color: hsl(225, 10%, 60%);
-    --placeholder-color: hsl(225, 10%, 50%);
-    --link-color: hsl(205, 100%, 60%);
+    --text-base-color: var(--bio-text-primary);
+    --description-color: var(--bio-text-muted);
+    --placeholder-color: var(--bio-text-placeholder);
+    --link-color: var(--bio-accent);
 
     /* Header */
-    --header-background-color: hsl(225, 10%, 20%);
-    --header-icon-fill-color: hsl(225, 10%, 80%);
-    --header-bottom-border-color: hsl(225, 10%, 30%);
+    --header-background-color: var(--bio-surface-2);
+    --header-icon-fill-color: var(--bio-icon);
+    --header-bottom-border-color: var(--bio-border);
 
     /* Groups / sections */
-    --group-background-color: hsl(225, 10%, 18%);
-    --group-bottom-border-color: hsl(225, 10%, 28%);
-    --sticky-group-background-color: hsl(225, 10%, 20%);
-    --sticky-group-bottom-border-color: hsl(225, 10%, 28%);
+    --group-background-color: var(--bio-surface-1);
+    --group-bottom-border-color: var(--bio-border-subtle);
+    --sticky-group-background-color: var(--bio-surface-2);
+    --sticky-group-bottom-border-color: var(--bio-border-subtle);
 
     /* Inputs */
-    --input-background-color: hsl(225, 10%, 22%);
-    --input-border-color: hsl(225, 10%, 35%);
-    --input-focus-background-color: hsl(225, 10%, 25%);
-    --input-focus-border-color: hsl(205, 100%, 50%);
-    --input-disabled-color: hsl(225, 10%, 45%);
-    --input-disabled-background-color: hsl(225, 10%, 20%);
-    --input-disabled-border-color: hsl(225, 10%, 28%);
+    --input-background-color: var(--bio-surface-3);
+    --input-border-color: var(--bio-border-strong);
+    --input-focus-background-color: var(--bio-surface-4);
+    --input-focus-border-color: var(--bio-accent);
+    --input-disabled-color: var(--bio-text-disabled);
+    --input-disabled-background-color: var(--bio-surface-2);
+    --input-disabled-border-color: var(--bio-border-subtle);
 
     /* Arrows, dots, buttons */
-    --arrow-fill-color: hsl(225, 10%, 60%);
-    --arrow-hover-background-color: hsl(225, 10%, 25%);
-    --add-entry-fill-color: hsl(225, 10%, 60%);
-    --dot-color: hsl(225, 10%, 50%);
-    --remove-entry-fill-color: hsl(0, 80%, 55%);
+    --arrow-fill-color: var(--bio-text-muted);
+    --arrow-hover-background-color: var(--bio-surface-4);
+    --add-entry-fill-color: var(--bio-text-muted);
+    --dot-color: var(--bio-text-placeholder);
+    --remove-entry-fill-color: var(--bio-error);
 
     /* Dropdowns */
-    --dropdown-item-background-color: hsl(225, 10%, 22%);
-    --dropdown-item-hover-background-color: hsl(225, 10%, 28%);
-    --dropdown-separator-background-color: hsl(225, 10%, 30%);
+    --dropdown-item-background-color: var(--bio-surface-3);
+    --dropdown-item-hover-background-color: var(--bio-border-subtle);
+    --dropdown-separator-background-color: var(--bio-border);
 
     /* Placeholder area */
-    --placeholder-background-color: hsl(225, 10%, 18%);
+    --placeholder-background-color: var(--bio-surface-1);
 
     /* Description code blocks */
-    --description-code-background-color: hsl(225, 10%, 22%);
-    --description-code-border-color: hsl(225, 10%, 30%);
+    --description-code-background-color: var(--bio-surface-3);
+    --description-code-border-color: var(--bio-border);
 
     /* FEEL */
-    --feel-hover-background-color: hsl(225, 10%, 25%);
-    --feel-inactive-color: hsl(225, 10%, 50%);
-    --feel-hover-color: hsl(225, 10%, 80%);
-    --feel-open-popup-color: hsl(225, 10%, 60%);
-    --feel-open-popup-background-color: hsl(225, 10%, 22%);
-    --feel-indicator-background-color: hsl(225, 10%, 28%);
+    --feel-hover-background-color: var(--bio-surface-4);
+    --feel-inactive-color: var(--bio-text-placeholder);
+    --feel-hover-color: var(--bio-icon);
+    --feel-open-popup-color: var(--bio-text-muted);
+    --feel-open-popup-background-color: var(--bio-surface-3);
+    --feel-indicator-background-color: var(--bio-border-subtle);
 
     /* Toggle switch */
-    --toggle-switch-off-background-color: hsl(225, 10%, 40%);
-    --toggle-switch-switcher-background-color: hsl(225, 10%, 85%);
+    --toggle-switch-off-background-color: var(--bio-control-off);
+    --toggle-switch-switcher-background-color: var(--bio-text-primary);
 
     /* Side lines */
-    --side-line-background-color: hsl(225, 10%, 35%);
-    --side-line-extension-background-color: hsl(225, 10%, 35%);
+    --side-line-background-color: var(--bio-border-strong);
+    --side-line-extension-background-color: var(--bio-border-strong);
 
     /* List entries */
-    --list-entry-header-button-fill-color: hsl(225, 10%, 60%);
-    --list-badge-background-color: hsl(225, 10%, 35%);
+    --list-entry-header-button-fill-color: var(--bio-text-muted);
+    --list-badge-background-color: var(--bio-border-strong);
 
-    color: hsl(225, 10%, 85%);
+    color: var(--bio-text-primary);
   }
 
   /* Form playground */
   .cfp-root {
-    background-color: hsl(225, 10%, 18%);
-    color: hsl(225, 10%, 85%);
+    background-color: var(--bio-surface-1);
+    color: var(--bio-text-primary);
   }
 
   /* DMN shared color overrides (the library defines its own variables on .dmn-js-parent) */
   .dmn-js-parent {
-    --color-grey-225-10-15: hsl(225, 10%, 90%);
-    --color-grey-225-10-35: hsl(225, 10%, 75%);
-    --color-grey-225-10-55: hsl(225, 10%, 60%);
-    --color-grey-225-10-75: hsl(225, 10%, 35%);
-    --color-grey-225-10-80: hsl(225, 10%, 30%);
-    --color-grey-225-10-85: hsl(225, 10%, 22%);
-    --color-grey-225-10-90: hsl(225, 10%, 25%);
-    --color-grey-225-10-95: hsl(225, 10%, 20%);
-    --color-grey-225-10-97: hsl(225, 10%, 18%);
+    --color-grey-225-10-15: var(--bio-text-primary);
+    --color-grey-225-10-35: var(--bio-icon);
+    --color-grey-225-10-55: var(--bio-text-muted);
+    --color-grey-225-10-75: var(--bio-border-strong);
+    --color-grey-225-10-80: var(--bio-border);
+    --color-grey-225-10-85: var(--bio-surface-3);
+    --color-grey-225-10-90: var(--bio-surface-4);
+    --color-grey-225-10-95: var(--bio-surface-2);
+    --color-grey-225-10-97: var(--bio-surface-1);
     --color-blue-205-100-45-opacity-30: hsl(205, 100%, 45%, 30%);
     --color-blue-205-100-95: hsl(205, 60%, 20%);
     --color-red-360-100-92: hsl(360, 40%, 25%);
     --color-red-360-100-97: hsl(360, 40%, 18%);
-    --color-white: hsl(225, 10%, 14%);
+    --color-white: var(--bio-background);
     --color-black: hsl(0, 0%, 100%);
     --color-black-opacity-10: hsla(0, 0%, 100%, 10%);
     --color-black-opacity-20: hsla(0, 0%, 100%, 20%);
@@ -293,146 +293,146 @@
 
   /* DMN decision table dark overrides */
   .dmn-decision-table-container {
-    --decision-table-background-color: hsl(225, 10%, 18%);
-    --decision-table-color: hsl(225, 10%, 90%);
-    --table-cell-color: hsl(225, 10%, 85%);
-    --table-cell-border-color: hsl(225, 10%, 30%);
-    --table-head-border-color: hsl(225, 10%, 35%);
-    --table-head-clause-color: hsl(225, 10%, 65%);
-    --table-head-separator-color: hsl(225, 10%, 35%);
-    --table-head-variable-color: hsl(225, 10%, 65%);
-    --table-row-alternative-background-color: hsl(225, 10%, 16%);
-    --table-foot-add-rule-border-color: hsl(225, 10%, 35%);
-    --table-foot-add-rule-color: hsl(225, 10%, 50%);
-    --table-foot-add-rule-hover-border-color: hsl(225, 10%, 70%);
-    --table-foot-add-rule-hover-color: hsl(225, 10%, 70%);
-    --decision-table-properties-color: hsl(225, 10%, 85%);
-    --add-column-icon-background-color: hsl(225, 10%, 50%);
-    --hit-policy-explanation-color: hsl(225, 10%, 60%);
-    --simple-mode-button-color: hsl(225, 10%, 85%);
-    --simple-mode-button-background-color: hsl(225, 10%, 22%);
-    --simple-mode-button-border-color: hsl(225, 10%, 35%);
-    --simple-mode-button-disabled-color: hsl(225, 10%, 40%);
-    --view-drd-button-background-color: hsl(225, 10%, 22%);
-    --view-drd-button-border-color: hsl(225, 10%, 35%);
-    --view-drd-button-color: hsl(225, 10%, 85%);
-    --view-drd-button-hover-background-color: hsl(225, 10%, 28%);
-    --drag-and-drop-drag-color: hsl(225, 10%, 60%);
-    --drag-and-drop-drop-marker-color: hsl(225, 10%, 50%);
-    --context-menu-background-color: hsl(225, 10%, 22%);
-    --context-menu-border-color: hsl(225, 10%, 35%);
-    --context-menu-color: hsl(225, 10%, 85%);
-    --context-menu-group-entry-hover-background-color: hsl(225, 10%, 28%);
-    --context-menu-group-entry-border-color: hsl(225, 10%, 35%);
-    --context-menu-group-entry-disabled-color: hsl(225, 10%, 40%);
-    --create-inputs-border-color: hsl(225, 10%, 35%);
-    --create-inputs-color: hsl(225, 10%, 55%);
-    --create-inputs-hover-color: hsl(225, 10%, 80%);
-    --edit-button-color: hsl(225, 10%, 85%);
-    --edit-button-background-color: hsl(225, 10%, 22%);
-    --edit-button-border-color: hsl(225, 10%, 35%);
-    --edit-button-disabled-color: hsl(225, 10%, 40%);
-    --allowed-values-placeholder-color: hsl(225, 10%, 50%);
-    --cell-description-editor-border-color: hsl(225, 10%, 35%);
-    --drag-and-drop-handle-color: hsl(225, 10%, 50%);
-    --drag-and-drop-handle-hover-color: hsl(225, 10%, 80%);
-    --form-control-label-color: hsl(225, 10%, 85%);
-    --hint-color: hsl(225, 10%, 65%);
+    --decision-table-background-color: var(--bio-surface-1);
+    --decision-table-color: var(--bio-text-primary);
+    --table-cell-color: var(--bio-text-primary);
+    --table-cell-border-color: var(--bio-border);
+    --table-head-border-color: var(--bio-border-strong);
+    --table-head-clause-color: var(--bio-text-muted);
+    --table-head-separator-color: var(--bio-border-strong);
+    --table-head-variable-color: var(--bio-text-muted);
+    --table-row-alternative-background-color: var(--bio-panel);
+    --table-foot-add-rule-border-color: var(--bio-border-strong);
+    --table-foot-add-rule-color: var(--bio-text-placeholder);
+    --table-foot-add-rule-hover-border-color: var(--bio-text-secondary);
+    --table-foot-add-rule-hover-color: var(--bio-text-secondary);
+    --decision-table-properties-color: var(--bio-text-primary);
+    --add-column-icon-background-color: var(--bio-text-placeholder);
+    --hit-policy-explanation-color: var(--bio-text-muted);
+    --simple-mode-button-color: var(--bio-text-primary);
+    --simple-mode-button-background-color: var(--bio-surface-3);
+    --simple-mode-button-border-color: var(--bio-border-strong);
+    --simple-mode-button-disabled-color: var(--bio-control-off);
+    --view-drd-button-background-color: var(--bio-surface-3);
+    --view-drd-button-border-color: var(--bio-border-strong);
+    --view-drd-button-color: var(--bio-text-primary);
+    --view-drd-button-hover-background-color: var(--bio-border-subtle);
+    --drag-and-drop-drag-color: var(--bio-text-muted);
+    --drag-and-drop-drop-marker-color: var(--bio-text-placeholder);
+    --context-menu-background-color: var(--bio-surface-3);
+    --context-menu-border-color: var(--bio-border-strong);
+    --context-menu-color: var(--bio-text-primary);
+    --context-menu-group-entry-hover-background-color: var(--bio-border-subtle);
+    --context-menu-group-entry-border-color: var(--bio-border-strong);
+    --context-menu-group-entry-disabled-color: var(--bio-control-off);
+    --create-inputs-border-color: var(--bio-border-strong);
+    --create-inputs-color: var(--bio-text-muted);
+    --create-inputs-hover-color: var(--bio-icon);
+    --edit-button-color: var(--bio-text-primary);
+    --edit-button-background-color: var(--bio-surface-3);
+    --edit-button-border-color: var(--bio-border-strong);
+    --edit-button-disabled-color: var(--bio-control-off);
+    --allowed-values-placeholder-color: var(--bio-text-placeholder);
+    --cell-description-editor-border-color: var(--bio-border-strong);
+    --drag-and-drop-handle-color: var(--bio-text-placeholder);
+    --drag-and-drop-handle-hover-color: var(--bio-icon);
+    --form-control-label-color: var(--bio-text-primary);
+    --hint-color: var(--bio-text-muted);
   }
 
   /* DMN literal expression dark overrides */
   .dmn-literal-expression-container {
-    --decision-properties-background-color: hsl(225, 10%, 18%);
-    --decision-properties-border-color: hsl(225, 10%, 30%);
-    --decision-properties-color: hsl(225, 10%, 85%);
-    --literal-expression-color: hsl(225, 10%, 85%);
-    --literal-expression-properties-border-color: hsl(225, 10%, 30%);
-    --literal-expression-properties-color: hsl(225, 10%, 85%);
-    --textarea-border-color: hsl(225, 10%, 30%);
-    --textarea-color: hsl(225, 10%, 85%);
-    --view-drd-button-background-color: hsl(225, 10%, 22%);
-    --view-drd-button-border-color: hsl(225, 10%, 35%);
-    --view-drd-button-color: hsl(225, 10%, 85%);
-    --view-drd-button-hover-background-color: hsl(225, 10%, 28%);
+    --decision-properties-background-color: var(--bio-surface-1);
+    --decision-properties-border-color: var(--bio-border);
+    --decision-properties-color: var(--bio-text-primary);
+    --literal-expression-color: var(--bio-text-primary);
+    --literal-expression-properties-border-color: var(--bio-border);
+    --literal-expression-properties-color: var(--bio-text-primary);
+    --textarea-border-color: var(--bio-border);
+    --textarea-color: var(--bio-text-primary);
+    --view-drd-button-background-color: var(--bio-surface-3);
+    --view-drd-button-border-color: var(--bio-border-strong);
+    --view-drd-button-color: var(--bio-text-primary);
+    --view-drd-button-hover-background-color: var(--bio-border-subtle);
   }
 
   /* DMN boxed expression dark overrides */
   .dmn-boxed-expression-container {
-    --element-properties-background-color: hsl(225, 10%, 18%);
-    --element-properties-border-color: hsl(225, 10%, 30%);
-    --element-properties-color: hsl(225, 10%, 85%);
-    --boxed-expression-color: hsl(225, 10%, 85%);
-    --boxed-expression-properties-border-color: hsl(225, 10%, 30%);
-    --boxed-expression-properties-color: hsl(225, 10%, 85%);
-    --textarea-border-color: hsl(225, 10%, 30%);
-    --textarea-color: hsl(225, 10%, 85%);
-    --view-drd-button-background-color: hsl(225, 10%, 22%);
-    --view-drd-button-border-color: hsl(225, 10%, 35%);
-    --view-drd-button-color: hsl(225, 10%, 85%);
-    --view-drd-button-hover-background-color: hsl(225, 10%, 28%);
+    --element-properties-background-color: var(--bio-surface-1);
+    --element-properties-border-color: var(--bio-border);
+    --element-properties-color: var(--bio-text-primary);
+    --boxed-expression-color: var(--bio-text-primary);
+    --boxed-expression-properties-border-color: var(--bio-border);
+    --boxed-expression-properties-color: var(--bio-text-primary);
+    --textarea-border-color: var(--bio-border);
+    --textarea-color: var(--bio-text-primary);
+    --view-drd-button-background-color: var(--bio-surface-3);
+    --view-drd-button-border-color: var(--bio-border-strong);
+    --view-drd-button-color: var(--bio-text-primary);
+    --view-drd-button-hover-background-color: var(--bio-border-subtle);
   }
 
   /* Minimap dark theme */
   .djs-minimap {
-    border-color: hsl(225, 10%, 28%) !important;
-    background-color: hsl(225, 10%, 16%) !important;
+    border-color: var(--bio-border-subtle) !important;
+    background-color: var(--bio-panel) !important;
 
     .map {
-      background-color: hsl(225, 10%, 18%);
+      background-color: var(--bio-surface-1);
     }
 
     .map svg {
-      background-color: hsl(225, 10%, 18%);
+      background-color: var(--bio-surface-1);
 
       /* All shape element strokes → visible on dark */
       .djs-visual > rect,
       .djs-visual > circle,
       .djs-visual > polygon,
       .djs-visual > path {
-        stroke: hsl(225, 10%, 55%) !important;
+        stroke: var(--bio-text-muted) !important;
       }
 
       /* Shape body fills (first child, default white only) → dark */
       .djs-visual > rect:first-child[style*="fill: white"],
       .djs-visual > polygon:first-child[style*="fill: white"] {
-        fill: hsl(225, 10%, 22%) !important;
+        fill: var(--bio-surface-3) !important;
       }
 
       .djs-visual > circle:first-child[style*="fill: white"] {
-        fill: hsl(225, 10%, 22%) !important;
+        fill: var(--bio-surface-3) !important;
       }
 
       /* DataObject/DataStore body paths (no rect/circle/polygon sibling, not a connection) */
       .djs-visual:not(:has(> rect, > circle, > polygon)) > path:not([data-corner-radius])[style*="fill: white"] {
-        fill: hsl(225, 10%, 22%) !important;
+        fill: var(--bio-surface-3) !important;
       }
 
       /* Connection and association paths — keep fill:none, fix stroke */
       path[data-corner-radius] {
         fill: none !important;
-        stroke: hsl(225, 10%, 55%) !important;
+        stroke: var(--bio-text-muted) !important;
       }
 
       /* Secondary circles: terminate event markers, intermediate event inner rings */
       .djs-visual > circle:not(:first-child) {
-        fill: hsl(225, 10%, 60%) !important;
+        fill: var(--bio-text-muted) !important;
       }
 
       /* Icon/marker paths inside shapes that have a rect/circle/polygon body */
       .djs-visual:has(> rect) > path,
       .djs-visual:has(> circle) > path,
       .djs-visual:has(> polygon) > path {
-        fill: hsl(225, 10%, 55%) !important;
+        fill: var(--bio-text-muted) !important;
       }
 
       /* Text labels */
       text, tspan {
-        fill: hsl(225, 10%, 80%) !important;
+        fill: var(--bio-icon) !important;
       }
 
       /* Viewport rectangle (the navigation overlay) */
       .viewport {
-        stroke: hsl(205, 100%, 55%) !important;
+        stroke: var(--bio-accent-hover) !important;
         fill: hsla(205, 100%, 50%, 0.15) !important;
       }
     }

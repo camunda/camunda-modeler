@@ -155,22 +155,22 @@
 
 /* Dark theme overrides for RPA Editor */
 :global(:root[data-theme="dark"]) :local(.RPAEditor) {
-  background-color: hsl(225, 10%, 14%);
-  color: hsl(225, 10%, 85%);
+  background-color: var(--bio-background);
+  color: var(--bio-text-primary);
 
   .editor {
-    background-color: hsl(225, 10%, 14%);
+    background-color: var(--bio-background);
   }
 
   .crpa-file-actions .crpa-file-actions-menu {
-    background-color: hsl(225, 10%, 22%);
-    color: hsl(225, 10%, 85%);
-    border-color: hsl(225, 10%, 30%);
+    background-color: var(--bio-surface-3);
+    color: var(--bio-text-primary);
+    border-color: var(--bio-border);
   }
 
   .crpa-properties-panel-files {
     li.selected, li:hover:not(.additional-files) {
-      background-color: hsl(225, 10%, 25%);
+      background-color: var(--bio-surface-4);
     }
   }
 }

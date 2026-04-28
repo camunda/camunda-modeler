@@ -58,42 +58,42 @@
 
   /* Form Definition panel title */
   .cfp-collapsible-panel-title {
-    background-color: hsl(225, 10%, 20%);
-    border-color: hsl(225, 10%, 30%);
-    color: hsl(225, 10%, 85%);
+    background-color: var(--bio-surface-2);
+    border-color: var(--bio-border);
+    color: var(--bio-text-primary);
 
     h1, h2, h3 {
-      color: hsl(225, 10%, 85%);
+      color: var(--bio-text-primary);
     }
   }
 
   /* Form playground root */
   .cfp-root {
-    background-color: hsl(225, 10%, 18%);
-    color: hsl(225, 10%, 85%);
+    background-color: var(--bio-surface-1);
+    color: var(--bio-text-primary);
   }
 
   /* Main form design canvas */
   .cfp-editor-container {
-    background-color: hsl(225, 10%, 16%);
+    background-color: var(--bio-panel);
 
     .fjs-container,
     .fjs-editor-container,
     .fjs-form-editor,
     .fjs-form-container {
-      background-color: hsl(225, 10%, 16%);
+      background-color: var(--bio-panel);
 
-      --cds-background: hsl(225, 10%, 16%);
-      --cds-layer-01: hsl(225, 10%, 20%);
-      --cds-layer-02: hsl(225, 10%, 22%);
-      --cds-field-01: hsl(225, 10%, 20%);
-      --cds-field-02: hsl(225, 10%, 22%);
-      --cds-text-primary: hsl(225, 10%, 85%);
-      --cds-text-secondary: hsl(225, 10%, 65%);
-      --cds-text-disabled: hsl(225, 10%, 50%);
-      --cds-border-subtle-01: hsl(225, 10%, 30%);
-      --cds-border-strong-01: hsl(225, 10%, 35%);
-      --cds-icon-primary: hsl(225, 10%, 85%);
+      --cds-background: var(--bio-panel);
+      --cds-layer-01: var(--bio-surface-2);
+      --cds-layer-02: var(--bio-surface-3);
+      --cds-field-01: var(--bio-surface-2);
+      --cds-field-02: var(--bio-surface-3);
+      --cds-text-primary: var(--bio-text-primary);
+      --cds-text-secondary: var(--bio-text-muted);
+      --cds-text-disabled: var(--bio-text-placeholder);
+      --cds-border-subtle-01: var(--bio-border);
+      --cds-border-strong-01: var(--bio-border-strong);
+      --cds-icon-primary: var(--bio-text-primary);
     }
 
     /* Drop zone / canvas rows */
@@ -108,44 +108,44 @@
     /* Hovered/selected element outlines */
     .fjs-editor-hovered,
     .fjs-element-container:hover {
-      outline-color: hsl(205, 100%, 50%);
+      outline-color: var(--bio-accent);
     }
 
     /* Powered by link */
     .fjs-powered-by-link {
-      color: hsl(225, 10%, 50%) !important;
+      color: var(--bio-text-placeholder);
 
-      svg path { fill: hsl(225, 10%, 50%) !important; }
+      svg { fill: currentColor; }
     }
 
     /* Table component */
     .fjs-table-th {
-      background-color: hsl(225, 10%, 24%) !important;
-      color: hsl(225, 10%, 85%) !important;
-      border-color: hsl(225, 10%, 32%) !important;
+      background-color: var(--bio-surface-3);
+      color: var(--bio-text-primary);
+      border-color: var(--bio-border);
     }
 
     .fjs-table-tr {
-      border-color: hsl(225, 10%, 28%) !important;
+      border-color: var(--bio-border-subtle);
 
       &:nth-child(even) {
-        background-color: hsl(225, 10%, 20%) !important;
+        background-color: var(--bio-surface-2);
       }
 
       &:hover {
-        background-color: hsl(225, 10%, 26%) !important;
+        background-color: var(--bio-surface-4);
       }
     }
 
     .fjs-table-td {
-      color: hsl(225, 10%, 80%) !important;
-      border-color: hsl(225, 10%, 28%) !important;
+      color: var(--bio-icon);
+      border-color: var(--bio-border-subtle);
     }
 
     .fjs-table,
     .fjs-table-inner {
-      background-color: hsl(225, 10%, 18%) !important;
-      border-color: hsl(225, 10%, 32%) !important;
+      background-color: var(--bio-surface-1);
+      border-color: var(--bio-border);
     }
   }
 
@@ -153,212 +153,208 @@
   .cfp-properties,
   .fjs-properties-container,
   .fjs-properties-panel {
-    background-color: hsl(225, 10%, 14%);
-    color: hsl(225, 10%, 85%);
+    background-color: var(--bio-background);
+    color: var(--bio-text-primary);
 
     .bio-properties-panel {
-      background-color: hsl(225, 10%, 14%) !important;
-
       /* Text */
-      --text-base-color: hsl(225, 10%, 85%);
-      --description-color: hsl(225, 10%, 60%);
-      --placeholder-color: hsl(225, 10%, 50%);
-      --link-color: hsl(205, 100%, 60%);
+      --text-base-color: var(--bio-text-primary);
+      --description-color: var(--bio-text-muted);
+      --placeholder-color: var(--bio-text-placeholder);
+      --link-color: var(--bio-accent);
 
       /* Header */
-      --header-background-color: hsl(225, 10%, 20%);
-      --header-icon-fill-color: hsl(225, 10%, 80%);
-      --header-bottom-border-color: hsl(225, 10%, 30%);
+      --header-background-color: var(--bio-surface-2);
+      --header-icon-fill-color: var(--bio-icon);
+      --header-bottom-border-color: var(--bio-border);
 
       /* Groups */
-      --group-background-color: hsl(225, 10%, 18%);
-      --group-bottom-border-color: hsl(225, 10%, 28%);
-      --sticky-group-background-color: hsl(225, 10%, 20%);
-      --sticky-group-bottom-border-color: hsl(225, 10%, 28%);
+      --group-background-color: var(--bio-surface-1);
+      --group-bottom-border-color: var(--bio-border-subtle);
+      --sticky-group-background-color: var(--bio-surface-2);
+      --sticky-group-bottom-border-color: var(--bio-border-subtle);
 
       /* Inputs */
-      --input-background-color: hsl(225, 10%, 22%);
-      --input-border-color: hsl(225, 10%, 35%);
-      --input-focus-background-color: hsl(225, 10%, 25%);
-      --input-focus-border-color: hsl(205, 100%, 50%);
-      --input-disabled-color: hsl(225, 10%, 45%);
-      --input-disabled-background-color: hsl(225, 10%, 20%);
-      --input-disabled-border-color: hsl(225, 10%, 28%);
+      --input-background-color: var(--bio-surface-3);
+      --input-border-color: var(--bio-border-strong);
+      --input-focus-background-color: var(--bio-surface-4);
+      --input-focus-border-color: var(--bio-accent);
+      --input-disabled-color: var(--bio-text-disabled);
+      --input-disabled-background-color: var(--bio-surface-2);
+      --input-disabled-border-color: var(--bio-border-subtle);
 
       /* Arrows, dots, buttons */
-      --arrow-fill-color: hsl(225, 10%, 60%);
-      --arrow-hover-background-color: hsl(225, 10%, 25%);
-      --add-entry-fill-color: hsl(225, 10%, 60%);
-      --dot-color: hsl(225, 10%, 50%);
-      --remove-entry-fill-color: hsl(0, 80%, 55%);
+      --arrow-fill-color: var(--bio-text-muted);
+      --arrow-hover-background-color: var(--bio-surface-4);
+      --add-entry-fill-color: var(--bio-text-muted);
+      --dot-color: var(--bio-text-placeholder);
+      --remove-entry-fill-color: var(--bio-error);
 
       /* Dropdowns */
-      --dropdown-item-background-color: hsl(225, 10%, 22%);
-      --dropdown-item-hover-background-color: hsl(225, 10%, 28%);
-      --dropdown-separator-background-color: hsl(225, 10%, 30%);
+      --dropdown-item-background-color: var(--bio-surface-3);
+      --dropdown-item-hover-background-color: var(--bio-border-subtle);
+      --dropdown-separator-background-color: var(--bio-border);
 
       /* Placeholder */
-      --placeholder-background-color: hsl(225, 10%, 18%);
+      --placeholder-background-color: var(--bio-surface-1);
 
       /* FEEL */
-      --feel-hover-background-color: hsl(225, 10%, 25%);
-      --feel-inactive-color: hsl(225, 10%, 50%);
-      --feel-hover-color: hsl(225, 10%, 80%);
-      --feel-open-popup-color: hsl(225, 10%, 60%);
-      --feel-open-popup-background-color: hsl(225, 10%, 22%);
-      --feel-indicator-background-color: hsl(225, 10%, 28%);
+      --feel-hover-background-color: var(--bio-surface-4);
+      --feel-inactive-color: var(--bio-text-placeholder);
+      --feel-hover-color: var(--bio-icon);
+      --feel-open-popup-color: var(--bio-text-muted);
+      --feel-open-popup-background-color: var(--bio-surface-3);
+      --feel-indicator-background-color: var(--bio-border-subtle);
 
       /* Toggle */
-      --toggle-switch-off-background-color: hsl(225, 10%, 40%);
-      --toggle-switch-switcher-background-color: hsl(225, 10%, 85%);
+      --toggle-switch-off-background-color: var(--bio-control-off);
+      --toggle-switch-switcher-background-color: var(--bio-text-primary);
 
       /* List entries */
-      --list-entry-header-button-fill-color: hsl(225, 10%, 60%);
-      --list-badge-background-color: hsl(225, 10%, 35%);
+      --list-entry-header-button-fill-color: var(--bio-text-muted);
+      --list-badge-background-color: var(--bio-border-strong);
 
-      color: hsl(225, 10%, 85%);
+      color: var(--bio-text-primary);
     }
   }
 
   /* Right side panels: Form Preview + Form Output */
   .cfp-right {
-    background-color: hsl(225, 10%, 16%);
+    background-color: var(--bio-panel);
 
     /* Collapsed preview strip */
     .cfp-collapsed-preview {
-      background-color: hsl(225, 10%, 20%);
-      border-color: hsl(225, 10%, 30%);
-      color: hsl(225, 10%, 75%);
+      background-color: var(--bio-surface-2);
+      border-color: var(--bio-border);
+      color: var(--bio-icon);
 
       .cfp-collapsed-preview-title h1 {
-        color: hsl(225, 10%, 75%);
+        color: var(--bio-icon);
       }
 
       .cfp-collapsed-preview-action {
         background: none;
         border: none;
-        color: hsl(225, 10%, 70%);
+        color: var(--bio-text-secondary);
 
-        svg path { fill: hsl(225, 10%, 70%) !important; }
+        svg { fill: currentColor; }
 
         &:hover {
-          color: hsl(225, 10%, 90%);
-          svg path { fill: hsl(225, 10%, 90%) !important; }
+          color: var(--bio-text-primary);
         }
       }
     }
 
     /* Collapsible panel (Form Preview / Form Output) */
     .cfp-collapsible-panel {
-      border-color: hsl(225, 10%, 28%);
+      border-color: var(--bio-border-subtle);
 
       .cfp-collapsible-panel-title {
-        background-color: hsl(225, 10%, 20%);
-        border-color: hsl(225, 10%, 30%);
-        color: hsl(225, 10%, 85%);
+        background-color: var(--bio-surface-2);
+        border-color: var(--bio-border);
+        color: var(--bio-text-primary);
 
-        h1 { color: hsl(225, 10%, 85%); }
+        h1 { color: var(--bio-text-primary); }
 
         .cfp-collapsible-panel-action {
           background: none;
           border: none;
-          color: hsl(225, 10%, 70%);
+          color: var(--bio-text-secondary);
 
-          svg path { fill: hsl(225, 10%, 70%) !important; }
+          svg { fill: currentColor; }
 
           &:hover {
-            color: hsl(225, 10%, 90%);
-            svg path { fill: hsl(225, 10%, 90%) !important; }
+            color: var(--bio-text-primary);
           }
         }
       }
 
       .cfp-collapsible-panel-content {
-        background-color: hsl(225, 10%, 16%);
+        background-color: var(--bio-panel);
 
         /* Form Preview renderer */
         .cfp-preview-container {
-          background-color: hsl(225, 10%, 16%);
+          background-color: var(--bio-panel);
 
           .fjs-container {
-            --cds-background: hsl(225, 10%, 16%);
-            --cds-layer-01: hsl(225, 10%, 20%);
-            --cds-layer-02: hsl(225, 10%, 22%);
-            --cds-field-01: hsl(225, 10%, 20%);
-            --cds-field-02: hsl(225, 10%, 22%);
-            --cds-text-primary: hsl(225, 10%, 85%);
-            --cds-text-secondary: hsl(225, 10%, 65%);
-            --cds-text-disabled: hsl(225, 10%, 50%);
-            --cds-border-subtle-01: hsl(225, 10%, 30%);
-            --cds-border-strong-01: hsl(225, 10%, 35%);
-            --cds-icon-primary: hsl(225, 10%, 85%);
-            background-color: hsl(225, 10%, 16%);
-            color: hsl(225, 10%, 85%);
+            --cds-background: var(--bio-panel);
+            --cds-layer-01: var(--bio-surface-2);
+            --cds-layer-02: var(--bio-surface-3);
+            --cds-field-01: var(--bio-surface-2);
+            --cds-field-02: var(--bio-surface-3);
+            --cds-text-primary: var(--bio-text-primary);
+            --cds-text-secondary: var(--bio-text-muted);
+            --cds-text-disabled: var(--bio-text-placeholder);
+            --cds-border-subtle-01: var(--bio-border);
+            --cds-border-strong-01: var(--bio-border-strong);
+            --cds-icon-primary: var(--bio-text-primary);
+            background-color: var(--bio-panel);
+            color: var(--bio-text-primary);
           }
 
           /* Powered by bpmn.io link */
           .fjs-powered-by-link {
-            color: hsl(225, 10%, 55%) !important;
+            color: var(--bio-text-muted);
 
-            svg path { fill: hsl(225, 10%, 55%) !important; }
+            svg { fill: currentColor; }
           }
 
           /* Table component in preview */
           .fjs-table-th {
-            background-color: hsl(225, 10%, 24%) !important;
-            color: hsl(225, 10%, 85%) !important;
-            border-color: hsl(225, 10%, 32%) !important;
+            background-color: var(--bio-surface-3);
+            color: var(--bio-text-primary);
+            border-color: var(--bio-border);
           }
 
           .fjs-table-tr {
-            border-color: hsl(225, 10%, 28%) !important;
+            border-color: var(--bio-border-subtle);
 
             &:nth-child(even) {
-              background-color: hsl(225, 10%, 20%) !important;
+              background-color: var(--bio-surface-2);
             }
 
             &:hover {
-              background-color: hsl(225, 10%, 26%) !important;
+              background-color: var(--bio-surface-4);
             }
           }
 
           .fjs-table-td {
-            color: hsl(225, 10%, 80%) !important;
-            border-color: hsl(225, 10%, 28%) !important;
+            color: var(--bio-icon);
+            border-color: var(--bio-border-subtle);
           }
 
           .fjs-table,
           .fjs-table-inner {
-            background-color: hsl(225, 10%, 18%) !important;
-            border-color: hsl(225, 10%, 32%) !important;
+            background-color: var(--bio-surface-1);
+            border-color: var(--bio-border);
           }
         }
 
         /* Form Output CodeMirror editor */
         .cfp-result-container,
         .fjs-json-editor {
-          background-color: hsl(225, 10%, 16%);
+          background-color: var(--bio-panel);
 
           .cm-editor {
-            background-color: hsl(225, 10%, 16%);
-            color: hsl(225, 10%, 85%);
+            background-color: var(--bio-panel);
+            color: var(--bio-text-primary);
 
             .cm-gutters {
-              background-color: hsl(225, 10%, 20%);
-              border-color: hsl(225, 10%, 30%);
-              color: hsl(225, 10%, 55%);
+              background-color: var(--bio-surface-2);
+              border-color: var(--bio-border);
+              color: var(--bio-text-muted);
             }
 
             .cm-activeLineGutter {
-              background-color: hsl(225, 10%, 24%);
+              background-color: var(--bio-surface-3);
             }
 
             .cm-content {
-              color: hsl(225, 10%, 85%);
+              color: var(--bio-text-primary);
             }
 
             .cm-activeLine {
-              background-color: hsl(225, 10%, 20%);
+              background-color: var(--bio-surface-2);
             }
 
             /* JSON token colours */
@@ -366,8 +362,8 @@
             .cm-number { color: hsl(205, 100%, 65%) !important; }
             .cm-keyword { color: hsl(290, 60%, 70%) !important; }
             .cm-propertyName { color: hsl(200, 70%, 70%) !important; }
-            .cm-punctuation { color: hsl(225, 10%, 65%) !important; }
-            .cm-bracket { color: hsl(225, 10%, 75%) !important; }
+            .cm-punctuation { color: var(--bio-text-muted) !important; }
+            .cm-bracket { color: var(--bio-icon) !important; }
           }
         }
       }
@@ -377,27 +373,27 @@
   /* Empty editor illustration */
   .fjs-empty-editor {
     h2 {
-      color: hsl(225, 10%, 85%);
+      color: var(--bio-text-primary);
     }
 
     span {
-      color: hsl(225, 10%, 60%);
+      color: var(--bio-text-muted);
     }
 
     svg {
       /* cursor/pointer body paths (originally #393939) */
       [fill="#393939"] {
-        fill: hsl(225, 10%, 80%) !important;
+        fill: var(--bio-icon);
       }
 
       /* paper background rect (originally #E5E5E5) */
       [fill="#E5E5E5"] {
-        fill: hsl(225, 10%, 28%) !important;
+        fill: var(--bio-border-subtle);
       }
 
       /* cursor stroke lines (originally stroke="#000") */
       [stroke="#000"] {
-        stroke: hsl(225, 10%, 80%) !important;
+        stroke: var(--bio-icon);
       }
     }
   }

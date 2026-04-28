@@ -92,7 +92,7 @@
 /* Dark theme overrides */
 :global(:root[data-theme="dark"]) :local(.ProcessApplicationsButton) {
   svg path {
-    fill: hsl(225, 10%, 75%) !important;
+    fill: var(--bio-icon) !important;
   }
 
   &.has-process-application {
@@ -103,21 +103,21 @@
 }
 
 :global(:root[data-theme="dark"]) :local(.ProcessApplicationsOverlay) {
-  background-color: hsl(225, 10%, 18%);
-  border-color: hsl(225, 10%, 30%);
-  color: hsl(225, 10%, 85%);
+  background-color: var(--bio-surface-1);
+  border-color: var(--bio-border);
+  color: var(--bio-text-primary);
 
   .section__body {
     a, button {
-      color: hsl(225, 10%, 80%);
+      color: var(--bio-icon);
 
       &:hover {
-        background-color: hsl(225, 10%, 25%);
+        background-color: var(--bio-surface-4);
       }
     }
   }
 
   ul.files li.file button {
-    color: hsl(225, 10%, 75%);
+    color: var(--bio-icon);
   }
 }

@@ -138,35 +138,35 @@
 
 /* Dark theme overrides for Welcome page */
 :global(:root[data-theme="dark"]) :local(.EmptyTab) {
-  background-color: hsl(225, 10%, 14%);
+  background-color: var(--bio-background);
 
   h2.welcome-header {
-    color: hsl(225, 10%, 85%);
+    color: var(--bio-text-primary);
   }
 
   .welcome-card {
-    background-color: hsl(225, 10%, 20%);
-    color: hsl(225, 10%, 85%);
-    border: 1px solid hsl(225, 10%, 28%);
+    background-color: var(--bio-surface-2);
+    color: var(--bio-text-primary);
+    border: 1px solid var(--bio-border-subtle);
 
     h3 {
-      color: hsl(225, 10%, 85%);
+      color: var(--bio-text-primary);
     }
 
     p {
-      color: hsl(225, 10%, 70%);
+      color: var(--bio-text-secondary);
     }
 
     a {
-      color: hsl(205, 100%, 65%);
+      color: var(--bio-accent);
     }
 
     .engine-icon {
-      color: hsl(225, 10%, 60%);
+      color: var(--bio-text-muted);
     }
 
     .learn-more .top {
-      border-bottom-color: hsl(225, 10%, 30%);
+      border-bottom-color: var(--bio-border);
     }
   }
 }
