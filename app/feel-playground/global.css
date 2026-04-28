@@ -1,0 +1,72 @@
+* {
+  box-sizing: border-box;
+
+  --gutter: 1rem;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+
+  margin: 0;
+
+  font-family: sans-serif;
+}
+
+.btn {
+  display: inline-flex;
+  padding: 0.275rem 0.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #333;
+  background: #EEE;
+  border: 1px solid #EEE;
+  border-radius: .5em;
+
+  cursor: pointer;
+}
+
+a.btn {
+  text-decoration: none;
+}
+
+.btn:hover,
+.btn:focus {
+  background: #DFDFDF;
+}
+
+.btn-none {
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.hcontainer,
+.vcontainer {
+  display: flex;
+  align-self: stretch;
+  flex: 1;
+
+  overflow: hidden;
+}
+
+.vcontainer {
+  flex-direction: column;
+}
+
+.hcontainer {
+  flex-direction: row;
+}
+
+.container {
+  margin: calc(var(--gutter) * .5);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.container .content {
+  flex: 1;
+  align-self: stretch;
+}

@@ -1,0 +1,20 @@
+{
+  "short_name": "FEEL Playground",
+  "name": "FEEL Playground",
+  "icons": [
+    {
+      "src": "./logo-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "./logo-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "background_color": "#4682b4",
+  "display": "standalone",
+  "theme_color": "#4682b4"
+}
