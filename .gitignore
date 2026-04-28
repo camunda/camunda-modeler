@@ -9,3 +9,10 @@ coverage
 .nyc_output
 .linked-dependencies
 tmp
+
+# Local Claude / superpowers tooling and prototype-plan artifacts —
+# these don't belong to the modeler repo.
+.claude/
+.superpowers/
+/docs/superpowers/
+/PROTOTYPE-PLAN-*.md
