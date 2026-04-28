@@ -1,9 +1,20 @@
 # Camunda Modeler — Prototype Context
 
-## Active Prototype: Guided Start Experience
+## Active Prototype: Intent-Driven Modeling with Connectors
 
-Branch: `prototype/guided-start-experience`
-Epic: fetch live details with `gh issue view <number> --repo camunda/product-hub` (search for "Guided Start Experience")
+Branch: `prototype/intent-driven-with-connectors` (stacked on `prototype/left-rail-revamp`)
+Plan: `PROTOTYPE-PLAN-connectors-context.md` (gitignored, lives on this branch)
+Goal: bring the modeling-relevant slices of the Connectors team's Native Operations ([#3403](https://github.com/camunda/product-hub/issues/3403)) and Connections ([#3396](https://github.com/camunda/product-hub/issues/3396)) prototypes into Desktop Modeler, composed with IDM's existing guided-append and Validate work.
+Adds:
+- `client/src/app/tabs/cloud-bpmn/connectors-context/` — Synonym Index, Connection store, Connection card/picker, searchable Operation selector, Configure/Validate header toggle
+- `resources/element-templates/connectors-context/` — connector templates with curated keywords + per-operation synonyms
+- Extends existing `guided-append` panel with a Connectors → Operation Groups → Operations drilldown
+- Configure/Validate `ContentSwitcher` in the properties panel chrome (Validate routes to existing Task Tester unchanged)
+
+## Earlier Prototypes (for reference)
+
+- `prototype/guided-start-experience` — guided-start input above the empty canvas (epic: search "Guided Start Experience" in product-hub)
+- `prototype/left-rail-revamp` — current base; ships the guided-append panel and ValidateSession infrastructure
 
 ## Camunda 8 vs Camunda 7
 
