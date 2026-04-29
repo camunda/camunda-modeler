@@ -19,6 +19,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const pLimit = require('p-limit');
 const semver = require('semver');
 
 const log = require('../log')('app:template-updater:util');
@@ -104,7 +105,7 @@ async function fetchAndUpdateTemplates(templates, executionPlatformVersion, url)
   let updatedTemplates = [ ...templates ],
       warnings = [];
 
-  let response = await fetch(url);
+  const response = await fetch(url);
 
   if (!response.ok) {
     log.warn(`Failed to fetch templates from ${ url } (HTTP ${ response.status })`);
@@ -123,6 +124,8 @@ async function fetchAndUpdateTemplates(templates, executionPlatformVersion, url)
     incompatible: 0,
     error: 0
   };
+
+  const toFetch = [];
 
   for (const id in templatesByIdMetadata) {
     const templatesMetadata = templatesByIdMetadata[ id ];
@@ -146,46 +149,64 @@ async function fetchAndUpdateTemplates(templates, executionPlatformVersion, url)
         continue;
       }
 
-      const { ref } = templateMetadata;
-
-      response = await fetch(ref);
-
-      if (!response.ok) {
-        log.warn(`Failed to fetch template ${ id } version ${ templateMetadata.version } from ${ ref } (HTTP ${ response.status })`);
-
-        stats.error++;
-
-        warnings.push(`Failed to fetch template ${ id } version ${ templateMetadata.version } from ${ ref } (HTTP ${ response.status })`);
-
-        continue;
-      }
-
-      const templateText = await response.text();
-
-      try {
-        let templateJson = JSON.parse(templateText);
-
-        templateJson = cacheRef(templateJson, templateMetadata);
-
-        const existingIndex = updatedTemplates.findIndex(t => t.id === templateJson.id && t.version === templateJson.version);
-
-        if (existingIndex !== -1) {
-          updatedTemplates[existingIndex] = templateJson;
-        } else {
-          updatedTemplates.push(templateJson);
-        }
-
-        stats.fetched++;
-
-        log.info(`Fetched template ${ id } version ${ templateMetadata.version } from ${ ref }`);
-      } catch (error) {
-        log.warn(`Failed to parse template ${ id } version ${ templateMetadata.version } fetched from ${ ref }`, error);
-
-        stats.error++;
-
-        warnings.push(`Failed to parse template ${ id } version ${ templateMetadata.version } fetched from ${ ref }: ${ error.message }`);
-      }
+      toFetch.push({ id, templateMetadata });
     }
+  }
+
+  const MAX_CONCURRENT_FETCHES = 6;
+
+  const limit = pLimit(MAX_CONCURRENT_FETCHES);
+
+  const results = await Promise.all(
+    toFetch.map(({ id, templateMetadata }) =>
+      limit(async () => {
+        try {
+          const res = await fetch(templateMetadata.ref);
+
+          if (!res.ok) {
+            return { id, templateMetadata, error: `HTTP ${ res.status }` };
+          }
+
+          const text = await res.text();
+
+          const templateJson = cacheRef(JSON.parse(text), templateMetadata);
+
+          return { id, templateMetadata, templateJson };
+        } catch (error) {
+          return { id, templateMetadata, error: error.message };
+        }
+      })
+    )
+  );
+
+  for (const result of results) {
+    const { id, templateMetadata } = result;
+
+    const { ref } = templateMetadata;
+
+    if (result.error) {
+      log.warn(`Failed to fetch or parse template ${ id } version ${ templateMetadata.version } from ${ ref } (${ result.error })`);
+
+      stats.error++;
+
+      warnings.push(`Failed to fetch or parse template ${ id } version ${ templateMetadata.version } from ${ ref } (${ result.error })`);
+
+      continue;
+    }
+
+    const { templateJson } = result;
+
+    const existingIndex = updatedTemplates.findIndex(t => t.id === templateJson.id && t.version === templateJson.version);
+
+    if (existingIndex !== -1) {
+      updatedTemplates[existingIndex] = templateJson;
+    } else {
+      updatedTemplates.push(templateJson);
+    }
+
+    stats.fetched++;
+
+    log.info(`Fetched template ${ id } version ${ templateMetadata.version } from ${ ref }`);
   }
 
   log.info(`Fetched ${ stats.fetched } templates from ${ url }, cached: ${ stats.cached }, incompatible: ${ stats.incompatible }, warnings: ${ warnings.length }, error: ${ stats.error }`);
