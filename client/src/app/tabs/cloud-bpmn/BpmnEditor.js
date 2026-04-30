@@ -888,6 +888,7 @@ export class BpmnEditor extends CachedComponent {
       file,
       id,
       layout,
+      linting,
       onAction,
       startInstance,
       zeebeApi
@@ -960,6 +961,7 @@ export class BpmnEditor extends CachedComponent {
                       id={ id }
                       injector={ injector }
                       layout={ layout }
+                      linting={ linting }
                       onAction={ onAction }
                       startInstance={ startInstance }
                       zeebeApi={ zeebeApi }
