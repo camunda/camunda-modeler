@@ -13,155 +13,155 @@ This project incorporates components from the projects listed below. The origina
 6.    @opentelemetry/instrumentation@0.203.0 (git+https://github.com/open-telemetry/opentelemetry-js.git)
 7.    @opentelemetry/api-logs@0.203.0 (open-telemetry/opentelemetry-js)
 8.    require-in-the-middle@7.3.0 (git+https://github.com/elastic/require-in-the-middle.git)
-9.    resolve@1.22.4 (git://github.com/browserify/resolve.git)
-10.   path-parse@1.0.7 (https://github.com/jbgutierrez/path-parse.git)
-11.   is-core-module@2.15.1 (git+https://github.com/inspect-js/is-core-module.git)
-12.   hasown@2.0.2 (git+https://github.com/inspect-js/hasOwn.git)
-13.   function-bind@1.1.2 (https://github.com/Raynos/function-bind.git)
-14.   debug@4.3.7 (git://github.com/debug-js/debug.git)
-15.   ms@2.1.3 (vercel/ms)
-16.   supports-color@5.5.0 (chalk/supports-color)
-17.   has-flag@3.0.0 (sindresorhus/has-flag)
-18.   module-details-from-path@1.0.3 (git+https://github.com/watson/module-details-from-path.git)
-19.   import-in-the-middle@1.14.2 (git+ssh://git@github.com/nodejs/import-in-the-middle.git)
-20.   forwarded-parse@2.1.2 (lpinca/forwarded-parse)
-21.   @sentry/core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
-22.   @sentry/node-core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
-23.   @sentry/opentelemetry@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
-24.   @opentelemetry/sdk-trace-base@2.0.1 (open-telemetry/opentelemetry-js)
-25.   @opentelemetry/resources@2.0.1 (open-telemetry/opentelemetry-js)
-26.   @opentelemetry/context-async-hooks@2.0.1 (open-telemetry/opentelemetry-js)
-27.   @opentelemetry/instrumentation-undici@0.14.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-28.   @opentelemetry/instrumentation-fs@0.23.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-29.   @opentelemetry/instrumentation-express@0.52.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-30.   minimatch@9.0.5 (git://github.com/isaacs/minimatch.git)
-31.   brace-expansion@2.0.2 (git://github.com/juliangruber/brace-expansion.git)
-32.   balanced-match@1.0.0 (git://github.com/juliangruber/balanced-match.git)
-33.   @opentelemetry/instrumentation-graphql@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-34.   @opentelemetry/instrumentation-kafkajs@0.13.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-35.   @opentelemetry/instrumentation-lru-memoizer@0.48.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-36.   @opentelemetry/instrumentation-mongodb@0.56.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-37.   @opentelemetry/instrumentation-mongoose@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-38.   @opentelemetry/instrumentation-mysql@0.49.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-39.   @opentelemetry/instrumentation-mysql2@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-40.   @opentelemetry/sql-common@0.41.0 (open-telemetry/opentelemetry-js-contrib)
-41.   @opentelemetry/instrumentation-ioredis@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-42.   @opentelemetry/redis-common@0.38.0 (open-telemetry/opentelemetry-js-contrib)
-43.   @opentelemetry/instrumentation-redis@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-44.   @opentelemetry/instrumentation-pg@0.55.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-45.   @prisma/instrumentation@6.14.0 (https://github.com/prisma/prisma.git)
-46.   semver@7.7.1 (git+https://github.com/npm/node-semver.git)
-47.   shimmer@1.2.1 (https://github.com/othiym23/shimmer.git)
-48.   @opentelemetry/instrumentation-hapi@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-49.   @opentelemetry/instrumentation-koa@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-50.   @opentelemetry/instrumentation-connect@0.47.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-51.   @opentelemetry/instrumentation-knex@0.48.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-52.   @opentelemetry/instrumentation-tedious@0.22.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-53.   @opentelemetry/instrumentation-generic-pool@0.47.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-54.   @opentelemetry/instrumentation-dataloader@0.21.1 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-55.   @opentelemetry/instrumentation-amqplib@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
-56.   @camunda8/sdk@8.7.28 (git+https://github.com/camunda/camunda-8-js-sdk.git)
-57.   got@11.8.6 (sindresorhus/got)
-58.   @sindresorhus/is@4.6.0 (sindresorhus/is)
-59.   p-cancelable@2.1.1 (sindresorhus/p-cancelable)
-60.   @szmarczak/http-timer@4.0.6 (git+https://github.com/szmarczak/http-timer.git)
-61.   defer-to-connect@2.0.1 (git+https://github.com/szmarczak/defer-to-connect.git)
-62.   cacheable-lookup@5.0.4 (git+https://github.com/szmarczak/cacheable-lookup.git)
-63.   cacheable-request@7.0.2 (lukechilds/cacheable-request)
-64.   normalize-url@6.1.0 (sindresorhus/normalize-url)
-65.   get-stream@5.2.0 (sindresorhus/get-stream)
-66.   pump@3.0.0 (git://github.com/mafintosh/pump.git)
-67.   once@1.4.0 (git://github.com/isaacs/once)
-68.   wrappy@1.0.2 (https://github.com/npm/wrappy)
-69.   end-of-stream@1.4.1 (git://github.com/mafintosh/end-of-stream.git)
-70.   http-cache-semantics@4.1.1 (https://github.com/kornelski/http-cache-semantics.git)
-71.   responselike@2.0.1 (https://github.com/sindresorhus/responselike.git)
-72.   lowercase-keys@2.0.0 (sindresorhus/lowercase-keys)
-73.   clone-response@1.0.3 (git+https://github.com/sindresorhus/clone-response.git)
-74.   mimic-response@1.0.1 (sindresorhus/mimic-response)
-75.   keyv@4.5.4 (git+https://github.com/jaredwray/keyv.git)
-76.   json-buffer@3.0.1 (git://github.com/dominictarr/json-buffer.git)
-77.   decompress-response@6.0.0 (sindresorhus/decompress-response)
-78.   http2-wrapper@1.0.3 (git+https://github.com/szmarczak/http2-wrapper.git)
-79.   quick-lru@5.1.1 (sindresorhus/quick-lru)
-80.   resolve-alpn@1.2.1 (git+https://github.com/szmarczak/resolve-alpn.git)
-81.   lodash.mergewith@4.6.2 (lodash/lodash)
-82.   typed-env@2.0.0 (git+https://github.com/itslukej/typed-env.git)
-83.   jwt-decode@4.0.0 (git://github.com/auth0/jwt-decode)
-84.   winston@3.17.0 (https://github.com/winstonjs/winston.git)
-85.   logform@2.7.0 (git+https://github.com/winstonjs/logform.git)
-86.   @colors/colors@1.6.0 (http://github.com/DABH/colors.js.git)
-87.   triple-beam@1.4.1 (git+https://github.com/winstonjs/triple-beam.git)
-88.   safe-stable-stringify@2.5.0 (git+https://github.com/BridgeAR/safe-stable-stringify.git)
-89.   fecha@4.2.3 (https://taylorhakes@github.com/taylorhakes/fecha.git)
-90.   winston-transport@4.9.0 (git@github.com:winstonjs/winston-transport.git)
-91.   readable-stream@3.6.2 (git://github.com/nodejs/readable-stream)
-92.   util-deprecate@1.0.2 (git://github.com/TooTallNate/util-deprecate.git)
-93.   inherits@2.0.4 (git://github.com/isaacs/inherits)
-94.   string_decoder@1.3.0 (git://github.com/nodejs/string_decoder.git)
-95.   safe-buffer@5.2.1 (git://github.com/feross/safe-buffer.git)
-96.   async@3.2.4 (https://github.com/caolan/async.git)
-97.   @dabh/diagnostics@2.0.3 (git://github.com/3rd-Eden/diagnostics.git)
-98.   colorspace@1.1.4 (https://github.com/3rd-Eden/colorspace)
-99.   color@3.2.1 (Qix-/color)
-100.  color-string@1.9.1 (Qix-/color-string)
-101.  color-name@1.1.3 (git@github.com:dfcreative/color-name.git)
-102.  simple-swizzle@0.2.2 (qix-/node-simple-swizzle)
-103.  is-arrayish@0.3.2 (https://github.com/qix-/node-is-arrayish.git)
-104.  color-convert@1.9.3 (Qix-/color-convert)
-105.  text-hex@1.0.0 (https://github.com/3rd-Eden/text-hex)
-106.  kuler@2.0.0 (https://github.com/3rd-Eden/kuler)
-107.  enabled@2.0.0 (git://github.com/3rd-Eden/enabled.git)
-108.  is-stream@2.0.1 (sindresorhus/is-stream)
-109.  one-time@1.0.0 (https://github.com/3rd-Eden/one-time.git)
-110.  fn.name@1.1.0 (https://github.com/3rd-Eden/fn.name)
-111.  stack-trace@0.0.10 (git://github.com/felixge/node-stack-trace.git)
-112.  win-ca@3.5.1 (git+https://github.com/ukoloff/win-ca.git)
-113.  is-electron@2.2.2 (git@github.com:cheton/is-electron.git)
-114.  node-forge@1.3.3 (https://github.com/digitalbazaar/forge)
-115.  split@1.0.1 (git://github.com/dominictarr/split.git)
-116.  through@2.3.8 (https://github.com/dominictarr/through.git)
-117.  make-dir@1.3.0 (sindresorhus/make-dir)
-118.  pify@3.0.0 (sindresorhus/pify)
-119.  lossless-json@4.0.2 (https://github.com/josdejong/lossless-json.git)
-120.  reflect-metadata@0.2.2 (https://github.com/rbuckton/reflect-metadata.git)
-121.  typed-duration@1.0.13 (git+https://github.com/jwulf/typed-duration.git)
-122.  fast-xml-parser@4.2.7 (https://github.com/NaturalIntelligence/fast-xml-parser)
-123.  strnum@1.0.5 (https://github.com/NaturalIntelligence/strnum)
-124.  dayjs@1.11.5 (https://github.com/iamkun/dayjs.git)
-125.  chalk@2.4.2 (chalk/chalk)
-126.  escape-string-regexp@1.0.5 (sindresorhus/escape-string-regexp)
-127.  ansi-styles@3.2.1 (chalk/ansi-styles)
-128.  uuid@7.0.3 (https://github.com/uuidjs/uuid.git)
-129.  promise-retry@1.1.1 (git://github.com/IndigoUnited/node-promise-retry.git)
-130.  err-code@1.1.2 (git://github.com/IndigoUnited/js-err-code.git)
-131.  retry@0.10.1 (git://github.com/tim-kos/node-retry.git)
-132.  @grpc/grpc-js@1.12.5 (https://github.com/grpc/grpc-node/tree/master/packages/grpc-js)
-133.  @js-sdsl/ordered-map@4.4.2 (https://github.com/js-sdsl/js-sdsl.git)
-134.  @grpc/proto-loader@0.7.13 (https://github.com/grpc/grpc-node.git)
-135.  lodash.camelcase@4.3.0 (lodash/lodash)
-136.  protobufjs@7.2.5 (protobufjs/protobuf.js)
-137.  @protobufjs/aspromise@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
-138.  @protobufjs/base64@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
-139.  @protobufjs/eventemitter@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-140.  @protobufjs/float@1.0.2 (https://github.com/dcodeIO/protobuf.js.git)
-141.  @protobufjs/inquire@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-142.  @protobufjs/utf8@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-143.  @protobufjs/pool@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-144.  @protobufjs/codegen@2.0.4 (https://github.com/dcodeIO/protobuf.js.git)
-145.  @protobufjs/fetch@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
-146.  @protobufjs/path@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
-147.  long@5.2.4 (https://github.com/dcodeIO/long.js.git)
-148.  form-data@4.0.5 (git://github.com/form-data/form-data.git)
-149.  combined-stream@1.0.8 (git://github.com/felixge/node-combined-stream.git)
-150.  delayed-stream@1.0.0 (git://github.com/felixge/node-delayed-stream.git)
-151.  mime-types@2.1.35 (jshttp/mime-types)
-152.  mime-db@1.52.0 (jshttp/mime-db)
-153.  asynckit@0.4.0 (git+https://github.com/alexindigo/asynckit.git)
-154.  es-set-tostringtag@2.1.0 (git+https://github.com/es-shims/es-set-tostringtag.git)
-155.  get-intrinsic@1.3.0 (git+https://github.com/ljharb/get-intrinsic.git)
-156.  es-object-atoms@1.1.1 (git+https://github.com/ljharb/es-object-atoms.git)
-157.  es-errors@1.3.0 (git+https://github.com/ljharb/es-errors.git)
+9.    resolve@1.22.12 (ssh://github.com/browserify/resolve.git)
+10.   es-errors@1.3.0 (git+https://github.com/ljharb/es-errors.git)
+11.   path-parse@1.0.7 (https://github.com/jbgutierrez/path-parse.git)
+12.   is-core-module@2.16.1 (git+https://github.com/inspect-js/is-core-module.git)
+13.   hasown@2.0.2 (git+https://github.com/inspect-js/hasOwn.git)
+14.   function-bind@1.1.2 (https://github.com/Raynos/function-bind.git)
+15.   debug@4.4.3 (git://github.com/debug-js/debug.git)
+16.   ms@2.1.3 (vercel/ms)
+17.   supports-color@5.5.0 (chalk/supports-color)
+18.   has-flag@3.0.0 (sindresorhus/has-flag)
+19.   module-details-from-path@1.0.3 (git+https://github.com/watson/module-details-from-path.git)
+20.   import-in-the-middle@1.14.2 (git+ssh://git@github.com/nodejs/import-in-the-middle.git)
+21.   forwarded-parse@2.1.2 (lpinca/forwarded-parse)
+22.   @sentry/core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+23.   @sentry/node-core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+24.   @sentry/opentelemetry@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+25.   @opentelemetry/sdk-trace-base@2.0.1 (open-telemetry/opentelemetry-js)
+26.   @opentelemetry/resources@2.0.1 (open-telemetry/opentelemetry-js)
+27.   @opentelemetry/context-async-hooks@2.0.1 (open-telemetry/opentelemetry-js)
+28.   @opentelemetry/instrumentation-undici@0.14.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+29.   @opentelemetry/instrumentation-fs@0.23.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+30.   @opentelemetry/instrumentation-express@0.52.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+31.   minimatch@9.0.9 (git://github.com/isaacs/minimatch.git)
+32.   brace-expansion@2.1.0 (git://github.com/juliangruber/brace-expansion.git)
+33.   balanced-match@1.0.0 (git://github.com/juliangruber/balanced-match.git)
+34.   @opentelemetry/instrumentation-graphql@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+35.   @opentelemetry/instrumentation-kafkajs@0.13.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+36.   @opentelemetry/instrumentation-lru-memoizer@0.48.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+37.   @opentelemetry/instrumentation-mongodb@0.56.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+38.   @opentelemetry/instrumentation-mongoose@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+39.   @opentelemetry/instrumentation-mysql@0.49.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+40.   @opentelemetry/instrumentation-mysql2@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+41.   @opentelemetry/sql-common@0.41.0 (open-telemetry/opentelemetry-js-contrib)
+42.   @opentelemetry/instrumentation-ioredis@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+43.   @opentelemetry/redis-common@0.38.0 (open-telemetry/opentelemetry-js-contrib)
+44.   @opentelemetry/instrumentation-redis@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+45.   @opentelemetry/instrumentation-pg@0.55.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+46.   @prisma/instrumentation@6.14.0 (https://github.com/prisma/prisma.git)
+47.   semver@7.7.4 (git+https://github.com/npm/node-semver.git)
+48.   shimmer@1.2.1 (https://github.com/othiym23/shimmer.git)
+49.   @opentelemetry/instrumentation-hapi@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+50.   @opentelemetry/instrumentation-koa@0.51.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+51.   @opentelemetry/instrumentation-connect@0.47.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+52.   @opentelemetry/instrumentation-knex@0.48.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+53.   @opentelemetry/instrumentation-tedious@0.22.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+54.   @opentelemetry/instrumentation-generic-pool@0.47.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+55.   @opentelemetry/instrumentation-dataloader@0.21.1 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+56.   @opentelemetry/instrumentation-amqplib@0.50.0 (https://github.com/open-telemetry/opentelemetry-js-contrib.git)
+57.   @camunda8/sdk@8.7.28 (git+https://github.com/camunda/camunda-8-js-sdk.git)
+58.   got@11.8.6 (sindresorhus/got)
+59.   @sindresorhus/is@4.6.0 (sindresorhus/is)
+60.   p-cancelable@2.1.1 (sindresorhus/p-cancelable)
+61.   @szmarczak/http-timer@4.0.6 (git+https://github.com/szmarczak/http-timer.git)
+62.   defer-to-connect@2.0.1 (git+https://github.com/szmarczak/defer-to-connect.git)
+63.   cacheable-lookup@5.0.4 (git+https://github.com/szmarczak/cacheable-lookup.git)
+64.   cacheable-request@7.0.2 (lukechilds/cacheable-request)
+65.   normalize-url@6.1.0 (sindresorhus/normalize-url)
+66.   get-stream@5.2.0 (sindresorhus/get-stream)
+67.   pump@3.0.0 (git://github.com/mafintosh/pump.git)
+68.   once@1.4.0 (git://github.com/isaacs/once)
+69.   wrappy@1.0.2 (https://github.com/npm/wrappy)
+70.   end-of-stream@1.4.1 (git://github.com/mafintosh/end-of-stream.git)
+71.   http-cache-semantics@4.1.1 (https://github.com/kornelski/http-cache-semantics.git)
+72.   responselike@2.0.1 (https://github.com/sindresorhus/responselike.git)
+73.   lowercase-keys@2.0.0 (sindresorhus/lowercase-keys)
+74.   clone-response@1.0.3 (git+https://github.com/sindresorhus/clone-response.git)
+75.   mimic-response@1.0.1 (sindresorhus/mimic-response)
+76.   keyv@4.5.4 (git+https://github.com/jaredwray/keyv.git)
+77.   json-buffer@3.0.1 (git://github.com/dominictarr/json-buffer.git)
+78.   decompress-response@6.0.0 (sindresorhus/decompress-response)
+79.   http2-wrapper@1.0.3 (git+https://github.com/szmarczak/http2-wrapper.git)
+80.   quick-lru@5.1.1 (sindresorhus/quick-lru)
+81.   resolve-alpn@1.2.1 (git+https://github.com/szmarczak/resolve-alpn.git)
+82.   lodash.mergewith@4.6.2 (lodash/lodash)
+83.   typed-env@2.0.0 (git+https://github.com/itslukej/typed-env.git)
+84.   jwt-decode@4.0.0 (git://github.com/auth0/jwt-decode)
+85.   winston@3.17.0 (https://github.com/winstonjs/winston.git)
+86.   logform@2.7.0 (git+https://github.com/winstonjs/logform.git)
+87.   @colors/colors@1.6.0 (http://github.com/DABH/colors.js.git)
+88.   triple-beam@1.4.1 (git+https://github.com/winstonjs/triple-beam.git)
+89.   safe-stable-stringify@2.5.0 (git+https://github.com/BridgeAR/safe-stable-stringify.git)
+90.   fecha@4.2.3 (https://taylorhakes@github.com/taylorhakes/fecha.git)
+91.   winston-transport@4.9.0 (git@github.com:winstonjs/winston-transport.git)
+92.   readable-stream@3.6.2 (git://github.com/nodejs/readable-stream)
+93.   util-deprecate@1.0.2 (git://github.com/TooTallNate/util-deprecate.git)
+94.   inherits@2.0.4 (git://github.com/isaacs/inherits)
+95.   string_decoder@1.3.0 (git://github.com/nodejs/string_decoder.git)
+96.   safe-buffer@5.2.1 (git://github.com/feross/safe-buffer.git)
+97.   async@3.2.4 (https://github.com/caolan/async.git)
+98.   @dabh/diagnostics@2.0.3 (git://github.com/3rd-Eden/diagnostics.git)
+99.   colorspace@1.1.4 (https://github.com/3rd-Eden/colorspace)
+100.  color@3.2.1 (Qix-/color)
+101.  color-string@1.9.1 (Qix-/color-string)
+102.  color-name@1.1.3 (git@github.com:dfcreative/color-name.git)
+103.  simple-swizzle@0.2.2 (qix-/node-simple-swizzle)
+104.  is-arrayish@0.3.2 (https://github.com/qix-/node-is-arrayish.git)
+105.  color-convert@1.9.3 (Qix-/color-convert)
+106.  text-hex@1.0.0 (https://github.com/3rd-Eden/text-hex)
+107.  kuler@2.0.0 (https://github.com/3rd-Eden/kuler)
+108.  enabled@2.0.0 (git://github.com/3rd-Eden/enabled.git)
+109.  is-stream@2.0.1 (sindresorhus/is-stream)
+110.  one-time@1.0.0 (https://github.com/3rd-Eden/one-time.git)
+111.  fn.name@1.1.0 (https://github.com/3rd-Eden/fn.name)
+112.  stack-trace@0.0.10 (git://github.com/felixge/node-stack-trace.git)
+113.  win-ca@3.5.1 (git+https://github.com/ukoloff/win-ca.git)
+114.  is-electron@2.2.2 (git@github.com:cheton/is-electron.git)
+115.  node-forge@1.3.3 (https://github.com/digitalbazaar/forge)
+116.  split@1.0.1 (git://github.com/dominictarr/split.git)
+117.  through@2.3.8 (https://github.com/dominictarr/through.git)
+118.  make-dir@1.3.0 (sindresorhus/make-dir)
+119.  pify@3.0.0 (sindresorhus/pify)
+120.  lossless-json@4.0.2 (https://github.com/josdejong/lossless-json.git)
+121.  reflect-metadata@0.2.2 (https://github.com/rbuckton/reflect-metadata.git)
+122.  typed-duration@1.0.13 (git+https://github.com/jwulf/typed-duration.git)
+123.  fast-xml-parser@4.2.7 (https://github.com/NaturalIntelligence/fast-xml-parser)
+124.  strnum@1.0.5 (https://github.com/NaturalIntelligence/strnum)
+125.  dayjs@1.11.5 (https://github.com/iamkun/dayjs.git)
+126.  chalk@2.4.2 (chalk/chalk)
+127.  escape-string-regexp@1.0.5 (sindresorhus/escape-string-regexp)
+128.  ansi-styles@3.2.1 (chalk/ansi-styles)
+129.  uuid@7.0.3 (https://github.com/uuidjs/uuid.git)
+130.  promise-retry@1.1.1 (git://github.com/IndigoUnited/node-promise-retry.git)
+131.  err-code@1.1.2 (git://github.com/IndigoUnited/js-err-code.git)
+132.  retry@0.10.1 (git://github.com/tim-kos/node-retry.git)
+133.  @grpc/grpc-js@1.12.5 (https://github.com/grpc/grpc-node/tree/master/packages/grpc-js)
+134.  @js-sdsl/ordered-map@4.4.2 (https://github.com/js-sdsl/js-sdsl.git)
+135.  @grpc/proto-loader@0.7.13 (https://github.com/grpc/grpc-node.git)
+136.  lodash.camelcase@4.3.0 (lodash/lodash)
+137.  protobufjs@7.2.5 (protobufjs/protobuf.js)
+138.  @protobufjs/aspromise@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
+139.  @protobufjs/base64@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
+140.  @protobufjs/eventemitter@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+141.  @protobufjs/float@1.0.2 (https://github.com/dcodeIO/protobuf.js.git)
+142.  @protobufjs/inquire@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+143.  @protobufjs/utf8@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+144.  @protobufjs/pool@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+145.  @protobufjs/codegen@2.0.4 (https://github.com/dcodeIO/protobuf.js.git)
+146.  @protobufjs/fetch@1.1.0 (https://github.com/dcodeIO/protobuf.js.git)
+147.  @protobufjs/path@1.1.2 (https://github.com/dcodeIO/protobuf.js.git)
+148.  long@5.2.4 (https://github.com/dcodeIO/long.js.git)
+149.  form-data@4.0.5 (git://github.com/form-data/form-data.git)
+150.  combined-stream@1.0.8 (git://github.com/felixge/node-combined-stream.git)
+151.  delayed-stream@1.0.0 (git://github.com/felixge/node-delayed-stream.git)
+152.  mime-types@2.1.35 (jshttp/mime-types)
+153.  mime-db@1.52.0 (jshttp/mime-db)
+154.  asynckit@0.4.0 (git+https://github.com/alexindigo/asynckit.git)
+155.  es-set-tostringtag@2.1.0 (git+https://github.com/es-shims/es-set-tostringtag.git)
+156.  get-intrinsic@1.3.0 (git+https://github.com/ljharb/get-intrinsic.git)
+157.  es-object-atoms@1.1.1 (git+https://github.com/ljharb/es-object-atoms.git)
 158.  math-intrinsics@1.1.0 (git+https://github.com/es-shims/math-intrinsics.git)
 159.  gopd@1.2.0 (git+https://github.com/ljharb/gopd.git)
 160.  es-define-property@1.0.1 (git+https://github.com/ljharb/es-define-property.git)
@@ -174,7 +174,7 @@ This project incorporates components from the projects listed below. The origina
 167.  min-dash@5.0.0 (git+https://github.com/bpmn-io/min-dash.git)
 168.  parents@1.0.1 (git://github.com/substack/node-parents.git)
 169.  path-platform@0.11.15 (http://github.com/tjfontaine/node-path-platform.git)
-170.  fast-glob@3.3.2 (mrmlnc/fast-glob)
+170.  fast-glob@3.3.3 (mrmlnc/fast-glob)
 171.  glob-parent@5.1.2 (gulpjs/glob-parent)
 172.  is-glob@4.0.3 (micromatch/is-glob)
 173.  is-extglob@2.1.1 (jonschlinkert/is-extglob)
@@ -183,7 +183,7 @@ This project incorporates components from the projects listed below. The origina
 176.  fill-range@7.1.1 (jonschlinkert/fill-range)
 177.  to-regex-range@5.0.1 (micromatch/to-regex-range)
 178.  is-number@7.0.0 (jonschlinkert/is-number)
-179.  picomatch@2.3.1 (micromatch/picomatch)
+179.  picomatch@2.3.2 (micromatch/picomatch)
 180.  merge2@1.4.1 (git@github.com:teambition/merge2.git)
 181.  @nodelib/fs.walk@1.2.8 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk)
 182.  @nodelib/fs.scandir@2.1.5 (https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir)
@@ -192,209 +192,211 @@ This project incorporates components from the projects listed below. The origina
 185.  queue-microtask@1.2.3 (git://github.com/feross/queue-microtask.git)
 186.  fastq@1.13.0 (git+https://github.com/mcollina/fastq.git)
 187.  reusify@1.0.4 (git+https://github.com/mcollina/reusify.git)
-188.  chokidar@5.0.0 (git+https://github.com/paulmillr/chokidar.git)
-189.  readdirp@5.0.0 (https://github.com/paulmillr/readdirp.git)
-190.  bpmn-moddle@10.0.0 (https://github.com/bpmn-io/bpmn-moddle)
-191.  moddle@8.0.0 (https://github.com/bpmn-io/moddle)
-192.  moddle-xml@12.0.0 (https://github.com/bpmn-io/moddle-xml)
-193.  saxen@11.0.2 (https://github.com/nikku/saxen)
-194.  zeebe-bpmn-moddle@1.12.0 (https://github.com/camunda/zeebe-bpmn-moddle)
-195.  dmn-moddle@12.0.1 (https://github.com/bpmn-io/dmn-moddle)
-196.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
-197.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
-198.  localforage@1.10.0 (git://github.com/localForage/localForage.git)
-199.  epipebomb@1.0.0 (git://github.com/mhart/epipebomb.git)
-200.  monaco-editor@0.51.0 (https://github.com/microsoft/monaco-editor)
-201.  style-loader@4.0.0 (webpack-contrib/style-loader)
-202.  css-loader@7.1.4 (webpack/css-loader)
-203.  @carbon/styles@1.100.0 (https://github.com/carbon-design-system/carbon.git)
-204.  @camunda/form-playground@0.24.0 (git+https://github.com/camunda/form-playground.git)
-205.  camunda-bpmn-js@5.26.0 (https://github.com/camunda/camunda-bpmn-js)
-206.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
-207.  camunda-dmn-js@3.7.0 (https://github.com/camunda/camunda-dmn-js)
-208.  @camunda/linting@3.48.1 (https://github.com/camunda/linting)
-209.  min-dash@5.0.0 (git+https://github.com/bpmn-io/min-dash.git)
-210.  react@18.3.1 (https://github.com/facebook/react.git)
-211.  classnames@2.5.1 (git+https://github.com/JedWatson/classnames.git)
-212.  react-dom@18.3.1 (https://github.com/facebook/react.git)
-213.  scheduler@0.23.2 (https://github.com/facebook/react.git)
-214.  @carbon/react@1.101.0 (https://github.com/carbon-design-system/carbon.git)
-215.  @carbon/feature-flags@1.0.0 (https://github.com/carbon-design-system/carbon.git)
-216.  prop-types@15.8.1 (facebook/prop-types)
-217.  @carbon/icons-react@11.77.0 (https://github.com/carbon-design-system/carbon.git)
-218.  @carbon/icon-helpers@10.74.0 (https://github.com/carbon-design-system/carbon.git)
-219.  @floating-ui/react@0.27.17 (https://github.com/floating-ui/floating-ui.git)
-220.  @floating-ui/utils@0.2.10 (https://github.com/floating-ui/floating-ui.git)
-221.  tabbable@6.4.0 (git+https://github.com/focus-trap/tabbable.git)
-222.  @floating-ui/react-dom@2.1.7 (https://github.com/floating-ui/floating-ui.git)
-223.  @floating-ui/dom@1.7.5 (https://github.com/floating-ui/floating-ui.git)
-224.  @floating-ui/core@1.7.4 (https://github.com/floating-ui/floating-ui.git)
-225.  copy-to-clipboard@3.3.3 (git+https://github.com/sudodoki/copy-to-clipboard)
-226.  toggle-selection@1.0.6 (git+https://github.com/sudodoki/toggle-selection)
-227.  downshift@9.0.10 (https://github.com/downshift-js/downshift.git)
-228.  @babel/runtime@7.28.6 (https://github.com/babel/babel.git)
-229.  react-is@18.2.0 (https://github.com/facebook/react.git)
-230.  compute-scroll-into-view@3.1.1 (git+https://github.com/scroll-into-view/compute-scroll-into-view.git)
-231.  tslib@2.8.1 (https://github.com/Microsoft/tslib.git)
-232.  react-fast-compare@3.2.2 (https://github.com/FormidableLabs/react-fast-compare)
-233.  invariant@2.2.4 (https://github.com/zertosh/invariant)
-234.  flatpickr@4.6.13 (git+https://github.com/chmln/flatpickr.git)
-235.  @carbon/utilities@0.16.0 (https://github.com/carbon-design-system/carbon.git)
-236.  @internationalized/number@3.6.5 (https://github.com/adobe/react-spectrum)
-237.  @carbon/layout@11.48.0 (https://github.com/carbon-design-system/carbon.git)
-238.  formik@2.4.9 (jaredpalmer/formik)
-239.  deepmerge@2.2.1 (git://github.com/KyleAMathews/deepmerge.git)
-240.  lodash-es@4.17.21 (lodash/lodash)
-241.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning.git)
-242.  hoist-non-react-statics@3.3.2 (git://github.com/mridgway/hoist-non-react-statics.git)
-243.  events@3.3.0 (git://github.com/Gozala/events.git)
-244.  codemirror@6.0.2 (https://github.com/codemirror/basic-setup.git)
-245.  @codemirror/view@6.39.16 (git+https://github.com/codemirror/view.git)
-246.  @codemirror/state@6.5.4 (git+https://github.com/codemirror/state.git)
-247.  @marijn/find-cluster-break@1.0.2 (git+https://github.com/marijnh/find-cluster-break.git)
-248.  style-mod@4.1.0 (git+https://github.com/marijnh/style-mod.git)
-249.  w3c-keyname@2.2.6 (git+https://github.com/marijnh/w3c-keyname.git)
-250.  crelt@1.0.6 (git+https://github.com/marijnh/crelt.git)
-251.  @codemirror/language@6.12.2 (git+https://github.com/codemirror/language.git)
-252.  @lezer/common@1.5.1 (https://github.com/lezer-parser/common.git)
-253.  @lezer/highlight@1.2.3 (https://github.com/lezer-parser/highlight.git)
-254.  @codemirror/commands@6.10.2 (git+https://github.com/codemirror/commands.git)
-255.  @codemirror/search@6.5.6 (https://github.com/codemirror/search.git)
-256.  @codemirror/autocomplete@6.20.0 (https://github.com/codemirror/autocomplete.git)
-257.  @codemirror/lint@6.9.3 (git+https://github.com/codemirror/lint.git)
-258.  @codemirror/lang-json@6.0.2 (https://github.com/codemirror/lang-json.git)
-259.  @lezer/json@1.0.0 (https://github.com/lezer-parser/json.git)
-260.  @lezer/lr@1.4.8 (https://github.com/lezer-parser/lr.git)
-261.  @uiw/codemirror-theme-vscode@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
-262.  @uiw/codemirror-themes@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
-263.  drag-tabs@3.0.0 (git+ssh://git@github.com/bpmn-io/drag-tabs.git)
-264.  min-dom@5.3.0 (https://github.com/bpmn-io/min-dom)
-265.  domify@3.0.0 (sindresorhus/domify)
-266.  mitt@3.0.1 (developit/mitt)
-267.  @bpmn-io/properties-panel@3.40.5 (git+https://github.com/bpmn-io/properties-panel.git)
-268.  preact-hooks@0.1.0
-269.  preact@10.19.3 (preactjs/preact)
-270.  preact-compat@4.0.0
-271.  jsx-runtime@1.0.0
-272.  feelers@1.5.1
-273.  @bpmn-io/feelin@6.1.0 (https://github.com/bpmn-io/feelin)
-274.  luxon@3.7.2 (https://github.com/moment/luxon)
-275.  @bpmn-io/lezer-feel@2.3.1 (https://github.com/bpmn-io/lezer-feel.git)
-276.  @lezer/markdown@1.6.3 (https://github.com/lezer-parser/markdown.git)
-277.  @bpmn-io/feel-lint@3.1.0 (git+https://github.com/bpmn-io/feel-lint.git)
-278.  @bpmn-io/cm-theme@0.1.0-alpha.2
-279.  @bpmn-io/feel-editor@2.5.2 (git+https://github.com/bpmn-io/feel-editor.git)
-280.  @bpmn-io/lang-feel@3.0.0 (https://github.com/bpmn-io/lang-feel.git)
-281.  @camunda/feel-builtins@1.0.0 (git+https://github.com/camunda/feel-builtins.git)
-282.  focus-trap@8.0.0 (git+https://github.com/focus-trap/focus-trap.git)
-283.  bpmn-js-properties-panel@5.53.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
-284.  bpmn-js@18.14.0 (https://github.com/bpmn-io/bpmn-js)
-285.  diagram-js@15.11.0 (https://github.com/bpmn-io/diagram-js)
-286.  ids@3.0.2 (https://github.com/bpmn-io/ids)
-287.  @bpmn-io/extract-process-variables@2.2.1 (git+https://github.com/bpmn-io/extract-process-variables.git)
-288.  array-move@4.0.0 (sindresorhus/array-move)
-289.  dmn-js-properties-panel@3.10.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
-290.  lodash@4.17.23 (lodash/lodash)
-291.  bpmn-moddle@10.0.0 (https://github.com/bpmn-io/bpmn-moddle)
-292.  moddle@8.0.0 (https://github.com/bpmn-io/moddle)
-293.  moddle-xml@12.0.0 (https://github.com/bpmn-io/moddle-xml)
-294.  saxen@11.0.2 (https://github.com/nikku/saxen)
-295.  camunda-bpmn-moddle@7.0.1 (https://github.com/camunda/camunda-bpmn-moddle)
-296.  zeebe-bpmn-moddle@1.12.0 (https://github.com/camunda/zeebe-bpmn-moddle)
-297.  modeler-moddle@0.2.0 (https://github.com/camunda/modeler-moddle)
-298.  debug@4.3.7 (git://github.com/debug-js/debug.git)
-299.  ms@2.1.3 (vercel/ms)
-300.  @sentry/browser@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
-301.  @sentry-internal/feedback@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
-302.  @sentry/core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
-303.  @sentry-internal/browser-utils@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
-304.  @sentry-internal/replay@10.8.0 (git+https://github.com/getsentry/sentry-javascript.git)
-305.  @sentry-internal/replay-canvas@10.8.0 (git+https://github.com/getsentry/sentry-javascript.git)
-306.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
-307.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
-308.  ua-parser-js@1.0.39 (https://github.com/faisalman/ua-parser-js.git)
-309.  inherits-browser@0.1.0 (git+https://github.com/nikku/inherits-browser.git)
-310.  object-refs@0.4.0 (https://github.com/bpmn-io/object-refs)
-311.  mixpanel-browser@2.55.1 (https://github.com/mixpanel/mixpanel-js.git)
-312.  semver@7.7.3 (git+https://github.com/npm/node-semver.git)
-313.  p-defer@4.0.1 (sindresorhus/p-defer)
-314.  p-series@3.0.0 (sindresorhus/p-series)
-315.  sourcemapped-stacktrace@1.1.11 (http://github.com/novocaine/sourcemapped-stacktrace)
-316.  @bpmn-io/replace-ids@0.2.0 (git+https://github.com/bpmn-io/replace-ids.git)
-317.  bpmnlint@11.12.0 (https://github.com/bpmn-io/bpmnlint)
-318.  bpmnlint-plugin-camunda-compat@2.48.1 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
-319.  bpmnlint-utils@1.1.1 (https://github.com/bpmn-io/bpmnlint-utils)
-320.  @bpmn-io/moddle-utils@0.3.0 (https://github.com/bpmn-io/moddle-utils)
-321.  semver-compare@1.0.0 (git://github.com/substack/semver-compare.git)
-322.  @camunda/form-linting@0.24.0
-323.  bpmn-js-element-templates@2.23.0 (https://github.com/bpmn-io/bpmn-js-element-templates)
-324.  uuid@13.0.0 (https://github.com/uuidjs/uuid.git)
-325.  @bpmn-io/element-templates-validator@2.20.1 (git+https://github.com/bpmn-io/element-templates-validator.git)
-326.  @camunda/rpa-integration@1.3.4 (https://github.com/camunda/rpa-frontend)
-327.  htm_preact@undefined
-328.  htm@3.1.1 (developit/htm)
-329.  didi@11.0.0 (git://github.com/nikku/didi.git)
-330.  @bpmn-io/element-template-chooser@2.1.0 (https://github.com/bpmn-io/element-template-chooser.git)
-331.  tiny-svg@3.1.3 (https://github.com/bpmn-io/tiny-svg)
-332.  @bpmn-io/element-template-icon-renderer@1.0.0 (git+ssh://git@github.com/bpmn-io/element-template-icon-renderer.git)
-333.  @bpmn-io/variable-outline@3.0.3 (https://github.com/bpmn-io/variable-outline)
-334.  @camunda/example-data-properties-provider@1.3.0
-335.  @camunda/task-testing@4.0.1 (https://github.com/camunda/task-testing)
-336.  camunda-bpmn-js-behaviors@1.14.1 (https://github.com/camunda/camunda-bpmn-js-behaviors)
-337.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
-338.  @bpmn-io/variable-resolver@3.0.0 (https://github.com/bpmn-io/variable-resolver)
-339.  bpmn-js-color-picker@0.7.2 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
-340.  bpmn-js-create-append-anything@1.2.0 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
-341.  bpmn-js-executable-fix@0.2.1 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
-342.  bpmn-js-native-copy-paste@0.3.0 (git+https://github.com/nikku/bpmn-js-native-copy-paste.git)
-343.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
-344.  diagram-js-minimap@5.3.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
-345.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
-346.  @camunda/improved-canvas@1.8.0 (git+https://github.com/camunda/improved-canvas.git)
-347.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
-348.  diagram-js-direct-editing@3.3.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
-349.  diagram-js-origin@1.4.0 (https://github.com/bpmn-io/diagram-js-origin)
-350.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
-351.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
-352.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
-353.  @bpmn-io/dmn-variable-resolver@0.7.0
-354.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
-355.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
-356.  dmn-js-boxed-expression@17.7.0 (https://github.com/bpmn-io/dmn-js)
-357.  dmn-js-decision-table@17.7.0 (https://github.com/bpmn-io/dmn-js)
-358.  dmn-js-drd@17.7.0 (https://github.com/bpmn-io/dmn-js)
-359.  dmn-js-literal-expression@17.7.0 (https://github.com/bpmn-io/dmn-js)
-360.  dmn-js-shared@17.7.0 (https://github.com/bpmn-io/dmn-js)
-361.  dmn-js@17.7.0 (https://github.com/bpmn-io/dmn-js)
-362.  escape-html@1.0.3 (component/escape-html)
-363.  inferno@5.6.3 (https://github.com/infernojs/inferno)
-364.  table-js@9.4.0 (https://github.com/bpmn-io/table-js)
-365.  @bpmn-io/form-js-editor@1.21.2 (git+https://github.com/bpmn-io/form-js.git)
-366.  @bpmn-io/form-js-playground@1.21.2 (git+https://github.com/bpmn-io/form-js.git)
-367.  @bpmn-io/form-js-viewer@1.21.2 (git+https://github.com/bpmn-io/form-js.git)
-368.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
-369.  @bpmn-io/svg-to-image@1.0.1 (git+https://github.com/bpmn-io/svg-to-image.git)
-370.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
-371.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
-372.  canvg@4.0.3 (https://github.com/canvg/canvg)
-373.  clsx@2.1.1 (lukeed/clsx)
-374.  diagram-js-grid@2.0.1 (git@github.com:bpmn-io/diagram-js-grid.git)
-375.  path-intersection@4.1.0 (https://github.com/bpmn-io/path-intersection)
-376.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
-377.  @bpmn-io/feel-analyzer@0.1.0 (git+https://github.com/bpmn-io/feel-analyzer.git)
-378.  bpmn-js-copy-as-image@0.4.1 (git+https://github.com/barmac/bpmn-js-copy-as-image.git)
-379.  @bpmn-io/dmn-migrate@0.7.1 (git+https://github.com/bpmn-io/dmn-migrate.git)
-380.  dmn-moddle@12.0.1 (https://github.com/bpmn-io/dmn-moddle)
-381.  selection-ranges@4.1.1 (git+ssh://git@github.com/nikku/selection-ranges.git)
-382.  selection-update@1.1.1 (git+ssh://git@github.com/nikku/selection-update.git)
-383.  camunda-dmn-moddle@1.3.1 (https://github.com/camunda/camunda-dmn-moddle)
-384.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
-385.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
-386.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
-387.  dompurify@3.3.3 (git://github.com/cure53/DOMPurify.git)
-388.  file-drops@0.7.0 (git+ssh://git@github.com/nikku/file-drops.git)
-389.  marked@17.0.5 (git://github.com/markedjs/marked.git)
-390.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
+188.  p-limit@3.1.0 (sindresorhus/p-limit)
+189.  yocto-queue@0.1.0 (sindresorhus/yocto-queue)
+190.  chokidar@5.0.0 (git+https://github.com/paulmillr/chokidar.git)
+191.  readdirp@5.0.0 (https://github.com/paulmillr/readdirp.git)
+192.  bpmn-moddle@10.0.0 (https://github.com/bpmn-io/bpmn-moddle)
+193.  moddle@8.0.0 (https://github.com/bpmn-io/moddle)
+194.  moddle-xml@12.0.0 (https://github.com/bpmn-io/moddle-xml)
+195.  saxen@11.0.2 (https://github.com/nikku/saxen)
+196.  zeebe-bpmn-moddle@1.13.0 (https://github.com/camunda/zeebe-bpmn-moddle)
+197.  dmn-moddle@12.0.1 (https://github.com/bpmn-io/dmn-moddle)
+198.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
+199.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
+200.  localforage@1.10.0 (git://github.com/localForage/localForage.git)
+201.  epipebomb@1.0.0 (git://github.com/mhart/epipebomb.git)
+202.  monaco-editor@0.51.0 (https://github.com/microsoft/monaco-editor)
+203.  style-loader@4.0.0 (webpack-contrib/style-loader)
+204.  css-loader@7.1.4 (webpack/css-loader)
+205.  @carbon/styles@1.100.0 (https://github.com/carbon-design-system/carbon.git)
+206.  @camunda/form-playground@0.24.0 (git+https://github.com/camunda/form-playground.git)
+207.  camunda-bpmn-js@5.27.0 (https://github.com/camunda/camunda-bpmn-js)
+208.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
+209.  camunda-dmn-js@3.7.0 (https://github.com/camunda/camunda-dmn-js)
+210.  @camunda/linting@3.49.0 (https://github.com/camunda/linting)
+211.  min-dash@5.0.0 (git+https://github.com/bpmn-io/min-dash.git)
+212.  react@18.3.1 (https://github.com/facebook/react.git)
+213.  classnames@2.5.1 (git+https://github.com/JedWatson/classnames.git)
+214.  react-dom@18.3.1 (https://github.com/facebook/react.git)
+215.  scheduler@0.23.2 (https://github.com/facebook/react.git)
+216.  @carbon/react@1.101.0 (https://github.com/carbon-design-system/carbon.git)
+217.  @carbon/feature-flags@1.0.0 (https://github.com/carbon-design-system/carbon.git)
+218.  prop-types@15.8.1 (facebook/prop-types)
+219.  @carbon/icons-react@11.77.0 (https://github.com/carbon-design-system/carbon.git)
+220.  @carbon/icon-helpers@10.74.0 (https://github.com/carbon-design-system/carbon.git)
+221.  @floating-ui/react@0.27.17 (https://github.com/floating-ui/floating-ui.git)
+222.  @floating-ui/utils@0.2.10 (https://github.com/floating-ui/floating-ui.git)
+223.  tabbable@6.4.0 (git+https://github.com/focus-trap/tabbable.git)
+224.  @floating-ui/react-dom@2.1.7 (https://github.com/floating-ui/floating-ui.git)
+225.  @floating-ui/dom@1.7.5 (https://github.com/floating-ui/floating-ui.git)
+226.  @floating-ui/core@1.7.4 (https://github.com/floating-ui/floating-ui.git)
+227.  copy-to-clipboard@3.3.3 (git+https://github.com/sudodoki/copy-to-clipboard)
+228.  toggle-selection@1.0.6 (git+https://github.com/sudodoki/toggle-selection)
+229.  downshift@9.0.10 (https://github.com/downshift-js/downshift.git)
+230.  @babel/runtime@7.28.6 (https://github.com/babel/babel.git)
+231.  react-is@18.2.0 (https://github.com/facebook/react.git)
+232.  compute-scroll-into-view@3.1.1 (git+https://github.com/scroll-into-view/compute-scroll-into-view.git)
+233.  tslib@2.8.1 (https://github.com/Microsoft/tslib.git)
+234.  react-fast-compare@3.2.2 (https://github.com/FormidableLabs/react-fast-compare)
+235.  invariant@2.2.4 (https://github.com/zertosh/invariant)
+236.  flatpickr@4.6.13 (git+https://github.com/chmln/flatpickr.git)
+237.  @carbon/utilities@0.16.0 (https://github.com/carbon-design-system/carbon.git)
+238.  @internationalized/number@3.6.5 (https://github.com/adobe/react-spectrum)
+239.  @carbon/layout@11.48.0 (https://github.com/carbon-design-system/carbon.git)
+240.  formik@2.4.9 (jaredpalmer/formik)
+241.  deepmerge@2.2.1 (git://github.com/KyleAMathews/deepmerge.git)
+242.  lodash-es@4.17.21 (lodash/lodash)
+243.  tiny-warning@1.0.3 (https://github.com/alexreardon/tiny-warning.git)
+244.  hoist-non-react-statics@3.3.2 (git://github.com/mridgway/hoist-non-react-statics.git)
+245.  events@3.3.0 (git://github.com/Gozala/events.git)
+246.  codemirror@6.0.2 (https://github.com/codemirror/basic-setup.git)
+247.  @codemirror/view@6.39.16 (git+https://github.com/codemirror/view.git)
+248.  @codemirror/state@6.6.0 (git+https://github.com/codemirror/state.git)
+249.  @marijn/find-cluster-break@1.0.2 (git+https://github.com/marijnh/find-cluster-break.git)
+250.  style-mod@4.1.0 (git+https://github.com/marijnh/style-mod.git)
+251.  w3c-keyname@2.2.6 (git+https://github.com/marijnh/w3c-keyname.git)
+252.  crelt@1.0.6 (git+https://github.com/marijnh/crelt.git)
+253.  @codemirror/language@6.12.2 (git+https://github.com/codemirror/language.git)
+254.  @lezer/common@1.5.1 (https://github.com/lezer-parser/common.git)
+255.  @lezer/highlight@1.2.3 (https://github.com/lezer-parser/highlight.git)
+256.  @codemirror/commands@6.10.3 (git+https://github.com/codemirror/commands.git)
+257.  @codemirror/search@6.5.6 (https://github.com/codemirror/search.git)
+258.  @codemirror/autocomplete@6.20.0 (https://github.com/codemirror/autocomplete.git)
+259.  @codemirror/lint@6.9.5 (git+https://github.com/codemirror/lint.git)
+260.  @codemirror/lang-json@6.0.2 (https://github.com/codemirror/lang-json.git)
+261.  @lezer/json@1.0.0 (https://github.com/lezer-parser/json.git)
+262.  @lezer/lr@1.4.8 (https://github.com/lezer-parser/lr.git)
+263.  @uiw/codemirror-theme-vscode@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
+264.  @uiw/codemirror-themes@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
+265.  drag-tabs@3.0.0 (git+ssh://git@github.com/bpmn-io/drag-tabs.git)
+266.  min-dom@5.3.0 (https://github.com/bpmn-io/min-dom)
+267.  domify@3.0.0 (sindresorhus/domify)
+268.  mitt@3.0.1 (developit/mitt)
+269.  @bpmn-io/properties-panel@3.41.2 (git+https://github.com/bpmn-io/properties-panel.git)
+270.  preact-hooks@0.1.0
+271.  preact@10.19.3 (preactjs/preact)
+272.  preact-compat@4.0.0
+273.  jsx-runtime@1.0.0
+274.  feelers@1.5.1
+275.  @bpmn-io/feelin@6.1.0 (https://github.com/bpmn-io/feelin)
+276.  luxon@3.7.2 (https://github.com/moment/luxon)
+277.  @bpmn-io/lezer-feel@2.4.0 (https://github.com/bpmn-io/lezer-feel.git)
+278.  @lezer/markdown@1.6.3 (https://github.com/lezer-parser/markdown.git)
+279.  @bpmn-io/feel-lint@3.1.0 (git+https://github.com/bpmn-io/feel-lint.git)
+280.  @bpmn-io/cm-theme@0.1.0-alpha.2
+281.  @bpmn-io/feel-editor@2.5.2 (git+https://github.com/bpmn-io/feel-editor.git)
+282.  @bpmn-io/lang-feel@3.0.0 (https://github.com/bpmn-io/lang-feel.git)
+283.  @camunda/feel-builtins@1.0.0 (git+https://github.com/camunda/feel-builtins.git)
+284.  focus-trap@8.0.0 (git+https://github.com/focus-trap/focus-trap.git)
+285.  bpmn-js-properties-panel@5.54.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
+286.  bpmn-js@18.15.0 (https://github.com/bpmn-io/bpmn-js)
+287.  diagram-js@15.13.0 (https://github.com/bpmn-io/diagram-js)
+288.  ids@3.0.2 (https://github.com/bpmn-io/ids)
+289.  @bpmn-io/extract-process-variables@2.2.1 (git+https://github.com/bpmn-io/extract-process-variables.git)
+290.  array-move@4.0.0 (sindresorhus/array-move)
+291.  dmn-js-properties-panel@3.11.0 (https://github.com/bpmn-io/dmn-js-properties-panel)
+292.  lodash@4.17.23 (lodash/lodash)
+293.  bpmn-moddle@10.0.0 (https://github.com/bpmn-io/bpmn-moddle)
+294.  moddle@8.0.0 (https://github.com/bpmn-io/moddle)
+295.  moddle-xml@12.0.0 (https://github.com/bpmn-io/moddle-xml)
+296.  saxen@11.0.2 (https://github.com/nikku/saxen)
+297.  camunda-bpmn-moddle@7.0.1 (https://github.com/camunda/camunda-bpmn-moddle)
+298.  zeebe-bpmn-moddle@1.13.0 (https://github.com/camunda/zeebe-bpmn-moddle)
+299.  modeler-moddle@0.2.0 (https://github.com/camunda/modeler-moddle)
+300.  debug@4.4.3 (git://github.com/debug-js/debug.git)
+301.  ms@2.1.3 (vercel/ms)
+302.  @sentry/browser@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+303.  @sentry-internal/feedback@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+304.  @sentry/core@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+305.  @sentry-internal/browser-utils@10.8.0 (git://github.com/getsentry/sentry-javascript.git)
+306.  @sentry-internal/replay@10.8.0 (git+https://github.com/getsentry/sentry-javascript.git)
+307.  @sentry-internal/replay-canvas@10.8.0 (git+https://github.com/getsentry/sentry-javascript.git)
+308.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
+309.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
+310.  ua-parser-js@1.0.39 (https://github.com/faisalman/ua-parser-js.git)
+311.  inherits-browser@0.1.0 (git+https://github.com/nikku/inherits-browser.git)
+312.  object-refs@0.4.0 (https://github.com/bpmn-io/object-refs)
+313.  mixpanel-browser@2.55.1 (https://github.com/mixpanel/mixpanel-js.git)
+314.  @bpmn-io/variable-outline@3.0.3 (https://github.com/bpmn-io/variable-outline)
+315.  semver@7.7.4 (git+https://github.com/npm/node-semver.git)
+316.  p-defer@4.0.1 (sindresorhus/p-defer)
+317.  p-series@3.0.0 (sindresorhus/p-series)
+318.  sourcemapped-stacktrace@1.1.11 (http://github.com/novocaine/sourcemapped-stacktrace)
+319.  @bpmn-io/replace-ids@0.2.0 (git+https://github.com/bpmn-io/replace-ids.git)
+320.  bpmnlint@11.12.1 (https://github.com/bpmn-io/bpmnlint)
+321.  bpmnlint-plugin-camunda-compat@2.49.2 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
+322.  bpmnlint-utils@1.1.1 (https://github.com/bpmn-io/bpmnlint-utils)
+323.  @bpmn-io/moddle-utils@0.3.0 (https://github.com/bpmn-io/moddle-utils)
+324.  semver-compare@1.0.0 (git://github.com/substack/semver-compare.git)
+325.  @camunda/form-linting@0.24.0
+326.  bpmn-js-element-templates@2.24.0 (https://github.com/bpmn-io/bpmn-js-element-templates)
+327.  uuid@14.0.0 (https://github.com/uuidjs/uuid.git)
+328.  @bpmn-io/element-templates-validator@2.21.0 (git+https://github.com/bpmn-io/element-templates-validator.git)
+329.  @camunda/rpa-integration@1.3.4 (https://github.com/camunda/rpa-frontend)
+330.  htm_preact@undefined
+331.  htm@3.1.1 (developit/htm)
+332.  didi@11.0.0 (git://github.com/nikku/didi.git)
+333.  @bpmn-io/element-template-chooser@2.1.0 (https://github.com/bpmn-io/element-template-chooser.git)
+334.  tiny-svg@3.1.3 (https://github.com/bpmn-io/tiny-svg)
+335.  @bpmn-io/element-template-icon-renderer@1.0.0 (git+ssh://git@github.com/bpmn-io/element-template-icon-renderer.git)
+336.  @camunda/example-data-properties-provider@1.4.0
+337.  @camunda/task-testing@4.0.1 (https://github.com/camunda/task-testing)
+338.  camunda-bpmn-js-behaviors@1.14.1 (https://github.com/camunda/camunda-bpmn-js-behaviors)
+339.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
+340.  @bpmn-io/variable-resolver@3.0.1 (https://github.com/bpmn-io/variable-resolver)
+341.  bpmn-js-color-picker@0.7.2 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
+342.  bpmn-js-create-append-anything@1.2.0 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
+343.  bpmn-js-executable-fix@0.2.1 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
+344.  bpmn-js-native-copy-paste@0.3.0 (git+https://github.com/nikku/bpmn-js-native-copy-paste.git)
+345.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
+346.  diagram-js-minimap@5.3.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
+347.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
+348.  @camunda/improved-canvas@1.8.0 (git+https://github.com/camunda/improved-canvas.git)
+349.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
+350.  diagram-js-direct-editing@3.3.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
+351.  diagram-js-origin@1.4.0 (https://github.com/bpmn-io/diagram-js-origin)
+352.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
+353.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
+354.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
+355.  @bpmn-io/dmn-variable-resolver@0.7.0
+356.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
+357.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
+358.  dmn-js-boxed-expression@17.8.0 (https://github.com/bpmn-io/dmn-js)
+359.  dmn-js-decision-table@17.8.0 (https://github.com/bpmn-io/dmn-js)
+360.  dmn-js-drd@17.8.0 (https://github.com/bpmn-io/dmn-js)
+361.  dmn-js-literal-expression@17.8.0 (https://github.com/bpmn-io/dmn-js)
+362.  dmn-js-shared@17.8.0 (https://github.com/bpmn-io/dmn-js)
+363.  dmn-js@17.8.0 (https://github.com/bpmn-io/dmn-js)
+364.  escape-html@1.0.3 (component/escape-html)
+365.  inferno@5.6.3 (https://github.com/infernojs/inferno)
+366.  table-js@9.4.0 (https://github.com/bpmn-io/table-js)
+367.  @bpmn-io/form-js-editor@1.21.3 (git+https://github.com/bpmn-io/form-js.git)
+368.  @bpmn-io/form-js-playground@1.21.3 (git+https://github.com/bpmn-io/form-js.git)
+369.  @bpmn-io/form-js-viewer@1.21.3 (git+https://github.com/bpmn-io/form-js.git)
+370.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
+371.  @bpmn-io/svg-to-image@1.0.1 (git+https://github.com/bpmn-io/svg-to-image.git)
+372.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
+373.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
+374.  canvg@4.0.3 (https://github.com/canvg/canvg)
+375.  clsx@2.1.1 (lukeed/clsx)
+376.  diagram-js-grid@2.0.1 (git@github.com:bpmn-io/diagram-js-grid.git)
+377.  path-intersection@4.1.0 (https://github.com/bpmn-io/path-intersection)
+378.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
+379.  @bpmn-io/feel-analyzer@0.1.0 (git+https://github.com/bpmn-io/feel-analyzer.git)
+380.  bpmn-js-copy-as-image@0.4.1 (git+https://github.com/barmac/bpmn-js-copy-as-image.git)
+381.  @bpmn-io/dmn-migrate@0.7.1 (git+https://github.com/bpmn-io/dmn-migrate.git)
+382.  dmn-moddle@12.0.1 (https://github.com/bpmn-io/dmn-moddle)
+383.  selection-ranges@4.1.1 (git+ssh://git@github.com/nikku/selection-ranges.git)
+384.  selection-update@1.1.1 (git+ssh://git@github.com/nikku/selection-update.git)
+385.  camunda-dmn-moddle@1.3.1 (https://github.com/camunda/camunda-dmn-moddle)
+386.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
+387.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
+388.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
+389.  dompurify@3.4.1 (git://github.com/cure53/DOMPurify.git)
+390.  file-drops@0.7.0 (git+ssh://git@github.com/nikku/file-drops.git)
+391.  marked@18.0.2 (git://github.com/markedjs/marked.git)
+392.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
 
 
 %% @sentry/node@10.8.0 NOTICES AND INFORMATION BEGIN HERE
@@ -1702,7 +1704,7 @@ SOFTWARE.
 END OF require-in-the-middle@7.3.0 NOTICES AND INFORMATION
 
 
-%% resolve@1.22.4 NOTICES AND INFORMATION BEGIN HERE
+%% resolve@1.22.12 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -1727,7 +1729,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF resolve@1.22.4 NOTICES AND INFORMATION
+END OF resolve@1.22.12 NOTICES AND INFORMATION
+
+
+%% es-errors@1.3.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2024 Jordan Harband
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF es-errors@1.3.0 NOTICES AND INFORMATION
 
 
 %% path-parse@1.0.7 NOTICES AND INFORMATION BEGIN HERE
@@ -1758,7 +1788,7 @@ SOFTWARE.
 END OF path-parse@1.0.7 NOTICES AND INFORMATION
 
 
-%% is-core-module@2.15.1 NOTICES AND INFORMATION BEGIN HERE
+%% is-core-module@2.16.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -1781,7 +1811,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF is-core-module@2.15.1 NOTICES AND INFORMATION
+END OF is-core-module@2.16.1 NOTICES AND INFORMATION
 
 
 %% hasown@2.0.2 NOTICES AND INFORMATION BEGIN HERE
@@ -1839,7 +1869,7 @@ THE SOFTWARE.
 END OF function-bind@1.1.2 NOTICES AND INFORMATION
 
 
-%% debug@4.3.7 NOTICES AND INFORMATION BEGIN HERE
+%% debug@4.4.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 (The MIT License)
 
@@ -1863,7 +1893,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ==========================================
-END OF debug@4.3.7 NOTICES AND INFORMATION
+END OF debug@4.4.3 NOTICES AND INFORMATION
 
 
 %% ms@2.1.3 NOTICES AND INFORMATION BEGIN HERE
@@ -3520,7 +3550,7 @@ END OF @opentelemetry/instrumentation-fs@0.23.0 NOTICES AND INFORMATION
 END OF @opentelemetry/instrumentation-express@0.52.0 NOTICES AND INFORMATION
 
 
-%% minimatch@9.0.5 NOTICES AND INFORMATION BEGIN HERE
+%% minimatch@9.0.9 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The ISC License
 
@@ -3539,10 +3569,10 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ==========================================
-END OF minimatch@9.0.5 NOTICES AND INFORMATION
+END OF minimatch@9.0.9 NOTICES AND INFORMATION
 
 
-%% brace-expansion@2.0.2 NOTICES AND INFORMATION BEGIN HERE
+%% brace-expansion@2.1.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -3567,7 +3597,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF brace-expansion@2.0.2 NOTICES AND INFORMATION
+END OF brace-expansion@2.1.0 NOTICES AND INFORMATION
 
 
 %% balanced-match@1.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -6302,7 +6332,7 @@ END OF @opentelemetry/instrumentation-pg@0.55.0 NOTICES AND INFORMATION
 END OF @prisma/instrumentation@6.14.0 NOTICES AND INFORMATION
 
 
-%% semver@7.7.1 NOTICES AND INFORMATION BEGIN HERE
+%% semver@7.7.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The ISC License
 
@@ -6321,7 +6351,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ==========================================
-END OF semver@7.7.1 NOTICES AND INFORMATION
+END OF semver@7.7.4 NOTICES AND INFORMATION
 
 
 %% shimmer@1.2.1 NOTICES AND INFORMATION BEGIN HERE
@@ -11802,34 +11832,6 @@ SOFTWARE.
 END OF es-object-atoms@1.1.1 NOTICES AND INFORMATION
 
 
-%% es-errors@1.3.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2024 Jordan Harband
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF es-errors@1.3.0 NOTICES AND INFORMATION
-
-
 %% math-intrinsics@1.1.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
@@ -12144,7 +12146,7 @@ This file is pulled directly from Node.js
 END OF path-platform@0.11.15 NOTICES AND INFORMATION
 
 
-%% fast-glob@3.3.2 NOTICES AND INFORMATION BEGIN HERE
+%% fast-glob@3.3.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12169,7 +12171,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF fast-glob@3.3.2 NOTICES AND INFORMATION
+END OF fast-glob@3.3.3 NOTICES AND INFORMATION
 
 
 %% glob-parent@5.1.2 NOTICES AND INFORMATION BEGIN HERE
@@ -12390,7 +12392,7 @@ THE SOFTWARE.
 END OF is-number@7.0.0 NOTICES AND INFORMATION
 
 
-%% picomatch@2.3.1 NOTICES AND INFORMATION BEGIN HERE
+%% picomatch@2.3.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12415,7 +12417,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF picomatch@2.3.1 NOTICES AND INFORMATION
+END OF picomatch@2.3.2 NOTICES AND INFORMATION
 
 
 %% merge2@1.4.1 NOTICES AND INFORMATION BEGIN HERE
@@ -12633,6 +12635,38 @@ SOFTWARE.
 END OF reusify@1.0.4 NOTICES AND INFORMATION
 
 
+%% p-limit@3.1.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF p-limit@3.1.0 NOTICES AND INFORMATION
+
+
+%% yocto-queue@0.1.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+==========================================
+END OF yocto-queue@0.1.0 NOTICES AND INFORMATION
+
+
 %% chokidar@5.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
@@ -12798,7 +12832,7 @@ SOFTWARE.
 END OF saxen@11.0.2 NOTICES AND INFORMATION
 
 
-%% zeebe-bpmn-moddle@1.12.0 NOTICES AND INFORMATION BEGIN HERE
+%% zeebe-bpmn-moddle@1.13.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12822,7 +12856,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF zeebe-bpmn-moddle@1.12.0 NOTICES AND INFORMATION
+END OF zeebe-bpmn-moddle@1.13.0 NOTICES AND INFORMATION
 
 
 %% dmn-moddle@12.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -13431,7 +13465,7 @@ THE SOFTWARE.
 END OF @camunda/form-playground@0.24.0 NOTICES AND INFORMATION
 
 
-%% camunda-bpmn-js@5.26.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-bpmn-js@5.27.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -13455,7 +13489,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF camunda-bpmn-js@5.26.0 NOTICES AND INFORMATION
+END OF camunda-bpmn-js@5.27.0 NOTICES AND INFORMATION
 
 
 %% @ibm/plex@6.4.1 NOTICES AND INFORMATION BEGIN HERE
@@ -13585,7 +13619,7 @@ THE SOFTWARE.
 END OF camunda-dmn-js@3.7.0 NOTICES AND INFORMATION
 
 
-%% @camunda/linting@3.48.1 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/linting@3.49.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -13609,7 +13643,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/linting@3.48.1 NOTICES AND INFORMATION
+END OF @camunda/linting@3.49.0 NOTICES AND INFORMATION
 
 
 %% min-dash@5.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -15886,7 +15920,7 @@ THE SOFTWARE.
 END OF @codemirror/view@6.39.16 NOTICES AND INFORMATION
 
 
-%% @codemirror/state@6.5.4 NOTICES AND INFORMATION BEGIN HERE
+%% @codemirror/state@6.6.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -15911,7 +15945,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @codemirror/state@6.5.4 NOTICES AND INFORMATION
+END OF @codemirror/state@6.6.0 NOTICES AND INFORMATION
 
 
 %% @marijn/find-cluster-break@1.0.2 NOTICES AND INFORMATION BEGIN HERE
@@ -16104,7 +16138,7 @@ THE SOFTWARE.
 END OF @lezer/highlight@1.2.3 NOTICES AND INFORMATION
 
 
-%% @codemirror/commands@6.10.2 NOTICES AND INFORMATION BEGIN HERE
+%% @codemirror/commands@6.10.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -16129,7 +16163,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @codemirror/commands@6.10.2 NOTICES AND INFORMATION
+END OF @codemirror/commands@6.10.3 NOTICES AND INFORMATION
 
 
 %% @codemirror/search@6.5.6 NOTICES AND INFORMATION BEGIN HERE
@@ -16188,7 +16222,7 @@ THE SOFTWARE.
 END OF @codemirror/autocomplete@6.20.0 NOTICES AND INFORMATION
 
 
-%% @codemirror/lint@6.9.3 NOTICES AND INFORMATION BEGIN HERE
+%% @codemirror/lint@6.9.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -16213,7 +16247,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @codemirror/lint@6.9.3 NOTICES AND INFORMATION
+END OF @codemirror/lint@6.9.5 NOTICES AND INFORMATION
 
 
 %% @codemirror/lang-json@6.0.2 NOTICES AND INFORMATION BEGIN HERE
@@ -16413,7 +16447,7 @@ SOFTWARE.
 END OF mitt@3.0.1 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/properties-panel@3.40.5 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/properties-panel@3.41.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16437,7 +16471,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/properties-panel@3.40.5 NOTICES AND INFORMATION
+END OF @bpmn-io/properties-panel@3.41.2 NOTICES AND INFORMATION
 
 
 %% preact-hooks@0.1.0 NOTICES AND INFORMATION BEGIN HERE
@@ -16616,7 +16650,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF luxon@3.7.2 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/lezer-feel@2.3.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/lezer-feel@2.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -16641,7 +16675,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @bpmn-io/lezer-feel@2.3.1 NOTICES AND INFORMATION
+END OF @bpmn-io/lezer-feel@2.4.0 NOTICES AND INFORMATION
 
 
 %% @lezer/markdown@1.6.3 NOTICES AND INFORMATION BEGIN HERE
@@ -16833,7 +16867,7 @@ SOFTWARE.
 END OF focus-trap@8.0.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-properties-panel@5.53.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-properties-panel@5.54.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16857,10 +16891,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-properties-panel@5.53.0 NOTICES AND INFORMATION
+END OF bpmn-js-properties-panel@5.54.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js@18.14.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js@18.15.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -16887,10 +16921,10 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF bpmn-js@18.14.0 NOTICES AND INFORMATION
+END OF bpmn-js@18.15.0 NOTICES AND INFORMATION
 
 
-%% diagram-js@15.11.0 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@15.13.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -16914,7 +16948,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@15.11.0 NOTICES AND INFORMATION
+END OF diagram-js@15.13.0 NOTICES AND INFORMATION
 
 
 %% ids@3.0.2 NOTICES AND INFORMATION BEGIN HERE
@@ -16987,7 +17021,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF array-move@4.0.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-properties-panel@3.10.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-properties-panel@3.11.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17011,7 +17045,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF dmn-js-properties-panel@3.10.0 NOTICES AND INFORMATION
+END OF dmn-js-properties-panel@3.11.0 NOTICES AND INFORMATION
 
 
 %% lodash@4.17.23 NOTICES AND INFORMATION BEGIN HERE
@@ -17204,7 +17238,7 @@ THE SOFTWARE.
 END OF camunda-bpmn-moddle@7.0.1 NOTICES AND INFORMATION
 
 
-%% zeebe-bpmn-moddle@1.12.0 NOTICES AND INFORMATION BEGIN HERE
+%% zeebe-bpmn-moddle@1.13.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17228,7 +17262,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF zeebe-bpmn-moddle@1.12.0 NOTICES AND INFORMATION
+END OF zeebe-bpmn-moddle@1.13.0 NOTICES AND INFORMATION
 
 
 %% modeler-moddle@0.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -17258,7 +17292,7 @@ THE SOFTWARE.
 END OF modeler-moddle@0.2.0 NOTICES AND INFORMATION
 
 
-%% debug@4.3.7 NOTICES AND INFORMATION BEGIN HERE
+%% debug@4.4.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 (The MIT License)
 
@@ -17282,7 +17316,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ==========================================
-END OF debug@4.3.7 NOTICES AND INFORMATION
+END OF debug@4.4.3 NOTICES AND INFORMATION
 
 
 %% ms@2.1.3 NOTICES AND INFORMATION BEGIN HERE
@@ -17822,7 +17856,35 @@ limitations under the License.
 END OF mixpanel-browser@2.55.1 NOTICES AND INFORMATION
 
 
-%% semver@7.7.3 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/variable-outline@3.0.3 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+The MIT License (MIT)
+
+Copyright (c) 2024-present Camunda Services GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+==========================================
+END OF @bpmn-io/variable-outline@3.0.3 NOTICES AND INFORMATION
+
+
+%% semver@7.7.4 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The ISC License
 
@@ -17841,7 +17903,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ==========================================
-END OF semver@7.7.3 NOTICES AND INFORMATION
+END OF semver@7.7.4 NOTICES AND INFORMATION
 
 
 %% p-defer@4.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -17937,7 +17999,7 @@ THE SOFTWARE.
 END OF @bpmn-io/replace-ids@0.2.0 NOTICES AND INFORMATION
 
 
-%% bpmnlint@11.12.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint@11.12.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17961,10 +18023,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint@11.12.0 NOTICES AND INFORMATION
+END OF bpmnlint@11.12.1 NOTICES AND INFORMATION
 
 
-%% bpmnlint-plugin-camunda-compat@2.48.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmnlint-plugin-camunda-compat@2.49.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -17988,7 +18050,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmnlint-plugin-camunda-compat@2.48.1 NOTICES AND INFORMATION
+END OF bpmnlint-plugin-camunda-compat@2.49.2 NOTICES AND INFORMATION
 
 
 %% bpmnlint-utils@1.1.1 NOTICES AND INFORMATION BEGIN HERE
@@ -18098,7 +18160,7 @@ SOFTWARE.
 END OF @camunda/form-linting@0.24.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-element-templates@2.23.0 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-element-templates@2.24.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -18122,10 +18184,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-element-templates@2.23.0 NOTICES AND INFORMATION
+END OF bpmn-js-element-templates@2.24.0 NOTICES AND INFORMATION
 
 
-%% uuid@13.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% uuid@14.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -18138,10 +18200,10 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==========================================
-END OF uuid@13.0.0 NOTICES AND INFORMATION
+END OF uuid@14.0.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/element-templates-validator@2.20.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/element-templates-validator@2.21.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -18166,7 +18228,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @bpmn-io/element-templates-validator@2.20.1 NOTICES AND INFORMATION
+END OF @bpmn-io/element-templates-validator@2.21.0 NOTICES AND INFORMATION
 
 
 %% @camunda/rpa-integration@1.3.4 NOTICES AND INFORMATION BEGIN HERE
@@ -18767,35 +18829,7 @@ SOFTWARE.
 END OF @bpmn-io/element-template-icon-renderer@1.0.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/variable-outline@3.0.3 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-The MIT License (MIT)
-
-Copyright (c) 2024-present Camunda Services GmbH
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-==========================================
-END OF @bpmn-io/variable-outline@3.0.3 NOTICES AND INFORMATION
-
-
-%% @camunda/example-data-properties-provider@1.3.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/example-data-properties-provider@1.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -18819,7 +18853,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @camunda/example-data-properties-provider@1.3.0 NOTICES AND INFORMATION
+END OF @camunda/example-data-properties-provider@1.4.0 NOTICES AND INFORMATION
 
 
 %% @camunda/task-testing@4.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -18903,7 +18937,7 @@ THE SOFTWARE.
 END OF @bpmn-io/add-exporter@0.2.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/variable-resolver@3.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/variable-resolver@3.0.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -18927,7 +18961,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/variable-resolver@3.0.0 NOTICES AND INFORMATION
+END OF @bpmn-io/variable-resolver@3.0.1 NOTICES AND INFORMATION
 
 
 %% bpmn-js-color-picker@0.7.2 NOTICES AND INFORMATION BEGIN HERE
@@ -19373,14 +19407,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 END OF css.escape@1.5.1 NOTICES AND INFORMATION
 
 
-%% dmn-js-boxed-expression@17.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-boxed-expression@17.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 null
 ==========================================
-END OF dmn-js-boxed-expression@17.7.0 NOTICES AND INFORMATION
+END OF dmn-js-boxed-expression@17.8.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-decision-table@17.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-decision-table@17.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -19406,10 +19440,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-decision-table@17.7.0 NOTICES AND INFORMATION
+END OF dmn-js-decision-table@17.8.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-drd@17.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-drd@17.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -19435,10 +19469,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-drd@17.7.0 NOTICES AND INFORMATION
+END OF dmn-js-drd@17.8.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-literal-expression@17.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-literal-expression@17.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -19464,10 +19498,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-literal-expression@17.7.0 NOTICES AND INFORMATION
+END OF dmn-js-literal-expression@17.8.0 NOTICES AND INFORMATION
 
 
-%% dmn-js-shared@17.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js-shared@17.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -19493,10 +19527,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js-shared@17.7.0 NOTICES AND INFORMATION
+END OF dmn-js-shared@17.8.0 NOTICES AND INFORMATION
 
 
-%% dmn-js@17.7.0 NOTICES AND INFORMATION BEGIN HERE
+%% dmn-js@17.8.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2014-present Camunda Services GmbH
 
@@ -19522,7 +19556,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF dmn-js@17.7.0 NOTICES AND INFORMATION
+END OF dmn-js@17.8.0 NOTICES AND INFORMATION
 
 
 %% escape-html@1.0.3 NOTICES AND INFORMATION BEGIN HERE
@@ -19610,7 +19644,7 @@ THE SOFTWARE.
 END OF table-js@9.4.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-editor@1.21.2 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-editor@1.21.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -19636,10 +19670,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-editor@1.21.2 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-editor@1.21.3 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-playground@1.21.2 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-playground@1.21.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -19665,10 +19699,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-playground@1.21.2 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-playground@1.21.3 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/form-js-viewer@1.21.2 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/form-js-viewer@1.21.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 Copyright (c) 2021-present Camunda Services GmbH
 
@@ -19694,7 +19728,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/form-js-viewer@1.21.2 NOTICES AND INFORMATION
+END OF @bpmn-io/form-js-viewer@1.21.3 NOTICES AND INFORMATION
 
 
 %% downloadjs@1.4.7 NOTICES AND INFORMATION BEGIN HERE
@@ -20192,10 +20226,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 END OF big.js@7.0.1 NOTICES AND INFORMATION
 
 
-%% dompurify@3.3.3 NOTICES AND INFORMATION BEGIN HERE
+%% dompurify@3.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 DOMPurify
-Copyright 2025 Dr.-Ing. Mario Heiderich, Cure53
+Copyright 2025-2026 Dr.-Ing. Mario Heiderich, Cure53
 
 DOMPurify is free software; you can redistribute it and/or modify it under the
 terms of either:
@@ -20393,7 +20427,7 @@ b) the Mozilla Public License Version 2.0
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [yyyy] [name of copyright owner]
+Copyright 2025-2026 Dr.-Ing. Mario Heiderich, Cure53
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20764,7 +20798,7 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
 
 
 ==========================================
-END OF dompurify@3.3.3 NOTICES AND INFORMATION
+END OF dompurify@3.4.1 NOTICES AND INFORMATION
 
 
 %% file-drops@0.7.0 NOTICES AND INFORMATION BEGIN HERE
@@ -20794,7 +20828,7 @@ THE SOFTWARE.
 END OF file-drops@0.7.0 NOTICES AND INFORMATION
 
 
-%% marked@17.0.5 NOTICES AND INFORMATION BEGIN HERE
+%% marked@18.0.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 # License information
 
@@ -20842,7 +20876,7 @@ Redistribution and use in source and binary forms, with or without modification,
 This software is provided by the copyright holders and contributors “as is” and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the copyright owner or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
 
 ==========================================
-END OF marked@17.0.5 NOTICES AND INFORMATION
+END OF marked@18.0.2 NOTICES AND INFORMATION
 
 
 %% vscode-windows-ca-certs@0.3.0 NOTICES AND INFORMATION BEGIN HERE
