@@ -9,6 +9,7 @@
  */
 
 import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React from 'react';
 
 import { ZeebeVariableResolverModule } from '@bpmn-io/variable-resolver';
@@ -19,6 +20,7 @@ import { render, waitFor, screen } from '@testing-library/react';
 
 import TaskTestingTab, {
   CANNOT_CONNECT_TITLE,
+  LINTING_ERRORS_TITLE,
   UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE,
   UNSUPPORTED_PROTOCOL_TITLE
 } from '../TaskTestingTab';
@@ -92,6 +94,36 @@ describe('<TaskTestingTab>', function() {
     });
 
 
+    it('should open connection selector on click (execution platform version not supported)', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      renderTab(modeler, {
+        connectionCheckResult: {
+          success: true,
+          response: {
+            protocol: 'rest',
+            gatewayVersion: '8.7.0'
+          }
+        },
+        onAction
+      });
+
+      await selectElement(modeler, 'Task_1');
+
+      // when
+      const button = await screen.findByTestId('test-task-btn');
+
+      button.click();
+
+      // then
+      await waitFor(() => {
+        expect(onAction).to.have.been.calledWith('open-connection-selector');
+      });
+    });
+
+
     it('should show error (gRPC connection not supported)', async function() {
 
       // given
@@ -115,6 +147,36 @@ describe('<TaskTestingTab>', function() {
     });
 
 
+    it('should open connection selector on click (gRPC connection not supported)', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      renderTab(modeler, {
+        connectionCheckResult: {
+          success: true,
+          response: {
+            protocol: 'grpc',
+            gatewayVersion: '8.8.0'
+          }
+        },
+        onAction
+      });
+
+      await selectElement(modeler, 'Task_1');
+
+      // when
+      const button = await screen.findByTestId('test-task-btn');
+
+      button.click();
+
+      // then
+      await waitFor(() => {
+        expect(onAction).to.have.been.calledWith('open-connection-selector');
+      });
+    });
+
+
     it('should show error (cannot connect to cluster)', async function() {
 
       // given
@@ -132,6 +194,99 @@ describe('<TaskTestingTab>', function() {
       await waitFor(() => {
         expect(screen.getByText(CANNOT_CONNECT_TITLE)).to.exist;
       });
+    });
+
+
+    it('should open connection selector on click (cannot connect to cluster)', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      renderTab(modeler, {
+        connectionCheckResult: {
+          success: false,
+          reason: 'Foo'
+        },
+        onAction
+      });
+
+      await selectElement(modeler, 'Task_1');
+
+      // when
+      const button = await screen.findByTestId('test-task-btn');
+
+      button.click();
+
+      // then
+      await waitFor(() => {
+        expect(onAction).to.have.been.calledWith('open-connection-selector');
+      });
+    });
+
+
+    it('should show error (linting errors)', async function() {
+
+      // given
+      renderTab(modeler, {
+        connectionCheckResult: {
+          success: true,
+          response: {
+            protocol: 'rest',
+            gatewayVersion: '8.8.0'
+          }
+        },
+        linting: [
+          { category: 'error' }
+        ]
+      });
+
+      // when
+      await selectElement(modeler, 'Task_1');
+
+      // then
+      await waitFor(() => {
+        expect(screen.getByText(LINTING_ERRORS_TITLE)).to.exist;
+      });
+    });
+
+
+    it('should start execution and open linting panel on click (linting errors)', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      renderTab(modeler, {
+        connectionCheckResult: {
+          success: true,
+          response: {
+            protocol: 'rest',
+            gatewayVersion: '8.8.0'
+          }
+        },
+        linting: [
+          { category: 'error' }
+        ],
+        onAction
+      });
+
+      await selectElement(modeler, 'Task_1');
+
+      // when
+      const button = await screen.findByTestId('test-task-btn');
+
+      button.click();
+
+      // then
+      await waitFor(() => {
+        expect(onAction).to.have.been.calledWith('emit-event', {
+          type: 'taskTesting.started',
+          payload: {
+            element: modeler.get('elementRegistry').get('Task_1')
+          }
+        });
+      });
+
+      expect(onAction).to.have.been.calledWith('open-panel', { tab: 'linting' });
     });
 
   });
@@ -255,11 +410,12 @@ function renderTab(modeler, options = {}) {
     }),
     startInstance: new StartInstance(),
     connectionCheckResult,
+    linting: [],
     file: {
       path: 'foo.bpmn'
     },
-    onAction: () => { },
-    ...options,
+    onAction: () => {},
+    ...options
   };
 
   const mockSubscribe = (event, listener) => {
@@ -282,6 +438,7 @@ function renderTab(modeler, options = {}) {
         startInstance={ props.startInstance }
         zeebeApi={ props.zeebeApi }
         layout={ props.layout }
+        linting={ props.linting }
         injector={ props.injector }
         file={ props.file }
         config={ props.config }

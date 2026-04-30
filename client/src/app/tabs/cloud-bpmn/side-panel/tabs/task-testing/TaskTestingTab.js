@@ -47,6 +47,9 @@ export const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST co
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE = 'Execution platform version not supported';
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
 
+export const LINTING_ERRORS_TITLE = 'Diagram has linting errors';
+export const LINTING_ERRORS_DESCRIPTION = 'Task testing requires a diagram without linting errors.';
+
 const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/');
 
 export default function TaskTestingTab(props) {
@@ -56,6 +59,7 @@ export default function TaskTestingTab(props) {
     injector,
     file,
     id,
+    linting,
     onAction,
     startInstance,
     zeebeApi
@@ -174,19 +178,30 @@ export default function TaskTestingTab(props) {
     onAction('open-connection-selector');
   }, [ onAction ]);
 
-  const isConnectionConfigured = canConnectToCluster(connectionCheckResult);
+  const handleOpenLintingPanel = useCallback(() => {
+    onAction('open-panel', { tab: 'linting' });
+  }, [ onAction ]);
+
+  const hasLintErrors = linting && linting.some(({ category }) => category === 'error');
+
+  const isConnectionConfigured = canConnectToCluster(connectionCheckResult) && !hasLintErrors;
 
   const handleTestTask = useCallback(() => {
-    if (!isConnectionConfigured) {
+    if (!canConnectToCluster(connectionCheckResult)) {
       handleConfigureConnection();
+
       return false;
     }
 
-    return true;
-  }, [ isConnectionConfigured, handleConfigureConnection ]);
+    if (hasLintErrors) {
+      handleOpenLintingPanel();
+    }
 
-  const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult);
-  const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult);
+    return true;
+  }, [ connectionCheckResult, hasLintErrors, handleConfigureConnection, handleOpenLintingPanel ]);
+
+  const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult, hasLintErrors);
+  const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult, hasLintErrors);
 
   return <div className={ css.TaskTestingTab }>
     <TaskTesting
@@ -207,24 +222,28 @@ export default function TaskTestingTab(props) {
   </div>;
 }
 
-function getConnectionBannerTitle(connectionCheckResult) {
+function getConnectionBannerTitle(connectionCheckResult, hasLintingErrors) {
   if (!connectionCheckResult || !connectionCheckResult.success) {
     return CANNOT_CONNECT_TITLE;
   } else if (!isProtocolSupported(connectionCheckResult)) {
     return UNSUPPORTED_PROTOCOL_TITLE;
   } else if (!isExecutionPlatformVersionSupported(connectionCheckResult)) {
     return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE;
+  } else if (hasLintingErrors) {
+    return LINTING_ERRORS_TITLE;
   }
   return null;
 }
 
-function getConfigureConnectionBannerDescription(connectionCheckResult) {
+function getConfigureConnectionBannerDescription(connectionCheckResult, hasLintingErrors) {
   if (!connectionCheckResult || !connectionCheckResult.success) {
     return CANNOT_CONNECT_DESCRIPTION;
   } else if (!isProtocolSupported(connectionCheckResult)) {
     return UNSUPPORTED_PROTOCOL_DESCRIPTION;
   } else if (!isExecutionPlatformVersionSupported(connectionCheckResult)) {
     return UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION;
+  } else if (hasLintingErrors) {
+    return LINTING_ERRORS_DESCRIPTION;
   }
   return null;
 }
