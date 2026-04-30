@@ -6,6 +6,12 @@
   --json-editor-font-size-small: 13px;
 }
 
+[data-theme="dark"] {
+  --json-editor-button-color: var(--bio-text-primary);
+  --json-editor-button-border-color: var(--bio-border);
+  --json-editor-button-background-color: var(--bio-surface-2);
+}
+
 :local(.JSONEditor) {
   display: flex;
   flex: 1;
@@ -83,4 +89,48 @@
     }
   }
 
+}
+
+:global(:root[data-theme="dark"]) :local(.JSONEditor) {
+  .cm-panel.cm-search {
+    background-color: var(--bio-surface-2);
+
+    label {
+      color: var(--bio-text-primary);
+    }
+
+    .cm-textfield {
+      background-color: var(--bio-surface-3);
+      border: solid 1px var(--bio-border);
+      color: var(--bio-text-primary);
+
+      &::placeholder {
+        color: var(--bio-text-placeholder);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: var(--bio-accent);
+        box-shadow: 0 0 0 1px var(--bio-accent), 0 0 0 1px var(--bio-border) inset;
+      }
+    }
+
+    .cm-button {
+      color: var(--bio-text-primary);
+      border-color: var(--bio-border);
+      background-color: var(--bio-surface-2);
+
+      &:hover {
+        background-color: var(--bio-surface-3);
+      }
+
+      &:active {
+        background-color: var(--bio-surface-4);
+      }
+    }
+
+    button[name=close] {
+      color: var(--bio-text-primary);
+    }
+  }
 }

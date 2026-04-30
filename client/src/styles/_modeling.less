@@ -68,10 +68,22 @@
     }
 
     /* Task type icons (user, envelope, gear, etc.) inside shapes with rect/circle/polygon body */
-    .djs-shape .djs-visual:has(> rect) > path,
-    .djs-shape .djs-visual:has(> circle) > path,
-    .djs-shape .djs-visual:has(> polygon) > path {
-      fill: #e0e0e0 !important;
+    /* Descendant selector (no >) catches icons nested inside <g> wrappers */
+    /* Fill-based icons (gear, person, lightning, etc.) */
+    .djs-shape .djs-visual:has(> rect) path:not([style*="fill: none"]),
+    .djs-shape .djs-visual:has(> circle) path:not([style*="fill: none"]),
+    .djs-shape .djs-visual:has(> polygon) path:not([style*="fill: none"]) {
+      fill: var(--bio-icon) !important;
+    }
+    /* Stroke-based icons (message envelope outline, etc.) */
+    .djs-shape .djs-visual:has(> rect) path[style*="fill: none"],
+    .djs-shape .djs-visual:has(> circle) path[style*="fill: none"],
+    .djs-shape .djs-visual:has(> polygon) path[style*="fill: none"] {
+      stroke: var(--bio-icon) !important;
+    }
+    /* Inner circle decorators (boundary event double-ring, intermediate event ring, etc.) */
+    .djs-shape .djs-visual:has(> circle) circle {
+      stroke: var(--bio-icon) !important;
     }
 
     /* Shape fills — only override default white fill, preserve user-set custom colors */
