@@ -109,9 +109,9 @@ Based on the [test diagram](./test.bpmn.png):
 
 Test the following scenarios against **all three** cluster types with the engine version matching the modeler release:
 
-* **Local (c8run):** download latest version and start via `./c8run start`
+* **Local (c8run):** download the c8run version matching the modeler release and start via `./c8run start`
 * **SaaS:** use an internal or trial cluster on [console.camunda.io](https://console.camunda.io)
-* **Self-Managed (SM):** use an internal `dev`/`int` cluster or setup your own locally
+* **Self-Managed (SM):** use an internal `dev`/`int` cluster or set up your own locally
 
 To test per cluster type:
 
@@ -121,7 +121,7 @@ To test per cluster type:
 * [ ] Start a process instance, verify link to Operate works
 * [ ] Test the previously created `User Task`
   * [ ] Select it and start testing
-  * [ ] Open the linked form in tasklist and complete it
+  * [ ] Open the linked form in Tasklist and complete it
   * [ ] Verify the task completes successfully
 
 #### File system integration (platform specific)
