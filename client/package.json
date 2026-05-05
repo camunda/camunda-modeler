@@ -111,7 +111,7 @@
     "puppeteer": "^24.42.0",
     "react-svg-loader": "^3.0.3",
     "react-test-renderer": "^18.3.1",
-    "sinon": "^21.0.0",
+    "sinon": "^22.0.0",
     "sinon-chai": "^4.0.0",
     "style-loader": "^4.0.0",
     "webpack": "^5.106.2",
