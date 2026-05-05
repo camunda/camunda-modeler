@@ -47,20 +47,24 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Support for Camunda 8.9</h4>
-          Camunda 8.9 is now fully supported.
+          <h4>Execution listener headers</h4>
+          Execution listeners now support headers configuration in the properties panel and via element templates.
         </li>
         <li>
-          <h4>Variables panel improvements</h4>
-          The variables panel is now placed next to a new side panel, making it easier to configure elements.
+          <h4>Improved canvas interactions</h4>
+          Lasso-selected elements now show a clear outline of selected elements. Enclosed artifacts are moved together with participants and sub-processes.
         </li>
         <li>
-          <h4>Revamped testing</h4>
-          Task testing now supports testing any activity including subprocesses. It also displays the log of executed elements to make the execution transparent and got moved into the new side panel.
+          <h4>Version mismatch warnings</h4>
+          A warning is shown when the selected Camunda version differs from the connected cluster version.
         </li>
         <li>
-          <h4>Enhanced element templates</h4>
-          Element templates may now define execution and task listeners. Template authors can enable the users to define element output mappings dynamically.
+          <h4>JSON editor for example data</h4>
+          The example data input now uses a dedicated JSON editor with syntax and error highlighting.
+        </li>
+        <li>
+          <h4>Bug fixes and more</h4>
+          As always, this release incorporates bug fixes and additional minor improvements.
         </li>
       </ul>
     </div>
