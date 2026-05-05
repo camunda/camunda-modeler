@@ -19,7 +19,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: fix side panel resize UI glitch ([#5729](https://github.com/camunda/camunda-modeler/issues/5729))
 * `DEPS`: update to `@bpmn-io/form-js@1.21.3`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.41.2`
-* `DEPS`: update to `@camunda/linting@3.49.0`
+* `DEPS`: update to `@camunda/linting@3.49.1`
 * `DEPS`: update to `bpmn-js@18.15.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.24.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.54.0`
