@@ -8,9 +8,10 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import draggerFactory from '../dragger';
 
-/* global sinon */
 
 
 describe('dragger', function() {

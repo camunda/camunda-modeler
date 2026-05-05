@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import FlagsSingleton from '../Flags';
 
 const Flags = FlagsSingleton.__proto__.constructor;

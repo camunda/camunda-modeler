@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 describe('tabs/cloud-bpmn', function() {
 
   describe('initial diagram', function() {

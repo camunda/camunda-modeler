@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import Dialog from '../Dialog';
 
 import { Backend } from '../../app/__tests__/mocks';

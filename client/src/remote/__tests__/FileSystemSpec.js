@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import FileSystem from '../FileSystem';
 
 import { Backend } from '../../app/__tests__/mocks';

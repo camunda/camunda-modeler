@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React from 'react';
 
 import TestRenderer from 'react-test-renderer';
@@ -21,7 +23,6 @@ import {
   tab as defaultTab
 } from './mocks';
 
-/* global sinon */
 
 
 describe('<EditorTab>', function() {

@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React from 'react';
 
 import { render, fireEvent, screen } from '@testing-library/react';
@@ -24,7 +26,6 @@ import {
   TITLE
 } from '../constants';
 
-/* global sinon */
 const { spy } = sinon;
 
 describe('<PrivacyPreferencesView>', function() {

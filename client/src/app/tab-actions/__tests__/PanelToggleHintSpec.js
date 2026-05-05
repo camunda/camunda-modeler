@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React from 'react';
 
 import { act, render, fireEvent, screen, waitFor } from '@testing-library/react';
@@ -16,7 +18,6 @@ import { PanelToggleHint } from '../PanelToggleHint';
 
 import { Config } from '../../__tests__/mocks';
 
-/* global sinon */
 
 
 describe('<PanelToggleHint>', function() {

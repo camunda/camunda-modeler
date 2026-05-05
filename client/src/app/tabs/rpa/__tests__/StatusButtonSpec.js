@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 

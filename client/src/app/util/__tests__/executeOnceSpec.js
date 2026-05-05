@@ -8,9 +8,10 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import executeOnce from '../executeOnce';
 
-/* global sinon */
 const { spy } = sinon;
 
 

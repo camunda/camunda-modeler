@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React, { createRef } from 'react';
 
 import { render, waitFor } from '@testing-library/react';
@@ -21,7 +23,6 @@ import { XMLEditor } from '../XMLEditor';
 
 import CodeMirror from 'test/mocks/code-mirror/CodeMirror';
 
-/* global sinon */
 
 const XML = '<xml></xml>';
 

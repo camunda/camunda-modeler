@@ -12,7 +12,7 @@
 
 var chai = require('chai');
 
-var sinonChai = require('sinon-chai');
+var sinonChai = require('sinon-chai').default;
 chai.use(sinonChai);
 
 var chaiSubset = require('chai-subset');

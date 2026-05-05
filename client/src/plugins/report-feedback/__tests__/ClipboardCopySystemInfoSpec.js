@@ -8,13 +8,14 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import { ClipboardCopySystemInfo } from '../ClipboardCopySystemInfo';
 
 import Metadata from '../../../util/Metadata';
 
 import { UAParser } from 'ua-parser-js';
 
-/* global sinon */
 const { spy } = sinon;
 
 

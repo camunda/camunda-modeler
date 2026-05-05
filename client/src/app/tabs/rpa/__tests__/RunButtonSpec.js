@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
@@ -16,7 +18,6 @@ import { Slot, SlotFillRoot } from '../../../slot-fill';
 
 import { RPACodeEditor as MockRPACodeEditor } from 'test/mocks/rpa';
 
-/* global sinon */
 
 describe('<RunButton>', function() {
 

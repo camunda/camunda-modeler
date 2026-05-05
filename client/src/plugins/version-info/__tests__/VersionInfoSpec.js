@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React from 'react';
 
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
@@ -21,7 +23,6 @@ import Flags, { DISPLAY_VERSION } from '../../../util/Flags';
 import { Config } from '../../../app/__tests__/mocks';
 import Metadata from '../../../util/Metadata';
 
-/* global sinon */
 
 
 describe('<VersionInfo>', function() {

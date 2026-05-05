@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React, { createRef, Component } from 'react';
 
 import { render, waitFor, screen } from '@testing-library/react';
@@ -43,7 +45,6 @@ import {
   assign
 } from 'min-dash';
 
-/* global sinon */
 
 const { spy } = sinon;
 

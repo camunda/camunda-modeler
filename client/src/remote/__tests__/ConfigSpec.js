@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import Config from '../Config';
 
 import { Backend } from './mocks';

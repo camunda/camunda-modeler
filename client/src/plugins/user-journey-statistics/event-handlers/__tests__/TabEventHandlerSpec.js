@@ -8,7 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-/* global sinon */
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 
 import MixpanelHandler from '../../MixpanelHandler';
 import TabEventHandler from '../TabEventHandler';
