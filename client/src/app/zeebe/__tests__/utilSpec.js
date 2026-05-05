@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import {
   getDeploymentUrls,
   getOperateBaseUrl,
@@ -16,7 +17,7 @@ import {
   getTasklistBaseUrl
 } from '../util';
 
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 
 import { TARGET_TYPES } from '../../../remote/ZeebeAPI';
 

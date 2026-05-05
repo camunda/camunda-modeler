@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React from 'react';
 
 import {
@@ -18,7 +20,6 @@ import {
 
 import { FileInput } from '..';
 
-/* global sinon */
 
 describe('<FileInput>', function() {
 

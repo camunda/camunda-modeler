@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import { validateProperties } from '../../../settings/SettingsForm';
 import { properties as connectionProperties } from '../ConnectionManagerSettingsProperties';
 import { AUTH_TYPES, TARGET_TYPES } from '../../../../remote/ZeebeAPI';

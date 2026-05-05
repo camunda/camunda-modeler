@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import TestContainer from 'mocha-test-container-support';
 
 import BpmnModeler from '../../../../../app/tabs/bpmn/modeler/BpmnModeler';

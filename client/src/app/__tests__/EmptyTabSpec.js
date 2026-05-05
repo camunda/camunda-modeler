@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React from 'react';
 
 import { render } from '@testing-library/react';
@@ -17,7 +19,6 @@ import TabsProvider from '../TabsProvider';
 
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../util/Flags';
 
-/* global sinon */
 
 describe('<EmptyTab>', function() {
 

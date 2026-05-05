@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import MetadataSingleton from '../Metadata';
 
 const Metadata = MetadataSingleton.__proto__.constructor;

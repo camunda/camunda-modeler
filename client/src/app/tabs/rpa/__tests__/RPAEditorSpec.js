@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import React from 'react';
 
 import { render, waitFor, screen, act } from '@testing-library/react';
@@ -24,7 +26,6 @@ import { RPACodeEditor as MockRPACodeEditor } from 'test/mocks/rpa';
 const RPA = '{"script": "Hello, World!", "executionPlatform": "Camunda Cloud",  "executionPlatformVersion": "8.8.0"}';
 const INVALID_RPA = 'invalid rpa';
 
-/* global sinon */
 
 describe('<RPAEditor>', function() {
 

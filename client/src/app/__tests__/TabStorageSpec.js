@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import TabStorage from '../TabStorage';
 
 describe('TabStorage', function() {

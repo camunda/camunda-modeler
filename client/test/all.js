@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import './globals.js';
+
 var scopedTests = require.context('../src', true, /\/__tests__\/[a-zA-Z]+Spec\.js$/);
 
 scopedTests.keys().forEach(scopedTests);

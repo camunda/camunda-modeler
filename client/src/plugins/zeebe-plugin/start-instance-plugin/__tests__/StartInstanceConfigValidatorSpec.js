@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import StartInstanceConfigValidator, { VALIDATION_ERROR_MESSAGES } from '../StartInstanceConfigValidator';
 
 describe('<StartInstanceConfigValidator>', function() {

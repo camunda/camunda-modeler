@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 import TestContainer from 'mocha-test-container-support';
 
 import BpmnModeler from '../../../../../app/tabs/bpmn/modeler/BpmnModeler';
@@ -18,7 +20,6 @@ import PropertiesProvider from '../../PropertiesProvider';
 
 import diagramXML from './diagram.bpmn';
 
-/* global sinon */
 
 const DEFAULT_ELEMENT_TEMPLATE = {
   appliesTo: [

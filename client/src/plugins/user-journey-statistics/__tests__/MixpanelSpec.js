@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import Metadata from '../../../util/Metadata';
 import MixpanelHandler from '../MixpanelHandler';
 

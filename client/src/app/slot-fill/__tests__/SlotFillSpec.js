@@ -8,9 +8,10 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import React, { useState } from 'react';
 
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 
 import { act, render } from '@testing-library/react';
 

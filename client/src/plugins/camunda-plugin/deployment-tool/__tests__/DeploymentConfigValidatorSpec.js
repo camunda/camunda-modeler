@@ -8,7 +8,8 @@
  * except in compliance with the MIT License.
  */
 
-/* global sinon */
+import { expect } from 'chai';
+import * as sinon from 'sinon';
 
 import DeploymentConfigValidator from '../validation/DeploymentConfigValidator';
 import AUTH_TYPES from '../../shared/AuthTypes';

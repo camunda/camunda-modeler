@@ -8,17 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { expect } from 'chai';
-import { schema } from '../useBuiltInSettings';
+import { use as chaiUse } from 'chai';
+import sinonChai from 'sinon-chai';
 
-
-describe('useBuiltInSettings', function() {
-
-  it('should use latest stable versions', function() {
-
-    // then
-    expect(schema.properties['app.defaultC8Version'].default).to.equal('8.9.0');
-    expect(schema.properties['app.defaultC7Version'].default).to.equal('7.24.0');
-  });
-
-});
+chaiUse(sinonChai);

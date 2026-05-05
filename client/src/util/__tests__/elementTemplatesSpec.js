@@ -8,6 +8,7 @@
  * except in compliance with the MIT License.
  */
 
+import { expect } from 'chai';
 import { map } from 'min-dash';
 
 import templates from './fixtures/templates.json';
