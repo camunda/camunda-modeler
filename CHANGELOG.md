@@ -40,7 +40,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: mark job worker user tasks managed by Camunda as unsupported in 8.10 onwards ([#5833](https://github.com/camunda/camunda-modeler/issues/5833))
 * `FIX`: fix element template length validation displaying "undefined" if label is missing ([#5859](https://github.com/camunda/camunda-modeler/issues/5859))
 * `FIX`: fix enabled copy as image action on unsupported elements ([#5690](https://github.com/camunda/camunda-modeler/issues/5690))
-* `FIX`: ignore broken `BPMNDI` when setting label colors ([bpmn-io/bpmn-js#2418](https://github.com/bpmn-io/bpmn-js/pull/2418))
+* `FIX`: ignore broken `BPMNDI` when setting label colors ([#5857](https://github.com/camunda/camunda-modeler/issues/5857))
 
 ### DMN
 
