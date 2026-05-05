@@ -41,6 +41,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: fix element template length validation displaying "undefined" if label is missing ([#5859](https://github.com/camunda/camunda-modeler/issues/5859))
 * `FIX`: fix enabled copy as image action on unsupported elements ([#5690](https://github.com/camunda/camunda-modeler/issues/5690))
 * `FIX`: ignore broken `BPMNDI` when setting label colors ([#5857](https://github.com/camunda/camunda-modeler/issues/5857))
+* `FIX`: change severity of the `no-inclusive-gateway` rule from error to warning ([#5822](https://github.com/camunda/camunda-modeler/issues/5822))
 
 ### DMN
 
