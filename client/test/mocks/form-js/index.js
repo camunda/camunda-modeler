@@ -83,7 +83,7 @@ export class FormEditor {
 
   _emit(event) {
     if (this.listeners[ event ]) {
-      this.listeners[ event ].forEach(callback => callback());
+      this.listeners[ event ].forEach(callback => callback({ type: event }));
     }
   }
 

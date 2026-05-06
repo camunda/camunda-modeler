@@ -121,7 +121,7 @@ export class FormEditor extends CachedComponent {
       setCached: (state) => this.setCached(state)
     });
 
-    this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
+    this.handleLintingDebounced = debounce(() => this.handleLinting());
   }
 
   componentDidMount() {
