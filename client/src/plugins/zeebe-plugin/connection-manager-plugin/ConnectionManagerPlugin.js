@@ -24,7 +24,7 @@ import { NO_CONNECTION_ID } from './constants';
 import { AUTH_TYPES, TARGET_TYPES } from '../../../remote/ZeebeAPI';
 import { generateId } from '../../../util';
 
-import * as css from './ConnectionManagerPlugin.less';
+import * as css from './ConnectionManagerPlugin.css';
 
 export const NO_CONNECTION = {
   id: NO_CONNECTION_ID,

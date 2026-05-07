@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import * as css from './DropZone.less';
+import * as css from './DropZone.css';
 import { DropHandler } from './DropHandler';
 
 export { isDroppableItem } from './DropHandler';

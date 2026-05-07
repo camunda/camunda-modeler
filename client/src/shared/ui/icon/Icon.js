@@ -12,7 +12,7 @@ import React from 'react';
 
 import classnames from 'classnames';
 
-import './Icon.less';
+import './Icon.css';
 
 
 export default function Icon(props) {

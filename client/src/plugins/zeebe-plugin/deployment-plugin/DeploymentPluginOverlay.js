@@ -32,7 +32,7 @@ import { getResourceType } from '../../../app/zeebe/util';
 
 import { ENGINES } from '../../../util/Engines';
 
-import * as css from './DeploymentPluginOverlay.less';
+import * as css from './DeploymentPluginOverlay.css';
 
 /**
  * @typedef {Object} DeploymentPluginOverlayProps

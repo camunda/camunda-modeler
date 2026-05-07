@@ -18,7 +18,7 @@ import {
 
 import CodeMirror from './CodeMirror';
 
-import * as css from './JSONEditor.less';
+import * as css from './JSONEditor.css';
 
 import {
   getEditMenu,

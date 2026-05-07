@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import * as css from './ReleaseInfo.less';
+import * as css from './ReleaseInfo.css';
 
 // If you add links to the release info, make sure to track them with UTM tags
 // import { utmTag } from '../../util/utmTag';

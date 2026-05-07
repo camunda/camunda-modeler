@@ -19,7 +19,7 @@ import { utmTag } from '../../../../util/utmTag';
 import ResizableContainer from '../../../resizable-container/ResizableContainer';
 import SidePanelTitleBar from '../../../side-panel/SidePanelTitleBar';
 
-import * as css from './VariablesSidePanel.less';
+import * as css from './VariablesSidePanel.css';
 
 const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/variables/');
 

@@ -18,7 +18,7 @@ import React from 'react';
 
 import { getDeploymentUrls } from '../../app/zeebe/util';
 
-import * as css from './ProcessApplicationsDeploymentNotifications.less';
+import * as css from './ProcessApplicationsDeploymentNotifications.css';
 
 /**
  * Get success notification for deployment.

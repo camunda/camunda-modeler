@@ -17,7 +17,7 @@ import React from 'react';
 
 import { getStartInstanceUrl } from '../../../app/zeebe/util';
 
-import * as css from './StartInstanceNotifications.less';
+import * as css from './StartInstanceNotifications.css';
 
 /**
  * Get success notification for instance started.

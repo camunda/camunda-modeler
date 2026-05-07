@@ -12,7 +12,7 @@ import React from 'react';
 
 import { Overlay, Section } from '../../shared/ui';
 
-import * as css from './UpdateAvailableOverlay.less';
+import * as css from './UpdateAvailableOverlay.css';
 
 const OFFSET = { right: 0 };
 

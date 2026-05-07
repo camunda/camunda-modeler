@@ -16,7 +16,7 @@ import {
 
 import classNames from 'classnames';
 
-import * as css from './PrivacyPreferencesView.less';
+import * as css from './PrivacyPreferencesView.css';
 
 import {
   PRIVACY_TEXT_FIELD,

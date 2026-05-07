@@ -16,7 +16,7 @@ import AiIcon from '../../resources/icons/Ai.svg';
 
 import { utmTag } from '../util/utmTag';
 
-import * as css from './EmptyTab.less';
+import * as css from './EmptyTab.css';
 
 import {
   Tab

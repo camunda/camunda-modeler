@@ -85,7 +85,7 @@
     background: var(--color-white);
   }
 
-  // This makes the text inside of a tooltip selectable
+  /* This makes the text inside of a tooltip selectable */
   .bio-properties-panel [role="tooltip"] * {
     user-select: text;
   }

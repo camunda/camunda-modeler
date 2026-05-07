@@ -14,7 +14,7 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import * as css from './Section.less';
+import * as css from './Section.css';
 
 export function Section(props) {
 

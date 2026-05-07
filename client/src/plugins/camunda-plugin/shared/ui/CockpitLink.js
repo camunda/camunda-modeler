@@ -10,7 +10,7 @@
 
 import React, { useMemo } from 'react';
 
-import * as css from './CockpitLink.less';
+import * as css from './CockpitLink.css';
 
 function combineUrlSegments(url, path, query) {
   if (!url) {

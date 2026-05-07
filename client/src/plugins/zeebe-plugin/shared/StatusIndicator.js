@@ -13,7 +13,7 @@ import React from 'react';
 import { Loading } from '@carbon/react';
 import { CheckmarkFilled, ErrorFilled, PauseOutlineFilled, } from '@carbon/icons-react';
 
-import * as css from './StatusIndicator.less';
+import * as css from './StatusIndicator.css';
 
 /**
  * @param {Object} props -

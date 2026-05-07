@@ -23,7 +23,7 @@ import { utmTag } from '../../util/utmTag';
 import ProcessApplicationIcon from '../../../resources/icons/file-types/ProcessApplication.svg';
 import ErrorIcon from '../../../resources/icons/Error.svg';
 
-import * as css from './ProcessApplicationsStatusBar.less';
+import * as css from './ProcessApplicationsStatusBar.css';
 
 export default function ProcessApplicationsStatusBar(props) {
   const ref = useRef();

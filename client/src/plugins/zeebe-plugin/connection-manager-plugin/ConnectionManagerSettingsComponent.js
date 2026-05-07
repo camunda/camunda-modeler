@@ -18,7 +18,7 @@ import { FieldArray, getIn, useFormikContext } from 'formik';
 import { SettingsField, validateProperties } from '../../settings/SettingsForm';
 import { generateNewElement, properties } from './ConnectionManagerSettingsProperties';
 
-import * as css from './ConnectionManagerSettingsComponent.less';
+import * as css from './ConnectionManagerSettingsComponent.css';
 
 import { CONNECTION_CHECK_ERROR_REASONS, getConnectionCheckFieldErrors } from '../deployment-plugin/ConnectionCheckErrors';
 import { StatusIndicator } from '../shared/StatusIndicator';

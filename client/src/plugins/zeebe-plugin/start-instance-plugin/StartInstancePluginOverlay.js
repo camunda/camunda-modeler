@@ -38,7 +38,7 @@ import {
 
 import { ENGINES } from '../../../util/Engines';
 
-import * as css from './StartInstancePluginOverlay.less';
+import * as css from './StartInstancePluginOverlay.css';
 
 export default function StartInstancePluginOverlay(props) {
   const {

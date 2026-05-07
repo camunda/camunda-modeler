@@ -14,7 +14,7 @@ import classNames from 'classnames';
 
 import { groupBy, omit } from 'min-dash';
 
-import * as css from './Tabbed.less';
+import * as css from './Tabbed.css';
 
 import {
   addDragger

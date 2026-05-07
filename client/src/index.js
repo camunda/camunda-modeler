@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import './styles/style.less';
+import './styles/style.css';
 
 import { flags, globals, metadata, plugins } from './globals';
 

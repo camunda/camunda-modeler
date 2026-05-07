@@ -22,11 +22,6 @@
   --tab-action-active-icon-color: var(--color-grey-225-10-35);
 }
 
-.tab-base() {
-  position: relative;
-  flex: 1;
-}
-
 :local(.TabContainer) {
   position: relative;
 
@@ -34,7 +29,8 @@
   flex: 1;
 
   &.tab {
-    .tab-base();
+    position: relative;
+    flex: 1;
   }
 }
 
@@ -260,5 +256,6 @@
 }
 
 :local(.Tab) {
-  .tab-base();
+  position: relative;
+  flex: 1;
 }

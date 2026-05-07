@@ -33,7 +33,7 @@
 
 :local(.ConnectionSelector) {
   span {
-    // non linear scaling with min and max values
+    /* non linear scaling with min and max values */
     max-width: clamp(5rem, calc(25vw - 5rem), 30rem);
     overflow: hidden;
     text-overflow: ellipsis;

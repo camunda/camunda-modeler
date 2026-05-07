@@ -22,7 +22,7 @@ import {
 
 import { Loader } from '../../primitives';
 
-import * as css from './FormEditor.less';
+import * as css from './FormEditor.css';
 
 import { getFormEditMenu } from './getFormEditMenu';
 
