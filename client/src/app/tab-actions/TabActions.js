@@ -16,7 +16,7 @@ import {
 
 import { PanelToggleHint } from './PanelToggleHint';
 
-import * as css from './TabActions.less';
+import * as css from './TabActions.css';
 
 
 export function TabActions(props) {

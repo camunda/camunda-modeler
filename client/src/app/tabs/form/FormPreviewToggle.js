@@ -19,7 +19,7 @@ import ValidateIcon from '../../../../resources/icons/Validate.svg';
 
 import { FORM_PREVIEW_TRIGGER } from './FormEditor';
 
-import * as css from './FormPreviewToggle.less';
+import * as css from './FormPreviewToggle.css';
 
 
 export function FormPreviewToggle(props) {

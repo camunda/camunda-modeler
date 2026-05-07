@@ -14,7 +14,7 @@ import { Overlay, Section } from '../../shared/ui';
 
 import { ReportFeedbackSystemInfoSection } from './ReportFeedbackSystemInfoSection';
 
-import * as css from './ReportFeedbackOverlay.less';
+import * as css from './ReportFeedbackOverlay.css';
 import { utmTag } from '../../util/utmTag';
 
 

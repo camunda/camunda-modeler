@@ -12,7 +12,7 @@ import React from 'react';
 
 import TabCloseIcon from '../../../resources/icons/TabClose.svg';
 
-import * as css from './SidePanelTitleBar.less';
+import * as css from './SidePanelTitleBar.css';
 
 
 export default function SidePanelTitleBar({ title, onClose }) {

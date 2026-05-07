@@ -26,7 +26,7 @@ import { SettingsForm } from './SettingsForm';
 
 import useBuiltInSettings from './useBuiltInSettings';
 
-import * as css from './SettingsPlugin.less';
+import * as css from './SettingsPlugin.css';
 
 const log = debug('Settings');
 

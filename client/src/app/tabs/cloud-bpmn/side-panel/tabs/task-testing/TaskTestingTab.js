@@ -20,7 +20,7 @@ import TaskTestingApi from './TaskTestingApi';
 
 import { useConnectionStatus } from '../../../../../hooks/useConnectionStatus';
 
-import * as css from './TaskTestingTab.less';
+import * as css from './TaskTestingTab.css';
 
 import { utmTag } from '../../../../../../util/utmTag';
 import { EventsContext } from '../../../../../EventsContext';

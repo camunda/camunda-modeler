@@ -30,7 +30,7 @@ import iconsByType from './icons';
 
 import LaunchIcon from '../../../../../resources/icons/Launch.svg';
 
-import * as css from './SidePanelHeader.less';
+import * as css from './SidePanelHeader.css';
 
 export default function SidePanelHeader({ injector }) {
 

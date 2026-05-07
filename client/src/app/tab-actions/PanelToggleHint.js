@@ -18,7 +18,7 @@ import { Close } from '@carbon/icons-react';
 
 import { Overlay } from '../../shared/ui';
 
-import * as css from './PanelToggleHint.less';
+import * as css from './PanelToggleHint.css';
 
 
 const CONFIG_KEY = 'hints';

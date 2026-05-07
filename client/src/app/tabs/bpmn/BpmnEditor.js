@@ -42,7 +42,7 @@ import { getBpmnEditMenu } from './getBpmnEditMenu';
 
 import getBpmnWindowMenu from './getBpmnWindowMenu';
 
-import * as css from './BpmnEditor.less';
+import * as css from './BpmnEditor.css';
 
 import { svgToImage } from '@bpmn-io/svg-to-image';
 

@@ -54,7 +54,7 @@ import {
 
 import getDmnWindowMenu from './getDmnWindowMenu';
 
-import * as css from './DmnEditor.less';
+import * as css from './DmnEditor.css';
 
 import { svgToImage } from '@bpmn-io/svg-to-image';
 

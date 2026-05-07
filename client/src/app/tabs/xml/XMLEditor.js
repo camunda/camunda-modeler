@@ -18,7 +18,7 @@ import {
 
 import CodeMirror from './CodeMirror';
 
-import * as css from './XMLEditor.less';
+import * as css from './XMLEditor.css';
 
 import { getXMLEditMenu } from './getXMLEditMenu';
 

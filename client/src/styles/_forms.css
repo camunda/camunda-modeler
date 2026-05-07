@@ -36,7 +36,7 @@
     resize: vertical;
   }
 
-  // hide but remain accessible: https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+  /* hide but remain accessible: https://snook.ca/archives/html_and_css/hiding-content-for-accessibility */
   input[type=file].form-control {
     position: absolute !important;
     height: 1px;
@@ -45,7 +45,7 @@
     clip: rect(1px 1px 1px 1px);
   }
 
-  // make sure outline doesn't cover the block
+  /* make sure outline doesn't cover the block */
   input[type=file].form-control + label {
     height: 20px;
     width: 20px;
@@ -160,7 +160,7 @@
       left: -9999px;
     }
 
-    // the text
+    /* the text */
     .custom-control-input:checked + .custom-control-option,
     .custom-control-input:not(:checked) + .custom-control-option {
         position: relative;
@@ -168,7 +168,7 @@
         line-height: 20px;
     }
 
-    // radio control
+    /* radio control */
     .custom-control-input:not(:checked) + .custom-control-option:after {
         opacity: 0;
     }
@@ -188,7 +188,7 @@
 
   .custom-checkbox {
 
-    // border of the radio
+    /* border of the radio */
     .custom-control-input:checked + .custom-control-option:before,
     .custom-control-input:not(:checked) + .custom-control-option:before {
       content: '';
@@ -203,7 +203,7 @@
       box-sizing: content-box;
     }
 
-    // inside the checkbox
+    /* inside the checkbox */
     .custom-control-input:checked + .custom-control-option:after,
     .custom-control-input:not(:checked) + .custom-control-option:after {
       position: absolute;
@@ -222,7 +222,7 @@
 
   .custom-radio {
 
-    // border of the radio
+    /* border of the radio */
     .custom-control-input:checked + .custom-control-option:before,
     .custom-control-input:not(:checked) + .custom-control-option:before {
       content: '';
@@ -237,7 +237,7 @@
       box-sizing: content-box;
     }
 
-    // inside the radio
+    /* inside the radio */
     .custom-control-input:checked + .custom-control-option:after,
     .custom-control-input:not(:checked) + .custom-control-option:after {
       content: '';
@@ -251,7 +251,7 @@
       box-sizing: content-box;
     }
 
-    // radio control
+    /* radio control */
     .custom-control-input:not(:checked) + .custom-control-option:after {
       opacity: 0;
     }
@@ -300,7 +300,7 @@
     }
   }
 
-  // feedback / tooltip
+  /* feedback / tooltip */
   .invalid-feedback {
     color: var(--color-red-360-100-45);
     margin-top: 6px;

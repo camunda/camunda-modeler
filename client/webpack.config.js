@@ -97,14 +97,6 @@ module.exports = {
             ]
           },
           {
-            test: /\.less$/,
-            use: [
-              'style-loader',
-              cssLoader(),
-              'less-loader'
-            ]
-          },
-          {
 
             // exclude files served otherwise
             exclude: [ /\.(js|jsx|cjs|mjs|bpmnlintrc)$/, /\.html$/, /\.json$/ ],

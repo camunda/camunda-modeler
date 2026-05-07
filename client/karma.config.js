@@ -122,22 +122,6 @@ module.exports = async function(karma) {
             }
           },
           {
-            test: /\.less$/,
-            use: [
-              {
-                loader: 'css-loader',
-                options: {
-                  modules: {
-                    mode: 'global',
-                    exportOnlyLocals: true,
-                    localIdentName: '[name]__[local]--[hash:base64:5]'
-                  }
-                }
-              },
-              'less-loader'
-            ]
-          },
-          {
             oneOf: [
               {
                 test: /[/\\][A-Z][^/\\]+\.svg$/,

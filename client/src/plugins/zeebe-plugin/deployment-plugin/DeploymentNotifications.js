@@ -21,7 +21,7 @@ import {
   RESOURCE_TYPES
 } from '../../../app/zeebe/util';
 
-import * as css from './DeploymentNotifications.less';
+import * as css from './DeploymentNotifications.css';
 
 /**
  * Get success notification for deployment.

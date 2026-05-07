@@ -1,4 +1,4 @@
-@import (css) '@carbon/styles/css/styles.css';
+@import '@carbon/styles/css/styles.css';
 
 :local(.RPAEditor) {
   display: flex;
@@ -21,8 +21,8 @@
       flex: 1;
       position: relative;
 
-      // Required to ensure Edior can be resized properly. Without setting position,
-      // the editor will never shrink anfter expanding.
+      /* Required to ensure Edior can be resized properly. Without setting position, */
+      /* the editor will never shrink anfter expanding. */
       .monaco-container {
         width: 100%;
         height: 100%;
@@ -135,12 +135,12 @@
   height: 16px;
 }
 
-// Overwrite Overlay styles that would indent the editor
+/* Overwrite Overlay styles that would indent the editor */
 .crpa-Runner-Selection .cds--accordion {
   padding-left: 0px;
 }
 
-// overwrite colors to the modelers theme
+/* overwrite colors to the modelers theme */
 .crpa-worker-status {
   .status-icon {
     &.success {

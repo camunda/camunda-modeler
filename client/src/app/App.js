@@ -68,7 +68,7 @@ import History from './History';
 
 import { PluginsRoot } from './plugins';
 
-import * as css from './App.less';
+import * as css from './App.css';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';

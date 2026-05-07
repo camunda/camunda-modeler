@@ -28,4 +28,4 @@
   line-height: 1em;
 }
 
-@import (less) "./font/app-codes.css";
+@import "./font/app-codes.css";

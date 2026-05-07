@@ -53,7 +53,7 @@ import { getBpmnEditMenu } from '../bpmn/getBpmnEditMenu';
 
 import getBpmnWindowMenu from '../bpmn/getBpmnWindowMenu';
 
-import * as css from './BpmnEditor.less';
+import * as css from './BpmnEditor.css';
 
 import { svgToImage } from '@bpmn-io/svg-to-image';
 

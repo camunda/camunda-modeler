@@ -17,7 +17,7 @@ import {
   CachedComponent
 } from '../../cached';
 
-import * as css from './RPAEditor.less';
+import * as css from './RPAEditor.css';
 
 import {
   debounce,
