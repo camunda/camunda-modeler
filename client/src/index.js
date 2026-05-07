@@ -8,6 +8,10 @@
  * except in compliance with the MIT License.
  */
 
+import './styles/layers.css';
+import './styles/carbon-layer.css';
+import '@camunda/design-system/styles.css';
+import './styles/modeling-vendor.css';
 import './styles/style.less';
 
 import { flags, globals, metadata, plugins } from './globals';

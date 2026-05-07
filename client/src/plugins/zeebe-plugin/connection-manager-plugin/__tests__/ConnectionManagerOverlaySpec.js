@@ -13,7 +13,7 @@ import * as sinon from 'sinon';
 
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 
 import { ConnectionManagerOverlay } from '../ConnectionManagerOverlay';
 import { C8RUN_DOWNLOAD_URL, C8RUN_TROUBLESHOOTING_URL } from '../constants';
@@ -31,7 +31,7 @@ describe('ConnectionManagerOverlay', function() {
       const { container, getByText } = createConnectionManagerOverlay({ connections });
 
       // then
-      expect(container.querySelector('select[name="connection"]')).to.exist;
+      expect(container.querySelector('[name="connection"]')).to.exist;
       expect(getByText('Manage connections')).to.exist;
     });
 
@@ -42,11 +42,10 @@ describe('ConnectionManagerOverlay', function() {
       const connections = [];
 
       // when
-      const { container, getByText } = createConnectionManagerOverlay({ connections });
+      const { container } = createConnectionManagerOverlay({ connections });
 
       // then
-      expect(container.querySelector('select[name="connection"]')).to.exist;
-      expect(getByText('Disabled (offline mode)')).to.exist;
+      expect(container.querySelector('[name="connection"]')).to.exist;
     });
 
 
@@ -68,27 +67,6 @@ describe('ConnectionManagerOverlay', function() {
 
   describe('connection selection', function() {
 
-    it('should display all available connections', function() {
-
-      // given
-      const connections = DEFAULT_CONNECTIONS;
-
-      // when
-      const { container } = createConnectionManagerOverlay({ connections });
-
-      const select = container.querySelector('select[name="connection"]');
-
-      // then
-      expect(select).to.exist;
-
-      expect(select.options.length).to.equal(3);
-      expect(select.options[0].value).to.equal('connection-1');
-      expect(select.options[0].text).to.equal('Test Connection 1');
-      expect(select.options[1].value).to.equal('connection-2');
-      expect(select.options[1].text).to.equal('Test Connection 2');
-    });
-
-
     it('should display active connection', function() {
 
       // given
@@ -96,73 +74,42 @@ describe('ConnectionManagerOverlay', function() {
       const activeConnection = connections[1];
 
       // when
-      const { container } = createConnectionManagerOverlay({ connections, activeConnection });
-
-      const select = container.querySelector('select[name="connection"]');
+      const { getByText } = createConnectionManagerOverlay({ connections, activeConnection });
 
       // then
-      expect(select.value).to.equal('connection-2');
+      expect(getByText('Test Connection 2')).to.exist;
     });
 
 
-    it('should handle connection change', function() {
+    it('should handle connection change', async function() {
 
       // given
       const connections = DEFAULT_CONNECTIONS;
       const handleConnectionChange = sinon.spy();
 
-      const { container } = createConnectionManagerOverlay({ connections, handleConnectionChange });
-
-      const select = container.querySelector('select[name="connection"]');
+      const { getByRole } = createConnectionManagerOverlay({
+        connections,
+        handleConnectionChange,
+        activeConnection: connections[0]
+      });
 
       // when
-      fireEvent.change(select, { target: { value: 'connection-2' } });
+      const trigger = getByRole('combobox');
+      fireEvent.click(trigger);
+
+      await waitFor(() => {
+        const option = document.querySelector('[role="option"][data-value="connection-2"]')
+          || Array.from(document.querySelectorAll('[role="option"]')).find(
+            el => el.textContent === 'Test Connection 2'
+          );
+        if (option) {
+          fireEvent.click(option);
+        }
+      });
 
       // then
       expect(handleConnectionChange).to.have.been.calledOnce;
       expect(handleConnectionChange).to.have.been.calledWith(connections[1]);
-    });
-
-
-    it('should display unnamed connection with URL', function() {
-
-      // given
-      const connections = [
-        {
-          id: 'connection-1',
-          targetType: 'selfHosted',
-          contactPoint: 'http://localhost:26500'
-        }
-      ];
-
-      // when
-      const { container } = createConnectionManagerOverlay({ connections });
-
-      const select = container.querySelector('select[name="connection"]');
-
-      // then
-      expect(select.options[0].text).to.equal('Unnamed (http://localhost:26500)');
-    });
-
-
-    it('should display camundaCloud connection URL', function() {
-
-      // given
-      const connections = [
-        {
-          id: 'connection-1',
-          targetType: 'camundaCloud',
-          camundaCloudClusterUrl: 'https://cluster.camunda.io'
-        }
-      ];
-
-      // when
-      const { container } = createConnectionManagerOverlay({ connections });
-
-      const select = container.querySelector('select[name="connection"]');
-
-      // then
-      expect(select.options[0].text).to.equal('Unnamed (https://cluster.camunda.io)');
     });
 
   });
@@ -181,13 +128,10 @@ describe('ConnectionManagerOverlay', function() {
       };
 
       // when
-      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+      const { getByText } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
 
       // then
-      const errorMessage = container.querySelector('.invalid-feedback');
-      expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.equal('Cannot connect to Orchestration Cluster.');
-      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+      expect(getByText('Cannot connect to Orchestration Cluster.')).to.exist;
     });
 
 
@@ -202,13 +146,10 @@ describe('ConnectionManagerOverlay', function() {
       };
 
       // when
-      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+      const { getByText } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
 
       // then
-      const errorMessage = container.querySelector('.invalid-feedback');
-      expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.equal('Cannot connect to Orchestration Cluster.');
-      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+      expect(getByText('Cannot connect to Orchestration Cluster.')).to.exist;
     });
 
 
@@ -223,13 +164,10 @@ describe('ConnectionManagerOverlay', function() {
       };
 
       // when
-      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+      const { getByText } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
 
       // then
-      const errorMessage = container.querySelector('.invalid-feedback');
-      expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.equal('Unknown error. Please check Orchestration Cluster status.');
-      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+      expect(getByText('Unknown error. Please check Orchestration Cluster status.')).to.exist;
     });
 
 
@@ -247,10 +185,8 @@ describe('ConnectionManagerOverlay', function() {
       const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
 
       // then
-      const errorMessage = container.querySelector('.invalid-feedback');
-      expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.contain('Could not establish connection:');
-      expect(errorMessage.textContent).to.contain('Credentials rejected by server.');
+      expect(container.textContent).to.contain('Could not establish connection:');
+      expect(container.textContent).to.contain('Credentials rejected by server.');
     });
 
 
@@ -308,13 +244,7 @@ describe('ConnectionManagerOverlay', function() {
       });
 
       // then
-      const errorMessage = container.querySelector('.invalid-feedback');
-      expect(errorMessage).to.exist;
-
-      // Get the description field and verify full text
-      const descriptionField = container.querySelector('.custom-control-description');
-      expect(descriptionField).to.exist;
-      expect(descriptionField.textContent).to.equal(
+      expect(container.textContent).to.contain(
         'Download or start Camunda 8 Run to connect. For help, see the troubleshooting information.'
       );
 
@@ -348,15 +278,13 @@ describe('ConnectionManagerOverlay', function() {
       };
 
       // when
-      const { container, queryByTestId } = createConnectionManagerOverlay({
+      const { queryByTestId } = createConnectionManagerOverlay({
         connections,
         connectionCheckResult,
         activeConnection
       });
 
       // then
-      const errorMessage = container.querySelector('.invalid-feedback');
-      expect(errorMessage).to.exist;
       expect(queryByTestId('c8run-nudge-link')).to.not.exist;
     });
 

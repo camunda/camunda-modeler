@@ -10,9 +10,22 @@
 
 import React from 'react';
 
-import classNames from 'classnames';
+import {
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from '@camunda/design-system';
 
-import { Section, Select } from '../../../shared/ui';
 import { getMessageForReason, isC8RunConnection } from '../../zeebe-plugin/shared/util';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 import { utmTag } from '../../../util/utmTag';
@@ -36,23 +49,10 @@ export function ConnectionManagerOverlay({
     }
   }
 
-  const connectionLabel = (
-    <>
-      <span>Connection</span>
-      <a className="manage-connections-link" onClick={ handleManageConnections } href="#">
-        Manage connections
-      </a>
-    </>
-  );
-
-  const connectionOptions = [
-    ...connections.map(connection => ({
-      value: connection.id,
-      label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
-    })),
-    { separator: true },
-    { value: NO_CONNECTION.id, label: 'Disabled (offline mode)' }
-  ];
+  const connectionItems = connections.map(connection => ({
+    value: connection.id,
+    label: connection.name ? connection.name : `Unnamed (${getUrl(connection)})`
+  }));
 
   const getConnectionFieldError = () => {
     if (connectionCheckResult?.success === false && connectionCheckResult.reason !== CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG) {
@@ -95,36 +95,47 @@ export function ConnectionManagerOverlay({
     handleConnectionChange(connection);
   }
 
-  return (
-    <Section>
-      <Section.Header className="form-header">
-        {renderHeader}
-      </Section.Header>
-      <Section.Body className="form-body">
-        <form className="fields">
-          <div className={ classNames('form-group', 'form-group-spacing') }>
-            <div>
-              <Select
-                field={ {
-                  name: 'connection',
-                  onChange: (event) => handleConnectionIdChange(event.target.value)
-                } }
-                className="form-control"
-                name="connection"
-                label={ connectionLabel }
-                options={ connectionOptions }
-                value={ activeConnection?.id }
-                fieldError={ getConnectionFieldError }
-                description={ getConnectionDescription() }
-              />
-            </div>
-          </div>
+  const fieldError = getConnectionFieldError();
+  const description = getConnectionDescription();
 
-          <div className={ classNames('form-group form-description') }>
-            A connection to a running <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>orchestration cluster</a> lets you test tasks, deploy resources, and run processes.
-          </div>
-        </form>
-      </Section.Body>
-    </Section>
+  return (
+    <>
+      <CardHeader className="px-0">
+        <CardTitle>{ renderHeader }</CardTitle>
+        <a onClick={ handleManageConnections } href="#">
+          Manage connections
+        </a>
+      </CardHeader>
+      <CardContent className="px-0">
+        <Field>
+          <FieldLabel>Connection</FieldLabel>
+          <Select
+            value={ activeConnection?.id }
+            onValueChange={ handleConnectionIdChange }
+          >
+            <SelectTrigger name="connection">
+              <SelectValue placeholder="Select a connection" />
+            </SelectTrigger>
+            <SelectContent>
+              { connectionItems.map(item => (
+                <SelectItem key={ item.value } value={ item.value }>
+                  { item.label }
+                </SelectItem>
+              )) }
+              <SelectSeparator />
+              <SelectItem value={ NO_CONNECTION.id }>
+                Disabled (offline mode)
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          { fieldError && <FieldError>{ fieldError }</FieldError> }
+          { description && <FieldDescription>{ description }</FieldDescription> }
+        </Field>
+
+        <p className="form-description">
+          A connection to a running <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>orchestration cluster</a> lets you test tasks, deploy resources, and run processes.
+        </p>
+      </CardContent>
+    </>
   );
 }

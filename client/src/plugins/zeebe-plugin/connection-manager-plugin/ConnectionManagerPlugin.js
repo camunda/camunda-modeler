@@ -13,7 +13,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import { Fill } from '../../../app/slot-fill';
-import { Overlay } from '../../../shared/ui';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@camunda/design-system';
 
 import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
 import { CONNECTION_MANAGER_PLUGIN_ID, SETTINGS_KEY_CONNECTIONS, initializeSettings } from './ConnectionManagerSettings';
@@ -240,39 +244,41 @@ export default function ConnectionManagerPlugin(props) {
   return <>
     { tabNeedsConnection(activeTab) &&
       <Fill name="connection-manager" slot="status-bar__file" group="8_deploy" priority={ 2 }>
-        <button
-          onClick={ () => setOverlayOpen(!overlayOpen) }
-          title="Configure Camunda 8 connection"
-          className={ classNames(css.ConnectionSelector, 'btn', { 'btn--active': overlayOpen }) }
-          ref={ statusBarButtonRef }
-        >
-          <StatusIndicator status={ statusBarConnectionStatus } text={ statusBarText }></StatusIndicator>
-        </button>
+        <Popover open={ overlayOpen } onOpenChange={ setOverlayOpen } className="ds-root">
+          <PopoverTrigger asChild>
+            <button
+              title="Configure Camunda 8 connection"
+              className={ classNames(css.ConnectionSelector, 'btn', { 'btn--active': overlayOpen }) }
+              ref={ statusBarButtonRef }
+            >
+              <StatusIndicator status={ statusBarConnectionStatus } text={ statusBarText }></StatusIndicator>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="start" sideOffset={ 5 } className={ css.ConnectionManagerOverlay }>
+            <ConnectionManagerOverlay
+              connections={ connections }
+              connectionCheckResult={ connectionCheckResult }
+              renderHeader="Select Camunda 8 connection"
+              activeConnection={ activeConnection }
+              handleManageConnections={ () => {
+                setOverlayOpen(false);
+                const index = connections.findIndex((conn) => conn.id === activeConnection?.id);
+                triggerAction('settings-open', {
+                  scrollToEntry:
+                    index >= 0
+                      ? `${SETTINGS_KEY_CONNECTIONS}[${index}].name`
+                      : CONNECTION_MANAGER_PLUGIN_ID,
+                });
+              } }
+              handleConnectionChange={ async (connection) => {
+                await deployment.setConnectionIdForTab(activeTab, connection.id);
+                setActiveConnection(connection);
+              }
+              }
+            />
+          </PopoverContent>
+        </Popover>
       </Fill>
-    }
-    { overlayOpen && <Overlay className={ css.ConnectionManagerOverlay } onClose={ () => setOverlayOpen(false) } anchor={ statusBarButtonRef.current }>
-      <ConnectionManagerOverlay
-        connections={ connections }
-        connectionCheckResult={ connectionCheckResult }
-        renderHeader="Select Camunda 8 connection"
-        activeConnection={ activeConnection }
-        handleManageConnections={ () => {
-          setOverlayOpen(false);
-          const index = connections.findIndex((conn) => conn.id === activeConnection?.id);
-          triggerAction('settings-open', {
-            scrollToEntry:
-              index >= 0
-                ? `${SETTINGS_KEY_CONNECTIONS}[${index}].name`
-                : CONNECTION_MANAGER_PLUGIN_ID,
-          });
-        } }
-        handleConnectionChange={ async (connection) => {
-          await deployment.setConnectionIdForTab(activeTab, connection.id);
-          setActiveConnection(connection);
-        }
-        }
-      />
-    </Overlay>
     }
   </>;
 }

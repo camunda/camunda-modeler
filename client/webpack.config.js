@@ -33,6 +33,7 @@ const {
 
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 
 const { LicenseWebpackPlugin } = require('license-webpack-plugin');
@@ -92,14 +93,14 @@ module.exports = {
           {
             test: /\.css$/,
             use: [
-              'style-loader',
+              MiniCssExtractPlugin.loader,
               cssLoader()
             ]
           },
           {
             test: /\.less$/,
             use: [
-              'style-loader',
+              MiniCssExtractPlugin.loader,
               cssLoader(),
               'less-loader'
             ]
@@ -116,6 +117,9 @@ module.exports = {
   },
   plugins: [
     new CaseSensitivePathsPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].css'
+    }),
     new DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
       'process.env.SENTRY_DSN': JSON.stringify(SENTRY_DSN),

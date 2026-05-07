@@ -1,0 +1,13 @@
+/**
+ * Establishes the CSS cascade layer order for the application.
+ * Lower in the list = higher priority in the cascade.
+ *
+ * - properties: Tailwind CSS custom property fallbacks
+ * - theme: Design system theme variables
+ * - carbon: Legacy Carbon Design System
+ * - base: Design system preflight/reset (Tailwind preflight)
+ * - components: Design system component styles
+ * - utilities: Design system utility classes
+ * - app: Application-specific styles (highest priority)
+ */
+@layer properties, theme, carbon, base, components, utilities, app;
