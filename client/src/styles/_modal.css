@@ -42,20 +42,26 @@
   color: var(--color-grey-225-10-15);
 
   &.modal-adaptive {
-    margin-top: 40px;
-    margin-bottom: 40px;
-    height: calc(100% - 80px);
+    --height-breakpoint: 600px;
+    --width-breakpoint: 992px;
+    --margin-x: 10px;
+    --margin-y-min: 10px;
+    --margin-y-max: 40px;
+
+    margin-top: var(--margin-y-max);
+    margin-bottom: var(--margin-y-max);
+    height: calc(100% - var(--margin-y-max) * 2);
     @media (max-height: 600px) {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      height: calc(100% - 20px);
+      margin-top: var(--margin-y-min);
+      margin-bottom: var(--margin-y-min);
+      height: calc(100% - var(--margin-y-min) * 2);
     }
 
-    width: 972px;
+    width: calc(var(--width-breakpoint) - var(--margin-x) * 2);
     @media (max-width: 992px) {
-      margin-left: 10px;
-      margin-right: 10px;
-      width: calc(100% - 20px);
+      margin-left: var(--margin-x);
+      margin-right: var(--margin-x);
+      width: calc(100% - var(--margin-x) * 2);
     }
   }
 }
