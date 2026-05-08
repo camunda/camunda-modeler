@@ -11,6 +11,7 @@
 import './styles/layers.css';
 import './styles/carbon-layer.css';
 import '@camunda/design-system/styles.css';
+import './styles/design-system-overrides.css';
 import './styles/modeling-vendor.css';
 import './styles/style.less';
 

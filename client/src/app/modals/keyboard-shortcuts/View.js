@@ -8,57 +8,55 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent } from 'react';
+import React from 'react';
 
 import {
-  Modal
-} from '../../../shared/ui';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Kbd,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
+} from '@camunda/design-system';
 
-import * as css from './View.less';
 
-
-class View extends PureComponent {
-  render() {
-    const {
-      shortcuts,
-      onClose
-    } = this.props;
-
-    return (
-      <Modal className={ css.View } onClose={ onClose }>
-
-        <Modal.Title>Keyboard Shortcuts</Modal.Title>
-
-        <Modal.Body>
-          <p>
+export default function View({ shortcuts, onClose }) {
+  return (
+    <Dialog open onOpenChange={ (open) => { if (!open) onClose(); } }>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Keyboard Shortcuts</DialogTitle>
+          <DialogDescription>
             The following special shortcuts can be used on opened diagrams.
-          </p>
-          <table>
-            <tbody className="keyboard-shortcuts">
-              {
-                (shortcuts || []).map(s => {
-                  return <tr key={ s.id }>
-                    <td>{ s.label }</td>
-                    <td className="binding"><code>{ s.binding }</code></td>
-                  </tr>;
-                })
-              }
-            </tbody>
-          </table>
-          <p>
-            Find additional shortcuts on individual items in the application menu.
-          </p>
-        </Modal.Body>
+          </DialogDescription>
+        </DialogHeader>
 
-        <Modal.Footer>
-          <div className="buttonDiv">
-            <button className="btn btn-primary" onClick={ onClose }>Close</button>
-          </div>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+        <Table>
+          <TableBody>
+            {
+              (shortcuts || []).map(s => (
+                <TableRow key={ s.id }>
+                  <TableCell>{ s.label }</TableCell>
+                  <TableCell className="text-right">
+                    <Kbd>{ s.binding }</Kbd>
+                  </TableCell>
+                </TableRow>
+              ))
+            }
+          </TableBody>
+        </Table>
 
+        <p className="text-sm text-muted-foreground">
+          Find additional shortcuts on individual items in the application menu.
+        </p>
+
+        <DialogFooter showCloseButton />
+      </DialogContent>
+    </Dialog>
+  );
 }
-
-export default View;

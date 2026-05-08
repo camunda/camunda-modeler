@@ -1,0 +1,8 @@
+@layer app {
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-content"],
+  [data-slot="popover-content"],
+  [data-slot="select-content"] {
+    z-index: 10000;
+  }
+}
