@@ -28,6 +28,7 @@ import popupMenuTracking from 'bpmn-js-tracking/lib/features/popup-menu';
 import paletteTracking from 'bpmn-js-tracking/lib/features/palette';
 
 import { BpmnImprovedCanvasModule } from '../../bpmn/modeler/features/improved-canvas';
+import createMenuModule from '../../bpmn/modeler/features/create-menu';
 
 import Flags, {
   DISABLE_ADJUST_ORIGIN,
@@ -55,6 +56,11 @@ export default class CloudBpmnModeler extends BpmnModeler {
         }
       ];
     }
+
+    additionalModules = [
+      ...additionalModules,
+      createMenuModule
+    ];
 
     super({
       ...otherOptions,
