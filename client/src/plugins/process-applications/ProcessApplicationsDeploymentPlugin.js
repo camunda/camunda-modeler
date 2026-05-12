@@ -23,6 +23,7 @@ import { getSuccessNotification } from './ProcessApplicationsDeploymentNotificat
 
 export default function ProcessApplicationsDeploymentPlugin(props) {
   const {
+    _getFromApp,
     _getGlobal,
     activeTab,
     displayNotification,
@@ -107,6 +108,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     ) }
     { overlayOpen && (
       <DeploymentPluginOverlay
+        _getFromApp={ _getFromApp }
         activeTab={ activeTab }
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }

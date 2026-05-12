@@ -222,6 +222,7 @@ export default function ProcessApplicationsPlugin(props) {
       tabsProvider={ _getFromApp('props').tabsProvider }
     />
     <ProcessApplicationsDeploymentPlugin
+      _getFromApp={ _getFromApp }
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
