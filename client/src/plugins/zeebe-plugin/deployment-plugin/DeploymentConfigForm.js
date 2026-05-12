@@ -20,6 +20,7 @@ import FormFeedback from '../../../shared/ui/form/FormFeedback';
 export default function DeploymentConfigForm(props) {
   const {
     connectionCheckResult,
+    hasLintErrors = false,
     onSubmit,
     renderDescription = null,
     renderHeader = null,
@@ -60,6 +61,11 @@ export default function DeploymentConfigForm(props) {
                     { getMessageForReason(connectionCheckResult?.reason) } <br />
                     <a href="#" onClick={ handleChangeConnections }>Change</a> or <a href="#" onClick={ handleManageConnections }>manage connections.</a>
                   </> }
+                />
+              )}
+              { connectionCheckResult?.success !== false && hasLintErrors && (
+                <FormFeedback
+                  error="Diagram has linting errors."
                 />
               )}
             </div>

@@ -106,6 +106,51 @@ describe('<DeploymentConfigForm>', function() {
 
   });
 
+
+  describe('lint errors', function() {
+
+    it('should show lint error feedback', function() {
+
+      // when
+      const { container } = createDeploymentConfigForm({
+        hasLintErrors: true
+      });
+
+      // then
+      expect(container.querySelector('.invalid-feedback')).to.exist;
+      expect(container.querySelector('.invalid-feedback').textContent).to.include('linting errors');
+    });
+
+
+    it('should not show lint error feedback if no lint errors', function() {
+
+      // when
+      const { container } = createDeploymentConfigForm({
+        hasLintErrors: false
+      });
+
+      // then
+      expect(container.querySelector('.invalid-feedback')).to.be.null;
+    });
+
+
+    it('should not show lint error feedback if connection check failed', function() {
+
+      // when
+      const { container } = createDeploymentConfigForm({
+        hasLintErrors: true,
+        connectionCheckResult: { success: false, reason: 'CONTACT_POINT_UNAVAILABLE' }
+      });
+
+      // then
+      const feedback = container.querySelector('.invalid-feedback');
+      expect(feedback).to.exist;
+      expect(feedback.textContent).to.not.include('linting errors');
+      expect(feedback.textContent).to.include('Could not establish connection');
+    });
+
+  });
+
 });
 
 const DEFAULT_INITIAL_FIELD_VALUES = {
@@ -118,7 +163,11 @@ const DEFAULT_INITIAL_FIELD_VALUES = {
 
 function createDeploymentConfigForm(props = {}) {
   let {
+    connectionCheckResult,
     getFieldError = (meta, fieldName) => {},
+    handleChangeConnections = () => {},
+    handleManageConnections = () => {},
+    hasLintErrors = false,
     initialFieldValues = {},
     onSubmit = () => {},
     renderHeader = null,
@@ -130,7 +179,11 @@ function createDeploymentConfigForm(props = {}) {
   initialFieldValues = merge({}, DEFAULT_INITIAL_FIELD_VALUES, initialFieldValues);
 
   return render(<DeploymentConfigForm
+    connectionCheckResult={ connectionCheckResult }
     getFieldError={ getFieldError }
+    handleChangeConnections={ handleChangeConnections }
+    handleManageConnections={ handleManageConnections }
+    hasLintErrors={ hasLintErrors }
     initialFieldValues={ initialFieldValues }
     onSubmit={ onSubmit }
     renderHeader={ renderHeader }

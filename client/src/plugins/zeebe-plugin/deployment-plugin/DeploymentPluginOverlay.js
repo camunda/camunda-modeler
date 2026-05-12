@@ -36,6 +36,7 @@ import * as css from './DeploymentPluginOverlay.less';
 
 /**
  * @typedef {Object} DeploymentPluginOverlayProps
+ * @property {Function} _getFromApp - Function to get values from app
  * @property {Object} activeTab - The currently active tab
  * @property {HTMLElement} anchor - The anchor element for positioning the overlay
  * @property {Object} connectionCheckResult - Result of the connection check
@@ -58,6 +59,7 @@ import * as css from './DeploymentPluginOverlay.less';
  */
 export default function DeploymentPluginOverlay(props) {
   const {
+    _getFromApp,
     activeTab,
     anchor,
     connectionCheckResult,
@@ -74,6 +76,12 @@ export default function DeploymentPluginOverlay(props) {
     renderSubmit = 'Deploy',
     triggerAction
   } = props;
+
+  const getLintingState = _getFromApp && _getFromApp('getLintingState');
+
+  const hasLintErrors = getLintingState && activeTab
+    ? getLintingState(activeTab).some(({ category }) => category === 'error')
+    : false;
 
   const [ isSubmitting, setIsSubmitting ] = React.useState(false);
 
@@ -165,6 +173,7 @@ export default function DeploymentPluginOverlay(props) {
         renderHeader={ renderHeader }
         renderSubmit={ renderSubmit }
         connectionCheckResult={ connectionCheckResult }
+        hasLintErrors={ hasLintErrors }
         isSubmitting={ isSubmitting }
         handleChangeConnections={ handleChangeConnections }
         handleManageConnections={ handleManageConnections }
