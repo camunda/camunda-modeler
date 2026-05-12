@@ -14,13 +14,10 @@ import { Section } from '../../shared/ui';
 
 import {
   Formik,
-  Form,
-  Field
+  Form
 } from 'formik';
 
-import {
-  CheckBox
-} from '../../shared/ui';
+import { Checkbox } from '../../shared/ui/primitives';
 
 
 const INITIAL_VALUES = {
@@ -84,46 +81,26 @@ export function ReportFeedbackSystemInfoSection(props) {
           {formik => {
             return (
               <Form>
-                <Field name="version">
-                  {({ field, form }) => (
-                    <CheckBox
-                      field={ field }
-                      form={ form }
-                      type="checkbox"
-                      label="Version"
-                    />
-                  )}
-                </Field>
-                <Field name="operatingSystem">
-                  {({ field, form }) => (
-                    <CheckBox
-                      field={ field }
-                      form={ form }
-                      type="checkbox"
-                      label="Operating system"
-                    />
-                  )}
-                </Field>
-                <Field name="installedPlugins">
-                  {({ field, form }) => (
-                    <CheckBox
-                      field={ field }
-                      form={ form }
-                      type="checkbox"
-                      label="Installed plugins"
-                    />
-                  )}
-                </Field>
-                <Field name="executionPlatform">
-                  {({ field, form }) => (
-                    <CheckBox
-                      field={ field }
-                      form={ form }
-                      type="checkbox"
-                      label="Execution platform"
-                    />
-                  )}
-                </Field>
+                <Checkbox
+                  checked={ formik.values.version }
+                  onChange={ (e) => formik.setFieldValue('version', e.target.checked) }
+                  label="Version"
+                />
+                <Checkbox
+                  checked={ formik.values.operatingSystem }
+                  onChange={ (e) => formik.setFieldValue('operatingSystem', e.target.checked) }
+                  label="Operating system"
+                />
+                <Checkbox
+                  checked={ formik.values.installedPlugins }
+                  onChange={ (e) => formik.setFieldValue('installedPlugins', e.target.checked) }
+                  label="Installed plugins"
+                />
+                <Checkbox
+                  checked={ formik.values.executionPlatform }
+                  onChange={ (e) => formik.setFieldValue('executionPlatform', e.target.checked) }
+                  label="Execution platform"
+                />
                 {formik.errors._form && allFieldsTruthy(formik.touched) && <div className="feedback__message">{formik.errors._form}</div>}
 
                 <Section.Actions>

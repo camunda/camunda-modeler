@@ -24,6 +24,8 @@ import {
   Section
 } from '../../shared/ui';
 
+import { Select } from '../../shared/ui/primitives';
+
 import { utmTag } from '../../util/utmTag';
 import { Fill } from '../slot-fill';
 
@@ -130,8 +132,8 @@ function EditableVersionSection(props) {
     throw new Error('<engineProfileVersions> required');
   }
 
-  const handleVersionChanged = event => {
-    const executionPlatformVersion = toSemver(event.target.value);
+  const handleVersionChanged = version => {
+    const executionPlatformVersion = toSemver(version);
 
     onChange({
       executionPlatform: engineProfile.executionPlatform,
@@ -151,6 +153,17 @@ function EditableVersionSection(props) {
 
   const versionRecognized = isKnownVersion(engineProfileVersions, engineProfile.executionPlatformVersion);
 
+  const selectOptions = [
+    ...(versionRecognized
+      ? []
+      : [ { value: currentMinorVersion || '', label: currentMinorVersion ? `${currentMinorVersion} (unsupported)` : '<unset>' } ]
+    ),
+    ...minorVersions.map(version => ({
+      value: version,
+      label: getAnnotatedVersion(version, executionPlatform)
+    }))
+  ];
+
   return (
     <Section>
       <Section.Header>
@@ -161,27 +174,12 @@ function EditableVersionSection(props) {
           <div className="form-group">
             <label htmlFor={ name }>Version</label>
 
-            <select
-              className="form-control"
-              onChange={ handleVersionChanged }
-              value={ currentMinorVersion || '' }
+            <Select
               id={ name }
-              name={ name }>
-              {
-                versionRecognized
-                  ? null
-                  : <option value={ currentMinorVersion || '' }>{ currentMinorVersion ? `${currentMinorVersion} (unsupported)` : '<unset>' }</option>
-              }
-              {
-                minorVersions.map(version => {
-                  return (
-                    <option key={ version } value={ version }>
-                      { getAnnotatedVersion(version, executionPlatform) }
-                    </option>
-                  );
-                })
-              }
-            </select>
+              value={ currentMinorVersion || '' }
+              onChange={ handleVersionChanged }
+              options={ selectOptions }
+            />
           </div>
 
           {(versionRecognized || !currentMinorVersion) ?

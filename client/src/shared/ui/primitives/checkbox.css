@@ -1,0 +1,62 @@
+/* Checkbox — styled with @camunda/design-system CSS tokens */
+
+.cm-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+.cm-checkbox--disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.cm-checkbox__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.cm-checkbox__box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--background);
+  transition: background-color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.cm-checkbox__input:checked + .cm-checkbox__box,
+.cm-checkbox__input:indeterminate + .cm-checkbox__box {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.cm-checkbox__input:focus-visible + .cm-checkbox__box {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.cm-checkbox__icon {
+  width: 12px;
+  height: 12px;
+  color: var(--primary-foreground);
+}
+
+.cm-checkbox__label {
+  color: var(--foreground);
+}

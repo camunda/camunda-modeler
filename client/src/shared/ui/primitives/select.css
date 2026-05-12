@@ -1,0 +1,104 @@
+/* Select — styled with @camunda/design-system CSS tokens */
+
+.cm-select {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+}
+
+.cm-select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-width: 8rem;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.cm-select__trigger:hover:not(:disabled) {
+  border-color: var(--ring);
+}
+
+.cm-select__trigger:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.cm-select__trigger--disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.cm-select__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  text-align: left;
+}
+
+.cm-select__placeholder {
+  color: var(--muted-foreground);
+}
+
+.cm-select__chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+
+.cm-select__dropdown {
+  z-index: 10000;
+  min-width: var(--trigger-width, 8rem);
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: var(--shadow-md);
+  padding: 4px;
+}
+
+.cm-select__dropdown:focus-visible {
+  outline: none;
+}
+
+.cm-select__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.1s;
+}
+
+.cm-select__option--highlighted {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.cm-select__option--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cm-select__check {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
