@@ -461,6 +461,60 @@ describe('DeploymentPluginOverlay', function() {
 
   });
 
+
+  describe('lint errors', function() {
+
+    it('should pass hasLintErrors as true to form when lint errors exist', async function() {
+
+      // given
+      const lintingState = [
+        { category: 'error', message: 'some error' }
+      ];
+
+      const _getFromApp = (prop) => {
+        if (prop === 'getLintingState') {
+          return () => lintingState;
+        }
+      };
+
+      const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
+
+      createDeploymentPluginOverlay({
+        _getFromApp,
+        DeploymentConfigForm: Form
+      });
+
+      // then
+      await waitFor(() => {
+        expect(getFormProps().hasLintErrors).to.be.true;
+      });
+    });
+
+
+    it('should pass hasLintErrors as false to form when no lint errors', async function() {
+
+      // given
+      const _getFromApp = (prop) => {
+        if (prop === 'getLintingState') {
+          return () => [];
+        }
+      };
+
+      const { Form, getProps: getFormProps } = createMockDeploymentConfigForm();
+
+      createDeploymentPluginOverlay({
+        _getFromApp,
+        DeploymentConfigForm: Form
+      });
+
+      // then
+      await waitFor(() => {
+        expect(getFormProps().hasLintErrors).to.be.false;
+      });
+    });
+
+  });
+
 });
 
 class Mock {
@@ -517,6 +571,8 @@ function createMockDeploymentConfigForm() {
   const Form = function MockForm(props) {
     const {
       getFieldError,
+      hasLintErrors,
+      handleOpenLintingPanel,
       initialFieldValues,
       onSubmit = () => {},
       validateForm = () => {},
@@ -525,6 +581,8 @@ function createMockDeploymentConfigForm() {
 
     useEffect(() => {
       _props.getFieldError = getFieldError;
+      _props.hasLintErrors = hasLintErrors;
+      _props.handleOpenLintingPanel = handleOpenLintingPanel;
       _props.initialFieldValues = initialFieldValues;
       _props.onSubmit = onSubmit;
       _props.validateForm = validateForm;
@@ -601,6 +659,7 @@ function createMockDeploymentErrorResponse() {
 
 function createDeploymentPluginOverlay(props = {}) {
   const {
+    _getFromApp,
     activeTab = DEFAULT_ACTIVE_TAB,
     anchor = new MockAnchor(),
     connectionChecker = new MockConnectionChecker(),
@@ -620,6 +679,7 @@ function createDeploymentPluginOverlay(props = {}) {
 
   return render(
     <DeploymentPluginOverlay
+      _getFromApp={ _getFromApp }
       activeTab={ activeTab }
       anchor={ anchor }
       connectionChecker={ connectionChecker }
