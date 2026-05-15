@@ -200,8 +200,8 @@ export default function TaskTestingTab(props) {
     return true;
   }, [ connectionCheckResult, hasLintingErrors, handleConfigureConnection, handleOpenLintingPanel ]);
 
-  const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult, hasLintingErrors);
-  const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult, hasLintingErrors);
+  const bannerTitle = getBannerTitle(connectionCheckResult, hasLintingErrors);
+  const bannerDescription = getBannerDescription(connectionCheckResult, hasLintingErrors);
 
   return <div className={ css.TaskTestingTab }>
     <TaskTesting
@@ -214,15 +214,15 @@ export default function TaskTestingTab(props) {
       onTaskExecutionStarted={ handleTaskExecutionStarted }
       onTaskExecutionFinished={ handleTaskExecutionFinished }
       onTestTask={ handleTestTask }
-      configureConnectionBannerTitle={ configureConnectionBannerTitle }
-      configureConnectionBannerDescription={ configureConnectionBannerDescription }
+      configureConnectionBannerTitle={ bannerTitle }
+      configureConnectionBannerDescription={ bannerDescription }
       api={ api }
       documentationUrl={ DOCUMENTATION_URL }
     />
   </div>;
 }
 
-function getConnectionBannerTitle(connectionCheckResult, hasLintingErrors) {
+function getBannerTitle(connectionCheckResult, hasLintingErrors) {
   if (!connectionCheckResult || !connectionCheckResult.success) {
     return CANNOT_CONNECT_TITLE;
   } else if (!isProtocolSupported(connectionCheckResult)) {
@@ -235,7 +235,7 @@ function getConnectionBannerTitle(connectionCheckResult, hasLintingErrors) {
   return null;
 }
 
-function getConfigureConnectionBannerDescription(connectionCheckResult, hasLintingErrors) {
+function getBannerDescription(connectionCheckResult, hasLintingErrors) {
   if (!connectionCheckResult || !connectionCheckResult.success) {
     return CANNOT_CONNECT_DESCRIPTION;
   } else if (!isProtocolSupported(connectionCheckResult)) {
