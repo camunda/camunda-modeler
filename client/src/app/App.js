@@ -2480,6 +2480,7 @@ export class App extends PureComponent {
     };
 
     const Tab = this.getTabComponent(activeTab);
+    const isProcessApplication = !!tabGroups[activeTab.id];
 
     return (
       <DropZone
@@ -2540,7 +2541,7 @@ export class App extends PureComponent {
                         deployment={ this.getGlobal('deployment') }
                         startInstance={ this.getGlobal('startInstance') }
                         zeebeApi={ this.getGlobal('zeebeAPI') }
-                        tabGroup={ tabGroups[activeTab.id] }
+                        isProcessApplication={ isProcessApplication }
                       />
                     }
                   </TabContainer>

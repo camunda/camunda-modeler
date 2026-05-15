@@ -879,6 +879,19 @@ export class BpmnEditor extends CachedComponent {
     eventBus.fire('propertiesPanel.resized');
   };
 
+  deployBpmn = async (saved, config) => {
+    const {
+      deployment
+    } = this.props;
+
+    return deployment.deploy([
+      {
+        path: saved.file.path,
+        type: 'bpmn'
+      }
+    ], config);
+  };
+
   render() {
     const engineProfile = this.engineProfile.getCached();
 
@@ -890,7 +903,7 @@ export class BpmnEditor extends CachedComponent {
       layout,
       onAction,
       startInstance,
-      tabGroup,
+      isProcessApplication,
       zeebeApi
     } = this.props;
 
@@ -901,8 +914,6 @@ export class BpmnEditor extends CachedComponent {
     const {
       importing
     } = this.state;
-
-    const isProcessApplication = !!tabGroup;
 
     return (
       <div className={ css.BpmnEditor }>
@@ -958,14 +969,7 @@ export class BpmnEditor extends CachedComponent {
                   <SidePanel.Tab id="test" label="Test" icon={ TaskTestingIcon }>
                     <TaskTestingTab
                       config={ config }
-                      deployProcessApplication={ isProcessApplication ? async (saved, config) => {
-                        return deployment.deploy([
-                          {
-                            path: saved.file.path,
-                            type: 'bpmn'
-                          }
-                        ], config);
-                      } : undefined }
+                      deployProcessApplication={ isProcessApplication ? this.deployBpmn : undefined }
                       deployment={ deployment }
                       file={ file }
                       id={ id }
