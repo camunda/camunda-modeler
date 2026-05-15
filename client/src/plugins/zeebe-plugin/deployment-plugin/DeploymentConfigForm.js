@@ -27,7 +27,8 @@ export default function DeploymentConfigForm(props) {
     renderSubmit = 'Submit',
     isSubmitting = false,
     handleChangeConnections,
-    handleManageConnections
+    handleManageConnections,
+    handleOpenLintingPanel
   } = props;
 
   return (
@@ -65,7 +66,9 @@ export default function DeploymentConfigForm(props) {
               )}
               { connectionCheckResult?.success !== false && hasLintErrors && (
                 <FormFeedback
-                  error="Diagram has linting errors."
+                  error={ <>
+                    Diagram has linting errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
+                  </> }
                 />
               )}
             </div>

@@ -97,6 +97,12 @@ export default function DeploymentPluginOverlay(props) {
     return false;
   };
 
+  const handleOpenLintingPanel = () => {
+    onClose();
+    triggerAction('open-panel', { tab: 'linting' });
+    return false;
+  };
+
   const onSubmit = async () => {
     setIsSubmitting(true);
     const connection = await deployment.getConnectionForTab(activeTab);
@@ -177,6 +183,7 @@ export default function DeploymentPluginOverlay(props) {
         isSubmitting={ isSubmitting }
         handleChangeConnections={ handleChangeConnections }
         handleManageConnections={ handleManageConnections }
+        handleOpenLintingPanel={ handleOpenLintingPanel }
       />
     </Overlay>
   );

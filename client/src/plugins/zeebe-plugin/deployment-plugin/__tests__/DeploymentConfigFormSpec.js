@@ -149,6 +149,24 @@ describe('<DeploymentConfigForm>', function() {
       expect(feedback.textContent).to.include('Could not establish connection');
     });
 
+
+    it('should open linting panel on click', function() {
+
+      // given
+      const handleOpenLintingPanelSpy = sinon.spy();
+
+      const { container } = createDeploymentConfigForm({
+        hasLintErrors: true,
+        handleOpenLintingPanel: handleOpenLintingPanelSpy
+      });
+
+      // when
+      fireEvent.click(container.querySelector('.invalid-feedback a'));
+
+      // then
+      expect(handleOpenLintingPanelSpy).to.have.been.calledOnce;
+    });
+
   });
 
 });
@@ -167,6 +185,7 @@ function createDeploymentConfigForm(props = {}) {
     getFieldError = (meta, fieldName) => {},
     handleChangeConnections = () => {},
     handleManageConnections = () => {},
+    handleOpenLintingPanel = () => {},
     hasLintErrors = false,
     initialFieldValues = {},
     onSubmit = () => {},
@@ -183,6 +202,7 @@ function createDeploymentConfigForm(props = {}) {
     getFieldError={ getFieldError }
     handleChangeConnections={ handleChangeConnections }
     handleManageConnections={ handleManageConnections }
+    handleOpenLintingPanel={ handleOpenLintingPanel }
     hasLintErrors={ hasLintErrors }
     initialFieldValues={ initialFieldValues }
     onSubmit={ onSubmit }
