@@ -593,6 +593,88 @@ describe('StartInstancePluginOverlay', function() {
 
   });
 
+
+  describe('lint errors', function() {
+
+    it('should pass hasLintErrors as true to form when lint errors exist', async function() {
+
+      // given
+      const lintingState = [
+        { category: 'error', message: 'some error' }
+      ];
+
+      const _getFromApp = (prop) => {
+        if (prop === 'getLintingState') {
+          return () => lintingState;
+        }
+      };
+
+      const deploymentConfig = createMockEndpoint();
+
+      const deployment = new MockDeployment({
+        getConnectionForTab: () => Promise.resolve(deploymentConfig)
+      });
+
+      const startInstanceConfig = createMockStartInstanceConfig();
+
+      const startInstance = new MockStartInstance({
+        getConfigForFile: () => Promise.resolve(startInstanceConfig)
+      });
+
+      const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
+
+      createStartInstancePluginOverlay({
+        _getFromApp,
+        deployment,
+        startInstance,
+        StartInstanceConfigForm: Form
+      });
+
+      // then
+      await waitFor(() => {
+        expect(getFormProps().hasLintErrors).to.be.true;
+      });
+    });
+
+
+    it('should pass hasLintErrors as false to form when no lint errors', async function() {
+
+      // given
+      const _getFromApp = (prop) => {
+        if (prop === 'getLintingState') {
+          return () => [];
+        }
+      };
+
+      const deploymentConfig = createMockEndpoint();
+
+      const deployment = new MockDeployment({
+        getConnectionForTab: () => Promise.resolve(deploymentConfig)
+      });
+
+      const startInstanceConfig = createMockStartInstanceConfig();
+
+      const startInstance = new MockStartInstance({
+        getConfigForFile: () => Promise.resolve(startInstanceConfig)
+      });
+
+      const { Form, getProps: getFormProps } = createMockStartInstanceConfigForm();
+
+      createStartInstancePluginOverlay({
+        _getFromApp,
+        deployment,
+        startInstance,
+        StartInstanceConfigForm: Form
+      });
+
+      // then
+      await waitFor(() => {
+        expect(getFormProps().hasLintErrors).to.be.false;
+      });
+    });
+
+  });
+
 });
 
 class Mock {
@@ -661,12 +743,16 @@ function createMockStartInstanceConfigForm() {
 
   const Form = function MockForm(props) {
     const {
+      hasLintErrors,
+      handleOpenLintingPanel,
       initialFieldValues,
       onSubmit,
       validateForm,
       validateField
     } = props;
 
+    _props.hasLintErrors = hasLintErrors;
+    _props.handleOpenLintingPanel = handleOpenLintingPanel;
     _props.initialFieldValues = initialFieldValues;
     _props.onSubmit = onSubmit;
     _props.validateForm = validateForm;
@@ -763,6 +849,7 @@ function createMockDeploymentErrorResponse() {
 
 function createStartInstancePluginOverlay(props = {}) {
   const {
+    _getFromApp,
     activeTab = DEFAULT_ACTIVE_TAB,
     anchor = new MockAnchor(),
     connectionChecker = new MockConnectionChecker(),
@@ -789,6 +876,7 @@ function createStartInstancePluginOverlay(props = {}) {
 
   return render(
     <StartInstancePluginOverlay
+      _getFromApp={ _getFromApp }
       activeTab={ activeTab }
       anchor={ anchor }
       connectionChecker={ connectionChecker }
