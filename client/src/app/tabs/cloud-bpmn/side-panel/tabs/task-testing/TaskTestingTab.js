@@ -53,7 +53,9 @@ export default function TaskTestingTab(props) {
   const {
     config,
     deployment,
+    deployProcessApplication,
     injector,
+    isProcessApplication,
     file,
     id,
     onAction,
@@ -74,8 +76,11 @@ export default function TaskTestingTab(props) {
   }), [ id, file ]);
 
   const taskTestingApi = useMemo(() => {
-    return new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction);
-  }, [ deployment, startInstance, zeebeApi, tab, onAction ]);
+    return new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction, {
+      isProcessApplication,
+      deployProcessApplication
+    });
+  }, [ deployment, startInstance, zeebeApi, tab, onAction, isProcessApplication, deployProcessApplication ]);
 
   const api = useMemo(() => taskTestingApi.getApi(), [ taskTestingApi ]);
 

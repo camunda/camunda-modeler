@@ -890,6 +890,7 @@ export class BpmnEditor extends CachedComponent {
       layout,
       onAction,
       startInstance,
+      tabGroup,
       zeebeApi
     } = this.props;
 
@@ -900,6 +901,8 @@ export class BpmnEditor extends CachedComponent {
     const {
       importing
     } = this.state;
+
+    const isProcessApplication = !!tabGroup;
 
     return (
       <div className={ css.BpmnEditor }>
@@ -955,10 +958,19 @@ export class BpmnEditor extends CachedComponent {
                   <SidePanel.Tab id="test" label="Test" icon={ TaskTestingIcon }>
                     <TaskTestingTab
                       config={ config }
+                      deployProcessApplication={ isProcessApplication ? async (saved, config) => {
+                        return deployment.deploy([
+                          {
+                            path: saved.file.path,
+                            type: 'bpmn'
+                          }
+                        ], config);
+                      } : undefined }
                       deployment={ deployment }
                       file={ file }
                       id={ id }
                       injector={ injector }
+                      isProcessApplication={ isProcessApplication }
                       layout={ layout }
                       onAction={ onAction }
                       startInstance={ startInstance }

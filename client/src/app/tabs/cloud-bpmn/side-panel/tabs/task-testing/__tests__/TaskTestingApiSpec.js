@@ -359,6 +359,53 @@ describe('<TaskTestingApi>', function() {
         }
       ]);
     });
+
+
+    it('should use injected process application deployment when in process application context', async function() {
+
+      // given
+      const deployProcessApplicationSpy = sinon.spy(() => {
+        return { success: true };
+      });
+      const savedFile = {
+        path: 'path/to/file.bpmn'
+      };
+
+      const api = new TaskTestingApi(
+        new Deployment({
+          deploy: sinon.spy(),
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'camundaCloud',
+              camundaCloudClusterUrl: 'https://yyy-1.zeebe.example.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+            };
+          },
+          once: () => {}
+        }),
+        null,
+        null,
+        {
+          path: null
+        },
+        actionName => {
+          return actionName === 'save' && {
+            file: savedFile
+          };
+        },
+        {
+          isProcessApplication: true,
+          deployProcessApplication: deployProcessApplicationSpy
+        }
+      );
+
+      // when
+      await api.deploy();
+
+      // then
+      expect(deployProcessApplicationSpy).to.have.been.calledWithMatch({
+        file: savedFile
+      });
+    });
   });
 
 });

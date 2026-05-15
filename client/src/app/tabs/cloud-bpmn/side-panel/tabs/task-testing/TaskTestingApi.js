@@ -15,8 +15,15 @@ import { getOperateBaseUrl, getTasklistBaseUrl } from '../../../../../zeebe/util
 const log = debug('TaskTestingApi');
 
 export default class TaskTestingApi {
-  constructor(deployment, startInstance, zeebeApi, tab, onAction) {
+  constructor(deployment, startInstance, zeebeApi, tab, onAction, options = {}) {
+    const {
+      deployProcessApplication,
+      isProcessApplication = false
+    } = options;
+
     this._deployment = deployment;
+    this._deployProcessApplication = deployProcessApplication;
+    this._isProcessApplication = isProcessApplication;
     this._startInstance = startInstance;
     this._zeebeApi = zeebeApi;
     this._onAction = onAction;
@@ -86,12 +93,7 @@ export default class TaskTestingApi {
       this._handleDeployment(event);
     });
 
-    const result = await this._deployment.deploy([
-      {
-        path: saved.file.path,
-        type: 'bpmn'
-      }
-    ], config);
+    const result = await this._deploy(saved, config);
 
     if (!result.success) {
       log('Deployment failed: ', result);
@@ -103,6 +105,19 @@ export default class TaskTestingApi {
 
     log('Deployment successful: ', result);
     return result;
+  }
+
+  async _deploy(saved, config) {
+    if (this._isProcessApplication && this._deployProcessApplication) {
+      return this._deployProcessApplication(saved, config);
+    }
+
+    return this._deployment.deploy([
+      {
+        path: saved.file.path,
+        type: 'bpmn'
+      }
+    ], config);
   }
 
   async startInstance(processDefinitionKey, elementId, variables) {
