@@ -38,8 +38,10 @@ export default function StartInstanceConfigForm(props) {
     VariablesComponent = JSONInput,
     variablesComponentProps = {},
     connectionCheckResult,
+    hasLintErrors = false,
     handleChangeConnections,
-    handleManageConnections
+    handleManageConnections,
+    handleOpenLintingPanel
   } = props;
 
   const getFieldError = (meta, fieldName) => {
@@ -108,6 +110,13 @@ export default function StartInstanceConfigForm(props) {
                             Could not establish connection: <br />
                             { getMessageForReason(connectionCheckResult?.reason) } <br />
                             <a href="#" onClick={ handleChangeConnections }>Change</a> or <a href="#" onClick={ handleManageConnections }>manage connections.</a>
+                          </> }
+                        />
+                      )}
+                      { connectionCheckResult?.success !== false && hasLintErrors && (
+                        <FormFeedback
+                          error={ <>
+                            Diagram has linting errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
                           </> }
                         />
                       )}

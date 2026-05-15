@@ -42,6 +42,7 @@ import * as css from './StartInstancePluginOverlay.css';
 
 export default function StartInstancePluginOverlay(props) {
   const {
+    _getFromApp,
     activeTab,
     anchor,
     deployment,
@@ -62,6 +63,11 @@ export default function StartInstancePluginOverlay(props) {
     connectionCheckResult
   } = props;
 
+  const getLintingState = _getFromApp && _getFromApp('getLintingState');
+
+  const hasLintErrors = getLintingState && activeTab
+    ? getLintingState(activeTab).some(({ category }) => category === 'error')
+    : false;
 
   const [ deploymentConfig, setDeploymentConfig ] = useState(/** @type {DeploymentConfig|null} */ (null));
 
@@ -76,6 +82,12 @@ export default function StartInstancePluginOverlay(props) {
   const handleManageConnections = () => {
     onClose();
     triggerAction('settings-open');
+    return false;
+  };
+
+  const handleOpenLintingPanel = () => {
+    onClose();
+    triggerAction('open-panel', { tab: 'linting' });
     return false;
   };
 
@@ -223,8 +235,10 @@ export default function StartInstancePluginOverlay(props) {
           validateForm={ validateStartInstanceConfigForm }
           validateField={ (name, value) => startInstanceConfigValidator.validateConfigValue(name, value) }
           connectionCheckResult={ connectionCheckResult }
+          hasLintErrors={ hasLintErrors }
           handleChangeConnections={ handleChangeConnections }
           handleManageConnections={ handleManageConnections }
+          handleOpenLintingPanel={ handleOpenLintingPanel }
         />
       ) : (
 

@@ -232,6 +232,7 @@ export default function ProcessApplicationsPlugin(props) {
       triggerAction={ triggerAction }
       connectionCheckResult={ connectionCheckResult } />
     <ProcessApplicationsStartInstancePlugin
+      _getFromApp={ _getFromApp }
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }

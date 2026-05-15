@@ -369,6 +369,76 @@ describe('<StartInstanceConfigForm>', function() {
 
   });
 
+
+  describe('lint errors', function() {
+
+    it('should show lint error feedback', function() {
+
+      // when
+      const { container } = createStartInstanceConfigForm({
+        hasLintErrors: true
+      });
+
+      // then
+      const feedbacks = container.querySelectorAll('.invalid-feedback');
+      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('linting errors'));
+      expect(lintFeedback).to.exist;
+    });
+
+
+    it('should not show lint error feedback if no lint errors', function() {
+
+      // when
+      const { container } = createStartInstanceConfigForm({
+        hasLintErrors: false
+      });
+
+      // then
+      const feedbacks = container.querySelectorAll('.invalid-feedback');
+      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('linting errors'));
+      expect(lintFeedback).to.not.exist;
+    });
+
+
+    it('should not show lint error feedback if connection check failed', function() {
+
+      // when
+      const { container } = createStartInstanceConfigForm({
+        hasLintErrors: true,
+        connectionCheckResult: { success: false, reason: 'CONTACT_POINT_UNAVAILABLE' }
+      });
+
+      // then
+      const feedbacks = container.querySelectorAll('.invalid-feedback');
+      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('linting errors'));
+      expect(lintFeedback).to.not.exist;
+
+      const connectionFeedback = Array.from(feedbacks).find(el => el.textContent.includes('Could not establish connection'));
+      expect(connectionFeedback).to.exist;
+    });
+
+
+    it('should open linting panel on click', function() {
+
+      // given
+      const handleOpenLintingPanelSpy = sinon.spy();
+
+      const { container } = createStartInstanceConfigForm({
+        hasLintErrors: true,
+        handleOpenLintingPanel: handleOpenLintingPanelSpy
+      });
+
+      // when
+      const feedbacks = container.querySelectorAll('.invalid-feedback');
+      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('linting errors'));
+      fireEvent.click(lintFeedback.querySelector('a'));
+
+      // then
+      expect(handleOpenLintingPanelSpy).to.have.been.calledOnce;
+    });
+
+  });
+
 });
 
 const DEFAULT_INITIAL_FIELD_VALUES = {
@@ -377,7 +447,12 @@ const DEFAULT_INITIAL_FIELD_VALUES = {
 
 function createStartInstanceConfigForm(props = {}) {
   let {
+    connectionCheckResult,
     getFieldError = (meta, fieldName) => {},
+    handleChangeConnections = () => {},
+    handleManageConnections = () => {},
+    handleOpenLintingPanel = () => {},
+    hasLintErrors = false,
     initialFieldValues = {},
     onSubmit = () => {},
     renderHeader = null,
@@ -393,7 +468,12 @@ function createStartInstanceConfigForm(props = {}) {
   initialFieldValues = merge({}, DEFAULT_INITIAL_FIELD_VALUES, initialFieldValues);
 
   return render(<StartInstanceConfigForm
+    connectionCheckResult={ connectionCheckResult }
     getFieldError={ getFieldError }
+    handleChangeConnections={ handleChangeConnections }
+    handleManageConnections={ handleManageConnections }
+    handleOpenLintingPanel={ handleOpenLintingPanel }
+    hasLintErrors={ hasLintErrors }
     initialFieldValues={ initialFieldValues }
     onSubmit={ onSubmit }
     renderHeader={ renderHeader }

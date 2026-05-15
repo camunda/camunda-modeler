@@ -25,6 +25,7 @@ import { getSuccessNotification } from './ProcessApplicationsStartInstanceNotifi
 
 export default function ProcessApplicationsStartInstancePlugin(props) {
   const {
+    _getFromApp,
     _getGlobal,
     activeTab,
     displayNotification,
@@ -93,6 +94,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
     ) }
     { overlayOpen && (
       <StartInstancePluginOverlay
+        _getFromApp={ _getFromApp }
         activeTab={ activeTab }
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
