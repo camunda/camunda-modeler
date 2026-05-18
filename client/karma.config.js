@@ -30,8 +30,6 @@ var MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 var absoluteBasePath = path.resolve(__dirname);
 var resourcePath = path.resolve(__dirname + '/resources');
 
-process.env.CHROME_BIN = require('puppeteer').executablePath();
-
 // configures browsers to run test against
 // any of [ 'ChromeHeadless', 'Chrome', 'Firefox', 'IE', 'PhantomJS' ]
 var browsers = (process.env.TEST_BROWSERS || 'ChromeHeadless').split(/,/g);
@@ -47,7 +45,10 @@ if (modelers) {
 }
 
 
-module.exports = function(karma) {
+module.exports = async function(karma) {
+
+  // executablePath is async in puppeteer v25+
+  process.env.CHROME_BIN = await require('puppeteer').executablePath();
   karma.set({
 
     frameworks: [
