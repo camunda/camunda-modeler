@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import classNames from 'classnames';
 
@@ -41,6 +41,24 @@ export default function VariablesSidePanel(props) {
     maxWidth,
     onLayoutChanged
   } = props;
+
+  const bodyRef = useRef();
+
+  useEffect(() => {
+    const eventBus = injector.get('eventBus');
+    const container = bodyRef.current;
+
+    const handleFocusin = () => eventBus.fire('variablesPanel.focusin');
+    const handleFocusout = () => eventBus.fire('variablesPanel.focusout');
+
+    container.addEventListener('focusin', handleFocusin);
+    container.addEventListener('focusout', handleFocusout);
+
+    return () => {
+      container.removeEventListener('focusin', handleFocusin);
+      container.removeEventListener('focusout', handleFocusout);
+    };
+  }, [ injector ]);
 
   const { variablesSidePanel = DEFAULT_LAYOUT } = layout;
 
@@ -82,7 +100,7 @@ export default function VariablesSidePanel(props) {
     >
       <SidePanelTitleBar title="Variables" onClose={ onClose } />
 
-      <div className="variables-side-panel__body">
+      <div className="variables-side-panel__body" ref={ bodyRef }>
         <VariableOutline
           injector={ injector }
           learnMoreUrl={ DOCUMENTATION_URL }

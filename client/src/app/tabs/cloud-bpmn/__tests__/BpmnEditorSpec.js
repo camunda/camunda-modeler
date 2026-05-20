@@ -361,6 +361,12 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     it('propertiesPanel.focusout', expectHandleChanged('propertiesPanel.focusout'));
 
 
+    it('variablesPanel.focusin', expectHandleChanged('variablesPanel.focusin'));
+
+
+    it('variablesPanel.focusout', expectHandleChanged('variablesPanel.focusout'));
+
+
   });
 
 
