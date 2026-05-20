@@ -1101,7 +1101,7 @@ export class App extends PureComponent {
     const relevantChange = (prev && prev.success) !== connectionCheckResult.success
       || prevVersion !== nextVersion;
 
-    this.setState({ connectionCheckResult }, () => {
+    this.setState({ connectionCheckResult }, async () => {
       if (!relevantChange) {
         return;
       }
@@ -1109,7 +1109,9 @@ export class App extends PureComponent {
       const { activeTab } = this.state;
 
       if (activeTab && activeTab !== EMPTY_TAB) {
-        this.lintTab(activeTab);
+        const contents = await this.getActiveTabContents();
+
+        this.lintTab(activeTab, contents);
       }
     });
   };
@@ -1124,10 +1126,14 @@ export class App extends PureComponent {
         ...state.engineProfiles,
         [ tab.id ]: { executionPlatform, executionPlatformVersion }
       }
-    }), () => {
+    }), async () => {
+      if (this.state.activeTab === tab) {
+        const contents = await this.getActiveTabContents();
 
-      // Re-lint to pick up version mismatch warning
-      this.lintTab(tab);
+        this.lintTab(tab, contents);
+      } else {
+        this.lintTab(tab);
+      }
     });
   };
 

@@ -72,7 +72,9 @@ class FakeTab extends Component {
   triggerAction(action, options) {
 
     if (action === 'save') {
-      return 'CONTENTS';
+      return this.currentContents !== undefined
+        ? this.currentContents
+        : 'CONTENTS';
     }
 
     if (action === 'export-as') {
@@ -250,7 +252,17 @@ export class TabsProvider {
         extensions: [ 'rpa' ],
         getLinter() {
           return {
-            lint() {
+            lint(contents) {
+              if (contents === 'linting-errors') {
+                return [
+                  {
+                    id: 'Script_1',
+                    path: [],
+                    message: 'foo'
+                  }
+                ];
+              }
+
               return [];
             }
           };
