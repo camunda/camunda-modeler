@@ -37,6 +37,21 @@ jobs:
         LINKED_DEPENDENCIES: "${{ github.event.inputs.linkedDependencies }}"
       run: npm run link-dependencies
 
+    - name: Import Secrets
+      id: secrets
+      uses: hashicorp/vault-action@v3.0.0
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/desktop-modeler/ci/sentry SENTRY_AUTH_TOKEN;
+          secret/data/products/desktop-modeler/ci/sentry SENTRY_DSN_DEV;
+          secret/data/products/desktop-modeler/ci/sentry SENTRY_ORG;
+          secret/data/products/desktop-modeler/ci/sentry SENTRY_PROJECT;
+
     - name: Import Secrets (Windows)
       if: ${{ runner.os == 'Windows' }}
       id: windowsSecrets
@@ -66,6 +81,10 @@ jobs:
         AWS_BUCKET: "${{ secrets.AWS_ON_DEMAND_BUCKET }}"
         CSC_LINK: "${{ secrets.CSC_LINK }}"
         CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
+        SENTRY_AUTH_TOKEN: "${{ steps.secrets.outputs.SENTRY_AUTH_TOKEN }}"
+        SENTRY_DSN: "${{ steps.secrets.outputs.SENTRY_DSN_DEV }}"
+        SENTRY_ORG: "${{ steps.secrets.outputs.SENTRY_ORG }}"
+        SENTRY_PROJECT: "${{ steps.secrets.outputs.SENTRY_PROJECT }}"
       run: npm run build -- --linux --publish --on-demand
 
     - name: Build distro (MacOS)
@@ -81,6 +100,10 @@ jobs:
         APPLE_TEAM_ID: "${{ secrets.APPLE_TEAM_ID }}"
         CSC_LINK: "${{ secrets.CSC_LINK }}"
         CSC_KEY_PASSWORD: "${{ secrets.CSC_KEY_PASSWORD }}"
+        SENTRY_AUTH_TOKEN: "${{ steps.secrets.outputs.SENTRY_AUTH_TOKEN }}"
+        SENTRY_DSN: "${{ steps.secrets.outputs.SENTRY_DSN_DEV }}"
+        SENTRY_ORG: "${{ steps.secrets.outputs.SENTRY_ORG }}"
+        SENTRY_PROJECT: "${{ steps.secrets.outputs.SENTRY_PROJECT }}"
       run: npm run build -- --mac --publish --on-demand
 
     - name: Build distro (Windows)
@@ -98,4 +121,8 @@ jobs:
         AZURE_ENDPOINT: "${{ steps.windowsSecrets.outputs.AZURE_ENDPOINT }}"
         AZURE_PUBLISHER_NAME: "${{ steps.windowsSecrets.outputs.AZURE_PUBLISHER_NAME }}"
         AZURE_TENANT_ID: "${{ steps.windowsSecrets.outputs.AZURE_TENANT_ID }}"
+        SENTRY_AUTH_TOKEN: "${{ steps.secrets.outputs.SENTRY_AUTH_TOKEN }}"
+        SENTRY_DSN: "${{ steps.secrets.outputs.SENTRY_DSN_DEV }}"
+        SENTRY_ORG: "${{ steps.secrets.outputs.SENTRY_ORG }}"
+        SENTRY_PROJECT: "${{ steps.secrets.outputs.SENTRY_PROJECT }}"
       run: npm run build -- --win --publish --on-demand
