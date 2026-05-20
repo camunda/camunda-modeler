@@ -12,7 +12,7 @@ import debug from 'debug';
 
 import { PureComponent } from 'react';
 
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/electron/renderer';
 import { RewriteFrames } from '@sentry/integrations';
 
 import Metadata from '../../util/Metadata';
