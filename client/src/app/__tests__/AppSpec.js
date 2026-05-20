@@ -4716,6 +4716,438 @@ describe('<App>', function() {
           });
         });
 
+
+        it('should re-lint with current editor contents, not stale file contents', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.openFiles([
+            createFile('1.cloud-bpmn', {
+              contents: 'linting-errors'
+            })
+          ]);
+
+          const { activeTab } = app.state;
+
+          setVersionState(app, activeTab, {
+            engineProfile: {
+              executionPlatform: 'Camunda Cloud',
+              executionPlatformVersion: '8.7.0'
+            },
+            connectionCheckResult: {
+              success: false,
+              reason: 'UNAVAILABLE'
+            }
+          });
+
+          // lint with saved file contents — error should exist
+          await app.lintTab(activeTab, 'linting-errors');
+
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.true;
+          });
+
+          // simulate user removing the task in the editor (unsaved)
+          const tabComponent = app.tabRef.current;
+          tabComponent.currentContents = 'no-errors';
+
+          // when - connection status changes, triggering re-lint
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          });
+
+          // then - lint should use current editor contents (task removed),
+          // not stale file contents (task still present)
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.false;
+          });
+        });
+
+
+        it('should re-lint RPA tab with current editor contents', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.openFiles([
+            createFile('1.rpa', {
+              contents: 'linting-errors'
+            })
+          ]);
+
+          const { activeTab } = app.state;
+
+          setVersionState(app, activeTab, {
+            engineProfile: {
+              executionPlatform: 'Camunda Cloud',
+              executionPlatformVersion: '8.7.0'
+            },
+            connectionCheckResult: {
+              success: false,
+              reason: 'UNAVAILABLE'
+            }
+          });
+
+          await app.lintTab(activeTab, 'linting-errors');
+
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Script_1')).to.be.true;
+          });
+
+          // simulate user editing in the editor (unsaved)
+          const tabComponent = app.tabRef.current;
+          tabComponent.currentContents = 'no-errors';
+
+          // when
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          });
+
+          // then
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Script_1')).to.be.false;
+          });
+        });
+
+
+        it('should re-lint Form (C7) tab with current editor contents', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.openFiles([
+            createFile('1.form', {
+              contents: 'linting-errors'
+            })
+          ]);
+
+          const { activeTab } = app.state;
+
+          setVersionState(app, activeTab, {
+            engineProfile: {
+              executionPlatform: 'Camunda Platform',
+              executionPlatformVersion: '7.15'
+            },
+            connectionCheckResult: {
+              success: false,
+              reason: 'UNAVAILABLE'
+            }
+          });
+
+          await app.lintTab(activeTab, 'linting-errors');
+
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Field_1')).to.be.true;
+          });
+
+          // simulate user editing in the editor (unsaved)
+          const tabComponent = app.tabRef.current;
+          tabComponent.currentContents = 'no-errors';
+
+          // when
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          });
+
+          // then
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Field_1')).to.be.false;
+          });
+        });
+
+
+        it('should re-lint BPMN (C7) tab with current editor contents', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.openFiles([
+            createFile('1.bpmn', {
+              contents: 'linting-errors'
+            })
+          ]);
+
+          const { activeTab } = app.state;
+
+          setVersionState(app, activeTab, {
+            engineProfile: {
+              executionPlatform: 'Camunda Platform',
+              executionPlatformVersion: '7.15'
+            },
+            connectionCheckResult: {
+              success: false,
+              reason: 'UNAVAILABLE'
+            }
+          });
+
+          await app.lintTab(activeTab, 'linting-errors');
+
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.true;
+          });
+
+          // simulate user editing in the editor (unsaved)
+          const tabComponent = app.tabRef.current;
+          tabComponent.currentContents = 'no-errors';
+
+          // when
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          });
+
+          // then
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.false;
+          });
+        });
+
+      });
+
+
+      describe('engine profile changed re-lint', function() {
+
+        it('should re-lint active cloud-bpmn tab with current editor contents', async function() {
+
+          // given
+          const { app } = createApp();
+
+          // create dummy tab to advance uuid past 0
+          // (_handleEngineProfileChanged guards on !tab.id)
+          await app.createDiagram('cloud-bpmn');
+
+          await app.openFiles([
+            createFile('1.cloud-bpmn', {
+              contents: 'linting-errors'
+            })
+          ]);
+
+          const { activeTab } = app.state;
+
+          await app.lintTab(activeTab, 'linting-errors');
+
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.true;
+          });
+
+          // simulate user editing in the editor (unsaved)
+          const tabComponent = app.tabRef.current;
+          tabComponent.currentContents = 'no-errors';
+
+          // when - engine profile changes on active tab
+          app.emit('tab.engineProfileChanged', {
+            tab: activeTab,
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.8.0'
+          });
+
+          // then - should use current editor contents
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.false;
+          });
+        });
+
+
+        it('should re-lint active RPA tab with current editor contents', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.createDiagram('rpa');
+
+          await app.openFiles([
+            createFile('1.rpa', {
+              contents: 'linting-errors'
+            })
+          ]);
+
+          const { activeTab } = app.state;
+
+          await app.lintTab(activeTab, 'linting-errors');
+
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Script_1')).to.be.true;
+          });
+
+          const tabComponent = app.tabRef.current;
+          tabComponent.currentContents = 'no-errors';
+
+          // when
+          app.emit('tab.engineProfileChanged', {
+            tab: activeTab,
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.8.0'
+          });
+
+          // then
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Script_1')).to.be.false;
+          });
+        });
+
+
+        it('should re-lint active Form (C7) tab with current editor contents', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.createDiagram('form');
+
+          await app.openFiles([
+            createFile('1.form', {
+              contents: 'linting-errors'
+            })
+          ]);
+
+          const { activeTab } = app.state;
+
+          await app.lintTab(activeTab, 'linting-errors');
+
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Field_1')).to.be.true;
+          });
+
+          const tabComponent = app.tabRef.current;
+          tabComponent.currentContents = 'no-errors';
+
+          // when
+          app.emit('tab.engineProfileChanged', {
+            tab: activeTab,
+            executionPlatform: 'Camunda Platform',
+            executionPlatformVersion: '7.16'
+          });
+
+          // then
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Field_1')).to.be.false;
+          });
+        });
+
+
+        it('should re-lint active BPMN (C7) tab with current editor contents', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.createDiagram('bpmn');
+
+          await app.openFiles([
+            createFile('1.bpmn', {
+              contents: 'linting-errors'
+            })
+          ]);
+
+          const { activeTab } = app.state;
+
+          await app.lintTab(activeTab, 'linting-errors');
+
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.true;
+          });
+
+          const tabComponent = app.tabRef.current;
+          tabComponent.currentContents = 'no-errors';
+
+          // when
+          app.emit('tab.engineProfileChanged', {
+            tab: activeTab,
+            executionPlatform: 'Camunda Platform',
+            executionPlatformVersion: '7.16'
+          });
+
+          // then
+          await waitFor(() => {
+            const errors = app.getLintingState(activeTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.false;
+          });
+        });
+
+
+        it('should re-lint non-active tab with file contents', async function() {
+
+          // given
+          const { app } = createApp();
+
+          await app.createDiagram('cloud-bpmn');
+
+          await app.openFiles([
+            createFile('1.cloud-bpmn', {
+              contents: 'linting-errors'
+            }),
+            createFile('2.cloud-bpmn', {
+              contents: 'no-errors'
+            })
+          ]);
+
+          // last opened tab is active, '1.cloud-bpmn' is background
+          const backgroundTab = app.state.tabs.find(t => t.file && t.file.path === '1.cloud-bpmn');
+          const { activeTab } = app.state;
+
+          expect(activeTab).to.not.eql(backgroundTab);
+
+          await app.lintTab(backgroundTab, 'linting-errors');
+
+          await waitFor(() => {
+            const errors = app.getLintingState(backgroundTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.true;
+          });
+
+          // when - engine profile changes on background tab
+          app.emit('tab.engineProfileChanged', {
+            tab: backgroundTab,
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.8.0'
+          });
+
+          // then - should use file contents (linting-errors), not editor contents,
+          // because the tab is not active
+          await waitFor(() => {
+            const errors = app.getLintingState(backgroundTab);
+
+            expect(errors.some(e => e.id === 'Task_1')).to.be.true;
+          });
+        });
+
       });
 
     });
