@@ -51,7 +51,8 @@ export default class StartInstance extends EventEmitter {
       processId,
       variables = '{}',
       startInstructions,
-      runtimeInstructions
+      runtimeInstructions,
+      businessId
     } = config;
 
     const startInstanceResult = await this._zeebeAPI.startInstance({
@@ -60,7 +61,8 @@ export default class StartInstance extends EventEmitter {
       processId,
       variables: parseVariables(variables),
       startInstructions,
-      runtimeInstructions
+      runtimeInstructions,
+      businessId: businessId || undefined
     });
 
     this.emit('instanceStarted', {
@@ -82,10 +84,11 @@ export default class StartInstance extends EventEmitter {
    * @returns {Promise<StartInstanceConfig>}
    */
   async getConfigForFile(file) {
-    const { variables = JSON.stringify({}) } = await this._config.getForFile(file, CONFIG_KEYS.CONFIG, {});
+    const { variables = JSON.stringify({}), businessId = '' } = await this._config.getForFile(file, CONFIG_KEYS.CONFIG, {});
 
     return {
-      variables
+      variables,
+      businessId
     };
   }
 

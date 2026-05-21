@@ -9,7 +9,7 @@
  */
 
 import { expect } from 'chai';
-import StartInstanceConfigValidator, { VALIDATION_ERROR_MESSAGES } from '../StartInstanceConfigValidator';
+import StartInstanceConfigValidator, { BUSINESS_ID_MAX_LENGTH, VALIDATION_ERROR_MESSAGES } from '../StartInstanceConfigValidator';
 
 describe('<StartInstanceConfigValidator>', function() {
 
@@ -38,6 +38,50 @@ describe('<StartInstanceConfigValidator>', function() {
 
     });
 
+
+    describe('businessId', function() {
+
+      it('should validate (empty)', function() {
+
+        // when
+        const validationError = StartInstanceConfigValidator.validateConfigValue('businessId', '');
+
+        // then
+        expect(validationError).to.be.null;
+      });
+
+
+      it('should validate (valid)', function() {
+
+        // when
+        const validationError = StartInstanceConfigValidator.validateConfigValue('businessId', 'order-1234');
+
+        // then
+        expect(validationError).to.be.null;
+      });
+
+
+      it('should validate (at max length)', function() {
+
+        // when
+        const validationError = StartInstanceConfigValidator.validateConfigValue('businessId', 'a'.repeat(BUSINESS_ID_MAX_LENGTH));
+
+        // then
+        expect(validationError).to.be.null;
+      });
+
+
+      it('should validate (too long)', function() {
+
+        // when
+        const validationError = StartInstanceConfigValidator.validateConfigValue('businessId', 'a'.repeat(BUSINESS_ID_MAX_LENGTH + 1));
+
+        // then
+        expect(validationError).to.eql(VALIDATION_ERROR_MESSAGES.BUSINESS_ID_TOO_LONG);
+      });
+
+    });
+
   });
 
 
@@ -51,6 +95,14 @@ describe('<StartInstanceConfigValidator>', function() {
         });
       });
 
+
+      it('should be valid (with businessId)', function() {
+        expectNoValidationErrors({
+          variables: '{ "foo": "bar" }',
+          businessId: 'order-1234'
+        });
+      });
+
     });
 
 
@@ -61,6 +113,16 @@ describe('<StartInstanceConfigValidator>', function() {
           variables: '{'
         }, {
           'variables': VALIDATION_ERROR_MESSAGES.VARIABLES_MUST_BE_VALID_JSON
+        });
+      });
+
+
+      it('should not be valid (businessId too long)', function() {
+        expectValidationErrors({
+          variables: '{}',
+          businessId: 'a'.repeat(BUSINESS_ID_MAX_LENGTH + 1)
+        }, {
+          'businessId': VALIDATION_ERROR_MESSAGES.BUSINESS_ID_TOO_LONG
         });
       });
 

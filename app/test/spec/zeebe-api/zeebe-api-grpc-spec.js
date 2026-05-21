@@ -566,6 +566,37 @@ describe('ZeebeAPI (gRPC)', function() {
       expect(result.response).not.to.be.instanceOf(Error);
     });
 
+
+    it('should pass businessId to gRPC client', async function() {
+
+      // given
+      const createProcessInstanceSpy = sinon.spy();
+
+      const zeebeAPI = createZeebeAPI({
+        ZeebeGrpcApiClient: {
+          createProcessInstance: createProcessInstanceSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processId: 'myProcess',
+        businessId: 'order-123'
+      };
+
+      // when
+      await zeebeAPI.startInstance(parameters);
+
+      // then
+      expect(createProcessInstanceSpy).to.have.been.calledOnce;
+
+      const callArgs = createProcessInstanceSpy.firstCall.args[0];
+      expect(callArgs.businessId).to.eql('order-123');
+    });
+
   });
 
 

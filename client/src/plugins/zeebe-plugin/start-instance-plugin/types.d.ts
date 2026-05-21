@@ -11,4 +11,5 @@ export interface StartInstanceResult {
 
 export interface StartInstanceConfig extends DeploymentConfig {
   variables: Record<string, any>;
+  businessId?: string;
 }

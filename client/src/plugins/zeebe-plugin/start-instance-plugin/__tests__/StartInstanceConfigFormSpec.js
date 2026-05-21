@@ -98,6 +98,198 @@ describe('<StartInstanceConfigForm>', function() {
 
     });
 
+
+    describe('businessId', function() {
+
+      it('should render', function() {
+
+        // when
+        const { container } = createStartInstanceConfigForm();
+
+        // then
+        expect(container.querySelector('label[for="businessId"]')).to.not.be.null;
+      });
+
+
+      it('should be enabled when cluster version >= 8.9', function() {
+
+        // when
+        const { container } = createStartInstanceConfigForm({
+          connectionCheckResult: {
+            success: true,
+            response: {
+              gatewayVersion: '8.9.0'
+            }
+          }
+        });
+
+        // then
+        expect(container.querySelector('input[name="businessId"]').disabled).to.be.false;
+      });
+
+
+      it('should be enabled when cluster version < 8.9', function() {
+
+        // when
+        const { container } = createStartInstanceConfigForm({
+          connectionCheckResult: {
+            success: true,
+            response: {
+              gatewayVersion: '8.8.0'
+            }
+          }
+        });
+
+        // then
+        const businessIdInput = container.querySelector('input[name="businessId"]');
+        expect(businessIdInput.disabled).to.be.false;
+      });
+
+
+      it('should be enabled when no connection check result', function() {
+
+        // when
+        const { container } = createStartInstanceConfigForm();
+
+        // then
+        const businessIdInput = container.querySelector('input[name="businessId"]');
+        expect(businessIdInput.disabled).to.be.false;
+      });
+
+
+      it('should be enabled when connection check fails', function() {
+
+        // when
+        const { container } = createStartInstanceConfigForm({
+          connectionCheckResult: {
+            success: false,
+            reason: 'UNKNOWN'
+          }
+        });
+
+        // then
+        const businessIdInput = container.querySelector('input[name="businessId"]');
+        expect(businessIdInput.disabled).to.be.false;
+      });
+
+
+      it('should preserve businessId when connecting to unsupported cluster', async function() {
+
+        // given
+        const supportedCluster = {
+          success: true,
+          response: { gatewayVersion: '8.9.0' }
+        };
+
+        const unsupportedCluster = {
+          success: true,
+          response: { gatewayVersion: '8.8.0' }
+        };
+
+        const { container, rerender } = createStartInstanceConfigForm({
+          initialFieldValues: { businessId: 'my-id' },
+          connectionCheckResult: supportedCluster
+        });
+
+        // when
+        await act(async () => {
+          rerenderStartInstanceConfigForm(rerender, {
+            initialFieldValues: { businessId: 'my-id' },
+            connectionCheckResult: unsupportedCluster
+          });
+        });
+
+        // then
+        expect(container.querySelector('input[name="businessId"]').value).to.eql('my-id');
+      });
+
+
+      it('should show version hint when field has a value and cluster is unsupported', function() {
+
+        // when
+        const { container } = createStartInstanceConfigForm({
+          initialFieldValues: { businessId: 'my-id' },
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          }
+        });
+
+        // then
+        const businessIdInput = container.querySelector('input[name="businessId"]');
+        const description = businessIdInput.closest('.form-group').querySelector('.custom-control-description');
+        expect(description.textContent).to.include('Requires Camunda 8.9.0 or later');
+      });
+
+
+      it('should not show version hint when field is empty with unsupported cluster', function() {
+
+        // when
+        const { container } = createStartInstanceConfigForm({
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          }
+        });
+
+        // then
+        const businessIdInput = container.querySelector('input[name="businessId"]');
+        const description = businessIdInput.closest('.form-group').querySelector('.custom-control-description');
+        expect(description).to.be.null;
+      });
+
+
+      it('should show version hint after user types value on unsupported cluster', async function() {
+
+        // given
+        const { container } = createStartInstanceConfigForm({
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          }
+        });
+
+        // when
+        await act(async () => {
+          fireEvent.change(container.querySelector('input[name="businessId"]'), {
+            target: { name: 'businessId', value: 'order-123' }
+          });
+        });
+
+        // then
+        const businessIdInput = container.querySelector('input[name="businessId"]');
+        const description = businessIdInput.closest('.form-group').querySelector('.custom-control-description');
+        expect(description.textContent).to.include('Requires Camunda 8.9.0 or later');
+      });
+
+
+      it('should not show version hint when field is touched but empty on unsupported cluster', async function() {
+
+        // given
+        const { container } = createStartInstanceConfigForm({
+          connectionCheckResult: {
+            success: true,
+            response: { gatewayVersion: '8.8.0' }
+          }
+        });
+
+        // when
+        await act(async () => {
+          fireEvent.focus(container.querySelector('input[name="businessId"]'));
+        });
+
+        await act(async () => {
+          fireEvent.blur(container.querySelector('input[name="businessId"]'));
+        });
+
+        // then
+        const businessIdInput = container.querySelector('input[name="businessId"]');
+        const description = businessIdInput.closest('.form-group').querySelector('.custom-control-description');
+        expect(description).to.be.null;
+      });
+
+    });
+
   });
 
 
@@ -173,9 +365,10 @@ describe('<StartInstanceConfigForm>', function() {
       });
 
       // then
-      expect(validateFieldSpy.callCount).to.eql(1);
+      expect(validateFieldSpy.callCount).to.eql(2);
 
       expect(validateFieldSpy).to.have.been.calledWith('variables', '{}');
+      expect(validateFieldSpy).to.have.been.calledWith('businessId', undefined);
 
       expect(validateFormSpy).to.have.been.calledOnce;
 
@@ -210,7 +403,7 @@ describe('<StartInstanceConfigForm>', function() {
       });
 
       // then
-      expect(validateFieldSpy.callCount).to.eql(1);
+      expect(validateFieldSpy.callCount).to.eql(2);
       expect(validateFormSpy.callCount).to.eql(1);
     });
 
@@ -242,7 +435,7 @@ describe('<StartInstanceConfigForm>', function() {
       });
 
       // then
-      expect(validateFieldSpy.callCount).to.eql(1);
+      expect(validateFieldSpy.callCount).to.eql(2);
       expect(validateFormSpy.callCount).to.eql(1);
     });
 
@@ -448,7 +641,7 @@ const DEFAULT_INITIAL_FIELD_VALUES = {
 function createStartInstanceConfigForm(props = {}) {
   let {
     connectionCheckResult,
-    getFieldError = (meta, fieldName) => {},
+    getFieldError = (_meta, _fieldName) => {},
     handleChangeConnections = () => {},
     handleManageConnections = () => {},
     handleOpenLintingPanel = () => {},
@@ -468,6 +661,45 @@ function createStartInstanceConfigForm(props = {}) {
   initialFieldValues = merge({}, DEFAULT_INITIAL_FIELD_VALUES, initialFieldValues);
 
   return render(<StartInstanceConfigForm
+    connectionCheckResult={ connectionCheckResult }
+    getFieldError={ getFieldError }
+    handleChangeConnections={ handleChangeConnections }
+    handleManageConnections={ handleManageConnections }
+    handleOpenLintingPanel={ handleOpenLintingPanel }
+    hasLintErrors={ hasLintErrors }
+    initialFieldValues={ initialFieldValues }
+    onSubmit={ onSubmit }
+    renderHeader={ renderHeader }
+    renderSubmit={ renderSubmit }
+    validateField={ validateField }
+    validateForm={ validateForm }
+    VariablesComponent={ VariablesComponent }
+    variablesComponentProps={ variablesComponentProps } />);
+}
+
+function rerenderStartInstanceConfigForm(rerender, props = {}) {
+  let {
+    connectionCheckResult,
+    getFieldError = () => {},
+    handleChangeConnections = () => {},
+    handleManageConnections = () => {},
+    handleOpenLintingPanel = () => {},
+    hasLintErrors = false,
+    initialFieldValues = {},
+    onSubmit = () => {},
+    renderHeader = null,
+    renderSubmit = 'Submit',
+    validateField = () => {},
+    validateForm = () => {},
+    VariablesComponent = TextInput,
+    variablesComponentProps = {
+      multiline: true
+    }
+  } = props;
+
+  initialFieldValues = merge({}, DEFAULT_INITIAL_FIELD_VALUES, initialFieldValues);
+
+  rerender(<StartInstanceConfigForm
     connectionCheckResult={ connectionCheckResult }
     getFieldError={ getFieldError }
     handleChangeConnections={ handleChangeConnections }

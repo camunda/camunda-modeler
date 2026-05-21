@@ -19,6 +19,52 @@ describe('StartInstance', function() {
 
   describe('#startInstance', function() {
 
+    it('should not send empty businessId in API call', async function() {
+
+      // given
+      const config = createMockConfig({ businessId: '' }),
+            startInstanceResult = createMockStartInstanceResult();
+
+      const zeebeAPI = new MockZeebeAPI({
+        startInstance: sinon.stub().resolves(startInstanceResult)
+      });
+
+      const startInstance = createStartInstance({
+        zeebeAPI
+      });
+
+      // when
+      await startInstance.startInstance(config);
+
+      // then
+      const callArgs = zeebeAPI.startInstance.firstCall.args[0];
+      expect(callArgs.businessId).to.be.undefined;
+    });
+
+
+    it('should include businessId in API call when provided', async function() {
+
+      // given
+      const config = createMockConfig({ businessId: 'order-123' }),
+            startInstanceResult = createMockStartInstanceResult();
+
+      const zeebeAPI = new MockZeebeAPI({
+        startInstance: sinon.stub().resolves(startInstanceResult)
+      });
+
+      const startInstance = createStartInstance({
+        zeebeAPI
+      });
+
+      // when
+      await startInstance.startInstance(config);
+
+      // then
+      const callArgs = zeebeAPI.startInstance.firstCall.args[0];
+      expect(callArgs).to.have.property('businessId', 'order-123');
+    });
+
+
     it('should start instance', async function() {
 
       // given
@@ -54,7 +100,8 @@ describe('StartInstance', function() {
           foo: 'bar'
         },
         startInstructions: undefined,
-        runtimeInstructions: undefined
+        runtimeInstructions: undefined,
+        businessId: undefined
       });
 
       expect(instanceStartedSpy).to.have.been.calledOnce;
@@ -94,7 +141,8 @@ describe('StartInstance', function() {
       expect(config).to.eql({
         variables: JSON.stringify({
           foo: 'bar'
-        })
+        }),
+        businessId: ''
       });
     });
 
@@ -113,7 +161,8 @@ describe('StartInstance', function() {
 
       // then
       expect(config).to.eql({
-        variables: JSON.stringify({})
+        variables: JSON.stringify({}),
+        businessId: ''
       });
     });
 

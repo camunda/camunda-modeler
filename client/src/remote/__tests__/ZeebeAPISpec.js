@@ -278,7 +278,8 @@ describe('<ZeebeAPI>', function() {
         },
         variables,
         startInstructions: undefined,
-        runtimeInstructions: undefined
+        runtimeInstructions: undefined,
+        businessId: undefined
       });
     });
 
@@ -324,7 +325,8 @@ describe('<ZeebeAPI>', function() {
         },
         variables,
         startInstructions: undefined,
-        runtimeInstructions: undefined
+        runtimeInstructions: undefined,
+        businessId: undefined
       });
     });
 
@@ -374,7 +376,8 @@ describe('<ZeebeAPI>', function() {
         },
         variables,
         startInstructions: undefined,
-        runtimeInstructions: undefined
+        runtimeInstructions: undefined,
+        businessId: undefined
       });
     });
 
@@ -429,7 +432,8 @@ describe('<ZeebeAPI>', function() {
         },
         variables,
         startInstructions: undefined,
-        runtimeInstructions: undefined
+        runtimeInstructions: undefined,
+        businessId: undefined
       });
     });
 
@@ -485,7 +489,8 @@ describe('<ZeebeAPI>', function() {
         },
         variables,
         startInstructions: undefined,
-        runtimeInstructions: undefined
+        runtimeInstructions: undefined,
+        businessId: undefined
       });
     });
 
@@ -541,7 +546,8 @@ describe('<ZeebeAPI>', function() {
         },
         variables,
         startInstructions: undefined,
-        runtimeInstructions: undefined
+        runtimeInstructions: undefined,
+        businessId: undefined
       });
     });
 

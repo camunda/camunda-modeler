@@ -60,7 +60,8 @@ export default class ZeebeAPI {
       processId,
       variables,
       startInstructions,
-      runtimeInstructions
+      runtimeInstructions,
+      businessId
     } = options;
 
     endpoint = getEndpointForTargetType(endpoint);
@@ -71,7 +72,8 @@ export default class ZeebeAPI {
       processId,
       variables,
       startInstructions,
-      runtimeInstructions
+      runtimeInstructions,
+      businessId
     });
   }
 

@@ -63,6 +63,7 @@ const {
  * @property {Array} [startInstructions]
  * @property {Array} [runtimeInstructions]
  * @property {Object} [variables]
+ * @property {string} [businessId]
  */
 
 /**
@@ -242,7 +243,8 @@ class ZeebeAPI {
       processDefinitionKey,
       processId,
       startInstructions,
-      runtimeInstructions
+      runtimeInstructions,
+      businessId
     } = config;
 
     this._log.debug('start instance', {
@@ -268,6 +270,7 @@ class ZeebeAPI {
           bpmnProcessId: processId,
           variables,
           startInstructions,
+          businessId,
         });
 
         return {
@@ -281,7 +284,8 @@ class ZeebeAPI {
         const requestBody = {
           variables,
           startInstructions,
-          runtimeInstructions
+          runtimeInstructions,
+          businessId
         };
 
         if (processDefinitionKey) {
