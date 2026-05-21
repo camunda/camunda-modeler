@@ -12,8 +12,11 @@
  * @typedef {import('../deployment-plugin/types.d.ts').DeploymentConfig} DeploymentConfig
  */
 
+export const BUSINESS_ID_MAX_LENGTH = 256;
+
 export const VALIDATION_ERROR_MESSAGES = {
   VARIABLES_MUST_BE_VALID_JSON: 'Variables must be valid JSON.',
+  BUSINESS_ID_TOO_LONG: `Business ID must not exceed ${BUSINESS_ID_MAX_LENGTH} characters.`,
 };
 
 export default class StartInstanceConfigValidator {
@@ -29,6 +32,12 @@ export default class StartInstanceConfigValidator {
   static validateConfigValue(name, value) {
     if (name === 'variables') {
       return value.trim().length && validateJSON(value, VALIDATION_ERROR_MESSAGES.VARIABLES_MUST_BE_VALID_JSON);
+    }
+
+    if (name === 'businessId') {
+      if (value && value.length > BUSINESS_ID_MAX_LENGTH) {
+        return VALIDATION_ERROR_MESSAGES.BUSINESS_ID_TOO_LONG;
+      }
     }
 
     return null;
@@ -48,6 +57,12 @@ export default class StartInstanceConfigValidator {
 
     if (variablesValidationError) {
       validationErrors['variables'] = variablesValidationError;
+    }
+
+    const businessIdValidationError = StartInstanceConfigValidator.validateConfigValue('businessId', config.businessId);
+
+    if (businessIdValidationError) {
+      validationErrors['businessId'] = businessIdValidationError;
     }
 
     return validationErrors;

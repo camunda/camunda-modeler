@@ -1,4 +1,16 @@
 :local(.StartInstancePluginOverlay) {
+  .form-group > label,
+  .custom-text-input > label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+
+    .cds--toggletip-button {
+      inline-size: auto;
+    }
+  }
+
   .section__header {
     display: flex;
     align-items: center;
@@ -6,5 +18,12 @@
     svg {
       margin-right: 6px;
     }
+  }
+
+  .version-hint {
+    color: var(--color-red-360-100-45);
+    margin-top: 6px;
+    font-size: 13px;
+    display: inline-block;
   }
 }
