@@ -116,7 +116,7 @@ export default function StartInstanceConfigForm(props) {
                       { connectionCheckResult?.success !== false && hasLintErrors && (
                         <FormFeedback
                           error={ <>
-                            Diagram has linting errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
+                            Diagram has errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
                           </> }
                         />
                       )}
