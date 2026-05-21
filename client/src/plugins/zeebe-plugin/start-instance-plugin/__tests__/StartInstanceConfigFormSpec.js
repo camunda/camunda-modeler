@@ -381,7 +381,7 @@ describe('<StartInstanceConfigForm>', function() {
 
       // then
       const feedbacks = container.querySelectorAll('.invalid-feedback');
-      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('linting errors'));
+      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('has errors'));
       expect(lintFeedback).to.exist;
     });
 
@@ -395,7 +395,7 @@ describe('<StartInstanceConfigForm>', function() {
 
       // then
       const feedbacks = container.querySelectorAll('.invalid-feedback');
-      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('linting errors'));
+      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('has errors'));
       expect(lintFeedback).to.not.exist;
     });
 
@@ -410,7 +410,7 @@ describe('<StartInstanceConfigForm>', function() {
 
       // then
       const feedbacks = container.querySelectorAll('.invalid-feedback');
-      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('linting errors'));
+      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('has errors'));
       expect(lintFeedback).to.not.exist;
 
       const connectionFeedback = Array.from(feedbacks).find(el => el.textContent.includes('Could not establish connection'));
@@ -430,7 +430,7 @@ describe('<StartInstanceConfigForm>', function() {
 
       // when
       const feedbacks = container.querySelectorAll('.invalid-feedback');
-      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('linting errors'));
+      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('has errors'));
       fireEvent.click(lintFeedback.querySelector('a'));
 
       // then

@@ -47,8 +47,8 @@ export const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST co
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE = 'Execution platform version not supported';
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
 
-export const LINTING_ERRORS_TITLE = 'Diagram has linting errors';
-export const LINTING_ERRORS_DESCRIPTION = 'Task testing requires a diagram without linting errors.';
+export const LINTING_ERRORS_TITLE = 'Diagram has errors';
+export const LINTING_ERRORS_DESCRIPTION = 'Task testing requires a diagram without errors.';
 
 const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/');
 

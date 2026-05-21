@@ -67,7 +67,7 @@ export default function DeploymentConfigForm(props) {
               { connectionCheckResult?.success !== false && hasLintErrors && (
                 <FormFeedback
                   error={ <>
-                    Diagram has linting errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
+                    Diagram has errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
                   </> }
                 />
               )}
