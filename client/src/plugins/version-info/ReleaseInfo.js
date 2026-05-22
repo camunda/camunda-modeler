@@ -47,20 +47,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Execution listener headers</h4>
-          Execution listeners now support headers configuration in the properties panel and via element templates.
+          <h4>Forms on start events</h4>
+          You can now attach Camunda Forms directly to start events.
         </li>
         <li>
-          <h4>Improved canvas interactions</h4>
-          Lasso-selected elements now show a clear outline of selected elements. Enclosed artifacts are moved together with participants and sub-processes.
+          <h4>Track where variables are used</h4>
+          The variable outline now shows a &quot;Used by&quot; section, so you can quickly see which elements read a given variable.
         </li>
         <li>
-          <h4>Version mismatch warnings</h4>
-          A warning is shown when the selected Camunda version differs from the connected cluster version.
+          <h4>Validation before deploy</h4>
+          Lint errors are surfaced before you deploy or start a process instance, helping you catch issues early.
         </li>
         <li>
-          <h4>JSON editor for example data</h4>
-          The example data input now uses a dedicated JSON editor with syntax and error highlighting.
+          <h4>Resizable labels and improved annotations</h4>
+          You can now resize external labels, and text annotations received rendering improvements for better readability.
         </li>
         <li>
           <h4>Bug fixes and more</h4>
