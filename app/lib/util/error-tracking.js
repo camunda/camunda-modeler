@@ -22,6 +22,13 @@ const NON_EXISTENT_EDITOR_ID = 'NON_EXISTENT_EDITOR_ID';
 const SENTRY_DSN_FLAG = 'sentry-dsn';
 const DISABLE_REMOTE_INTERACTION_FLAG = 'disable-remote-interaction';
 
+const SIGNATURE_CAP = 5;
+const RENDER_LOOP_CAP = 1;
+
+const REACT_RENDER_LOOP_MESSAGES = [
+  /Maximum update depth exceeded/
+];
+
 let isActive = false;
 
 const additionalTags = [];
@@ -116,6 +123,7 @@ function initializeSentry(Sentry, editorID, release, dsn) {
     Sentry.init({
       dsn,
       release,
+      beforeSend: createThrottler(),
       integrations: [
         rewriteFramesIntegration({
           iteratee: (frame) => {
@@ -169,3 +177,51 @@ function normalizeUrl(path) {
   const filename = path.replace(/^.*[\\\/]/, '');
   return 'file:///build/' + filename;
 }
+
+/**
+ * Build a Sentry `beforeSend` callback that drops non-actionable events and
+ * caps repeated reports per error signature within a session.
+ */
+function createThrottler() {
+  const counts = new Map();
+
+  return function beforeSend(event) {
+    const value = getExceptionValue(event);
+
+    const isRenderLoop = REACT_RENDER_LOOP_MESSAGES.some(re => re.test(value));
+    const cap = isRenderLoop ? RENDER_LOOP_CAP : SIGNATURE_CAP;
+
+    const signature = getSignature(event);
+    const count = counts.get(signature) || 0;
+
+    if (count >= cap) {
+      return null;
+    }
+
+    counts.set(signature, count + 1);
+    return event;
+  };
+}
+
+function getExceptionValue(event) {
+  const values = event && event.exception && event.exception.values;
+
+  if (values && values.length) {
+    return (values[0] && values[0].value) || '';
+  }
+
+  return (event && event.message) || '';
+}
+
+function getSignature(event) {
+  const values = event && event.exception && event.exception.values;
+
+  if (values && values.length) {
+    const v = values[0] || {};
+    return (v.type || 'Error') + ':' + (v.value || '');
+  }
+
+  return (event && event.message) || 'unknown';
+}
+
+module.exports.createThrottler = createThrottler;

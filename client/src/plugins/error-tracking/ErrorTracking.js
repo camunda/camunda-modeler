@@ -24,6 +24,13 @@ const EDITOR_ID_CONFIG_KEY = 'editor.id';
 const CRASH_REPORTS_CONFIG_KEY = 'ENABLE_CRASH_REPORTS';
 const NON_EXISTENT_EDITOR_ID = 'NON_EXISTENT_EDITOR_ID';
 
+const SIGNATURE_CAP = 5;
+const RENDER_LOOP_CAP = 1;
+
+const REACT_RENDER_LOOP_MESSAGES = [
+  /Maximum update depth exceeded/
+];
+
 const log = debug('ErrorTracking');
 
 // DSN is set to our CI provider as an env variable, passed to client via WebPack DefinePlugin
@@ -77,6 +84,8 @@ export default class ErrorTracking extends PureComponent {
 
     try {
 
+      this._throttler = createThrottler();
+
       // Source map uploaded to Sentry from WebPack is tagged with the
       // version number in package.json which is supposed to be the same
       // with Metadata.data.version (except for dev environments
@@ -84,6 +93,7 @@ export default class ErrorTracking extends PureComponent {
       this._sentry.init({
         dsn: this.SENTRY_DSN,
         release: releaseTag,
+        beforeSend: this._throttler,
         integrations: [
           rewriteFramesIntegration({
             iteratee: (frame) => {
@@ -222,5 +232,54 @@ function generatePluginsTag(plugins) {
   }
 
   return plugins.map(({ name }) => name).join(',');
+}
+
+/**
+ * Build a Sentry `beforeSend` callback that drops non-actionable events and
+ * caps repeated reports per error signature within a session.
+ *
+ * Single broken installs and render loops can otherwise emit thousands of
+ * events for the same error and consume the project quota.
+ */
+export function createThrottler() {
+  const counts = new Map();
+
+  return function beforeSend(event) {
+    const value = getExceptionValue(event);
+
+    const isRenderLoop = REACT_RENDER_LOOP_MESSAGES.some(re => re.test(value));
+    const cap = isRenderLoop ? RENDER_LOOP_CAP : SIGNATURE_CAP;
+
+    const signature = getSignature(event);
+    const count = counts.get(signature) || 0;
+
+    if (count >= cap) {
+      return null;
+    }
+
+    counts.set(signature, count + 1);
+    return event;
+  };
+}
+
+function getExceptionValue(event) {
+  const values = event && event.exception && event.exception.values;
+
+  if (values && values.length) {
+    return (values[0] && values[0].value) || '';
+  }
+
+  return (event && event.message) || '';
+}
+
+function getSignature(event) {
+  const values = event && event.exception && event.exception.values;
+
+  if (values && values.length) {
+    const v = values[0] || {};
+    return (v.type || 'Error') + ':' + (v.value || '');
+  }
+
+  return (event && event.message) || 'unknown';
 }
 
