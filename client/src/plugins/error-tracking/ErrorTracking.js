@@ -13,7 +13,7 @@ import debug from 'debug';
 import { PureComponent } from 'react';
 
 import * as Sentry from '@sentry/electron/renderer';
-import { RewriteFrames } from '@sentry/integrations';
+import { rewriteFramesIntegration } from '@sentry/integrations';
 
 import Metadata from '../../util/Metadata';
 
@@ -85,7 +85,7 @@ export default class ErrorTracking extends PureComponent {
         dsn: this.SENTRY_DSN,
         release: releaseTag,
         integrations: [
-          new RewriteFrames({
+          rewriteFramesIntegration({
             iteratee: (frame) => {
               if (!frame.filename) {
                 return frame;

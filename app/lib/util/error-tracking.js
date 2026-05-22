@@ -12,7 +12,7 @@ const os = require('os');
 
 const log = require('../log')('app:error-tracking');
 
-const { RewriteFrames } = require('@sentry/integrations');
+const { rewriteFramesIntegration } = require('@sentry/integrations');
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
@@ -117,7 +117,7 @@ function initializeSentry(Sentry, editorID, release, dsn) {
       dsn,
       release,
       integrations: [
-        new RewriteFrames({
+        rewriteFramesIntegration({
           iteratee: (frame) => {
             if (!frame.filename) {
               return frame;
