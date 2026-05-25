@@ -11,6 +11,8 @@
 import mixpanel from 'mixpanel-browser';
 import Metadata from '../../util/Metadata';
 
+const MIXPANEL_ENDPOINT = 'https://api-eu.mixpanel.com';
+
 export default class MixpanelHandler {
 
   constructor() {
@@ -39,6 +41,7 @@ export default class MixpanelHandler {
     const debug = stage === 'prod' ? false : true;
 
     mixpanel.init(token, {
+      api_host: MIXPANEL_ENDPOINT,
       property_blacklist: [ '$current_url' ],
       debug
     });
