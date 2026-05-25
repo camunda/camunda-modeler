@@ -10,15 +10,9 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FEAT`: display "Used by" section showing elements that read a variable ([#5937](https://github.com/camunda/camunda-modeler/issues/5937))
-* `FEAT`: highlight root scope when nothing is selected in the canvas ([#5926](https://github.com/camunda/camunda-modeler/issues/5926))
-* `FEAT`: improve Camunda 8 tooltips/guidance ([#5527](https://github.com/camunda/camunda-modeler/issues/5527))
-* `FEAT`: support Business ID when starting a process instance ([#5913](https://github.com/camunda/camunda-modeler/issues/5913))
-* `FEAT`: add regex validation for tenant IDs ([#5905](https://github.com/camunda/camunda-modeler/issues/5905))
-* `FEAT`: indicate lint errors before deploying or testing ([#5804](https://github.com/camunda/camunda-modeler/issues/5804))
-* `FIX`: fix Select All shortcut in Variable Outline not working ([#5841](https://github.com/camunda/camunda-modeler/issues/5841))
-* `FIX`: re-validate forms whenever the execution platform version changes ([#5861](https://github.com/camunda/camunda-modeler/issues/5861))
-* `FIX`: fix linting error shown for a removed task ([#5949](https://github.com/camunda/camunda-modeler/issues/5949))
+* `FEAT`: add regex validation for tenant ID ([#5905](https://github.com/camunda/camunda-modeler/issues/5905))
+* `FEAT`: indicate lint errors before deployment, test, or instance start ([#5804](https://github.com/camunda/camunda-modeler/issues/5804))
+* `FEAT`: use EU endpoint for tracking ([#5973](https://github.com/camunda/camunda-modeler/pull/5973))
 * `DEPS`: update to `@bpmn-io/properties-panel@3.44.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@3.1.0`
 * `DEPS`: update to `@camunda/linting@3.50.0`
@@ -27,19 +21,30 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-bpmn-js@5.28.0`
 * `DEPS`: update to `diagram-js@15.14.0`
 * `DEPS`: update to `dmn-js@17.8.1`
+* `DEPS`: update to `electron@42`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.14.0`
 
 ### BPMN
 
+* `FEAT`: support Business ID when starting a process instance ([#5913](https://github.com/camunda/camunda-modeler/issues/5913))
+* `FEAT`: display "Used by" section showing elements that read a variable ([#5937](https://github.com/camunda/camunda-modeler/issues/5937))
+* `FEAT`: highlight root scope when nothing is selected in the canvas ([#5926](https://github.com/camunda/camunda-modeler/issues/5926))
 * `FEAT`: resizable external labels & improved annotations ([bpmn-io/bpmn-js#1513](https://github.com/bpmn-io/bpmn-js/issues/1513))
-* `FEAT`: add forms support for start event ([#4672](https://github.com/camunda/camunda-modeler/issues/4672))
+* `FEAT`: add support for start event forms ([#4672](https://github.com/camunda/camunda-modeler/issues/4672))
 * `FEAT`: add multi-instance specific event types for execution listeners ([#5869](https://github.com/camunda/camunda-modeler/issues/5869))
 * `FEAT`: support `cancel` execution listener rules ([#5929](https://github.com/camunda/camunda-modeler/issues/5929))
+* `FEAT`: improve Camunda 8 tooltips/guidance ([#5527](https://github.com/camunda/camunda-modeler/issues/5527))
 * `FIX`: render data output with filled arrow ([bpmn-io/bpmn-js#2425](https://github.com/bpmn-io/bpmn-js/pull/2425))
+* `FIX`: fix Select All shortcut in variable outline not working ([#5841](https://github.com/camunda/camunda-modeler/issues/5841))
+* `FIX`: fix linting error shown for a removed task ([#5949](https://github.com/camunda/camunda-modeler/issues/5949))
 
 ### DMN
 
 * `FIX`: allow setting variable on element without one ([bpmn-io/dmn-js#994](https://github.com/bpmn-io/dmn-js/issues/994))
+
+### Forms
+
+* `FIX`: re-validate forms whenever the execution platform version changes ([#5861](https://github.com/camunda/camunda-modeler/issues/5861))
 
 ## 5.47.0
 
