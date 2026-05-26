@@ -15,6 +15,8 @@ import { PureComponent } from 'react';
 import * as Sentry from '@sentry/electron/renderer';
 import { rewriteFramesIntegration } from '@sentry/integrations';
 
+import { createThrottler } from '../../../../app/lib/util/error-tracking-throttler';
+
 import Metadata from '../../util/Metadata';
 
 import Flags, { SENTRY_DSN, DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
@@ -23,13 +25,6 @@ const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
 const CRASH_REPORTS_CONFIG_KEY = 'ENABLE_CRASH_REPORTS';
 const NON_EXISTENT_EDITOR_ID = 'NON_EXISTENT_EDITOR_ID';
-
-const SIGNATURE_CAP = 5;
-const RENDER_LOOP_CAP = 1;
-
-const REACT_RENDER_LOOP_MESSAGES = [
-  /Maximum update depth exceeded/
-];
 
 const log = debug('ErrorTracking');
 
@@ -233,53 +228,3 @@ function generatePluginsTag(plugins) {
 
   return plugins.map(({ name }) => name).join(',');
 }
-
-/**
- * Build a Sentry `beforeSend` callback that drops non-actionable events and
- * caps repeated reports per error signature within a session.
- *
- * Single broken installs and render loops can otherwise emit thousands of
- * events for the same error and consume the project quota.
- */
-export function createThrottler() {
-  const counts = new Map();
-
-  return function beforeSend(event) {
-    const value = getExceptionValue(event);
-
-    const isRenderLoop = REACT_RENDER_LOOP_MESSAGES.some(re => re.test(value));
-    const cap = isRenderLoop ? RENDER_LOOP_CAP : SIGNATURE_CAP;
-
-    const signature = getSignature(event);
-    const count = counts.get(signature) || 0;
-
-    if (count >= cap) {
-      return null;
-    }
-
-    counts.set(signature, count + 1);
-    return event;
-  };
-}
-
-function getExceptionValue(event) {
-  const values = event && event.exception && event.exception.values;
-
-  if (values && values.length) {
-    return (values[0] && values[0].value) || '';
-  }
-
-  return (event && event.message) || '';
-}
-
-function getSignature(event) {
-  const values = event && event.exception && event.exception.values;
-
-  if (values && values.length) {
-    const v = values[0] || {};
-    return (v.type || 'Error') + ':' + (v.value || '');
-  }
-
-  return (event && event.message) || 'unknown';
-}
-
