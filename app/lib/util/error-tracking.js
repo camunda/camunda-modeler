@@ -13,6 +13,7 @@ const os = require('os');
 const log = require('../log')('app:error-tracking');
 
 const { RewriteFrames } = require('@sentry/integrations');
+const { makeNodeTransport } = require('@sentry/node');
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
@@ -116,6 +117,7 @@ function initializeSentry(Sentry, editorID, release, dsn) {
     Sentry.init({
       dsn,
       release,
+      transport: makeNodeTransport,
       integrations: [
         new RewriteFrames({
           iteratee: (frame) => {
