@@ -49,7 +49,7 @@ module.exports.start = function(Sentry, version, config, flags, renderer) {
 /**
  * Set additional tag in Sentry
  *
- * @param {import('@sentry/electron/main')} Sentry
+ * @param {import('@sentry/node')} Sentry
  * @param {string} key
  * @param {any} value
  */
