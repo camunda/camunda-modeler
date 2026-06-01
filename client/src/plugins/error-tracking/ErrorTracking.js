@@ -13,7 +13,9 @@ import debug from 'debug';
 import { PureComponent } from 'react';
 
 import * as Sentry from '@sentry/browser';
-import { RewriteFrames } from '@sentry/integrations';
+import { rewriteFramesIntegration } from '@sentry/integrations';
+
+import { createThrottler } from '../../../../app/lib/util/error-tracking-throttler';
 
 import Metadata from '../../util/Metadata';
 
@@ -77,6 +79,8 @@ export default class ErrorTracking extends PureComponent {
 
     try {
 
+      this._throttler = createThrottler();
+
       // Source map uploaded to Sentry from WebPack is tagged with the
       // version number in package.json which is supposed to be the same
       // with Metadata.data.version (except for dev environments
@@ -84,8 +88,9 @@ export default class ErrorTracking extends PureComponent {
       this._sentry.init({
         dsn: this.SENTRY_DSN,
         release: releaseTag,
+        beforeSend: this._throttler,
         integrations: [
-          new RewriteFrames({
+          rewriteFramesIntegration({
             iteratee: (frame) => {
               if (!frame.filename) {
                 return frame;
@@ -223,4 +228,3 @@ function generatePluginsTag(plugins) {
 
   return plugins.map(({ name }) => name).join(',');
 }
-

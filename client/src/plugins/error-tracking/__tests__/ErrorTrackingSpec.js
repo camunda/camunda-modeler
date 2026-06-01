@@ -445,7 +445,7 @@ describe('<ErrorTracking>', function() {
   });
 });
 
-// Handling of Stack frames is done in the sentry `RewriteFrames` integration,
+// Handling of Stack frames is done in the sentry `rewriteFramesIntegration`,
 // we only check that our replace function is correct.
 async function expectNormalization(prefix) {
 
