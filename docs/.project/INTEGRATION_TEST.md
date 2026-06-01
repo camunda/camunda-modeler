@@ -95,7 +95,7 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] Set the __Execution Platform Version__ to `Camunda 8.2`
   * [ ] An error is shown: `Expression` is not supported by Camunda Platform 8.2
   * [ ] Clicking on the error focuses the respective element
-* [ ] Set the __Execution Platform Version__ to `Camunda 8.5` or higher
+* [ ] Set the __Execution Platform Version__ to `Camunda 8.3` or higher
   * [ ] No errors are shown
 
 #### BPMN + Camunda Forms deployment
