@@ -18,7 +18,7 @@ const {
   BrowserWindow
 } = require('electron');
 
-const Sentry = require('@sentry/electron/main');
+const Sentry = require('@sentry/node');
 
 const path = require('path');
 
