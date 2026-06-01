@@ -25,13 +25,12 @@ _To be done when the release manager is assigned._
 
 _To be done before the code freeze._
 
-* [ ] inform QA about the release and its details so they can prepare for testing
 * [ ] get in touch with the team (PM, UX and Engineering side), to clarify what topics will be included in the Release and their priority. Use this information to start preparing a concept for the _blog post_ (see below) and _release info_ (see below)
   * [ ] (optional) if possible, already create a PR to update [Release Info](https://github.com/camunda/camunda-modeler/blob/develop/client/src/plugins/version-info/ReleaseInfo.js) following our [guidelines](https://github.com/bpmn-io/internal-docs/blob/main/releases/modeler/CAMUNDA_MODELER.md#whats-new-communication)
 
 _To be done after code freeze to prepare and test the release._
 
-* [ ] inform teams ([#team-modeling-group](https://camunda.slack.com/archives/C032H77434N)) that the freeze started and release prep is in progress 
+* [ ] inform teams ([#team-modeling-group](https://camunda.slack.com/archives/C032H77434N)) that the freeze started and release prep is in progress
 * [ ] make sure changes in upstream libraries are merged and released
   * `bpmn-js`, `dmn-js`, `*-properties-panel`, `*-moddle`, `camunda-bpmn-js`, `form-js`, ...
 * [ ] make sure the dependencies are updated in the [Web Modeler](https://github.com/camunda/web-modeler/)
@@ -55,7 +54,6 @@ _To be done after code freeze to prepare and test the release._
   * [ ] Works on Linux
   * [ ] Works on Mac
   * [ ] Works on Windows
-* [ ] notify QA about the release so they can test it
 
 _To be done to build the release after release testing completed._
 
