@@ -102,6 +102,7 @@ jobs:
         secrets: |
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
+          secret/data/products/desktop-modeler/ci/slack_integration TEAM_MEMBER_IDS;
     - name: Post to a Slack channel
       uses: slackapi/slack-github-action@v3
       with:
@@ -109,8 +110,8 @@ jobs:
         token: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
         payload: |
           channel: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
-          text: "Assigned <https://github.com/${{ env.RELEASE_MANAGER }}|@${{ env.RELEASE_MANAGER }}> as the release manager. Go to <${{ env.ISSUE_LINK }}|the release issue> to update if necessary."
+          text: "Assigned <@${{ env.RELEASE_MANAGER_ID }}> as the release manager. Go to <${{ env.ISSUE_LINK }}|the release issue> to update if necessary."
       env:
         # Release manager is either the assignee from the newly created issue or the new assigned from the `assigned` trigger
-        RELEASE_MANAGER: ${{ needs.create_release_issue.outputs.assignee || github.event.issue.assignee.login }}
+        RELEASE_MANAGER_ID: ${{ fromJSON(steps.secrets.outputs.TEAM_MEMBER_IDS)[ needs.create_release_issue.outputs.assignee || github.event.issue.assignee.login ] }}
         ISSUE_LINK: https://github.com/${{ github.repository }}/issues/${{ needs.create_release_issue.outputs.issue && fromJson(needs.create_release_issue.outputs.issue).number || github.event.issue.number }}
