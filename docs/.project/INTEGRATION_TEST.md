@@ -38,9 +38,9 @@ Manual integration tests:
 ##### BPMN properties panel
 
 * [ ] configure service task in properties panel
-* [ ] add `async:before`
 * [ ] add execution listener
 * [ ] add input mapping
+* [ ] add an asynchronous continuation (Camunda 7 only)
 * [ ] verify results in XML tab
 
 ##### Keep implementation Details (Copy/Paste and Morph)
@@ -98,11 +98,49 @@ Based on the [test diagram](./test.bpmn.png):
 * [ ] Set the __Execution Platform Version__ to `Camunda 8.3` or higher
   * [ ] No errors are shown
 
+#### RPA Modeling
+
+* [ ] create a new RPA script
+* [ ] edit script content; tab shows dirty state indicator
+* [ ] save file on disk as `test.rpa`
+* [ ] reopen `test.rpa`; content is preserved correctly
+
+##### Edit operations
+
+* [ ] undo (`CTRL+Z`) / redo (`CTRL+Y`) work in editor
+* [ ] cut, copy, paste work
+* [ ] find/replace (`CTRL+H`) opens and functions
+
+##### Linting
+
+* [ ] introduce a syntax error; problems panel shows lint violation
+* [ ] fix error; problems panel clears
+
+##### RPA Worker
+
+> If no worker is running, set one up before testing this section (see [RPA Worker setup](https://docs.camunda.io/docs/components/modeler/desktop-modeler/run-rpa-script/)).
+
+* [ ] status bar shows "RPA Worker not connected" when no worker is running
+* [ ] clicking the status button opens the configuration dialog
+* [ ] after configuring a running worker, status bar shows "RPA Worker connected"
+* [ ] worker config persists after restarting the modeler
+
+##### Test execution
+
+* [ ] "Test RPA script" test tube button is visible in status bar
+* [ ] clicking it opens the test dialog
+* [ ] test output appears in the RPA output panel after run
+
+##### Properties panel
+
+* [ ] properties panel opens via the Settings icon
+* [ ] execution platform version is visible and editable
+
 #### BPMN + Camunda Forms deployment
 
 * [ ] Create a simple `Start Event -> User Task -> End Event` process
 * [ ] Create a simple form with id `foo`
-* [ ] Reference the form in the user task via `Camunda Forms -> reference=foo`
+* [ ] Reference the form in the user task via `Camunda Form -> reference=foo`
 * [ ] Verify that deployment of BPMN + Form file works
 
 #### Engine Connection
@@ -138,6 +176,7 @@ To test per cluster type:
   * [ ] `.bpmn`
   * [ ] `.dmn`
   * [ ] `.form`
+  * [ ] `.rpa`
 
 #### Error Handling
 
