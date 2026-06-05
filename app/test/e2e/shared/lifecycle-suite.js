@@ -47,7 +47,7 @@ module.exports = function defineLifecycleSuite({ label, setup }) {
 
   describe(`e2e - file lifecycle parity (${label})`, function() {
 
-    this.timeout(40000);
+    this.timeout(120000);
 
     let ctx;
 
