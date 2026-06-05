@@ -31,6 +31,7 @@ const { app, ipcMain, BrowserWindow } = require('electron');
 
 const renderer = require('../../../lib/util/renderer');
 const { readFile, readFileStats, writeFile } = require('../../../lib/file-system');
+const { MARKER_FROM, MARKER_TO } = require('../shared/lifecycle-fixture');
 
 const PROBE_OUT = process.env.PROBE_OUT;
 const PROBE_FIXTURE = process.env.PROBE_FIXTURE;
@@ -101,7 +102,9 @@ app.whenReady().then(() => {
   window.webContents.on('did-finish-load', () => {
     window.webContents.send('probe:fixture', {
       fixturePath: PROBE_FIXTURE,
-      savePath: PROBE_SAVE_PATH
+      savePath: PROBE_SAVE_PATH,
+      markerFrom: MARKER_FROM,
+      markerTo: MARKER_TO
     });
   });
 
