@@ -118,7 +118,7 @@ app.whenReady().then(() => {
   const window = new BrowserWindow({
     show: false,
     webPreferences: {
-      preload: path.resolve(__dirname, 'probe-preload.js'),
+      preload: path.resolve(__dirname, '../shared/probe-preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false
