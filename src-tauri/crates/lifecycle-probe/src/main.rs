@@ -16,6 +16,10 @@
 //! `defineLifecycleSuite` — the identical assertions that judge the Electron
 //! backend, so parity is structurally enforced.
 //!
+//! This lives in its own crate (not a bin in `app`) so it can embed the minimal
+//! `frontend-placeholder` probe page instead of the product `app/public` bundle:
+//! Tauri embeds exactly one `frontendDist` per crate at build time.
+//!
 //! Inputs (env): `PROBE_FIXTURE`, `PROBE_SAVE_PATH`, `PROBE_OUT`.
 
 use std::fs;

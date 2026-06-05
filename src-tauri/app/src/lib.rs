@@ -14,16 +14,23 @@
 //!      synchronously, and
 //!   2. the preload-compat shim that reconstructs `window.getAppPreload()`.
 
-use serde_json::{json, Value};
-use tauri::{WebviewUrl, WebviewWindowBuilder};
+pub mod ipc;
 
-/// Route a contract event to the pure backend, returning the parity-shaped
+use serde_json::{json, Value};
+use tauri::{WebviewUrl, WebviewWindow, WebviewWindowBuilder};
+
+use crate::ipc::AppState;
+
+/// Route a contract event through the IPC handler, returning the parity-shaped
 /// error object on failure (so the renderer sees the same `{ message, code, ...}`
 /// it got from Electron).
 #[tauri::command]
-async fn ipc_dispatch(event: String, args: Vec<Value>) -> Result<Value, Value> {
-    modeler_backend::dispatch(&event, &args)
-        .map_err(|err| serde_json::to_value(err).unwrap_or(Value::Null))
+async fn ipc_dispatch(
+    window: WebviewWindow,
+    event: String,
+    args: Vec<Value>,
+) -> Result<Value, Value> {
+    ipc::handle(&window, &event, &args)
 }
 
 /// Node `process.platform` equivalent, which the renderer reads via
@@ -36,13 +43,13 @@ fn node_platform() -> &'static str {
     }
 }
 
-fn boot_script(app: &tauri::AppHandle) -> String {
-    let package = app.package_info();
-
+/// Boot constants the Electron preload exposed synchronously
+/// (`window.getAppPreload()` reads these without IPC).
+pub fn boot_script(version: &str, name: &str) -> String {
     let boot = json!({
         "metadata": {
-            "version": package.version.to_string(),
-            "name": package.name,
+            "version": version,
+            "name": name,
         },
         "plugins": [],
         "flags": {},
@@ -54,14 +61,17 @@ fn boot_script(app: &tauri::AppHandle) -> String {
 
 pub fn run() {
     tauri::Builder::default()
+        .manage(AppState::default())
         .invoke_handler(tauri::generate_handler![ipc_dispatch])
         .setup(|app| {
             let handle = app.handle();
+            let package = handle.package_info();
+            let boot = boot_script(&package.version.to_string(), &package.name);
 
             WebviewWindowBuilder::new(handle, "main", WebviewUrl::default())
                 .title("Camunda Modeler")
                 .inner_size(1280.0, 800.0)
-                .initialization_script(&boot_script(handle))
+                .initialization_script(&boot)
                 .initialization_script(include_str!("../../preload-shim.js"))
                 .build()?;
 

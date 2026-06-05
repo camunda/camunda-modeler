@@ -1,10 +1,10 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Camunda Modeler",
+  "productName": "Camunda Modeler Lifecycle Probe",
   "version": "0.0.0",
-  "identifier": "org.camunda.modeler",
+  "identifier": "org.camunda.modeler.lifecycle-probe",
   "build": {
-    "frontendDist": "../../app/public"
+    "frontendDist": "../../frontend-placeholder"
   },
   "app": {
     "withGlobalTauri": true,
@@ -14,10 +14,9 @@
     }
   },
   "bundle": {
-    "active": true,
-    "targets": "all",
+    "active": false,
     "icon": [
-      "icons/icon.png"
+      "../../app/icons/icon.png"
     ]
   }
 }

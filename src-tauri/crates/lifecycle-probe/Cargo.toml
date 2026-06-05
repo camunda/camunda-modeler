@@ -1,0 +1,24 @@
+[package]
+name = "lifecycle-probe"
+version = "0.0.0"
+edition = "2021"
+license = "MIT"
+publish = false
+
+# Headless Tauri lifecycle parity probe. A SEPARATE crate (not a bin in `app`)
+# because it embeds a different `frontendDist` (the minimal `frontend-placeholder`
+# probe page) than the product app (the real `app/public` bundle), and Tauri
+# embeds exactly one frontend per crate at build time.
+
+[[bin]]
+name = "lifecycle_probe"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+modeler-backend = { path = "../modeler-backend" }
