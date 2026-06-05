@@ -7,6 +7,7 @@
     "app:auto-test": "npm run app:test -- --watch",
     "app:dev": "electron ./dev.js --force-update-checks resources/diagram/simple.bpmn",
     "app:test": "nyc --reporter lcov --exclude \"app/test/**\" --exclude \"app/**/__tests__\" mocha --require ./app/test/expect.js \"app/**/*-spec.js\"",
+    "app:test-e2e": "RUN_E2E=true mocha --require ./app/test/expect.js \"app/test/e2e/**/*-spec.js\"",
     "app:collect-licenses": "webpack -c webpack.config.license.js",
     "client:build": "npm run build --workspace=client",
     "client:auto-test": "npm run auto-test --workspace=client",
