@@ -16,3 +16,5 @@ base64 = "0.22"
 url = "2"
 uuid = { version = "1", features = ["v4"] }
 notify = "6"
+roxmltree = "0.20"
+quick-xml = "0.36"

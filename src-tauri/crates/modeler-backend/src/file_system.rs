@@ -115,7 +115,11 @@ pub fn write_file(file_path: &str, file: &Value, options: &Value) -> Result<Valu
 /// Faithful port of `createFile(oldFile, newFile)`: pick known properties from
 /// both, derive `name`/`dirname`/`extname`/`uri` when the new file has a path,
 /// default `messages`, then `Object.assign({}, oldFile, newFile)`.
-fn create_file(old_file: &Value, new_file: &Value) -> Value {
+/// Faithful port of `createFile`: keeps only `FILE_PROPERTIES`, and when a
+/// `path` is present derives `name`/`dirname`/`extname`/`uri`. Exposed so the
+/// indexer can build the same `FileDescriptor` shape for synthetic (empty /
+/// read-error) files.
+pub fn create_file(old_file: &Value, new_file: &Value) -> Value {
     let old_picked = pick(old_file);
     let mut new_picked = pick(new_file);
 
