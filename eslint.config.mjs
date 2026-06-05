@@ -25,6 +25,7 @@ const files = {
     'docs',
     'resources/plugins/*/dist',
     'resources/plugins/test-script-error/broken.js',
+    'src-tauri/target',
     'tmp'
   ]
 };
