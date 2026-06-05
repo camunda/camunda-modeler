@@ -9,23 +9,49 @@
 //! Effectful/stateful IPC handled in the Tauri layer.
 //!
 //! Pure, stateless events (the file-system slice) live in `modeler-backend` and
-//! are reached via the fallback at the bottom. Events that need process state
+//! are reached via the fallback at the bottom. Events that need persisted state
 //! (config, workspace) or a webview effect (`client:ready` -> emit
-//! `client:started`) are handled here, where we hold [`AppState`] and the
-//! window. Boot-path shapes were taken from the renderer startup map
-//! (`client/src/app/AppParent.js`, `client/src/app/RecentTabs.js`).
+//! `client:started`) are handled here, where we hold [`AppState`] (the persisted
+//! [`Config`]) and the window. Boot-path shapes were taken from the renderer
+//! startup map (`client/src/app/AppParent.js`, `client/src/app/RecentTabs.js`).
 
-use std::sync::Mutex;
+use std::path::Path;
 
 use serde_json::{json, Value};
 use tauri::{Emitter, Manager, WebviewWindow};
 
-/// In-process backend state. A persisted store replaces this in a later phase;
-/// in-memory is enough to boot the renderer to its ready state.
-#[derive(Default)]
+use modeler_backend::{workspace, Config, IpcError};
+
+/// In-process backend state: the persisted [`Config`] router (`config.json`,
+/// `settings.json`, `.editorid`) rooted at the resolved user-data directory.
 pub struct AppState {
-    config: Mutex<serde_json::Map<String, Value>>,
-    workspace: Mutex<Option<Value>>,
+    pub config: Config,
+}
+
+impl AppState {
+    /// Build the state rooted at `user_path`. The Tauri layer resolves and
+    /// creates that directory before constructing this.
+    pub fn new(user_path: &Path) -> Self {
+        AppState {
+            config: Config::new(user_path),
+        }
+    }
+}
+
+/// Serialize a parity-shaped backend error into the `{ message, code, ... }`
+/// object the renderer expects (the same shape Electron delivered).
+fn to_error_value(err: IpcError) -> Value {
+    serde_json::to_value(err).unwrap_or(Value::Null)
+}
+
+/// `os.info` is computed in the Tauri layer because it needs host APIs; it
+/// mirrors Electron's `OSInfoProvider` (`{ platform, release }`) using Node
+/// platform names and the kernel release string.
+fn os_info() -> Value {
+    json!({
+        "platform": crate::node_platform(),
+        "release": sysinfo::System::kernel_version().unwrap_or_default(),
+    })
 }
 
 /// Route a contract event, handling the stateful/effectful ones here and
@@ -35,56 +61,44 @@ pub fn handle(window: &WebviewWindow, event: &str, args: &[Value]) -> Result<Val
 
     match event {
 
-        // config:get(key, default?) -> stored value, else default, else null
+        // config:get(key, ...args) -> provider value (args[0] is the default for
+        // the default provider). os.info is intercepted here; everything else is
+        // routed by the persisted Config.
         "config:get" => {
             let key = args.first().and_then(Value::as_str).unwrap_or_default();
-            let mut config = state.config.lock().unwrap();
 
-            // editor.id mirrors the Electron UUIDProvider: a v4 UUID generated
-            // and cached on first read (the renderer's stats/error-tracking
-            // plugins reject boot if it is missing).
-            if key == "editor.id" {
-                let id = config
-                    .entry(key.to_string())
-                    .or_insert_with(|| Value::String(uuid::Uuid::new_v4().to_string()));
-
-                return Ok(id.clone());
+            if key == "os.info" {
+                return Ok(os_info());
             }
 
-            let value = config
-                .get(key)
-                .cloned()
-                .or_else(|| args.get(1).cloned())
-                .unwrap_or(Value::Null);
-
-            Ok(value)
+            state
+                .config
+                .get(key, args.get(1..).unwrap_or(&[]))
+                .map_err(to_error_value)
         },
 
-        // config:set(key, value) -> value
+        // config:set(key, value) -> null (the Electron providers return
+        // undefined; the renderer ignores the resolved value).
         "config:set" => {
-            let key = args.first().and_then(Value::as_str).unwrap_or_default().to_string();
+            let key = args.first().and_then(Value::as_str).unwrap_or_default();
             let value = args.get(1).cloned().unwrap_or(Value::Null);
 
-            state.config.lock().unwrap().insert(key, value.clone());
-
-            Ok(value)
+            state.config.set(key, value).map_err(to_error_value)
         },
 
-        // workspace:restore(defaultConfig) -> saved workspace, else the default
+        // workspace:restore(defaultConfig) -> saved workspace (files re-read from
+        // disk), else the default.
         "workspace:restore" => {
             let default = args.first().cloned().unwrap_or_else(|| json!({}));
-            let workspace = state.workspace.lock().unwrap();
 
-            Ok(workspace.clone().unwrap_or(default))
+            Ok(workspace::restore(&state.config, default))
         },
 
-        // workspace:save(config) -> config
+        // workspace:save(workspace) -> null
         "workspace:save" => {
-            let config = args.first().cloned().unwrap_or_else(|| json!({}));
+            let ws = args.first().cloned().unwrap_or_else(|| json!({}));
 
-            *state.workspace.lock().unwrap() = Some(config.clone());
-
-            Ok(config)
+            workspace::save(&state.config, ws).map_err(to_error_value)
         },
 
         // The renderer sends client:ready after restoring the workspace and then

@@ -16,8 +16,11 @@
 
 pub mod ipc;
 
-use serde_json::{json, Value};
-use tauri::{WebviewUrl, WebviewWindow, WebviewWindowBuilder};
+use std::fs;
+use std::path::{Path, PathBuf};
+
+use serde_json::{json, Map, Value};
+use tauri::{Manager, Runtime, WebviewUrl, WebviewWindowBuilder};
 
 use crate::ipc::AppState;
 
@@ -26,7 +29,7 @@ use crate::ipc::AppState;
 /// it got from Electron).
 #[tauri::command]
 async fn ipc_dispatch(
-    window: WebviewWindow,
+    window: tauri::WebviewWindow,
     event: String,
     args: Vec<Value>,
 ) -> Result<Value, Value> {
@@ -35,7 +38,7 @@ async fn ipc_dispatch(
 
 /// Node `process.platform` equivalent, which the renderer reads via
 /// `backend.getPlatform()`.
-fn node_platform() -> &'static str {
+pub fn node_platform() -> &'static str {
     match std::env::consts::OS {
         "macos" => "darwin",
         "windows" => "win32",
@@ -43,37 +46,82 @@ fn node_platform() -> &'static str {
     }
 }
 
+/// Resolve the user-data directory holding `config.json`, `settings.json`,
+/// `.editorid` and `flags.json`, creating it if needed.
+///
+/// `PROBE_USER_PATH` overrides the OS app-config dir so headless probes/tests
+/// run hermetically against a throwaway directory. Note: this is intentionally a
+/// fresh directory rather than Electron's `userData` — Phase 2 starts clean and
+/// does not migrate the Electron store.
+pub fn resolve_user_path<R: Runtime>(app: &tauri::AppHandle<R>) -> std::io::Result<PathBuf> {
+    let user_path = match std::env::var_os("PROBE_USER_PATH") {
+        Some(path) => PathBuf::from(path),
+        None => app
+            .path()
+            .app_config_dir()
+            .map_err(|err| std::io::Error::other(err.to_string()))?,
+    };
+
+    fs::create_dir_all(&user_path)?;
+
+    Ok(user_path)
+}
+
+/// Load feature flags merged from `flags.json` under the search paths, applying
+/// CLI overrides last. For now only the user-data directory is searched (the
+/// resources/CLI surface is wired in a later phase).
+pub fn load_flags(user_path: &Path) -> Map<String, Value> {
+    modeler_backend::flags::load(&[user_path], &Map::new())
+}
+
 /// Boot constants the Electron preload exposed synchronously
 /// (`window.getAppPreload()` reads these without IPC).
-pub fn boot_script(version: &str, name: &str) -> String {
+pub fn boot_script(version: &str, name: &str, flags: &Value) -> String {
     let boot = json!({
         "metadata": {
             "version": version,
             "name": name,
         },
         "plugins": [],
-        "flags": {},
+        "flags": flags,
         "platform": node_platform(),
     });
 
     format!("window.__MODELER_BOOT__ = {boot};")
 }
 
+/// Build the main webview window: resolve the user-data dir, manage the
+/// persisted [`AppState`], load flags, and inject the boot constants + shim.
+fn setup_main_window<R: Runtime>(app: &tauri::App<R>) -> Result<(), Box<dyn std::error::Error>> {
+    let handle = app.handle();
+
+    let user_path = resolve_user_path(handle)?;
+    let flags = load_flags(&user_path);
+
+    app.manage(AppState::new(&user_path));
+
+    let package = handle.package_info();
+    let boot = boot_script(
+        &package.version.to_string(),
+        &package.name,
+        &Value::Object(flags),
+    );
+
+    WebviewWindowBuilder::new(handle, "main", WebviewUrl::default())
+        .title("Camunda Modeler")
+        .inner_size(1280.0, 800.0)
+        .initialization_script(&boot)
+        .initialization_script(include_str!("../../preload-shim.js"))
+        .build()?;
+
+    Ok(())
+}
+
 pub fn run() {
     tauri::Builder::default()
-        .manage(AppState::default())
         .invoke_handler(tauri::generate_handler![ipc_dispatch])
         .setup(|app| {
-            let handle = app.handle();
-            let package = handle.package_info();
-            let boot = boot_script(&package.version.to_string(), &package.name);
-
-            WebviewWindowBuilder::new(handle, "main", WebviewUrl::default())
-                .title("Camunda Modeler")
-                .inner_size(1280.0, 800.0)
-                .initialization_script(&boot)
-                .initialization_script(include_str!("../../preload-shim.js"))
-                .build()?;
+            setup_main_window(app)?;
 
             Ok(())
         })

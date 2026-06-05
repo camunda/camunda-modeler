@@ -34,6 +34,7 @@ use tauri::{Manager, WebviewUrl, WebviewWindow, WebviewWindowBuilder};
 
 use camunda_modeler_tauri_lib::boot_script;
 use camunda_modeler_tauri_lib::ipc::{self, AppState};
+use camunda_modeler_tauri_lib::resolve_user_path;
 
 /// Records what the renderer did during boot so the driver can assert on it.
 #[derive(Default)]
@@ -163,6 +164,17 @@ const PROBE_HOOKS: &str = r#"
 "#;
 
 fn main() {
+    // hermeticity: default PROBE_USER_PATH to a throwaway temp dir so the boot
+    // probe never reads or writes the real user config store.
+    if std::env::var_os("PROBE_USER_PATH").is_none() {
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_nanos())
+            .unwrap_or(0);
+        let dir = std::env::temp_dir().join(format!("cm-boot-probe-{nanos}"));
+        std::env::set_var("PROBE_USER_PATH", &dir);
+    }
+
     // safety net: never hang a CI run. Reaching this means the boot handshake
     // never completed (e.g. client:started was not delivered).
     thread::spawn(|| {
@@ -173,18 +185,26 @@ fn main() {
 
     let package_boot = |app: &tauri::AppHandle| {
         let package = app.package_info();
-        boot_script(&package.version.to_string(), &package.name)
+        boot_script(
+            &package.version.to_string(),
+            &package.name,
+            &serde_json::Value::Object(Default::default()),
+        )
     };
 
     tauri::Builder::default()
-        .manage(AppState::default())
         .manage(BootObserver::default())
         .invoke_handler(tauri::generate_handler![ipc_dispatch, probe_started, probe_error])
         .setup(move |app| {
+            // hermetic, throwaway config dir (PROBE_USER_PATH) so the boot probe
+            // does not read or write the real user store
+            let user_path = resolve_user_path(app.handle())?;
+            app.manage(AppState::new(&user_path));
+
             WebviewWindowBuilder::new(app.handle(), "main", WebviewUrl::default())
                 .visible(false)
                 .initialization_script(PROBE_HOOKS)
-                .initialization_script(&package_boot(app.handle()))
+                .initialization_script(package_boot(app.handle()))
                 .initialization_script(include_str!("../../../preload-shim.js"))
                 .build()?;
 

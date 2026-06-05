@@ -12,9 +12,13 @@
 //! can be tested quickly with `cargo test` (no WebKit toolchain) and is the
 //! same logic the thin Tauri command layer calls.
 
+pub mod config;
 pub mod dispatch;
 pub mod error;
 pub mod file_system;
+pub mod flags;
+pub mod workspace;
 
+pub use config::Config;
 pub use dispatch::{dispatch, ALLOWED_EVENTS};
 pub use error::IpcError;
