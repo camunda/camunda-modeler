@@ -37,6 +37,13 @@ async fn ipc_dispatch(
     event: String,
     args: Vec<Value>,
 ) -> Result<Value, Value> {
+    // Zeebe endpoints are network-bound and async; route them through the
+    // async REST client. The handlers always resolve a `{ success, ... }`
+    // object (the Electron handlers never reject), so this is always `Ok`.
+    if event.starts_with("zeebe:") {
+        return Ok(modeler_backend::zeebe::handle(&event, &args).await);
+    }
+
     ipc::handle(&window, &event, &args)
 }
 

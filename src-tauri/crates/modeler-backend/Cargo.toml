@@ -19,3 +19,7 @@ notify = "6"
 roxmltree = "0.20"
 quick-xml = "0.36"
 regex = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "multipart", "rustls-tls"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt", "rt-multi-thread"] }
