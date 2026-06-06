@@ -63,7 +63,7 @@ pub enum IndexerEvent {
     Removed(IndexItem),
 }
 
-type Sink = Box<dyn FnMut(IndexerEvent)>;
+type Sink = Box<dyn FnMut(IndexerEvent) + Send>;
 
 /// Indexes file-context items, a port of `indexer.js`.
 #[derive(Default)]

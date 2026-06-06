@@ -15,6 +15,7 @@
 pub mod config;
 pub mod dispatch;
 pub mod error;
+pub mod file_context;
 pub mod file_system;
 pub mod flags;
 pub mod indexer;
@@ -25,5 +26,6 @@ pub mod workspace;
 pub use config::Config;
 pub use dispatch::{dispatch, ALLOWED_EVENTS};
 pub use error::IpcError;
+pub use file_context::{ChangedSink, FileContext};
 pub use indexer::{IndexItem, Indexer, IndexerEvent};
 pub use watcher::{Watcher, WatcherEvent};

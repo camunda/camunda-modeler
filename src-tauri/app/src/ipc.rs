@@ -16,11 +16,12 @@
 //! startup map (`client/src/app/AppParent.js`, `client/src/app/RecentTabs.js`).
 
 use std::path::Path;
+use std::sync::Mutex;
 
 use serde_json::{json, Value};
 use tauri::{Emitter, Manager, WebviewWindow};
 
-use modeler_backend::{workspace, Config, IpcError};
+use modeler_backend::{workspace, Config, FileContext, IpcError};
 
 /// In-process backend state: the persisted [`Config`] router (`config.json`,
 /// `settings.json`, `.editorid`) rooted at the resolved user-data directory.
@@ -42,6 +43,33 @@ impl AppState {
 /// object), defaulting to `{}`.
 fn arg0(args: &[Value]) -> Value {
     args.first().cloned().unwrap_or_else(|| json!({}))
+}
+
+/// Lock the managed [`FileContext`] (the file-context IPC handlers all mutate
+/// it).
+fn file_context<'a>(window: &'a WebviewWindow) -> std::sync::MutexGuard<'a, FileContext> {
+    window
+        .state::<Mutex<FileContext>>()
+        .inner()
+        .lock()
+        .expect("file context mutex poisoned")
+}
+
+/// `options.filePath` from an add-root/remove-root request object.
+fn file_path_field(options: &Value) -> String {
+    options
+        .get("filePath")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string()
+}
+
+/// Optional `options.processor` id from a file-opened/file-updated request.
+fn processor_option(options: Option<&Value>) -> Option<String> {
+    options
+        .and_then(|options| options.get("processor"))
+        .and_then(Value::as_str)
+        .map(str::to_string)
 }
 
 /// Serialize a parity-shaped backend error into the `{ message, code, ... }`
@@ -111,6 +139,41 @@ pub fn handle(window: &WebviewWindow, event: &str, args: &[Value]) -> Result<Val
         // waits for the client:started push to open restored/CLI files.
         "client:ready" => {
             let _ = window.emit("client:started", Vec::<Value>::new());
+
+            Ok(Value::Null)
+        },
+
+        // file context: drive the watcher/indexer; pushes happen out-of-band via
+        // the `file-context:changed` event the FileContext emits (ports the
+        // `file-context:*` handlers in index.js). All return null (done(null)).
+        "file-context:add-root" => {
+            file_context(window).add_root(&file_path_field(&arg0(args)));
+
+            Ok(Value::Null)
+        },
+        "file-context:remove-root" => {
+            file_context(window).remove_root(&file_path_field(&arg0(args)));
+
+            Ok(Value::Null)
+        },
+        "file-context:file-opened" => {
+            let file_path = args.first().and_then(Value::as_str).unwrap_or_default();
+
+            file_context(window).file_opened(file_path, processor_option(args.get(1)));
+
+            Ok(Value::Null)
+        },
+        "file-context:file-updated" => {
+            let file_path = args.first().and_then(Value::as_str).unwrap_or_default();
+
+            file_context(window).file_updated(file_path, processor_option(args.get(1)));
+
+            Ok(Value::Null)
+        },
+        "file-context:file-closed" => {
+            let file_path = args.first().and_then(Value::as_str).unwrap_or_default();
+
+            file_context(window).file_closed(file_path);
 
             Ok(Value::Null)
         },

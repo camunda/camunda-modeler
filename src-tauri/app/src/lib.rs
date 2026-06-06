@@ -19,9 +19,12 @@ pub mod ipc;
 
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::Mutex;
 
 use serde_json::{json, Map, Value};
-use tauri::{Manager, Runtime, WebviewUrl, WebviewWindowBuilder};
+use tauri::{Emitter, Manager, Runtime, WebviewUrl, WebviewWindowBuilder};
+
+use modeler_backend::{ChangedSink, FileContext};
 
 use crate::ipc::AppState;
 
@@ -100,6 +103,16 @@ fn setup_main_window<R: Runtime>(app: &tauri::App<R>) -> Result<(), Box<dyn std:
     let flags = load_flags(&user_path);
 
     app.manage(AppState::new(&user_path));
+
+    // File context: watches roots and pushes the full item list to the renderer
+    // via `file-context:changed`. The push is wrapped in a one-element array
+    // because the preload shim treats a Tauri event payload as the array of
+    // renderer-callback args (here a single `items` argument).
+    let emit_handle = handle.clone();
+    let changed: ChangedSink = std::sync::Arc::new(move |items| {
+        let _ = emit_handle.emit("file-context:changed", vec![Value::Array(items)]);
+    });
+    app.manage(Mutex::new(FileContext::new(changed)));
 
     let package = handle.package_info();
     let boot = boot_script(
