@@ -2212,6 +2212,7 @@ dependencies = [
  "base64 0.22.1",
  "notify",
  "quick-xml 0.36.2",
+ "regex",
  "roxmltree",
  "serde",
  "serde_json",

@@ -22,6 +22,7 @@ pub mod indexer;
 pub mod processors;
 pub mod watcher;
 pub mod workspace;
+pub mod zeebe_utils;
 
 pub use config::Config;
 pub use dispatch::{dispatch, ALLOWED_EVENTS};
