@@ -1,8 +1,9 @@
 # Tauri / Rust backend migration — remaining plan
 
 > Status snapshot as of 2026-06-05. Branch: `prototype/tauri-backend`
-> (cut from `prototype/tauri-ipc-contract-tests`). Phases 0–4 are **done**;
-> this document captures the **remaining** work (Phases 5–6) plus the standing
+> (cut from `prototype/tauri-ipc-contract-tests`). Phases 0–4 and the Phase-5
+> dialogs + file-context slices are **done**; this document captures the
+> **remaining** work (the zeebe network client + Phase 6) plus the standing
 > scope cuts that still need to be paid back.
 
 ## Premise (unchanged)
@@ -37,104 +38,71 @@ backend. The React + bpmn.io renderer (`client/`, builds to `app/public`) stays
 | 2 | `config` (persisted store), `flags`, `workspace` ported (`config.rs`/`flags.rs`/`workspace.rs`) + wired into the Tauri layer (`AppState`, `app.path().app_config_dir()`); 17 + 5 + 7 cargo parity tests. |
 | 3 | file-context **watcher** ported to the `notify` crate (`watcher.rs`); emits `Add`/`Change`/`Remove`/`Ready`/debounced `Changed`; 11 cargo parity tests. |
 | 4 | file-context **indexer + processors** ported (`processors.rs` + `indexer.rs`); 5 processors + router + synchronous read/process/message lifecycle; `roxmltree` (BPMN/DMN) + `quick-xml` Camunda-8 gate + `serde_json`; 17 cargo parity tests. |
+| 5a | Native **dialogs + shell** ported (`app/src/dialog.rs`): open/save/message dialogs (`tauri-plugin-dialog`), file-explorer reveal + external URL open (`tauri-plugin-opener`), clipboard writes (`tauri-plugin-clipboard-manager`). Faithful to `dialog.js` + the shell handlers in `index.js` (defaultPath precedence, Linux ext-less-save fix, button label↔id mapping, defaultPath persistence). |
+| 5b | file-context **IPC wiring + watcher↔indexer integration** (`file_context.rs`): ties the Phase-3 watcher to the Phase-4 indexer, ports `findProcessApplicationFile` + add-root-on-open + the file-closed process-application skip, and pushes the full `[{file,metadata}]` list via `file-context:changed`. Mutate→snapshot→emit under the indexer lock for ordered, atomic pushes. 6 cargo parity tests. |
+| 5c (slice 1) | zeebe-api **pure helpers** ported (`zeebe_utils.rs`): SaaS URL detection, config/option sanitization, `removeV2OrSlashes`. 9 cargo parity tests mirroring `utils-spec.js`. |
 
-Total cargo tests at the Phase-4 commit: **72** (17 config + 15 file_system +
-7 flags + 11 watcher + 5 workspace + 17 file_context). Note: CI does **not** yet
-run `cargo` — the prototype is not wired into `.github/workflows/CI.yml`.
-
----
-
-## Phase 5 — file-context IPC wiring + watcher↔indexer integration
-
-Goal: make the ported watcher (Phase 3) and indexer/processors (Phase 4)
-observable to the renderer through the existing `file-context:*` IPC contract,
-so the renderer's file-context features (cross-file linking, process-application
-awareness) work end-to-end on the Rust backend.
-
-### Scope
-
-1. **Watcher ↔ indexer integration.** Bridge `WatcherEvent` → indexer calls,
-   mirroring `indexer.js`'s event-bus subscriptions:
-   - `WatcherEvent::Add(uri)` → `indexer.add(uri, None)`
-   - `WatcherEvent::Change(uri)` → `indexer.file_updated(uri, None)`
-   - `WatcherEvent::Remove(uri)` → `indexer.remove(uri)`
-   - `WatcherEvent::Changed` (debounced) → drives the `file-context:changed`
-     emit (see below).
-   The indexer was deliberately built **synchronous** in Phase 4; this phase
-   must decide the concurrency model (likely the indexer lives behind a
-   `Mutex`/actor on a dedicated thread, fed by the watcher's worker thread, so
-   the `notify` callback never blocks). Re-check the Phase-3 fidelity notes:
-   roots are canonicalized; duplicate `Add`s are harmless (idempotent by URI).
-
-2. **The async ready-gate (`workqueue` / `workqueue:empty`).** Phase 4 cut the
-   async workqueue. Port `workqueue.js` (simple Set-based pending tracker) so a
-   burst of adds resolves to a single "settled" signal before
-   `file-context:changed` is emitted, matching the JS `waitForEvent(...,
-   'workqueue:empty')` semantics the spec relies on.
-
-3. **The `file-context:*` IPC surface.** Wire these contract events through
-   `ipc_dispatch` (and the `file-context.js` orchestration they correspond to):
-   - inbound: `file-context:add-root`, `file-context:remove-root`,
-     `file-context:file-opened`, `file-context:file-updated`,
-     `file-context:file-closed`
-   - outbound: `file-context:changed` (the aggregated index broadcast to the
-     renderer). Serialize indexer items via `IndexItem::to_value()`
-     (`{ uri, processor, file, metadata }`) — the `serde_json::Value` shapes
-     were chosen in Phase 4 precisely so this is trivial.
-
-4. **`findProcessApplicationFile` + add-root-on-open discovery.** Port the
-   `processors/util.js` `findProcessApplicationFile` walk (ascend dirs looking
-   for a `.process-application`) and the `file-context.js` behavior that adds the
-   containing directory as a watch root when a process-application file is
-   opened/discovered.
-
-5. **Renderer plumbing.** Confirm the renderer's file-context client receives
-   `file-context:changed` and reacts identically to Electron (no renderer code
-   changes expected; this is a verification step).
-
-### Parity oracle
-
-- Reuse `app/lib/file-context/__tests__/file-context-spec.js` as the behavioral
-  oracle. The processing + error-handling cases are already mirrored in
-  `tests/file_context_parity.rs`; this phase adds the **integration** cases:
-  add-root → scan → `changed` payload, file-opened/updated/closed lifecycle,
-  process-application discovery, and the `workqueue:empty` settle timing.
-- Prefer a cargo integration test driving watcher+indexer over real temp-dir fs
-  ops (as Phase 3 did), plus — if feasible — a Tauri probe + driver spec in
-  `app/test/e2e/file-context/` reusing the JS assertions end-to-end.
-
-### Risks / watch-items
-
-- Threading: the `notify` callback must not block on indexer work; pick the
-  actor/queue model deliberately and get a rubber-duck design critique first
-  (consistent with prior phases).
-- `file-context:changed` payload shape + ordering must match what the renderer
-  expects (array order matters; object key order does not).
-- macOS FSEvents trailing-modify-after-delete is already handled in the watcher
-  (stat-before-emit) — keep that invariant when integrating.
+Total cargo tests: **87** (17 config + 15 file_system + 7 flags + 11 watcher +
+5 workspace + 17 file_context indexer/processors + 6 file_context orchestrator +
+9 zeebe_utils). Note: CI does **not** yet run `cargo` — the prototype is not
+wired into `.github/workflows/CI.yml`.
 
 ---
 
-## Phase 5 (parallel track) — zeebe-api (Camunda 8 deploy/run)
+## ✅ Phase 5a/5b — done
 
-> The hard one. Can proceed independently of the file-context IPC work.
+Native dialogs/shell and the full `file-context:*` IPC surface (add-root,
+remove-root, file-opened, file-updated, file-closed, and the
+`file-context:changed` push) are wired end-to-end on the Rust backend. The
+watcher↔indexer concurrency model (indexer shared behind `Arc<Mutex>`, every
+operation does mutate→snapshot→emit under that lock so pushes are totally
+ordered across the IPC thread and the watcher's worker/scan threads; a close
+flag drops late events) was design-reviewed before implementation. The async
+`workqueue:empty` ready-gate from Phase 4's scope cut is **not** needed in this
+model: the Rust indexer is synchronous, so each watcher event's index work
+completes inline and the resulting push already reflects a settled snapshot.
 
-Port `app/lib/zeebe-api` — the Camunda 8 client used for deploy / start-instance
-/ connectivity checks. Considerations:
+---
 
-- Transport: Zeebe gRPC **and** the Camunda 8 REST API (the JS client supports
-  both; SaaS uses OAuth client-credentials, Self-Managed may use OAuth or none).
-  Decide on a Rust gRPC stack (e.g. `tonic`) vs. REST-first (`reqwest`).
-- Auth: OAuth2 client-credentials token cache + refresh; mTLS / self-signed CA
-  options that the Electron client exposes.
-- Surface the same IPC contract events (`zeebe:deploy`, `zeebe:run`,
-  `zeebe:checkConnection`, config/endpoint variants) and **identical error
-  shapes** — the renderer surfaces these messages verbatim.
-- Parity oracle: the IPC contract suite + any zeebe-api unit tests on the parent
-  branch. This slice likely needs a mock/stub Zeebe endpoint for hermetic tests.
+## Phase 5c — zeebe-api (Camunda 8 deploy/run) — **network client remaining**
 
-This is the largest remaining behavioral surface and the most likely to need its
-own multi-slice breakdown (transport → auth → deploy → run → connection-check).
+> The hard one, and the largest remaining behavioral surface.
+
+**Done (slice 1):** the network-free helpers in `app/lib/zeebe-api/utils.js`
+are ported to `modeler-backend/src/zeebe_utils.rs` with 9 parity tests
+(`tests/zeebe_utils_parity.rs`) — SaaS URL detection, secret/blob sanitization,
+and `removeV2OrSlashes`.
+
+**Remaining (the networked client).** Porting `zeebe-api.js` (868 LOC) +
+`camunda-client-factory.js` (428 LOC) + `get-system-certificates.js` faithfully
+is a multi-slice effort that **requires external infrastructure to verify** and
+so is intentionally not stubbed with unverifiable code:
+
+- **Transport.** Zeebe **gRPC** (deploy / createProcessInstance / topology for
+  the gateway version) needs `tonic` + the **vendored Zeebe gateway `.proto`**;
+  the Camunda 8 **REST** API (the `search*` endpoints + REST deploy/start
+  variants) needs `reqwest`. The JS client supports both and auto-selects.
+- **Auth.** OAuth2 client-credentials token cache + refresh; basic auth; the
+  `none` case.
+- **TLS.** mTLS + custom root cert string **and** system-certificate loading
+  (`get-system-certificates.js` reads the OS trust store).
+- **Contract + error shapes.** Surface `zeebe:checkConnection` / `deploy` /
+  `startInstance` / `getGatewayVersion` / `search{ProcessInstances,Variables,
+  Incidents,ElementInstances,Jobs,MessageSubscriptions,UserTasks}` with the
+  **identical** `{ success, reason }` / response / error shapes (the renderer
+  surfaces `reason` + messages verbatim; map gRPC status codes → the
+  `ERROR_REASONS` set exactly).
+- **Parity oracle.** `app/test/spec/zeebe-api/zeebe-api-grpc-spec.js` (2343 LOC)
+  + `zeebe-api-rest-spec.js` (2575 LOC) + `camunda-client-factory-spec.js`. These
+  mock the SDK; a Rust port needs an equivalent mock gateway/HTTP server for
+  hermetic tests, **plus a live Camunda 8 cluster** to validate the real
+  transport/auth/TLS paths end-to-end.
+
+Suggested slice breakdown: connection-factory/endpoint config → REST `search*`
+(reqwest + OAuth, most portable) → gRPC `deploy`/`startInstance`/topology (tonic
++ proto) → TLS/system-certs. Until then, the `zeebe:*` IPC events return the
+parity-shaped `ERR_NOT_IMPLEMENTED` (the renderer's Zeebe panel degrades to a
+connection error, as today).
 
 ---
 
@@ -144,14 +112,12 @@ The remaining "app shell" surface, largely Tauri-native rather than pure logic:
 
 - **Native menu** (`app/lib/menu`) — application menu, context menus, accelerators,
   enable/disable state synced from the renderer's menu-state updates.
-- **Native dialogs** — file open/save, message boxes, error dialogs (explicitly
-  cut in Phase 2; the file-system slice needs these for full open/save flows).
 - **Plugins** (`app/lib/plugins`) — discovery + loading of user/extension plugins
   (menu, script, style, client-extension entry points).
 - **Error tracking** — the Electron crash/error reporting path.
 - **Packaging + auto-update** — bundle the Tauri app for win/mac/linux; replace
   electron-builder + the Electron auto-updater with the Tauri updater; code
-  signing / notarization.
+  signing / notarization (needs signing/notarization secrets).
 
 ---
 
@@ -166,13 +132,15 @@ Carried forward from earlier phases — track these so they aren't forgotten:
   is not ported.
 - **Phase 2 — user-data migration.** The Rust user-data dir starts fresh; there
   is no migration from the existing Electron `userData` directory.
-- **Phase 2 — native dialog.** Deferred to Phase 6 (see above).
+- **Phase 2 — native dialog.** ✅ Done (Phase 5a) via `tauri-plugin-dialog` +
+  `-opener` + `-clipboard-manager`.
 - **Phase 3 — atomic-save coalescing.** chokidar's per-file `atomic:300`
   write-replace coalescing is not mirrored; an editor's write-replace may surface
   as `Remove` + `Add`. Eventually consistent via the indexer's URI reconciliation,
   but verify it doesn't cause a visible flicker in `file-context:changed`.
-- **Phase 4 — async workqueue.** The indexer is synchronous; the
-  `workqueue:empty` ready-gate is folded into Phase 5.
+- **Phase 4 — async workqueue.** ✅ Resolved (Phase 5b): the synchronous indexer
+  makes the `workqueue:empty` ready-gate unnecessary — each push already reflects
+  a settled snapshot. (Re-introduce only if the indexer is made async later.)
 - **Phase 4 — moddle fidelity edge cases.** BPMN/DMN element identification uses
   `(namespace, local-name)` matching via `roxmltree` rather than full moddle type
   resolution. DMN decisions are matched against the exact dmn-moddle **DMN 1.3**
