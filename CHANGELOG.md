@@ -33,7 +33,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add support for start event forms ([#4672](https://github.com/camunda/camunda-modeler/issues/4672))
 * `FEAT`: add multi-instance specific event types for execution listeners ([#5869](https://github.com/camunda/camunda-modeler/issues/5869))
 * `FEAT`: support `cancel` execution listener rules ([#5929](https://github.com/camunda/camunda-modeler/issues/5929))
-* `FEAT`: improve Camunda 8 tooltips/guidance ([#5527](https://github.com/camunda/camunda-modeler/issues/5527))
+* `FEAT`: improve Camunda 8 tooltips/guidance ([#5527](https://github.com/camunda/camunda-modeler/issues/5527), [#5244](https://github.com/camunda/camunda-modeler/issues/5244), [bpmn-io/bpmn-js-properties-panel#1224](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1224))
 * `FIX`: render data output with filled arrow ([bpmn-io/bpmn-js#2425](https://github.com/bpmn-io/bpmn-js/pull/2425))
 * `FIX`: fix Select All shortcut in variable outline not working ([#5841](https://github.com/camunda/camunda-modeler/issues/5841))
 * `FIX`: fix linting error shown for a removed task ([#5949](https://github.com/camunda/camunda-modeler/issues/5949))
