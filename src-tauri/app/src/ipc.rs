@@ -188,11 +188,29 @@ pub fn handle(window: &WebviewWindow, event: &str, args: &[Value]) -> Result<Val
         "external:open-url" => Ok(crate::dialog::open_url(window, &arg0(args))),
         "system-clipboard:write-text" => Ok(crate::dialog::write_clipboard_text(window, &arg0(args))),
 
+        // Native application menu (port of app/lib/menu). register/update mutate
+        // the managed menu model and reinstall the menu; the menu's Quit and the
+        // window close button defer to the renderer, which replies app:quit-allowed.
+        "menu:register" => {
+            let provider_id = args.first().and_then(Value::as_str).unwrap_or_default();
+            crate::menu::register(window.app_handle(), provider_id, &arg0(&args[1..]));
+
+            Ok(Value::Null)
+        },
+        "menu:update" => {
+            crate::menu::update(window.app_handle(), args.first().cloned().unwrap_or(Value::Null));
+
+            Ok(Value::Null)
+        },
+        "app:quit-allowed" => {
+            window.app_handle().exit(0);
+
+            Ok(Value::Null)
+        },
+
         // Fire-and-forget / not-yet-meaningful boot calls: accept as no-ops so
         // the renderer's promises resolve instead of rejecting during startup.
-        "menu:register"
-        | "menu:update"
-        | "client:error"
+        "client:error"
         | "client:templates-update"
         | "errorTracking:turnedOn"
         | "errorTracking:turnedOff"
@@ -200,7 +218,6 @@ pub fn handle(window: &WebviewWindow, event: &str, args: &[Value]) -> Result<Val
         | "toggle-plugins"
         | "app:reload"
         | "app:restart"
-        | "app:quit-allowed"
         | "app:quit-aborted" => Ok(Value::Null),
 
         // Pure, stateless events (file-system, ...) and the

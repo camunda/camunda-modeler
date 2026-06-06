@@ -126,8 +126,19 @@ is a test/e2e fixture), so nothing was migrated there.
 
 The remaining "app shell" surface, largely Tauri-native rather than pure logic:
 
-- **Native menu** (`app/lib/menu`) — application menu, context menus, accelerators,
-  enable/disable state synced from the renderer's menu-state updates.
+- **Native menu** (`app/lib/menu`) — ✅ application menu done (Phase 6a):
+  `src-tauri/app/src/menu.rs` is a faithful port of `menu-builder.js`
+  (File/Edit/Window/Help, dynamic editMenu/windowMenu, role→native predefined
+  items with disabled-state fallback, provider newFileMenu/helpMenu, accelerator
+  normalization). Driven by `menu:register`/`menu:update`; clicks emit
+  `menu:action(action, options)` window-scoped to "main". Quit and the window
+  close button defer to the renderer's unsaved-changes flow (emit
+  `menu:action('quit')` → renderer → `app:quit-allowed` → `app.exit(0)`).
+  **Still open:** context menus (`context-menu:open` is still a no-op stub);
+  the DevTools toggle is a no-op in release builds unless the `devtools` feature
+  is enabled; accelerator double-fire risk (native menu accelerators vs the
+  renderer's own keyboardBindings) — drop native accelerators for
+  renderer-owned actions if it occurs.
 - **Plugins** (`app/lib/plugins`) — discovery + loading of user/extension plugins
   (menu, script, style, client-extension entry points).
 - **Error tracking** — the Electron crash/error reporting path.

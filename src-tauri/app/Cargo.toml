@@ -15,6 +15,11 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
+[features]
+# Enables the webview devtools toggle in the Window menu (forwards to Tauri's
+# own `devtools` feature). Always available in debug builds regardless.
+devtools = ["tauri/devtools"]
+
 [dependencies]
 tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }

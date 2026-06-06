@@ -16,6 +16,7 @@
 
 pub mod dialog;
 pub mod ipc;
+pub mod menu;
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -109,6 +110,13 @@ fn setup_main_window<R: Runtime>(app: &tauri::App<R>) -> Result<(), Box<dyn std:
     let user_path = resolve_user_path(handle)?;
     let flags = load_flags(&user_path);
 
+    // Help menu hides remote-interaction entries when the flag is set (port of
+    // `app.flags.get('disable-remote-interaction')`).
+    let allow_remote = !flags
+        .get("disable-remote-interaction")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
+
     app.manage(AppState::new(&user_path));
 
     // File context: watches roots and pushes the full item list to the renderer
@@ -128,12 +136,37 @@ fn setup_main_window<R: Runtime>(app: &tauri::App<R>) -> Result<(), Box<dyn std:
         &Value::Object(flags),
     );
 
-    WebviewWindowBuilder::new(handle, "main", WebviewUrl::default())
+    // Native application menu (port of app/lib/menu). Managed before the window
+    // is built so an initial menu (File/Window/Help) exists before the renderer's
+    // first menu:register/menu:update.
+    app.manage(Mutex::new(menu::MenuModel::new(
+        package.version.to_string(),
+        allow_remote,
+    )));
+
+    let window = WebviewWindowBuilder::new(handle, "main", WebviewUrl::default())
         .title("Camunda Modeler")
         .inner_size(1280.0, 800.0)
         .initialization_script(&boot)
         .initialization_script(include_str!("../../preload-shim.js"))
         .build()?;
+
+    // Build the initial (empty-provider) menu.
+    menu::rebuild(handle);
+
+    // The window close button defers to the renderer's unsaved-changes flow:
+    // prevent the close, emit `menu:action('quit')`, and let the renderer reply
+    // `app:quit-allowed` (handled in ipc.rs -> app.exit). Mirrors Electron, where
+    // closing the window runs the same quit guard.
+    let close_handle = handle.clone();
+    window.on_window_event(move |event| {
+        if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+            api.prevent_close();
+            if let Some(main) = close_handle.get_webview_window("main") {
+                let _ = main.emit("menu:action", vec![Value::String("quit".into()), json!({})]);
+            }
+        }
+    });
 
     Ok(())
 }
@@ -144,6 +177,9 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .invoke_handler(tauri::generate_handler![ipc_dispatch])
+        .on_menu_event(|app, event| {
+            menu::handle_event(app, &event.id().0);
+        })
         .setup(|app| {
             setup_main_window(app)?;
 
