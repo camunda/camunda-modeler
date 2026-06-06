@@ -38,6 +38,12 @@ impl AppState {
     }
 }
 
+/// First argument as an object (dialog/shell handlers take a single options
+/// object), defaulting to `{}`.
+fn arg0(args: &[Value]) -> Value {
+    args.first().cloned().unwrap_or_else(|| json!({}))
+}
+
 /// Serialize a parity-shaped backend error into the `{ message, code, ... }`
 /// object the renderer expects (the same shape Electron delivered).
 fn to_error_value(err: IpcError) -> Value {
@@ -109,6 +115,16 @@ pub fn handle(window: &WebviewWindow, event: &str, args: &[Value]) -> Result<Val
             Ok(Value::Null)
         },
 
+        // dialogs / shell / clipboard (Tauri-layer, port of dialog.js + the
+        // shell handlers in index.js).
+        "dialog:open-files" => Ok(crate::dialog::open_files(window, &arg0(args))),
+        "dialog:save-file" => Ok(crate::dialog::save_file(window, &arg0(args))),
+        "dialog:show" => Ok(crate::dialog::show(window, &arg0(args))),
+        "dialog:open-file-error" => Ok(crate::dialog::open_file_error(window, &arg0(args))),
+        "dialog:open-file-explorer" => Ok(crate::dialog::open_file_explorer(window, &arg0(args))),
+        "external:open-url" => Ok(crate::dialog::open_url(window, &arg0(args))),
+        "system-clipboard:write-text" => Ok(crate::dialog::write_clipboard_text(window, &arg0(args))),
+
         // Fire-and-forget / not-yet-meaningful boot calls: accept as no-ops so
         // the renderer's promises resolve instead of rejecting during startup.
         "menu:register"
@@ -117,8 +133,6 @@ pub fn handle(window: &WebviewWindow, event: &str, args: &[Value]) -> Result<Val
         | "client:templates-update"
         | "errorTracking:turnedOn"
         | "errorTracking:turnedOff"
-        | "external:open-url"
-        | "system-clipboard:write-text"
         | "context-menu:open"
         | "toggle-plugins"
         | "app:reload"

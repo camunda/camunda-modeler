@@ -14,6 +14,7 @@
 //!      synchronously, and
 //!   2. the preload-compat shim that reconstructs `window.getAppPreload()`.
 
+pub mod dialog;
 pub mod ipc;
 
 use std::fs;
@@ -119,6 +120,9 @@ fn setup_main_window<R: Runtime>(app: &tauri::App<R>) -> Result<(), Box<dyn std:
 
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
         .invoke_handler(tauri::generate_handler![ipc_dispatch])
         .setup(|app| {
             setup_main_window(app)?;
