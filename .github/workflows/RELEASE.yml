@@ -173,6 +173,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write # Vault OIDC/JWT auth
+      issues: read
 
     # skip for release candidates
     if: contains(needs.pre_release.outputs.tag, 'rc') == false
@@ -238,6 +239,7 @@ jobs:
       - build_release
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       id-token: write # Vault OIDC/JWT auth
 
     steps:

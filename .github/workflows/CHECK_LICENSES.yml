@@ -17,6 +17,7 @@ jobs:
     name: Analyze dependencies
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       id-token: write # Vault OIDC/JWT auth
     timeout-minutes: 10
     steps:
