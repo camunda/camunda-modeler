@@ -28,6 +28,7 @@ jobs:
           - 'dist/camunda-modeler-nightly-win-x64.zip'
     runs-on: ${{ matrix.os }}
     permissions:
+      contents: read
       id-token: write # Vault OIDC/JWT auth
 
     steps:

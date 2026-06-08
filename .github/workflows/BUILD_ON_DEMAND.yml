@@ -20,6 +20,7 @@ jobs:
         os: [ ubuntu-latest, macos-latest, windows-2022 ]
     runs-on: ${{ matrix.os }}
     permissions:
+      contents: read
       id-token: write # Vault OIDC/JWT auth
     env:
       ON_DEMAND: true
