@@ -16,15 +16,18 @@ jobs:
     name: Add issue to project
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Vault OIDC/JWT auth
     steps:
       - name: Import Secrets
         id: secrets
         uses: hashicorp/vault-action@v4.0.0
         with:
           url: ${{ secrets.VAULT_ADDR }}
-          method: approle
-          roleId: ${{ secrets.VAULT_ROLE_ID }}
-          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          method: jwt
+          role: ${{ secrets.VAULT_JWT_ROLE }}
+          path: ${{ secrets.VAULT_JWT_PATH }}
+          jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
           exportEnv: false
           secrets: |
             secret/data/products/desktop-modeler/ci/ADD_TO_PROJECT_PAT ADD_TO_PROJECT_PAT;

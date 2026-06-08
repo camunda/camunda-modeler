@@ -27,6 +27,8 @@ jobs:
           - 'dist/camunda-modeler-nightly-win-ia32.zip'
           - 'dist/camunda-modeler-nightly-win-x64.zip'
     runs-on: ${{ matrix.os }}
+    permissions:
+      id-token: write # Vault OIDC/JWT auth
 
     steps:
     - name: Checkout
@@ -43,9 +45,10 @@ jobs:
       uses: hashicorp/vault-action@v4.0.0
       with:
         url: ${{ secrets.VAULT_ADDR }}
-        method: approle
-        roleId: ${{ secrets.VAULT_ROLE_ID }}
-        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        method: jwt
+        role: ${{ secrets.VAULT_JWT_ROLE }}
+        path: ${{ secrets.VAULT_JWT_PATH }}
+        jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
         exportEnv: false
         secrets: |
           secret/data/products/desktop-modeler/ci/sentry SENTRY_AUTH_TOKEN;
@@ -60,9 +63,10 @@ jobs:
       uses: hashicorp/vault-action@v4.0.0
       with:
         url: ${{ secrets.VAULT_ADDR }}
-        method: approle
-        roleId: ${{ secrets.VAULT_ROLE_ID }}
-        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        method: jwt
+        role: ${{ secrets.VAULT_JWT_ROLE }}
+        path: ${{ secrets.VAULT_JWT_PATH }}
+        jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
         exportEnv: false
         secrets: |
           secret/data/products/rpa/ci/azure             CERT_PROFILE_NAME  | AZURE_CERT_PROFILE_NAME ;
@@ -139,15 +143,18 @@ jobs:
     needs: build_nightly
     if: failure()
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Vault OIDC/JWT auth
     steps:
     - name: Import Secrets
       id: secrets
       uses: hashicorp/vault-action@v4.0.0
       with:
         url: ${{ secrets.VAULT_ADDR }}
-        method: approle
-        roleId: ${{ secrets.VAULT_ROLE_ID }}
-        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        method: jwt
+        role: ${{ secrets.VAULT_JWT_ROLE }}
+        path: ${{ secrets.VAULT_JWT_PATH }}
+        jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
         exportEnv: false
         secrets: |
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;

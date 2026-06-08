@@ -6,6 +6,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Vault OIDC/JWT auth
 
     steps:
     - name: Retrieve version
@@ -23,9 +25,10 @@ jobs:
       uses: hashicorp/vault-action@v4.0.0
       with:
         url: ${{ secrets.VAULT_ADDR }}
-        method: approle
-        roleId: ${{ secrets.VAULT_ROLE_ID }}
-        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        method: jwt
+        role: ${{ secrets.VAULT_JWT_ROLE }}
+        path: ${{ secrets.VAULT_JWT_PATH }}
+        jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
         exportEnv: false
         secrets: |
           secret/data/common/jenkins/downloads-camunda-cloud_google_sa_key DOWNLOAD_CENTER_GCLOUD_KEY_BYTES | GCP_CREDENTIALS_NAME;
@@ -42,15 +45,18 @@ jobs:
     needs: publish
     if: failure()
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Vault OIDC/JWT auth
     steps:
     - name: Import Secrets
       id: secrets
       uses: hashicorp/vault-action@v4.0.0
       with:
         url: ${{ secrets.VAULT_ADDR }}
-        method: approle
-        roleId: ${{ secrets.VAULT_ROLE_ID }}
-        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        method: jwt
+        role: ${{ secrets.VAULT_JWT_ROLE }}
+        path: ${{ secrets.VAULT_JWT_PATH }}
+        jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
         exportEnv: false
         secrets: |
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;

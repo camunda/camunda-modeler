@@ -54,6 +54,8 @@ jobs:
     name: Sync Slack roles
     needs: create_release_issue
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Vault OIDC/JWT auth
     if: |
       always() &&
       contains(github.event.issue.labels.*.name, 'release')
@@ -63,9 +65,10 @@ jobs:
       uses: hashicorp/vault-action@v4.0.0
       with:
         url: ${{ secrets.VAULT_ADDR }}
-        method: approle
-        roleId: ${{ secrets.VAULT_ROLE_ID }}
-        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        method: jwt
+        role: ${{ secrets.VAULT_JWT_ROLE }}
+        path: ${{ secrets.VAULT_JWT_PATH }}
+        jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
         exportEnv: false
         secrets: |
           secret/data/products/desktop-modeler/ci/slack_integration RELEASE_MANAGER_GROUP_ID;
@@ -89,15 +92,18 @@ jobs:
       always() &&
       contains(github.event.issue.labels.*.name, 'release')
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Vault OIDC/JWT auth
     steps:
     - name: Import Secrets
       id: secrets
       uses: hashicorp/vault-action@v4.0.0
       with:
         url: ${{ secrets.VAULT_ADDR }}
-        method: approle
-        roleId: ${{ secrets.VAULT_ROLE_ID }}
-        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        method: jwt
+        role: ${{ secrets.VAULT_JWT_ROLE }}
+        path: ${{ secrets.VAULT_JWT_PATH }}
+        jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
         exportEnv: false
         secrets: |
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;
