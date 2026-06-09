@@ -184,10 +184,11 @@ export default function TaskTestingTab(props) {
 
   const hasLintErrors = linting && linting.some(({ category }) => category === 'error');
 
-  const isConnectionConfigured = canConnectToCluster(connectionCheckResult) && !hasLintErrors;
+  const canConnect = canConnectToCluster(connectionCheckResult);
+  const hasError = !canConnect || hasLintErrors;
 
   const handleTestTask = useCallback(() => {
-    if (!canConnectToCluster(connectionCheckResult)) {
+    if (!canConnect) {
       handleConfigureConnection();
 
       return false;
@@ -198,24 +199,34 @@ export default function TaskTestingTab(props) {
     }
 
     return true;
-  }, [ connectionCheckResult, hasLintErrors, handleConfigureConnection, handleOpenLintingPanel ]);
+  }, [ canConnect, hasLintErrors, handleConfigureConnection, handleOpenLintingPanel ]);
 
-  const configureConnectionBannerTitle = getConnectionBannerTitle(connectionCheckResult, hasLintErrors);
-  const configureConnectionBannerDescription = getConfigureConnectionBannerDescription(connectionCheckResult, hasLintErrors);
+  const errorBannerTitle = getConnectionBannerTitle(connectionCheckResult, hasLintErrors);
+  const configureTooltip = getConfigureConnectionBannerDescription(connectionCheckResult, hasLintErrors);
+
+  const handleConfigure = useCallback(() => {
+    if (canConnect && hasLintErrors) {
+      handleOpenLintingPanel();
+      return;
+    }
+
+    handleConfigureConnection();
+  }, [ canConnect, hasLintErrors, handleConfigureConnection, handleOpenLintingPanel ]);
 
   return <div className={ css.TaskTestingTab }>
     <TaskTesting
       injector={ injector }
       config={ taskTestingConfig }
-      isConnectionConfigured={ isConnectionConfigured }
+      hasError={ hasError }
       onConfigChanged={ setTaskTestingConfig }
       operateBaseUrl={ operateUrl }
       tasklistBaseUrl={ tasklistUrl }
       onTaskExecutionStarted={ handleTaskExecutionStarted }
       onTaskExecutionFinished={ handleTaskExecutionFinished }
       onTestTask={ handleTestTask }
-      configureConnectionBannerTitle={ configureConnectionBannerTitle }
-      configureConnectionBannerDescription={ configureConnectionBannerDescription }
+      errorBannerTitle={ errorBannerTitle }
+      configureTooltip={ configureTooltip }
+      onConfigure={ handleConfigure }
       api={ api }
       documentationUrl={ DOCUMENTATION_URL }
     />
