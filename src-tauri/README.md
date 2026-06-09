@@ -84,9 +84,9 @@ a built client bundle, `npm run client:build`).
   `client:ready`/`client:started` handshake) with no uncaught errors.
 - `file:get-path` (Electron `webUtils`) has no portable web equivalent; the shim
   returns `null` for now — revisit in the drag-and-drop phase.
-- Config/workspace are in-memory only (no disk persistence yet); dialog,
-  file-context, zeebe, menu, plugins, packaging are still to come. Most non-boot
-  events remain `ERR_NOT_IMPLEMENTED`. See the phased plan.
+- Config/workspace are in-memory only (no disk persistence yet); 
+  file-context, plugins, packaging are still to come. Most non-boot
+  events remain `ERR_NOT_IMPLEMENTED`. See the phased plan. (Zeebe and file dialogs are implemented).
 - The boot capabilities (`app/capabilities/default.json`) are broad
   (`withGlobalTauri`, `csp: null`); tighten to least-privilege before shipping.
 - `icons/icon.png` is a placeholder; real branding assets come with packaging.
