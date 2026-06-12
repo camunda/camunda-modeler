@@ -113,7 +113,7 @@ describe('<TaskTestingTab>', function() {
       await selectElement(modeler, 'Task_1');
 
       // when
-      const button = await screen.findByTestId('test-task-btn');
+      const button = await screen.findByTestId('configure-btn');
 
       button.click();
 
@@ -166,7 +166,7 @@ describe('<TaskTestingTab>', function() {
       await selectElement(modeler, 'Task_1');
 
       // when
-      const button = await screen.findByTestId('test-task-btn');
+      const button = await screen.findByTestId('configure-btn');
 
       button.click();
 
@@ -213,7 +213,7 @@ describe('<TaskTestingTab>', function() {
       await selectElement(modeler, 'Task_1');
 
       // when
-      const button = await screen.findByTestId('test-task-btn');
+      const button = await screen.findByTestId('configure-btn');
 
       button.click();
 
@@ -287,6 +287,39 @@ describe('<TaskTestingTab>', function() {
       });
 
       expect(onAction).to.have.been.calledWith('open-panel', { tab: 'linting' });
+    });
+
+
+    it('should open linting panel on configure click (linting errors)', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      renderTab(modeler, {
+        connectionCheckResult: {
+          success: true,
+          response: {
+            protocol: 'rest',
+            gatewayVersion: '8.8.0'
+          }
+        },
+        linting: [
+          { category: 'error' }
+        ],
+        onAction
+      });
+
+      await selectElement(modeler, 'Task_1');
+
+      // when
+      const button = await screen.findByTestId('configure-btn');
+
+      button.click();
+
+      // then
+      await waitFor(() => {
+        expect(onAction).to.have.been.calledWith('open-panel', { tab: 'linting' });
+      });
     });
 
   });

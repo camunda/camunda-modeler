@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+### General
+
+* `DEPS`: update to `@camunda/task-testing@5`
+
 ## 5.48.0
 
 ### General
