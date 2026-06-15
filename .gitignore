@@ -4,6 +4,8 @@ dist/
 app/public/
 app/preload/
 plugins/**
+.webpack
+out
 .claude/worktrees
 .vscode
 coverage
