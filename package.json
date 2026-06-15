@@ -31,9 +31,12 @@
     "release": "lerna publish --force-publish=*",
     "release:rc": "npm run release -- --preid=rc",
     "test": "run-s *:test",
-    "start": "run-s \"dev -- {@}\" --",
-    "link-dependencies": "node tasks/link-dependencies.js"
+    "start": "electron-forge start",
+    "link-dependencies": "node tasks/link-dependencies.js",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
+  "main": "app/prod.js",
   "author": "Camunda <http://camunda.com>",
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://github.com/camunda/camunda-modeler",
@@ -46,6 +49,15 @@
     "url": "https://github.com/camunda/camunda-modeler"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.11.2",
+    "@electron-forge/maker-deb": "^7.11.2",
+    "@electron-forge/maker-rpm": "^7.11.2",
+    "@electron-forge/maker-squirrel": "^7.11.2",
+    "@electron-forge/maker-zip": "^7.11.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.11.2",
+    "@electron-forge/plugin-fuses": "^7.11.2",
+    "@electron-forge/plugin-webpack": "^7.11.2",
+    "@electron/fuses": "^1.8.0",
     "@electron/notarize": "^3.1.1",
     "chai": "^6.0.0",
     "chai-subset": "^1.6.0",
@@ -54,7 +66,6 @@
     "del-cli": "^7.0.0",
     "diff2html": "^3.4.48",
     "electron": "^42.0.0",
-    "electron-builder": "^26.8.1",
     "electron-extension-installer": "^2.0.1",
     "electron-publisher-s3": "^20.17.2",
     "electron-reloader": "^1.2.0",
@@ -91,5 +102,8 @@
         false
       ]
     ]
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.1"
   }
 }
