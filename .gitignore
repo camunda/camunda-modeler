@@ -4,6 +4,7 @@ dist/
 app/public/
 app/preload/
 plugins/**
+.claude/worktrees
 .vscode
 coverage
 .nyc_output
