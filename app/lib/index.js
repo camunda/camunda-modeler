@@ -11,6 +11,7 @@
 const {
   app,
   dialog: electronDialog,
+  ipcMain,
   Menu: ElectronMenu,
   MenuItem,
   screen: electronScreen,
@@ -811,10 +812,23 @@ function bootstrap() {
   });
 
   // (5) dialog
+  const testMode = !!flags.get('test-mode');
+
   const dialog = new Dialog({
     config,
     electronDialog,
-    userDesktopPath
+    userDesktopPath,
+    testMode
+  });
+
+  // Test-mode IPC: lets tests queue dialog results without native OS dialogs.
+  // Always register the handler so the app can be launched with --test-mode
+  // by the integration test harness without separate build variants.
+  ipcMain.handle('dialog:test-queue-result', function(event, type, result) {
+    if (!testMode) {
+      throw new Error('dialog:test-queue-result is only available in --test-mode');
+    }
+    dialog.queueTestResult(type, result);
   });
 
   // (6) workspace

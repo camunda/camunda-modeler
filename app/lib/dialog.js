@@ -32,7 +32,8 @@ class Dialog {
    * @param { {
    *   electronDialog: ElectronDialog,
    *   config: Config,
-   *   userDesktopPath: string
+   *   userDesktopPath: string,
+   *   testMode?: boolean
    * } } options
    */
   constructor(options) {
@@ -42,8 +43,21 @@ class Dialog {
 
     this.electronDialog = options.electronDialog;
     this.config = options.config;
-
     this.userDesktopPath = options.userDesktopPath;
+
+    this._testMode = !!options.testMode;
+    this._testResultQueue = [];
+  }
+
+  /**
+   * Queue a result to be returned by the next showSaveDialog or showOpenDialog
+   * call instead of showing a native OS dialog. Only effective in test mode.
+   *
+   * @param {'save'|'open'} type
+   * @param {string|string[]} result - file path for save; array of paths for open
+   */
+  queueTestResult(type, result) {
+    this._testResultQueue.push({ type, result });
   }
 
   showOpenFileErrorDialog(options) {
@@ -65,6 +79,16 @@ class Dialog {
   }
 
   showSaveDialog(options) {
+
+    // In test mode, consume a queued 'save' result instead of opening a native dialog
+    if (this._testMode) {
+      const idx = this._testResultQueue.findIndex(e => e.type === 'save');
+      if (idx !== -1) {
+        const [ { result } ] = this._testResultQueue.splice(idx, 1);
+        return Promise.resolve(result);
+      }
+    }
+
     const {
       file,
       filters,
@@ -108,6 +132,16 @@ class Dialog {
   }
 
   showOpenDialog(options) {
+
+    // In test mode, consume a queued 'open' result instead of opening a native dialog
+    if (this._testMode) {
+      const idx = this._testResultQueue.findIndex(e => e.type === 'open');
+      if (idx !== -1) {
+        const [ { result } ] = this._testResultQueue.splice(idx, 1);
+        return Promise.resolve(Array.isArray(result) ? result : [ result ]);
+      }
+    }
+
     const {
       filters,
       properties = [ 'openFile', 'multiSelections' ],

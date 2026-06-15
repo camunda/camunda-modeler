@@ -69,6 +69,20 @@ const allowedEvents = [
   'zeebe:searchUserTasks'
 ];
 
+// Test API: exposed unconditionally so Playwright can reach it via page.evaluate().
+// The main process only registers the IPC handler when --test-mode is active.
+contextBridge.exposeInMainWorld('__cmTestApi', {
+
+  // Queue a dialog result so the next showSaveDialog / showOpenDialog call returns
+  // this value instead of opening a native OS dialog.
+  queueDialogResult: (type, result) => ipcRenderer.invoke('dialog:test-queue-result', type, result),
+
+  // Simulate a menu:action IPC message from the main process.
+  // This is the same event the React app listens to via backend.on('menu:action', ...).
+  // Used to trigger actions like 'save-as' without going through the native menu system.
+  triggerMenuAction: (action, options) => ipcRenderer.emit('menu:action', {}, action, options)
+});
+
 let executed = false;
 
 contextBridge.exposeInMainWorld('getAppPreload', function() {
