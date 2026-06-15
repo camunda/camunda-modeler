@@ -600,11 +600,11 @@ app.createEditorWindow = function() {
 
   dialog.setActiveWindow(mainWindow);
 
-  // MAIN_WINDOW_WEBPACK_ENTRY is a global injected by @electron-forge/plugin-webpack.
-  // Falls back to the pre-built public/ path for production builds without the plugin.
-  const url = typeof MAIN_WINDOW_WEBPACK_ENTRY !== 'undefined'
-    ? MAIN_WINDOW_WEBPACK_ENTRY
-    : 'file://' + path.resolve(__dirname + '/../public/index.html');
+  let url = 'file://' + path.resolve(__dirname + '/../public/index.html');
+
+  if (process.env.NODE_ENV === 'development') {
+    url = 'file://' + path.resolve(__dirname + '/../../client/build/index.html');
+  }
 
   mainWindow.loadURL(url);
 
