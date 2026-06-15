@@ -1,20 +1,25 @@
 const path = require('path');
+const fs = require('fs');
 
 const execa = require('execa');
 
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
+const APP_DIR = path.resolve(__dirname, 'app');
+const RESOURCES_SRC = path.resolve(__dirname, 'resources');
+const RESOURCES_DEST = path.resolve(APP_DIR, 'resources');
+
 module.exports = {
   packagerConfig: {
     asar: true,
+
+    // Package from app/ so electron-packager prunes against app/package.json,
+    // which is exactly the right production dependency list.
+    dir: './app',
+
     name: 'Camunda Modeler',
     appBundleId: 'com.camunda.CamundaModeler',
-
-    // TODO: monorepo workspace hoisting means production deps of app/ are pruned
-    // with the default prune:true. Fix: prePackage hook that flattens app/ deps
-    // via `npm install --workspaces=false`. See knowledge/02-monorepo-prune-issue.md.
-    prune: false,
   },
   rebuildConfig: {},
   makers: [
@@ -67,6 +72,36 @@ module.exports = {
     generateAssets: async () => {
       await execa('npm', [ 'run', 'preload:build' ], { stdio: 'inherit', cwd: path.resolve(__dirname) });
       await execa('npm', [ 'run', 'client:build' ], { stdio: 'inherit', cwd: path.resolve(__dirname) });
+    },
+
+    /**
+     * Prepare app/ for packaging:
+     * 1. Install production deps non-workspace so they land in app/node_modules/
+     *    rather than being hoisted to root. electron-packager then prunes based on
+     *    app/package.json — the correct production dependency list.
+     * 2. Merge root resources/ into app/resources/ so the asar contains templates,
+     *    diagrams and flags (app code looks for them at app.getAppPath() + '/resources').
+     */
+    prePackage: async () => {
+      await execa('npm', [ 'install', '--workspaces=false' ], {
+        stdio: 'inherit',
+        cwd: APP_DIR,
+      });
+
+      fs.cpSync(RESOURCES_SRC, RESOURCES_DEST, { recursive: true });
+    },
+
+    /**
+     * Restore app/ to its source state after packaging:
+     * - Remove the resources that were merged in from root resources/
+     *   (app/resources/icons and favicon.png are original; everything else was copied)
+     * - app/node_modules/ is left as-is; it does not break the dev workflow since
+     *   root node_modules/ still takes precedence via workspace hoisting.
+     */
+    postPackage: async () => {
+      for (const entry of fs.readdirSync(RESOURCES_SRC)) {
+        fs.rmSync(path.join(RESOURCES_DEST, entry), { recursive: true, force: true });
+      }
     },
   },
 };
