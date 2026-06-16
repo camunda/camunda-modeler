@@ -17,7 +17,6 @@ import {
   debounce,
   forEach,
   groupBy,
-  isString,
   map,
   merge,
   reduce
@@ -32,6 +31,8 @@ import getActionRegistry from './getActionRegistry';
 import LintingManager from './LintingManager';
 
 import FileManager from './FileManager';
+
+import NotificationManager from './NotificationManager';
 
 import executeOnce from './util/executeOnce';
 
@@ -74,7 +75,7 @@ import { PluginsRoot } from './plugins';
 
 import * as css from './App.css';
 
-import Notifications, { NOTIFICATION_TYPES } from './notifications';
+import Notifications from './notifications';
 import { RecentTabs } from './RecentTabs';
 import { EventsContext } from './EventsContext';
 import { AppContext } from './AppContext';
@@ -169,6 +170,8 @@ export class App extends PureComponent {
 
     this.fileManager = new FileManager(this);
 
+    this.notificationManager = new NotificationManager(this);
+
     this.on('connectionManager.connectionStatusChanged',
       this.lintingManager.handleConnectionStatusChanged);
     this.on('connectionManager.connectionCheckStarted', this.lintingManager.handleConnectionCheckStarted);
@@ -211,8 +214,6 @@ export class App extends PureComponent {
       triggerAction: this.triggerAction,
       getGlobal: this.getGlobal
     };
-
-    this.currentNotificationId = 0;
   }
 
   /**
@@ -1369,69 +1370,12 @@ export class App extends PureComponent {
    *
    * @returns {{ update: (options: object) => void, close: () => void }}
    */
-  displayNotification({ type = 'info', title, content, duration = 4000 }) {
-    const { notifications } = this.state;
-
-    if (!NOTIFICATION_TYPES.includes(type)) {
-      throw new Error('Unknown notification type');
-    }
-
-    if (!isString(title)) {
-      throw new Error('Title should be string');
-    }
-
-    const id = this.currentNotificationId++;
-
-    const close = () => {
-      this._closeNotification(id);
-    };
-
-    const update = newProps => {
-      this._updateNotification(id, newProps);
-    };
-
-    const notification = {
-      content,
-      duration,
-      id,
-      close,
-      title,
-      type
-    };
-
-    this.setState({
-      notifications: [
-        ...notifications,
-        notification
-      ]
-    });
-
-    return {
-      close,
-      update
-    };
+  displayNotification(options) {
+    return this.notificationManager.displayNotification(options);
   }
 
   closeNotifications() {
-    this.setState({
-      notifications: []
-    });
-  }
-
-  _updateNotification(id, options) {
-    const notifications = this.state.notifications.map(notification => {
-      const { id: currentId } = notification;
-
-      return currentId !== id ? notification : { ...notification, ...options };
-    });
-
-    this.setState({ notifications });
-  }
-
-  _closeNotification(id) {
-    const notifications = this.state.notifications.filter(({ id: currentId }) => currentId !== id);
-
-    this.setState({ notifications });
+    return this.notificationManager.closeNotifications();
   }
 
   setLayout(layout) {
