@@ -1,0 +1,16 @@
+{
+  "components": [
+    {
+      "type": "expression",
+      "expression": "=1 + 1",
+      "computeOn": "load",
+      "key": "sum",
+      "id": "Field_1"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.6.0",
+  "schemaVersion": 18
+}

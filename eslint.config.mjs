@@ -25,6 +25,8 @@ const files = {
     'docs',
     'resources/plugins/*/dist',
     'resources/plugins/test-script-error/broken.js',
+    'test/e2e/playwright-report',
+    'test/e2e/test-results',
     'tmp'
   ]
 };

@@ -1,0 +1,6 @@
+# e2e export baselines: keep the SVG baseline as LF so it matches the app's
+# export on all platforms (a Windows checkout would otherwise convert it to
+# CRLF and break the comparison). Raster baselines are binary.
+test/e2e/__snapshots__/**/*.svg text eol=lf
+test/e2e/__snapshots__/**/*.png binary
+test/e2e/__snapshots__/**/*.jpeg binary

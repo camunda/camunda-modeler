@@ -37,6 +37,16 @@ jobs:
     - name: Build for macOS
       if: ${{ runner.OS == 'macOS' }}
       run: npm run all -- --arm64 --no-compress
+    # tar the built renderer + preload so the exact `app/public` / `app/preload`
+    # paths are preserved through the artifact (no path-flattening surprises)
+    - name: Package app build
+      run: tar -czf app-build.tar.gz app/public app/preload
+    - name: Upload app build
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-build-${{ matrix.os }}
+        path: app-build.tar.gz
+        if-no-files-found: error
     - name: Import Secrets
       if: ${{ runner.OS == 'Linux' }}
       id: secrets
@@ -57,3 +67,49 @@ jobs:
         fail_ci_if_error: true
       env:
         CODECOV_TOKEN: ${{ steps.secrets.outputs.CODECOV_TOKEN }}
+
+
+  e2e-tests:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-2022 ]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+    - name: Use Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: 24
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Project setup
+      uses: bpmn-io/actions/setup@latest
+    - name: Download app build
+      uses: actions/download-artifact@v4
+      with:
+        name: app-build-${{ matrix.os }}
+    - name: Unpack app build
+      run: tar -xzf app-build.tar.gz
+    # Electron is headed, so Linux needs a virtual display (xvfb); macOS and
+    # Windows runners have one.
+    - name: Run integration tests (${{ runner.os }})
+      run: |
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          xvfb-run --auto-servernum npm run test:e2e
+        else
+          npm run test:e2e
+        fi
+    - name: Upload integration test artifacts
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: e2e-results-${{ matrix.os }}
+        path: test/e2e/test-results/
+        if-no-files-found: ignore
