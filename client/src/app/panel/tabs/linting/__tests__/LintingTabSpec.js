@@ -17,6 +17,8 @@ import { render, fireEvent } from '@testing-library/react';
 
 import { SlotFillRoot } from '../../../../slot-fill';
 
+import { AppContext } from '../../../../AppContext';
+
 import Panel from '../../../Panel';
 
 import LintingTab from '../LintingTab';
@@ -337,16 +339,22 @@ function renderLintingTab(options = {}) {
     onLayoutChanged = () => {}
   } = options;
 
+  const appContext = {
+    triggerAction: onAction,
+    getGlobal: () => {}
+  };
+
   return render(
-    <SlotFillRoot>
-      <Panel
-        layout={ layout }>
-        <LintingTab
-          layout={ layout }
-          linting={ linting }
-          onAction={ onAction }
-          onLayoutChanged={ onLayoutChanged } />
-      </Panel>
-    </SlotFillRoot>
+    <AppContext.Provider value={ appContext }>
+      <SlotFillRoot>
+        <Panel
+          layout={ layout }>
+          <LintingTab
+            layout={ layout }
+            linting={ linting }
+            onLayoutChanged={ onLayoutChanged } />
+        </Panel>
+      </SlotFillRoot>
+    </AppContext.Provider>
   );
 }

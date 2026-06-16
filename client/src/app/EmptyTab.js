@@ -22,10 +22,14 @@ import {
   Tab
 } from './primitives';
 
+import { AppContext } from './AppContext';
+
 import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../util/Flags';
 
 
 export default class EmptyTab extends PureComponent {
+
+  static contextType = AppContext;
 
   componentDidMount() {
     this.props.onShown(this.props.tab);
@@ -35,11 +39,11 @@ export default class EmptyTab extends PureComponent {
 
   renderDiagramButton = (key, entry) => {
     const {
-      onAction
-    } = this.props;
+      triggerAction
+    } = this.context;
 
     return (
-      <button key={ key } className="btn btn-secondary" onClick={ () => onAction(entry.action, entry.options) }>
+      <button key={ key } className="btn btn-secondary" onClick={ () => triggerAction(entry.action, entry.options) }>
         {entry.icon && <entry.icon />}
         {entry.label}
       </button>
@@ -126,7 +130,7 @@ export default class EmptyTab extends PureComponent {
           </div>
           <div className="article">
             <p>About Modeler 5</p>
-            <a href="#" onClick={ () => this.props.onAction('emit-event', { type: 'versionInfo.open' }) }>Open &quot;What&apos;s new&quot;</a>
+            <a href="#" onClick={ () => this.context.triggerAction('emit-event', { type: 'versionInfo.open' }) }>Open &quot;What&apos;s new&quot;</a>
           </div>
           <div className="article">
             <p>Model your first diagram</p>

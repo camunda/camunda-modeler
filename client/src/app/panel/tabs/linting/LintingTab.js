@@ -16,6 +16,8 @@ import { isNil } from 'min-dash';
 
 import { Fill } from '../../../slot-fill';
 
+import { useApp } from '../../../AppContext';
+
 import LintingStatusBarItem from './LintingStatusBarItem';
 
 import * as css from './LintingTab.css';
@@ -29,13 +31,14 @@ import InfoIcon from '../../../../../resources/icons/InformationCircle.svg';
 export default function LintingTab(props) {
   const {
     layout = {},
-    linting: reports,
-    onAction
+    linting: reports
   } = props;
+
+  const { triggerAction } = useApp();
 
   const onClick = (report) => () => {
     if (!window.getSelection().toString().length) {
-      onAction('showLintError', report);
+      triggerAction('showLintError', report);
     }
   };
 
@@ -43,9 +46,9 @@ export default function LintingTab(props) {
     const { panel = {} } = layout;
 
     if (!panel.open || panel.tab !== 'linting') {
-      onAction('open-panel', { tab: 'linting' });
+      triggerAction('open-panel', { tab: 'linting' });
     } else if (panel.tab === 'linting') {
-      onAction('close-panel');
+      triggerAction('close-panel');
     }
   };
 
@@ -72,7 +75,7 @@ export default function LintingTab(props) {
             key={ index }
             report={ report }
             onClick={ onClick(report) }
-            onAction={ onAction }
+            onAction={ triggerAction }
           />;
         }))
       }

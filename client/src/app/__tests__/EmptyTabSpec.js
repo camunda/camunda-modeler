@@ -17,6 +17,8 @@ import { render } from '@testing-library/react';
 import EmptyTab from '../EmptyTab';
 import TabsProvider from '../TabsProvider';
 
+import { AppContext } from '../AppContext';
+
 import Flags, { DISABLE_DMN, DISABLE_FORM, DISABLE_ZEEBE, DISABLE_PLATFORM } from '../../util/Flags';
 
 
@@ -170,12 +172,18 @@ describe('<EmptyTab>', function() {
   function createEmptyTab(options = {}) {
     const tabsProvider = new TabsProvider();
 
+    const appContext = {
+      triggerAction: options.onAction || sinon.fake(),
+      getGlobal: options.getGlobal || sinon.fake()
+    };
+
     return render(
-      <EmptyTab
-        onAction={ options.onAction || sinon.fake() }
-        onShown={ options.onShown || sinon.fake() }
-        tabsProvider={ tabsProvider }
-      />
+      <AppContext.Provider value={ appContext }>
+        <EmptyTab
+          onShown={ options.onShown || sinon.fake() }
+          tabsProvider={ tabsProvider }
+        />
+      </AppContext.Provider>
     );
   }
 });
