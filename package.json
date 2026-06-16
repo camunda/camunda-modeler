@@ -31,6 +31,10 @@
     "release": "lerna publish --force-publish=*",
     "release:rc": "npm run release -- --preid=rc",
     "test": "run-s *:test",
+    "test:e2e": "playwright test -c test/e2e/playwright.config.js",
+    "test:e2e:trace": "cross-env E2E_TRACE=1 npm run test:e2e",
+    "test:e2e:show-trace": "playwright show-report test/e2e/playwright-report",
+    "test:e2e:update": "playwright test -c test/e2e/playwright.config.js --update-snapshots",
     "start": "run-s \"dev -- {@}\" --",
     "link-dependencies": "node tasks/link-dependencies.js"
   },
@@ -47,9 +51,11 @@
   },
   "devDependencies": {
     "@electron/notarize": "^3.1.1",
+    "@playwright/test": "^1.60.0",
     "chai": "^6.0.0",
     "chai-subset": "^1.6.0",
     "cpx2": "^9.0.0",
+    "cross-env": "^10.1.0",
     "del": "^8.0.0",
     "del-cli": "^7.0.0",
     "diff2html": "^3.4.48",

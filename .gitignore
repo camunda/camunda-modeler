@@ -10,3 +10,5 @@ coverage
 .nyc_output
 .linked-dependencies
 tmp
+test/e2e/test-results
+test/e2e/playwright-report
