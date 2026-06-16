@@ -50,11 +50,14 @@ class Dialog {
   }
 
   /**
-   * Queue a result to be returned by the next showSaveDialog or showOpenDialog
-   * call instead of showing a native OS dialog. Only effective in test mode.
+   * Queue a result to be returned by the next matching dialog call instead of
+   * showing a native OS dialog. Only effective in test mode.
    *
-   * @param {'save'|'open'} type
-   * @param {string|string[]} result - file path for save; array of paths for open
+   * @param {'save'|'open'|'dialog'} type
+   * @param {string|string[]|Object} result
+   *   - 'save': file path string
+   *   - 'open': file path string or array of paths
+   *   - 'dialog': response object, e.g. `{ button: 'ok' }`
    */
   queueTestResult(type, result) {
     this._testResultQueue.push({ type, result });
@@ -178,6 +181,16 @@ class Dialog {
   }
 
   showDialog(options) {
+
+    // In test mode, consume a queued 'dialog' result instead of opening a native dialog
+    if (this._testMode) {
+      const idx = this._testResultQueue.findIndex(e => e.type === 'dialog');
+      if (idx !== -1) {
+        const [ { result } ] = this._testResultQueue.splice(idx, 1);
+        return Promise.resolve(result);
+      }
+    }
+
     let { buttons } = options;
 
     if (buttons) {
