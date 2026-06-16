@@ -17,11 +17,14 @@ import classNames from 'classnames';
 import { RunDialog } from '@camunda/rpa-integration';
 import TestIcon from './resources/TestIcon.svg';
 
+import { useApp } from '../../AppContext';
+
 export default function RunButton(props) {
   const {
-    layout,
-    onAction
+    layout
   } = props;
+
+  const { triggerAction } = useApp();
 
   const editor = props.editor || {};
 
@@ -47,7 +50,7 @@ export default function RunButton(props) {
     const { panel = {} } = layout;
 
     if (!panel.open || panel.tab !== 'RPA-output') {
-      onAction('open-panel', { tab: 'RPA-output' });
+      triggerAction('open-panel', { tab: 'RPA-output' });
     }
   };
 

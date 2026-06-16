@@ -10,6 +10,8 @@
 
 import React, { PureComponent } from 'react';
 
+import { AppContext } from '../AppContext';
+
 
 /**
  * A higher order component that lazily
@@ -30,8 +32,10 @@ export default function(Comp) {
 
   class WithCachedState extends PureComponent {
 
-    constructor(props) {
-      super(props);
+    static contextType = AppContext;
+
+    constructor(props, context) {
+      super(props, context);
 
       const {
         id,
@@ -52,7 +56,7 @@ export default function(Comp) {
 
         const initialCachedState =
           'createCachedState' in Comp
-            ? Comp.createCachedState(this.props)
+            ? Comp.createCachedState(this.props, context)
             : {};
 
         const {

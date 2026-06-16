@@ -18,6 +18,8 @@ import { render, waitFor } from '@testing-library/react';
 import { SlotFillRoot } from '../../slot-fill';
 import Panel from '../../panel/Panel';
 
+import { AppContext } from '../../AppContext';
+
 import { WithCachedState } from '../../cached';
 import Cache from '../../cached/Cache';
 
@@ -64,6 +66,11 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
     onImport: onImportSpy,
   };
 
+  const appContext = {
+    triggerAction: props.onAction,
+    getGlobal: props.getGlobal || noop
+  };
+
   const ref = createRef(null);
 
   const TestEditor = WithCachedState(EditorComponent);
@@ -72,10 +79,12 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
     rerender,
     ...renderResults
   } = render(
-    <SlotFillRoot>
-      <TestEditor ref={ ref } { ...props } />
-      <Panel layout={ props.layout } />
-    </SlotFillRoot>
+    <AppContext.Provider value={ appContext }>
+      <SlotFillRoot>
+        <TestEditor ref={ ref } { ...props } />
+        <Panel layout={ props.layout } />
+      </SlotFillRoot>
+    </AppContext.Provider>
   );
 
   if (props.waitForImport) {
@@ -88,16 +97,27 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
     ...renderResults,
     instance: ref.current,
     rerender: (newXML, newOptions = {}) => {
+      const newProps = {
+        ...props,
+        xml: newXML || xml,
+        ...newOptions
+      };
+
+      const newAppContext = {
+        triggerAction: newProps.onAction,
+        getGlobal: newProps.getGlobal || noop
+      };
+
       rerender(
-        <SlotFillRoot>
-          <TestEditor
-            ref={ ref }
-            { ...props }
-            xml={ newXML || xml }
-            { ...newOptions }
-          />
-          <Panel layout={ props.layout } />
-        </SlotFillRoot>
+        <AppContext.Provider value={ newAppContext }>
+          <SlotFillRoot>
+            <TestEditor
+              ref={ ref }
+              { ...newProps }
+            />
+            <Panel layout={ props.layout } />
+          </SlotFillRoot>
+        </AppContext.Provider>
       );
     }
   };

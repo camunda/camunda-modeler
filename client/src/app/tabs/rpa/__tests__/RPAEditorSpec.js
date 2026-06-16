@@ -21,6 +21,8 @@ import {
 
 import { RPAEditor } from '../RPAEditor';
 
+import { AppContext } from '../../../AppContext';
+
 import { RPACodeEditor as MockRPACodeEditor } from 'test/mocks/rpa';
 
 const RPA = '{"script": "Hello, World!", "executionPlatform": "Camunda Cloud",  "executionPlatformVersion": "8.8.0"}';
@@ -433,19 +435,21 @@ function renderEditor(xml, options = {}) {
   const ref = React.createRef();
 
   const rendered = render(
-    <TestEditor
-      ref={ ref }
-      getConfig={ () => ({}) }
-      onAction={ noop }
-      onImport={ onImport || noop }
-      id={ id || 'editor' }
-      xml={ xml }
-      activeSheet={ options.activeSheet || { id: 'xml' } }
-      onChanged={ onChanged || noop }
-      layout={ options.layout || {} }
-      cache={ cache }
-      { ...props }
-    />
+    <AppContext.Provider value={ { triggerAction: options.onAction || noop, getGlobal: noop } }>
+      <TestEditor
+        ref={ ref }
+        getConfig={ () => ({}) }
+        onAction={ noop }
+        onImport={ onImport || noop }
+        id={ id || 'editor' }
+        xml={ xml }
+        activeSheet={ options.activeSheet || { id: 'xml' } }
+        onChanged={ onChanged || noop }
+        layout={ options.layout || {} }
+        cache={ cache }
+        { ...props }
+      />
+    </AppContext.Provider>
   );
 
   return {

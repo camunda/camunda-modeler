@@ -26,6 +26,8 @@ import {
   CachedComponent
 } from '../../cached';
 
+import { AppContext } from '../../AppContext';
+
 import { Settings } from '@carbon/icons-react';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
@@ -89,6 +91,8 @@ const LOW_PRIORITY = 500;
 
 export class BpmnEditor extends CachedComponent {
 
+  static contextType = AppContext;
+
   constructor(props) {
     super(props);
 
@@ -125,7 +129,7 @@ export class BpmnEditor extends CachedComponent {
           'modeler:executionPlatformVersion': executionPlatformVersion
         });
 
-        this.props.onAction('emit-event', {
+        this.context.triggerAction('emit-event', {
           type: 'tab.engineProfileChanged',
           payload: {
             executionPlatform,
@@ -427,7 +431,7 @@ export class BpmnEditor extends CachedComponent {
       if (engineProfile) {
         const { executionPlatform, executionPlatformVersion } = engineProfile;
 
-        this.props.onAction('emit-event', {
+        this.context.triggerAction('emit-event', {
           type: 'tab.engineProfileChanged',
           payload: {
             executionPlatform,
@@ -559,9 +563,7 @@ export class BpmnEditor extends CachedComponent {
 
     const contents = modeler.getDefinitions();
 
-    const { onAction } = this.props;
-
-    onAction('lint-tab', { contents });
+    this.context.triggerAction('lint-tab', { contents });
   };
 
   isLintingActive = () => {
@@ -891,7 +893,6 @@ export class BpmnEditor extends CachedComponent {
       id,
       layout,
       linting,
-      onAction,
       startInstance,
       zeebeApi
     } = this.props;
@@ -924,7 +925,6 @@ export class BpmnEditor extends CachedComponent {
                   injector={ injector }
                   layout={ layout }
                   maxWidth={ maxWidth }
-                  onAction={ onAction }
                   onLayoutChanged={ onLayoutChanged }
                 />
               ) }
@@ -964,7 +964,6 @@ export class BpmnEditor extends CachedComponent {
                       injector={ injector }
                       layout={ layout }
                       linting={ linting }
-                      onAction={ onAction }
                       startInstance={ startInstance }
                       zeebeApi={ zeebeApi }
                     />
@@ -1000,7 +999,7 @@ export class BpmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState(props) {
+  static createCachedState(props, app) {
 
     const {
       name,
@@ -1009,7 +1008,6 @@ export class BpmnEditor extends CachedComponent {
 
     const {
       getPlugins,
-      onAction,
       onError,
       layout = {},
       settings
@@ -1017,7 +1015,7 @@ export class BpmnEditor extends CachedComponent {
 
     // notify interested parties that modeler will be configured
     const handleMiddlewareExtensions = (middlewares) => {
-      onAction('emit-event', {
+      app.triggerAction('emit-event', {
         type: 'bpmn.modeler.configure',
         payload: {
           middlewares
@@ -1076,7 +1074,7 @@ export class BpmnEditor extends CachedComponent {
     const stackIdx = commandStack._stackIdx;
 
     // notify interested parties that modeler was created
-    onAction('emit-event', {
+    app.triggerAction('emit-event', {
       type: 'bpmn.modeler.created',
       payload: {
         modeler

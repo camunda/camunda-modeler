@@ -20,11 +20,15 @@ import {
   CachedComponent
 } from '../cached';
 
+import { AppContext } from '../AppContext';
+
 import * as css from './MultiSheetTab.css';
 import { Fill } from '../slot-fill';
 
 
 export class MultiSheetTab extends CachedComponent {
+
+  static contextType = AppContext;
 
   constructor(props) {
     super(props);
@@ -390,48 +394,54 @@ export class MultiSheetTab extends CachedComponent {
 
     const isNew = this.isUnsaved(tab);
 
+    const appContext = {
+      ...(this.context || {}),
+      triggerAction: this.onAction
+    };
+
     return (
-      <div className={ css.MultiSheetTab }>
-        <TabContainer className="content tab">
-          <Editor
-            ref={ this.editorRef }
-            file={ tab.file }
-            id={ `${id}-${activeSheet.provider.type}` }
-            xml={ lastXML || xml }
-            isNew={ isNew }
-            layout={ layout }
+      <AppContext.Provider value={ appContext }>
+        <div className={ css.MultiSheetTab }>
+          <TabContainer className="content tab">
+            <Editor
+              ref={ this.editorRef }
+              file={ tab.file }
+              id={ `${id}-${activeSheet.provider.type}` }
+              xml={ lastXML || xml }
+              isNew={ isNew }
+              layout={ layout }
+              activeSheet={ activeSheet }
+              onSheetsChanged={ this.sheetsChanged }
+              onContextMenu={ this.handleContextMenu }
+              onChanged={ this.handleChanged }
+              onContentUpdated={ this.handleContentUpdated }
+              onError={ this.handleError }
+              onImport={ this.handleImport }
+              onLayoutChanged={ this.handleLayoutChanged }
+              onModal={ this.props.onModal }
+              onUpdateMenu={ this.props.onUpdateMenu }
+              getConfig={ this.props.getConfig }
+              setConfig={ this.props.setConfig }
+              getPlugins={ this.props.getPlugins }
+              onWarning={ this.handleWarning }
+              linting={ this.props.linting }
+              settings={ this.props.settings }
+              backend={ this.props.backend }
+              config={ this.props.config }
+              deployment={ this.props.deployment }
+              startInstance={ this.props.startInstance }
+              zeebeApi={ this.props.zeebeApi }
+            />
+          </TabContainer>
+
+          <SheetSwitch
+            sheets={ sheets }
             activeSheet={ activeSheet }
-            onSheetsChanged={ this.sheetsChanged }
-            onContextMenu={ this.handleContextMenu }
-            onAction={ this.onAction }
-            onChanged={ this.handleChanged }
-            onContentUpdated={ this.handleContentUpdated }
-            onError={ this.handleError }
-            onImport={ this.handleImport }
-            onLayoutChanged={ this.handleLayoutChanged }
-            onModal={ this.props.onModal }
-            onUpdateMenu={ this.props.onUpdateMenu }
-            getConfig={ this.props.getConfig }
-            setConfig={ this.props.setConfig }
-            getPlugins={ this.props.getPlugins }
-            onWarning={ this.handleWarning }
-            linting={ this.props.linting }
-            settings={ this.props.settings }
-            backend={ this.props.backend }
-            config={ this.props.config }
-            deployment={ this.props.deployment }
-            startInstance={ this.props.startInstance }
-            zeebeApi={ this.props.zeebeApi }
+            onSelect={ this.switchSheet }
           />
-        </TabContainer>
 
-        <SheetSwitch
-          sheets={ sheets }
-          activeSheet={ activeSheet }
-          onSelect={ this.switchSheet }
-        />
-
-      </div>
+        </div>
+      </AppContext.Provider>
     );
   }
 

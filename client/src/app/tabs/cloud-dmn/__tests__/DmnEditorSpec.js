@@ -307,7 +307,7 @@ describe('<DmnEditor>', function() {
       };
 
       // then
-      expect(() => DmnEditor.createCachedState(props)).to.not.throw();
+      expect(() => DmnEditor.createCachedState(props, { triggerAction: noop })).to.not.throw();
       expect(onErrorSpy).to.be.calledOnce;
     });
 

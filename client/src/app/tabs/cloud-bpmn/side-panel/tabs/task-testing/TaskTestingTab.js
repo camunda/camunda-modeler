@@ -24,6 +24,7 @@ import * as css from './TaskTestingTab.css';
 
 import { utmTag } from '../../../../../../util/utmTag';
 import { EventsContext } from '../../../../../EventsContext';
+import { useApp } from '../../../../../AppContext';
 
 
 export const TAB_ID = 'task-testing';
@@ -60,10 +61,11 @@ export default function TaskTestingTab(props) {
     file,
     id,
     linting,
-    onAction,
     startInstance,
     zeebeApi
   } = props;
+
+  const { triggerAction } = useApp();
 
   const { subscribe } = useContext(EventsContext);
 
@@ -78,8 +80,8 @@ export default function TaskTestingTab(props) {
   }), [ id, file ]);
 
   const taskTestingApi = useMemo(() => {
-    return new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction);
-  }, [ deployment, startInstance, zeebeApi, tab, onAction ]);
+    return new TaskTestingApi(deployment, startInstance, zeebeApi, tab, triggerAction);
+  }, [ deployment, startInstance, zeebeApi, tab, triggerAction ]);
 
   const api = useMemo(() => taskTestingApi.getApi(), [ taskTestingApi ]);
 
@@ -134,13 +136,13 @@ export default function TaskTestingTab(props) {
   }, [ taskTestingConfig ]);
 
   const handleTaskExecutionStarted = useCallback((element) => {
-    onAction('emit-event', {
+    triggerAction('emit-event', {
       type: 'taskTesting.started',
       payload: {
         element
       }
     });
-  }, [ onAction ]);
+  }, [ triggerAction ]);
 
   const handleTaskExecutionFinished = useCallback((element, result) => {
 
@@ -156,7 +158,7 @@ export default function TaskTestingTab(props) {
       return;
     }
 
-    onAction('emit-event', {
+    triggerAction('emit-event', {
       type: 'taskTesting.finished',
       payload: {
         element: element,
@@ -165,22 +167,22 @@ export default function TaskTestingTab(props) {
         output: lastPolledResult
       }
     });
-  }, [ onAction ]);
+  }, [ triggerAction ]);
 
   const handleTaskExecutionInterrupted = useCallback(() => {
-    onAction('display-notification', {
+    triggerAction('display-notification', {
       type: 'info',
       title: 'Test canceled',
     });
-  }, [ onAction ]);
+  }, [ triggerAction ]);
 
   const handleConfigureConnection = useCallback(() => {
-    onAction('open-connection-selector');
-  }, [ onAction ]);
+    triggerAction('open-connection-selector');
+  }, [ triggerAction ]);
 
   const handleOpenLintingPanel = useCallback(() => {
-    onAction('open-panel', { tab: 'linting' });
-  }, [ onAction ]);
+    triggerAction('open-panel', { tab: 'linting' });
+  }, [ triggerAction ]);
 
   const hasLintErrors = linting && linting.some(({ category }) => category === 'error');
 

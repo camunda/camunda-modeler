@@ -20,6 +20,8 @@ import {
   CachedComponent
 } from '../../cached';
 
+import { AppContext } from '../../AppContext';
+
 import { Loader } from '../../primitives';
 
 import * as css from './FormEditor.css';
@@ -68,6 +70,9 @@ export const FORM_PREVIEW_TRIGGER = {
 
 
 export class FormEditor extends CachedComponent {
+
+  static contextType = AppContext;
+
   constructor(props) {
     super(props);
 
@@ -109,7 +114,7 @@ export class FormEditor extends CachedComponent {
           executionPlatformVersion
         } = engineProfile;
 
-        this.props.onAction('emit-event', {
+        this.context.triggerAction('emit-event', {
           type: 'tab.engineProfileChanged',
           payload: {
             executionPlatform,
@@ -269,7 +274,7 @@ export class FormEditor extends CachedComponent {
       if (engineProfile) {
         const { executionPlatform, executionPlatformVersion } = engineProfile;
 
-        this.props.onAction('emit-event', {
+        this.context.triggerAction('emit-event', {
           type: 'tab.engineProfileChanged',
           payload: {
             executionPlatform,
@@ -321,15 +326,11 @@ export class FormEditor extends CachedComponent {
   };
 
   handleDataEditorInteractionEnd = () => {
-    const {
-      onAction
-    } = this.props;
-
     const newData = this.getInputData();
 
     // fire event once data was touched (changed)
     if (this.state.lastInputData !== newData) {
-      onAction('emit-event', {
+      this.context.triggerAction('emit-event', {
         type: 'form.modeler.inputDataChanged'
       });
     }
@@ -362,15 +363,11 @@ export class FormEditor extends CachedComponent {
   };
 
   handleFormPreviewInteractionEnd = () => {
-    const {
-      onAction
-    } = this.props;
-
     const newformPreviewState = this.getFormPreviewState();
 
     // fire event once preview was touched (changed)
     if (this.state.lastFormPreviewState !== newformPreviewState) {
-      onAction('emit-event', {
+      this.context.triggerAction('emit-event', {
         type: 'form.modeler.previewChanged'
       });
     }
@@ -471,7 +468,6 @@ export class FormEditor extends CachedComponent {
     } = event;
 
     const {
-      onAction,
       onLayoutChanged
     } = this.props;
 
@@ -483,7 +479,7 @@ export class FormEditor extends CachedComponent {
     }
 
     // (2) notify interested parties that playground layout has changed
-    onAction('emit-event', {
+    this.context.triggerAction('emit-event', {
       type: 'form.modeler.playgroundLayoutChanged',
       payload: {
         layout,
@@ -532,9 +528,7 @@ export class FormEditor extends CachedComponent {
 
     const contents = form.getEditor().saveSchema();
 
-    const { onAction } = this.props;
-
-    onAction('lint-tab', { contents });
+    this.context.triggerAction('lint-tab', { contents });
   };
 
   isDirty() {
@@ -662,11 +656,10 @@ export class FormEditor extends CachedComponent {
     );
   }
 
-  static createCachedState(props) {
+  static createCachedState(props, app) {
 
     const {
-      layout = {},
-      onAction
+      layout = {}
     } = props;
 
     const {
@@ -686,7 +679,7 @@ export class FormEditor extends CachedComponent {
       }
     });
 
-    onAction('emit-event', {
+    app.triggerAction('emit-event', {
       type: 'form.modeler.created',
       payload: form
     });

@@ -33,6 +33,8 @@ import {
   CachedComponent
 } from '../../cached';
 
+import { AppContext } from '../../AppContext';
+
 import OverviewContainer from './OverviewContainer';
 
 import { Settings } from '@carbon/icons-react';
@@ -88,6 +90,8 @@ export const DEFAULT_ENGINE_PROFILE = {
 
 
 export class DmnEditor extends CachedComponent {
+
+  static contextType = AppContext;
 
   constructor(props) {
     super(props);
@@ -583,7 +587,7 @@ export class DmnEditor extends CachedComponent {
     const importedXML = await this.handleMigration(xml);
 
     if (!importedXML) {
-      this.props.onAction('close-tab');
+      this.context.triggerAction('close-tab');
 
       return;
     }
@@ -634,9 +638,7 @@ export class DmnEditor extends CachedComponent {
   };
 
   async shouldMigrate() {
-    const { onAction } = this.props;
-
-    const { button, checkboxChecked } = await onAction('show-dialog', getMigrationDialog());
+    const { button, checkboxChecked } = await this.context.triggerAction('show-dialog', getMigrationDialog());
 
     if (button === 'yes' && checkboxChecked) {
       this.props.setConfig(CONFIG_KEY, false);
@@ -1002,7 +1004,7 @@ export class DmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState(props) {
+  static createCachedState(props, app) {
     const {
       name,
       version
@@ -1010,14 +1012,13 @@ export class DmnEditor extends CachedComponent {
 
     const {
       getPlugins,
-      onAction,
       onError,
       settings
     } = props;
 
     // notify interested parties that modeler will be configured
     const handleMiddlewareExtensions = (middlewares) => {
-      onAction('emit-event', {
+      app.triggerAction('emit-event', {
         type: 'dmn.modeler.configure',
         payload: {
           middlewares
@@ -1055,7 +1056,7 @@ export class DmnEditor extends CachedComponent {
     const stackIdx = modeler.getStackIdx();
 
     // notify interested parties that modeler was created
-    onAction('emit-event', {
+    app.triggerAction('emit-event', {
       type: 'dmn.modeler.created',
       payload: {
         modeler

@@ -16,6 +16,8 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import RunButton from '../RunButton';
 import { Slot, SlotFillRoot } from '../../../slot-fill';
 
+import { AppContext } from '../../../AppContext';
+
 import { RPACodeEditor as MockRPACodeEditor } from 'test/mocks/rpa';
 
 
@@ -99,9 +101,13 @@ function renderButton(props = {}) {
     })
   } = props;
 
-  return render(<SlotFillRoot>
-    <Slot name="status-bar__file" />
-    <RunButton layout={ layout } onAction={ onAction } editor={ editor } />
-  </SlotFillRoot>);
+  return render(
+    <AppContext.Provider value={ { triggerAction: onAction, getGlobal: () => {} } }>
+      <SlotFillRoot>
+        <Slot name="status-bar__file" />
+        <RunButton layout={ layout } editor={ editor } />
+      </SlotFillRoot>
+    </AppContext.Provider>
+  );
 
 }

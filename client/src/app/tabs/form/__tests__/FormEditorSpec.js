@@ -44,6 +44,8 @@ import patchEngineProfile from '../../__tests__/EngineProfile.patch.platform.for
 
 import { SlotFillRoot } from '../../../slot-fill';
 
+import { AppContext } from '../../../AppContext';
+
 const { spy } = sinon;
 
 
@@ -1381,23 +1383,25 @@ async function renderEditor(schema, options = {}) {
     };
 
     const { container, unmount } = render(
-      <SlotFillRoot>
-        <TestEditor
-          ref={ ref }
-          cache={ cache }
-          getConfig={ getConfig }
-          id={ id }
-          layout={ layout }
-          onAction={ onAction }
-          onChanged={ onChanged }
-          onContentUpdated={ onContentUpdated }
-          onError={ onError }
-          onImport={ waitForImport ? resolveOnImport : onImport }
-          onLayoutChanged={ onLayoutChanged }
-          onModal={ onModal }
-          xml={ schema }
-        />
-      </SlotFillRoot>
+      <AppContext.Provider value={ { triggerAction: onAction, getGlobal: noop } }>
+        <SlotFillRoot>
+          <TestEditor
+            ref={ ref }
+            cache={ cache }
+            getConfig={ getConfig }
+            id={ id }
+            layout={ layout }
+            onAction={ onAction }
+            onChanged={ onChanged }
+            onContentUpdated={ onContentUpdated }
+            onError={ onError }
+            onImport={ waitForImport ? resolveOnImport : onImport }
+            onLayoutChanged={ onLayoutChanged }
+            onModal={ onModal }
+            xml={ schema }
+          />
+        </SlotFillRoot>
+      </AppContext.Provider>
     );
 
     const instance = ref.current;

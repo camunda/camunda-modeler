@@ -17,6 +17,8 @@ import {
   CachedComponent
 } from '../../cached';
 
+import { AppContext } from '../../AppContext';
+
 import * as css from './RPAEditor.css';
 
 import {
@@ -52,6 +54,8 @@ export const LINTING_DEBOUNCE_WAIT = 500;
 
 
 export class RPAEditor extends CachedComponent {
+
+  static contextType = AppContext;
 
   constructor(props) {
     super(props);
@@ -89,7 +93,7 @@ export class RPAEditor extends CachedComponent {
           executionPlatformVersion
         } = engineProfile;
 
-        this.props.onAction('emit-event', {
+        this.context.triggerAction('emit-event', {
           type: 'tab.engineProfileChanged',
           payload: {
             executionPlatform,
@@ -114,7 +118,7 @@ export class RPAEditor extends CachedComponent {
   }
 
   handleNotification = (notification) => {
-    this.props.onAction('display-notification', {
+    this.context.triggerAction('display-notification', {
       type: 'warning',
       duration: 0,
       ...notification
@@ -135,9 +139,7 @@ export class RPAEditor extends CachedComponent {
 
     const contents = editor.getValue();
 
-    const { onAction } = this.props;
-
-    onAction('lint-tab', { contents });
+    this.context.triggerAction('lint-tab', { contents });
   };
 
   async componentDidMount() {
@@ -209,7 +211,7 @@ export class RPAEditor extends CachedComponent {
         executionPlatformVersion
       } = engineProfile;
 
-      this.props.onAction('emit-event', {
+      this.context.triggerAction('emit-event', {
         type: 'tab.engineProfileChanged',
         payload: {
           executionPlatform,
@@ -504,7 +506,7 @@ export class RPAEditor extends CachedComponent {
           </Fill>
 
           <StatusButton getConfig={ this.props.getConfig } setConfig={ this.props.getConfig } editor={ editor } />
-          <RunButton editor={ editor } layout={ this.props.layout } onAction={ this.props.onAction } />
+          <RunButton editor={ editor } layout={ this.props.layout } />
           { engineProfile && <EngineProfile
             engineProfile={ engineProfile }
             onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } /> }

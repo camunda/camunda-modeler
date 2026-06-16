@@ -26,6 +26,8 @@ import {
   CachedComponent
 } from '../../cached';
 
+import { AppContext } from '../../AppContext';
+
 import { Settings } from '@carbon/icons-react';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
@@ -89,6 +91,8 @@ const LOW_PRIORITY = 500;
 
 
 export class BpmnEditor extends CachedComponent {
+
+  static contextType = AppContext;
 
   constructor(props) {
     super(props);
@@ -364,7 +368,7 @@ export class BpmnEditor extends CachedComponent {
   };
 
   async shouldConvert() {
-    const { button } = await this.props.onAction('show-dialog', getNamespaceDialog());
+    const { button } = await this.context.triggerAction('show-dialog', getNamespaceDialog());
 
     return button === 'yes';
   }
@@ -542,9 +546,7 @@ export class BpmnEditor extends CachedComponent {
 
     const contents = modeler.getDefinitions();
 
-    const { onAction } = this.props;
-
-    onAction('lint-tab', { contents });
+    this.context.triggerAction('lint-tab', { contents });
   };
 
   isLintingActive = () => {
@@ -867,7 +869,7 @@ export class BpmnEditor extends CachedComponent {
     );
   }
 
-  static createCachedState(props) {
+  static createCachedState(props, app) {
 
     const {
       name,
@@ -876,7 +878,6 @@ export class BpmnEditor extends CachedComponent {
 
     const {
       getPlugins,
-      onAction,
       onError,
       layout = {},
       settings
@@ -884,7 +885,7 @@ export class BpmnEditor extends CachedComponent {
 
     // notify interested parties that modeler will be configured
     const handleMiddlewareExtensions = (middlewares) => {
-      onAction('emit-event', {
+      app.triggerAction('emit-event', {
         type: 'bpmn.modeler.configure',
         payload: {
           middlewares
@@ -931,7 +932,7 @@ export class BpmnEditor extends CachedComponent {
     const stackIdx = commandStack._stackIdx;
 
     // notify interested parties that modeler was created
-    onAction('emit-event', {
+    app.triggerAction('emit-event', {
       type: 'bpmn.modeler.created',
       payload: {
         modeler

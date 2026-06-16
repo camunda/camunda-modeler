@@ -238,7 +238,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     };
 
     // then
-    expect(() => BpmnEditor.createCachedState(props)).to.not.throw();
+    expect(() => BpmnEditor.createCachedState(props, { triggerAction: noop })).to.not.throw();
     expect(onErrorSpy).to.be.calledOnce;
   });
 

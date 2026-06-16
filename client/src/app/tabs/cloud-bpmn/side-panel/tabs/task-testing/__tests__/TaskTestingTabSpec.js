@@ -29,6 +29,8 @@ import { Config, Deployment, StartInstance, ZeebeAPI } from '../../../../../../_
 
 import { EventsContext } from '../../../../../../EventsContext';
 
+import { AppContext } from '../../../../../../AppContext';
+
 import diagramXML from './TaskTestingTab.bpmn';
 
 
@@ -465,18 +467,19 @@ function renderTab(modeler, options = {}) {
   };
 
   render(
-    <EventsContext.Provider value={ eventsContext }>
-      <TaskTestingTab
-        deployment={ props.deployment }
-        startInstance={ props.startInstance }
-        zeebeApi={ props.zeebeApi }
-        layout={ props.layout }
-        linting={ props.linting }
-        injector={ props.injector }
-        file={ props.file }
-        config={ props.config }
-        onAction={ props.onAction } />
-    </EventsContext.Provider>
+    <AppContext.Provider value={ { triggerAction: props.onAction, getGlobal: () => {} } }>
+      <EventsContext.Provider value={ eventsContext }>
+        <TaskTestingTab
+          deployment={ props.deployment }
+          startInstance={ props.startInstance }
+          zeebeApi={ props.zeebeApi }
+          layout={ props.layout }
+          linting={ props.linting }
+          injector={ props.injector }
+          file={ props.file }
+          config={ props.config } />
+      </EventsContext.Provider>
+    </AppContext.Provider>
   );
 }
 
