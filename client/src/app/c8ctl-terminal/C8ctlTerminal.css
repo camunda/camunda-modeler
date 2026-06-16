@@ -1,0 +1,104 @@
+/**
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH
+ * under one or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * Camunda licenses this file to you under the MIT; you may not use this file
+ * except in compliance with the MIT License.
+ */
+
+@keyframes c8ctl-slide-down {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes c8ctl-slide-up {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+:local(.C8ctlTerminal) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  color: #33ff66;
+  font-family: Menlo, Monaco, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid #1f6b32;
+  backdrop-filter: blur(2px);
+  animation: c8ctl-slide-down 120ms ease-out;
+}
+
+:local(.closing) {
+  animation: c8ctl-slide-up 150ms ease-in forwards;
+}
+
+:local(.log) {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+:local(.log) > div {
+  white-space: pre;
+}
+
+:local(.system) {
+  color: #2faf55;
+}
+
+:local(.output) {
+  color: #33ff66;
+}
+
+:local(.error) {
+  color: #ff5f56;
+}
+
+:local(.prompt) {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-top: 1px solid #1f6b32;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+:local(.promptLabel) {
+  color: #33ff66;
+  font-weight: bold;
+  margin-right: 8px;
+  white-space: pre;
+}
+
+:local(.input) {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #33ff66;
+  font-family: inherit;
+  font-size: inherit;
+  caret-color: #33ff66;
+  padding: 0;
+}

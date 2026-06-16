@@ -68,6 +68,8 @@ import History from './History';
 
 import { PluginsRoot } from './plugins';
 
+import C8ctlTerminal from './c8ctl-terminal/C8ctlTerminal';
+
 import * as css from './App.css';
 
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
@@ -2593,6 +2595,9 @@ export class App extends PureComponent {
         </div>
 
         <Notifications notifications={ this.state.notifications } />
+
+        { this.props.globals.c8ctl ?
+          <C8ctlTerminal c8ctl={ this.getGlobal('c8ctl') } /> : null }
 
       </DropZone>
     );

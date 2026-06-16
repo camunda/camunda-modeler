@@ -16,6 +16,7 @@ import Plugins from './remote/Plugins';
 import SystemClipboard from './remote/SystemClipboard';
 import Workspace from './remote/Workspace';
 import ZeebeAPI from './remote/ZeebeAPI';
+import C8ctl from './remote/C8ctl';
 
 import Settings from './app/Settings';
 import TabStorage from './app/TabStorage';
@@ -51,6 +52,8 @@ export const workspace = new Workspace(backend);
 
 export const zeebeAPI = new ZeebeAPI(backend);
 
+export const c8ctl = new C8ctl(backend);
+
 export const tabStorage = new TabStorage();
 
 export const deployment = new Deployment(tabStorage, config, zeebeAPI, settings);
@@ -67,6 +70,7 @@ export {
 export const globals = {
   backend,
   config,
+  c8ctl,
   deployment,
   dialog,
   fileSystem,
