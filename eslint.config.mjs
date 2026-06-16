@@ -25,7 +25,9 @@ const files = {
     'docs',
     'resources/plugins/*/dist',
     'resources/plugins/test-script-error/broken.js',
-    'tmp'
+    'tmp',
+    '.webpack',
+    'out'
   ]
 };
 

@@ -24,17 +24,20 @@ module.exports = {
   rebuildConfig: {},
   makers: [
     {
+
       // Windows: zip (matches electron-builder target)
       name: '@electron-forge/maker-zip',
       platforms: [ 'win32' ],
     },
     {
+
       // macOS: zip (matches electron-builder target)
       // TODO: add @electron-forge/maker-dmg for the dmg target
       name: '@electron-forge/maker-zip',
       platforms: [ 'darwin' ],
     },
     {
+
       // Linux: deb (electron-builder used tar.gz — no native tar.gz maker in Forge)
       // TODO: write a custom maker or postMake hook that repackages as tar.gz
       name: '@electron-forge/maker-deb',
@@ -61,6 +64,7 @@ module.exports = {
     }),
   ],
   hooks: {
+
     /**
      * Build the preload bundle and the renderer before packaging or starting.
      * This keeps the existing webpack pipeline intact — Forge only takes over
