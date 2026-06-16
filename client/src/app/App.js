@@ -13,12 +13,10 @@ import React, { PureComponent } from 'react';
 import debug from 'debug';
 
 import {
-  assign,
   debounce,
   forEach,
   groupBy,
-  map,
-  reduce
+  map
 } from 'min-dash';
 
 import EventEmitter from 'events';
@@ -40,6 +38,8 @@ import ModalManager from './ModalManager';
 import LogManager from './LogManager';
 
 import DialogManager, { FILTER_ALL_EXTENSIONS } from './DialogManager';
+
+import TabManager from './TabManager';
 
 import executeOnce from './util/executeOnce';
 
@@ -183,6 +183,8 @@ export class App extends PureComponent {
 
     this.dialogManager = new DialogManager(this);
 
+    this.tabManager = new TabManager(this);
+
     this.on('connectionManager.connectionStatusChanged',
       this.lintingManager.handleConnectionStatusChanged);
     this.on('connectionManager.connectionCheckStarted', this.lintingManager.handleConnectionCheckStarted);
@@ -234,20 +236,7 @@ export class App extends PureComponent {
    * @param {string} group Group name
    */
   setTabGroup(id, group) {
-    const tab = this.state.tabs.find((tab) => tab.id === id);
-
-    if (!tab) {
-      return;
-    }
-
-    this.setState(({ tabGroups }) => {
-      return {
-        tabGroups: {
-          ...tabGroups,
-          [ id ]: group
-        }
-      };
-    });
+    return this.tabManager.setTabGroup(id, group);
   }
 
   createDiagram = async (type = 'bpmn') => {
@@ -269,59 +258,14 @@ export class App extends PureComponent {
    * Add a tab to the tab list.
    */
   addTab(tab, properties = {}) {
-
-    this.setState((state) => {
-      const {
-        tabs,
-        activeTab
-      } = state;
-
-      if (tabs.indexOf(tab) !== -1) {
-        throw new Error('tab exists');
-      }
-
-      const insertIdx = tabs.indexOf(activeTab) + 1;
-
-      let unsavedState = {};
-
-      if ('unsaved' in properties) {
-        unsavedState = this.setUnsaved(tab, properties.unsaved);
-      }
-
-      this._onTabOpened(tab);
-
-      return {
-        ...unsavedState,
-        tabs: [
-          ...tabs.slice(0, insertIdx),
-          tab,
-          ...tabs.slice(insertIdx)
-        ]
-      };
-    });
-
-    return tab;
+    return this.tabManager.addTab(tab, properties);
   }
 
   /**
    * Navigate shown tabs in given direction.
    */
   navigate(direction) {
-
-    const {
-      activeTab,
-      tabs
-    } = this.state;
-
-    // next tab in line as a fallback to history
-    // navigation
-    const nextFn = function() {
-      return getNextTab(tabs, activeTab, direction);
-    };
-
-    const nextActiveTab = this.navigationHistory.navigate(direction, nextFn);
-
-    return this.showTab(nextActiveTab);
+    return this.tabManager.navigate(direction);
   }
 
   /**
@@ -329,46 +273,8 @@ export class App extends PureComponent {
    *
    * @param {Tab} tab
    */
-  checkFileChanged = async (tab) => {
-
-    const fileSystem = this.getGlobal('fileSystem');
-
-    const {
-      file
-    } = tab;
-
-    const tabLastModified = (file || {}).lastModified;
-
-    // skip new file
-    if (this.isUnsaved(tab) || typeof tabLastModified === 'undefined') {
-      return tab;
-    }
-
-    const {
-      lastModified
-    } = await fileSystem.readFileStats(file);
-
-    // skip unchanged
-    if (!(lastModified > tabLastModified)) {
-      return tab;
-    }
-
-    const { button } = await this.showDialog(getContentChangedDialog());
-
-    if (button === 'ok') {
-      const updatedFile = await fileSystem.readFile(file.path);
-
-      return this.updateTab(tab, {
-        file: updatedFile
-      });
-    } else {
-      return this.updateTab(tab, {
-        file: {
-          ...file,
-          lastModified
-        }
-      }, this.setUnsaved(tab, true));
-    }
+  checkFileChanged = (tab) => {
+    return this.tabManager.checkFileChanged(tab);
   };
 
   /**
@@ -379,54 +285,7 @@ export class App extends PureComponent {
    * @param {Object} [newState={}]
    */
   updateTab(tab, newAttrs, newState = {}) {
-
-    if (newAttrs.id && newAttrs.id !== tab.id) {
-      throw new Error('must not change tab.id');
-    }
-
-    const {
-      tabsProvider
-    } = this.props;
-
-    let updatedTab = tabsProvider.createTabForFile(tab.file);
-    updatedTab.id = tab.id;
-
-    assign(updatedTab, newAttrs);
-
-    this.setState((state) => {
-
-      const {
-        activeTab,
-        tabs
-      } = state;
-
-      // replace in tabs
-      const updatedTabs = tabs.map(t => {
-        if (t === tab) {
-          return updatedTab;
-        }
-
-        return t;
-      });
-
-
-      // replace activeTab
-      let updatedActiveTab = activeTab;
-      if (activeTab.id === updatedTab.id) {
-        updatedActiveTab = updatedTab;
-      }
-
-      return {
-        ...newState,
-        activeTab: updatedActiveTab,
-        tabs: updatedTabs
-      };
-    });
-
-    // replace in navigation history
-    this.navigationHistory.replace(tab, updatedTab);
-
-    return updatedTab;
+    return this.tabManager.updateTab(tab, newAttrs, newState);
   }
 
 
@@ -493,37 +352,8 @@ export class App extends PureComponent {
    *
    * @return {Promise<boolean>} resolved to true if tab can be safely closed
    */
-  saveBeforeClose = async (tab) => {
-    const { file } = tab;
-
-    const { name } = file;
-
-    try {
-
-      // disable auto-save during <save-all> to prevent
-      // interferring with user save decisions
-      this.off('app.blurred', this.triggerAutoSave);
-
-      if (this.isDirty(tab)) {
-        const { button } = await this.showCloseFileDialog({ name });
-
-        if (button === 'save') {
-          const saved = await this.saveTab(tab);
-
-          if (!saved) {
-            return false;
-          }
-        } else if (button === 'cancel') {
-          return false;
-        }
-      }
-    } finally {
-
-      // restore auto-save
-      this.on('app.blurred', this.triggerAutoSave);
-    }
-
-    return true;
+  saveBeforeClose = (tab) => {
+    return this.tabManager.saveBeforeClose(tab);
   };
 
   /**
@@ -533,25 +363,8 @@ export class App extends PureComponent {
    *
    * @return {Promise<boolean>} resolved to true if tab is closed
    */
-  closeTab = async (tab) => {
-    const canClose = await this.saveBeforeClose(tab);
-
-    if (!canClose) {
-      return false;
-    }
-
-    this.triggerAction('emit-event', {
-      type: 'tab.closed',
-      payload: {
-        tab
-      }
-    });
-
-    await this._removeTab(tab);
-
-    this._onTabClosed(tab);
-
-    return true;
+  closeTab = (tab) => {
+    return this.tabManager.closeTab(tab);
   };
 
   /**
@@ -587,10 +400,7 @@ export class App extends PureComponent {
   };
 
   hasUnsavedTabs = () => {
-    const { tabs } = this.state;
-    return tabs.some((tab) => {
-      return this.isDirty(tab) || this.isUnsaved(tab);
-    });
+    return this.tabManager.hasUnsavedTabs();
   };
 
   reload = async (options) => {
@@ -602,79 +412,19 @@ export class App extends PureComponent {
   };
 
   isEmptyTab = (tab) => {
-    return tab === EMPTY_TAB;
+    return this.tabManager.isEmptyTab(tab);
   };
 
   isDirty = (tab) => {
-    return !!this.state.dirtyTabs[tab.id];
+    return this.tabManager.isDirty(tab);
   };
 
   isUnsaved = (tab) => {
-    const { unsavedTabs } = this.state;
-    const { id, file } = tab;
-
-    return unsavedTabs[id] || (file && !file.path);
+    return this.tabManager.isUnsaved(tab);
   };
 
   async _removeTab(tab) {
-
-    const {
-      tabs,
-      activeTab,
-      openedTabs
-    } = this.state;
-
-    const {
-      navigationHistory,
-      closedTabs,
-      recentTabs
-    } = this;
-
-    const {
-      ...newOpenedTabs
-    } = openedTabs;
-
-    delete newOpenedTabs[tab.id];
-
-    const {
-      [ tab.id ]: _removedProfile,
-      ...newEngineProfiles
-    } = this.state.engineProfiles;
-
-    const newTabs = tabs.filter(t => t !== tab);
-
-    navigationHistory.purge(tab);
-
-    if (!this.isUnsaved(tab)) {
-      closedTabs.push(tab);
-      recentTabs.push(tab);
-    }
-
-    if (activeTab === tab) {
-
-      const tabIdx = tabs.indexOf(tab);
-
-      // open previous tab, if it exists
-      const nextActive = (
-        navigationHistory.get() ||
-        newTabs[tabIdx] ||
-        newTabs[tabIdx - 1] ||
-        EMPTY_TAB
-      );
-
-      await this.showTab(nextActive);
-    }
-
-    return new Promise((resolve) => {
-      this.setState({
-        tabs: newTabs,
-        openedTabs: newOpenedTabs,
-        engineProfiles: newEngineProfiles
-      }, () => {
-        this.props.cache.destroy(tab.id);
-        resolve();
-      });
-    });
+    return this.tabManager._removeTab(tab);
   }
 
   triggerAutoSave = () => {
@@ -693,23 +443,7 @@ export class App extends PureComponent {
   };
 
   moveTab = (tab, newIndex) => {
-    const {
-      tabs
-    } = this.state;
-
-    if (!tabs[ newIndex ]) {
-      throw new Error('invalid index');
-    }
-
-    // remove tab at current index
-    const newTabs = tabs.filter(t => t !== tab);
-
-    // add tab at new index
-    newTabs.splice(newIndex, 0, tab);
-
-    this.setState({
-      tabs: newTabs
-    });
+    return this.tabManager.moveTab(tab, newIndex);
   };
 
   showOpenFilesDialog = () => {
@@ -875,12 +609,7 @@ export class App extends PureComponent {
   }
 
   findOpenTab(file) {
-
-    const {
-      tabs
-    } = this.state;
-
-    return tabs.find(t => t.file && t.file.path === file.path);
+    return this.tabManager.findOpenTab(file);
   }
 
   emit(event, ...args) {
@@ -1025,70 +754,15 @@ export class App extends PureComponent {
   };
 
   setDirty(tab, dirty = true) {
-    const { tabs } = this.state;
-
-    const newDirtyTabs = reduce(tabs, (dirtyTabs, t) => {
-      if (t === tab) {
-        return dirtyTabs;
-      }
-
-      return {
-        ...dirtyTabs,
-        [ t.id ]: this.isDirty(t)
-      };
-    }, {
-      [ tab.id ]: dirty
-    });
-
-    return {
-      dirtyTabs: newDirtyTabs
-    };
+    return this.tabManager.setDirty(tab, dirty);
   }
 
   setUnsaved(tab, unsaved = true) {
-    const { tabs } = this.state;
-
-    const newUnsavedTabs = reduce(tabs, (unsavedTabs, t) => {
-      if (t === tab) {
-        return unsavedTabs;
-      }
-
-      return {
-        ...unsavedTabs,
-        [ t.id ]: this.isUnsaved(t)
-      };
-    }, {
-      [ tab.id ]: unsaved
-    });
-
-    return {
-      unsavedTabs: newUnsavedTabs
-    };
+    return this.tabManager.setUnsaved(tab, unsaved);
   }
 
   tabSaved(tab, newFile) {
-
-    const {
-      tabs
-    } = this.state;
-
-    tab.file = newFile;
-
-    const dirtyState = this.setDirty(tab, false);
-    const unsavedState = this.setUnsaved(tab, false);
-
-    this.setState({
-      tabs: [ ...tabs ],
-      ...dirtyState,
-      ...unsavedState
-    });
-
-    this.emit('tab.saved', { tab });
-    this.triggerAction('lint-tab', { tab });
-
-    this._onTabSaved(tab);
-
-    return tab;
+    return this.tabManager.tabSaved(tab, newFile);
   }
 
   getTabComponent(tab) {
@@ -1611,18 +1285,7 @@ export class App extends PureComponent {
   }
 
   closeTabs = (matcher) => {
-
-    const {
-      tabs
-    } = this.state;
-
-    const allTabs = tabs.slice();
-
-    const closeTasks = allTabs.filter(matcher).map((tab) => {
-      return () => this.closeTab(tab);
-    });
-
-    return pSeries(closeTasks);
+    return this.tabManager.closeTabs(matcher);
   };
 
   revealInFileExplorer = (filePath) => {
@@ -1630,16 +1293,7 @@ export class App extends PureComponent {
   };
 
   reopenLastTab = () => {
-
-    const lastTab = this.closedTabs.pop();
-
-    if (lastTab) {
-      this.addTab(lastTab);
-
-      return this.showTab(lastTab);
-    }
-
-    return Promise.reject(new Error('no last tab'));
+    return this.tabManager.reopenLastTab();
   };
 
   showShortcuts = () => this.modalManager.showShortcuts();
@@ -1876,35 +1530,15 @@ export class App extends PureComponent {
   };
 
   _onTabOpened(tab) {
-    if (!this.isUnsaved(tab)) {
-      const {
-        file,
-        type
-      } = tab;
-
-      this.getGlobal('backend').send('file-context:file-opened', file.path, {
-        processor: getProcessor(type)
-      });
-    }
+    return this.tabManager._onTabOpened(tab);
   }
 
   _onTabClosed(tab) {
-    if (!this.isUnsaved(tab)) {
-      const { file } = tab;
-
-      this.getGlobal('backend').send('file-context:file-closed', file.path);
-    }
+    return this.tabManager._onTabClosed(tab);
   }
 
   _onTabSaved(tab) {
-    const {
-      file,
-      type
-    } = tab;
-
-    this.getGlobal('backend').send('file-context:file-updated', file.path, {
-      processor: getProcessor(type)
-    });
+    return this.tabManager._onTabSaved(tab);
   }
 
   render() {
@@ -2124,20 +1758,6 @@ class LoadingTab extends PureComponent {
 
 }
 
-function getNextTab(tabs, activeTab, direction) {
-  let nextIdx = tabs.indexOf(activeTab) + direction;
-
-  if (nextIdx === -1) {
-    nextIdx = tabs.length - 1;
-  }
-
-  if (nextIdx === tabs.length) {
-    nextIdx = 0;
-  }
-
-  return tabs[nextIdx];
-}
-
 export default WithCache(App);
 
 // helpers //////////
@@ -2217,18 +1837,6 @@ function getFileTypeFromExtension(filePath) {
   return filePath.split('.').pop();
 }
 
-function getContentChangedDialog() {
-  return {
-    title: 'File changed',
-    message: 'The file has been changed externally.\nWould you like to reload it?',
-    type: 'question',
-    buttons: [
-      { id: 'ok', label: 'Reload' },
-      { id: 'cancel', label: 'Cancel' }
-    ]
-  };
-}
-
 function getSaveFileDialogFilters(provider) {
   const {
     extensions,
@@ -2270,20 +1878,4 @@ function failSafe(fn, errorHandler) {
       errorHandler(error);
     }
   };
-}
-
-function getProcessor(type) {
-  if (type === 'cloud-bpmn') {
-    return 'bpmn';
-  }
-
-  if (type === 'cloud-dmn') {
-    return 'dmn';
-  }
-
-  if (type === 'cloud-form') {
-    return 'form';
-  }
-
-  return null;
 }
