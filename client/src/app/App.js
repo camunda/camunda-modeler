@@ -18,7 +18,6 @@ import {
   forEach,
   groupBy,
   map,
-  merge,
   reduce
 } from 'min-dash';
 
@@ -33,6 +32,14 @@ import LintingManager from './LintingManager';
 import FileManager from './FileManager';
 
 import NotificationManager from './NotificationManager';
+
+import LayoutManager from './LayoutManager';
+
+import ModalManager from './ModalManager';
+
+import LogManager from './LogManager';
+
+import DialogManager, { FILTER_ALL_EXTENSIONS } from './DialogManager';
 
 import executeOnce from './util/executeOnce';
 
@@ -90,10 +97,6 @@ export const EMPTY_TAB = {
 const ENCODING_UTF8 = 'utf8';
 
 
-const FILTER_ALL_EXTENSIONS = {
-  name: 'All Files',
-  extensions: [ '*' ]
-};
 
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
@@ -171,6 +174,14 @@ export class App extends PureComponent {
     this.fileManager = new FileManager(this);
 
     this.notificationManager = new NotificationManager(this);
+
+    this.layoutManager = new LayoutManager(this);
+
+    this.modalManager = new ModalManager(this);
+
+    this.logManager = new LogManager(this);
+
+    this.dialogManager = new DialogManager(this);
 
     this.on('connectionManager.connectionStatusChanged',
       this.lintingManager.handleConnectionStatusChanged);
@@ -701,56 +712,20 @@ export class App extends PureComponent {
     });
   };
 
-  showOpenFilesDialog = async () => {
-    const dialog = this.getGlobal('dialog');
-
-    const {
-      tabsProvider
-    } = this.props;
-
-    const {
-      activeTab
-    } = this.state;
-
-    const providers = tabsProvider.getProviders();
-
-    const filters = getOpenFilesDialogFilters(providers);
-
-    const filePaths = await dialog.showOpenFilesDialog({
-      activeFile: activeTab.file,
-      filters
-    });
-
-    if (!filePaths.length) {
-      return;
-    }
-
-    const files = await this.readFileList(filePaths);
-
-    await this.openFiles(files);
+  showOpenFilesDialog = () => {
+    return this.dialogManager.showOpenFilesDialog();
   };
 
   showCloseFileDialog = (file) => {
-    const { name } = file;
-
-    return this.getGlobal('dialog').showCloseFileDialog({ name });
+    return this.dialogManager.showCloseFileDialog(file);
   };
 
   showSaveFileDialog = (file, options = {}) => {
-    const {
-      filters,
-      title
-    } = options;
-
-    return this.getGlobal('dialog').showSaveFileDialog({
-      file,
-      filters,
-      title
-    });
+    return this.dialogManager.showSaveFileDialog(file, options);
   };
 
   showSaveFileErrorDialog(options) {
-    return this.getGlobal('dialog').showSaveFileErrorDialog(options);
+    return this.dialogManager.showSaveFileErrorDialog(options);
   }
 
   openEmptyFile = async (file) => {
@@ -941,9 +916,7 @@ export class App extends PureComponent {
   };
 
   handleLayoutChanged = (newLayout) => {
-    this.setState(({ layout }) => ({
-      layout: merge({}, layout, newLayout)
-    }));
+    return this.layoutManager.handleLayoutChanged(newLayout);
   };
 
 
@@ -1328,35 +1301,7 @@ export class App extends PureComponent {
    * @param {boolean} silent - Log without opening the panel.
    */
   logEntry(message, category, action, silent) {
-
-    if (!silent) {
-      this.openPanel('log');
-    }
-
-    const logEntry = {
-      category,
-      message
-    };
-
-    if (action) {
-      assign(logEntry, {
-        action
-      });
-    }
-
-    this.setState((state) => {
-
-      const {
-        logEntries
-      } = state;
-
-      return {
-        logEntries: [
-          ...logEntries,
-          logEntry
-        ]
-      };
-    });
+    return this.logManager.logEntry(message, category, action, silent);
   }
 
   /**
@@ -1379,9 +1324,7 @@ export class App extends PureComponent {
   }
 
   setLayout(layout) {
-    this.setState({
-      layout
-    });
+    return this.layoutManager.setLayout(layout);
   }
 
   /**
@@ -1391,16 +1334,7 @@ export class App extends PureComponent {
    * @param {Function} dialogHandler
    */
   async askForSaveRetry(tab, err, dialogHandler) {
-    const { message } = err;
-
-    const {
-      name
-    } = tab;
-
-    return await this.showSaveFileErrorDialog(dialogHandler({
-      message,
-      name
-    }));
+    return this.dialogManager.askForSaveRetry(tab, err, dialogHandler);
   }
 
   /**
@@ -1657,63 +1591,23 @@ export class App extends PureComponent {
   };
 
   clearLog = () => {
-    this.setState({
-      logEntries: []
-    });
+    return this.logManager.clearLog();
   };
 
   openPanel = (tab = 'log') => {
-    const { layout = {} } = this.state;
-
-    const { panel = {} } = layout;
-
-    this.handleLayoutChanged({
-      panel: {
-        ...panel,
-        open: true,
-        tab
-      }
-    });
+    return this.layoutManager.openPanel(tab);
   };
 
   closePanel() {
-    const { layout = {} } = this.state;
-
-    const { panel = {} } = layout;
-
-    this.handleLayoutChanged({
-      panel: {
-        ...panel,
-        open: false
-      }
-    });
+    return this.layoutManager.closePanel();
   }
 
   openSidePanel = (tab = 'properties') => {
-    const { layout = {} } = this.state;
-
-    const { sidePanel = {} } = layout;
-
-    this.handleLayoutChanged({
-      sidePanel: {
-        ...sidePanel,
-        open: true,
-        tab
-      }
-    });
+    return this.layoutManager.openSidePanel(tab);
   };
 
   closeSidePanel() {
-    const { layout = {} } = this.state;
-
-    const { sidePanel = {} } = layout;
-
-    this.handleLayoutChanged({
-      sidePanel: {
-        ...sidePanel,
-        open: false
-      }
-    });
+    return this.layoutManager.closeSidePanel();
   }
 
   closeTabs = (matcher) => {
@@ -1748,7 +1642,7 @@ export class App extends PureComponent {
     return Promise.reject(new Error('no last tab'));
   };
 
-  showShortcuts = () => this.openModal('KEYBOARD_SHORTCUTS');
+  showShortcuts = () => this.modalManager.showShortcuts();
 
   /**
    * Update menu with provided state which can include `windowMenu` as well as `editMenu`.
@@ -1882,14 +1776,11 @@ export class App extends PureComponent {
     this.getGlobal('backend').send('external:open-url', options);
   }
 
-  openModal = modal => this.triggerAction('open-modal', modal);
+  openModal = modal => this.modalManager.openModal(modal);
 
-  closeModal = () => {
-    this.updateMenu(this.state.tabState);
-    this.triggerAction('close-modal');
-  };
+  closeModal = () => this.modalManager.closeModal();
 
-  setModal = currentModal => this.setState({ currentModal });
+  setModal = currentModal => this.modalManager.setModal(currentModal);
 
   handleCloseTab = (tab) => {
     this.triggerAction('close-tab', { tabId: tab.id }).catch(console.error);
@@ -2336,80 +2227,6 @@ function getContentChangedDialog() {
       { id: 'cancel', label: 'Cancel' }
     ]
   };
-}
-
-function getOpenFilesDialogFilters(providers) {
-  const allSupportedFilter = {
-    name: 'All Supported',
-    extensions: []
-  };
-
-  const filtersByName = new Map();
-
-  forEach(providers, provider => {
-    const {
-      extensions,
-      name
-    } = provider;
-
-    if (!extensions) {
-      return;
-    }
-
-    allSupportedFilter.extensions = [
-      ...allSupportedFilter.extensions,
-      ...extensions
-    ];
-
-    const existingFilter = filtersByName.get(name);
-
-    if (existingFilter) {
-      existingFilter.extensions = Array.from(new Set([
-        ...existingFilter.extensions,
-        ...extensions
-      ]));
-    } else {
-      filtersByName.set(name, {
-        name,
-        extensions: [ ...extensions ]
-      });
-    }
-  });
-
-  // remove duplicates, sort alphabetically
-  allSupportedFilter.extensions = allSupportedFilter.extensions
-    .reduce((extensions, extension) => {
-      if (extensions.includes(extension)) {
-        return extensions;
-      } else {
-        return [
-          ...extensions,
-          extension
-        ];
-      }
-    }, [])
-    .sort();
-
-  let filters = Array.from(filtersByName.values());
-
-  // sort alphabetically
-  filters = filters.sort((a, b) => {
-    if (a.name < b.name) {
-      return -1;
-    }
-
-    if (a.name > b.name) {
-      return 1;
-    }
-
-    return 0;
-  });
-
-  return [
-    allSupportedFilter,
-    ...filters,
-    FILTER_ALL_EXTENSIONS
-  ];
 }
 
 function getSaveFileDialogFilters(provider) {
