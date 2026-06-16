@@ -16,6 +16,23 @@ import PluginParent from './PluginParent';
 
 const log = debug('app:plugins');
 
+/**
+ * Explicit allow-list of <App> members exposed to plugins via `_getFromApp`.
+ *
+ * This narrows the plugin API surface: only these members are part of the
+ * supported contract, so internal <App> refactors do not accidentally break
+ * (or leak internals to) plugins.
+ *
+ * @type {Array<string>}
+ */
+const PLUGIN_APP_MEMBERS = [
+  '_getNewFileItems',
+  '_getTabIcon',
+  'getLintingState',
+  'props',
+  'selectTab'
+];
+
 
 export default class PluginsRoot extends PureComponent {
 
@@ -81,7 +98,15 @@ export default class PluginsRoot extends PureComponent {
         subscribe
       } = subscriber;
 
-      const getFromApp = (prop) => app[prop];
+      const getFromApp = (prop) => {
+        if (!PLUGIN_APP_MEMBERS.includes(prop)) {
+          log('plugin requested unsupported app member "%s"', prop);
+
+          return undefined;
+        }
+
+        return app[prop];
+      };
 
       log('render plug-in', name);
 

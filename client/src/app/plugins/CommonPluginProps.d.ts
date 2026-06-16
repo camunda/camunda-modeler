@@ -1,6 +1,17 @@
 import { config, settings } from '../../globals';
 import { App } from '../App';
 
+/**
+ * The narrowed set of <App> members exposed to plugins via `_getFromApp`.
+ * Keep in sync with `PLUGIN_APP_MEMBERS` in `PluginsRoot.js`.
+ */
+export type PluginAppMember =
+  | '_getNewFileItems'
+  | '_getTabIcon'
+  | 'getLintingState'
+  | 'props'
+  | 'selectTab';
+
 export interface CommonPluginProps {
   triggerAction: App['triggerAction'];
   config: typeof config;
@@ -15,6 +26,6 @@ export interface CommonPluginProps {
   }) => void;
   displayNotification: App['displayNotification'];
   settings: typeof settings;
-  _getFromApp: (prop) => any;
+  _getFromApp: (prop: PluginAppMember) => any;
   _getGlobal: App['getGlobal'];
 }

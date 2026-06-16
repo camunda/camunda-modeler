@@ -27,7 +27,11 @@ import EventEmitter from 'events';
 
 import defaultPlugins from '../plugins';
 
-import VersionMismatchChecker from './linting/VersionMismatchChecker';
+import getActionRegistry from './getActionRegistry';
+
+import LintingManager from './LintingManager';
+
+import FileManager from './FileManager';
 
 import executeOnce from './util/executeOnce';
 
@@ -73,6 +77,7 @@ import * as css from './App.css';
 import Notifications, { NOTIFICATION_TYPES } from './notifications';
 import { RecentTabs } from './RecentTabs';
 import { EventsContext } from './EventsContext';
+import { AppContext } from './AppContext';
 
 const log = debug('App');
 
@@ -83,12 +88,11 @@ export const EMPTY_TAB = {
 
 const ENCODING_UTF8 = 'utf8';
 
+
 const FILTER_ALL_EXTENSIONS = {
   name: 'All Files',
   extensions: [ '*' ]
 };
-
-const EMPTY_LINTING_STATE = [];
 
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
@@ -161,11 +165,15 @@ export class App extends PureComponent {
 
     this.tabRef = React.createRef();
 
+    this.lintingManager = new LintingManager(this);
+
+    this.fileManager = new FileManager(this);
+
     this.on('connectionManager.connectionStatusChanged',
-      this._handleConnectionStatusChanged);
-    this.on('connectionManager.connectionCheckStarted', this._handleConnectionCheckStarted);
+      this.lintingManager.handleConnectionStatusChanged);
+    this.on('connectionManager.connectionCheckStarted', this.lintingManager.handleConnectionCheckStarted);
     this.on('tab.engineProfileChanged',
-      this._handleEngineProfileChanged);
+      this.lintingManager.handleEngineProfileChanged);
 
     const userPlugins = this.getPlugins('client');
 
@@ -196,6 +204,13 @@ export class App extends PureComponent {
     this.on('app.focused', () => {
       this.triggerAction('check-file-changed');
     });
+
+    this.actionRegistry = getActionRegistry(this);
+
+    this.appContext = {
+      triggerAction: this.triggerAction,
+      getGlobal: this.getGlobal
+    };
 
     this.currentNotificationId = 0;
   }
@@ -827,45 +842,12 @@ export class App extends PureComponent {
     return openedTabs;
   };
 
-  readFileList = async filePaths => {
-    const readOperations = filePaths.map(this.readFileFromPath);
-
-    const rawFiles = await Promise.all(readOperations);
-
-    const files = rawFiles.filter(Boolean);
-
-    return files;
+  readFileList = (filePaths) => {
+    return this.fileManager.readFileList(filePaths);
   };
 
-  readFileFromPath = async (filePath) => {
-
-    const fileSystem = this.getGlobal('fileSystem');
-
-    const {
-      tabsProvider
-    } = this.props;
-
-    const fileType = getFileTypeFromExtension(filePath);
-
-    const provider = tabsProvider.getProvider(fileType);
-
-    const encoding = provider.encoding ? provider.encoding : ENCODING_UTF8;
-
-    let file = null;
-
-    try {
-      file = await fileSystem.readFile(filePath, {
-        encoding
-      });
-    } catch (error) {
-      if (error.code === 'EISDIR') {
-        return this.handleError(new Error(`Cannot open directory: ${filePath}`));
-      }
-
-      this.handleError(error);
-    }
-
-    return file;
+  readFileFromPath = (filePath) => {
+    return this.fileManager.readFileFromPath(filePath);
   };
 
   /**
@@ -1050,116 +1032,16 @@ export class App extends PureComponent {
     });
   };
 
-  lintTab = async (tab, contents) => {
-    const { tabsProvider } = this.props;
-
-    const { type } = tab;
-
-    const tabProvider = tabsProvider.getProvider(type);
-
-    const plugins = this.getPlugins(`lintRules.${ type }`);
-
-    const linter = await tabProvider.getLinter(plugins, tab, this.getConfig);
-
-    let results = [];
-
-    if (linter) {
-      if (!contents) {
-        contents = tab.file.contents;
-      }
-
-      results = await linter.lint(contents);
-    }
-
-    const getWarnings = VersionMismatchChecker({
-      connectionCheckResult: this.state.connectionCheckResult,
-      engineProfiles: this.state.engineProfiles
-    });
-
-    const warnings = getWarnings(tab);
-
-    if (warnings.length) {
-      results = [ ...results, ...warnings ];
-    }
-
-    this.setLintingState(tab, results);
-  };
-
-  _handleConnectionCheckStarted = () => {
-    this.setState({ connectionCheckResult: null });
-  };
-
-  _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
-    const prev = this.state.connectionCheckResult;
-
-    // Only re-lint when the data relevant to version mismatch
-    // warning actually changes, not on every periodic poll
-    const prevVersion = prev && prev.success && prev.response
-      ? prev.response.gatewayVersion : null;
-    const nextVersion = connectionCheckResult.success && connectionCheckResult.response
-      ? connectionCheckResult.response.gatewayVersion : null;
-    const relevantChange = (prev && prev.success) !== connectionCheckResult.success
-      || prevVersion !== nextVersion;
-
-    this.setState({ connectionCheckResult }, async () => {
-      if (!relevantChange) {
-        return;
-      }
-
-      const { activeTab } = this.state;
-
-      if (activeTab && activeTab !== EMPTY_TAB) {
-        const contents = await this.getActiveTabContents();
-
-        this.lintTab(activeTab, contents);
-      }
-    });
-  };
-
-  _handleEngineProfileChanged = ({ tab, executionPlatform, executionPlatformVersion }) => {
-    if (!tab || !tab.id) {
-      return;
-    }
-
-    this.setState(state => ({
-      engineProfiles: {
-        ...state.engineProfiles,
-        [ tab.id ]: { executionPlatform, executionPlatformVersion }
-      }
-    }), async () => {
-      if (this.state.activeTab === tab) {
-        const contents = await this.getActiveTabContents();
-
-        this.lintTab(tab, contents);
-      } else {
-        this.lintTab(tab);
-      }
-    });
+  lintTab = (tab, contents) => {
+    return this.lintingManager.lintTab(tab, contents);
   };
 
   getLintingState = (tab) => {
-    return this.state.lintingState[ tab.id ] || EMPTY_LINTING_STATE;
+    return this.lintingManager.getLintingState(tab);
   };
 
   setLintingState = (tab, results) => {
-    const { tabs } = this.state;
-
-    const lintingState = reduce(tabs, (lintingState, t) => {
-      if (t === tab) {
-        return lintingState;
-      }
-
-      return {
-        ...lintingState,
-        [ t.id ]: this.getLintingState(t)
-      };
-    }, {
-      [ tab.id ]: results
-    });
-
-    this.setState({
-      lintingState
-    });
+    return this.lintingManager.setLintingState(tab, results);
   };
 
   resizeTab = () => {
@@ -1603,29 +1485,7 @@ export class App extends PureComponent {
    * @returns {Promise<File>} saved file.
    */
   async saveTabAsFile(options, contents) {
-
-    const {
-      encoding,
-      originalFile,
-      savePath,
-      saveType
-    } = options;
-
-    const fileSystem = this.getGlobal('fileSystem');
-
-    const file = await fileSystem.writeFile(savePath, {
-      ...originalFile,
-      contents
-    }, {
-      encoding,
-      fileType: saveType
-    });
-
-    if (originalFile.path !== savePath) {
-      await this.migrateConfigForFile(originalFile, file);
-    }
-
-    return file;
+    return this.fileManager.saveTabAsFile(options, contents);
   }
 
   /**
@@ -1635,17 +1495,7 @@ export class App extends PureComponent {
    * @param {File} newFile - New file with new path
    */
   async migrateConfigForFile(oldFile, newFile) {
-    if (!newFile?.path || !oldFile?.path) {
-      return;
-    }
-
-    const config = this.getGlobal('config');
-
-    const configForFile = await config.getForFile(oldFile);
-
-    if (configForFile && Object.keys(configForFile).length > 0) {
-      await config.setForFile(newFile, undefined, configForFile);
-    }
+    return this.fileManager.migrateConfigForFile(oldFile, newFile);
   }
 
 
@@ -1986,30 +1836,7 @@ export class App extends PureComponent {
    * @param {File} options.originalFile
    */
   async exportAsFile(options) {
-    const {
-      encoding,
-      exportType,
-      exportPath,
-      originalFile,
-    } = options;
-
-    const fileSystem = this.getGlobal('fileSystem');
-
-    try {
-      const contents = await this.tabRef.current.triggerAction('export-as', {
-        fileType: exportType
-      });
-
-      return fileSystem.writeFile(exportPath, {
-        ...originalFile,
-        contents
-      }, {
-        encoding,
-        fileType: exportType
-      });
-    } catch (err) {
-      this.logEntry(err.message, 'ERROR');
-    }
+    return this.fileManager.exportAsFile(options);
   }
 
   /**
@@ -2094,238 +1921,12 @@ export class App extends PureComponent {
 
   triggerAction = failSafe((action, options = {}) => {
 
-    const {
-      activeTab
-    } = this.state;
-
-
     log('App#triggerAction %s %o', action, options);
 
-    if (action === 'set-tab-group') {
-      const {
-        id,
-        group
-      } = options;
+    const handler = this.actionRegistry.get(action);
 
-      return this.setTabGroup(id, group);
-    }
-
-    if (action === 'lint-tab') {
-      const {
-        tab,
-        contents
-      } = options;
-
-      return this.lintTab(tab, contents);
-    }
-
-    if (action === 'select-tab') {
-      if (options === 'next') {
-        this.navigate(1);
-      }
-
-      if (options === 'previous') {
-        this.navigate(-1);
-      }
-
-      return;
-    }
-
-    if (action === 'create-bpmn-diagram') {
-      return this.createDiagram('bpmn');
-    }
-
-    if (action === 'create-dmn-diagram') {
-      return this.createDiagram('dmn');
-    }
-
-    if (action === 'create-form') {
-      return this.createDiagram('form');
-    }
-
-    if (action === 'create-cloud-form') {
-      return this.createDiagram('cloud-form');
-    }
-
-    if (action === 'create-cloud-bpmn-diagram') {
-      return this.createDiagram('cloud-bpmn');
-    }
-
-    if (action === 'create-cloud-dmn-diagram') {
-      return this.createDiagram('cloud-dmn');
-    }
-
-    if (action === 'create-diagram') {
-      return this.createDiagram(options.type);
-    }
-
-    if (action === 'reopen-file') {
-      return this.openFiles([ options.file ]);
-    }
-
-    if (action === 'open-diagram') {
-      const { path } = options;
-
-      if (path) {
-        return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
-      }
-
-      return this.showOpenFilesDialog();
-    }
-
-    if (action === 'save-all') {
-      return this.saveAllTabs();
-    }
-
-    if (action === 'save-tab') {
-      return this.saveTab(options.tab);
-    }
-
-    if (action === 'save') {
-      return this.saveTab(activeTab);
-    }
-
-    if (action === 'save-as') {
-      return this.saveTab(activeTab, { saveAs: true });
-    }
-
-    if (action === 'window-focused') {
-      return this.emit('app.focused');
-    }
-
-    if (action === 'window-blurred') {
-      return this.emit('app.blurred');
-    }
-
-    if (action === 'quit') {
-      return this.quit();
-    }
-
-    if (action === 'close-all-tabs') {
-      return this.closeTabs(t => true);
-    }
-
-    if (action === 'close-tab') {
-      return this.closeTabs(t => options && t.id === options.tabId);
-    }
-
-    if (action === 'close-active-tab') {
-      let activeId = this.state.activeTab.id;
-
-      return this.closeTabs(t => t.id === activeId);
-    }
-
-    if (action === 'close-other-tabs') {
-      let activeId = options && options.tabId || this.state.activeTab.id;
-
-      return this.closeTabs(t => t.id !== activeId);
-    }
-
-    if (action === 'reopen-last-tab') {
-      return this.reopenLastTab();
-    }
-
-    if (action === 'reveal-in-file-explorer') {
-      return this.revealInFileExplorer(options.filePath);
-    }
-
-    if (action === 'show-shortcuts') {
-      return this.showShortcuts();
-    }
-
-    if (action === 'update-menu') {
-      return this.updateMenu(options);
-    }
-
-    if (action === 'export-as') {
-      return this.exportAs(activeTab);
-    }
-
-    if (action === 'show-dialog') {
-      return this.showDialog(options);
-    }
-
-    if (action === 'open-modal') {
-      return this.setModal(options);
-    }
-
-    if (action === 'close-modal') {
-      return this.setModal(null);
-    }
-
-    if (action === 'open-external-url') {
-      return this.openExternalUrl(options);
-    }
-
-    if (action === 'check-file-changed') {
-      return this.checkFileChanged(activeTab);
-    }
-
-    if (action === 'resize') {
-      return this.resizeTab();
-    }
-
-    if (action === 'reload-modeler') {
-      return this.reloadModeler();
-    }
-
-    if (action === 'restart-modeler') {
-      return this.reloadModeler(true);
-    }
-
-    if (action === 'log') {
-      const {
-        action,
-        category,
-        message,
-        silent
-      } = options;
-
-      return this.logEntry(message, category, action, silent);
-    }
-
-    if (action === 'open-log') {
-      return this.openPanel('log');
-    }
-
-    if (action === 'open-panel') {
-      const { tab } = options;
-
-      return this.openPanel(tab);
-    }
-
-    if (action === 'close-panel') {
-      return this.closePanel();
-    }
-
-    if (action === 'display-notification') {
-      return this.displayNotification(options);
-    }
-
-    if (action === 'emit-event') {
-      const {
-        type,
-        payload
-      } = options;
-
-      return this.emitWithTab(type, activeTab, payload);
-    }
-
-    if (action === 'toggle-panel') {
-      const { panel } = this.state.layout;
-      return panel.open ? this.closePanel() : this.openPanel(panel.tab);
-    }
-
-    if (action === 'settings-open') {
-      return this.emit('app.settings-open', options);
-    }
-
-    if (action === 'open-deployment') {
-      return this.emitWithTab('app.open-deployment', activeTab);
-    }
-
-    if (action === 'open-connection-selector') {
-      return this.emitWithTab('app.open-connection-selector', activeTab);
+    if (handler) {
+      return handler(options);
     }
 
     const tab = this.tabRef.current;
@@ -2497,96 +2098,100 @@ export class App extends PureComponent {
 
           <EventsContext.Provider value={ this.eventsContext }>
 
-            <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
+            <AppContext.Provider value={ this.appContext }>
 
-              <SlotFillRoot>
+              <KeyboardInteractionTrapContext.Provider value={ this.triggerAction }>
 
-                <div className="tabs">
-                  <TabLinks
-                    tabs={ tabs }
-                    tabGroups={ tabGroups }
-                    isDirty={ isDirty }
-                    activeTab={ activeTab }
-                    config={ this.getGlobal('config') }
-                    getTabIcon={ this._getTabIcon }
-                    onSelect={ this.selectTab }
-                    onMoveTab={ this.moveTab }
-                    onContextMenu={ this.openTabLinksMenu }
-                    onClose={ this.handleCloseTab }
-                    placeholder={ tabs.length ? false : {
-                      label: 'Welcome',
-                      title: 'Welcome Screen'
-                    } }
-                    draggable
+                <SlotFillRoot>
+
+                  <div className="tabs">
+                    <TabLinks
+                      tabs={ tabs }
+                      tabGroups={ tabGroups }
+                      isDirty={ isDirty }
+                      activeTab={ activeTab }
+                      config={ this.getGlobal('config') }
+                      getTabIcon={ this._getTabIcon }
+                      onSelect={ this.selectTab }
+                      onMoveTab={ this.moveTab }
+                      onContextMenu={ this.openTabLinksMenu }
+                      onClose={ this.handleCloseTab }
+                      placeholder={ tabs.length ? false : {
+                        label: 'Welcome',
+                        title: 'Welcome Screen'
+                      } }
+                      draggable
+                    />
+
+                    <TabContainer className="main">
+                      {
+                        <Tab
+                          key={ activeTab.id }
+                          tab={ activeTab }
+                          layout={ layout }
+                          linting={ this.getLintingState(activeTab) }
+                          onChanged={ this.handleTabChanged }
+                          onError={ this.handleTabError }
+                          onWarning={ this.handleTabWarning }
+                          onShown={ this.handleTabShown }
+                          onLayoutChanged={ this.handleLayoutChanged }
+                          onContextMenu={ this.openTabMenu }
+                          onAction={ this.triggerAction }
+                          onModal={ this.openModal }
+                          onUpdateMenu={ this.updateMenu }
+                          getConfig={ this.getConfig }
+                          setConfig={ this.setConfig }
+                          getPlugins={ this.getPlugins }
+                          ref={ this.tabRef }
+                          settings={ this.getGlobal('settings') }
+                          backend={ this.getGlobal('backend') }
+                          config={ this.getGlobal('config') }
+                          deployment={ this.getGlobal('deployment') }
+                          startInstance={ this.getGlobal('startInstance') }
+                          zeebeApi={ this.getGlobal('zeebeAPI') }
+                        />
+                      }
+                    </TabContainer>
+                  </div>
+
+                  <PanelContainer
+                    layout={ layout }
+                    onLayoutChanged={ this.handleLayoutChanged }>
+                    <Panel
+                      layout={ layout }
+                      onLayoutChanged={ this.handleLayoutChanged }
+                      onUpdateMenu={ this.updateMenu } />
+
+                    <LogTab
+                      layout={ layout }
+                      entries={ logEntries }
+                      onClear={ this.clearLog }
+                      onAction={ this.triggerAction } />
+
+                    <LintingTab
+                      layout={ layout }
+                      linting={ this.getLintingState(activeTab) }
+                      onAction={ this.triggerAction } />
+                  </PanelContainer>
+
+                  <StatusBar />
+
+                  <PluginsRoot
+                    app={ this }
+                    plugins={ this.plugins }
                   />
 
-                  <TabContainer className="main">
-                    {
-                      <Tab
-                        key={ activeTab.id }
-                        tab={ activeTab }
-                        layout={ layout }
-                        linting={ this.getLintingState(activeTab) }
-                        onChanged={ this.handleTabChanged }
-                        onError={ this.handleTabError }
-                        onWarning={ this.handleTabWarning }
-                        onShown={ this.handleTabShown }
-                        onLayoutChanged={ this.handleLayoutChanged }
-                        onContextMenu={ this.openTabMenu }
-                        onAction={ this.triggerAction }
-                        onModal={ this.openModal }
-                        onUpdateMenu={ this.updateMenu }
-                        getConfig={ this.getConfig }
-                        setConfig={ this.setConfig }
-                        getPlugins={ this.getPlugins }
-                        ref={ this.tabRef }
-                        settings={ this.getGlobal('settings') }
-                        backend={ this.getGlobal('backend') }
-                        config={ this.getGlobal('config') }
-                        deployment={ this.getGlobal('deployment') }
-                        startInstance={ this.getGlobal('startInstance') }
-                        zeebeApi={ this.getGlobal('zeebeAPI') }
-                      />
-                    }
-                  </TabContainer>
-                </div>
+                </SlotFillRoot>
 
-                <PanelContainer
-                  layout={ layout }
-                  onLayoutChanged={ this.handleLayoutChanged }>
-                  <Panel
-                    layout={ layout }
-                    onLayoutChanged={ this.handleLayoutChanged }
-                    onUpdateMenu={ this.updateMenu } />
+                { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
+                  <KeyboardShortcutsModal
+                    getGlobal={ this.getGlobal }
+                    onClose={ this.closeModal }
+                  /> : null }
 
-                  <LogTab
-                    layout={ layout }
-                    entries={ logEntries }
-                    onClear={ this.clearLog }
-                    onAction={ this.triggerAction } />
+              </KeyboardInteractionTrapContext.Provider>
 
-                  <LintingTab
-                    layout={ layout }
-                    linting={ this.getLintingState(activeTab) }
-                    onAction={ this.triggerAction } />
-                </PanelContainer>
-
-                <StatusBar />
-
-                <PluginsRoot
-                  app={ this }
-                  plugins={ this.plugins }
-                />
-
-              </SlotFillRoot>
-
-              { this.state.currentModal === 'KEYBOARD_SHORTCUTS' ?
-                <KeyboardShortcutsModal
-                  getGlobal={ this.getGlobal }
-                  onClose={ this.closeModal }
-                /> : null }
-
-            </KeyboardInteractionTrapContext.Provider>
+            </AppContext.Provider>
 
           </EventsContext.Provider>
 
