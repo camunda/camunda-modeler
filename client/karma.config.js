@@ -45,10 +45,8 @@ if (modelers) {
 }
 
 
-module.exports = async function(karma) {
+module.exports = function(karma) {
 
-  // executablePath is async in puppeteer v25+
-  process.env.CHROME_BIN = await require('puppeteer').executablePath();
   karma.set({
 
     frameworks: [
