@@ -107,9 +107,9 @@ Based on the [test diagram](./test.bpmn.png):
 
 ##### Edit operations
 
-* [ ] undo (`CTRL+Z`) / redo (`CTRL+Y`) work in editor
+* [ ] undo (`CTRL + Z`) / redo (`CTRL + Y`) work in editor
 * [ ] cut, copy, paste work
-* [ ] find/replace (`CTRL+H`) opens and functions
+* [ ] find/replace (`CTRL + H`) opens and functions
 
 ##### Linting
 
