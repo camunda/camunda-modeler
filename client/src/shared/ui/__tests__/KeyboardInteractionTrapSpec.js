@@ -165,6 +165,60 @@ describe('<KeyboardInteractionTrap>', function() {
   });
 
 
+  it('should update menu when contenteditable element receives focus', function() {
+
+    // given
+    const triggerAction = sinon.spy();
+
+    const { container } = render(
+      <KeyboardInteractionTrapContext.Provider value={ triggerAction }>
+        <KeyboardInteractionTrap>
+          <div contentEditable="true" suppressContentEditableWarning />
+        </KeyboardInteractionTrap>
+      </KeyboardInteractionTrapContext.Provider>
+    );
+
+    const div = container.querySelector('[contenteditable]');
+
+    // when
+    div.focus();
+
+    // then
+    expect(triggerAction).to.have.been.calledWith('update-menu', {
+      editMenu: [
+        [
+          {
+            role: 'undo',
+            enabled: true
+          },
+          {
+            role: 'redo',
+            enabled: true
+          }
+        ],
+        [
+          {
+            role: 'copy',
+            enabled: true
+          },
+          {
+            role: 'cut',
+            enabled: true
+          },
+          {
+            role: 'paste',
+            enabled: true
+          },
+          {
+            role: 'selectAll',
+            enabled: true
+          }
+        ]
+      ]
+    });
+  });
+
+
   it('should disable menu when non-input element receives focus', function() {
 
     // given
