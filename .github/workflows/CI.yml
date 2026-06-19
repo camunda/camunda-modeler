@@ -80,8 +80,10 @@ jobs:
       run: npm ci
     - name: Project setup
       uses: bpmn-io/actions/setup@latest
-    - name: Build preload + client
-      run: npm run preload:build && npm run client:build
+    - name: Build preload
+      run: npm run preload:build
+    - name: Build client
+      run: npm run client:build
     # Electron is headed, so Linux needs a virtual display (xvfb); macOS and
     # Windows runners have one.
     - name: Run integration tests (${{ runner.os }})
