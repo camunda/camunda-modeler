@@ -8,6 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FIX`: allow to paste into start instance variables field ([#6003](https://github.com/camunda/camunda-modeler/issues/6003))
 * `DEPS`: update to `@camunda/task-testing@5`
 
 ## 5.48.0

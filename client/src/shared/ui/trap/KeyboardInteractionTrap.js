@@ -10,6 +10,8 @@
 
 import React, { PureComponent, createContext } from 'react';
 
+import { isTextInput } from '../../../util/dom/isInput';
+
 export const KeyboardInteractionTrapContext = createContext(() => {});
 
 /**
@@ -44,7 +46,7 @@ class KeyboardInteractionTrapComponent extends PureComponent {
 
   updateMenu(element) {
 
-    const enabled = [ 'INPUT', 'TEXTAREA' ].includes(element.tagName);
+    const enabled = isTextInput(element);
 
     const editMenu = [
       [
