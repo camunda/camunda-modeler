@@ -37,16 +37,6 @@ jobs:
     - name: Build for macOS
       if: ${{ runner.OS == 'macOS' }}
       run: npm run all -- --arm64 --no-compress
-    # tar the built renderer + preload so the exact `app/public` / `app/preload`
-    # paths are preserved through the artifact (no path-flattening surprises)
-    - name: Package app build
-      run: tar -czf app-build.tar.gz app/public app/preload
-    - name: Upload app build
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-build-${{ matrix.os }}
-        path: app-build.tar.gz
-        if-no-files-found: error
     - name: Import Secrets
       if: ${{ runner.OS == 'Linux' }}
       id: secrets
@@ -70,7 +60,6 @@ jobs:
 
 
   e2e-tests:
-    needs: build
     strategy:
       fail-fast: false
       matrix:
@@ -91,12 +80,8 @@ jobs:
       run: npm ci
     - name: Project setup
       uses: bpmn-io/actions/setup@latest
-    - name: Download app build
-      uses: actions/download-artifact@v4
-      with:
-        name: app-build-${{ matrix.os }}
-    - name: Unpack app build
-      run: tar -xzf app-build.tar.gz
+    - name: Build preload + client
+      run: npm run preload:build && npm run client:build
     # Electron is headed, so Linux needs a virtual display (xvfb); macOS and
     # Windows runners have one.
     - name: Run integration tests (${{ runner.os }})
