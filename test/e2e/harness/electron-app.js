@@ -51,9 +51,11 @@ class ElectronApp {
    */
   async shortcut(accelerator) {
     for (let attempt = 0; attempt < 25; attempt++) {
-      if (await triggerAccelerator(this.electronApp, accelerator)) {
-        return;
-      }
+      try {
+        if (await triggerAccelerator(this.electronApp, accelerator)) {
+          return;
+        }
+      } catch (err) { /* empty */ }
 
       await this.page.waitForTimeout(200);
     }

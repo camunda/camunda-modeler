@@ -66,8 +66,12 @@ function triggerAccelerator(electronApp, accelerator) {
     const [ window ] = BrowserWindow.getAllWindows();
 
     // Electron's MenuItem click is (menuItem, browserWindow, event); handlers
-    // read the 3rd arg, so the accelerator event must be passed there
-    match.click(match, window, { triggeredByAccelerator: true });
+    // read the 3rd arg, so the accelerator event must be passed there.
+    try {
+      match.click(match, window, { triggeredByAccelerator: true });
+    } catch (err) {
+      return false;
+    }
 
     return true;
   }, accelerator);

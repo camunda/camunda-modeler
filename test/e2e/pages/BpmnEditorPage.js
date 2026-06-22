@@ -103,6 +103,39 @@ class BpmnEditorPage extends DiagramEditorPage {
   }
 
   /**
+   * Undo the last command (Cmd/Ctrl+Z).
+   *
+   * @return {Promise<void>}
+   */
+  undo() {
+    return this.app.shortcut('CommandOrControl+Z');
+  }
+
+  /**
+   * Redo the last undone command (Cmd/Ctrl+Y).
+   *
+   * @return {Promise<void>}
+   */
+  redo() {
+    return this.app.shortcut('CommandOrControl+Y');
+  }
+
+  /**
+   * The type of an element as shown in the properties-panel header (e.g. 'User
+   * Task', 'Service Task'). Selects the element first, so it works as an
+   * observable after undo/redo — which clear the canvas selection.
+   *
+   * @param {string} elementId
+   *
+   * @return {Promise<string>}
+   */
+  async getElementType(elementId) {
+    await this.selectElement(elementId);
+
+    return new PropertiesPanelPage(this.page).elementType();
+  }
+
+  /**
    * Set the name of any element, addressed by id. Selects the element first (so
    * it does not matter what was selected before), then sets the name in the
    * properties panel's General group.

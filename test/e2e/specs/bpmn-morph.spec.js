@@ -233,14 +233,20 @@ test.describe('BPMN keep implementation details (Camunda 7)', function() {
 
     // undo -> the form is back
     await app.step('undo restores the form', async () => {
-      await app.shortcut('CommandOrControl+Z');
+      await editor.undo();
+
+      // wait for the morph to revert before checking the file
+      await expect.poll(() => editor.getElementType('UserTask_1'), { timeout: 10000 }).toBe('User Task');
 
       await expect.poll(hasForm, { timeout: 10000 }).toBe(true);
     });
 
     // redo -> the form is dropped again
     await app.step('redo drops the form again', async () => {
-      await app.shortcut('CommandOrControl+Y');
+      await editor.redo();
+
+      // wait for the morph to re-apply before checking the file
+      await expect.poll(() => editor.getElementType('UserTask_1'), { timeout: 10000 }).toBe('Service Task');
 
       await expect.poll(hasForm, { timeout: 10000 }).toBe(false);
     });
