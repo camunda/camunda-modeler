@@ -211,6 +211,19 @@ class PropertiesPanelPage {
   async addListItem(groupTitle) {
     await this.group(groupTitle).locator('.bio-properties-panel-add-entry').click();
   }
+
+  /**
+   * The element type shown in the panel header for the current selection
+   * (e.g. 'User Task', 'Service Task') — reflects the model immediately, so it
+   * is a reliable observable of a morph/undo/redo without a file round-trip.
+   *
+   * @return {Promise<string>}
+   */
+  async elementType() {
+    const type = await this.page.locator('.bio-properties-panel-header-type').first().textContent();
+
+    return (type || '').trim();
+  }
 }
 
 module.exports = PropertiesPanelPage;
