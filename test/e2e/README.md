@@ -114,5 +114,6 @@ npm run test:e2e:update   # playwright test ... --update-snapshots
 
 CI ([`.github/workflows/CI.yml`](../../.github/workflows/CI.yml)) runs the suite
 as a dedicated **`e2e-tests`** job, on the Linux (Xvfb) / macOS / Windows matrix.
-It reuses the `app/public` + `app/preload` artifact produced by the `build` job
-(no rebuild), so e2e results are reported separately from build and unit tests.
+It builds preload + client inline (`npm run preload:build && npm run
+client:build`) and runs in parallel with the `build` job, so e2e results are
+reported separately from build and unit tests.
