@@ -94,9 +94,7 @@ test.describe('DMN modeling', function() {
       await editor.contextPadAction(whichSeason, 'append.input-data');
       await nameSelected('Regional Weather');
 
-      await editor.contextPadAction(goOnHolidays, 'append.text-annotation');
-      const annotation = await editor.selectedElementId();
-      await editor.setTextAnnotation(annotation, 'We decide for holidays once we agreed on season and region');
+      await editor.setTextAnnotation(goOnHolidays, 'We decide for holidays once we agreed on season and region');
 
       // the default decision is named last (clicking it selects it — it sits at
       // the top, always clear of the status bar)
