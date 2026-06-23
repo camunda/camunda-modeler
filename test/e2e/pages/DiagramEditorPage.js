@@ -98,6 +98,50 @@ class DiagramEditorPage {
 
     await this.page.locator(`.djs-context-pad .entry[data-action="${ action }"]`).click();
   }
+
+  /**
+   * Open a context-pad popup menu (e.g. via 'replace' or 'append') and click one
+   * of its entries by title.
+   *
+   * The whole open-then-click is retried as a unit: a background re-render — most
+   * notably the connection check / "Camunda Connector templates updated" toast
+   * landing — can tear the popup down again right after it opens, so clicking the
+   * entry on its own would hang on a popup that just vanished. Re-opening and
+   * re-clicking rides out that teardown.
+   *
+   * @param {string} elementId
+   * @param {string} action the context-pad entry's `data-action`, e.g. 'replace'
+   * @param {string} entryTitle the popup entry's `title`, e.g. 'User task'
+   *
+   * @return {Promise<void>}
+   */
+  async selectPopupEntry(elementId, action, entryTitle) {
+    const popup = this.page.locator('.djs-popup');
+    const entry = popup.locator(`.entry[title="${ entryTitle }"]`).first();
+
+    for (let attempt = 0; attempt < 5; attempt++) {
+
+      if (!(await popup.count())) {
+        await this.contextPadAction(elementId, action);
+
+        await popup.waitFor({ timeout: 2000 }).catch(() => {});
+
+        continue;
+      }
+
+      // popup is open — try to pick the entry; it can be torn down before the
+      // click lands, in which case we loop to re-open and retry
+      try {
+        await entry.click({ timeout: 2000 });
+
+        return;
+      } catch (err) {
+        continue;
+      }
+    }
+
+    throw new Error(`could not select "${ entryTitle }" from the "${ action }" popup`);
+  }
 }
 
 module.exports = DiagramEditorPage;

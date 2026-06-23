@@ -93,13 +93,7 @@ class BpmnEditorPage extends DiagramEditorPage {
    * @return {Promise<void>}
    */
   async changeType(elementId, targetTitle) {
-    await this.showContextPad(elementId);
-
-    await this.page.locator('.djs-context-pad .entry[data-action="replace"]').click();
-
-    await this.page.waitForSelector('.djs-popup');
-
-    await this.page.locator(`.djs-popup .entry[title="${ targetTitle }"]`).first().click();
+    await this.selectPopupEntry(elementId, 'replace', targetTitle);
   }
 
   /**
@@ -168,12 +162,7 @@ class BpmnEditorPage extends DiagramEditorPage {
    * @return {Promise<string>} the appended element's id
    */
   async appendElement(fromId, title) {
-    await this.showContextPad(fromId);
-
-    await this.page.locator('.djs-context-pad .entry[data-action="append"]').click();
-
-    await this.page.waitForSelector('.djs-popup');
-    await this.page.locator(`.djs-popup .entry[title="${ title }"]`).first().click();
+    await this.selectPopupEntry(fromId, 'append', title);
 
     return this.selectedElementId();
   }
@@ -214,6 +203,14 @@ class BpmnEditorPage extends DiagramEditorPage {
     await this.contextPadAction(fromId, 'append.append-task');
 
     const id = await this.selectedElementId();
+
+    // appending a task auto-activates label direct-editing; dismiss it so the
+    // overlay cannot swallow the morph's context-pad interaction below
+    const editing = this.page.locator('.djs-direct-editing-content');
+
+    await editing.waitFor();
+    await this.page.keyboard.press('Escape');
+    await editing.waitFor({ state: 'detached' });
 
     await this.changeType(id, type);
 
