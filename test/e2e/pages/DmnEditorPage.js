@@ -37,19 +37,23 @@ class DmnEditorPage extends DiagramEditorPage {
   }
 
   /**
-   * Set a text annotation's content via direct editing: double-click to edit,
-   * type, then click empty canvas to commit (Escape would cancel the edit).
+   * Append a text annotation to an element and set its content. Appending a text
+   * annotation auto-places it and starts direct editing, so we just wait for the
+   * editing box, type, then click empty canvas to commit (Escape would cancel).
    *
-   * @param {string} elementId
+   * @param {string} elementId the element to append the annotation to
    * @param {string} text
    *
    * @return {Promise<void>}
    */
   async setTextAnnotation(elementId, text) {
-    await this.element(elementId).dblclick();
+    await this.contextPadAction(elementId, 'append.text-annotation');
 
-    await this.page.locator('.djs-direct-editing-content').waitFor();
-    await this.page.keyboard.type(text);
+    const editing = this.page.locator('.djs-direct-editing-content');
+
+    await editing.waitFor();
+
+    await editing.fill(text);
 
     // commit by blurring — click an empty corner of the canvas
     const box = await this.canvas().boundingBox();
