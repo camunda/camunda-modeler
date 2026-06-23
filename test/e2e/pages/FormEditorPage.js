@@ -95,17 +95,24 @@ class FormEditorPage {
     const fields = this.page.locator('.fjs-editor-container .fjs-element[data-id^="Field_"]');
     const before = await fields.count();
 
-    // the drop occasionally does not register, so re-drag until a field lands
+    // form-js uses a dragula (mouse-event) drag whose drop occasionally does not
+    // register, so re-drag until a field lands. A registered drop updates the
+    // model on mouseup, but the re-render can lag on slow CI — so we wait
+    // generously for the field to appear and only re-drag when nothing landed.
+    // Re-dragging while a drop is still settling would drop a second field.
     for (let attempt = 0; attempt < 3; attempt++) {
       await this.dragField(fieldType);
 
       try {
-        await expect(fields).toHaveCount(before + 1, { timeout: 2000 });
-
-        return;
+        await expect.poll(() => fields.count(), { timeout: 5000 }).toBeGreaterThan(before);
       } catch {
         continue;
       }
+
+      // a drop landed; it must be exactly one
+      await expect(fields).toHaveCount(before + 1);
+
+      return;
     }
 
     throw new Error(`failed to drop a "${ fieldType }" field onto the form`);
@@ -163,10 +170,12 @@ class FormEditorPage {
       const fields = document.querySelectorAll('.fjs-editor-container .fjs-element[data-id^="Field_"]');
       const last = fields[fields.length - 1];
 
-      // bring the last field's bottom into view (the browser scrolls whatever
-      // nested container is scrollable)
+      // centre the last field in the editor (rather than aligning its bottom to
+      // the editor's bottom edge): that keeps the drop point well clear of the
+      // bottom edge, where an in-drag auto-scroll would otherwise keep moving the
+      // content and destabilise the drop once the form outgrows the viewport
       if (last) {
-        last.scrollIntoView({ block: 'end' });
+        last.scrollIntoView({ block: 'center' });
       }
 
       const editorBox = editor.getBoundingClientRect();
@@ -179,8 +188,8 @@ class FormEditorPage {
       }
 
       // just above the last field's bottom (its lower part = "insert after"),
-      // but never below the visible editor (a few px clear of its border)
-      return { x, y: Math.round(Math.min(ref.bottom - 4, editorBox.bottom - 4)) };
+      // kept a safe margin clear of the editor's bottom edge
+      return { x, y: Math.round(Math.min(ref.bottom - 4, editorBox.bottom - 40)) };
     });
 
     if (!target) {
