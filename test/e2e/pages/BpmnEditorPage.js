@@ -271,8 +271,10 @@ class BpmnEditorPage extends DiagramEditorPage {
    * Paste the clipboard contents (via the real Paste shortcut binding) and drop
    * them at a point in the canvas.
    *
-   * `paste` starts an interactive create-drag attached to the cursor, so we
-   * position the mouse, paste, then click to drop.
+   * `paste` starts an interactive create-drag attached to the cursor. The drag
+   * preview (`.djs-drag-group`) is rendered lazily on the first `create.move`,
+   * so we move onto the canvas *after* pasting, wait for the preview, then click
+   * to drop — clicking before the create is live drops nothing.
    *
    * @param {number} relX 0..1 fraction of the canvas width
    * @param {number} relY 0..1 fraction of the canvas height
@@ -284,9 +286,11 @@ class BpmnEditorPage extends DiagramEditorPage {
     const x = box.x + box.width * relX;
     const y = box.y + box.height * relY;
 
-    await this.page.mouse.move(x, y);
-
     await this.app.shortcut('CommandOrControl+V');
+
+    await this.page.mouse.move(x, y, { steps: 5 });
+
+    await this.page.locator('.djs-drag-group').waitFor();
 
     await this.page.mouse.click(x, y);
   }
