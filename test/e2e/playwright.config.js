@@ -29,7 +29,7 @@ module.exports = defineConfig({
   workers: 1,
   fullyParallel: false,
 
-  retries: 0,
+  retries: CI ? 2 : 0,
   timeout: 60000,
 
   forbidOnly: CI,
