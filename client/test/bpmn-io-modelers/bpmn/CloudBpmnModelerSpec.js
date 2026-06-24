@@ -11,6 +11,10 @@
 import { expect } from 'chai';
 import TestContainer from 'mocha-test-container-support';
 
+import { waitFor } from '@testing-library/react';
+
+import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
+
 import BpmnModeler from '../../../src/app/tabs/cloud-bpmn/modeler/BpmnModeler';
 
 import diagramXML from './diagram.bpmn';
@@ -25,8 +29,17 @@ const DEFAULT_OPTIONS = {
   }
 };
 
+const ELEMENT_TEMPLATE = {
+  $schema: 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+  name: 'Template 1',
+  id: 'template-1',
+  appliesTo: [ 'bpmn:StartEvent' ],
+  properties: []
+};
+
 
 inlineCSS(require('camunda-bpmn-js/dist/assets/camunda-platform-modeler.css'));
+inlineCSS(require('camunda-bpmn-js/dist/assets/element-template-chooser.css'));
 
 inlineCSS(`
   .test-content-container {
@@ -112,6 +125,55 @@ describe('BpmnModeler', function() {
 
   });
 
+
+  describe('element template chooser', function() {
+
+    it('should open chooser on <elementTemplates.select>', async function() {
+
+      // given
+      const modeler = await createModeler({ container: modelerContainer });
+
+      const eventBus = modeler.get('eventBus'),
+            popupMenu = modeler.get('popupMenu'),
+            elementRegistry = modeler.get('elementRegistry');
+
+      const element = elementRegistry.get('StartEvent_1');
+
+      // when
+      eventBus.fire('elementTemplates.select', { element });
+
+      // then
+      await waitFor(() => {
+        expect(popupMenu.isOpen()).to.be.true;
+      });
+    });
+
+
+    it('should apply chosen element template', async function() {
+
+      // given
+      const modeler = await createModeler({ container: modelerContainer });
+
+      const eventBus = modeler.get('eventBus'),
+            elementTemplates = modeler.get('elementTemplates'),
+            elementRegistry = modeler.get('elementRegistry');
+
+      const element = elementRegistry.get('StartEvent_1');
+
+      const template = elementTemplates.get('template-1');
+
+      // when
+      eventBus.fire('elementTemplates.select', { element });
+      eventBus.fire('elementTemplateChooser.chosen', { element, template });
+
+      // then
+      await waitFor(() => {
+        expect(getBusinessObject(element).get('modelerTemplate')).to.eql('template-1');
+      });
+    });
+
+  });
+
 });
 
 // helpers //////////
@@ -127,7 +189,11 @@ async function createModeler(options = {}) {
     ...options
   });
 
-  return modeler.importXML(diagramXML).then(() => modeler);
+  await modeler.importXML(diagramXML);
+
+  modeler.get('elementTemplatesLoader').setTemplates([ ELEMENT_TEMPLATE ]);
+
+  return modeler;
 }
 
 function inlineCSS(css) {

@@ -1056,7 +1056,6 @@ export class BpmnEditor extends CachedComponent {
         feelPopupContainer: '.bjs-container',
         layout: layout.propertiesPanel
       },
-      elementTemplateChooser: false,
       keyboard: {
         bind: false
       },
