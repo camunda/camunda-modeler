@@ -11,7 +11,6 @@
 import CamundaPlugin from './camunda-plugin';
 import ContextAction from './tab-context-action';
 import CreateNewAction from './create-new-action';
-import ElementTemplatesModal from './element-templates-modal';
 import ErrorTracking from './error-tracking';
 import PrivacyPreferences from './privacy-preferences';
 import ProcessApplications from './process-applications';
@@ -27,7 +26,6 @@ export default [
   CamundaPlugin,
   ContextAction,
   CreateNewAction,
-  ElementTemplatesModal,
   ErrorTracking,
   PrivacyPreferences,
   ProcessApplications,
