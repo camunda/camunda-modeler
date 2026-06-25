@@ -21,7 +21,7 @@ jobs:
       id-token: write # Vault OIDC/JWT auth
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     # Import FOSSA_API_KEY from Vault
     - name: Import Secrets
       id: secrets
