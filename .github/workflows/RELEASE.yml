@@ -18,7 +18,7 @@ jobs:
       tag: ${{ steps.tag.outputs.TAG }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Get tag
       id: tag
       run: |
@@ -45,7 +45,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Use Node.js
       uses: actions/setup-node@v6
       with:
@@ -149,7 +149,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         # required to compare versions in the
         # license book summary
@@ -243,7 +243,7 @@ jobs:
       id-token: write # Vault OIDC/JWT auth
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Import Secrets
         id: secrets
         uses: hashicorp/vault-action@v4.0.0
