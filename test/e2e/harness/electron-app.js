@@ -243,7 +243,10 @@ async function launch(options = {}) {
   // properties panel and intercept clicks) don't appear
   await fs.writeFile(
     path.join(userDataDir, 'config.json'),
-    JSON.stringify({ hints: { panelToggleDismissed: true } })
+    JSON.stringify({
+      hints: { panelToggleDismissed: true },
+      lastUsedConnection: 'NO_CONNECTION'
+    })
   );
 
   const electronApp = await _electron.launch({
