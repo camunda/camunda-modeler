@@ -10,10 +10,12 @@
 
 'use strict';
 
+const os = require('os');
 const path = require('path');
 const fs = require('fs/promises');
 
 const { test, expect } = require('../harness/test');
+const { launch } = require('../harness/electron-app');
 const { copyFixture, expectFileExists } = require('../harness/files');
 const { normalizeSvg } = require('../harness/svg');
 
@@ -21,16 +23,43 @@ const FORMATS = [ 'svg', 'png', 'jpeg' ];
 
 test.describe('DMN export', function() {
 
+  let app, tmp;
+
+  test.beforeAll(async function() {
+    tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'cm-e2e-tmp-'));
+
+    const input = await copyFixture('decision.dmn', tmp, 'decision.dmn');
+
+    app = await launch({ openFile: input });
+
+    await app.page.waitForSelector('.djs-container');
+  });
+
+  test.beforeEach(() => app.startTracing());
+
+  test.afterEach(async function() {
+    const testInfo = test.info();
+
+    if (testInfo.status !== testInfo.expectedStatus || process.env.E2E_TRACE === '1') {
+      const tracePath = testInfo.outputPath('trace.zip');
+
+      await app.stopTracing(tracePath);
+
+      await testInfo.attach('trace', { path: tracePath, contentType: 'application/zip' });
+    } else {
+      await app.stopTracing();
+    }
+  });
+
+  test.afterAll(async function() {
+    await app.close();
+
+    await fs.rm(tmp, { recursive: true, force: true });
+  });
+
   for (const format of FORMATS) {
 
-    test(`should export the DRD as ${ format.toUpperCase() }`, async function({ launch, tmp }) {
-
-      // given
-      const input = await copyFixture('decision.dmn', tmp, 'decision.dmn');
-
-      const app = await launch({ openFile: input });
-
-      await app.page.waitForSelector('.djs-container');
+    test(`should export the DRD as ${ format.toUpperCase() }`, async function() {
 
       const output = path.join(tmp, `decision.${ format }`);
 
