@@ -100,7 +100,7 @@
     "karma-coverage": "^2.2.1",
     "karma-env-preprocessor": "^0.1.1",
     "karma-mocha": "^2.0.1",
-    "karma-tldr-reporter": "^0.0.1",
+    "karma-tldr-reporter": "^1.0.0",
     "karma-webpack": "^5.0.1",
     "license-webpack-plugin": "^4.0.0",
     "mocha": "^11.0.0",
