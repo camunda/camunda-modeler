@@ -8,8 +8,8 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FIX`: allow to paste into start instance variables field ([#6003](https://github.com/camunda/camunda-modeler/issues/6003))
 * `FEAT`: redesign the append/context pads and remove the attach pad when the 'Enable new context pad' setting is enabled ([camunda/improved-canvas#82](https://github.com/camunda/improved-canvas/pull/82))
+* `FIX`: allow to paste into start instance variables field ([#6003](https://github.com/camunda/camunda-modeler/issues/6003))
 * `DEPS`: update to `@camunda/improved-canvas@1.9.0`
 * `DEPS`: update to `@camunda/task-testing@5`
 
