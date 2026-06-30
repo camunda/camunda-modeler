@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.49.0
+
 ### General
 
 * `FEAT`: redesign the append/context pads and remove the attach pad when the 'Enable new context pad' setting is enabled ([camunda/improved-canvas#82](https://github.com/camunda/improved-canvas/pull/82))
