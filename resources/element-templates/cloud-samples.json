@@ -812,5 +812,35 @@
         }
       }
     ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Call Activity Template",
+    "id": "io.camunda.callActivity",
+    "version": 5,
+    "description": "Template to verify propagation works in a template",
+    "appliesTo": [
+      "bpmn:CallActivity"
+    ],
+    "properties": [
+      {
+        "label": "Process ID",
+        "type": "String",
+        "feel": "optional",
+        "binding": {
+          "type": "zeebe:calledElement",
+          "property": "processId"
+        }
+      },
+      {
+        "label": "Propagate all parent variables",
+        "value": false,
+        "type": "Boolean",
+        "binding": {
+          "type": "zeebe:calledElement",
+          "property": "propagateAllParentVariables"
+        }
+      }
+    ]
   }
 ]
