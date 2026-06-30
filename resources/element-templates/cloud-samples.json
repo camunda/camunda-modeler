@@ -842,5 +842,66 @@
         }
       }
     ]
+  },
+  {
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "Task Listeners Template",
+    "id": "io.camunda.taskListeners",
+    "version": 5,
+    "description": "Template to verify task listeners work in a template",
+    "appliesTo": [
+      "bpmn:UserTask"
+    ],
+    "elementType": {
+      "value": "bpmn:UserTask"
+    },
+    "properties": [
+      {
+        "type": "Hidden",
+        "binding": {
+          "type": "zeebe:userTask"
+        }
+      },
+      {
+        "value": "creating",
+        "type": "Hidden",
+        "binding": {
+          "type": "zeebe:taskListener",
+          "eventType": "creating"
+        }
+      },
+      {
+        "value": "updating",
+        "type": "Hidden",
+        "binding": {
+          "type": "zeebe:taskListener",
+          "eventType": "updating"
+        }
+      },
+      {
+        "value": "assigning",
+        "type": "Hidden",
+        "binding": {
+          "type": "zeebe:taskListener",
+          "eventType": "assigning"
+        }
+      },
+      {
+        "value": "completing",
+        "type": "Hidden",
+        "binding": {
+          "type": "zeebe:taskListener",
+          "eventType": "completing"
+        }
+      },
+      {
+        "value": "canceling",
+        "type": "Hidden",
+        "binding": {
+          "type": "zeebe:taskListener",
+          "eventType": "canceling"
+        }
+      }
+    ]
   }
 ]
