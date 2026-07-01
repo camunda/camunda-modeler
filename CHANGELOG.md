@@ -10,7 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
-* `FEAT`: redesign the append/context pads and remove the attach pad when the 'Enable new context pad' setting is enabled ([camunda/improved-canvas#82](https://github.com/camunda/improved-canvas/pull/82))
+* `FEAT`: redesign the append/context pads (enabled via 'Enable new context pad' setting) ([camunda/improved-canvas#82](https://github.com/camunda/improved-canvas/pull/82))
 * `FIX`: allow to paste into start instance variables field ([#6003](https://github.com/camunda/camunda-modeler/issues/6003))
 * `DEPS`: update to `@bpmn-io/element-template-chooser@3.0.0`
 * `DEPS`: update to `@bpmn-io/form-js@1.23.0`
