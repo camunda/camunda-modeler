@@ -101,7 +101,7 @@ class DiagramEditorPage {
 
   /**
    * Open a context-pad popup menu (e.g. via 'replace' or 'append') and click one
-   * of its entries by title.
+   * of its entries by its visible label text.
    *
    * The whole open-then-click is retried as a unit: a background re-render — most
    * notably the connection check / "Camunda Connector templates updated" toast
@@ -111,13 +111,17 @@ class DiagramEditorPage {
    *
    * @param {string} elementId
    * @param {string} action the context-pad entry's `data-action`, e.g. 'replace'
-   * @param {string} entryTitle the popup entry's `title`, e.g. 'User task'
+   * @param {string} entryLabel the popup entry's label, e.g. 'User task'
    *
    * @return {Promise<void>}
    */
-  async selectPopupEntry(elementId, action, entryTitle) {
+  async selectPopupEntry(elementId, action, entryLabel) {
     const popup = this.page.locator('.djs-popup');
-    const entry = popup.locator(`.entry[title="${ entryTitle }"]`).first();
+
+    // the label lives in `.djs-popup-label`; match its exact text
+    const entry = popup
+      .locator(`.entry:has(.djs-popup-label:text-is("${ entryLabel }"))`)
+      .first();
 
     for (let attempt = 0; attempt < 5; attempt++) {
 
@@ -140,7 +144,7 @@ class DiagramEditorPage {
       }
     }
 
-    throw new Error(`could not select "${ entryTitle }" from the "${ action }" popup`);
+    throw new Error(`could not select "${ entryLabel }" from the "${ action }" popup`);
   }
 }
 
