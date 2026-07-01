@@ -19,6 +19,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const { fetch } = require('undici');
 const pLimit = require('p-limit').default;
 const semver = require('semver');
 
