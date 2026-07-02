@@ -183,6 +183,72 @@ describe('FileContext', function() {
   });
 
 
+  describe('reset', function() {
+
+    it('should remove all indexed items', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn');
+
+      await waitForEvent(() => {
+        fileContext.addFile(filePath);
+      });
+
+      expectItemsLength(fileContext, 1);
+
+      // when
+      fileContext.reset();
+
+      // then
+      expectItemsLength(fileContext, 0);
+    });
+
+
+    it('should remove all roots', async function() {
+
+      // given
+      const directoryPath = path.resolve(__dirname, './tmp/foo-process-application');
+
+      await waitForEvent(() => {
+        fileContext.addRoot(directoryPath);
+      }, 'watcher:ready');
+
+      expectRootsLength(fileContext, 1);
+
+      // when
+      fileContext.reset();
+
+      // then
+      expectRootsLength(fileContext, 0);
+      expectItemsLength(fileContext, 0);
+    });
+
+
+    it('should allow re-adding a file after reset', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn'),
+            uri = toFileUrl(filePath);
+
+      await waitForEvent(() => {
+        fileContext.addFile(filePath);
+      });
+
+      fileContext.reset();
+
+      // when
+      await waitForEvent(() => {
+        fileContext.addFile(filePath);
+      });
+
+      // then
+      expectItemsLength(fileContext, 1);
+      expect(getItem(fileContext, uri)).to.exist;
+    });
+
+  });
+
+
   describe('watching', function() {
 
     it('should watch by default', function() {

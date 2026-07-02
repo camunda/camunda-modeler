@@ -189,6 +189,13 @@ module.exports = class Indexer {
   }
 
   /**
+   * Remove all indexed items.
+   */
+  removeAll() {
+    this.getItems().forEach(item => this.remove(item.uri));
+  }
+
+  /**
    * @internal
    *
    * @param {IndexItem} item
