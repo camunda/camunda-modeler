@@ -33,6 +33,7 @@ const Flags = require('./flags');
 const Log = require('./log');
 const logTransports = require('./log/transports');
 const Menu = require('./menu');
+const OpenFileHandler = require('./open-file-handler');
 const Platform = require('./platform');
 const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
@@ -88,9 +89,9 @@ const {
   config,
   dialog,
   fileContext,
-  files,
   flags,
   menu,
+  openFileHandler,
   plugins,
   windowManager,
   zeebeAPI
@@ -457,9 +458,7 @@ app.on('app:client-ready', function() {
   bootstrapLog.info('received client-ready');
 
   // open pending files
-  if (files.length) {
-    app.openFiles(files);
-  }
+  openFileHandler.drain();
 
   renderer.send('client:started');
 });
@@ -540,28 +539,9 @@ app.on('web-contents-created', (event, webContents) => {
  * @param {Array<string>} filePaths
  */
 app.openFiles = function(filePaths) {
-
   log.info('open files', filePaths);
 
-  if (!app.clientReady) {
-
-    // defer file open
-    return files.push(...filePaths);
-  }
-
-  const existingFiles = filePaths.map(filePath => {
-
-    try {
-      return readFile(filePath);
-    } catch (e) {
-      dialog.showOpenFileErrorDialog({
-        name: path.basename(filePath)
-      });
-    }
-  }).filter(f => f);
-
-  // open files
-  renderer.send('client:open-files', existingFiles);
+  openFileHandler.open(filePaths);
 };
 
 /**
@@ -891,13 +871,26 @@ function bootstrap() {
 
   app.on('quit', () => fileContext.close());
 
+  // (12) open file handler
+  const openFileHandler = OpenFileHandler({
+    isReady: () => app.clientReady,
+    readFile,
+    onError: (filePath) => dialog.showOpenFileErrorDialog({
+      name: path.basename(filePath)
+    }),
+    onOpen: (files) => renderer.send('client:open-files', files)
+  });
+
+  // queue files passed via CLI; opened once the client is ready
+  openFileHandler.open(files);
+
   return {
     config,
     dialog,
     fileContext,
-    files,
     flags,
     menu,
+    openFileHandler,
     plugins,
     windowManager,
     zeebeAPI
