@@ -594,6 +594,10 @@ app.createEditorWindow = function() {
 
     if (app.quitAllowed) {
 
+      // reset file context, as the next window session
+      // will re-index files it opens on its own
+      fileContext.reset();
+
       // dereferencing main window and resetting client state
       app.mainWindow = null;
       dialog.setActiveWindow(null);
