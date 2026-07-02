@@ -18,7 +18,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/variable-resolver@3.1.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@3.2.0`
 * `DEPS`: update to `@camunda/linting@3.51.0`
-* `DEPS`: update to `@camunda/improved-canvas@1.9.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.9.1`
 * `DEPS`: update to `@camunda/task-testing@5`
 * `DEPS`: update to `bpmn-js@18.19.0`
 * `DEPS`: update to `bpmn-js-create-append-anything@1.3.0`
