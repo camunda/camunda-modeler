@@ -47,24 +47,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Forms on start events</h4>
-          You can now attach Camunda Forms directly to start events.
+          <h4>Redesigned append and context pads</h4>
+          We redesigned the append and context pads for a cleaner, more focused modeling experience. Enable new context pad in the settings to try it out.
         </li>
         <li>
-          <h4>Track where variables are used</h4>
-          The variable outline now shows a &quot;Used by&quot; section, so you can quickly see which elements read a given variable.
+          <h4>Element templates with presets</h4>
+          You can now apply element templates that come with presets, and step through their options directly from the append menu.
         </li>
         <li>
-          <h4>Validation before deploy</h4>
-          Lint errors are surfaced before you deploy or start a process instance, helping you catch issues early.
+          <h4>Set a job priority</h4>
+          Jobs can now be given a priority to control the order in which workers pick them up.
         </li>
         <li>
-          <h4>Resizable labels and improved annotations</h4>
-          You can now resize external labels, and text annotations received rendering improvements for better readability.
-        </li>
-        <li>
-          <h4>Bug fixes and more</h4>
-          As always, this release incorporates bug fixes and additional minor improvements.
+          <h4>See where your variables are used</h4>
+          The variable outline now highlights the elements that read or write a selected variable, and picks up variables from even more properties.
         </li>
       </ul>
     </div>
