@@ -52,6 +52,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: apply shared theme in variable outline ([#5941](https://github.com/camunda/camunda-modeler/issues/5941))
 * `FEAT`: use FEEL syntax highlighting in variable outline ([#5953](https://github.com/camunda/camunda-modeler/issues/5953))
 * `FEAT`: distinguish function invocations from arguments in FEEL syntax highlighting ([#5940](https://github.com/camunda/camunda-modeler/issues/5940))
+* `FEAT`: highlight elements writing/reading variable ([#5934](https://github.com/camunda/camunda-modeler/issues/5934))
 * `FIX`: correct popup menu closing on inside clicks ([bpmn-io/diagram-js#1045](https://github.com/bpmn-io/diagram-js/pull/1045))
 * `FIX`: support translation of list component ([bpmn-io/properties-panel#504](https://github.com/bpmn-io/properties-panel/pull/504))
 * `FIX`: use semantic color name for tooltip underline ([bpmn-io/properties-panel#500](https://github.com/bpmn-io/properties-panel/pull/500))
