@@ -92,6 +92,172 @@ describe('PropertiesPanelKeyboardBindings', function() {
   });
 
 
+  describe('non-QWERTY layouts', function() {
+
+    it('should undo with physical key code', function() {
+
+      // given
+      const undoSpy = spy();
+
+      const modeler = createModeler({
+        commandStack: {
+          canUndo: () => true,
+          undo: undoSpy
+        },
+        eventBus: {
+          on: (_, callback) => callback()
+        },
+        propertiesPanel: {
+          _container: container
+        }
+      });
+
+      const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+      const event = createKeyEvent('\u044f', { code: 'KeyZ', ctrlKey: true });
+
+      // when
+      propertiesPanelKeyboardBindings.handleKeydown(event);
+
+      // then
+      expect(undoSpy).to.have.been.called;
+    });
+
+
+    it('should redo with physical key code', function() {
+
+      // given
+      const redoSpy = spy();
+
+      const modeler = createModeler({
+        commandStack: {
+          canRedo: () => true,
+          redo: redoSpy
+        },
+        eventBus: {
+          on: (_, callback) => callback()
+        },
+        propertiesPanel: {
+          _container: container
+        }
+      });
+
+      const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+      const event = createKeyEvent('\u043d', { code: 'KeyY', ctrlKey: true });
+
+      // when
+      propertiesPanelKeyboardBindings.handleKeydown(event);
+
+      // then
+      expect(redoSpy).to.have.been.called;
+    });
+
+
+    it('should redo with physical key code and shift', function() {
+
+      // given
+      const redoSpy = spy();
+
+      const modeler = createModeler({
+        commandStack: {
+          canRedo: () => true,
+          redo: redoSpy
+        },
+        eventBus: {
+          on: (_, callback) => callback()
+        },
+        propertiesPanel: {
+          _container: container
+        }
+      });
+
+      const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+      const event = createKeyEvent('\u044f', { code: 'KeyZ', ctrlKey: true, shiftKey: true });
+
+      // when
+      propertiesPanelKeyboardBindings.handleKeydown(event);
+
+      // then
+      expect(redoSpy).to.have.been.called;
+    });
+
+  });
+
+
+  describe('QWERTZ layout', function() {
+
+    it('should prefer logical key for undo', function() {
+
+      // given
+      const undoSpy = spy(),
+            redoSpy = spy();
+
+      const modeler = createModeler({
+        commandStack: {
+          canRedo: () => true,
+          canUndo: () => true,
+          redo: redoSpy,
+          undo: undoSpy
+        },
+        eventBus: {
+          on: (_, callback) => callback()
+        },
+        propertiesPanel: {
+          _container: container
+        }
+      });
+
+      const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+      const event = createKeyEvent('z', { code: 'KeyY', ctrlKey: true });
+
+      // when
+      propertiesPanelKeyboardBindings.handleKeydown(event);
+
+      // then
+      expect(undoSpy).to.have.been.calledOnce;
+      expect(redoSpy).not.to.have.been.called;
+    });
+
+
+    it('should prefer logical key for redo', function() {
+
+      // given
+      const undoSpy = spy(),
+            redoSpy = spy();
+
+      const modeler = createModeler({
+        commandStack: {
+          canRedo: () => true,
+          canUndo: () => true,
+          redo: redoSpy,
+          undo: undoSpy
+        },
+        eventBus: {
+          on: (_, callback) => callback()
+        },
+        propertiesPanel: {
+          _container: container
+        }
+      });
+
+      const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+      const event = createKeyEvent('y', { code: 'KeyZ', ctrlKey: true });
+
+      // when
+      propertiesPanelKeyboardBindings.handleKeydown(event);
+
+      // then
+      expect(redoSpy).to.have.been.calledOnce;
+      expect(undoSpy).not.to.have.been.called;
+    });
+
+  });
+
+
   it('should handle focusin', function() {
 
     // given
