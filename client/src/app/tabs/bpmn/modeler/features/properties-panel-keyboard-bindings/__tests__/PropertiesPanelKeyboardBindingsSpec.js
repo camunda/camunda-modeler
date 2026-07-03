@@ -92,6 +92,100 @@ describe('PropertiesPanelKeyboardBindings', function() {
   });
 
 
+  describe('non-QWERTY layouts', function() {
+
+    it('should undo with physical key code', function() {
+
+      // given
+      const undoSpy = spy();
+
+      const modeler = createModeler({
+        commandStack: {
+          canUndo: () => true,
+          undo: undoSpy
+        },
+        eventBus: {
+          on: (_, callback) => callback()
+        },
+        propertiesPanel: {
+          _container: container
+        }
+      });
+
+      const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+      const event = createKeyEvent('\u044f', { code: 'KeyZ', ctrlKey: true });
+
+      // when
+      propertiesPanelKeyboardBindings.handleKeydown(event);
+
+      // then
+      expect(undoSpy).to.have.been.called;
+    });
+
+
+    it('should redo with physical key code', function() {
+
+      // given
+      const redoSpy = spy();
+
+      const modeler = createModeler({
+        commandStack: {
+          canRedo: () => true,
+          redo: redoSpy
+        },
+        eventBus: {
+          on: (_, callback) => callback()
+        },
+        propertiesPanel: {
+          _container: container
+        }
+      });
+
+      const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+      const event = createKeyEvent('\u043d', { code: 'KeyY', ctrlKey: true });
+
+      // when
+      propertiesPanelKeyboardBindings.handleKeydown(event);
+
+      // then
+      expect(redoSpy).to.have.been.called;
+    });
+
+
+    it('should redo with physical key code and shift', function() {
+
+      // given
+      const redoSpy = spy();
+
+      const modeler = createModeler({
+        commandStack: {
+          canRedo: () => true,
+          redo: redoSpy
+        },
+        eventBus: {
+          on: (_, callback) => callback()
+        },
+        propertiesPanel: {
+          _container: container
+        }
+      });
+
+      const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+      const event = createKeyEvent('\u044f', { code: 'KeyZ', ctrlKey: true, shiftKey: true });
+
+      // when
+      propertiesPanelKeyboardBindings.handleKeydown(event);
+
+      // then
+      expect(redoSpy).to.have.been.called;
+    });
+
+  });
+
+
   it('should handle focusin', function() {
 
     // given

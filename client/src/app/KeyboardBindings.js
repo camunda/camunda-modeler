@@ -288,38 +288,42 @@ export default class KeyboardBindings {
 
 // Ctrl + C
 function isCopy(event) {
-  return isKey([ 'c', 'C' ], event) && isCommandOrControl(event) && !isShift(event);
+  return isCommandKey([ 'c', 'C' ], 'KeyC', event) && !isShift(event);
 }
 
 // Ctrl + Shift + C
 function isCopyAsImage(event) {
-  return isKey([ 'c', 'C' ], event) && isCommandOrControl(event) && isShift(event);
+  return isCommandKey([ 'c', 'C' ], 'KeyC', event) && isShift(event);
 }
 
 // Ctrl + X
 function isCut(event) {
-  return isKey([ 'x', 'X' ], event) && isCommandOrControl(event);
+  return isCommandKey([ 'x', 'X' ], 'KeyX', event);
 }
 
 // Ctrl + V
 function isPaste(event) {
-  return isKey([ 'v', 'V' ], event) && isCommandOrControl(event);
+  return isCommandKey([ 'v', 'V' ], 'KeyV', event);
 }
 
 // Ctrl + A
 function isSelectAll(event) {
-  return isKey([ 'a', 'A' ], event) && isCommandOrControl(event);
+  return isCommandKey([ 'a', 'A' ], 'KeyA', event);
 }
 
 // Ctrl + Z
 function isUndo(event) {
-  return isKey([ 'z', 'Z' ], event) && isCommandOrControl(event) && !isShift(event);
+  return isCommandKey([ 'z', 'Z' ], 'KeyZ', event) && !isShift(event);
 }
 
 // Ctrl + Y or Ctrl + Shift + Z
 function isRedo(event) {
-  return isCommandOrControl(event) &&
-    (isKey([ 'y', 'Y' ], event) || (isKey([ 'z', 'Z' ], event) && isShift(event)));
+  return isCommandKey([ 'y', 'Y' ], 'KeyY', event) ||
+    (isCommandKey([ 'z', 'Z' ], 'KeyZ', event) && isShift(event));
+}
+
+function isCommandKey(keys, code, event) {
+  return isCommandOrControl(event) && (isKey(keys, event) || event.code === code);
 }
 
 // r
