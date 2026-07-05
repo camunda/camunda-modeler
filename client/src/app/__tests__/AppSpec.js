@@ -2912,7 +2912,7 @@ describe('<App>', function() {
     });
 
 
-    it('should notify if content changed', async function() {
+    it('should reload without notifying if not dirty', async function() {
 
       // given
       const showSpy = spy(_ => {
@@ -2935,6 +2935,58 @@ describe('<App>', function() {
       const openedTabs = await app.openFiles([ file1, file2 ]);
 
       const tab = openedTabs[0];
+
+      const lastModified = new Date().getMilliseconds();
+
+      updateFileStats(tab.file, { lastModified }, fileSystem);
+
+      // when
+      const updatedTab = await app.checkFileChanged(tab);
+
+      // then
+      expect(showSpy).to.not.have.been.called;
+      expect(readFileSpy).to.have.been.called;
+
+      await waitFor(() => {
+        expect(updatedTab).to.eql(app.findOpenTab(file1));
+      });
+
+      expect(updatedTab.file.contents).to.eql(NEW_FILE_CONTENTS);
+
+      // TODO(nikku): fix test suite and properly pass last modified
+      // expect(updatedTab.file.lastModified).to.eql(lastModified);
+
+      expect(app.isUnsaved(updatedTab)).to.be.false;
+    });
+
+
+    it('should notify if content changed and tab is dirty', async function() {
+
+      // given
+      const showSpy = spy(_ => {
+        return {
+          button: 'ok'
+        };
+      });
+
+      const dialog = new Dialog({
+        show: showSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      });
+
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const tab = openedTabs[0];
+
+      app.setState(app.setDirty(tab));
+
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
 
       const lastModified = new Date().getMilliseconds();
 
@@ -3042,6 +3094,10 @@ describe('<App>', function() {
       const openedTabs = await app.openFiles([ file1, file2 ]);
 
       const tab = openedTabs[0];
+
+      app.setState(app.setDirty(tab));
+
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
 
       const lastModified = new Date().getMilliseconds();
 
