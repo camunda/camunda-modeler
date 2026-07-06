@@ -1812,6 +1812,13 @@ export class App extends PureComponent {
    *
    * Does NOT prompt the user for a save location.
    *
+   * TODO(#5995): guard against clobbering external changes. The write below is
+   * unconditional, so a dirty tab auto-saved on blur / tab switch can overwrite
+   * a file that changed externally in the meantime, before #checkFileChanged
+   * gets a chance to run on focus. A follow-up will re-stat the file here and
+   * skip the write (leaving the tab dirty) when the on-disk `lastModified` is
+   * newer than what we last read, deferring to the focus-time conflict prompt.
+   *
    * @param {Tab} tab - the tab to auto-save
    * @param {string} contents - the tab contents
    *
