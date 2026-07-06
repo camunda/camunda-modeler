@@ -9,42 +9,50 @@
  */
 
 const sinon = require('sinon');
+const { EventEmitter } = require('events');
 
 const OpenFileHandler = require('../open-file-handler');
 
 
 describe('open-file-handler', function() {
 
-  let ready,
+  let app,
       readFile,
       onError,
-      onOpen,
+      renderer,
       openFileHandler;
 
   beforeEach(function() {
-    ready = true;
+    app = Object.assign(new EventEmitter(), {
+      clientReady: false
+    });
 
     readFile = sinon.stub().callsFake(filePath => ({ path: filePath }));
     onError = sinon.spy();
-    onOpen = sinon.spy();
+    renderer = {
+      send: sinon.spy()
+    };
 
     openFileHandler = OpenFileHandler({
-      isReady: () => ready,
+      app,
       readFile,
       onError,
-      onOpen
+      renderer
     });
   });
 
 
   it('should open files immediately when client is ready', function() {
 
+    // given
+    app.clientReady = true;
+
     // when
     openFileHandler.open([ 'a.bpmn' ]);
 
     // then
     expect(readFile).to.have.been.calledOnceWith('a.bpmn');
-    expect(onOpen).to.have.been.calledOnceWith([ { path: 'a.bpmn' } ]);
+    expect(renderer.send).to.have.been.calledOnceWith('client:open-files', [ { path: 'a.bpmn' } ]);
     expect(onError).not.to.have.been.called;
   });
 
@@ -52,6 +60,7 @@ describe('open-file-handler', function() {
   it('should show error and still open remaining files when a file fails to read', function() {
 
     // given
+    app.clientReady = true;
     readFile.withArgs('missing.bpmn').throws(new Error('ENOENT'));
 
     // when
@@ -59,56 +68,56 @@ describe('open-file-handler', function() {
 
     // then
     expect(onError).to.have.been.calledOnceWith('missing.bpmn');
-    expect(onOpen).to.have.been.calledOnceWith([ { path: 'ok.bpmn' } ]);
+    expect(renderer.send).to.have.been.calledOnceWith('client:open-files', [ { path: 'ok.bpmn' } ]);
   });
 
 
   it('should defer opening files when client is not ready', function() {
 
     // given
-    ready = false;
+    app.clientReady = false;
 
     // when
     openFileHandler.open([ 'a.bpmn' ]);
 
     // then
     expect(readFile).not.to.have.been.called;
-    expect(onOpen).not.to.have.been.called;
+    expect(renderer.send).not.to.have.been.called;
   });
 
 
-  it('should open deferred files on drain', function() {
+  it('should open deferred files on client-ready', function() {
 
     // given
-    ready = false;
+    app.clientReady = false;
     openFileHandler.open([ 'a.bpmn', 'b.bpmn' ]);
 
     // when
-    ready = true;
-    openFileHandler.drain();
+    app.clientReady = true;
+    app.emit('app:client-ready');
 
     // then
-    expect(onOpen).to.have.been.calledOnceWith([
+    expect(renderer.send).to.have.been.calledOnceWith('client:open-files', [
       { path: 'a.bpmn' },
       { path: 'b.bpmn' }
     ]);
   });
 
 
-  it('should not replay drained files on a subsequent drain', function() {
+  it('should not replay drained files on a subsequent client-ready', function() {
 
     // given
-    ready = false;
+    app.clientReady = false;
     openFileHandler.open([ 'a.bpmn' ]);
 
-    ready = true;
-    openFileHandler.drain();
+    app.clientReady = true;
+    app.emit('app:client-ready');
 
     // when
-    openFileHandler.drain();
+    app.emit('app:client-ready');
 
     // then
-    expect(onOpen).to.have.been.calledOnce;
+    expect(renderer.send).to.have.been.calledOnce;
     expect(readFile).to.have.been.calledOnce;
   });
 
@@ -116,39 +125,39 @@ describe('open-file-handler', function() {
   it('should not replay files across close/reopen cycles', function() {
 
     // given
-    ready = false;
+    app.clientReady = false;
     openFileHandler.open([ 'a.bpmn' ]);
 
-    ready = true;
-    openFileHandler.drain();
+    app.clientReady = true;
+    app.emit('app:client-ready');
 
     // when
-    ready = false;
+    app.clientReady = false;
     openFileHandler.open([ 'b.bpmn' ]);
 
-    ready = true;
-    openFileHandler.drain();
+    app.clientReady = true;
+    app.emit('app:client-ready');
 
     // then
-    expect(onOpen).to.have.been.calledTwice;
-    expect(onOpen.secondCall).to.have.been.calledWith([ { path: 'b.bpmn' } ]);
+    expect(renderer.send).to.have.been.calledTwice;
+    expect(renderer.send.secondCall).to.have.been.calledWith('client:open-files', [ { path: 'b.bpmn' } ]);
   });
 
 
   it('should not queue duplicate file paths', function() {
 
     // given
-    ready = false;
+    app.clientReady = false;
     openFileHandler.open([ 'a.bpmn' ]);
     openFileHandler.open([ 'a.bpmn' ]);
 
     // when
-    ready = true;
-    openFileHandler.drain();
+    app.clientReady = true;
+    app.emit('app:client-ready');
 
     // then
     expect(readFile).to.have.been.calledOnce;
-    expect(onOpen).to.have.been.calledOnceWith([ { path: 'a.bpmn' } ]);
+    expect(renderer.send).to.have.been.calledOnceWith('client:open-files', [ { path: 'a.bpmn' } ]);
   });
 
 
@@ -157,33 +166,33 @@ describe('open-file-handler', function() {
     // given
     readFile.withArgs('missing.bpmn').throws(new Error('ENOENT'));
 
-    ready = false;
+    app.clientReady = false;
     openFileHandler.open([ 'missing.bpmn' ]);
     openFileHandler.open([ 'missing.bpmn' ]);
 
     // when
-    ready = true;
-    openFileHandler.drain();
+    app.clientReady = true;
+    app.emit('app:client-ready');
 
     // then
     expect(onError).to.have.been.calledOnce;
-    expect(onOpen).to.have.been.calledOnceWith([]);
+    expect(renderer.send).to.have.been.calledOnceWith('client:open-files', []);
   });
 
 
   it('should keep files queued when drained while not ready', function() {
 
     // given
-    ready = false;
+    app.clientReady = false;
     openFileHandler.open([ 'a.bpmn' ]);
     openFileHandler.drain();
 
     // when
-    ready = true;
-    openFileHandler.drain();
+    app.clientReady = true;
+    app.emit('app:client-ready');
 
     // then
-    expect(onOpen).to.have.been.calledOnceWith([ { path: 'a.bpmn' } ]);
+    expect(renderer.send).to.have.been.calledOnceWith('client:open-files', [ { path: 'a.bpmn' } ]);
   });
 
 });
