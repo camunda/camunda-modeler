@@ -2988,7 +2988,7 @@ describe('<App>', function() {
 
       await waitFor(() => expect(app.isDirty(tab)).to.be.true);
 
-      const lastModified = new Date().getMilliseconds();
+      const lastModified = Date.now();
 
       updateFileStats(tab.file, { lastModified }, fileSystem);
 
