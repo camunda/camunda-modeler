@@ -17,7 +17,7 @@ const log = require('./log')('app:open-file-handler');
  * path multiple times while the client is not ready only opens it once.
  *
  * @param { {
- *   isReady: () => boolean,
+ *   app: any,
  *   readFile: (filePath: string) => any,
  *   onError: (filePath: string, error: Error) => void,
  *   onOpen: (files: any[]) => void
@@ -25,13 +25,17 @@ const log = require('./log')('app:open-file-handler');
  */
 module.exports = function OpenFileHandler(options) {
   const {
-    isReady,
+    app,
     readFile,
     onError,
-    onOpen
+    renderer
   } = options;
 
   const queued = [];
+
+  app.on('app:client-ready', () => {
+    drain();
+  });
 
   /**
    * Open the given file paths, or queue them if the client is not ready.
@@ -39,7 +43,7 @@ module.exports = function OpenFileHandler(options) {
    * @param {string[]} filePaths
    */
   function open(filePaths) {
-    if (!isReady()) {
+    if (!app.clientReady) {
       filePaths.forEach(filePath => {
         if (!queued.includes(filePath)) {
           queued.push(filePath);
@@ -61,7 +65,7 @@ module.exports = function OpenFileHandler(options) {
       }
     }).filter(file => file);
 
-    onOpen(files);
+    renderer.send('client:open-files', files);
   }
 
   /**

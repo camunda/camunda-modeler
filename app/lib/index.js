@@ -457,9 +457,6 @@ renderer.on('toggle-plugins', function() {
 app.on('app:client-ready', function() {
   bootstrapLog.info('received client-ready');
 
-  // open pending files
-  openFileHandler.drain();
-
   renderer.send('client:started');
 });
 
@@ -877,12 +874,12 @@ function bootstrap() {
 
   // (12) open file handler
   const openFileHandler = OpenFileHandler({
-    isReady: () => app.clientReady,
+    app,
     readFile,
     onError: (filePath) => dialog.showOpenFileErrorDialog({
       name: path.basename(filePath)
     }),
-    onOpen: (files) => renderer.send('client:open-files', files)
+    renderer
   });
 
   // queue files passed via CLI; opened once the client is ready
