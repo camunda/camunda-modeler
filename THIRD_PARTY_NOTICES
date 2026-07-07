@@ -185,7 +185,7 @@ This project incorporates components from the projects listed below. The origina
 178.  css-loader@7.1.4 (webpack/css-loader)
 179.  @carbon/styles@1.100.0 (https://github.com/carbon-design-system/carbon.git)
 180.  @ibm/plex@6.4.1 (https://github.com/ibm/plex.git)
-181.  @camunda/form-playground@0.24.0 (git+https://github.com/camunda/form-playground.git)
+181.  @camunda/form-playground@0.25.0 (git+https://github.com/camunda/form-playground.git)
 182.  camunda-bpmn-js@5.29.0 (https://github.com/camunda/camunda-bpmn-js)
 183.  camunda-dmn-js@3.7.0 (https://github.com/camunda/camunda-dmn-js)
 184.  @camunda/linting@3.51.0 (https://github.com/camunda/linting)
@@ -267,7 +267,7 @@ This project incorporates components from the projects listed below. The origina
 260.  focus-trap@8.0.0 (git+https://github.com/focus-trap/focus-trap.git)
 261.  bpmn-js-properties-panel@5.60.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 262.  bpmn-js@18.19.0 (https://github.com/bpmn-io/bpmn-js)
-263.  diagram-js@15.18.1 (https://github.com/bpmn-io/diagram-js)
+263.  diagram-js@15.18.0 (https://github.com/bpmn-io/diagram-js)
 264.  ids@3.0.2 (https://github.com/bpmn-io/ids)
 265.  @bpmn-io/extract-process-variables@2.2.1 (git+https://github.com/bpmn-io/extract-process-variables.git)
 266.  array-move@4.0.0 (sindresorhus/array-move)
@@ -290,7 +290,7 @@ This project incorporates components from the projects listed below. The origina
 283.  @sentry-internal/replay-canvas@10.8.0 (git+https://github.com/getsentry/sentry-javascript.git)
 284.  @sentry/integrations@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
 285.  @sentry/utils@7.114.0 (git://github.com/getsentry/sentry-javascript.git)
-286.  camunda-modeler@5.49.0-rc.0 (https://github.com/camunda/camunda-modeler)
+286.  camunda-modeler@5.49.0-rc.1 (https://github.com/camunda/camunda-modeler)
 287.  semver@7.7.4 (git+https://github.com/npm/node-semver.git)
 288.  ua-parser-js@1.0.39 (https://github.com/faisalman/ua-parser-js.git)
 289.  inherits-browser@0.1.0 (git+https://github.com/nikku/inherits-browser.git)
@@ -8661,7 +8661,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 END OF @ibm/plex@6.4.1 NOTICES AND INFORMATION
 
 
-%% @camunda/form-playground@0.24.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/form-playground@0.25.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -8685,7 +8685,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @camunda/form-playground@0.24.0 NOTICES AND INFORMATION
+END OF @camunda/form-playground@0.25.0 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-js@5.29.0 NOTICES AND INFORMATION BEGIN HERE
@@ -12107,7 +12107,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 END OF bpmn-js@18.19.0 NOTICES AND INFORMATION
 
 
-%% diagram-js@15.18.1 NOTICES AND INFORMATION BEGIN HERE
+%% diagram-js@15.18.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -12131,7 +12131,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF diagram-js@15.18.1 NOTICES AND INFORMATION
+END OF diagram-js@15.18.0 NOTICES AND INFORMATION
 
 
 %% ids@3.0.2 NOTICES AND INFORMATION BEGIN HERE
@@ -12740,11 +12740,11 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 END OF @sentry/utils@7.114.0 NOTICES AND INFORMATION
 
 
-%% camunda-modeler@5.49.0-rc.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-modeler@5.49.0-rc.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 null
 ==========================================
-END OF camunda-modeler@5.49.0-rc.0 NOTICES AND INFORMATION
+END OF camunda-modeler@5.49.0-rc.1 NOTICES AND INFORMATION
 
 
 %% semver@7.7.4 NOTICES AND INFORMATION BEGIN HERE
