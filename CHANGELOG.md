@@ -30,6 +30,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `diagram-js-direct-editing@3.4.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.11.1`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.15.0`
+* `DEPS`: update to `@camunda/form-playground@0.25.0`
 
 ### BPMN
 
