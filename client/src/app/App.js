@@ -339,9 +339,7 @@ export class App extends PureComponent {
     if (!this.isDirty(tab)) {
       const updatedFile = await fileSystem.readFile(file.path);
 
-      return this.updateTab(tab, {
-        file: updatedFile
-      });
+      return this.reloadTab(tab, updatedFile);
     }
 
     // the tab has unsaved changes that would be lost on reload; ask the user
@@ -351,9 +349,7 @@ export class App extends PureComponent {
     if (button === 'ok') {
       const updatedFile = await fileSystem.readFile(file.path);
 
-      return this.updateTab(tab, {
-        file: updatedFile
-      });
+      return this.reloadTab(tab, updatedFile);
     } else {
       return this.updateTab(tab, {
         file: {
@@ -363,6 +359,32 @@ export class App extends PureComponent {
       }, this.setUnsaved(tab, true));
     }
   };
+
+  /**
+   * Reload a tab with the given (externally changed) file contents.
+   *
+   * An inactive tab keeps its editor state cached (including the last imported
+   * XML) while it is in the background. Re-mounting it would restore that stale
+   * cache instead of importing the new contents, leaving the diagram unchanged
+   * and marked dirty. We drop the cache so the tab re-imports the file when it
+   * is re-activated. The active tab stays mounted and re-imports through its
+   * regular update cycle, so its (live) cache must not be destroyed.
+   *
+   * @param {Tab} tab
+   * @param {File} file
+   *
+   * @return {Tab} updated tab
+   */
+  reloadTab(tab, file) {
+
+    if (tab !== this.state.activeTab) {
+      this.props.cache.destroy(tab.id);
+    }
+
+    return this.updateTab(tab, {
+      file
+    });
+  }
 
   /**
    * Update the tab with new attributes.

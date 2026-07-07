@@ -2960,6 +2960,77 @@ describe('<App>', function() {
     });
 
 
+    it('should reset the editor cache when reloading a background tab', async function() {
+
+      // given
+      const cache = new Cache();
+
+      const destroySpy = sinon.spy(cache, 'destroy');
+
+      const { app } = createApp({
+        cache,
+        globals: {
+          fileSystem
+        }
+      });
+
+      // file2 is opened last, so file1's tab stays in the background
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const backgroundTab = openedTabs[0];
+
+      const lastModified = Date.now();
+
+      updateFileStats(backgroundTab.file, { lastModified }, fileSystem);
+
+      // when
+      const updatedTab = await app.checkFileChanged(backgroundTab);
+
+      // then
+      // the stale cache is dropped so the tab re-imports the external contents
+      // once it is re-activated
+      expect(destroySpy).to.have.been.calledWith(backgroundTab.id);
+
+      expect(updatedTab.file.contents).to.eql(NEW_FILE_CONTENTS);
+      expect(app.isUnsaved(updatedTab)).to.be.false;
+    });
+
+
+    it('should NOT reset the editor cache when reloading the active tab', async function() {
+
+      // given
+      const cache = new Cache();
+
+      const { app } = createApp({
+        cache,
+        globals: {
+          fileSystem
+        }
+      });
+
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const tab = openedTabs[0];
+
+      // make file1's tab the active one
+      await app.showTab(tab);
+
+      const destroySpy = sinon.spy(cache, 'destroy');
+
+      const lastModified = Date.now();
+
+      updateFileStats(tab.file, { lastModified }, fileSystem);
+
+      // when
+      await app.checkFileChanged(tab);
+
+      // then
+      // the active tab stays mounted and re-imports through its update cycle,
+      // so its live cache must be kept
+      expect(destroySpy).not.to.have.been.called;
+    });
+
+
     it('should notify if content changed and tab is dirty', async function() {
 
       // given
