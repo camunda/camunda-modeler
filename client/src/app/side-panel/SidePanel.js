@@ -49,7 +49,7 @@ export const DEFAULT_LAYOUT = {
  * ```jsx
  * <SidePanel layout={layout} onLayoutChanged={onLayoutChanged}>
  *   <SidePanel.Header>
- *     <SidePanelHeader injector={injector} />
+ *     <div ref={headerRef} />
  *   </SidePanel.Header>
  *   <SidePanel.Tab id="properties" label="Properties" icon={Settings}>
  *     <PropertiesTab propertiesPanelRef={propertiesPanelRef} />

@@ -36,7 +36,6 @@ import TaskTestingTabActionItem from './side-panel/tabs/task-testing/TaskTesting
 
 import TaskTestingTab from './side-panel/tabs/task-testing/TaskTestingTab';
 import TaskTestingIcon from '../../../../resources/icons/TaskTesting.svg';
-import SidePanelHeader from './side-panel/SidePanelHeader';
 
 import VariablesSidePanel, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT } from './variables-side-panel/VariablesSidePanel';
 import VariablesTabActionItem from './variables-side-panel/VariablesTabActionItem';
@@ -96,6 +95,7 @@ export class BpmnEditor extends CachedComponent {
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
+    this.propertiesPanelHeaderRef = React.createRef();
 
     this.handleEngineProfileChangeDebounced = debounce(this.handleEngineProfileChange);
 
@@ -178,7 +178,7 @@ export class BpmnEditor extends CachedComponent {
       propertiesPanel.setLayout(layout.propertiesPanel);
     }
 
-    propertiesPanel.attachTo(this.propertiesPanelRef.current);
+    propertiesPanel.attachTo(this.propertiesPanelRef.current, this.propertiesPanelHeaderRef.current);
 
     try {
       await this.loadTemplates();
@@ -950,7 +950,7 @@ export class BpmnEditor extends CachedComponent {
                     />
                   </SidePanel.Header>
                   <SidePanel.Header>
-                    <SidePanelHeader injector={ injector } />
+                    <div className="properties-panel-header-container" ref={ this.propertiesPanelHeaderRef } />
                   </SidePanel.Header>
                   <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
                     <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
