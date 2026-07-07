@@ -17,6 +17,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/properties-panel@3.46.0`
 * `DEPS`: update to `@bpmn-io/variable-resolver@3.1.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@3.2.0`
+* `DEPS`: update to `@camunda/form-playground@0.25.0`
 * `DEPS`: update to `@camunda/linting@3.51.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.9.1`
 * `DEPS`: update to `@camunda/task-testing@5`
@@ -30,7 +31,6 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `diagram-js-direct-editing@3.4.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.11.1`
 * `DEPS`: update to `zeebe-bpmn-moddle@1.15.0`
-* `DEPS`: update to `@camunda/form-playground@0.25.0`
 
 ### BPMN
 
