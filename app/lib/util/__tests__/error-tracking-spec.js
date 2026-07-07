@@ -323,6 +323,7 @@ function mockSentry(props = {}) {
         props.sentryInitSpy(initParam);
       }
     },
+    rewriteFramesIntegration: () => ({}),
     setTag: (key, value) => {
       if (props.setTagSpy) {
         props.setTagSpy({ key, value });
