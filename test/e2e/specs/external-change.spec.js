@@ -88,4 +88,56 @@ test.describe('external change detection', function() {
     }, { timeout: 10000 }).toBe(true);
   });
 
+
+  test('should reload a background tab that changed on disk when it is re-activated', async function({ launch, tmp }) {
+
+    // given two open diagrams, with the first one pushed to the background
+    const fileA = await copyFixture('simple.bpmn', tmp, 'a.bpmn');
+    const fileB = await copyFixture('simple.bpmn', tmp, 'b.bpmn');
+
+    const app = await launch({ openFile: fileA });
+
+    const editor = new Modeler(app).bpmnEditor;
+
+    await editor.canvas().waitFor();
+    await expect(editor.element('Task_0zlv465')).toContainText('foo');
+
+    // edit a.bpmn and save it; this leaves the tab clean while the editor
+    // keeps the saved XML cached — the situation a background reload must reset
+    await editor.setName('Task_0zlv465', 'edited in app');
+
+    await app.shortcut('CommandOrControl+S');
+
+    await expect(app.page.locator('.tab--active.tab--dirty')).toHaveCount(0);
+
+    // open the second file; it becomes active and pushes a.bpmn to the background
+    await app.expectOpenDialog([ fileB ]);
+    await app.shortcut('CommandOrControl+O');
+
+    await expect(app.page.locator('.tab--active .tab__name', { hasText: 'b.bpmn' })).toBeVisible();
+
+    await app.recordDialogs();
+
+    // when the background file is changed by another program
+    const xml = await readFile(fileA);
+
+    await fs.writeFile(fileA, xml.replace('name="edited in app"', 'name="reloaded externally"'));
+
+    // and the tab is re-activated
+    await app.page.locator('.tab[data-tab-id] .tab__name', { hasText: 'a.bpmn' }).click();
+
+    await expect(app.page.locator('.tab--active .tab__name', { hasText: 'a.bpmn' })).toBeVisible();
+
+    // then the diagram is refreshed with the external contents...
+    await expect(editor.element('Task_0zlv465')).toContainText('reloaded externally');
+
+    // ...without a reload prompt...
+    const calls = await app.dialogCalls();
+
+    expect(calls.some(call => /changed externally/.test(call.message || ''))).toBe(false);
+
+    // ...and the tab is not marked dirty
+    await expect(app.page.locator('.tab--active.tab--dirty')).toHaveCount(0);
+  });
+
 });
