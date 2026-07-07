@@ -12,8 +12,8 @@ import debug from 'debug';
 
 import { PureComponent } from 'react';
 
-import * as Sentry from '@sentry/browser';
-import { rewriteFramesIntegration } from '@sentry/integrations';
+import * as Sentry from '@sentry/electron/renderer';
+import { rewriteFramesIntegration } from '@sentry/electron/renderer';
 
 import { createThrottler } from '../../../../app/lib/util/error-tracking-throttler';
 
