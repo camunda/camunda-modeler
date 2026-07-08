@@ -30,10 +30,13 @@ class PropertiesPanelPage {
   /**
    * Wait for the panel to render for the current selection.
    *
+   * Exclude the separately rendered header, which also carries the
+   * `bio-properties-panel` class (cf. `attachTo(body, header)`)
+   *
    * @return {Promise<void>}
    */
   async waitForLoad() {
-    await this.page.waitForSelector('.bio-properties-panel');
+    await this.page.waitForSelector('.bio-properties-panel:not(.bio-properties-panel-header-container)');
   }
 
   /**
