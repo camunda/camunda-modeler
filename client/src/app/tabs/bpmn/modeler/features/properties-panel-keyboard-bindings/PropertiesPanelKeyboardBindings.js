@@ -16,7 +16,8 @@ import {
 
 
 export default class PropertiesPanelKeyboardBindings {
-  constructor(commandStack, eventBus, propertiesPanel) {
+  constructor(canvas, commandStack, eventBus, propertiesPanel) {
+    this._canvas = canvas;
     this._commandStack = commandStack;
     this._eventBus = eventBus;
     this._propertiesPanel = propertiesPanel;
@@ -24,6 +25,7 @@ export default class PropertiesPanelKeyboardBindings {
     eventBus.on('propertiesPanel.attach', this._addEventListeners);
 
     eventBus.on('propertiesPanel.detach', this._removeEventListeners);
+    eventBus.on('commandStack.changed', this.restoreCanvasFocus);
   }
 
   _addEventListeners = () => {
@@ -48,6 +50,22 @@ export default class PropertiesPanelKeyboardBindings {
 
   handleFocusout = () => {
     this._eventBus.fire('propertiesPanel.focusout');
+  };
+
+  /**
+   * Restore canvas focus if the focused element is removed from the properties
+   * panel as a result of a command (e.g. undo removing the entry it was in).
+   * Focus would otherwise be lost to `<body>`, where keyboard shortcuts like
+   * undo/redo are not handled.
+   */
+  restoreCanvasFocus = () => {
+    const container = this._getContainer();
+
+    if (!container || !container.contains(document.activeElement)) {
+      return;
+    }
+
+    setTimeout(() => this._canvas.restoreFocus());
   };
 
   handleKeydown = event => {
@@ -79,7 +97,7 @@ export default class PropertiesPanelKeyboardBindings {
   }
 }
 
-PropertiesPanelKeyboardBindings.$inject = [ 'commandStack', 'eventBus', 'propertiesPanel' ];
+PropertiesPanelKeyboardBindings.$inject = [ 'canvas', 'commandStack', 'eventBus', 'propertiesPanel' ];
 
 // helpers //////////
 
