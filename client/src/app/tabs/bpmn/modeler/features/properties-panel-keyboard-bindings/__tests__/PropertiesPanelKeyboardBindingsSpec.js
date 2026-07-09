@@ -31,6 +31,10 @@ describe('PropertiesPanelKeyboardBindings', function() {
     container = document.createElement('div');
   });
 
+  afterEach(function() {
+    container.remove();
+  });
+
 
   it('should undo', function() {
 
@@ -89,6 +93,76 @@ describe('PropertiesPanelKeyboardBindings', function() {
 
     // then
     expect(redoSpy).to.have.been.called;
+  });
+
+
+  it('should restore canvas focus when focused element is removed on command', async function() {
+
+    // given
+    const restoreFocusSpy = spy();
+
+    const input = document.createElement('input');
+
+    container.appendChild(input);
+
+    document.body.appendChild(container);
+
+    const modeler = createModeler({
+      canvas: {
+        restoreFocus: restoreFocusSpy
+      },
+      eventBus: {
+        on: (_, callback) => callback()
+      },
+      propertiesPanel: {
+        _container: container
+      }
+    });
+
+    const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+    input.focus();
+
+    // when
+    propertiesPanelKeyboardBindings.restoreCanvasFocus();
+
+    input.remove();
+
+    await nextTick();
+
+    // then
+    expect(restoreFocusSpy).to.have.been.called;
+  });
+
+
+  it('should not restore canvas focus when properties panel is not focused', async function() {
+
+    // given
+    const restoreFocusSpy = spy();
+
+    document.body.appendChild(container);
+
+    const modeler = createModeler({
+      canvas: {
+        restoreFocus: restoreFocusSpy
+      },
+      eventBus: {
+        on: (_, callback) => callback()
+      },
+      propertiesPanel: {
+        _container: container
+      }
+    });
+
+    const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+    // when
+    propertiesPanelKeyboardBindings.restoreCanvasFocus();
+
+    await nextTick();
+
+    // then
+    expect(restoreFocusSpy).not.to.have.been.called;
   });
 
 
@@ -163,6 +237,10 @@ function createModeler(dependencies) {
       )
     }
   });
+}
+
+function nextTick() {
+  return new Promise(resolve => setTimeout(resolve, 0));
 }
 
 /**
