@@ -268,6 +268,95 @@ describe('KeyboardBindings', function() {
   });
 
 
+  describe('non-QWERTY layouts', function() {
+
+    [
+      {
+        description: 'copy',
+        key: '\u0441',
+        code: 'KeyC',
+        accelerator: 'CommandOrControl + C',
+        action: 'copy'
+      },
+      {
+        description: 'copySelectionAsImage',
+        key: '\u0441',
+        code: 'KeyC',
+        shiftKey: true,
+        accelerator: 'CommandOrControl + Shift + C',
+        action: 'copySelectionAsImage'
+      },
+      {
+        description: 'cut',
+        key: '\u0447',
+        code: 'KeyX',
+        accelerator: 'CommandOrControl + X',
+        action: 'cut'
+      },
+      {
+        description: 'paste',
+        key: '\u043c',
+        code: 'KeyV',
+        accelerator: 'CommandOrControl + V',
+        action: 'paste'
+      },
+      {
+        description: 'selectAll',
+        key: '\u0444',
+        code: 'KeyA',
+        accelerator: 'CommandOrControl + A',
+        action: 'selectAll'
+      },
+      {
+        description: 'undo',
+        key: '\u044f',
+        code: 'KeyZ',
+        accelerator: 'CommandOrControl + Z',
+        action: 'undo'
+      },
+      {
+        description: 'redo',
+        key: '\u043d',
+        code: 'KeyY',
+        accelerator: 'CommandOrControl + Y',
+        action: 'redo'
+      },
+      {
+        description: 'redo (Ctrl + Shift + Z)',
+        key: '\u044f',
+        code: 'KeyZ',
+        shiftKey: true,
+        accelerator: 'CommandOrControl + Y',
+        action: 'redo'
+      }
+    ].forEach(({ description, key, code, shiftKey = false, accelerator, action }) => {
+
+      it(`should handle ${ description } with physical key code`, function() {
+
+        // given
+        event = createKeyEvent(key, {
+          code,
+          ctrlKey: true,
+          shiftKey
+        });
+
+        keyboardBindings.update([ {
+          accelerator,
+          action
+        } ]);
+
+        // when
+        keyboardBindings._keyDownHandler(event);
+
+        // then
+        expect(actionSpy).to.have.been.calledWith(action, event);
+      });
+
+    });
+
+  });
+
+
   describe('removeSelection', function() {
 
     it('should NOT update primary <removeSelection>', function() {
