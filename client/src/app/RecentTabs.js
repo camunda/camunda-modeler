@@ -20,8 +20,6 @@ export class RecentTabs {
     this._configKey = 'recentTabs';
     this._maxLength = 10;
     this._elements = [];
-
-    this._load();
   }
 
   set elements(_elements) {
@@ -34,7 +32,7 @@ export class RecentTabs {
     return this._elements;
   }
 
-  async _load() {
+  async load() {
     const elements = await this._config.get(this._configKey);
 
     if (elements) {

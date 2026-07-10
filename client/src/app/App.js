@@ -1274,6 +1274,8 @@ export class App extends PureComponent {
       onReady();
     }
 
+    this.recentTabs.load();
+
     this.on('app.activeTabChanged', () => {
       this.closeNotifications();
     });
