@@ -77,7 +77,6 @@
   },
   "homepage": ".",
   "devDependencies": {
-    "@axe-core/react": "^4.10.0",
     "@babel/core": "^7.29.0",
     "@babel/preset-env": "^7.29.2",
     "@babel/preset-react": "^7.28.5",
