@@ -73,7 +73,7 @@ describe('RecentTabs', function() {
     const tab = createTab('foo');
 
     // when
-    new RecentTabs({
+    const recentTabs = new RecentTabs({
       config: {
         set: NOOP,
         get: () => [ tab ]
@@ -81,7 +81,7 @@ describe('RecentTabs', function() {
       setState: setStateSpy
     });
 
-    await nextTick();
+    await recentTabs.load();
 
     // then
     expect(setStateSpy).to.have.been.calledWith([
@@ -163,8 +163,4 @@ function createTab(path) {
       path
     }
   };
-}
-
-async function nextTick() {
-  return new Promise(resolve => resolve());
 }
