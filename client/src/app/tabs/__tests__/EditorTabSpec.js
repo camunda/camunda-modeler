@@ -10,12 +10,11 @@
 
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import React from 'react';
+import React, { createRef } from 'react';
 
-import TestRenderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 
 import { createTab } from './../EditorTab';
-import ErrorTab from './../ErrorTab';
 
 import {
   Editor as MockEditor,
@@ -55,11 +54,11 @@ describe('<EditorTab>', function() {
 
       // when
       const {
-        wrapper
+        container
       } = renderEditorTab();
 
       // then
-      verifyChildIsPresent(wrapper, ErrorTab);
+      expect(container.textContent).to.include('Ooops, this should not have happened.');
     });
 
 
@@ -97,26 +96,21 @@ function renderEditorTab({
 
   const EditorTab = createTab(tab.name, providers);
 
-  const testRenderer = TestRenderer.create(
+  const ref = createRef();
+
+  const {
+    container
+  } = render(
     <EditorTab
+      ref={ ref }
       tab={ tab }
       onError={ onError }
       onShown={ onShown }
     />
   );
 
-  const instance = testRenderer.getInstance();
-
   return {
-    instance,
-    wrapper: testRenderer.root
+    instance: ref.current,
+    container
   };
-}
-
-function verifyChildIsPresent(wrapper, childType) {
-  function isChildPresent() {
-    return wrapper.findByType(childType);
-  }
-
-  expect(isChildPresent, `did not display ${childType.name}`).to.not.throw();
 }

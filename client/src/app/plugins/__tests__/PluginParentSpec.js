@@ -13,7 +13,7 @@ import * as sinon from 'sinon';
 
 import React from 'react';
 
-import TestRenderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 
 import PluginParent from '../PluginParent';
 
@@ -21,7 +21,7 @@ import PluginParent from '../PluginParent';
 describe('<PluginParent>', function() {
 
   it('should render', function() {
-    TestRenderer.create(<PluginParent />);
+    render(<PluginParent />);
   });
 
 
@@ -29,12 +29,12 @@ describe('<PluginParent>', function() {
 
     // given
     const cancelSubscriptionsSpy = sinon.spy();
-    const wrapper = TestRenderer.create(
+    const { unmount } = render(
       <PluginParent cancelSubscriptions={ cancelSubscriptionsSpy } />
     );
 
     // when
-    wrapper.unmount();
+    unmount();
 
     // then
     expect(cancelSubscriptionsSpy).to.have.been.calledOnce;
@@ -51,14 +51,14 @@ describe('<PluginParent>', function() {
     it('should work as an error boundary', function() {
 
       // when
-      const { root } = TestRenderer.create(
+      const { container } = render(
         <PluginParent>
           <ErrorComponent />
         </PluginParent>
       );
 
       // then
-      expect(root).to.exist;
+      expect(container).to.exist;
     });
 
 
@@ -68,14 +68,14 @@ describe('<PluginParent>', function() {
       const onErrorSpy = sinon.spy();
 
       // when
-      const { root } = TestRenderer.create(
+      const { container } = render(
         <PluginParent onError={ onErrorSpy }>
           <ErrorComponent />
         </PluginParent>
       );
 
       // then
-      expect(root).to.exist;
+      expect(container).to.exist;
       expect(onErrorSpy).to.have.been.calledOnce;
     });
 
@@ -86,14 +86,14 @@ describe('<PluginParent>', function() {
       const cancelSubscriptionsSpy = sinon.spy();
 
       // when
-      const { root } = TestRenderer.create(
+      const { container } = render(
         <PluginParent cancelSubscriptions={ cancelSubscriptionsSpy }>
           <ErrorComponent />
         </PluginParent>
       );
 
       // then
-      expect(root).to.exist;
+      expect(container).to.exist;
       expect(cancelSubscriptionsSpy).to.have.been.calledOnce;
     });
 

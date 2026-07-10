@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import React from 'react';
 
-import TestRenderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 
 import PluginsRoot from '../PluginsRoot';
 
@@ -53,7 +53,7 @@ function createPluginsRoot(props = {}) {
     plugins: []
   };
 
-  return TestRenderer.create(<PluginsRoot { ...{ ...defaultProps, ...props } } />);
+  return render(<PluginsRoot { ...{ ...defaultProps, ...props } } />);
 }
 
 class App {
