@@ -87,6 +87,8 @@
     "yauzl": "^3.3.1"
   },
   "overrides": {
+    "react": "^19",
+    "react-dom": "^19",
     "yauzl": "^3.3.1"
   },
   "remarkConfig": {
