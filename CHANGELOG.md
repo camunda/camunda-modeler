@@ -10,6 +10,9 @@ ___Note:__ Yet to be released changes appear here._
 
 * `DEPS`: update to `electron@43`
 * `DEPS`: migrate to `@sentry/electron`
+* `DEPS`: update to `react@19`
+* `DEPS`: update to `@bpmn-io/variable-outline@3.2.1`
+* `DEPS`: update to `@camunda/task-testing@5.1.0`
 
 ## 5.49.0
 
