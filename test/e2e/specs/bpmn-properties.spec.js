@@ -17,6 +17,30 @@ const Modeler = require('../pages/Modeler');
 
 test.describe('BPMN properties panel (Camunda 8)', function() {
 
+  test('should render the header for the selected element', async function({ launch, tmp }) {
+
+    // given
+    const file = await copyFixture('service-task.bpmn', tmp);
+
+    const app = await launch({ openFile: file });
+
+    const modeler = new Modeler(app);
+    const editor = modeler.bpmnEditor;
+    const panel = modeler.propertiesPanel;
+
+    await editor.canvas().waitFor();
+
+    // when
+    await editor.selectElement('ServiceTask_1');
+
+    await panel.waitForLoad();
+
+    // then
+    await expect(panel.header()).toBeVisible();
+    expect(await panel.elementType()).toBe('Service Task');
+  });
+
+
   test('should configure a service task via the properties panel', async function({ launch, tmp }) {
 
     // given
