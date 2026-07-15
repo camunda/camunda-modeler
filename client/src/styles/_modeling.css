@@ -25,6 +25,10 @@
   z-index: 1001;
 }
 
+.bio-properties-panel-group-header:has(.bio-properties-panel-tooltip) {
+  z-index: 1002;
+}
+
 .djs-search-highlight {
   font-weight: bold;
 }
