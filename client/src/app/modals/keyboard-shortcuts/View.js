@@ -31,23 +31,27 @@ class View extends PureComponent {
 
         <Modal.Body>
           <p>
-            The following special shortcuts can be used on opened diagrams.
+            The following keyboard and mouse shortcuts are available in the application.
           </p>
-          <table>
-            <tbody className="keyboard-shortcuts">
-              {
-                (shortcuts || []).map(s => {
-                  return <tr key={ s.id }>
-                    <td>{ s.label }</td>
-                    <td className="binding"><code>{ s.binding }</code></td>
-                  </tr>;
-                })
-              }
-            </tbody>
-          </table>
-          <p>
-            Find additional shortcuts on individual items in the application menu.
-          </p>
+          {
+            (shortcuts || []).map(group => {
+              return <section key={ group.id } className="shortcut-group">
+                <h3>{ group.title }</h3>
+                <table>
+                  <tbody className="keyboard-shortcuts">
+                    {
+                      group.shortcuts.map(s => {
+                        return <tr key={ s.id }>
+                          <td>{ s.label }</td>
+                          <td className="binding"><code>{ s.binding }</code></td>
+                        </tr>;
+                      })
+                    }
+                  </tbody>
+                </table>
+              </section>;
+            })
+          }
         </Modal.Body>
 
         <Modal.Footer>
