@@ -29,13 +29,17 @@ describe('<KeyboardShortcutsModal>', function() {
     it('should render shortcuts', function() {
 
       // when
-      const { getByText } = renderOverlay();
-      const shortcuts = getShortcuts(CTRL_MODIFIER);
+      const { getByText, queryAllByText } = renderOverlay();
+      const groups = getShortcuts('win32');
 
       // then
-      shortcuts.forEach((shortcut) => {
-        expect(getByText(shortcut.label)).to.exist;
-        expect(getByText(shortcut.binding)).to.exist;
+      groups.forEach((group) => {
+        expect(getByText(group.title)).to.exist;
+
+        group.shortcuts.forEach((shortcut) => {
+          expect(getByText(shortcut.label)).to.exist;
+          expect(queryAllByText(shortcut.binding).length).to.be.gt(0);
+        });
       });
     });
 
@@ -43,26 +47,33 @@ describe('<KeyboardShortcutsModal>', function() {
     it('should render Mac OS shortcuts', function() {
 
       // when
-      const { queryAllByText } = renderOverlay({
+      const { getByText, queryAllByText } = renderOverlay({
         platform: 'darwin'
       });
 
       // then
       expect(queryAllByText(COMMAND_MODIFIER, { exact: false }).length).to.be.gt(0);
-      expect(queryAllByText(CTRL_MODIFIER, { exact: false }).length).to.be.equal(0);
+
+      // OS-specific bindings
+      expect(getByText('Command + Shift + Z')).to.exist;
+      expect(getByText('Control + Command + F')).to.exist;
     });
 
 
     it('should render Windows / Linux shortcuts', function() {
 
       // when
-      const { queryAllByText } = renderOverlay({
+      const { getByText, queryAllByText } = renderOverlay({
         platform: 'linux'
       });
 
       // then
       expect(queryAllByText(CTRL_MODIFIER, { exact: false }).length).to.be.gt(0);
       expect(queryAllByText(COMMAND_MODIFIER, { exact: false }).length).to.be.equal(0);
+
+      // OS-specific bindings
+      expect(getByText('Control + Y')).to.exist;
+      expect(getByText('F11')).to.exist;
     });
 
   });
