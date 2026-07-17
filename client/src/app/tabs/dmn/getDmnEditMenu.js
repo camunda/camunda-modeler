@@ -13,6 +13,7 @@ import {
   getCopyCutPasteEntries,
   getAlignDistributeEntries,
   getDefaultCopyCutPasteEntries,
+  getDefaultUndoRedoEntries,
   getDiagramFindEntries,
   getSelectionEntries,
   getToolEntries,
@@ -77,28 +78,36 @@ export function getDmnDecisionTableEditMenu(state) {
 }
 
 export function getDmnLiteralExpressionEditMenu(state) {
-  const { defaultCopyCutPaste } = state;
+  const { defaultCopyCutPaste, defaultUndoRedo } = state;
+
+  const undoRedoEntries = defaultUndoRedo
+    ? getDefaultUndoRedoEntries(true)
+    : getUndoRedoEntries(state);
 
   const copyCutPasteEntries = defaultCopyCutPaste
     ? getDefaultCopyCutPasteEntries(true)
     : getCopyCutPasteEntries(state);
 
   return [
-    getUndoRedoEntries(state),
+    undoRedoEntries,
     copyCutPasteEntries,
     getSelectionEntries(state)
   ];
 }
 
 export function getDmnBoxedExpressionEditMenu(state) {
-  const { defaultCopyCutPaste } = state;
+  const { defaultCopyCutPaste, defaultUndoRedo } = state;
+
+  const undoRedoEntries = defaultUndoRedo
+    ? getDefaultUndoRedoEntries(true)
+    : getUndoRedoEntries(state);
 
   const copyCutPasteEntries = defaultCopyCutPaste
     ? getDefaultCopyCutPasteEntries(true)
     : getCopyCutPasteEntries(state);
 
   return [
-    getUndoRedoEntries(state),
+    undoRedoEntries,
     copyCutPasteEntries,
     getSelectionEntries(state)
   ];
