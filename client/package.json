@@ -77,9 +77,9 @@
   },
   "homepage": ".",
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/preset-env": "^7.29.2",
-    "@babel/preset-react": "^7.28.5",
+    "@babel/core": "^8.0.0",
+    "@babel/preset-env": "^8.0.0",
+    "@babel/preset-react": "^8.0.0",
     "@bpmn-io/variable-resolver": "^3.1.0",
     "@sentry/webpack-plugin": "^5.0.0",
     "@testing-library/react": "^16.3.2",
