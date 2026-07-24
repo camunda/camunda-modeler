@@ -300,6 +300,13 @@ export class App extends PureComponent {
   /**
    * Check whether file has changed externally and update accordingly.
    *
+   * If the tab has no unsaved changes the diagram is silently refreshed with
+   * the external contents. Auto-save keeps a tab's file in sync whenever it is
+   * left, so reloading only ever discards contents that are already persisted.
+   *
+   * If the tab has unsaved changes the user is asked whether to reload
+   * (discarding the local changes) or to keep the local changes.
+   *
    * @param {Tab} tab
    */
   checkFileChanged = async (tab) => {
@@ -326,14 +333,23 @@ export class App extends PureComponent {
       return tab;
     }
 
+    // if the tab has no unsaved changes we can safely refresh it with the
+    // external contents; auto-save keeps the file in sync whenever the tab
+    // is left, so this only ever discards contents that are already persisted
+    if (!this.isDirty(tab)) {
+      const updatedFile = await fileSystem.readFile(file.path);
+
+      return this.reloadTab(tab, updatedFile);
+    }
+
+    // the tab has unsaved changes that would be lost on reload; ask the user
+    // how to proceed
     const { button } = await this.showDialog(getContentChangedDialog());
 
     if (button === 'ok') {
       const updatedFile = await fileSystem.readFile(file.path);
 
-      return this.updateTab(tab, {
-        file: updatedFile
-      });
+      return this.reloadTab(tab, updatedFile);
     } else {
       return this.updateTab(tab, {
         file: {
@@ -343,6 +359,32 @@ export class App extends PureComponent {
       }, this.setUnsaved(tab, true));
     }
   };
+
+  /**
+   * Reload a tab with the given (externally changed) file contents.
+   *
+   * An inactive tab keeps its editor state cached (including the last imported
+   * XML) while it is in the background. Re-mounting it would restore that stale
+   * cache instead of importing the new contents, leaving the diagram unchanged
+   * and marked dirty. We drop the cache so the tab re-imports the file when it
+   * is re-activated. The active tab stays mounted and re-imports through its
+   * regular update cycle, so its (live) cache must not be destroyed.
+   *
+   * @param {Tab} tab
+   * @param {File} file
+   *
+   * @return {Tab} updated tab
+   */
+  reloadTab(tab, file) {
+
+    if (tab !== this.state.activeTab) {
+      this.props.cache.destroy(tab.id);
+    }
+
+    return this.updateTab(tab, {
+      file
+    });
+  }
 
   /**
    * Update the tab with new attributes.
@@ -1793,6 +1835,13 @@ export class App extends PureComponent {
    * Auto-saves the given tab with contents.
    *
    * Does NOT prompt the user for a save location.
+   *
+   * TODO(#5995): guard against clobbering external changes. The write below is
+   * unconditional, so a dirty tab auto-saved on blur / tab switch can overwrite
+   * a file that changed externally in the meantime, before #checkFileChanged
+   * gets a chance to run on focus. A follow-up will re-stat the file here and
+   * skip the write (leaving the tab dirty) when the on-disk `lastModified` is
+   * newer than what we last read, deferring to the focus-time conflict prompt.
    *
    * @param {Tab} tab - the tab to auto-save
    * @param {string} contents - the tab contents

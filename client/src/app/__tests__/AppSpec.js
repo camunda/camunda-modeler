@@ -2912,7 +2912,7 @@ describe('<App>', function() {
     });
 
 
-    it('should notify if content changed', async function() {
+    it('should reload without notifying if not dirty', async function() {
 
       // given
       const showSpy = spy(_ => {
@@ -2937,6 +2937,129 @@ describe('<App>', function() {
       const tab = openedTabs[0];
 
       const lastModified = new Date().getMilliseconds();
+
+      updateFileStats(tab.file, { lastModified }, fileSystem);
+
+      // when
+      const updatedTab = await app.checkFileChanged(tab);
+
+      // then
+      expect(showSpy).to.not.have.been.called;
+      expect(readFileSpy).to.have.been.called;
+
+      await waitFor(() => {
+        expect(updatedTab).to.eql(app.findOpenTab(file1));
+      });
+
+      expect(updatedTab.file.contents).to.eql(NEW_FILE_CONTENTS);
+
+      // TODO(nikku): fix test suite and properly pass last modified
+      // expect(updatedTab.file.lastModified).to.eql(lastModified);
+
+      expect(app.isUnsaved(updatedTab)).to.be.false;
+    });
+
+
+    it('should reset the editor cache when reloading a background tab', async function() {
+
+      // given
+      const cache = new Cache();
+
+      const destroySpy = sinon.spy(cache, 'destroy');
+
+      const { app } = createApp({
+        cache,
+        globals: {
+          fileSystem
+        }
+      });
+
+      // file2 is opened last, so file1's tab stays in the background
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const backgroundTab = openedTabs[0];
+
+      const lastModified = Date.now();
+
+      updateFileStats(backgroundTab.file, { lastModified }, fileSystem);
+
+      // when
+      const updatedTab = await app.checkFileChanged(backgroundTab);
+
+      // then
+      // the stale cache is dropped so the tab re-imports the external contents
+      // once it is re-activated
+      expect(destroySpy).to.have.been.calledWith(backgroundTab.id);
+
+      expect(updatedTab.file.contents).to.eql(NEW_FILE_CONTENTS);
+      expect(app.isUnsaved(updatedTab)).to.be.false;
+    });
+
+
+    it('should NOT reset the editor cache when reloading the active tab', async function() {
+
+      // given
+      const cache = new Cache();
+
+      const { app } = createApp({
+        cache,
+        globals: {
+          fileSystem
+        }
+      });
+
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const tab = openedTabs[0];
+
+      // make file1's tab the active one
+      await app.showTab(tab);
+
+      const destroySpy = sinon.spy(cache, 'destroy');
+
+      const lastModified = Date.now();
+
+      updateFileStats(tab.file, { lastModified }, fileSystem);
+
+      // when
+      await app.checkFileChanged(tab);
+
+      // then
+      // the active tab stays mounted and re-imports through its update cycle,
+      // so its live cache must be kept
+      expect(destroySpy).not.to.have.been.called;
+    });
+
+
+    it('should notify if content changed and tab is dirty', async function() {
+
+      // given
+      const showSpy = spy(_ => {
+        return {
+          button: 'ok'
+        };
+      });
+
+      const dialog = new Dialog({
+        show: showSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      });
+
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const tab = openedTabs[0];
+
+      app.setState(app.setDirty(tab));
+
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
+
+      const lastModified = Date.now();
 
       updateFileStats(tab.file, { lastModified }, fileSystem);
 
@@ -3042,6 +3165,10 @@ describe('<App>', function() {
       const openedTabs = await app.openFiles([ file1, file2 ]);
 
       const tab = openedTabs[0];
+
+      app.setState(app.setDirty(tab));
+
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
 
       const lastModified = new Date().getMilliseconds();
 
