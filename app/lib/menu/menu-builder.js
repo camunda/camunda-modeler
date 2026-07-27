@@ -101,7 +101,8 @@ class MenuBuilder {
     if (this.options.type === 'tab') {
       return this.appendContextCloseTab()
         .appendSeparator()
-        .appendContextRevealInFileExplorerTab();
+        .appendContextRevealInFileExplorerTab()
+        .appendContextCopyFilePathTab();
     }
 
     if (contextMenu) {
@@ -741,6 +742,26 @@ class MenuBuilder {
       enabled: !!filePath,
       click: function() {
         app.emit('menu:action', 'reveal-in-file-explorer', {
+          filePath
+        });
+      }
+    }));
+
+    return this;
+  }
+
+  appendContextCopyFilePathTab() {
+    const attrs = this.options.attrs,
+          tabs = this.options.state.tabs,
+          tabId = attrs.tabId;
+
+    const filePath = tabs.find(t => t.id === tabId).file.path;
+
+    this.menu.append(new MenuItem({
+      label: 'Copy File Path',
+      enabled: !!filePath,
+      click: function() {
+        app.emit('menu:action', 'copy-file-path', {
           filePath
         });
       }

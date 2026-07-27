@@ -2014,6 +2014,10 @@ export class App extends PureComponent {
     return this.getGlobal('dialog').showFileExplorerDialog({ path: filePath });
   };
 
+  copyFilePath = (filePath) => {
+    return this.getGlobal('systemClipboard').writeText({ text: filePath });
+  };
+
   reopenLastTab = () => {
 
     const lastTab = this.closedTabs.pop();
@@ -2300,6 +2304,10 @@ export class App extends PureComponent {
 
     if (action === 'reveal-in-file-explorer') {
       return this.revealInFileExplorer(options.filePath);
+    }
+
+    if (action === 'copy-file-path') {
+      return this.copyFilePath(options.filePath);
     }
 
     if (action === 'show-shortcuts') {

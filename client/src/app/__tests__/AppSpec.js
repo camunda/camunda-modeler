@@ -4184,6 +4184,33 @@ describe('<App>', function() {
   });
 
 
+  describe('#copyFilePath', function() {
+
+    it('should call systemClipboard#writeText', async function() {
+
+      // given
+      const systemClipboard = new SystemClipboard();
+
+      const writeTextSpy = sinon.spy(systemClipboard, 'writeText');
+
+      const { app } = createApp({
+        globals: {
+          systemClipboard
+        }
+      });
+
+      const [ tab ] = await app.openFiles([ createFile('1.bpmn') ]);
+
+      // when
+      app.copyFilePath(tab.file.path);
+
+      // then
+      expect(writeTextSpy).to.have.been.calledOnceWith({ text: tab.file.path });
+    });
+
+  });
+
+
   describe('linting', function() {
 
     it('should lint tab (no errors)', async function() {
