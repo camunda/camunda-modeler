@@ -47,20 +47,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Redesigned append and context pads</h4>
-          We redesigned the append and context pads for a cleaner, more focused modeling experience. Enable new context pad in the settings to try it out.
+          <h4>Browse the append and create menus by category</h4>
+          Elements are now grouped into browsable categories with short descriptions, making them easier to find.
         </li>
         <li>
-          <h4>Element templates with presets</h4>
-          You can now apply element templates that come with presets, and step through their options directly from the append menu.
+          <h4>Configure a Call Activity&apos;s Business ID</h4>
+          Call Activities can now set the Business ID of the process instance they start — inherited, fixed, or via FEEL.
         </li>
         <li>
-          <h4>Set a job priority</h4>
-          Jobs can now be given a priority to control the order in which workers pick them up.
+          <h4>Smoother FEEL editing</h4>
+          FEEL inputs now provide clearer syntax highlighting and easier snippet navigation.
         </li>
         <li>
-          <h4>See where your variables are used</h4>
-          The variable outline now highlights the elements that read or write a selected variable, and picks up variables from even more properties.
+          <h4>More accurate variable outline</h4>
+          The variable outline now recognizes more FEEL built-ins and analyzes expressions more accurately.
         </li>
       </ul>
     </div>
