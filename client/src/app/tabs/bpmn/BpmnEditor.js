@@ -213,10 +213,19 @@ export class BpmnEditor extends CachedComponent {
 
     const { panel = {} } = layout;
 
-    if (panel.open && panel.tab === 'linting') {
-      this.getModeler().get('linting').activate();
-    } else if (!panel.open || panel.tab !== 'linting') {
-      this.getModeler().get('linting').deactivate();
+    // only toggle linting once the diagram is imported; activating or
+    // deactivating while (re-)importing would access the not yet imported
+    // root element and crash (cf. #6049)
+    const { lastXML } = this.getCached();
+
+    if (lastXML && !this.state.importing && !this.isImportNeeded(prevProps)) {
+      const linting = this.getModeler().get('linting');
+
+      if (panel.open && panel.tab === 'linting') {
+        linting.activate();
+      } else {
+        linting.deactivate();
+      }
     }
 
     if (isPropertiesPanelLayoutChanged(prevProps, this.props)) {
