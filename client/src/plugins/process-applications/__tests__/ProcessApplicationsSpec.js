@@ -320,6 +320,73 @@ describe('ProcessApplications', function() {
     });
   });
 
+
+  describe('#getColor', function() {
+
+    it('should assign a color', function() {
+
+      // when
+      const color = processApplications.getColor('C://foo/.process-application');
+
+      // then
+      expect(color).to.be.a('string');
+    });
+
+
+    it('should keep color stable', function() {
+
+      // given
+      const color = processApplications.getColor('C://foo/.process-application');
+
+      // when
+      const otherColor = processApplications.getColor('C://foo/.process-application');
+
+      // then
+      expect(otherColor).to.equal(color);
+    });
+
+
+    it('should assign distinct colors to different process applications', function() {
+
+      // when
+      const colorA = processApplications.getColor('C://foo/.process-application');
+      const colorB = processApplications.getColor('C://bar/.process-application');
+
+      // then
+      expect(colorB).not.to.equal(colorA);
+    });
+
+
+    it('should reuse color of removed process application', function() {
+
+      // given
+      const items = [
+        {
+          file: {
+            name: '.process-application',
+            path: 'C://foo/.process-application',
+            dirname: 'C://foo'
+          },
+          metadata: { type: 'processApplication' }
+        }
+      ];
+
+      processApplications.emit('items-changed', items);
+
+      const colorA = processApplications.getColor('C://foo/.process-application');
+
+      // when
+      // process application removed
+      processApplications.emit('items-changed', []);
+
+      const colorB = processApplications.getColor('C://bar/.process-application');
+
+      // then
+      expect(colorB).to.equal(colorA);
+    });
+
+  });
+
 });
 
 const DEFAULT_ITEMS = [

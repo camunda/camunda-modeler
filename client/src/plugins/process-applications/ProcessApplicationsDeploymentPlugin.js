@@ -29,6 +29,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     displayNotification,
     log,
     processApplication,
+    processApplicationColor,
     processApplicationItems,
     triggerAction,
     connectionCheckResult
@@ -111,6 +112,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
         _getFromApp={ _getFromApp }
         activeTab={ activeTab }
         anchor={ anchorRef.current }
+        color={ processApplicationColor }
         connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }

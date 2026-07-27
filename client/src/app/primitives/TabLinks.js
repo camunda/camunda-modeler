@@ -12,8 +12,6 @@ import React, { PureComponent } from 'react';
 
 import classNames from 'classnames';
 
-import { groupBy, omit } from 'min-dash';
-
 import * as css from './Tabbed.css';
 
 import {
@@ -48,14 +46,6 @@ const MIDDLE_MOUSE_BUTTON = 1;
  */
 const SMALL_TAB_WIDTH = 90;
 const SMALLER_TAB_WIDTH = 45;
-
-const COLORS = [
-  'rgb(30, 136, 229)',
-  'rgb(251, 140, 0)',
-  'rgb(67, 160, 71)',
-  'rgb(229, 57, 53)',
-  'rgb(142, 36, 170)'
-];
 
 export default class TabLinks extends PureComponent {
   constructor(props) {
@@ -111,14 +101,6 @@ export default class TabLinks extends PureComponent {
       isDirty = () => false
     } = this.props;
 
-    const tabsByGroup = omit(groupBy(tabs, tab => tabGroups[ tab.id ]), '_');
-
-    const colors = {};
-
-    Object.keys(tabsByGroup).forEach((key, index) => {
-      colors[ key ] = COLORS[ index % COLORS.length ];
-    });
-
     return (
       <div
         className={ classNames(css.LinksContainer, className) }
@@ -129,7 +111,7 @@ export default class TabLinks extends PureComponent {
               const dirty = isDirty(tab);
               const active = tab === activeTab;
 
-              const color = tabGroups[ tab.id ] && colors[ tabGroups[ tab.id ] ];
+              const color = tabGroups[ tab.id ]?.color;
 
               return (
                 <Tab

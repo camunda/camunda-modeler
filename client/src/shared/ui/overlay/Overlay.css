@@ -32,6 +32,14 @@
   min-width: var(--overlay-min-width);
   overflow-y: auto;
 
+  .overlay__color {
+    position: sticky;
+    top: 0;
+    flex: none;
+    height: 3px;
+    z-index: 1;
+  }
+
   h1, h2, h3, h4 {
     font-weight: 500;
     font-size: inherit;

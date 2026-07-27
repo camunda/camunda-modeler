@@ -1,13 +1,14 @@
 :local(.ProcessApplicationsButton) {
   &.has-process-application {
-    background: hsl(205, 100%, 45%) !important;
+    background: var(--process-application-color, hsl(205, 100%, 45%)) !important;
   
     svg {
       fill: white;
     }
 
     &:hover {
-      background: hsl(205, 100%, 40%) !important;
+      background: var(--process-application-color, hsl(205, 100%, 45%)) !important;
+      filter: brightness(0.9);
   
       svg {
         fill: white;
