@@ -72,7 +72,8 @@ describe('MenuBuilder', function() {
       'Close All Tabs',
       'Close Other Tabs',
       undefined,
-      'Reveal in File Explorer'
+      'Reveal in File Explorer',
+      'Copy File Path'
     ]);
   });
 
