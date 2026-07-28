@@ -12,7 +12,7 @@
 
 const fs = require('fs');
 
-const exec = require('execa').sync;
+const exec = require('execa').execaSync;
 
 const nodemailer = require('nodemailer');
 
@@ -174,7 +174,7 @@ function getDiff({ previousVersion, file }) {
     return exec('diff', [ '-u', '-', file ], { input: previousFile }).stdout;
   } catch (e) {
 
-    if (e.code !== 1) {
+    if (e.exitCode !== 1) {
       throw e;
     }
 
