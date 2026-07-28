@@ -44,9 +44,14 @@ export default class Dialog {
   _send(channel, options) {
     this._openDialogs++;
 
-    return Promise.resolve(this.backend.send(channel, options)).finally(() => {
-      this._openDialogs--;
-    });
+    // defer the send into the promise chain so a synchronous throw (e.g. a
+    // disallowed backend event) still settles through `finally` and never
+    // leaves the counter stuck, permanently suppressing focus / blur handling
+    return Promise.resolve()
+      .then(() => this.backend.send(channel, options))
+      .finally(() => {
+        this._openDialogs--;
+      });
   }
 
   /**
