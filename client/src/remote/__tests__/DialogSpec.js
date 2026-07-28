@@ -308,4 +308,66 @@ describe('dialog', function() {
     dialog.showEmptyFileDialog();
 
   });
+
+
+  describe('#isDialogOpen', function() {
+
+    it('should report a dialog as open while the backend send is pending', async function() {
+
+      // given
+      let resolveSend;
+
+      const backend = new Backend({
+        send: () => new Promise(resolve => {
+          resolveSend = resolve;
+        })
+      });
+
+      const dialog = new Dialog(backend);
+
+      // when
+      const result = dialog.show({});
+
+      // then
+      expect(dialog.isDialogOpen()).to.be.true;
+
+      // when
+      // flush the microtask that defers the backend send, so `resolveSend`
+      // is assigned, then settle it
+      await Promise.resolve();
+
+      resolveSend({});
+
+      await result;
+
+      // then
+      expect(dialog.isDialogOpen()).to.be.false;
+    });
+
+
+    it('should not leave a dialog open if the backend throws synchronously', async function() {
+
+      // given
+      const backend = new Backend({
+        send: () => {
+          throw new Error('Disallowed event');
+        }
+      });
+
+      const dialog = new Dialog(backend);
+
+      // when
+      try {
+        await dialog.show({});
+      } catch (err) {
+
+        // expected
+      }
+
+      // then
+      expect(dialog.isDialogOpen()).to.be.false;
+    });
+
+  });
+
 });
