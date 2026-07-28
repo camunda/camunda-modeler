@@ -65,7 +65,7 @@ export default class PropertiesPanelKeyboardBindings {
       return;
     }
 
-    setTimeout(() => this._canvas.restoreFocus());
+    this._canvas.restoreFocus();
   };
 
   handleKeydown = event => {
