@@ -60,7 +60,7 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>More accurate variable outline</h4>
-          The variable outline now recognizes more FEEL built-ins and analyzes expressions more accurately.
+          The variable outline now recognizes more FEEL built-ins and understands expressions better.
         </li>
       </ul>
     </div>
