@@ -51,8 +51,8 @@ export function ReleaseInfo(props) {
           Elements are now grouped into categories with short descriptions, making them easier to find.
         </li>
         <li>
-          <h4>Configure a Call Activity&apos;s Business ID</h4>
-          Call Activities can now set the Business ID of the process instance they start — inherited, fixed, or via FEEL.
+          <h4>Improved context pad</h4>
+          Unfinished flows now display an append indicator that opens the append menu on hover.
         </li>
         <li>
           <h4>Smoother FEEL editing</h4>
@@ -61,6 +61,10 @@ export function ReleaseInfo(props) {
         <li>
           <h4>More accurate variable outline</h4>
           The variable outline now recognizes more FEEL built-ins and understands expressions better.
+        </li>
+        <li>
+          <h4>Support for new C8 features</h4>
+          You can now set the Business ID of a Call Activity, and specify the priority of a job.
         </li>
       </ul>
     </div>
