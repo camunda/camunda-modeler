@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import ProcessApplications from './ProcessApplications';
 import ProcessApplicationsStatusBar from './ProcessApplicationsStatusBar';
@@ -42,10 +42,15 @@ export default function ProcessApplicationsPlugin(props) {
   const [ processApplication, setProcessApplication ] = useState(null);
   const [ processApplicationItems, setProcessApplicationItems ] = useState([]);
 
+  // active tab mirrored synchronously from `app.activeTabChanged`.
+  const activeTabRef = useRef(null);
+
   const connectionCheckResult = useConnectionStatus(subscribe);
 
   useEffect(() => {
     const subscription = subscribe('app.activeTabChanged', (event) => {
+      activeTabRef.current = event.activeTab;
+
       setActiveTab(event.activeTab);
 
       processApplications.emit('activeTab-changed', event.activeTab);
@@ -165,7 +170,9 @@ export default function ProcessApplicationsPlugin(props) {
   }, [ subscribe ]);
 
   useEffect(() => {
-    if (activeTab?.type === 'cloud-bpmn') {
+
+    // only emit on cloud-bpmn tabs
+    if (activeTabRef.current?.type === 'cloud-bpmn') {
       triggerAction('resources.reload');
     }
   }, [ activeTab, processApplicationItems, triggerAction ]);
