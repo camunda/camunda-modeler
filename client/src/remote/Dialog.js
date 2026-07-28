@@ -14,6 +14,39 @@ export default class Dialog {
 
   constructor(backend) {
     this.backend = backend;
+
+    this._openDialogs = 0;
+  }
+
+  /**
+   * Whether a modal dialog opened by the application is currently visible.
+   *
+   * Used to tell an application-triggered window focus / blur (a dialog we
+   * opened grabbing or releasing focus) apart from the user actually leaving
+   * or returning to the app from the outside.
+   *
+   * @returns {boolean}
+   */
+  isDialogOpen() {
+    return this._openDialogs > 0;
+  }
+
+  /**
+   * Send a dialog request to the backend while tracking it as an open modal
+   * dialog, so window focus / blur it causes is not mistaken for the user
+   * switching away from or back to the application.
+   *
+   * @param {string} channel
+   * @param {Object} [options]
+   *
+   * @returns {Promise}
+   */
+  _send(channel, options) {
+    this._openDialogs++;
+
+    return Promise.resolve(this.backend.send(channel, options)).finally(() => {
+      this._openDialogs--;
+    });
   }
 
   /**
@@ -27,7 +60,7 @@ export default class Dialog {
    * @returns {Promise}
    */
   showOpenFilesDialog(options) {
-    return this.backend.send('dialog:open-files', options);
+    return this._send('dialog:open-files', options);
   }
 
   /**
@@ -41,7 +74,7 @@ export default class Dialog {
    * @return {Promise}
    */
   showOpenFileErrorDialog = async (options) => {
-    return this.backend.send('dialog:open-file-error', options);
+    return this._send('dialog:open-file-error', options);
   };
 
   /**
@@ -55,7 +88,7 @@ export default class Dialog {
    * @returns {Promise}
    */
   showSaveFileDialog(options) {
-    return this.backend.send('dialog:save-file', options);
+    return this._send('dialog:save-file', options);
   }
 
   /**
@@ -67,7 +100,7 @@ export default class Dialog {
    * @returns {Promise}
    */
   showFileExplorerDialog(options) {
-    return this.backend.send('dialog:open-file-explorer', options);
+    return this._send('dialog:open-file-explorer', options);
   }
 
   /**
@@ -97,7 +130,7 @@ export default class Dialog {
    * @returns {Promise}
    */
   show(options) {
-    return this.backend.send('dialog:show', options);
+    return this._send('dialog:show', options);
   }
 
   /**

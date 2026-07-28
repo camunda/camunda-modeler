@@ -191,9 +191,24 @@ export class App extends PureComponent {
       this.resizeTab = debounce(this.resizeTab, 50);
     }
 
-    this.on('app.blurred', this.triggerAutoSave);
+    // window focus / blur drive auto-save and external-change detection. A
+    // modal dialog the app itself opened blurs the window while it is up and
+    // re-focuses it once dismissed. That focus / blur must NOT be treated as
+    // the user leaving or returning to the app from the outside, so we ignore
+    // it while one of our dialogs is open.
+    this.on('app.blurred', () => {
+      if (this.isDialogOpen()) {
+        return;
+      }
+
+      this.triggerAutoSave();
+    });
 
     this.on('app.focused', () => {
+      if (this.isDialogOpen()) {
+        return;
+      }
+
       this.triggerAction('check-file-changed');
     });
 
@@ -515,29 +530,20 @@ export class App extends PureComponent {
 
     const { name } = file;
 
-    try {
+    // auto-save is suppressed while the close dialog is open (cf.
+    // #isDialogOpen), so it can not interfere with the user's save decision
+    if (this.isDirty(tab)) {
+      const { button } = await this.showCloseFileDialog({ name });
 
-      // disable auto-save during <save-all> to prevent
-      // interferring with user save decisions
-      this.off('app.blurred', this.triggerAutoSave);
+      if (button === 'save') {
+        const saved = await this.saveTab(tab);
 
-      if (this.isDirty(tab)) {
-        const { button } = await this.showCloseFileDialog({ name });
-
-        if (button === 'save') {
-          const saved = await this.saveTab(tab);
-
-          if (!saved) {
-            return false;
-          }
-        } else if (button === 'cancel') {
+        if (!saved) {
           return false;
         }
+      } else if (button === 'cancel') {
+        return false;
       }
-    } finally {
-
-      // restore auto-save
-      this.on('app.blurred', this.triggerAutoSave);
     }
 
     return true;
@@ -757,6 +763,20 @@ export class App extends PureComponent {
 
     await this.openFiles(files);
   };
+
+  /**
+   * Whether a modal dialog opened by the application is currently visible.
+   *
+   * While a dialog is open the window focus / blur it causes must not be
+   * treated as the user leaving or returning to the app from the outside.
+   *
+   * @returns {boolean}
+   */
+  isDialogOpen() {
+    const dialog = this.getGlobal('dialog');
+
+    return Boolean(dialog.isDialogOpen && dialog.isDialogOpen());
+  }
 
   showCloseFileDialog = (file) => {
     const { name } = file;

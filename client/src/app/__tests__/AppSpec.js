@@ -1564,6 +1564,27 @@ describe('<App>', function() {
     });
 
 
+    it('should NOT auto-save on window blur while a dialog is open', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+      const [ tab ] = await app.openFiles([ file ]);
+
+      // mark as dirty
+      app.setState(app.setDirty(tab));
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
+
+      // a dialog opened by the app is blurring the window
+      dialog.isDialogOpen = () => true;
+
+      // when
+      await app.triggerAction('window-blurred');
+
+      // then
+      expect(writeFileSpy).not.to.have.been.called;
+    });
+
+
     it('should show notification on auto-save error', async function() {
 
       // given
@@ -3210,6 +3231,49 @@ describe('<App>', function() {
 
       // then
       expect(checkFileChangedSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should check for changes on window focus', async function() {
+
+      // given
+      const { app } = createApp({
+        globals: { fileSystem }
+      });
+
+      await app.openFiles([ file1 ]);
+
+      const checkFileChangedSpy = spy(app, 'checkFileChanged');
+
+      // when
+      await app.triggerAction('window-focused');
+
+      // then
+      expect(checkFileChangedSpy).to.have.been.called;
+    });
+
+
+    it('should NOT check for changes on window focus while a dialog is open', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      const { app } = createApp({
+        globals: { dialog, fileSystem }
+      });
+
+      await app.openFiles([ file1 ]);
+
+      const checkFileChangedSpy = spy(app, 'checkFileChanged');
+
+      // a dialog opened by the app is (re-)focusing the window
+      dialog.isDialogOpen = () => true;
+
+      // when
+      await app.triggerAction('window-focused');
+
+      // then
+      expect(checkFileChangedSpy).to.not.have.been.called;
     });
 
   });
