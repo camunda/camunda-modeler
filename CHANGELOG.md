@@ -42,6 +42,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: enable popup editor for text areas ([bpmn-io/properties-panel#523](https://github.com/bpmn-io/properties-panel/pull/523))
 * `FEAT`: enhance FEEL syntax highlighting ([bpmn-io/feel-editor#100](https://github.com/bpmn-io/feel-editor/pull/100))
 * `FEAT`: recognize additional Camunda built-ins and improve expression analysis accuracy in variable outline ([bpmn-io/variable-resolver#121](https://github.com/bpmn-io/variable-resolver/pull/121))
+* `FEAT`: improve minimap performance ([#5215](https://github.com/camunda/camunda-modeler/issues/5215), [bpmn-io/diagram-js-minimap#115](https://github.com/bpmn-io/diagram-js-minimap/pull/115)) 
 * `FIX`: assign `$parent` property in all cases for I/O mapping in element templates ([bpmn-io/bpmn-js-element-templates#265](https://github.com/bpmn-io/bpmn-js-element-templates/pull/265))
 * `FIX`: support snippet placeholder navigation in FEEL popup ([bpmn-io/properties-panel#524](https://github.com/bpmn-io/properties-panel/pull/524))
 * `FIX`: compare popup input against live value ([bpmn-io/properties-panel#530](https://github.com/bpmn-io/properties-panel/pull/530))
