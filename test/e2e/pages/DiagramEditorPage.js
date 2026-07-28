@@ -123,6 +123,10 @@ class DiagramEditorPage {
       .locator(`.entry:has(.djs-popup-label:text-is("${ entryLabel }"))`)
       .first();
 
+    // grouped menus nest entries in drill-in categories; the search box
+    // flattens them so entries can be reached by label
+    const search = popup.locator('.djs-popup-search input');
+
     for (let attempt = 0; attempt < 5; attempt++) {
 
       if (!(await popup.count())) {
@@ -131,6 +135,13 @@ class DiagramEditorPage {
         await popup.waitFor({ timeout: 2000 }).catch(() => {});
 
         continue;
+      }
+
+      // surface entries hidden inside drill-in categories; the search field
+      // filters on keyup, so real keystrokes are required (fill alone won't do)
+      if (await search.count() && !(await entry.count())) {
+        await search.fill('');
+        await search.pressSequentially(entryLabel);
       }
 
       // popup is open — try to pick the entry; it can be torn down before the
