@@ -140,4 +140,71 @@ test.describe('external change detection', function() {
     await expect(app.page.locator('.tab--active.tab--dirty')).toHaveCount(0);
   });
 
+
+  test('should not treat window focus caused by an app dialog as an external change', async function({ launch, tmp }) {
+
+    // given an open diagram with unsaved changes
+    const file = await copyFixture('simple.bpmn', tmp);
+
+    const app = await launch({ openFile: file });
+
+    const editor = new Modeler(app).bpmnEditor;
+
+    await editor.canvas().waitFor();
+
+    await editor.setName('Task_0zlv465', 'local edit');
+
+    await expect(app.page.locator('.tab--active.tab--dirty')).toHaveCount(1);
+
+    // and the file has meanwhile changed on disk
+    const xml = await readFile(file);
+
+    await fs.writeFile(file, xml.replace('name="foo"', 'name="external edit"'));
+
+    // and the "close file" dialog answers "Don't Save", but — like a real native
+    // modal — first refocuses the window while it is still open. Record every
+    // message box so we can assert the refocus did not surface a reload prompt.
+    await app.electronApp.evaluate(async ({ app: electronApp, dialog }) => {
+      const calls = globalThis.__cmDialogCalls = [];
+
+      dialog.showMessageBox = async (...args) => {
+        const options = args[args.length - 1] || {};
+
+        calls.push({ message: options.message, title: options.title });
+
+        const buttons = options.buttons || [];
+
+        // the close dialog is modal to the window: as it is dismissed the
+        // window regains focus *before* the dialog result is delivered. Emit
+        // that focus now, while the dialog is still open, to reproduce the race.
+        if (/before closing/.test(options.message || '')) {
+          electronApp.emit('menu:action', 'window-focused');
+
+          await new Promise(resolve => setTimeout(resolve, 750));
+
+          const discard = buttons.findIndex(label => /Don't Save/.test(label));
+
+          return { response: discard === -1 ? 1 : discard };
+        }
+
+        // any external-change prompt: keep local changes (do not reload)
+        const cancel = buttons.findIndex(label => /Cancel/.test(label));
+
+        return { response: cancel === -1 ? 1 : cancel };
+      };
+    });
+
+    // when the dirty tab is closed
+    await app.shortcut('CommandOrControl+W');
+
+    // then the tab closes ...
+    await expect(app.page.locator('.tab[data-tab-id]')).toHaveCount(0);
+
+    // ... and the window focus caused by our own close dialog did not trigger
+    // an external-change reload prompt
+    const calls = await app.dialogCalls();
+
+    expect(calls.some(call => /changed externally/.test(call.message || ''))).toBe(false);
+  });
+
 });
