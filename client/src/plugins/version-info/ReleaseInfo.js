@@ -48,7 +48,7 @@ export function ReleaseInfo(props) {
       <ul className="dashed">
         <li>
           <h4>Browse the append and create menus by category</h4>
-          Elements are now grouped into browsable categories with short descriptions, making them easier to find.
+          Elements are now grouped into categories with short descriptions, making them easier to find.
         </li>
         <li>
           <h4>Configure a Call Activity&apos;s Business ID</h4>
