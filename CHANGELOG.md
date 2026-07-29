@@ -18,15 +18,15 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/form-js@1.24.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.48.0`
 * `DEPS`: update to `@bpmn-io/variable-resolver@3.3.0`
-* `DEPS`: update to `@camunda/improved-canvas@1.10.2`
+* `DEPS`: update to `@camunda/improved-canvas@1.10.3`
 * `DEPS`: update to `@camunda/linting@3.53.0`
-* `DEPS`: update to `bpmn-js@18.22.0`
+* `DEPS`: update to `bpmn-js@18.22.1`
 * `DEPS`: update to `bpmn-js-create-append-anything@2.0.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.28.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.62.0`
 * `DEPS`: update to `bpmn-moddle@10.1.0`
-* `DEPS`: update to `camunda-bpmn-js@5.30.0`
-* `DEPS`: update to `diagram-js@15.23.0`
+* `DEPS`: update to `camunda-bpmn-js@5.30.2`
+* `DEPS`: update to `diagram-js@15.23.2`
 * `DEPS`: update to `diagram-js-direct-editing@3.5.1`
 * `DEPS`: update to `diagram-js-minimap@5.4.0`
 * `DEPS`: update to `dmn-js@17.10.0`
@@ -35,6 +35,7 @@ ___Note:__ Yet to be released changes appear here._
 ### BPMN
 
 * `FEAT`: rework append, create, and replace menus into browsable categories with per-element descriptions ([#6037](https://github.com/camunda/camunda-modeler/issues/6037))
+* `FEAT`: surface unfinished flows with an append indicator that opens the append menu on hover, guiding users to complete the paths ([camunda/improved-canvas#83](https://github.com/camunda/improved-canvas/pull/83))
 * `FEAT`: support configuring Call Activity Business ID (inherit / literal / FEEL expression) ([#5912](https://github.com/camunda/camunda-modeler/issues/5912))
 * `FEAT`: support `businessId` for Called Element in element templates ([bpmn-io/bpmn-js-element-templates#269](https://github.com/bpmn-io/bpmn-js-element-templates/pull/269))
 * `FEAT`: validate Call Activity Business ID against supported Camunda 8 versions ([camunda/linting#169](https://github.com/camunda/linting/pull/169))
@@ -46,8 +47,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: assign `$parent` property in all cases for I/O mapping in element templates ([bpmn-io/bpmn-js-element-templates#265](https://github.com/bpmn-io/bpmn-js-element-templates/pull/265))
 * `FIX`: support snippet placeholder navigation in FEEL popup ([bpmn-io/properties-panel#524](https://github.com/bpmn-io/properties-panel/pull/524))
 * `FIX`: compare popup input against live value ([bpmn-io/properties-panel#530](https://github.com/bpmn-io/properties-panel/pull/530))
-* `FIX`: correct misplaced append indicator on element's left edge ([camunda/improved-canvas#90](https://github.com/camunda/improved-canvas/pull/90))
-* `FIX`: increase pad gap to not overlap element resize handles ([camunda/improved-canvas#93](https://github.com/camunda/improved-canvas/pull/93))
 
 ### DMN
 
