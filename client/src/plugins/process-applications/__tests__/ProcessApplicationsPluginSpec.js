@@ -57,7 +57,7 @@ describe('<ProcessApplicationsPlugin>', function() {
       act(() => emit('app.activeTabChanged', { activeTab: PLATFORM_TAB }));
 
       // then
-      await wait();
+      await act(async () => {});
 
       expect(triggerAction).not.to.have.been.calledWith('resources.reload');
     });
@@ -66,10 +66,6 @@ describe('<ProcessApplicationsPlugin>', function() {
 
 
 // helpers //////////
-
-function wait(ms = 10) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 function createProcessApplicationsPlugin(props = {}) {
   const {
