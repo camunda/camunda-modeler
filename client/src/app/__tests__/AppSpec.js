@@ -144,6 +144,32 @@ describe('<App>', function() {
         expect(updateMenuSpy).to.have.been.called;
       });
 
+
+      it('on tab file path change (e.g. save as)', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const { app } = createApp({
+          onMenuUpdate: updateMenuSpy
+        });
+
+        const [ tab ] = await app.openFiles([ createFile('1.bpmn') ]);
+
+        updateMenuSpy.resetHistory();
+
+        // when
+        // simulate saving the tab to a different location
+        app.tabSaved(tab, createFile('1.bpmn', { path: '/other/folder/1.bpmn' }));
+
+        // then
+        await waitFor(() => {
+          expect(updateMenuSpy).to.have.been.calledWith(sinon.match({
+            tabs: app.state.tabs
+          }));
+        });
+      });
+
     });
 
 

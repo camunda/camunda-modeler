@@ -755,7 +755,7 @@ class MenuBuilder {
           tabs = this.options.state.tabs,
           tabId = attrs.tabId;
 
-    const filePath = tabs.find(t => t.id === tabId).file.path;
+    const filePath = tabs.find(t => t.id === tabId)?.file?.path;
 
     this.menu.append(new MenuItem({
       label: 'Copy File Path',
