@@ -175,7 +175,7 @@ export default function ProcessApplicationsPlugin(props) {
     if (activeTabRef.current?.type === 'cloud-bpmn') {
       triggerAction('resources.reload');
     }
-  }, [ activeTab, processApplicationItems, triggerAction ]);
+  }, [ activeTab, processApplicationItems, triggerAction, _getFromApp ]);
 
   useEffect(() => {
     const tabGroups = tabs.reduce((tabGroups, tab) => {
