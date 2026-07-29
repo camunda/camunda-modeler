@@ -1405,7 +1405,8 @@ export class App extends PureComponent {
 
     if (
       tabState !== prevState.tabState ||
-      recentTabs !== prevState.recentTabs
+      recentTabs !== prevState.recentTabs ||
+      tabs !== prevState.tabs
     ) {
       this.updateMenu(tabState);
     }
