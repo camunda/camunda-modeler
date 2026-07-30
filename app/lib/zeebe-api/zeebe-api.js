@@ -373,16 +373,18 @@ class ZeebeAPI {
   }
 
   /**
-   * Search process instances. Requires Camunda REST client.
+   * Search process instances, either by their own key or by the key of their
+   * parent. Requires Camunda REST client.
    *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
+   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey?: string, parentProcessInstanceKey?: string }} config
    *
    * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
    */
   async searchProcessInstances(config) {
     const {
       endpoint,
-      processInstanceKey
+      processInstanceKey,
+      parentProcessInstanceKey
     } = config;
 
     this._log.debug('search process instances', {
@@ -398,7 +400,8 @@ class ZeebeAPI {
 
       const response = await camundaRestClient.searchProcessInstances({
         filter: {
-          processInstanceKey
+          processInstanceKey,
+          parentProcessInstanceKey
         }
       });
 
@@ -518,7 +521,8 @@ class ZeebeAPI {
   }
 
   /**
-   * Search incidents. Requires Camunda REST client.
+   * Search incidents related to a process instance, including incidents of the
+   * process instances it called. Requires Camunda REST client.
    *
    * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
    *
@@ -541,10 +545,10 @@ class ZeebeAPI {
         throw new Error('Camunda REST client is not available');
       }
 
-      const response = await camundaRestClient.searchIncidents({
-        filter: {
-          processInstanceKey
-        }
+      const response = await camundaRestClient.callApiEndpoint({
+        method: 'POST',
+        urlPath: `process-instances/${processInstanceKey}/incidents/search`,
+        body: {}
       });
 
       return {

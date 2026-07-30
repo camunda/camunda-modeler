@@ -96,6 +96,17 @@ export default class ZeebeAPI {
     });
   }
 
+  searchChildProcessInstances(options, parentProcessInstanceKey) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:searchProcessInstances', {
+      endpoint,
+      parentProcessInstanceKey
+    });
+  }
+
   searchElementInstances(options, processInstanceKey) {
     let { endpoint } = options;
 

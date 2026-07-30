@@ -1206,6 +1206,44 @@ describe('<ZeebeAPI>', function() {
   });
 
 
+  describe('#searchChildProcessInstances', function() {
+
+    it('should search child process instances', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const parentProcessInstanceKey = '123';
+
+      // when
+      zeebeAPI.searchChildProcessInstances({ endpoint }, parentProcessInstanceKey);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchProcessInstances', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        parentProcessInstanceKey
+      });
+
+    });
+
+  });
+
+
   describe('#searchVariables', function() {
 
     it('should search variables', function() {
