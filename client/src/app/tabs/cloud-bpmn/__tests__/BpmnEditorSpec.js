@@ -2158,6 +2158,23 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(warningSpy).to.have.been.calledWith({ message: error3.message });
     });
 
+
+    it('should NOT warn when there are no template errors', async function() {
+
+      // given
+      const warningSpy = spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        onWarning: warningSpy
+      });
+
+      // when
+      await instance.handleElementTemplateErrors({ errors: [] });
+
+      // then
+      expect(warningSpy).not.to.have.been.called;
+    });
+
   });
 
 
