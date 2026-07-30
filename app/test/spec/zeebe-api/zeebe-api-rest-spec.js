@@ -1537,6 +1537,42 @@ describe('ZeebeAPI (REST)', function() {
   });
 
 
+  describe('#searchProcessInstances (children)', function() {
+
+    it('should filter by parent process instance key', async function() {
+
+      // given
+      const searchProcessInstances = sinon.stub().returns({ items: [] });
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          searchProcessInstances
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        parentProcessInstanceKey: '123'
+      };
+
+      // when
+      const result = await zeebeAPI.searchProcessInstances(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(searchProcessInstances).to.have.been.calledWithMatch({
+        filter: {
+          parentProcessInstanceKey: '123'
+        }
+      });
+    });
+
+  });
+
+
   describe('#searchVariables', function() {
 
     it('should set success=true on success', async function() {
@@ -1687,7 +1723,7 @@ describe('ZeebeAPI (REST)', function() {
       // given
       const zeebeAPI = createZeebeAPI({
         CamundaRestClient: {
-          searchIncidents: () => ({ items: [] })
+          callApiEndpoint: () => ({ items: [] })
         }
       });
 
@@ -1713,7 +1749,7 @@ describe('ZeebeAPI (REST)', function() {
       // given
       const zeebeAPI = createZeebeAPI({
         CamundaRestClient: {
-          searchIncidents: () => { throw new Error('TEST ERROR.'); }
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
         }
       });
 
@@ -1731,6 +1767,35 @@ describe('ZeebeAPI (REST)', function() {
       // then
       expect(result.success).to.be.false;
       expect(result.reason).to.exist;
+    });
+
+
+    it('should search incidents of called process instances', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        processInstanceKey: '123'
+      };
+
+      // when
+      await zeebeAPI.searchIncidents(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        urlPath: 'process-instances/123/incidents/search'
+      });
     });
 
   });

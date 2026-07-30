@@ -53,7 +53,7 @@ describe('<TaskTestingTab>', function() {
     renderTab(modeler);
 
     // then
-    expect(screen.getByText('Select a task or subprocess to start testing.')).to.exist;
+    expect(screen.getByText('Select a task, subprocess, or call activity to start testing.')).to.exist;
   });
 
 
