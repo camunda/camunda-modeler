@@ -13,6 +13,7 @@ ___Note:__ Yet to be released changes appear here._
 ### General
 
 * `FEAT`: list all application shortcuts in the 'Keyboard Shortcuts' modal ([#6050](https://github.com/camunda/camunda-modeler/pull/6050))
+* `FIX`: suppress errors for invalid, `template#engine` incompatible element templates ([#6071](https://github.com/camunda/camunda-modeler/issues/6071), [#6072](https://github.com/camunda/camunda-modeler/pull/6072), [bpmn-io/bpmn-js-element-templates#273](https://github.com/bpmn-io/bpmn-js-element-templates/pull/273))
 * `FIX`: correct discarting unsaved changes on fast tab switches ([#6063](https://github.com/camunda/camunda-modeler/issues/6063), [#6064](https://github.com/camunda/camunda-modeler/issues/6064))
 * `FIX`: reload auto-saved diagrams when they changed externally ([#5995](https://github.com/camunda/camunda-modeler/issues/5995))
 * `FIX`: do not treat application dialogs as window focus changes, avoiding bogus external-change prompts ([#5995](https://github.com/camunda/camunda-modeler/issues/5995))
