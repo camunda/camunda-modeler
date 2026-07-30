@@ -10,6 +10,12 @@ ___Note:__ Yet to be released changes appear here._
 
 ### General
 
+* `FEAT`: list all application shortcuts in the 'Keyboard Shortcuts' modal ([#6050](https://github.com/camunda/camunda-modeler/pull/6050))
+* `FIX`: correct discarting unsaved changes on fast tab switches ([#6063](https://github.com/camunda/camunda-modeler/issues/6063), [#6064](https://github.com/camunda/camunda-modeler/issues/6064))
+* `FIX`: reload auto-saved diagrams when they changed externally ([#5995](https://github.com/camunda/camunda-modeler/issues/5995))
+* `FIX`: do not treat application dialogs as window focus changes, avoiding bogus external-change prompts ([#5995](https://github.com/camunda/camunda-modeler/issues/5995))
+* `FIX`: guard resource reload against stale active tab in process applications ([#6061](https://github.com/camunda/camunda-modeler/issues/6061))
+* `FIX`: prevent re-opening stale historic files on application startup ([#6012](https://github.com/camunda/camunda-modeler/issues/6012), [#6026](https://github.com/camunda/camunda-modeler/issues/6012))
 * `DEPS`: update to `electron@43`
 * `DEPS`: migrate to `@sentry/electron`
 * `DEPS`: update to `react@19`
@@ -47,12 +53,16 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: assign `$parent` property in all cases for I/O mapping in element templates ([bpmn-io/bpmn-js-element-templates#265](https://github.com/bpmn-io/bpmn-js-element-templates/pull/265))
 * `FIX`: support snippet placeholder navigation in FEEL popup ([bpmn-io/properties-panel#524](https://github.com/bpmn-io/properties-panel/pull/524))
 * `FIX`: compare popup input against live value ([bpmn-io/properties-panel#530](https://github.com/bpmn-io/properties-panel/pull/530))
+* `FIX`: prevent tab crash when toggling linting during import ([#6049](https://github.com/camunda/camunda-modeler/issues/6049))
+* `FIX`: keep undo/redo working after properties panel interaction removes focus ([#4772](https://github.com/camunda/camunda-modeler/issues/4772))
+* `FIX`: render properties panel tooltip above the context/append pad ([#6002](https://github.com/camunda/camunda-modeler/issues/6002))
 
 ### DMN
 
 * `FEAT`: create variable for decision and input data per default ([bpmn-io/dmn-js#1011](https://github.com/bpmn-io/dmn-js/pull/1011))
 * `FEAT`: add type ref dropdown ([bpmn-io/dmn-js#1009](https://github.com/bpmn-io/dmn-js/pull/1009))
 * `FIX`: do not remove typeref when decision implementation changes ([bpmn-io/dmn-js#1011](https://github.com/bpmn-io/dmn-js/pull/1011))
+* `FIX`: make undo/redo respect focused text inputs ([#4613](https://github.com/camunda/camunda-modeler/issues/4613))
 
 ### Forms
 
