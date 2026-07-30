@@ -191,9 +191,24 @@ export class App extends PureComponent {
       this.resizeTab = debounce(this.resizeTab, 50);
     }
 
-    this.on('app.blurred', this.triggerAutoSave);
+    // window focus / blur drive auto-save and external-change detection. A
+    // modal dialog the app itself opened blurs the window while it is up and
+    // re-focuses it once dismissed. That focus / blur must NOT be treated as
+    // the user leaving or returning to the app from the outside, so we ignore
+    // it while one of our dialogs is open.
+    this.on('app.blurred', () => {
+      if (this.isDialogOpen()) {
+        return;
+      }
+
+      this.triggerAutoSave();
+    });
 
     this.on('app.focused', () => {
+      if (this.isDialogOpen()) {
+        return;
+      }
+
       this.triggerAction('check-file-changed');
     });
 
@@ -300,6 +315,13 @@ export class App extends PureComponent {
   /**
    * Check whether file has changed externally and update accordingly.
    *
+   * If the tab has no unsaved changes the diagram is silently refreshed with
+   * the external contents. Auto-save keeps a tab's file in sync whenever it is
+   * left, so reloading only ever discards contents that are already persisted.
+   *
+   * If the tab has unsaved changes the user is asked whether to reload
+   * (discarding the local changes) or to keep the local changes.
+   *
    * @param {Tab} tab
    */
   checkFileChanged = async (tab) => {
@@ -326,14 +348,23 @@ export class App extends PureComponent {
       return tab;
     }
 
+    // if the tab has no unsaved changes we can safely refresh it with the
+    // external contents; auto-save keeps the file in sync whenever the tab
+    // is left, so this only ever discards contents that are already persisted
+    if (!this.isDirty(tab)) {
+      const updatedFile = await fileSystem.readFile(file.path);
+
+      return this.reloadTab(tab, updatedFile);
+    }
+
+    // the tab has unsaved changes that would be lost on reload; ask the user
+    // how to proceed
     const { button } = await this.showDialog(getContentChangedDialog());
 
     if (button === 'ok') {
       const updatedFile = await fileSystem.readFile(file.path);
 
-      return this.updateTab(tab, {
-        file: updatedFile
-      });
+      return this.reloadTab(tab, updatedFile);
     } else {
       return this.updateTab(tab, {
         file: {
@@ -343,6 +374,34 @@ export class App extends PureComponent {
       }, this.setUnsaved(tab, true));
     }
   };
+
+  /**
+   * Reload a tab with the given (externally changed) file contents.
+   *
+   * An inactive tab keeps its editor state cached (including the last imported
+   * XML) while it is in the background. Re-mounting it would restore that stale
+   * cache instead of importing the new contents, leaving the diagram unchanged
+   * and marked dirty. We drop the cache so the tab re-imports the file when it
+   * is re-activated. The active tab stays mounted and re-imports through its
+   * regular update cycle, so its (live) cache must not be destroyed.
+   *
+   * @param {Tab} tab
+   * @param {File} file
+   *
+   * @return {Tab} updated tab
+   */
+  reloadTab(tab, file) {
+
+    const { activeTab } = this.state;
+
+    if (!activeTab || activeTab.id !== tab.id) {
+      this.props.cache.destroy(tab.id);
+    }
+
+    return this.updateTab(tab, {
+      file
+    });
+  }
 
   /**
    * Update the tab with new attributes.
@@ -471,29 +530,20 @@ export class App extends PureComponent {
 
     const { name } = file;
 
-    try {
+    // auto-save is suppressed while the close dialog is open (cf.
+    // #isDialogOpen), so it can not interfere with the user's save decision
+    if (this.isDirty(tab)) {
+      const { button } = await this.showCloseFileDialog({ name });
 
-      // disable auto-save during <save-all> to prevent
-      // interferring with user save decisions
-      this.off('app.blurred', this.triggerAutoSave);
+      if (button === 'save') {
+        const saved = await this.saveTab(tab);
 
-      if (this.isDirty(tab)) {
-        const { button } = await this.showCloseFileDialog({ name });
-
-        if (button === 'save') {
-          const saved = await this.saveTab(tab);
-
-          if (!saved) {
-            return false;
-          }
-        } else if (button === 'cancel') {
+        if (!saved) {
           return false;
         }
+      } else if (button === 'cancel') {
+        return false;
       }
-    } finally {
-
-      // restore auto-save
-      this.on('app.blurred', this.triggerAutoSave);
     }
 
     return true;
@@ -713,6 +763,20 @@ export class App extends PureComponent {
 
     await this.openFiles(files);
   };
+
+  /**
+   * Whether a modal dialog opened by the application is currently visible.
+   *
+   * While a dialog is open the window focus / blur it causes must not be
+   * treated as the user leaving or returning to the app from the outside.
+   *
+   * @returns {boolean}
+   */
+  isDialogOpen() {
+    const dialog = this.getGlobal('dialog');
+
+    return Boolean(dialog.isDialogOpen && dialog.isDialogOpen());
+  }
 
   showCloseFileDialog = (file) => {
     const { name } = file;
@@ -1274,6 +1338,8 @@ export class App extends PureComponent {
       onReady();
     }
 
+    this.recentTabs.load();
+
     this.on('app.activeTabChanged', () => {
       this.closeNotifications();
     });
@@ -1339,7 +1405,8 @@ export class App extends PureComponent {
 
     if (
       tabState !== prevState.tabState ||
-      recentTabs !== prevState.recentTabs
+      recentTabs !== prevState.recentTabs ||
+      tabs !== prevState.tabs
     ) {
       this.updateMenu(tabState);
     }
@@ -1792,6 +1859,13 @@ export class App extends PureComponent {
    *
    * Does NOT prompt the user for a save location.
    *
+   * TODO(#5995): guard against clobbering external changes. The write below is
+   * unconditional, so a dirty tab auto-saved on blur / tab switch can overwrite
+   * a file that changed externally in the meantime, before #checkFileChanged
+   * gets a chance to run on focus. A follow-up will re-stat the file here and
+   * skip the write (leaving the tab dirty) when the on-disk `lastModified` is
+   * newer than what we last read, deferring to the focus-time conflict prompt.
+   *
    * @param {Tab} tab - the tab to auto-save
    * @param {string} contents - the tab contents
    *
@@ -1939,6 +2013,10 @@ export class App extends PureComponent {
 
   revealInFileExplorer = (filePath) => {
     return this.getGlobal('dialog').showFileExplorerDialog({ path: filePath });
+  };
+
+  copyFilePath = (filePath) => {
+    return this.getGlobal('systemClipboard').writeText({ text: filePath });
   };
 
   reopenLastTab = () => {
@@ -2227,6 +2305,10 @@ export class App extends PureComponent {
 
     if (action === 'reveal-in-file-explorer') {
       return this.revealInFileExplorer(options.filePath);
+    }
+
+    if (action === 'copy-file-path') {
+      return this.copyFilePath(options.filePath);
     }
 
     if (action === 'show-shortcuts') {

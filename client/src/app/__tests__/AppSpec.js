@@ -144,6 +144,32 @@ describe('<App>', function() {
         expect(updateMenuSpy).to.have.been.called;
       });
 
+
+      it('on tab file path change (e.g. save as)', async function() {
+
+        // given
+        const updateMenuSpy = spy();
+
+        const { app } = createApp({
+          onMenuUpdate: updateMenuSpy
+        });
+
+        const [ tab ] = await app.openFiles([ createFile('1.bpmn') ]);
+
+        updateMenuSpy.resetHistory();
+
+        // when
+        // simulate saving the tab to a different location
+        app.tabSaved(tab, createFile('1.bpmn', { path: '/other/folder/1.bpmn' }));
+
+        // then
+        await waitFor(() => {
+          expect(updateMenuSpy).to.have.been.calledWith(sinon.match({
+            tabs: app.state.tabs
+          }));
+        });
+      });
+
     });
 
 
@@ -1564,6 +1590,27 @@ describe('<App>', function() {
     });
 
 
+    it('should NOT auto-save on window blur while a dialog is open', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+      const [ tab ] = await app.openFiles([ file ]);
+
+      // mark as dirty
+      app.setState(app.setDirty(tab));
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
+
+      // a dialog opened by the app is blurring the window
+      dialog.isDialogOpen = () => true;
+
+      // when
+      await app.triggerAction('window-blurred');
+
+      // then
+      expect(writeFileSpy).not.to.have.been.called;
+    });
+
+
     it('should show notification on auto-save error', async function() {
 
       // given
@@ -2912,7 +2959,7 @@ describe('<App>', function() {
     });
 
 
-    it('should notify if content changed', async function() {
+    it('should reload without notifying if not dirty', async function() {
 
       // given
       const showSpy = spy(_ => {
@@ -2936,7 +2983,130 @@ describe('<App>', function() {
 
       const tab = openedTabs[0];
 
-      const lastModified = new Date().getMilliseconds();
+      const lastModified = Date.now();
+
+      updateFileStats(tab.file, { lastModified }, fileSystem);
+
+      // when
+      const updatedTab = await app.checkFileChanged(tab);
+
+      // then
+      expect(showSpy).to.not.have.been.called;
+      expect(readFileSpy).to.have.been.called;
+
+      await waitFor(() => {
+        expect(updatedTab).to.eql(app.findOpenTab(file1));
+      });
+
+      expect(updatedTab.file.contents).to.eql(NEW_FILE_CONTENTS);
+
+      // TODO(nikku): fix test suite and properly pass last modified
+      // expect(updatedTab.file.lastModified).to.eql(lastModified);
+
+      expect(app.isUnsaved(updatedTab)).to.be.false;
+    });
+
+
+    it('should reset the editor cache when reloading a background tab', async function() {
+
+      // given
+      const cache = new Cache();
+
+      const destroySpy = sinon.spy(cache, 'destroy');
+
+      const { app } = createApp({
+        cache,
+        globals: {
+          fileSystem
+        }
+      });
+
+      // file2 is opened last, so file1's tab stays in the background
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const backgroundTab = openedTabs[0];
+
+      const lastModified = Date.now();
+
+      updateFileStats(backgroundTab.file, { lastModified }, fileSystem);
+
+      // when
+      const updatedTab = await app.checkFileChanged(backgroundTab);
+
+      // then
+      // the stale cache is dropped so the tab re-imports the external contents
+      // once it is re-activated
+      expect(destroySpy).to.have.been.calledWith(backgroundTab.id);
+
+      expect(updatedTab.file.contents).to.eql(NEW_FILE_CONTENTS);
+      expect(app.isUnsaved(updatedTab)).to.be.false;
+    });
+
+
+    it('should NOT reset the editor cache when reloading the active tab', async function() {
+
+      // given
+      const cache = new Cache();
+
+      const { app } = createApp({
+        cache,
+        globals: {
+          fileSystem
+        }
+      });
+
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const tab = openedTabs[0];
+
+      // make file1's tab the active one
+      await app.showTab(tab);
+
+      const destroySpy = sinon.spy(cache, 'destroy');
+
+      const lastModified = Date.now();
+
+      updateFileStats(tab.file, { lastModified }, fileSystem);
+
+      // when
+      await app.checkFileChanged(tab);
+
+      // then
+      // the active tab stays mounted and re-imports through its update cycle,
+      // so its live cache must be kept
+      expect(destroySpy).not.to.have.been.called;
+    });
+
+
+    it('should notify if content changed and tab is dirty', async function() {
+
+      // given
+      const showSpy = spy(_ => {
+        return {
+          button: 'ok'
+        };
+      });
+
+      const dialog = new Dialog({
+        show: showSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          dialog,
+          fileSystem
+        }
+      });
+
+      const openedTabs = await app.openFiles([ file1, file2 ]);
+
+      const tab = openedTabs[0];
+
+      app.setState(app.setDirty(tab));
+
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
+
+      const lastModified = Date.now();
 
       updateFileStats(tab.file, { lastModified }, fileSystem);
 
@@ -3043,7 +3213,11 @@ describe('<App>', function() {
 
       const tab = openedTabs[0];
 
-      const lastModified = new Date().getMilliseconds();
+      app.setState(app.setDirty(tab));
+
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
+
+      const lastModified = Date.now();
 
       updateFileStats(tab.file, { lastModified }, fileSystem);
 
@@ -3083,6 +3257,49 @@ describe('<App>', function() {
 
       // then
       expect(checkFileChangedSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should check for changes on window focus', async function() {
+
+      // given
+      const { app } = createApp({
+        globals: { fileSystem }
+      });
+
+      await app.openFiles([ file1 ]);
+
+      const checkFileChangedSpy = spy(app, 'checkFileChanged');
+
+      // when
+      await app.triggerAction('window-focused');
+
+      // then
+      expect(checkFileChangedSpy).to.have.been.called;
+    });
+
+
+    it('should NOT check for changes on window focus while a dialog is open', async function() {
+
+      // given
+      const dialog = new Dialog();
+
+      const { app } = createApp({
+        globals: { dialog, fileSystem }
+      });
+
+      await app.openFiles([ file1 ]);
+
+      const checkFileChangedSpy = spy(app, 'checkFileChanged');
+
+      // a dialog opened by the app is (re-)focusing the window
+      dialog.isDialogOpen = () => true;
+
+      // when
+      await app.triggerAction('window-focused');
+
+      // then
+      expect(checkFileChangedSpy).to.not.have.been.called;
     });
 
   });
@@ -3988,6 +4205,33 @@ describe('<App>', function() {
 
       // then
       expect(showFileExplorerDialogSpy).to.have.been.calledOnce;
+    });
+
+  });
+
+
+  describe('#copyFilePath', function() {
+
+    it('should call systemClipboard#writeText', async function() {
+
+      // given
+      const systemClipboard = new SystemClipboard();
+
+      const writeTextSpy = sinon.spy(systemClipboard, 'writeText');
+
+      const { app } = createApp({
+        globals: {
+          systemClipboard
+        }
+      });
+
+      const [ tab ] = await app.openFiles([ createFile('1.bpmn') ]);
+
+      // when
+      app.copyFilePath(tab.file.path);
+
+      // then
+      expect(writeTextSpy).to.have.been.calledOnceWith({ text: tab.file.path });
     });
 
   });

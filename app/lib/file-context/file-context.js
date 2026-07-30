@@ -130,6 +130,15 @@ module.exports = class FileContext extends EventEmitter {
   }
 
   /**
+   * Reset the file context, removing all roots and indexed files.
+   */
+  reset() {
+    this._indexer.getRoots().forEach(uri => this.removeRoot(uri));
+
+    this._indexer.removeAll();
+  }
+
+  /**
    * @return { Promise<undefined> }
    */
   close() {

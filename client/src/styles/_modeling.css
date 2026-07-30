@@ -10,6 +10,7 @@
 @import '~camunda-bpmn-js/dist/assets/element-templates.css';
 @import '~camunda-bpmn-js/dist/assets/element-template-chooser.css';
 @import '~camunda-bpmn-js/dist/assets/color-picker.css';
+@import '~camunda-bpmn-js/dist/assets/popup-menu.css';
 @import '~camunda-dmn-js/dist/assets/dmn-font/css/dmn-embedded.css';
 @import '~camunda-dmn-js/dist/assets/dmn-js-decision-table-controls.css';
 @import '~camunda-dmn-js/dist/assets/dmn-js-decision-table.css';
@@ -23,6 +24,10 @@
 /* render popup menu on top of all elements */
 .djs-popup-backdrop {
   z-index: 1001;
+}
+
+.bio-properties-panel-group-header:has(.bio-properties-panel-tooltip) {
+  z-index: 1002;
 }
 
 .djs-search-highlight {

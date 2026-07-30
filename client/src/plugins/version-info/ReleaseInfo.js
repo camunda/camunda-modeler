@@ -47,24 +47,24 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Forms on start events</h4>
-          You can now attach Camunda Forms directly to start events.
+          <h4>Browse the append and create menus by category</h4>
+          Elements are now grouped into categories with short descriptions, making them easier to find.
         </li>
         <li>
-          <h4>Track where variables are used</h4>
-          The variable outline now shows a &quot;Used by&quot; section, so you can quickly see which elements read a given variable.
+          <h4>Improved context pad</h4>
+          Unfinished flows now display an append indicator that opens the append menu on hover.
         </li>
         <li>
-          <h4>Validation before deploy</h4>
-          Lint errors are surfaced before you deploy or start a process instance, helping you catch issues early.
+          <h4>Smoother FEEL editing</h4>
+          FEEL inputs now provide clearer syntax highlighting and easier snippet navigation.
         </li>
         <li>
-          <h4>Resizable labels and improved annotations</h4>
-          You can now resize external labels, and text annotations received rendering improvements for better readability.
+          <h4>More accurate variable outline</h4>
+          The variable outline now recognizes more FEEL built-ins and understands expressions better.
         </li>
         <li>
-          <h4>Bug fixes and more</h4>
-          As always, this release incorporates bug fixes and additional minor improvements.
+          <h4>Support for new C8 features</h4>
+          You can now set the Business ID of a Call Activity, and specify the priority of a job.
         </li>
       </ul>
     </div>

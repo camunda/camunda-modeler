@@ -36,7 +36,6 @@ import TaskTestingTabActionItem from './side-panel/tabs/task-testing/TaskTesting
 
 import TaskTestingTab from './side-panel/tabs/task-testing/TaskTestingTab';
 import TaskTestingIcon from '../../../../resources/icons/TaskTesting.svg';
-import SidePanelHeader from './side-panel/SidePanelHeader';
 
 import VariablesSidePanel, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT } from './variables-side-panel/VariablesSidePanel';
 import VariablesTabActionItem from './variables-side-panel/VariablesTabActionItem';
@@ -96,6 +95,7 @@ export class BpmnEditor extends CachedComponent {
 
     this.ref = React.createRef();
     this.propertiesPanelRef = React.createRef();
+    this.propertiesPanelHeaderRef = React.createRef();
 
     this.handleEngineProfileChangeDebounced = debounce(this.handleEngineProfileChange);
 
@@ -178,7 +178,7 @@ export class BpmnEditor extends CachedComponent {
       propertiesPanel.setLayout(layout.propertiesPanel);
     }
 
-    propertiesPanel.attachTo(this.propertiesPanelRef.current);
+    propertiesPanel.attachTo(this.propertiesPanelRef.current, this.propertiesPanelHeaderRef.current);
 
     try {
       await this.loadTemplates();
@@ -226,10 +226,19 @@ export class BpmnEditor extends CachedComponent {
 
     const { panel = {} } = layout;
 
-    if (panel.open && panel.tab === 'linting') {
-      this.getModeler().get('linting').activate();
-    } else if (!panel.open || panel.tab !== 'linting') {
-      this.getModeler().get('linting').deactivate();
+    // only toggle linting once the diagram is imported; activating or
+    // deactivating while (re-)importing would access the not yet imported
+    // root element and crash (cf. #6049)
+    const { lastXML } = this.getCached();
+
+    if (lastXML && !this.state.importing && !this.isImportNeeded(prevProps)) {
+      const linting = this.getModeler().get('linting');
+
+      if (panel.open && panel.tab === 'linting') {
+        linting.activate();
+      } else {
+        linting.deactivate();
+      }
     }
 
     if (isPropertiesPanelLayoutChanged(prevProps, this.props)) {
@@ -950,7 +959,7 @@ export class BpmnEditor extends CachedComponent {
                     />
                   </SidePanel.Header>
                   <SidePanel.Header>
-                    <SidePanelHeader injector={ injector } />
+                    <div className="properties-panel-header-container" ref={ this.propertiesPanelHeaderRef } />
                   </SidePanel.Header>
                   <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
                     <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />

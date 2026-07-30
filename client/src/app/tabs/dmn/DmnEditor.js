@@ -459,7 +459,7 @@ export class DmnEditor extends CachedComponent {
     } else if (activeView.type === 'literalExpression') {
       assign(newState, {
         defaultCopyCutPaste: true,
-        defaultUndoRedo: true,
+        defaultUndoRedo: inputActive,
         removeSelected: true,
         selectAll: true
       });
@@ -475,7 +475,7 @@ export class DmnEditor extends CachedComponent {
       // TODO(@barmac): handle boxed expression differently than literal expression when needed
       assign(newState, {
         defaultCopyCutPaste: true,
-        defaultUndoRedo: true,
+        defaultUndoRedo: inputActive,
         removeSelected: true,
         selectAll: true
       });
@@ -965,12 +965,17 @@ export class DmnEditor extends CachedComponent {
             )
           }
 
-          <div className={
-            classNames(
-              'diagram',
-              { 'drd': isDrd }
-            )
-          } ref={ this.ref }></div>
+          <div
+            className={
+              classNames(
+                'diagram',
+                { 'drd': isDrd }
+              )
+            }
+            onFocus={ this.handleChanged }
+            onBlur={ this.handleChanged }
+            ref={ this.ref }>
+          </div>
 
           {
             hasPropertiesPanel && (

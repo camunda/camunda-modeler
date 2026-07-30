@@ -15,17 +15,11 @@ import View from './View';
 import getShortcuts from './getShortcuts';
 
 class KeyboardShortcutsModal extends PureComponent {
-  getModifierKey() {
+  render() {
     const platform = this.props.getGlobal('backend').getPlatform();
 
-    return platform === 'darwin' ? 'Command' : 'Control';
-  }
-
-  render() {
-    const modifierKey = this.getModifierKey();
-
     return <View
-      shortcuts={ getShortcuts(modifierKey) }
+      shortcuts={ getShortcuts(platform) }
       onClose={ this.props.onClose }
     />;
   }

@@ -32,13 +32,7 @@ import {
   ZeebeAPI
 } from './mocks';
 
-import { findRenderedComponentWithType } from 'react-dom/test-utils';
-
 import { TabsProvider } from '../';
-
-import { BpmnEditor } from '../tabs/bpmn/BpmnEditor';
-
-import { MultiSheetTab } from '../tabs/MultiSheetTab';
 
 import integrationSpec1XML from './IntegrationSpec.1.xml';
 import integrationSpec2XML from './IntegrationSpec.2.xml';
@@ -72,7 +66,7 @@ describe('Integration', function() {
     it.skip('should reimport on externally changed file', async function() {
 
       // given
-      const multiSheetTab = findRenderedComponentWithType(app, MultiSheetTab);
+      const multiSheetTab = app.tabRef.current.tabRef.current;
 
       await ensureLastXML(multiSheetTab);
 
@@ -84,7 +78,7 @@ describe('Integration', function() {
         }
       });
 
-      const modeler = findRenderedComponentWithType(app, BpmnEditor).getModeler();
+      const modeler = multiSheetTab.editorRef.current.getModeler();
 
       expect(modeler.xml).to.eql(integrationSpec2XML);
     });
@@ -93,9 +87,9 @@ describe('Integration', function() {
     it('should NOT reimport on tab selection with unsaved changes', async function() {
 
       // given
-      const multiSheetTab = findRenderedComponentWithType(app, MultiSheetTab);
+      const multiSheetTab = app.tabRef.current.tabRef.current;
 
-      const modeler = findRenderedComponentWithType(app, BpmnEditor).getModeler();
+      const modeler = multiSheetTab.editorRef.current.getModeler();
 
       const unsavedXML = ensureUnsavedChanges(modeler);
 

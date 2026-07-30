@@ -589,6 +589,96 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         expect(instance.getModeler().get('linting').isActive()).to.be.false;
       });
 
+
+      it('should not activate while importing (#6049)', async function() {
+
+        // given
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'linting'
+            }
+          }
+        });
+
+        const linting = instance.getModeler().get('linting');
+
+        const activateSpy = spy(linting, 'activate'),
+              deactivateSpy = spy(linting, 'deactivate');
+
+        // assume a (re-)import is in progress
+        await new Promise(resolve => instance.setState({ importing: true }, resolve));
+
+        // when
+        instance.componentDidUpdate(instance.props);
+
+        // then
+        expect(activateSpy).not.to.have.been.called;
+        expect(deactivateSpy).not.to.have.been.called;
+      });
+
+
+      it('should not deactivate while importing (#6049)', async function() {
+
+        // given
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: false
+            }
+          }
+        });
+
+        const linting = instance.getModeler().get('linting');
+
+        const activateSpy = spy(linting, 'activate'),
+              deactivateSpy = spy(linting, 'deactivate');
+
+        // assume a (re-)import is in progress
+        await new Promise(resolve => instance.setState({ importing: true }, resolve));
+
+        // when
+        instance.componentDidUpdate(instance.props);
+
+        // then
+        expect(deactivateSpy).not.to.have.been.called;
+        expect(activateSpy).not.to.have.been.called;
+      });
+
+
+      it('should not toggle while an import is pending (#6049)', async function() {
+
+        // given
+        const { instance } = await renderEditor(diagramXML, {
+          layout: {
+            panel: {
+              open: true,
+              tab: 'linting'
+            }
+          }
+        });
+
+        // props are out of sync with the imported diagram => import pending
+        instance.setCached({ lastXML: '<foo />' });
+
+        await waitFor(() => {
+          expect(instance.getCached().lastXML).to.equal('<foo />');
+        });
+
+        const linting = instance.getModeler().get('linting');
+
+        const activateSpy = spy(linting, 'activate'),
+              deactivateSpy = spy(linting, 'deactivate');
+
+        // when re-rendered before the pending import completes
+        instance.componentDidUpdate({ ...instance.props, xml: 'previous' });
+
+        // then
+        expect(activateSpy).not.to.have.been.called;
+        expect(deactivateSpy).not.to.have.been.called;
+      });
+
     });
 
   });
@@ -2066,6 +2156,23 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(warningSpy).to.have.been.calledWith({ message: error1.message });
       expect(warningSpy).to.have.been.calledWith({ message: error2.message });
       expect(warningSpy).to.have.been.calledWith({ message: error3.message });
+    });
+
+
+    it('should NOT warn when there are no template errors', async function() {
+
+      // given
+      const warningSpy = spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        onWarning: warningSpy
+      });
+
+      // when
+      await instance.handleElementTemplateErrors({ errors: [] });
+
+      // then
+      expect(warningSpy).not.to.have.been.called;
     });
 
   });

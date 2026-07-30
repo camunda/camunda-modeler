@@ -933,6 +933,68 @@ describe('<DmnEditor>', function() {
           expect(hasMenuEntry(state.editMenu, 'Find')).to.be.false;
         });
 
+
+        it('should provide native undo/redo entries when input is focused', async function() {
+
+          // given
+          const changedSpy = sinon.spy();
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'literalExpression' });
+
+          const input = document.createElement('input');
+          document.body.appendChild(input);
+          input.focus();
+
+          changedSpy.resetHistory();
+
+          // when
+          instance.handleChanged();
+
+          input.remove();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+
+          expect(getMenuEntry(state.editMenu, 'Undo').role).to.equal('undo');
+          expect(getMenuEntry(state.editMenu, 'Redo').role).to.equal('redo');
+        });
+
+
+        it('should provide editor undo/redo entries when no input is focused', async function() {
+
+          // given
+          const changedSpy = sinon.spy();
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'literalExpression' });
+
+          changedSpy.resetHistory();
+
+          // when
+          instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+
+          expect(getMenuEntry(state.editMenu, 'Undo').action).to.equal('undo');
+          expect(getMenuEntry(state.editMenu, 'Redo').action).to.equal('redo');
+        });
+
       });
 
 
@@ -987,6 +1049,68 @@ describe('<DmnEditor>', function() {
 
           const state = changedSpy.firstCall.args[0];
           expect(hasMenuEntry(state.editMenu, 'Find')).to.be.false;
+        });
+
+
+        it('should provide native undo/redo entries when input is focused', async function() {
+
+          // given
+          const changedSpy = sinon.spy();
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'boxedExpression' });
+
+          const input = document.createElement('input');
+          document.body.appendChild(input);
+          input.focus();
+
+          changedSpy.resetHistory();
+
+          // when
+          instance.handleChanged();
+
+          input.remove();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+
+          expect(getMenuEntry(state.editMenu, 'Undo').role).to.equal('undo');
+          expect(getMenuEntry(state.editMenu, 'Redo').role).to.equal('redo');
+        });
+
+
+        it('should provide editor undo/redo entries when no input is focused', async function() {
+
+          // given
+          const changedSpy = sinon.spy();
+
+          const { instance } = await renderEditor(diagramXML, {
+            onChanged: changedSpy
+          });
+
+          const modeler = instance.getModeler();
+
+          modeler.open({ type: 'boxedExpression' });
+
+          changedSpy.resetHistory();
+
+          // when
+          instance.handleChanged();
+
+          // then
+          expect(changedSpy).to.be.calledOnce;
+
+          const state = changedSpy.firstCall.args[0];
+
+          expect(getMenuEntry(state.editMenu, 'Undo').action).to.equal('undo');
+          expect(getMenuEntry(state.editMenu, 'Redo').action).to.equal('redo');
         });
 
       });

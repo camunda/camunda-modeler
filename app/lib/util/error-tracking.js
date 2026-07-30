@@ -12,8 +12,6 @@ const os = require('os');
 
 const log = require('../log')('app:error-tracking');
 
-const { rewriteFramesIntegration } = require('@sentry/integrations');
-
 const { createThrottler } = require('./error-tracking-throttler');
 
 const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
@@ -51,7 +49,7 @@ module.exports.start = function(Sentry, version, config, flags, renderer) {
 /**
  * Set additional tag in Sentry
  *
- * @param {import('@sentry/node')} Sentry
+ * @param {import('@sentry/electron/main')} Sentry
  * @param {string} key
  * @param {any} value
  */
@@ -120,7 +118,7 @@ function initializeSentry(Sentry, editorID, release, dsn) {
       release,
       beforeSend: createThrottler(),
       integrations: [
-        rewriteFramesIntegration({
+        Sentry.rewriteFramesIntegration({
           iteratee: (frame) => {
             if (!frame.filename) {
               return frame;

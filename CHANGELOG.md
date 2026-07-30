@@ -6,6 +6,74 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: add ability to copy diagram file path ([#6059](https://github.com/camunda/camunda-modeler/pull/6059))
+
+## 5.50.0
+
+### General
+
+* `FEAT`: list all application shortcuts in the 'Keyboard Shortcuts' modal ([#6050](https://github.com/camunda/camunda-modeler/pull/6050))
+* `FIX`: suppress errors for invalid, `template#engine` incompatible element templates ([#6071](https://github.com/camunda/camunda-modeler/issues/6071), [#6072](https://github.com/camunda/camunda-modeler/pull/6072), [bpmn-io/bpmn-js-element-templates#273](https://github.com/bpmn-io/bpmn-js-element-templates/pull/273))
+* `FIX`: correct discarting unsaved changes on fast tab switches ([#6063](https://github.com/camunda/camunda-modeler/issues/6063), [#6064](https://github.com/camunda/camunda-modeler/issues/6064))
+* `FIX`: reload auto-saved diagrams when they changed externally ([#5995](https://github.com/camunda/camunda-modeler/issues/5995))
+* `FIX`: do not treat application dialogs as window focus changes, avoiding bogus external-change prompts ([#5995](https://github.com/camunda/camunda-modeler/issues/5995))
+* `FIX`: guard resource reload against stale active tab in process applications ([#6061](https://github.com/camunda/camunda-modeler/issues/6061))
+* `FIX`: prevent re-opening stale historic files on application startup ([#6012](https://github.com/camunda/camunda-modeler/issues/6012), [#6026](https://github.com/camunda/camunda-modeler/issues/6012))
+* `DEPS`: update to `electron@43`
+* `DEPS`: migrate to `@sentry/electron`
+* `DEPS`: update to `react@19`
+* `DEPS`: update to `@bpmn-io/variable-outline@3.2.1`
+* `DEPS`: update to `@camunda/task-testing@5.1.0`
+* `DEPS`: update to `@bpmn-io/form-js@1.24.1`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.48.0`
+* `DEPS`: update to `@bpmn-io/variable-resolver@3.3.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.10.3`
+* `DEPS`: update to `@camunda/linting@3.53.0`
+* `DEPS`: update to `bpmn-js@18.22.1`
+* `DEPS`: update to `bpmn-js-create-append-anything@2.0.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.28.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.62.0`
+* `DEPS`: update to `bpmn-moddle@10.1.0`
+* `DEPS`: update to `camunda-bpmn-js@5.30.2`
+* `DEPS`: update to `diagram-js@15.23.2`
+* `DEPS`: update to `diagram-js-direct-editing@3.5.1`
+* `DEPS`: update to `diagram-js-minimap@5.4.0`
+* `DEPS`: update to `dmn-js@17.10.0`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.17.0`
+
+### BPMN
+
+* `FEAT`: rework append, create, and replace menus into browsable categories with per-element descriptions ([#6037](https://github.com/camunda/camunda-modeler/issues/6037))
+* `FEAT`: surface unfinished flows with an append indicator that opens the append menu on hover, guiding users to complete the paths ([camunda/improved-canvas#83](https://github.com/camunda/improved-canvas/pull/83))
+* `FEAT`: support configuring Call Activity Business ID (inherit / literal / FEEL expression) ([#5912](https://github.com/camunda/camunda-modeler/issues/5912))
+* `FEAT`: support `businessId` for Called Element in element templates ([bpmn-io/bpmn-js-element-templates#269](https://github.com/bpmn-io/bpmn-js-element-templates/pull/269))
+* `FEAT`: validate Call Activity Business ID against supported Camunda 8 versions ([camunda/linting#169](https://github.com/camunda/linting/pull/169))
+* `FEAT`: support job priority via `zeebe:jobPriorityDefinition` binding in element templates ([bpmn-io/bpmn-js-element-templates#267](https://github.com/bpmn-io/bpmn-js-element-templates/pull/267))
+* `FEAT`: enable popup editor for text areas ([bpmn-io/properties-panel#523](https://github.com/bpmn-io/properties-panel/pull/523))
+* `FEAT`: enhance FEEL syntax highlighting ([bpmn-io/feel-editor#100](https://github.com/bpmn-io/feel-editor/pull/100))
+* `FEAT`: recognize additional Camunda built-ins and improve expression analysis accuracy in variable outline ([bpmn-io/variable-resolver#121](https://github.com/bpmn-io/variable-resolver/pull/121))
+* `FEAT`: improve minimap performance ([#5215](https://github.com/camunda/camunda-modeler/issues/5215), [bpmn-io/diagram-js-minimap#115](https://github.com/bpmn-io/diagram-js-minimap/pull/115)) 
+* `FIX`: assign `$parent` property in all cases for I/O mapping in element templates ([bpmn-io/bpmn-js-element-templates#265](https://github.com/bpmn-io/bpmn-js-element-templates/pull/265))
+* `FIX`: support snippet placeholder navigation in FEEL popup ([bpmn-io/properties-panel#524](https://github.com/bpmn-io/properties-panel/pull/524))
+* `FIX`: compare popup input against live value ([bpmn-io/properties-panel#530](https://github.com/bpmn-io/properties-panel/pull/530))
+* `FIX`: prevent tab crash when toggling linting during import ([#6049](https://github.com/camunda/camunda-modeler/issues/6049))
+* `FIX`: keep undo/redo working after properties panel interaction removes focus ([#4772](https://github.com/camunda/camunda-modeler/issues/4772))
+* `FIX`: render properties panel tooltip above the context/append pad ([#6002](https://github.com/camunda/camunda-modeler/issues/6002))
+
+### DMN
+
+* `FEAT`: create variable for decision and input data per default ([bpmn-io/dmn-js#1011](https://github.com/bpmn-io/dmn-js/pull/1011))
+* `FEAT`: add type ref dropdown ([bpmn-io/dmn-js#1009](https://github.com/bpmn-io/dmn-js/pull/1009))
+* `FIX`: do not remove typeref when decision implementation changes ([bpmn-io/dmn-js#1011](https://github.com/bpmn-io/dmn-js/pull/1011))
+* `FIX`: make undo/redo respect focused text inputs ([#4613](https://github.com/camunda/camunda-modeler/issues/4613))
+
+### Forms
+
+* `FIX`: avoid redundant document preview fetches ([bpmn-io/form-js#1538](https://github.com/bpmn-io/form-js/pull/1538))
+* `FIX`: correct `getVariableSchema` reporting invalid variables ([bpmn-io/form-js#1475](https://github.com/bpmn-io/form-js/pull/1475))
+* `FIX`: correct drag and drop not working with recent `preact` versions ([bpmn-io/form-js#1529](https://github.com/bpmn-io/form-js/pull/1529))
+* `FIX`: handle numerical `0` value in select ([bpmn-io/form-js#1532](https://github.com/bpmn-io/form-js/issues/1532))
+
 ## 5.49.0
 
 ### General
@@ -17,6 +85,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/properties-panel@3.46.0`
 * `DEPS`: update to `@bpmn-io/variable-resolver@3.1.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@3.2.0`
+* `DEPS`: update to `@camunda/form-playground@0.25.0`
 * `DEPS`: update to `@camunda/linting@3.51.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.9.1`
 * `DEPS`: update to `@camunda/task-testing@5`

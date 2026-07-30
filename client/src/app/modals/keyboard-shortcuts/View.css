@@ -1,6 +1,25 @@
 :local(.View) {
   font-size: 1.2em;
 
+  .shortcut-group {
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0 0 6px;
+      font-size: 1em;
+    }
+
+    table {
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    td {
+      width: 50%;
+      text-align: left;
+    }
+  }
+
   .binding {
     padding: 5px 10px;
     font-family: var(--font-family-monospace);

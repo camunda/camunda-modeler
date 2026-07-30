@@ -30,10 +30,13 @@ class PropertiesPanelPage {
   /**
    * Wait for the panel to render for the current selection.
    *
+   * Exclude the separately rendered header, which also carries the
+   * `bio-properties-panel` class (cf. `attachTo(body, header)`)
+   *
    * @return {Promise<void>}
    */
   async waitForLoad() {
-    await this.page.waitForSelector('.bio-properties-panel');
+    await this.page.waitForSelector('.bio-properties-panel:not(.bio-properties-panel-header-container)');
   }
 
   /**
@@ -213,6 +216,16 @@ class PropertiesPanelPage {
   }
 
   /**
+   * The panel header, rendered into its own container via
+   * `attachTo(body, header)`.
+   *
+   * @return {import('@playwright/test').Locator}
+   */
+  header() {
+    return this.page.locator('.bio-properties-panel-header');
+  }
+
+  /**
    * The element type shown in the panel header for the current selection
    * (e.g. 'User Task', 'Service Task') — reflects the model immediately, so it
    * is a reliable observable of a morph/undo/redo without a file round-trip.
@@ -220,7 +233,7 @@ class PropertiesPanelPage {
    * @return {Promise<string>}
    */
   async elementType() {
-    const type = await this.page.locator('.bio-properties-panel-header-type').first().textContent();
+    const type = await this.header().locator('.bio-properties-panel-header-type').first().textContent();
 
     return (type || '').trim();
   }

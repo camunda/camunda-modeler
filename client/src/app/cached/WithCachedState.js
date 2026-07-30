@@ -70,24 +70,26 @@ export default function(Comp) {
     }
 
     setCachedState = (newState) => {
-      this.setState(function(state, props) {
-        const {
-          cache,
-          id
-        } = props;
+      const {
+        cache,
+        id
+      } = this.props;
 
-        newState = {
-          cached: {
-            ...state.cached,
-            ...newState
-          },
-          __destroy: state.__destroy
-        };
+      // write to the cache synchronously so it survives an unmount before React
+      // flushes setState (e.g. a fast tab switch); setState only re-renders (#6063)
+      const current = cache.get(id) || this.state;
 
-        cache.add(id, newState);
+      const updated = {
+        cached: {
+          ...current.cached,
+          ...newState
+        },
+        __destroy: current.__destroy
+      };
 
-        return newState;
-      });
+      cache.add(id, updated);
+
+      this.setState(updated);
     };
 
 

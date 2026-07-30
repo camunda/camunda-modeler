@@ -110,7 +110,7 @@ jobs:
           secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
           secret/data/products/desktop-modeler/ci/slack_integration TEAM_MEMBER_IDS;
     - name: Post to a Slack channel
-      uses: slackapi/slack-github-action@v3
+      uses: slackapi/slack-github-action@v4
       with:
         method: chat.postMessage
         token: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
