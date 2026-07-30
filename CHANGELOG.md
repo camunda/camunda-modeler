@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: add ability to copy diagram file path ([#6059](https://github.com/camunda/camunda-modeler/pull/6059))
+
 ## 5.50.0
 
 ### General
