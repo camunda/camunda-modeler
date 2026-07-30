@@ -9,6 +9,7 @@
  */
 
 import { expect } from 'chai';
+
 import TestContainer from 'mocha-test-container-support';
 
 import { waitFor } from '@testing-library/react';
@@ -174,6 +175,159 @@ describe('BpmnModeler', function() {
 
   });
 
+
+  describe('element templates - engine compatibility', function() {
+
+    // cf. https://docs.camunda.io/docs/components/modeler/element-templates/template-metadata/#engine-compatibility-engines
+    // and https://github.com/camunda/camunda-modeler/issues/6071
+
+    const SCHEMA = 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json';
+
+    // the desktop modeler advertises itself as `camundaDesktopModeler` (cf.
+    // BpmnEditor#createCachedState); `camunda` is intentionally not provided at
+    // load time (it is only added on engine-profile change)
+    const HOST_ENGINES = {
+      camundaDesktopModeler: '5.30.0'
+    };
+
+    // schema-VALID, no engines => compatible with any host
+    const VALID_COMPATIBLE = {
+      $schema: SCHEMA,
+      name: 'Valid Compatible',
+      id: 'valid.compatible',
+      appliesTo: [ 'bpmn:Task' ],
+      properties: [
+        {
+          label: 'Name',
+          type: 'String',
+          binding: {
+            type: 'property',
+            name: 'name'
+          }
+        }
+      ]
+    };
+
+    // schema-INVALID (`optional` not supported for property binding), compatible
+    const INVALID_COMPATIBLE = {
+      $schema: SCHEMA,
+      name: 'Invalid Compatible',
+      id: 'invalid.compatible',
+      appliesTo: [ 'bpmn:Task' ],
+      properties: [
+        {
+          type: 'String',
+          optional: true,
+          binding: {
+            type: 'property',
+            name: 'name'
+          }
+        }
+      ]
+    };
+
+    // schema-INVALID + INCOMPATIBLE: authored for a newer desktop modeler than
+    // the host provides (the #6071 scenario)
+    const INVALID_INCOMPATIBLE = {
+      ...INVALID_COMPATIBLE,
+      name: 'Invalid Incompatible',
+      id: 'invalid.incompatible',
+      engines: {
+        camundaDesktopModeler: '>=999.0.0'
+      }
+    };
+
+    // schema-VALID, declares only a `camunda` engine which the host does not
+    // provide at load => the engine key is ignored => compatible
+    const VALID_CAMUNDA_ONLY = {
+      $schema: SCHEMA,
+      name: 'Valid Camunda Only',
+      id: 'valid.camunda-only',
+      engines: {
+        camunda: '>=8.6'
+      },
+      appliesTo: [ 'bpmn:Task' ],
+      properties: []
+    };
+
+    async function loadTemplates(templates) {
+
+      // given
+      const modeler = await createModeler({
+        container: modelerContainer,
+        elementTemplates: { engines: HOST_ENGINES },
+        templates: []
+      });
+
+      const elementTemplates = modeler.get('elementTemplates'),
+            elementTemplatesLoader = modeler.get('elementTemplatesLoader'),
+            eventBus = modeler.get('eventBus');
+
+      let reportedErrors = null;
+
+      eventBus.on('elementTemplates.errors', (event) => {
+        reportedErrors = event.errors;
+      });
+
+      // when
+      elementTemplatesLoader.setTemplates(templates);
+
+      return { modeler, elementTemplates, reportedErrors };
+    }
+
+
+    it('should silently ignore an engine-incompatible template', async function() {
+
+      // when
+      const { elementTemplates, reportedErrors } = await loadTemplates([ INVALID_INCOMPATIBLE ]);
+
+      // then
+      expect(reportedErrors).to.be.null;
+
+      expect(elementTemplates.getAll()).to.be.empty;
+    });
+
+
+    it('should still report errors for an engine-compatible invalid template', async function() {
+
+      // when
+      const { elementTemplates, reportedErrors } = await loadTemplates([ INVALID_COMPATIBLE ]);
+
+      // then
+      expect(reportedErrors).not.to.be.empty;
+
+      expect(elementTemplates.getAll()).to.be.empty;
+    });
+
+
+    it('should load an engine-compatible valid template', async function() {
+
+      // when
+      const { elementTemplates, reportedErrors } = await loadTemplates([ VALID_COMPATIBLE ]);
+
+      // then
+      expect(reportedErrors).to.be.null;
+
+      const loaded = elementTemplates.getAll();
+
+      expect(loaded).to.have.length(1);
+      expect(loaded[0].id).to.eql('valid.compatible');
+    });
+
+
+    it('should treat a template with only a not-provided engine as compatible', async function() {
+
+      // when
+      const { elementTemplates, reportedErrors } = await loadTemplates([ VALID_CAMUNDA_ONLY ]);
+
+      // then
+      expect(reportedErrors).to.be.null;
+
+      expect(elementTemplates.get('valid.camunda-only')).to.exist;
+    });
+
+  });
+
 });
 
 // helpers //////////
@@ -184,14 +338,19 @@ describe('BpmnModeler', function() {
  * @param {Object} [options]
  */
 async function createModeler(options = {}) {
+  const {
+    templates = [ ELEMENT_TEMPLATE ],
+    ...modelerOptions
+  } = options;
+
   const modeler = new BpmnModeler({
     ...DEFAULT_OPTIONS,
-    ...options
+    ...modelerOptions
   });
 
   await modeler.importXML(diagramXML);
 
-  modeler.get('elementTemplatesLoader').setTemplates([ ELEMENT_TEMPLATE ]);
+  modeler.get('elementTemplatesLoader').setTemplates(templates);
 
   return modeler;
 }
