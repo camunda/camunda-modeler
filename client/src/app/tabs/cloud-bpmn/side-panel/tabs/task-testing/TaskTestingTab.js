@@ -50,6 +50,8 @@ export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing 
 export const LINTING_ERRORS_TITLE = 'Diagram has errors';
 export const LINTING_ERRORS_DESCRIPTION = 'Task testing requires a diagram without errors.';
 
+export const DEFAULT_CONFIGURE_DESCRIPTION = 'Configure cluster connection.';
+
 const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/');
 
 export default function TaskTestingTab(props) {
@@ -256,7 +258,7 @@ function getConfigureConnectionBannerDescription(connectionCheckResult, hasLinti
   } else if (hasLintingErrors) {
     return LINTING_ERRORS_DESCRIPTION;
   }
-  return null;
+  return DEFAULT_CONFIGURE_DESCRIPTION;
 }
 
 function canConnectToCluster(connectionCheckResult) {
