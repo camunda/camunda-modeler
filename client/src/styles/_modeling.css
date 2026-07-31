@@ -26,6 +26,12 @@
   z-index: 1001;
 }
 
+/* keep the minimap above the pads but below the open popup menu,
+ so an active menu still shows on top (#6075) */
+.djs-minimap {
+  z-index: 175;
+}
+
 .bio-properties-panel-group-header:has(.bio-properties-panel-tooltip) {
   z-index: 1002;
 }
