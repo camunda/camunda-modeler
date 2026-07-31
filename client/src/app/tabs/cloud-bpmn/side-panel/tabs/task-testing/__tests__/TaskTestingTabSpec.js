@@ -20,6 +20,7 @@ import { render, waitFor, screen } from '@testing-library/react';
 
 import TaskTestingTab, {
   CANNOT_CONNECT_TITLE,
+  DEFAULT_CONFIGURE_DESCRIPTION,
   LINTING_ERRORS_TITLE,
   UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE,
   UNSUPPORTED_PROTOCOL_TITLE
@@ -66,6 +67,19 @@ describe('<TaskTestingTab>', function() {
 
     // then
     expect(screen.getByRole('button', { name: 'Run test' })).to.exist;
+  });
+
+
+  it('should label the configure button without connection or linting errors', async function() {
+
+    // given
+    renderTab(modeler);
+
+    // when
+    await selectElement(modeler, 'Task_1');
+
+    // then
+    expect(await screen.findByRole('button', { name: DEFAULT_CONFIGURE_DESCRIPTION })).to.exist;
   });
 
 
