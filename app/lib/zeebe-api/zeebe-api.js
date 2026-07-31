@@ -863,6 +863,6 @@ function getErrorReason(error, endpoint) {
 
 
 function asSerializedError(error) {
-  return pick(error, [ 'message', 'code', 'details' ]);
+  return pick(error, [ 'message', 'code', 'details', 'detail' ]);
 }
 

@@ -359,6 +359,138 @@ describe('<TaskTestingApi>', function() {
         }
       ]);
     });
+
+
+    it('should return error details on failure', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          deploy: async () => {
+            return {
+              success: false,
+              response: {
+                message: 'Response code 400 (Bad Request).',
+                title: 'INVALID_ARGUMENT',
+                status: 400,
+                detail: 'Command \'CREATE\' rejected with code \'INVALID_ARGUMENT\': Must have at least one start event'
+              }
+            };
+          },
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'selfHosted'
+            };
+          },
+          once: () => {}
+        }),
+        null,
+        null,
+        {
+          path: 'path/to/file.bpmn'
+        },
+        () => {
+          return {
+            file: {
+              path: 'path/to/file.bpmn'
+            }
+          };
+        }
+      );
+
+      // when
+      const result = await api.deploy();
+
+      // then
+      expect(result).to.eql({
+        success: false,
+        error: 'Command \'CREATE\' rejected with code \'INVALID_ARGUMENT\': Must have at least one start event'
+      });
+    });
+  });
+
+
+  describe('#startInstance', function() {
+
+    it('should return error details on failure', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'selfHosted'
+            };
+          }
+        }),
+        {
+          startInstance: async () => {
+            return {
+              success: false,
+              response: {
+                message: 'Response code 400 (Bad Request).',
+                title: 'INVALID_ARGUMENT',
+                status: 400,
+                detail: 'The creation of elements inside a multi-instance subprocess is not supported.'
+              }
+            };
+          }
+        },
+        null,
+        {
+          path: 'path/to/file.bpmn'
+        },
+        null
+      );
+
+      // when
+      const result = await api.startInstance('123', 'Activity_1', {});
+
+      // then
+      expect(result).to.eql({
+        success: false,
+        error: 'The creation of elements inside a multi-instance subprocess is not supported.'
+      });
+    });
+
+
+    it('should fall back to error message without problem detail', async function() {
+
+      // given
+      const api = new TaskTestingApi(
+        new Deployment({
+          getConnectionForTab: async () => {
+            return {
+              targetType: 'selfHosted'
+            };
+          }
+        }),
+        {
+          startInstance: async () => {
+            return {
+              success: false,
+              response: {
+                message: 'connect ECONNREFUSED 127.0.0.1:8080'
+              }
+            };
+          }
+        },
+        null,
+        {
+          path: 'path/to/file.bpmn'
+        },
+        null
+      );
+
+      // when
+      const result = await api.startInstance('123', 'Activity_1', {});
+
+      // then
+      expect(result).to.eql({
+        success: false,
+        error: 'connect ECONNREFUSED 127.0.0.1:8080'
+      });
+    });
   });
 
 });
