@@ -79,6 +79,12 @@ const expectedFiles = {
         'camunda-modeler-${version}-linux-${arch}/camunda-modeler',
         'camunda-modeler-${version}-linux-${arch}/support/xdg_register.sh',
         'camunda-modeler-${version}-linux-${arch}/VERSION'
+      ],
+      executables: [
+        'camunda-modeler-${version}-linux-${arch}/camunda-modeler',
+        'camunda-modeler-${version}-linux-${arch}/chrome_crashpad_handler',
+        'camunda-modeler-${version}-linux-${arch}/chrome-sandbox',
+        'camunda-modeler-${version}-linux-${arch}/support/xdg_register.sh'
       ]
     }
   ],
@@ -140,6 +146,7 @@ function expandExpected(platform, version) {
     const {
       name,
       contents,
+      executables,
       archs
     } = expectedFile;
 
@@ -150,7 +157,8 @@ function expandExpected(platform, version) {
 
         return {
           name: replaceVariables(name),
-          contents: contents && contents.map(replaceVariables)
+          contents: contents && contents.map(replaceVariables),
+          executables: executables && executables.map(replaceVariables)
         };
       }))
     ];
@@ -159,21 +167,32 @@ function expandExpected(platform, version) {
 
 // helpers ///////////
 
+// extract unix permission bits from zip external file attributes
+// eslint-disable-next-line no-bitwise
+const zipEntryMode = (entry) => (entry.externalFileAttributes >>> 16) & 0o777;
+
+// whether the owner executable bit is set
+// eslint-disable-next-line no-bitwise
+const isExecutable = (mode) => Boolean(mode & 0o100);
+
 function parseZipFile(sourceFile) {
   return new Promise((resolve, reject) => {
-    let fileNames = [];
+    let entries = [];
     yauzl.open(sourceFile, { lazyEntries: true }, (err, zipFile) => {
       if (err) {
         return reject(err);
       }
       zipFile.readEntry();
       zipFile.on('entry', function(entry) {
-        fileNames.push(entry.fileName);
+        entries.push({
+          name: entry.fileName,
+          mode: zipEntryMode(entry)
+        });
         zipFile.readEntry();
       });
 
       zipFile.once('end', function() {
-        resolve(fileNames);
+        resolve(entries);
         zipFile.close();
       });
     });
@@ -182,12 +201,15 @@ function parseZipFile(sourceFile) {
 
 function parseTarFile(sourceFile) {
   return new Promise((resolve) => {
-    let fileNames = [];
+    let entries = [];
     const extract = tar.extract();
 
     extract.on('entry', function(header, stream, next) {
 
-      fileNames.push(header.name);
+      entries.push({
+        name: header.name,
+        mode: header.mode
+      });
 
       stream.on('end', function() {
         next();
@@ -197,7 +219,7 @@ function parseTarFile(sourceFile) {
     });
 
     extract.on('finish', function() {
-      resolve(fileNames);
+      resolve(entries);
     });
 
     fs.createReadStream(sourceFile).pipe(zlib.createUnzip()).pipe(extract);
@@ -230,7 +252,8 @@ async function verifyArchives(platforms, version) {
 
       const {
         name,
-        contents
+        contents,
+        executables
       } = distributable;
 
       const archivePath = `${distroDir}/${replaceVersion(name)}`;
@@ -243,23 +266,50 @@ async function verifyArchives(platforms, version) {
       }
 
 
-      // (1): verify correct contents for archive
-      if (contents) {
+      // (1): verify correct contents + permissions for archive
+      if (contents || executables) {
 
-        console.log('     > verifying contents');
+        const entries = await parseCompressedFile(archivePath);
 
-        const files = await parseCompressedFile(archivePath);
+        if (contents) {
 
-        for (const expectedFile of contents) {
+          console.log('     > verifying contents');
 
-          const contained = files.some(file => file === expectedFile);
+          for (const expectedFile of contents) {
 
-          if (!contained) {
-            throw new Error(`expected <${name}> to contain <${expectedFile}>`);
+            const contained = entries.some(entry => entry.name === expectedFile);
+
+            if (!contained) {
+              throw new Error(`expected <${name}> to contain <${expectedFile}>`);
+            }
           }
+
+          console.log('     > ok');
         }
 
-        console.log('     > ok');
+        if (executables) {
+
+          console.log('     > verifying executables');
+
+          for (const expectedFile of executables) {
+
+            const entry = entries.find(entry => entry.name === expectedFile);
+
+            if (!entry) {
+              throw new Error(`expected <${name}> to contain <${expectedFile}>`);
+            }
+
+            // verify owner executable bit is set
+            if (!isExecutable(entry.mode)) {
+              throw new Error(
+                `expected <${expectedFile}> in <${name}> to be executable, ` +
+                `found mode <${entry.mode.toString(8)}>`
+              );
+            }
+          }
+
+          console.log('     > ok');
+        }
       }
     }
 

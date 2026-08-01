@@ -31,6 +31,7 @@ module.exports = function(context) {
 
   const executableFiles = [
     'camunda-modeler',
+    'chrome_crashpad_handler',
     'chrome-sandbox',
     'support/xdg_register.sh',
     'support/xdg_unregister.sh'
@@ -68,4 +69,3 @@ module.exports = function(context) {
 
   walk(appOutDir);
 };
-
