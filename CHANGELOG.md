@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: make `chrome_crashpad_handler` in Linux distribution executable ([#6080](https://github.com/camunda/camunda-modeler/pull/6080))
+
 ## 5.50.0
 
 ### General
