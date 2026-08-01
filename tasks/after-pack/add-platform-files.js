@@ -11,16 +11,12 @@
 const fs = require('fs');
 
 const {
-  copy: _copyGlob
+  copy: copyGlob
 } = require('cpx2');
-
-const { promisify } = require('util');
 
 const {
   Transform: TransformStream
 } = require('stream');
-
-const copyGlob = promisify(_copyGlob);
 
 const {
   name,
