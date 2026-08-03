@@ -33,7 +33,7 @@ test.describe('BPMN keep implementation details (Camunda 8)', function() {
 
     // when morphing it to a user task
     await app.step('morph service task to user task', () => {
-      return editor.changeType('ServiceTask_1', 'User task');
+      return editor.changeType('Task_1', 'User task');
     });
 
     await app.step('save file', () => app.shortcut('CommandOrControl+S'));
@@ -70,7 +70,7 @@ test.describe('BPMN keep implementation details (Camunda 8)', function() {
     // when morphing it to a send task (also a job-worker task, so it supports
     // the same task definition)
     await app.step('morph service task to send task', () => {
-      return editor.changeType('ServiceTask_1', 'Send task');
+      return editor.changeType('Task_1', 'Send task');
     });
 
     await app.step('save file', () => app.shortcut('CommandOrControl+S'));
@@ -117,7 +117,9 @@ test.describe('BPMN keep implementation details (Camunda 8)', function() {
 
     // morph service task -> user task, save as `output`
     await app.step('morph to user task', async () => {
-      await editor.changeType('ServiceTask_1', 'User task');
+      await editor.changeType('Task_1', 'User task');
+
+      await expect.poll(() => editor.getElementType('Task_1'), { timeout: 10000 }).toBe('User Task');
 
       await app.expectSaveDialog(output);
       await app.shortcut('CommandOrControl+Shift+S');
@@ -127,15 +129,17 @@ test.describe('BPMN keep implementation details (Camunda 8)', function() {
 
     // undo -> back to a service task
     await app.step('undo restores the service task', async () => {
-      await app.shortcut('CommandOrControl+Z');
+      await editor.undo();
 
+      await expect.poll(() => editor.getElementType('Task_1'), { timeout: 10000 }).toBe('Service Task');
       await expect.poll(savedType, { timeout: 10000 }).toBe('serviceTask');
     });
 
     // redo -> user task again
     await app.step('redo re-applies the morph', async () => {
-      await app.shortcut('CommandOrControl+Y');
+      await editor.redo();
 
+      await expect.poll(() => editor.getElementType('Task_1'), { timeout: 10000 }).toBe('User Task');
       await expect.poll(savedType, { timeout: 10000 }).toBe('userTask');
     });
   });
@@ -157,7 +161,7 @@ test.describe('BPMN keep implementation details (Camunda 7)', function() {
     await editor.canvas().waitFor();
 
     // when morphing it to a send task (also a job-based task)
-    await app.step('morph service task to send task', () => editor.changeType('ServiceTask_1', 'Send task'));
+    await app.step('morph service task to send task', () => editor.changeType('Task_1', 'Send task'));
     await app.step('save file', () => app.shortcut('CommandOrControl+S'));
 
     // then all of the implementation is preserved
@@ -187,7 +191,7 @@ test.describe('BPMN keep implementation details (Camunda 7)', function() {
     await editor.canvas().waitFor();
 
     // when morphing it to a user task
-    await app.step('morph service task to user task', () => editor.changeType('ServiceTask_1', 'User task'));
+    await app.step('morph service task to user task', () => editor.changeType('Task_1', 'User task'));
     await app.step('save file', () => app.shortcut('CommandOrControl+S'));
 
     // then the service-task-specific implementation is dropped, but the shared
@@ -226,8 +230,9 @@ test.describe('BPMN keep implementation details (Camunda 7)', function() {
 
     // when morphing the user task to a service task, the form is dropped
     await app.step('morph to service task drops the form', async () => {
-      await editor.changeType('UserTask_1', 'Service task');
+      await editor.changeType('Task_1', 'Service task');
 
+      await expect.poll(() => editor.getElementType('Task_1'), { timeout: 10000 }).toBe('Service Task');
       await expect.poll(hasForm, { timeout: 10000 }).toBe(false);
     });
 
@@ -235,9 +240,7 @@ test.describe('BPMN keep implementation details (Camunda 7)', function() {
     await app.step('undo restores the form', async () => {
       await editor.undo();
 
-      // wait for the morph to revert before checking the file
-      await expect.poll(() => editor.getElementType('UserTask_1'), { timeout: 10000 }).toBe('User Task');
-
+      await expect.poll(() => editor.getElementType('Task_1'), { timeout: 10000 }).toBe('User Task');
       await expect.poll(hasForm, { timeout: 10000 }).toBe(true);
     });
 
@@ -245,9 +248,7 @@ test.describe('BPMN keep implementation details (Camunda 7)', function() {
     await app.step('redo drops the form again', async () => {
       await editor.redo();
 
-      // wait for the morph to re-apply before checking the file
-      await expect.poll(() => editor.getElementType('UserTask_1'), { timeout: 10000 }).toBe('Service Task');
-
+      await expect.poll(() => editor.getElementType('Task_1'), { timeout: 10000 }).toBe('Service Task');
       await expect.poll(hasForm, { timeout: 10000 }).toBe(false);
     });
   });

@@ -111,7 +111,7 @@ test.describe('BPMN copy/paste', function() {
 
     // when copying it and pasting a second copy
     await app.step('copy + paste the service task', async () => {
-      await editor.copy('ServiceTask_1');
+      await editor.copy('Task_1');
       await editor.pasteAt(0.5, 0.72);
     });
 
