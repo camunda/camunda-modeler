@@ -64,6 +64,19 @@ class ElectronApp {
   }
 
   /**
+   * Whether the canvas is focused, read from the Edit menu: the editor exposes
+   * the diagram undo/redo only while the canvas is focused, and the native
+   * (role-based) entries otherwise. Reflects a focus change asynchronously.
+   *
+   * @return {Promise<boolean>}
+   */
+  async isCanvasFocused() {
+    const undo = await findMenuItem(this.electronApp, 'Undo');
+
+    return !!undo && undo.role !== 'undo';
+  }
+
+  /**
    * Click an application menu item by label. For menu actions without a
    * keyboard accelerator (e.g. "New File > DMN diagram (Camunda 8)").
    *

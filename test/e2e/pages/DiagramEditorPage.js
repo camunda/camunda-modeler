@@ -10,6 +10,8 @@
 
 'use strict';
 
+const { expect } = require('@playwright/test');
+
 /**
  * Shared base for the diagram-js based editors (bpmn-js, dmn-js). Holds the
  * common canvas/element/selection/context-pad interactions; the BPMN and DMN
@@ -30,6 +32,20 @@ class DiagramEditorPage {
    */
   canvas() {
     return this.page.locator('.djs-container');
+  }
+
+  /**
+   * Focus the diagram canvas so undo/redo reach the diagram rather than the
+   * native (no-op) handler. Focuses the tabindexed canvas SVG without changing
+   * the selection, then waits for the Edit menu to switch to the diagram
+   * undo/redo, which the editor derives from canvas focus asynchronously.
+   *
+   * @return {Promise<void>}
+   */
+  async focusCanvas() {
+    await this.canvas().locator('svg[tabindex]').first().evaluate((el) => el.focus({ preventScroll: true }));
+
+    await expect.poll(() => this.app.isCanvasFocused(), { timeout: 5000 }).toBe(true);
   }
 
   /**
@@ -100,14 +116,9 @@ class DiagramEditorPage {
   }
 
   /**
-   * Open a context-pad popup menu (e.g. via 'replace' or 'append') and click one
-   * of its entries by its visible label text.
-   *
-   * The whole open-then-click is retried as a unit: a background re-render — most
-   * notably the connection check / "Camunda Connector templates updated" toast
-   * landing — can tear the popup down again right after it opens, so clicking the
-   * entry on its own would hang on a popup that just vanished. Re-opening and
-   * re-clicking rides out that teardown.
+   * Open a context-pad popup menu (e.g. via 'replace' or 'append') and click the
+   * entry with the given label. Opens and clicks as a retried unit because a
+   * background re-render can tear the popup down right after it opens.
    *
    * @param {string} elementId
    * @param {string} action the context-pad entry's `data-action`, e.g. 'replace'
@@ -137,16 +148,18 @@ class DiagramEditorPage {
         continue;
       }
 
-      // surface entries hidden inside drill-in categories; the search field
-      // filters on keyup, so real keystrokes are required (fill alone won't do)
+      // the search filters on keyup, so focus it and type real keystrokes
+      // (fill alone does not trigger the filter)
       if (await search.count() && !(await entry.count())) {
+        await search.click();
         await search.fill('');
         await search.pressSequentially(entryLabel);
       }
 
-      // popup is open — try to pick the entry; it can be torn down before the
-      // click lands, in which case we loop to re-open and retry
+      // wait for the entry (the filter may still be settling), then click; if
+      // the popup was torn down, loop to re-open and retry
       try {
+        await entry.waitFor({ state: 'visible', timeout: 2000 });
         await entry.click({ timeout: 2000 });
 
         return;
