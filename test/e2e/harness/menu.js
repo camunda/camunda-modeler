@@ -128,7 +128,7 @@ function clickMenuItem(electronApp, label) {
  * @param {import('@playwright/test').ElectronApplication} electronApp
  * @param {string} label
  *
- * @return {Promise<{ label: string, enabled: boolean, accelerator: string|null }|null>}
+ * @return {Promise<{ label: string, enabled: boolean, accelerator: string|null, role: string|null }|null>}
  */
 function findMenuItem(electronApp, label) {
   return electronApp.evaluate(({ Menu }, label) => {
@@ -137,7 +137,7 @@ function findMenuItem(electronApp, label) {
     const walk = (items) => {
       for (const item of items) {
         if (item.label === label) {
-          found = { label: item.label, enabled: item.enabled, accelerator: item.accelerator || null };
+          found = { label: item.label, enabled: item.enabled, accelerator: item.accelerator || null, role: item.role || null };
 
           return;
         }
