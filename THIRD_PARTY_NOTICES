@@ -292,7 +292,7 @@ This project incorporates components from the projects listed below. The origina
 285.  @sentry/browser-utils@10.62.0 (git://github.com/getsentry/sentry-javascript.git)
 286.  @sentry/replay@10.62.0 (git+https://github.com/getsentry/sentry-javascript.git)
 287.  @sentry/replay-canvas@10.62.0 (git+https://github.com/getsentry/sentry-javascript.git)
-288.  camunda-modeler@5.50.0-rc.0 (https://github.com/camunda/camunda-modeler)
+288.  camunda-modeler@5.50.0 (https://github.com/camunda/camunda-modeler)
 289.  semver@7.7.4 (git+https://github.com/npm/node-semver.git)
 290.  ua-parser-js@1.0.39 (https://github.com/faisalman/ua-parser-js.git)
 291.  inherits-browser@0.1.0 (git+https://github.com/nikku/inherits-browser.git)
@@ -12648,11 +12648,11 @@ SOFTWARE.
 END OF @sentry/replay-canvas@10.62.0 NOTICES AND INFORMATION
 
 
-%% camunda-modeler@5.50.0-rc.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-modeler@5.50.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 null
 ==========================================
-END OF camunda-modeler@5.50.0-rc.0 NOTICES AND INFORMATION
+END OF camunda-modeler@5.50.0 NOTICES AND INFORMATION
 
 
 %% semver@7.7.4 NOTICES AND INFORMATION BEGIN HERE
