@@ -86,7 +86,7 @@
     "@testing-library/user-event": "^14.6.1",
     "babel-loader": "^10.1.1",
     "babel-plugin-istanbul": "^8.0.0",
-    "bpmn-js-headless": "^0.1.0",
+    "bpmn-js-headless": "^0.2.0",
     "bpmnlint-loader": "^0.1.6",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chai": "^6.0.0",
