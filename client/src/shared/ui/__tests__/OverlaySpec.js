@@ -98,6 +98,29 @@ describe('<Overlay>', function() {
       // then
       expect(overlay.id).to.eql('');
     });
+
+
+    it('should render color strip if color provided', function() {
+
+      // when
+      const { overlay } = renderOverlay({ color: 'rgb(30, 136, 229)' });
+
+      // then
+      const colorStrip = overlay.querySelector('.overlay__color');
+
+      expect(colorStrip).to.exist;
+      expect(colorStrip.style.backgroundColor).to.eql('rgb(30, 136, 229)');
+    });
+
+
+    it('should NOT render color strip if no color provided', function() {
+
+      // when
+      const { overlay } = renderOverlay();
+
+      // then
+      expect(overlay.querySelector('.overlay__color')).not.to.exist;
+    });
   });
 
 

@@ -16,6 +16,7 @@
   --tab-dirty-marker-background-color: var(--color-blue-205-100-50);
   --tab-dirty-marker-border-color: var(--color-blue-205-100-45);
   --tab-active-background-color: var(--color-grey-225-10-75);
+  --tab-hover-background-color: var(--color-grey-225-10-80);
   --tab-action-icon-color: var(--color-grey-225-10-35);
   --tab-action-hover-background-color: var(--color-grey-225-10-80);
   --tab-action-active-background-color: var(--color-grey-225-10-75);
@@ -233,8 +234,7 @@
       }
     }
 
-    &.tab--active,
-    &:not(.tab--active):hover {
+    &.tab--active {
       background-color: var(--tab-active-background-color);
 
       .tab__dirty-marker {
@@ -242,11 +242,19 @@
       }
     }
 
+    &:not(.tab--active):hover {
+      background-color: var(--tab-hover-background-color);
+
+      .tab__dirty-marker {
+        box-shadow: 0 0 0 2px var(--tab-hover-background-color);
+      }
+    }
+
     &.tab--group:after {
       z-index: 3;
       position: absolute;
       content: '';
-      bottom: -0.5px;
+      top: 0;
       left: 0px;
       right: 0px;
       height: 2px;

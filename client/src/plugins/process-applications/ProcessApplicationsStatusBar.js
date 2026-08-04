@@ -36,6 +36,7 @@ export default function ProcessApplicationsStatusBar(props) {
     onRevealInFileExplorer,
     onCreateProcessApplication,
     processApplication,
+    processApplicationColor,
     processApplicationItems,
     tabsProvider
   } = props;
@@ -65,6 +66,7 @@ export default function ProcessApplicationsStatusBar(props) {
           className={ classnames('btn', css.ProcessApplicationsButton, { 'has-process-application': !!processApplication }) }
           ref={ ref }
           onClick={ () => setIsOpen(!isOpen) }
+          style={ processApplicationColor ? { '--process-application-color': processApplicationColor } : undefined }
           title={ processApplication ? 'This file is part of a process application' : 'New process application...' }
         >
           <ProcessApplicationIcon width="16" height="16" />
@@ -75,7 +77,7 @@ export default function ProcessApplicationsStatusBar(props) {
       isOpen && <Overlay className={ classnames(css.ProcessApplicationsOverlay, {
         'process-application': processApplication,
         'no-process-application': !processApplication
-      }) } id="process-application-overlay" anchor={ ref.current } onClose={ () => setIsOpen(false) }>
+      }) } id="process-application-overlay" color={ processApplicationColor } anchor={ ref.current } onClose={ () => setIsOpen(false) }>
         {
           !processApplication
             ? <>

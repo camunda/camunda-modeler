@@ -213,15 +213,21 @@ export default function ProcessApplicationsPlugin(props) {
     for (const [ id, group ] of Object.entries(tabGroups)) {
       triggerAction('set-tab-group', {
         id,
-        group
+        group,
+        color: group ? processApplications.getColor(group) : null
       });
     }
   }, [ items, tabs, triggerAction ]);
+
+  const processApplicationColor = processApplication
+    ? processApplications.getColor(processApplication.file.path)
+    : null;
 
   return <>
     <ProcessApplicationsStatusBar
       activeTab={ activeTab }
       processApplication={ processApplication }
+      processApplicationColor={ processApplicationColor }
       processApplicationItems={ processApplicationItems }
       onOpen={ (path) => triggerAction('open-diagram', { path }) }
       onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }
@@ -235,6 +241,7 @@ export default function ProcessApplicationsPlugin(props) {
       displayNotification={ displayNotification }
       log={ log }
       processApplication={ processApplication }
+      processApplicationColor={ processApplicationColor }
       processApplicationItems={ processApplicationItems }
       triggerAction={ triggerAction }
       connectionCheckResult={ connectionCheckResult } />
@@ -245,6 +252,7 @@ export default function ProcessApplicationsPlugin(props) {
       displayNotification={ displayNotification }
       log={ log }
       processApplication={ processApplication }
+      processApplicationColor={ processApplicationColor }
       processApplicationItems={ processApplicationItems }
       triggerAction={ triggerAction }
       connectionCheckResult={ connectionCheckResult } />

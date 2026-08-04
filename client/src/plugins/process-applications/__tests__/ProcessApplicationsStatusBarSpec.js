@@ -37,6 +37,38 @@ describe('<ProcessApplicationsStatusBar>', function() {
     });
 
 
+    it('should color button in process application color', function() {
+
+      // when
+      createProcessApplicationsStatusBar({
+        processApplicationColor: 'rgb(30, 136, 229)'
+      });
+
+      // then
+      const button = screen.getByRole('button');
+
+      expect(button.style.getPropertyValue('--process-application-color')).to.eql('rgb(30, 136, 229)');
+    });
+
+
+    it('should color overlay in process application color', function() {
+
+      // given
+      createProcessApplicationsStatusBar({
+        processApplicationColor: 'rgb(30, 136, 229)'
+      });
+
+      // when
+      fireEvent.click(screen.getByRole('button'));
+
+      // then
+      const colorStrip = screen.getByRole('dialog').querySelector('.overlay__color');
+
+      expect(colorStrip).to.exist;
+      expect(colorStrip.style.backgroundColor).to.eql('rgb(30, 136, 229)');
+    });
+
+
     it('should open overlay on click', function() {
 
       // given
