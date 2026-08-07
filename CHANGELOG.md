@@ -10,6 +10,11 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support call activities in task testing ([#6074](https://github.com/camunda/camunda-modeler/pull/6074))
 * `FIX`: surface the reason of instance start failed during task testing ([#6076](https://github.com/camunda/camunda-modeler/pull/6076))
 * `DEPS`: update to `@camunda/task-testing@6.0.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.10.4`
+
+### BPMN
+
+* `FIX`: correct create menu width ([#6085](https://github.com/camunda/camunda-modeler/issues/6085))
 
 ## 5.50.1
 
