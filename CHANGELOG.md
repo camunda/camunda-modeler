@@ -8,6 +8,8 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: add ability to copy diagram file path ([#6059](https://github.com/camunda/camunda-modeler/pull/6059))
 * `FIX`: surface the reason of instance start failed during task testing ([#6076](https://github.com/camunda/camunda-modeler/pull/6076))
+* `DEPS`: update to `@camunda/improved-canvas@1.10.4`
+
 
 ## 5.50.1
 
