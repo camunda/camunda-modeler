@@ -19,7 +19,7 @@
     "@camunda/execution-platform": "^0.3.2",
     "@camunda/form-linting": "^0.24.0",
     "@camunda/form-playground": "^0.25.0",
-    "@camunda/improved-canvas": "^1.10.3",
+    "@camunda/improved-canvas": "^1.10.4",
     "@camunda/linting": "^3.53.0",
     "@camunda/rpa-integration": "^1.3.4",
     "@camunda/task-testing": "^6.0.0",
