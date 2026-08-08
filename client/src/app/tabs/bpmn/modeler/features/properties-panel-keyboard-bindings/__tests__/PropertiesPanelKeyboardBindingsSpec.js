@@ -157,6 +157,36 @@ describe('PropertiesPanelKeyboardBindings', function() {
       expect(redoSpy).to.have.been.calledOnce;
     });
 
+
+    it('should redo with physical key code and shift', function() {
+
+      // given
+      const redoSpy = spy();
+
+      const modeler = createModeler({
+        commandStack: {
+          canRedo: () => true,
+          redo: redoSpy
+        },
+        eventBus: {
+          on: (_, callback) => callback()
+        },
+        propertiesPanel: {
+          _container: container
+        }
+      });
+
+      const propertiesPanelKeyboardBindings = modeler.get('propertiesPanelKeyboardBindings');
+
+      const event = createKeyEvent('\u044f', { code: 'KeyZ', ctrlKey: true, shiftKey: true });
+
+      // when
+      propertiesPanelKeyboardBindings.handleKeydown(event);
+
+      // then
+      expect(redoSpy).to.have.been.calledOnce;
+    });
+
   });
 
 
