@@ -95,9 +95,12 @@ export default class TaskTestingApi {
 
     if (!result.success) {
       log('Deployment failed: ', result);
+
+      const { detail, message } = result.response || {};
+
       return {
         success: false,
-        error: result?.response?.message || 'Deployment failed'
+        error: detail || message || 'Deployment failed'
       };
     }
 
@@ -124,6 +127,17 @@ export default class TaskTestingApi {
         }
       ]
     });
+
+    if (!response.success) {
+      log('Start instance failed: ', response);
+
+      const { detail, message } = response.response || {};
+
+      return {
+        success: false,
+        error: detail || message || 'Failed to start process instance'
+      };
+    }
 
     log('Start instance successful: ', response);
     return response;

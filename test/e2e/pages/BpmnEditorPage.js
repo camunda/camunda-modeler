@@ -97,20 +97,25 @@ class BpmnEditorPage extends DiagramEditorPage {
   }
 
   /**
-   * Undo the last command (Cmd/Ctrl+Z).
+   * Undo the last command. Focuses the canvas first so the accelerator reaches
+   * the diagram rather than the native no-op handler.
    *
    * @return {Promise<void>}
    */
-  undo() {
+  async undo() {
+    await this.focusCanvas();
+
     return this.app.shortcut('CommandOrControl+Z');
   }
 
   /**
-   * Redo the last undone command (Cmd/Ctrl+Y).
+   * Redo the last undone command. Mirror of {@link undo}.
    *
    * @return {Promise<void>}
    */
-  redo() {
+  async redo() {
+    await this.focusCanvas();
+
     return this.app.shortcut('CommandOrControl+Y');
   }
 
