@@ -28,8 +28,8 @@
     "prerelease": "run-s update-license-book",
     "update-license-book": "node tasks/license-book.js -o THIRD_PARTY_NOTICES -c",
     "send-license-book-summary": "node tasks/send-license-book-summary.js -s",
-    "release": "lerna publish --force-publish=*",
-    "release:rc": "npm run release -- --preid=rc",
+    "release": "bio-release --force-release --no-build",
+    "release:rc": "npm run release -- --bump preminor --preid rc --yes",
     "test": "run-s *:test",
     "test:e2e": "playwright test -c test/e2e/playwright.config.js",
     "test:e2e:trace": "cross-env E2E_TRACE=1 npm run test:e2e",
@@ -45,11 +45,16 @@
     "app",
     "client"
   ],
+  "releaseConfig": {
+    "strategy": "fixed",
+    "commitMessage": "chore: release %version"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/camunda/camunda-modeler"
   },
   "devDependencies": {
+    "@bpmn-io/release": "^0.5.0",
     "@electron/notarize": "^3.1.1",
     "@playwright/test": "^1.62.1",
     "chai": "^6.0.0",
@@ -68,7 +73,6 @@
     "eslint-plugin-bpmn-io": "^2.3.1",
     "eslint-plugin-camunda-licensed": "^1.1.0",
     "execa": "^10.0.1",
-    "lerna": "^9.0.7",
     "license-webpack-plugin": "^4.0.2",
     "mocha": "^11.8.0",
     "mri": "^1.1.4",
