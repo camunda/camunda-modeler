@@ -269,6 +269,8 @@ export class BpmnEditor extends CachedComponent {
 
     modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
 
+    modeler[fn]('elementTemplates.changed', this.handleElementTemplatesChanged);
+
     modeler[fn]('error', 1500, this.handleError);
 
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
@@ -380,6 +382,18 @@ export class BpmnEditor extends CachedComponent {
     errors.forEach(error => {
       onWarning({ message: error.message });
     });
+  };
+
+  /**
+   * React to the modeler's element templates changing - e.g. after
+   * (re-)loading them. Templates are a linting input, so we let the app
+   * invalidate the (cached) linter for this tab and then re-lint through our
+   * own debounced path - coalescing with any concurrent modeling changes.
+   */
+  handleElementTemplatesChanged = () => {
+    this.props.onAction('element-templates-changed');
+
+    this.handleLintingDebounced();
   };
 
   handleAttach = (event) => {

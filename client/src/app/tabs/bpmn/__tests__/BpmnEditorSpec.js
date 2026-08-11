@@ -1891,6 +1891,29 @@ describe('<BpmnEditor>', function() {
     });
 
 
+    it('should invalidate linter and re-lint when element templates change', async function() {
+
+      // given
+      const onActionSpy = sinon.spy();
+
+      const { instance } = await renderEditor(diagramXML, {
+        onAction: onActionSpy
+      });
+
+      onActionSpy.resetHistory();
+
+      // when
+      instance.getModeler()._emit('elementTemplates.changed');
+
+      // then
+      // the app is asked to invalidate the cached linter for this tab ...
+      expect(onActionSpy).to.have.been.calledWith('element-templates-changed');
+
+      // ... and the editor re-lints through its own (debounced) path
+      expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
+    });
+
+
     it('should reload templates on action triggered', async function() {
 
       // given

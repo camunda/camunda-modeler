@@ -4514,6 +4514,160 @@ describe('<App>', function() {
     });
 
 
+    it('should reuse linter across lints', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      const tab = {
+        id: 'cloud-bpmn-1',
+        type: 'cloud-bpmn',
+        file: { contents: '', path: null }
+      };
+
+      // when
+      await app.getTabLinter(tab);
+      await app.getTabLinter(tab);
+
+      // then
+      // linter is built once and reused, not rebuilt on every lint
+      expect(getLinterSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should not rebuild linter for concurrent lints', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      const tab = {
+        id: 'cloud-bpmn-1',
+        type: 'cloud-bpmn',
+        file: { contents: '', path: null }
+      };
+
+      // when
+      // two lints start before the first build resolves (lintTab is often
+      // called without awaiting), so they must share the in-flight build
+      await Promise.all([
+        app.getTabLinter(tab),
+        app.getTabLinter(tab)
+      ]);
+
+      // then
+      // the linter (and template validation) is built once, not per lint
+      expect(getLinterSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should rebuild linter after templates changed', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      const tab = {
+        id: 'cloud-bpmn-1',
+        type: 'cloud-bpmn',
+        file: { contents: '', path: null }
+      };
+
+      await app.getTabLinter(tab);
+
+      // when
+      // element templates were (re-)loaded, invalidating cached linters
+      app.linterCache = {};
+
+      await app.getTabLinter(tab);
+
+      // then
+      // templates changed, so the linter is rebuilt
+      expect(getLinterSpy).to.have.been.calledTwice;
+    });
+
+
+    it('should invalidate linter cache on element-templates-changed', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      await app.createDiagram('cloud-bpmn');
+
+      const { activeTab } = app.state;
+
+      await app.lintTab(activeTab);
+
+      expect(getLinterSpy).to.have.been.calledOnce;
+
+      // when
+      // templates changed - the cache entry is dropped
+      await app.triggerAction('element-templates-changed', { tab: activeTab });
+
+      // then
+      // the next lint rebuilds the linter (the handler itself does not re-lint)
+      await app.lintTab(activeTab);
+
+      expect(getLinterSpy).to.have.been.calledTwice;
+    });
+
+
+    it('should invalidate only the changed tab linter on element-templates-changed', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      await app.createDiagram('cloud-bpmn');
+
+      const otherTab = app.state.activeTab;
+
+      await app.createDiagram('cloud-bpmn');
+
+      const changedTab = app.state.activeTab;
+
+      // cache linters for both tabs
+      await app.lintTab(otherTab);
+      await app.lintTab(changedTab);
+
+      expect(getLinterSpy).to.have.been.calledTwice;
+
+      // when
+      // templates changed for one specific tab
+      await app.triggerAction('element-templates-changed', { tab: changedTab });
+
+      getLinterSpy.resetHistory();
+
+      // then
+      // the other tab's linter is retained (its templates did not change)
+      await app.lintTab(otherTab);
+
+      expect(getLinterSpy).not.to.have.been.called;
+
+      // but the changed tab's linter is rebuilt on the next lint
+      await app.lintTab(changedTab);
+
+      expect(getLinterSpy).to.have.been.calledOnce;
+    });
+
+
     it('should return empty linting state', async function() {
 
       // given
