@@ -115,7 +115,10 @@ const noopProvider = {
 export class TabsProvider {
 
   constructor(resolveTab) {
-    this.uuid = 0;
+
+    // start at 1 so generated tab ids are always truthy, matching production
+    // (real ids are non-empty strings; id 0 would be falsy)
+    this.uuid = 1;
 
     this.resolveTab = resolveTab || function(type) {
 
