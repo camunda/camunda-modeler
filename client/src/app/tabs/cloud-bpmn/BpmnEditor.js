@@ -211,7 +211,7 @@ export class BpmnEditor extends CachedComponent {
       }
     }
 
-    if (prevProps.file !== this.props.file) {
+    if (prevProps.file?.path !== this.props.file?.path) {
       this.loadTemplates();
     }
 

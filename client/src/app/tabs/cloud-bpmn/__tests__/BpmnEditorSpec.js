@@ -1897,7 +1897,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     });
 
 
-    it('should reload templates on save', async function() {
+    it('should not reload templates on save (unchanged path)', async function() {
 
       // given
       const getConfigSpy = sinon.spy(),
@@ -1926,15 +1926,66 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       setTemplatesSpy.resetHistory();
 
       // when
+      // save replaces the file object, but the path is unchanged
       rerender(diagramXML, {
         file: { path: '/bar' }
       });
 
       // expect
-      await waitFor(() => {
-        expect(getConfigSpy).to.be.calledOnce;
+      // templates are NOT re-fetched / re-validated on save
+      await new Promise(resolve => setTimeout(resolve, 50));
+      expect(getConfigSpy).not.to.have.been.called;
+      expect(setTemplatesSpy).not.to.have.been.called;
+    });
+
+
+    it('should reload templates when file path changes', async function() {
+
+      // given
+      let call = 0;
+
+      const getConfigStub = sinon.stub().callsFake(() => Promise.resolve([
+        {
+          '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+          'id': `template-${ call++ }`
+        }
+      ]));
+
+      const setTemplatesSpy = sinon.spy(),
+            elementTemplatesLoaderMock = { setTemplates: setTemplatesSpy };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplatesLoader: elementTemplatesLoaderMock
+            }
+          })
+        }
       });
-      expect(getConfigSpy).to.be.calledWith('bpmn.elementTemplates');
+
+      const { rerender } = await renderEditor(diagramXML, {
+        cache,
+        getConfig: getConfigStub,
+        file: { path: '/bar' }
+      });
+
+      getConfigStub.resetHistory();
+      setTemplatesSpy.resetHistory();
+
+      // when
+      // e.g. save-as to a new path, exposing different local templates
+      rerender(diagramXML, {
+        file: { path: '/baz' }
+      });
+
+      // expect
+      await waitFor(() => {
+        expect(getConfigStub).to.be.calledOnce;
+      });
+      expect(getConfigStub).to.be.calledWith('bpmn.elementTemplates');
       expect(setTemplatesSpy).to.be.calledOnce;
     });
 
