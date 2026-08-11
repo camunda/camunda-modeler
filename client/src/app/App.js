@@ -139,6 +139,11 @@ export class App extends PureComponent {
 
     this.tabComponentCache = {};
 
+    // cache of constructed linters per tab, so we don't rebuild the linter
+    // (and re-fetch + re-validate element templates) on every modeling
+    // interaction. Invalidated when templates are (re-)loaded.
+    this.linterCache = {};
+
     // TODO(nikku): make state
     this.navigationHistory = new History();
 
@@ -657,6 +662,8 @@ export class App extends PureComponent {
 
     delete newOpenedTabs[tab.id];
 
+    delete this.linterCache[tab.id];
+
     const {
       [ tab.id ]: _removedProfile,
       ...newEngineProfiles
@@ -1132,15 +1139,7 @@ export class App extends PureComponent {
   };
 
   lintTab = async (tab, contents) => {
-    const { tabsProvider } = this.props;
-
-    const { type } = tab;
-
-    const tabProvider = tabsProvider.getProvider(type);
-
-    const plugins = this.getPlugins(`lintRules.${ type }`);
-
-    const linter = await tabProvider.getLinter(plugins, tab, this.getConfig);
+    const linter = await this.getTabLinter(tab);
 
     let results = [];
 
@@ -1164,6 +1163,60 @@ export class App extends PureComponent {
     }
 
     this.setLintingState(tab, results);
+  };
+
+  /**
+   * Get the (cached) linter for a tab, rebuilt only when its templates change.
+   *
+   * @param {Object} tab
+   *
+   * @returns {Promise<Object|null>}
+   */
+  getTabLinter = (tab) => {
+    const cached = this.linterCache[ tab.id ];
+
+    if (cached) {
+      return cached;
+    }
+
+    const { tabsProvider } = this.props;
+
+    const { type } = tab;
+
+    const tabProvider = tabsProvider.getProvider(type);
+
+    const plugins = this.getPlugins(`lintRules.${ type }`);
+
+    // cache the in-flight promise so concurrent lints (lintTab is often not
+    // awaited) share one build instead of each re-validating all templates
+    const linterPromise = Promise.resolve(
+      tabProvider.getLinter(plugins, tab, this.getConfig)
+    );
+
+    this.linterCache[ tab.id ] = linterPromise;
+
+    return linterPromise;
+  };
+
+  /**
+   * Invalidate a tab's cached linter after its element templates changed.
+   *
+   * The originating editor names its own tab, so invalidation targets exactly
+   * the tab whose templates were (re-)set - not merely whichever tab is active.
+   * Each tab loads its own, file-scoped templates, so other tabs are
+   * unaffected. Re-linting is left to the editor, which triggers it (debounced)
+   * through its own linting path - keeping cache ownership here and lint
+   * scheduling where the contents live. Runs only on genuine template
+   * (re-)loads, never on ordinary modeling interactions.
+   *
+   * @param {Object} tab
+   */
+  handleElementTemplatesChanged = (tab) => {
+    if (!tab) {
+      return;
+    }
+
+    delete this.linterCache[ tab.id ];
   };
 
   _handleConnectionCheckStarted = () => {
@@ -2212,6 +2265,10 @@ export class App extends PureComponent {
       } = options;
 
       return this.lintTab(tab, contents);
+    }
+
+    if (action === 'element-templates-changed') {
+      return this.handleElementTemplatesChanged(options.tab);
     }
 
     if (action === 'select-tab') {

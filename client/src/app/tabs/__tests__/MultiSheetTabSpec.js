@@ -559,6 +559,49 @@ describe('<MultiSheetTab>', function() {
       });
     });
 
+
+    it('should inject tab into element-templates-changed action', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      const {
+        instance
+      } = renderTab({
+        onAction
+      });
+
+      // when
+      await instance.onAction('element-templates-changed');
+
+      // then
+      expect(onAction).to.have.been.calledWith('element-templates-changed', {
+        tab: instance.props.tab
+      });
+    });
+
+
+    it('should preserve options on element-templates-changed action', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      const {
+        instance
+      } = renderTab({
+        onAction
+      });
+
+      // when
+      await instance.onAction('element-templates-changed', { foo: 'bar' });
+
+      // then
+      expect(onAction).to.have.been.calledWith('element-templates-changed', {
+        foo: 'bar',
+        tab: instance.props.tab
+      });
+    });
+
   });
 
 

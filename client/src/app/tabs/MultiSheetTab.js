@@ -360,6 +360,13 @@ export class MultiSheetTab extends CachedComponent {
       });
     }
 
+    if (action === 'element-templates-changed') {
+      return onAction('element-templates-changed', {
+        ...options,
+        tab
+      });
+    }
+
     return onAction(action, options);
   };
 
