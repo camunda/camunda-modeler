@@ -7,14 +7,22 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: add ability to copy diagram file path ([#6059](https://github.com/camunda/camunda-modeler/pull/6059))
-* `FEAT`: support call activities in task testing ([#6074](https://github.com/camunda/camunda-modeler/pull/6074))
-* `FIX`: surface the reason of instance start failed during task testing ([#6076](https://github.com/camunda/camunda-modeler/pull/6076))
-* `DEPS`: update to `@camunda/task-testing@6.0.0`
-* `DEPS`: update to `@camunda/improved-canvas@1.10.4`
+* `DEPS`: update to `diagram-js@15.24.0`
 
 ### BPMN
 
+* `FEAT`: support call activities in task testing ([#6074](https://github.com/camunda/camunda-modeler/pull/6074))
+* `FEAT`: group popup menu elements into tabs ([camunda/camunda-bpmn-js#490](https://github.com/camunda/camunda-bpmn-js/issues/490))
+* `FEAT`: tag elements visually inside a group via `categoryValueRef` ([bpmn-io/bpmn-js#2469](https://github.com/bpmn-io/bpmn-js/pull/2469))
+* `FEAT`: eagerly create category value when creating or updating a group ([bpmn-io/bpmn-js#2469](https://github.com/bpmn-io/bpmn-js/pull/2469))
+* `FIX`: surface the reason of instance start failed during task testing ([#6076](https://github.com/camunda/camunda-modeler/pull/6076))
+* `FIX`: do not copy message flows without participants ([bpmn-io/bpmn-js#1902](https://github.com/bpmn-io/bpmn-js/issues/1902), [bpmn-io/bpmn-js#2475](https://github.com/bpmn-io/bpmn-js/pull/2475))
+* `FIX`: ignore labels in `laneRef` updates ([bpmn-io/bpmn-js#2469](https://github.com/bpmn-io/bpmn-js/pull/2469))
 * `FIX`: correct create menu width ([#6085](https://github.com/camunda/camunda-modeler/issues/6085))
+* `DEPS`: update to `bpmn-js@18.24.0`
+* `DEPS`: update to `camunda-bpmn-js@5.31.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.10.4`
+* `DEPS`: update to `@camunda/task-testing@6.0.0`
 
 ## 5.50.1
 
