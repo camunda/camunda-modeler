@@ -1867,8 +1867,17 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     it('should reload templates on action triggered', async function() {
 
       // given
-      const getConfigSpy = sinon.spy(),
-            elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
+      // each fetch returns different templates so the reload is applied
+      let call = 0;
+
+      const getConfigStub = sinon.stub().callsFake(() => Promise.resolve([
+        {
+          '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+          'id': `template-${ call++ }`
+        }
+      ]));
+
+      const elementTemplatesLoaderStub = sinon.stub({ setTemplates() {} });
 
       const cache = new Cache();
 
@@ -1885,15 +1894,57 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // when
       const { instance } = await renderEditor(diagramXML, {
         cache,
-        getConfig: getConfigSpy
+        getConfig: getConfigStub
       });
 
       await instance.triggerAction('elementTemplates.reload');
 
       // expect
-      expect(getConfigSpy).to.be.calledTwice;
-      expect(getConfigSpy).to.be.always.calledWith('bpmn.elementTemplates');
+      expect(getConfigStub).to.be.calledTwice;
+      expect(getConfigStub).to.be.always.calledWith('bpmn.elementTemplates');
       expect(elementTemplatesLoaderStub.setTemplates).to.be.calledTwice;
+    });
+
+
+    it('should not re-set unchanged templates on reload', async function() {
+
+      // given
+      const getConfigStub = sinon.stub().resolves([
+        {
+          '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+          'id': 'template-1'
+        }
+      ]);
+
+      const setTemplatesSpy = sinon.spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplatesLoader: { setTemplates: setTemplatesSpy }
+            }
+          })
+        }
+      });
+
+      const { instance } = await renderEditor(diagramXML, {
+        cache,
+        getConfig: getConfigStub
+      });
+
+      // templates were set once on mount
+      expect(setTemplatesSpy).to.be.calledOnce;
+
+      // when
+      // reload fetches the same templates
+      await instance.triggerAction('elementTemplates.reload');
+
+      // then
+      // identical templates are not re-applied (no re-validation, linter kept)
+      expect(setTemplatesSpy).to.be.calledOnce;
     });
 
 
