@@ -316,9 +316,22 @@ export class BpmnEditor extends CachedComponent {
 
     const templatesLoader = modeler.get('elementTemplatesLoader');
 
-    let templates = await getConfig('bpmn.elementTemplates');
+    const templates = getCloudTemplates(await getConfig('bpmn.elementTemplates'));
 
-    templatesLoader.setTemplates(getCloudTemplates(templates));
+    // skip (re-)setting identical templates: setting them re-validates every
+    // template and invalidates the linter. A (re-)load only warrants that work
+    // when the fetched templates actually changed (e.g. edited locally). The
+    // key lives in the (tab-scoped) cache so it survives editor remounts, i.e.
+    // switching away and back to the tab does not re-set unchanged templates.
+    const templatesKey = JSON.stringify(templates);
+
+    if (templatesKey === this.getCached().templatesKey) {
+      return;
+    }
+
+    this.setCached({ templatesKey });
+
+    templatesLoader.setTemplates(templates);
   }
 
   undo = () => {
