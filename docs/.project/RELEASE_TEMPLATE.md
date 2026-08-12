@@ -21,7 +21,7 @@ _To be done when the release manager is assigned._
 
 * [ ] communicate the code freeze to the team
   * [ ] create a calendar event
-  * [ ] announce the code freeze in the [#team-modeling-group](https://camunda.slack.com/archives/C032H77434N) Slack channel
+  * [ ] announce the code freeze in the [#sig-modeling-guild](https://camunda.slack.com/archives/C032H77434N) Slack channel
 
 _To be done before the code freeze._
 
@@ -30,7 +30,7 @@ _To be done before the code freeze._
 
 _To be done after code freeze to prepare and test the release._
 
-* [ ] inform teams ([#team-modeling-group](https://camunda.slack.com/archives/C032H77434N)) that the freeze started and release prep is in progress
+* [ ] inform teams ([#sig-modeling-guild](https://camunda.slack.com/archives/C032H77434N)) that the freeze started and release prep is in progress
 * [ ] make sure changes in upstream libraries are merged and released
   * `bpmn-js`, `dmn-js`, `*-properties-panel`, `*-moddle`, `camunda-bpmn-js`, `form-js`, ...
 * [ ] make sure the dependencies are updated in the [Web Modeler](https://github.com/camunda/web-modeler/)
@@ -45,7 +45,7 @@ _To be done after code freeze to prepare and test the release._
   * [ ] create a draft following [our guidelines](https://github.com/bpmn-io/internal-docs/blob/main/releases/modeler/CAMUNDA_MODELER.md#whats-new-communication) and based on priorities which were aligned with the team (PM, UX, and Engineering side)
   * [ ] create PR to merge the draft into `develop`. Assign to PM, UX and Engineering for review
 * [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md)
-* [ ] compile a list of blog worthy changes as input to [release blog](https://confluence.camunda.com/pages/viewpage.action?pageId=178590449)
+* [ ] compile a list of blog worthy changes as input to [release blog](https://lamppost.camunda-it.rocks/handbook/index.html?continue#departments/marketing/product-marketing/product-release-process-bom/monthly-alpha-and-software-release-blog-post-process/index.md)
 * [ ] merge to main: `git checkout main && git merge develop`
 * [ ] create release candidate (`npm run release:rc -- [preminor|premajor|prepatch]`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/main/releases/RELEASE_SCHEMA.md)
   * [ ] wait for [release build](https://github.com/camunda/camunda-modeler/actions/workflows/RELEASE.yml) to create the [artifacts](https://github.com/camunda/camunda-modeler/releases)
@@ -73,8 +73,7 @@ _To be done as a post-release activity._
   * [ ] [camunda-docs-static](https://github.com/camunda/camunda-docs-static)
   * [ ] [camunda-docs-manual](https://github.com/camunda/camunda-docs-manual)
   * [ ] [camunda-docs](https://github.com/camunda/camunda-docs)
-* [ ] provide content to the [release presentation and notice](https://confluence.camunda.com/x/Uq-gBQ#ReleasePresentationProcess-OrganisingtheReleasePresentation)
-* [ ] trigger an update of the Modeler download page ([modeler](https://camunda.com/download/modeler/)) via [marketing request form](https://confluence.camunda.com/x/rTGSBg)
+* [ ] provide content to the [release presentation and notice](https://lamppost.camunda-it.rocks/handbook/index.html?continue#departments/products/product-management/product-operations/products-processes/release-management-process/release-presentation-process/index.md)
 * [ ] update the version in [camunda-docs](https://github.com/camunda/camunda-docs/blob/main/src/pages/downloads.js) for the [self-managed download page](https://camunda.com/download/self-managed/)
 * [ ] add new version to [update server releases](https://github.com/camunda/camunda-modeler-update-server/blob/main/releases.json)
 * [ ] (optional) update [supported environments page](https://docs.camunda.io/docs/reference/supported-environments/)
