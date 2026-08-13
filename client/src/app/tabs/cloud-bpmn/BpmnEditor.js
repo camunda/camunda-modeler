@@ -81,6 +81,8 @@ import {
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
 
+import CredentialsManager from './credentials-manager/CredentialsManager';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 export const DEFAULT_ENGINE_PROFILE = {
@@ -973,7 +975,6 @@ export class BpmnEditor extends CachedComponent {
       <div className={ css.BpmnEditor }>
 
         <Loader hidden={ imported && !importing } />
-
         <div className="editor">
           <div
             className="diagram"
@@ -1061,6 +1062,14 @@ export class BpmnEditor extends CachedComponent {
           engineProfile={ engineProfile }
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
         }
+
+        <CredentialsManager
+          injector={ injector }
+          zeebeApi={ zeebeApi }
+          deployment={ deployment }
+          file={ file }
+          onError={ this.handleError }
+        />
       </div>
     );
   }
