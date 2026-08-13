@@ -8,6 +8,7 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: add ability to copy diagram file path ([#6059](https://github.com/camunda/camunda-modeler/pull/6059))
 * `DEPS`: update to `diagram-js@15.24.0`
+* `DEPS`: update to `react@19.2.8`
 
 ### BPMN
 
