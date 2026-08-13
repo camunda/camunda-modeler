@@ -1969,6 +1969,895 @@ describe('ZeebeAPI (REST)', function() {
   });
 
 
+  describe('#getAuthorizations', function() {
+
+    it('should set success=false when the REST client is not available', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI();
+
+      sinon.stub(zeebeAPI._camundaClients, 'getSupportedCamundaClients').resolves({});
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        resourceType: 'CLUSTER_VARIABLE'
+      };
+
+      // when
+      const result = await zeebeAPI.getAuthorizations(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+    });
+
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({ items: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        resourceType: 'CLUSTER_VARIABLE'
+      };
+
+      // when
+      const result = await zeebeAPI.getAuthorizations(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        resourceType: 'CLUSTER_VARIABLE'
+      };
+
+      // when
+      const result = await zeebeAPI.getAuthorizations(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+
+    it('should search authorizations for the resource type', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        resourceType: 'CLUSTER_VARIABLE'
+      };
+
+      // when
+      await zeebeAPI.getAuthorizations(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'POST',
+        urlPath: 'authentication/me/authorizations/search',
+        body: {
+          filter: {
+            resourceType: 'CLUSTER_VARIABLE'
+          }
+        }
+      });
+    });
+
+
+    it('should search authorizations with pagination', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const page = { from: 100, limit: 100 };
+
+      // when
+      await zeebeAPI.getAuthorizations({
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        resourceType: 'CLUSTER_VARIABLE',
+        page
+      });
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        body: { page }
+      });
+    });
+
+  });
+
+
+  describe('#searchClusterVariables', function() {
+
+    it('should set success=false when the REST client is not available', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI();
+
+      sinon.stub(zeebeAPI._camundaClients, 'getSupportedCamundaClients').resolves({});
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        filter: {}
+      };
+
+      // when
+      const result = await zeebeAPI.searchClusterVariables(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+    });
+
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({ items: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        filter: {
+          metadata: {
+            kind: { '$eq': 'CREDENTIAL' }
+          }
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.searchClusterVariables(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        filter: {}
+      };
+
+      // when
+      const result = await zeebeAPI.searchClusterVariables(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+
+    it('should return the response status on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => {
+            const error = new Error('TEST ERROR.');
+
+            error.statusCode = 403;
+
+            throw error;
+          }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        filter: {}
+      };
+
+      // when
+      const result = await zeebeAPI.searchClusterVariables(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.status).to.equal(403);
+    });
+
+
+    it('should search with the given filter', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const filter = {
+        metadata: {
+          kind: { '$eq': 'CREDENTIAL' }
+        }
+      };
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        filter
+      };
+
+      // when
+      await zeebeAPI.searchClusterVariables(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'POST',
+        urlPath: 'cluster-variables/search',
+        body: { filter }
+      });
+    });
+
+
+    it('should search with pagination', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const page = { from: 100, limit: 100 };
+
+      // when
+      await zeebeAPI.searchClusterVariables({
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        filter: {},
+        page
+      });
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        body: { page }
+      });
+    });
+
+  });
+
+
+  describe('#getClusterVariable', function() {
+
+    it('should set success=false when the REST client is not available', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI();
+
+      sinon.stub(zeebeAPI._camundaClients, 'getSupportedCamundaClients').resolves({});
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR'
+      };
+
+      // when
+      const result = await zeebeAPI.getClusterVariable(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+    });
+
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({ name: 'MY_VAR', value: '"secret"' })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR'
+      };
+
+      // when
+      const result = await zeebeAPI.getClusterVariable(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR'
+      };
+
+      // when
+      const result = await zeebeAPI.getClusterVariable(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+
+    it('should get the global variable by name', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({}));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR'
+      };
+
+      // when
+      await zeebeAPI.getClusterVariable(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'GET',
+        urlPath: 'cluster-variables/global/MY_VAR'
+      });
+    });
+
+
+    it('should encode the global variable name', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({}));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR/../../users'
+      };
+
+      // when
+      await zeebeAPI.getClusterVariable(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'GET',
+        urlPath: 'cluster-variables/global/MY_VAR%2F..%2F..%2Fusers'
+      });
+    });
+
+  });
+
+
+  describe('#createClusterVariable', function() {
+
+    it('should set success=false when the REST client is not available', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI();
+
+      sinon.stub(zeebeAPI._camundaClients, 'getSupportedCamundaClients').resolves({});
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        variable: {
+          name: 'MY_VAR',
+          value: '"secret"'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.createClusterVariable(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+    });
+
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({})
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        variable: {
+          name: 'MY_VAR',
+          value: '"secret"',
+          kind: 'SECRET_REFERENCE'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.createClusterVariable(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        variable: {
+          name: 'MY_VAR',
+          value: '"secret"'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.createClusterVariable(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+
+    it('should create the global variable', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({}));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const variable = {
+        name: 'MY_VAR',
+        value: '"secret"',
+        kind: 'SECRET_REFERENCE'
+      };
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        variable
+      };
+
+      // when
+      await zeebeAPI.createClusterVariable(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'POST',
+        urlPath: 'cluster-variables/global',
+        body: variable
+      });
+    });
+
+  });
+
+
+  describe('#updateClusterVariable', function() {
+
+    it('should set success=false when the REST client is not available', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI();
+
+      sinon.stub(zeebeAPI._camundaClients, 'getSupportedCamundaClients').resolves({});
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR',
+        variable: {
+          value: '"secret"'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.updateClusterVariable(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+    });
+
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({})
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR',
+        variable: {
+          value: '"secret"'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.updateClusterVariable(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR',
+        variable: {
+          value: '"secret"'
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.updateClusterVariable(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+
+    it('should update the global variable by name', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({}));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const variable = {
+        value: '"secret"'
+      };
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR',
+        variable
+      };
+
+      // when
+      await zeebeAPI.updateClusterVariable(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'PUT',
+        urlPath: 'cluster-variables/global/MY_VAR',
+        body: variable
+      });
+    });
+
+
+    it('should encode the global variable name', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({}));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const variable = {
+        value: '"secret"'
+      };
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        name: 'MY_VAR/../../users',
+        variable
+      };
+
+      // when
+      await zeebeAPI.updateClusterVariable(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'PUT',
+        urlPath: 'cluster-variables/global/MY_VAR%2F..%2F..%2Fusers',
+        body: variable
+      });
+    });
+
+  });
+
+
+  describe('#listSecrets', function() {
+
+    it('should set success=false when the REST client is not available', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI();
+
+      sinon.stub(zeebeAPI._camundaClients, 'getSupportedCamundaClients').resolves({});
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.listSecrets(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+    });
+
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({ references: [] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.listSecrets(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.listSecrets(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+
+    it('should return the response status on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => {
+            const error = new Error('TEST ERROR.');
+
+            error.statusCode = 403;
+
+            throw error;
+          }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.listSecrets(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.status).to.equal(403);
+    });
+
+
+    it('should list secrets with an empty body', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ references: [] }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      await zeebeAPI.listSecrets(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'POST',
+        urlPath: 'secrets/list',
+        body: {}
+      });
+    });
+
+  });
+
+
+
   describe('create client', function() {
 
     it('should create client with correct url', async function() {

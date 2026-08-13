@@ -40,3 +40,17 @@ export type Endpoint =
   | SelfHostedBasicAuthEndpoint
   | SelfHostedOAuthEndpoint
   | CamundaCloudEndpoint;
+
+export interface ClusterVariableMetadata {
+  kind: string;
+  configurationTemplate?: string;
+  configurationTemplateVersion?: number;
+  displayName?: string;
+}
+
+export interface ClusterVariable {
+  name: string;
+  value: object | string;
+  kind?: "JSON" | "SECRET_REFERENCE";
+  metadata: ClusterVariableMetadata;
+}
