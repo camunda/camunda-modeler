@@ -28,10 +28,13 @@ import {
   CONNECTION_CHECK_ERROR_REASONS
 } from '../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionCheckErrors';
 
+import { debounce } from '../../../../util';
+
 /**
  * @typedef {Object} ConfigurationInstance
  * @property {string} name - cluster-variable name
  * @property {Object} metadata - credential metadata (kind, configurationTemplate, ...)
+ * @property {string} [icon] - configuration-template icon contents
  */
 
 /**
@@ -56,7 +59,7 @@ const CONFIGURATION_UNAVAILABLE_MESSAGES = {
   unsupported: 'The connected cluster does not support credentials. Camunda 8.10 or later is required.'
 };
 
-const CREDENTIAL_SEARCH_FILTER = { metadata: { kind: { '$eq': 'CREDENTIAL' } } };
+const SEARCH_PAGE_SIZE = 100;
 
 const CREDENTIAL_REFERENCE_PREFIX = '=camunda.vars.env.';
 
@@ -76,9 +79,10 @@ export default class CredentialsManager extends PureComponent {
 
     this.state = { modal: null };
 
-    // last handled connection identity + status; the connection check polls
-    // periodically, so we only react to actual switches / offline transitions
-    this._lastConnectionKey = null;
+    this.updateConfigurationInstancesDebounced = debounce(() => this.updateConfigurationInstances());
+    this._configurationUpdatePromise = null;
+    this._configurationUpdatePending = false;
+    this._pendingConnectionStatus = undefined;
   }
 
   componentDidMount() {
@@ -87,6 +91,8 @@ export default class CredentialsManager extends PureComponent {
     eventBus.on('configuration.create', this.handleConfigurationCreate);
     eventBus.on('configuration.edit', this.handleConfigurationEdit);
     eventBus.on('configuration.upgrade', this.handleConfigurationUpgrade);
+    eventBus.on('import.done', this.updateConfigurationInstancesDebounced);
+    eventBus.on('elementTemplates.changed', this.updateConfigurationInstancesDebounced);
 
     this._connectionSubscription = this.context.subscribe(
       'connectionManager.connectionStatusChanged',
@@ -102,6 +108,10 @@ export default class CredentialsManager extends PureComponent {
     eventBus.off('configuration.create', this.handleConfigurationCreate);
     eventBus.off('configuration.edit', this.handleConfigurationEdit);
     eventBus.off('configuration.upgrade', this.handleConfigurationUpgrade);
+    eventBus.off('import.done', this.updateConfigurationInstancesDebounced);
+    eventBus.off('elementTemplates.changed', this.updateConfigurationInstancesDebounced);
+
+    this.updateConfigurationInstancesDebounced.cancel();
 
     if (this._connectionSubscription) {
       this._connectionSubscription.cancel();
@@ -142,6 +152,32 @@ export default class CredentialsManager extends PureComponent {
    * @param {Object} [connectionStatus] - latest status from the connection check
    */
   async updateConfigurationInstances(connectionStatus) {
+    this._pendingConnectionStatus = connectionStatus;
+
+    if (this._configurationUpdatePromise) {
+      this._configurationUpdatePending = true;
+
+      return this._configurationUpdatePromise;
+    }
+
+    this._configurationUpdatePromise = this.runConfigurationUpdates();
+
+    try {
+      await this._configurationUpdatePromise;
+    } finally {
+      this._configurationUpdatePromise = null;
+    }
+  }
+
+  async runConfigurationUpdates() {
+    do {
+      this._configurationUpdatePending = false;
+
+      await this.updateConfigurationInstancesOnce(this._pendingConnectionStatus);
+    } while (this._configurationUpdatePending);
+  }
+
+  async updateConfigurationInstancesOnce(connectionStatus) {
     const configurationInstances = this.getService('configurationInstances', false);
 
     if (!configurationInstances) {
@@ -175,20 +211,44 @@ export default class CredentialsManager extends PureComponent {
    * @param {Object} endpoint - the connected cluster endpoint
    */
   async loadConfigurationInstances(configurationInstances, endpoint) {
-    const { zeebeApi } = this.props;
+    const elementRegistry = this.getService('elementRegistry', false);
+    const elementTemplates = this.getService('elementTemplates', false);
 
-    const [ authorizationsResult, variablesResult ] = await Promise.all([
-      zeebeApi.getAuthorizations({ endpoint }, 'CLUSTER_VARIABLE'),
-      zeebeApi.searchClusterVariables({ endpoint }, CREDENTIAL_SEARCH_FILTER)
-    ]);
+    const filters = getConfigurationSearchFilters(
+      elementRegistry,
+      elementTemplates
+    );
 
-    if (!variablesResult.success) {
-      configurationInstances.setState(getConfigurationUnavailableState(variablesResult));
+    if (!filters.length) {
+      configurationInstances.setState({
+        available: false,
+        loading: false,
+        error: false,
+        permissions: { create: false, update: false },
+        selectableInstances: [],
+        referencedInstances: []
+      });
 
       return;
     }
 
-    const selectableInstances = toSelectableInstances(variablesResult.response.items);
+    const [ authorizationsResult, variablesResults ] = await Promise.all([
+      this.getAllAuthorizations(endpoint),
+      Promise.all(filters.map(filter => this.getAllClusterVariables(endpoint, filter)))
+    ]);
+
+    const failedVariablesResult = variablesResults.find(result => !result.success);
+
+    if (failedVariablesResult) {
+      configurationInstances.setState(getConfigurationUnavailableState(failedVariablesResult));
+
+      return;
+    }
+
+    const selectableInstances = toSelectableInstances(uniqueByName(
+      variablesResults.flatMap(result => result.response.items)
+    ))
+      .map(instance => this.withInstanceIcon(instance));
 
     const referencedInstances = await this.getReferencedInstances(endpoint, selectableInstances);
 
@@ -199,6 +259,18 @@ export default class CredentialsManager extends PureComponent {
       permissions: getConfigurationPermissions(authorizationsResult),
       selectableInstances,
       referencedInstances
+    });
+  }
+
+  getAllAuthorizations(endpoint) {
+    return getAllSearchResults(page => {
+      return this.props.zeebeApi.getAuthorizations({ endpoint }, 'CLUSTER_VARIABLE', page);
+    });
+  }
+
+  getAllClusterVariables(endpoint, filter) {
+    return getAllSearchResults(page => {
+      return this.props.zeebeApi.searchClusterVariables({ endpoint }, filter, page);
     });
   }
 
@@ -233,33 +305,18 @@ export default class CredentialsManager extends PureComponent {
 
     fetched.forEach((result, index) => {
       if (result.success && result.response && result.response.metadata) {
-        referencedInstances.push({
+        referencedInstances.push(this.withInstanceIcon({
           name: namesToFetch[index],
           metadata: result.response.metadata
-        });
+        }));
       }
     });
 
     return referencedInstances;
   }
 
-  /**
-   * React to a cluster connection change, debounced so the periodic connection
-   * check only triggers a reload on an actual switch or online/offline change.
-   *
-   * @param {Object} [connectionStatus]
-   */
+  /** @param {Object} [connectionStatus] */
   handleConnectionStatusChanged = (connectionStatus = {}) => {
-    const { connectionId = null, success = null } = connectionStatus;
-
-    const key = `${ connectionId }:${ success }`;
-
-    if (key === this._lastConnectionKey) {
-      return;
-    }
-
-    this._lastConnectionKey = key;
-
     this.updateConfigurationInstances(connectionStatus);
   };
 
@@ -287,26 +344,85 @@ export default class CredentialsManager extends PureComponent {
 
     const properties = getTemplateProperties(configurationTemplate);
 
-    let initialValues = getInitialFieldValues(properties);
-
-    try {
-      initialValues = await this.getInitialValues(mode, event, properties, initialValues);
-    } catch (error) {
-      this.props.onError({ error });
-    }
+    const initialValues = getInitialFieldValues(properties);
 
     const { instance } = event;
+
+    const configurationInstances = this.getService('configurationInstances', false);
+    const existingCredentials = configurationInstances
+      ? configurationInstances.getSelectableInstances()
+      : [];
 
     this.setState({
       modal: {
         mode,
         event,
         configurationTemplate,
+        existingCredentials,
         initialValues,
-        displayName: getCredentialDisplayName(mode, instance),
+        loading: mode !== 'create' && !!instance,
+        secretReferences: null,
+        displayName: getCredentialDisplayName(mode, instance, event.element),
         credentialName: getCredentialName(mode, instance)
       }
     });
+
+    Promise.all([
+      this.getInitialValues(mode, event, properties, initialValues),
+      this.getSecretReferences(properties)
+    ])
+      .then(([ loadedInitialValues, secretReferences ]) => this.updateModal(event, {
+        initialValues: loadedInitialValues,
+        loading: false,
+        secretReferences
+      }))
+      .catch(error => this.props.onError({ error }));
+  }
+
+  updateModal(event, updates) {
+    this.setState((state) => {
+      if (!state.modal || state.modal.event !== event) {
+        return null;
+      }
+
+      return {
+        modal: {
+          ...state.modal,
+          ...updates
+        }
+      };
+    });
+  }
+
+  /**
+   * List the secret references (`camunda.secrets.<name>`) on the connected
+   * cluster so the modal can flag references that do not exist yet. Returns null
+   * when the template has no secret fields, there is no connection, or the
+   * cluster does not expose the (version-gated) secrets endpoint — in which case
+   * no existence check is performed.
+   *
+   * @param {Array<Object>} properties
+   *
+   * @returns {Promise<string[]|null>}
+   */
+  async getSecretReferences(properties) {
+    if (!properties.some(property => property.secret === true)) {
+      return null;
+    }
+
+    const endpoint = await this.getEndpoint();
+
+    if (!endpoint) {
+      return null;
+    }
+
+    const result = await this.props.zeebeApi.listSecrets({ endpoint });
+
+    if (!result.success || !result.response) {
+      return null;
+    }
+
+    return result.response.references;
   }
 
   /**
@@ -383,7 +499,7 @@ export default class CredentialsManager extends PureComponent {
     }
 
     const value = buildCredentialValue(configurationTemplate, values);
-    const metadata = buildCredentialMetadata({ mode, event, configurationTemplate, displayName });
+    const metadata = buildCredentialMetadata({ event, configurationTemplate, displayName });
 
     if (mode === 'create') {
       await this.createCredential({ endpoint, event, name, value, metadata });
@@ -414,7 +530,7 @@ export default class CredentialsManager extends PureComponent {
       throw new Error(result.reason || 'Could not create the credential.');
     }
 
-    const instance = { name, metadata };
+    const instance = this.withInstanceIcon({ name, metadata });
 
     this.registerSelectableInstance(instance);
 
@@ -442,7 +558,26 @@ export default class CredentialsManager extends PureComponent {
       throw new Error(result.reason || 'Could not update the credential.');
     }
 
-    this.refreshSavedInstance({ name, metadata });
+    this.refreshSavedInstance(this.withInstanceIcon({ name, metadata }));
+  }
+
+  /**
+   * Attach the credential's configuration-template icon so the chooser can show
+   * it per instance.
+   *
+   * @param {ConfigurationInstance} instance
+   *
+   * @returns {ConfigurationInstance}
+   */
+  withInstanceIcon(instance) {
+    const configurationTemplates = this.getService('configurationTemplates', false);
+
+    const { metadata } = instance;
+
+    const template = configurationTemplates && metadata
+      && configurationTemplates.get(metadata.configurationTemplate, metadata.configurationTemplateVersion);
+
+    return { ...instance, icon: template && template.icon && template.icon.contents };
   }
 
   /**
@@ -500,7 +635,10 @@ export default class CredentialsManager extends PureComponent {
       <CredentialsModal
         mode={ modal.mode }
         configurationTemplate={ modal.configurationTemplate }
+        existingCredentials={ modal.existingCredentials }
         initialValues={ modal.initialValues }
+        loading={ modal.loading }
+        secretReferences={ modal.secretReferences }
         displayName={ modal.displayName }
         credentialName={ modal.credentialName }
         onSubmit={ this.handleSubmit }
@@ -512,6 +650,91 @@ export default class CredentialsManager extends PureComponent {
 
 
 // helpers //////////
+
+/**
+ * Fetch every page from a search endpoint using cursor pagination.
+ *
+ * @param {Function} search
+ * @returns {Promise<Object>}
+ */
+async function getAllSearchResults(search) {
+  const items = [];
+  let after;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    const page = {
+      limit: SEARCH_PAGE_SIZE,
+      ...(after ? { after } : {})
+    };
+    const result = await search(page);
+
+    if (!result.success) {
+      return result;
+    }
+
+    const responseItems = result.response.items || [];
+    const endCursor = result.response.page && result.response.page.endCursor;
+
+    items.push(...responseItems);
+
+    hasNextPage = responseItems.length > 0 && !!endCursor && endCursor !== after;
+    after = endCursor;
+
+    if (!hasNextPage) {
+      return {
+        ...result,
+        response: {
+          ...result.response,
+          items
+        }
+      };
+    }
+  }
+}
+
+/**
+ * Build one server-side credential filter per Configuration property used by
+ * an applied element template.
+ *
+ * @param {Object|null} elementRegistry
+ * @param {Object|null} elementTemplates
+ * @returns {Object[]}
+ */
+function getConfigurationSearchFilters(elementRegistry, elementTemplates) {
+  const configurationTemplates = new Set();
+
+  if (!elementRegistry || !elementTemplates) {
+    return [];
+  }
+
+  elementRegistry.getAll().forEach(element => {
+    const elementTemplate = elementTemplates.get(element);
+
+    (elementTemplate && elementTemplate.properties || []).forEach(property => {
+      if (property.type === 'Configuration' && property.configurationTemplate) {
+        configurationTemplates.add(property.configurationTemplate);
+      }
+    });
+  });
+
+  return [ ...configurationTemplates ].map(configurationTemplate => ({
+    metadata: {
+      kind: { '$eq': 'CREDENTIAL' },
+      configurationTemplate: { '$eq': configurationTemplate }
+    }
+  }));
+}
+
+/**
+ * De-duplicate configuration instances by cluster-variable name.
+ *
+ * @param {ConfigurationInstance[]} instances
+ * @returns {ConfigurationInstance[]}
+ */
+function uniqueByName(instances) {
+  return [ ...new Map(instances.map(instance => [ instance.name, instance ])).values() ];
+}
 
 /**
  * Determine why the credential chooser is unavailable before querying the
@@ -575,45 +798,39 @@ function buildCredentialValue(configurationTemplate, values) {
  * Build the credential's metadata, stamping the appropriate template version.
  *
  * @param {Object} options
- * @param {string} options.mode
  * @param {ChooserEvent} options.event
  * @param {ConfigurationTemplate|null} options.configurationTemplate
  * @param {string} options.displayName
  *
  * @returns {Object}
  */
-function buildCredentialMetadata({ mode, event, configurationTemplate, displayName }) {
+function buildCredentialMetadata({ event, configurationTemplate, displayName }) {
   return {
     kind: 'CREDENTIAL',
     displayName,
     configurationTemplate: (configurationTemplate && configurationTemplate.id)
       || (event.instance && event.instance.metadata && event.instance.metadata.configurationTemplate),
-    configurationTemplateVersion: getCredentialVersion(mode, configurationTemplate, event)
+    configurationTemplateVersion: getCredentialVersion(configurationTemplate, event)
   };
 }
 
 /**
- * Determine the configuration template version to stamp on a credential:
- * create / upgrade never go below the template's version, a plain edit keeps
- * the stored one.
+ * The configuration template version to stamp on the credential: always the
+ * rendered template's version, so any create, edit or upgrade auto-upgrades the
+ * stored version to the template embedded in the element template. Falls back to
+ * the floor, then the stored version, then 1 when no template resolves.
  *
- * @param {string} mode
  * @param {ConfigurationTemplate|null} configurationTemplate
  * @param {ChooserEvent} event
  *
  * @returns {number}
  */
-function getCredentialVersion(mode, configurationTemplate, event) {
-  const templateVersion = (configurationTemplate && configurationTemplate.version) || 1;
-
-  if (mode === 'create') {
-    return Math.max(templateVersion, event.configurationTemplateVersion || 1);
-  }
-
-  const currentVersion = (event.instance && event.instance.metadata
-    && event.instance.metadata.configurationTemplateVersion) || 1;
-
-  return mode === 'upgrade' ? Math.max(templateVersion, currentVersion) : currentVersion;
+function getCredentialVersion(configurationTemplate, event) {
+  return (configurationTemplate && configurationTemplate.version)
+    || event.configurationTemplateVersion
+    || (event.instance && event.instance.metadata
+      && event.instance.metadata.configurationTemplateVersion)
+    || 1;
 }
 
 /**
@@ -628,19 +845,45 @@ function getTemplateProperties(configurationTemplate) {
 }
 
 /**
- * The existing credential's display name, or empty for a new credential.
+ * The credential's display name: a suggestion derived from the bound element on
+ * create, or the existing credential's name on edit / upgrade.
  *
  * @param {string} mode
  * @param {ConfigurationInstance} [instance]
+ * @param {Object} [element] - the element the chooser is on (create only)
  *
  * @returns {string}
  */
-function getCredentialDisplayName(mode, instance) {
-  if (mode === 'create' || !instance) {
+function getCredentialDisplayName(mode, instance, element) {
+  if (mode === 'create') {
+    return getSuggestedCredentialName(element);
+  }
+
+  return (instance && instance.metadata && instance.metadata.displayName) || '';
+}
+
+/**
+ * Suggest a credential name from an element: its name in UPPER_SNAKE_CASE, or
+ * its ID uppercased when it has no name.
+ *
+ * @param {Object} [element]
+ *
+ * @returns {string}
+ */
+function getSuggestedCredentialName(element) {
+  if (!element) {
     return '';
   }
 
-  return (instance.metadata && instance.metadata.displayName) || '';
+  const businessObject = getBusinessObject(element);
+
+  const name = businessObject && businessObject.name;
+
+  if (name && name.trim()) {
+    return name.trim();
+  }
+
+  return element.id || '';
 }
 
 /**
