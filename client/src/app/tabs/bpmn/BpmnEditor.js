@@ -28,6 +28,8 @@ import {
   CachedComponent
 } from '../../cached';
 
+import { EventsContext } from '../../EventsContext';
+
 import { Settings } from '@carbon/icons-react';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
@@ -93,6 +95,8 @@ const log = debug('BpmnEditor:platform');
 
 
 export class BpmnEditor extends CachedComponent {
+
+  static contextType = EventsContext;
 
   constructor(props) {
     super(props);
@@ -276,6 +280,15 @@ export class BpmnEditor extends CachedComponent {
     } else if (fn === 'off') {
       modeler[ fn ]('commandStack.changed', this.handleLintingDebounced);
     }
+
+    // reload templates on focus to pick up external edits to local template
+    // files made while the app was away. The editor owns this decision, not
+    // the app. Cheap: loadTemplates skips re-setting unchanged templates.
+    if (fn === 'on') {
+      this._appFocusedSubscription = this.context.subscribe('app.focused', this.handleAppFocused);
+    } else {
+      this._appFocusedSubscription?.cancel();
+    }
   }
 
   handlePropertiesPanelLayoutChange(e) {
@@ -283,6 +296,10 @@ export class BpmnEditor extends CachedComponent {
       propertiesPanel: e.layout
     });
   }
+
+  handleAppFocused = () => {
+    this.loadTemplates().catch(error => this.handleError({ error }));
+  };
 
   async loadTemplates() {
     const {
