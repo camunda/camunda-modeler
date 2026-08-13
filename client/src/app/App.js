@@ -138,6 +138,7 @@ export class App extends PureComponent {
     };
 
     this.tabComponentCache = {};
+    this.lintRequests = new WeakMap();
 
     // TODO(nikku): make state
     this.navigationHistory = new History();
@@ -1115,6 +1116,10 @@ export class App extends PureComponent {
   };
 
   lintTab = async (tab, contents) => {
+    const request = (this.lintRequests.get(tab) || 0) + 1;
+
+    this.lintRequests.set(tab, request);
+
     const { tabsProvider } = this.props;
 
     const { type } = tab;
@@ -1144,6 +1149,10 @@ export class App extends PureComponent {
 
     if (warnings.length) {
       results = [ ...results, ...warnings ];
+    }
+
+    if (this.lintRequests.get(tab) !== request) {
+      return;
     }
 
     this.setLintingState(tab, results);
