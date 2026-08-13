@@ -1042,6 +1042,30 @@ describe('TabsProvider', function() {
     });
 
 
+    it('cloud-bpmn should resolve templates for the tab file', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider().getProvider('cloud-bpmn');
+
+      const calls = [];
+
+      const getConfig = (...args) => {
+        calls.push(args);
+
+        return [];
+      };
+
+      const file = { path: '/some/dir/diagram.bpmn' };
+
+      // when
+      await tabsProvider.getLinter([], { file }, getConfig);
+
+      // then
+      // templates are requested for the linted tab's file
+      expect(calls).to.eql([ [ 'bpmn.elementTemplates', file ] ]);
+    });
+
+
     it('cloud-bpmn plugins', async function() {
 
       // given

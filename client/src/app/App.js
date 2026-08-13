@@ -1190,7 +1190,7 @@ export class App extends PureComponent {
     // cache the in-flight promise so concurrent lints (lintTab is often not
     // awaited) share one build instead of each re-validating all templates
     const linterPromise = Promise.resolve(
-      tabProvider.getLinter(plugins, tab, this.getConfig)
+      tabProvider.getLinter(plugins, tab, this.getConfigForFile)
     );
 
     this.linterCache[ tab.id ] = linterPromise;
@@ -2525,11 +2525,14 @@ export class App extends PureComponent {
   };
 
   getConfig = (key, ...args) => {
-    const config = this.getGlobal('config');
-
     const { activeTab } = this.state;
-
     const { file } = activeTab;
+
+    return this.getConfigForFile(key, file, ...args);
+  };
+
+  getConfigForFile = (key, file, ...args) => {
+    const config = this.getGlobal('config');
 
     return config.get(key, file, ...args);
   };

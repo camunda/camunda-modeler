@@ -3786,6 +3786,102 @@ describe('<App>', function() {
       expect(getConfigSpy).to.be.calledOnceWith('foo');
     });
 
+
+    it('should get config for the active tab file', async function() {
+
+      // given
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      const file = { path: '/some/dir/diagram.bpmn' };
+
+      app.state.activeTab = { id: 'tab-1', file };
+
+      getConfigSpy.resetHistory();
+
+      // when
+      app.getConfig('foo');
+
+      // then
+      // the active tab's file is forwarded so file-scoped config
+      // (e.g. local element templates) resolves against it
+      expect(getConfigSpy).to.be.calledOnceWith('foo', file);
+    });
+
+  });
+
+
+  describe('#getConfigForFile', function() {
+
+    afterEach(sinon.restore);
+
+
+    it('should get config for the given file', function() {
+
+      // given
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      const file = { path: '/some/dir/diagram.bpmn' };
+
+      getConfigSpy.resetHistory();
+
+      // when
+      app.getConfigForFile('foo', file, 'bar');
+
+      // then
+      // the passed file is forwarded, independent from the active tab
+      expect(getConfigSpy).to.be.calledOnceWith('foo', file, 'bar');
+    });
+
+
+    it('should be callable when detached from the app', function() {
+
+      // given
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      getConfigSpy.resetHistory();
+
+      // when
+      // consumers (e.g. the linter) receive it as a bare callback
+      const getConfigForFile = app.getConfigForFile;
+
+      const file = { path: '/some/dir/diagram.bpmn' };
+
+      getConfigForFile('foo', file);
+
+      // then
+      expect(getConfigSpy).to.be.calledOnceWith('foo', file);
+    });
+
   });
 
 
@@ -4536,6 +4632,57 @@ describe('<App>', function() {
       // then
       // linter is built once and reused, not rebuilt on every lint
       expect(getLinterSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should build linter with a file-scoped config for the tab', async function() {
+
+      // given
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({
+        globals: {
+          config
+        },
+        tabsProvider
+      });
+
+      // active tab differs from the tab we lint
+      app.state.activeTab = { id: 'other', file: { path: '/other/dir/diagram.bpmn' } };
+
+      const file = { contents: '', path: '/some/dir/diagram.bpmn' };
+
+      const tab = {
+        id: 'cloud-bpmn-1',
+        type: 'cloud-bpmn',
+        file
+      };
+
+      // when
+      await app.getTabLinter(tab);
+
+      // then
+      // the linter is built for the linted tab, with a config accessor that
+      // resolves against that tab's file - not the active tab
+      expect(getLinterSpy).to.have.been.calledOnce;
+
+      const [ , passedTab, getConfig ] = getLinterSpy.firstCall.args;
+
+      expect(passedTab).to.equal(tab);
+
+      getConfigSpy.resetHistory();
+
+      getConfig('bpmn.elementTemplates', tab.file);
+
+      expect(getConfigSpy).to.have.been.calledOnceWith('bpmn.elementTemplates', file);
     });
 
 
