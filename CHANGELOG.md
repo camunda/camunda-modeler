@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `diagram-js@15.24.0`
 * `DEPS`: update to `react@19.2.8`
 * `DEPS`: update to `semver@7.8.5`
+* `DEPS`: update to `p-limit@7.3.1`
 
 ### BPMN
 
