@@ -82,8 +82,8 @@
     "sinon-chai": "^4.0.0",
     "tar-stream": "^3.1.8",
     "undici": "^7.22.0",
-    "webpack": "^5.106.2",
-    "webpack-cli": "^7.0.2",
+    "webpack": "^5.109.2",
+    "webpack-cli": "^7.2.2",
     "yauzl": "^3.3.1"
   },
   "overrides": {

@@ -110,8 +110,8 @@
     "sinon": "^22.0.0",
     "sinon-chai": "^4.0.0",
     "style-loader": "^4.0.0",
-    "webpack": "^5.106.2",
-    "webpack-cli": "^7.0.2"
+    "webpack": "^5.109.2",
+    "webpack-cli": "^7.2.2"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack --watch --config ./webpack.config.js",
