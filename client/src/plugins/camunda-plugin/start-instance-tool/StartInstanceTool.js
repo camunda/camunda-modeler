@@ -450,19 +450,16 @@ export default class StartInstanceTool extends PureComponent {
   handleDeploymentSuccess(tab, deployment, version) {
 
     const {
-      triggerAction
+      emit
     } = this.props;
 
     // notify interested parties
-    triggerAction('emit-event', {
-      type: 'deployment.done',
-      payload: {
-        deployment,
-        context: 'startInstanceTool',
-        deployedTo: {
-          executionPlatformVersion: version,
-          executionPlatform: ENGINES.PLATFORM
-        }
+    emit('deployment.done', {
+      deployment,
+      context: 'startInstanceTool',
+      deployedTo: {
+        executionPlatformVersion: version,
+        executionPlatform: ENGINES.PLATFORM
       }
     });
 
@@ -473,7 +470,7 @@ export default class StartInstanceTool extends PureComponent {
     const {
       log,
       displayNotification,
-      triggerAction
+      emit
     } = this.props;
 
     const logMessage = {
@@ -498,13 +495,10 @@ export default class StartInstanceTool extends PureComponent {
        { executionPlatformVersion: version, executionPlatform: ENGINES.PLATFORM }) || undefined;
 
     // notify interested parties
-    triggerAction('emit-event', {
-      type: 'deployment.error',
-      payload: {
-        error,
-        context: 'startInstanceTool',
-        ...(deployedTo && { deployedTo: deployedTo })
-      }
+    emit('deployment.error', {
+      error,
+      context: 'startInstanceTool',
+      ...(deployedTo && { deployedTo: deployedTo })
     });
   }
 

@@ -407,14 +407,14 @@ describe('ConnectionManagerPlugin', function() {
           'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
         });
 
-        const triggerAction = sinon.spy();
+        const emit = sinon.spy();
 
         // when
         createConnectionManagerPlugin({
           getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
           subscribe,
           settings,
-          triggerAction,
+          emit,
           connectionCheckResult: { success: true }
         });
 
@@ -425,14 +425,11 @@ describe('ConnectionManagerPlugin', function() {
         await clock.tickAsync(2000);
 
         // then
-        expect(triggerAction).to.have.been.calledWith(
-          'emit-event',
+        expect(emit).to.have.been.calledWith(
+          'connectionManager.connectionStatusChanged',
           sinon.match({
-            type: 'connectionManager.connectionStatusChanged',
-            payload: {
-              name: 'plugin',
-              success: true
-            }
+            name: 'plugin',
+            success: true
           })
         );
       });
@@ -459,12 +456,12 @@ describe('ConnectionManagerPlugin', function() {
           'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
         });
 
-        const triggerAction = sinon.spy();
+        const emit = sinon.spy();
         createConnectionManagerPlugin({
           getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
           subscribe,
           settings,
-          triggerAction,
+          emit,
           connectionCheckResult: { success: true }
         });
 
@@ -478,11 +475,9 @@ describe('ConnectionManagerPlugin', function() {
         await clock.tickAsync(2000);
 
         // then
-        expect(triggerAction).not.to.have.been.calledWith(
-          'emit-event',
-          sinon.match({
-            type: 'connectionManager.connectionStatusChanged'
-          })
+        expect(emit).not.to.have.been.calledWith(
+          'connectionManager.connectionStatusChanged',
+          sinon.match.any
         );
       });
 
@@ -507,14 +502,14 @@ describe('ConnectionManagerPlugin', function() {
             'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
           });
 
-          const triggerAction = sinon.spy();
+          const emit = sinon.spy();
 
           // when
           createConnectionManagerPlugin({
             getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
             subscribe,
             settings,
-            triggerAction,
+            emit,
           });
 
           // make React state settle and let the connection resolve
@@ -522,14 +517,11 @@ describe('ConnectionManagerPlugin', function() {
           await clock.tickAsync(2000);
 
           // then
-          expect(triggerAction).to.have.been.calledWith(
-            'emit-event',
+          expect(emit).to.have.been.calledWith(
+            'connectionManager.connectionCheckStarted',
             sinon.match({
-              type: 'connectionManager.connectionCheckStarted',
-              payload: sinon.match({
-                connectionId: DEFAULT_CONNECTIONS[0].id,
-                connection: DEFAULT_CONNECTIONS[0],
-              })
+              connectionId: DEFAULT_CONNECTIONS[0].id,
+              connection: DEFAULT_CONNECTIONS[0],
             })
           );
         });
@@ -554,13 +546,13 @@ describe('ConnectionManagerPlugin', function() {
               'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
             });
 
-            const triggerAction = sinon.spy();
+            const emit = sinon.spy();
 
             createConnectionManagerPlugin({
               getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
               subscribe,
               settings,
-              triggerAction,
+              emit,
               connectionCheckResult: { success }
             });
 
@@ -569,21 +561,20 @@ describe('ConnectionManagerPlugin', function() {
             await clock.tickAsync(2000);
 
             // isolate: reset history so assertions only cover the next check cycle
-            triggerAction.resetHistory();
+            emit.resetHistory();
 
             // advance to trigger a periodic check (ConnectionChecker LONG interval = 5000ms)
             await clock.tickAsync(5000);
 
             // then - connectionStatusChanged was emitted (a result arrived from interval check)
-            expect(triggerAction).to.have.been.calledWith(
-              'emit-event',
-              sinon.match({ type: 'connectionManager.connectionStatusChanged' })
+            expect(emit).to.have.been.calledWith(
+              'connectionManager.connectionStatusChanged',
+              sinon.match.any
             );
 
             // but connectionCheckStarted was NOT emitted (no state change occurred)
-            const checkStartedCalls = triggerAction.getCalls().filter(
-              call => call.args[0] === 'emit-event' &&
-                call.args[1]?.type === 'connectionManager.connectionCheckStarted'
+            const checkStartedCalls = emit.getCalls().filter(
+              call => call.args[0] === 'connectionManager.connectionCheckStarted'
             );
             expect(checkStartedCalls).to.have.lengthOf(0);
           });
@@ -611,13 +602,13 @@ describe('ConnectionManagerPlugin', function() {
             'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
           });
 
-          const triggerAction = sinon.spy();
+          const emit = sinon.spy();
 
           createConnectionManagerPlugin({
             getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
             subscribe,
             settings,
-            triggerAction,
+            emit,
             connectionCheckResult: { success: true }
           });
 
@@ -633,15 +624,14 @@ describe('ConnectionManagerPlugin', function() {
           await clock.tickAsync(1000);
 
           // isolate: reset history so assertions only cover the post-cancel window
-          triggerAction.resetHistory();
+          emit.resetHistory();
 
           // advance clock past where the cancelled check interval would have fired
           await clock.tickAsync(5000);
 
           // then - no connectionCheckStarted from the cancelled check
-          const checkStartedCalls = triggerAction.getCalls().filter(
-            call => call.args[0] === 'emit-event' &&
-                    call.args[1]?.type === 'connectionManager.connectionCheckStarted'
+          const checkStartedCalls = emit.getCalls().filter(
+            call => call.args[0] === 'connectionManager.connectionCheckStarted'
           );
           expect(checkStartedCalls).to.have.lengthOf(0);
         });
@@ -1298,6 +1288,7 @@ function createPluginProps(props = {}, globals = {}) {
     log = () => {},
     subscribe = () => ({ cancel: () => {} }),
     triggerAction = () => {},
+    emit = () => {},
     settings = createMockSettings(),
     config = createMockConfig(),
     getConfig = () => config,
@@ -1313,6 +1304,7 @@ function createPluginProps(props = {}, globals = {}) {
     log,
     subscribe,
     triggerAction,
+    emit,
     settings,
     config,
     getConfig,

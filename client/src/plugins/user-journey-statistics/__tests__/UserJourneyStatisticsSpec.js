@@ -375,7 +375,8 @@ function createJourneyStatistics(props = {}) {
       }
     },
     _getGlobal: () => ({}),
-    triggerAction: () => {}
+    triggerAction: () => {},
+    emit: props.emit || (() => {})
   });
 }
 

@@ -98,6 +98,7 @@ export default class PluginsRoot extends PureComponent {
             getConfig={ app.getConfig }
             setConfig={ app.setConfig }
             subscribe={ subscribe }
+            emit={ app.emitEvent }
             log={ this.log }
             displayNotification={ this.displayNotification }
             settings={ pluginSettings }

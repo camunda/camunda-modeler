@@ -349,21 +349,18 @@ describe('<RPAEditor>', function() {
     it('should emit tab.engineProfileChanged event on import', async function() {
 
       // given
-      const onActionSpy = sinon.spy();
+      const emitSpy = sinon.spy();
 
       // when
       renderEditor(RPA, {
-        onAction: onActionSpy
+        emit: emitSpy
       });
 
       // then
       await waitFor(() => {
-        expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
-          type: 'tab.engineProfileChanged',
-          payload: {
-            executionPlatform: 'Camunda Cloud',
-            executionPlatformVersion: '8.8.0'
-          }
+        expect(emitSpy).to.have.been.calledWithMatch('tab.engineProfileChanged', {
+          executionPlatform: 'Camunda Cloud',
+          executionPlatformVersion: '8.8.0'
         });
       });
     });
@@ -372,13 +369,13 @@ describe('<RPAEditor>', function() {
     it('should emit tab.engineProfileChanged event on set engine profile', async function() {
 
       // given
-      const onActionSpy = sinon.spy();
+      const emitSpy = sinon.spy();
 
       const { instance } = renderEditor(RPA, {
-        onAction: onActionSpy
+        emit: emitSpy
       });
 
-      onActionSpy.resetHistory();
+      emitSpy.resetHistory();
 
       // when
       instance.engineProfile.set({
@@ -388,12 +385,9 @@ describe('<RPAEditor>', function() {
 
       // then
       await waitFor(() => {
-        expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
-          type: 'tab.engineProfileChanged',
-          payload: {
-            executionPlatform: 'Camunda Cloud',
-            executionPlatformVersion: '8.9.0'
-          }
+        expect(emitSpy).to.have.been.calledWithMatch('tab.engineProfileChanged', {
+          executionPlatform: 'Camunda Cloud',
+          executionPlatformVersion: '8.9.0'
         });
       });
     });
@@ -437,6 +431,7 @@ function renderEditor(xml, options = {}) {
       ref={ ref }
       getConfig={ () => ({}) }
       onAction={ noop }
+      emit={ noop }
       onImport={ onImport || noop }
       id={ id || 'editor' }
       xml={ xml }

@@ -44,6 +44,7 @@ export default function SettingsPlugin(props) {
   const {
     subscribe,
     triggerAction,
+    emit,
     _getGlobal
   } = props;
 
@@ -134,7 +135,7 @@ export default function SettingsPlugin(props) {
   };
 
   const handleClose = () => {
-    triggerAction('emit-event', { type: 'settings.closed' });
+    emit('settings.closed');
     setOpen(false);
   };
 

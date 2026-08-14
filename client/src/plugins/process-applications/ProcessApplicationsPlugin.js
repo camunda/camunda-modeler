@@ -31,6 +31,7 @@ export default function ProcessApplicationsPlugin(props) {
     _getFromApp,
     _getGlobal,
     displayNotification,
+    emit,
     log,
     subscribe,
     triggerAction
@@ -225,7 +226,7 @@ export default function ProcessApplicationsPlugin(props) {
       processApplicationItems={ processApplicationItems }
       onOpen={ (path) => triggerAction('open-diagram', { path }) }
       onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }
-      onCreateProcessApplication={ () => triggerAction('emit-event', { type: 'create-process-application' }) }
+      onCreateProcessApplication={ () => emit('create-process-application') }
       tabsProvider={ _getFromApp('props').tabsProvider }
     />
     <ProcessApplicationsDeploymentPlugin

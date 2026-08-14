@@ -44,6 +44,7 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
   const props = {
     cache: new Cache(),
     config: new Config(),
+    emit: noop,
     getConfig: noop,
     getPlugins: () => [],
     id: 'editor',
