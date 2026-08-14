@@ -2259,249 +2259,255 @@ export class App extends PureComponent {
     } = this.state;
 
 
-    log('App#triggerAction %s %o', action, options);
+    log('trigger action %s %o', action, options);
 
-    if (action === 'set-tab-group') {
-      const {
-        id,
-        group
-      } = options;
+    try {
 
-      return this.setTabGroup(id, group);
-    }
+      if (action === 'set-tab-group') {
+        const {
+          id,
+          group
+        } = options;
 
-    if (action === 'lint-tab') {
-      const {
-        tab,
-        contents
-      } = options;
-
-      return this.lintTab(tab, contents);
-    }
-
-    if (action === 'element-templates-changed') {
-      return this.handleElementTemplatesChanged(options.tab);
-    }
-
-    if (action === 'select-tab') {
-      if (options === 'next') {
-        this.navigate(1);
+        return this.setTabGroup(id, group);
       }
 
-      if (options === 'previous') {
-        this.navigate(-1);
+      if (action === 'lint-tab') {
+        const {
+          tab,
+          contents
+        } = options;
+
+        return this.lintTab(tab, contents);
       }
 
-      return;
-    }
-
-    if (action === 'create-bpmn-diagram') {
-      return this.createDiagram('bpmn');
-    }
-
-    if (action === 'create-dmn-diagram') {
-      return this.createDiagram('dmn');
-    }
-
-    if (action === 'create-form') {
-      return this.createDiagram('form');
-    }
-
-    if (action === 'create-cloud-form') {
-      return this.createDiagram('cloud-form');
-    }
-
-    if (action === 'create-cloud-bpmn-diagram') {
-      return this.createDiagram('cloud-bpmn');
-    }
-
-    if (action === 'create-cloud-dmn-diagram') {
-      return this.createDiagram('cloud-dmn');
-    }
-
-    if (action === 'create-diagram') {
-      return this.createDiagram(options.type);
-    }
-
-    if (action === 'reopen-file') {
-      return this.openFiles([ options.file ]);
-    }
-
-    if (action === 'open-diagram') {
-      const { path } = options;
-
-      if (path) {
-        return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
+      if (action === 'element-templates-changed') {
+        return this.handleElementTemplatesChanged(options.tab);
       }
 
-      return this.showOpenFilesDialog();
+      if (action === 'select-tab') {
+        if (options === 'next') {
+          this.navigate(1);
+        }
+
+        if (options === 'previous') {
+          this.navigate(-1);
+        }
+
+        return;
+      }
+
+      if (action === 'create-bpmn-diagram') {
+        return this.createDiagram('bpmn');
+      }
+
+      if (action === 'create-dmn-diagram') {
+        return this.createDiagram('dmn');
+      }
+
+      if (action === 'create-form') {
+        return this.createDiagram('form');
+      }
+
+      if (action === 'create-cloud-form') {
+        return this.createDiagram('cloud-form');
+      }
+
+      if (action === 'create-cloud-bpmn-diagram') {
+        return this.createDiagram('cloud-bpmn');
+      }
+
+      if (action === 'create-cloud-dmn-diagram') {
+        return this.createDiagram('cloud-dmn');
+      }
+
+      if (action === 'create-diagram') {
+        return this.createDiagram(options.type);
+      }
+
+      if (action === 'reopen-file') {
+        return this.openFiles([ options.file ]);
+      }
+
+      if (action === 'open-diagram') {
+        const { path } = options;
+
+        if (path) {
+          return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
+        }
+
+        return this.showOpenFilesDialog();
+      }
+
+      if (action === 'save-all') {
+        return this.saveAllTabs();
+      }
+
+      if (action === 'save-tab') {
+        return this.saveTab(options.tab);
+      }
+
+      if (action === 'save') {
+        return this.saveTab(activeTab);
+      }
+
+      if (action === 'save-as') {
+        return this.saveTab(activeTab, { saveAs: true });
+      }
+
+      if (action === 'window-focused') {
+        return this.emit('app.focused');
+      }
+
+      if (action === 'window-blurred') {
+        return this.emit('app.blurred');
+      }
+
+      if (action === 'quit') {
+        return this.quit();
+      }
+
+      if (action === 'close-all-tabs') {
+        return this.closeTabs(t => true);
+      }
+
+      if (action === 'close-tab') {
+        return this.closeTabs(t => options && t.id === options.tabId);
+      }
+
+      if (action === 'close-active-tab') {
+        let activeId = this.state.activeTab.id;
+
+        return this.closeTabs(t => t.id === activeId);
+      }
+
+      if (action === 'close-other-tabs') {
+        let activeId = options && options.tabId || this.state.activeTab.id;
+
+        return this.closeTabs(t => t.id !== activeId);
+      }
+
+      if (action === 'reopen-last-tab') {
+        return this.reopenLastTab();
+      }
+
+      if (action === 'reveal-in-file-explorer') {
+        return this.revealInFileExplorer(options.filePath);
+      }
+
+      if (action === 'copy-file-path') {
+        return this.copyFilePath(options.filePath);
+      }
+
+      if (action === 'show-shortcuts') {
+        return this.showShortcuts();
+      }
+
+      if (action === 'update-menu') {
+        return this.updateMenu(options);
+      }
+
+      if (action === 'export-as') {
+        return this.exportAs(activeTab);
+      }
+
+      if (action === 'show-dialog') {
+        return this.showDialog(options);
+      }
+
+      if (action === 'open-modal') {
+        return this.setModal(options);
+      }
+
+      if (action === 'close-modal') {
+        return this.setModal(null);
+      }
+
+      if (action === 'open-external-url') {
+        return this.openExternalUrl(options);
+      }
+
+      if (action === 'check-file-changed') {
+        return this.checkFileChanged(activeTab);
+      }
+
+      if (action === 'resize') {
+        return this.resizeTab();
+      }
+
+      if (action === 'reload-modeler') {
+        return this.reloadModeler();
+      }
+
+      if (action === 'restart-modeler') {
+        return this.reloadModeler(true);
+      }
+
+      if (action === 'log') {
+        const {
+          action,
+          category,
+          message,
+          silent
+        } = options;
+
+        return this.logEntry(message, category, action, silent);
+      }
+
+      if (action === 'open-log') {
+        return this.openPanel('log');
+      }
+
+      if (action === 'open-panel') {
+        const { tab } = options;
+
+        return this.openPanel(tab);
+      }
+
+      if (action === 'close-panel') {
+        return this.closePanel();
+      }
+
+      if (action === 'display-notification') {
+        return this.displayNotification(options);
+      }
+
+      if (action === 'emit-event') {
+        console.error(
+          'The \'emit-event\' action has been removed. ' +
+          'Application events are now emitted through the events context. ' +
+          'Use the `emit(type, payload)` prop (or `EventsContext#emit`) instead of ' +
+          '`triggerAction(\'emit-event\', { type, payload })`. ' +
+          'See https://github.com/camunda/camunda-modeler/pull/6106 for details.'
+        );
+
+        return;
+      }
+
+      if (action === 'toggle-panel') {
+        const { panel } = this.state.layout;
+        return panel.open ? this.closePanel() : this.openPanel(panel.tab);
+      }
+
+      if (action === 'settings-open') {
+        return this.emit('app.settings-open', options);
+      }
+
+      if (action === 'open-deployment') {
+        return this.emitWithTab('app.open-deployment', activeTab);
+      }
+
+      if (action === 'open-connection-selector') {
+        return this.emitWithTab('app.open-connection-selector', activeTab);
+      }
+
+      const tab = this.tabRef.current;
+
+      return tab.triggerAction(action, options);
+
+    } finally {
+      log('triggered action %s', action);
     }
-
-    if (action === 'save-all') {
-      return this.saveAllTabs();
-    }
-
-    if (action === 'save-tab') {
-      return this.saveTab(options.tab);
-    }
-
-    if (action === 'save') {
-      return this.saveTab(activeTab);
-    }
-
-    if (action === 'save-as') {
-      return this.saveTab(activeTab, { saveAs: true });
-    }
-
-    if (action === 'window-focused') {
-      return this.emit('app.focused');
-    }
-
-    if (action === 'window-blurred') {
-      return this.emit('app.blurred');
-    }
-
-    if (action === 'quit') {
-      return this.quit();
-    }
-
-    if (action === 'close-all-tabs') {
-      return this.closeTabs(t => true);
-    }
-
-    if (action === 'close-tab') {
-      return this.closeTabs(t => options && t.id === options.tabId);
-    }
-
-    if (action === 'close-active-tab') {
-      let activeId = this.state.activeTab.id;
-
-      return this.closeTabs(t => t.id === activeId);
-    }
-
-    if (action === 'close-other-tabs') {
-      let activeId = options && options.tabId || this.state.activeTab.id;
-
-      return this.closeTabs(t => t.id !== activeId);
-    }
-
-    if (action === 'reopen-last-tab') {
-      return this.reopenLastTab();
-    }
-
-    if (action === 'reveal-in-file-explorer') {
-      return this.revealInFileExplorer(options.filePath);
-    }
-
-    if (action === 'copy-file-path') {
-      return this.copyFilePath(options.filePath);
-    }
-
-    if (action === 'show-shortcuts') {
-      return this.showShortcuts();
-    }
-
-    if (action === 'update-menu') {
-      return this.updateMenu(options);
-    }
-
-    if (action === 'export-as') {
-      return this.exportAs(activeTab);
-    }
-
-    if (action === 'show-dialog') {
-      return this.showDialog(options);
-    }
-
-    if (action === 'open-modal') {
-      return this.setModal(options);
-    }
-
-    if (action === 'close-modal') {
-      return this.setModal(null);
-    }
-
-    if (action === 'open-external-url') {
-      return this.openExternalUrl(options);
-    }
-
-    if (action === 'check-file-changed') {
-      return this.checkFileChanged(activeTab);
-    }
-
-    if (action === 'resize') {
-      return this.resizeTab();
-    }
-
-    if (action === 'reload-modeler') {
-      return this.reloadModeler();
-    }
-
-    if (action === 'restart-modeler') {
-      return this.reloadModeler(true);
-    }
-
-    if (action === 'log') {
-      const {
-        action,
-        category,
-        message,
-        silent
-      } = options;
-
-      return this.logEntry(message, category, action, silent);
-    }
-
-    if (action === 'open-log') {
-      return this.openPanel('log');
-    }
-
-    if (action === 'open-panel') {
-      const { tab } = options;
-
-      return this.openPanel(tab);
-    }
-
-    if (action === 'close-panel') {
-      return this.closePanel();
-    }
-
-    if (action === 'display-notification') {
-      return this.displayNotification(options);
-    }
-
-    if (action === 'emit-event') {
-      console.error(
-        'The \'emit-event\' action has been removed. ' +
-        'Application events are now emitted through the events context. ' +
-        'Use the `emit(type, payload)` prop (or `EventsContext#emit`) instead of ' +
-        '`triggerAction(\'emit-event\', { type, payload })`. ' +
-        'See https://github.com/camunda/camunda-modeler/pull/6106 for details.'
-      );
-
-      return;
-    }
-
-    if (action === 'toggle-panel') {
-      const { panel } = this.state.layout;
-      return panel.open ? this.closePanel() : this.openPanel(panel.tab);
-    }
-
-    if (action === 'settings-open') {
-      return this.emit('app.settings-open', options);
-    }
-
-    if (action === 'open-deployment') {
-      return this.emitWithTab('app.open-deployment', activeTab);
-    }
-
-    if (action === 'open-connection-selector') {
-      return this.emitWithTab('app.open-connection-selector', activeTab);
-    }
-
-    const tab = this.tabRef.current;
-
-    return tab.triggerAction(action, options);
   }, this.handleError);
 
   openExternalUrl(options) {
