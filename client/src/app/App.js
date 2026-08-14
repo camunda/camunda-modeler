@@ -1148,7 +1148,11 @@ export class App extends PureComponent {
         contents = tab.file.contents;
       }
 
+      log('linting tab', { tabId: tab.id, path: tab.file?.path });
+
       results = await linter.lint(contents);
+
+      log('linted tab', { tabId: tab.id });
     }
 
     const getWarnings = VersionMismatchChecker({
@@ -1187,11 +1191,17 @@ export class App extends PureComponent {
 
     const plugins = this.getPlugins(`lintRules.${ type }`);
 
+    log('building linter', { tabId: tab.id, path: tab.file?.path });
+
     // cache the in-flight promise so concurrent lints (lintTab is often not
     // awaited) share one build instead of each re-validating all templates
     const linterPromise = Promise.resolve(
       tabProvider.getLinter(plugins, tab, this.getConfigForFile)
-    );
+    ).then((linter) => {
+      log('built linter', { tabId: tab.id });
+
+      return linter;
+    });
 
     this.linterCache[ tab.id ] = linterPromise;
 
@@ -1215,6 +1225,8 @@ export class App extends PureComponent {
     if (!tab) {
       return;
     }
+
+    log('invalidated linter', { tabId: tab.id });
 
     delete this.linterCache[ tab.id ];
   };

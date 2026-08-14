@@ -10,6 +10,8 @@
 
 import React from 'react';
 
+import debug from 'debug';
+
 import { isFunction } from 'min-dash';
 
 import {
@@ -84,6 +86,8 @@ export const DEFAULT_ENGINE_PROFILE = {
 };
 
 const LOW_PRIORITY = 500;
+
+const log = debug('BpmnEditor:cloud');
 
 
 export class BpmnEditor extends CachedComponent {
@@ -312,7 +316,10 @@ export class BpmnEditor extends CachedComponent {
   };
 
   async loadTemplates() {
-    const { getConfig } = this.props;
+    const {
+      getConfig,
+      tab
+    } = this.props;
 
     const modeler = this.getModeler();
 
@@ -328,12 +335,18 @@ export class BpmnEditor extends CachedComponent {
     const templatesKey = JSON.stringify(templates);
 
     if (templatesKey === this.getCached().templatesKey) {
+      log('skip re-setting - element templates unchanged', { tabId: tab?.id, path: this.props.file?.path });
+
       return;
     }
 
     this.setCached({ templatesKey });
 
+    log('setting element templates', { tabId: tab?.id, path: this.props.file?.path });
+
     templatesLoader.setTemplates(templates);
+
+    log('element templates set', { tabId: tab?.id, path: this.props.file?.path });
   }
 
   undo = () => {
@@ -383,6 +396,8 @@ export class BpmnEditor extends CachedComponent {
    * own debounced path - coalescing with any concurrent modeling changes.
    */
   handleElementTemplatesChanged = () => {
+    log('element templates changed', { path: this.props.file?.path });
+
     this.props.onAction('element-templates-changed');
 
     this.handleLintingDebounced();
