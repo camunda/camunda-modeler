@@ -230,11 +230,11 @@ describe('<LintingTab>', function() {
         {
           category: 'warn',
           id: 'foo',
-          name: 'Version mismatch',
-          message: 'The selected version (8.7) differs from the connected cluster version (8.8).',
+          name: 'Engine profile',
+          message: 'This file targets Camunda 8.7, but the connected cluster runs Camunda 8.8.',
           rule: 'camunda/version-mismatch',
           action: {
-            label: 'Select 8.8 instead',
+            label: 'Update engine profile to 8.8',
             handler: 'set-engine-profile',
             options: {
               executionPlatformVersion: '8.8.0'
@@ -245,9 +245,9 @@ describe('<LintingTab>', function() {
     });
 
     // then
-    const link = getByRole('button', { name: 'Select 8.8 instead' });
+    const link = getByRole('button', { name: 'Update engine profile to 8.8' });
     expect(link).to.exist;
-    expect(link.textContent).to.equal('Select 8.8 instead');
+    expect(link.textContent).to.equal('Update engine profile to 8.8');
   });
 
 
@@ -262,11 +262,11 @@ describe('<LintingTab>', function() {
         {
           category: 'warn',
           id: 'foo',
-          name: 'Version mismatch',
+          name: 'Engine profile',
           message: 'Version mismatch message',
           rule: 'camunda/version-mismatch',
           action: {
-            label: 'Select 8.8 instead',
+            label: 'Update engine profile to 8.8',
             handler: 'set-engine-profile',
             options: {
               executionPlatformVersion: '8.8.0'
@@ -277,7 +277,7 @@ describe('<LintingTab>', function() {
     });
 
     // when
-    fireEvent.click(getByRole('button', { name: 'Select 8.8 instead' }));
+    fireEvent.click(getByRole('button', { name: 'Update engine profile to 8.8' }));
 
     // then
     expect(onActionSpy).to.have.been.calledWith('set-engine-profile', {
