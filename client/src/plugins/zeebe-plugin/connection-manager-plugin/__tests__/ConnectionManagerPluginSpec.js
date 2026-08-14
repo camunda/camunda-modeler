@@ -566,13 +566,13 @@ describe('ConnectionManagerPlugin', function() {
             // advance to trigger a periodic check (ConnectionChecker LONG interval = 5000ms)
             await clock.tickAsync(5000);
 
-            // then - connectionStatusChanged was emitted (a result arrived from interval check)
-            expect(emit).to.have.been.calledWith(
-              'connectionManager.connectionStatusChanged',
-              sinon.match.any
+            // then - connectionStatusChanged was NOT re-emitted (result did not change)
+            const statusChangedCalls = emit.getCalls().filter(
+              call => call.args[0] === 'connectionManager.connectionStatusChanged'
             );
+            expect(statusChangedCalls).to.have.lengthOf(0);
 
-            // but connectionCheckStarted was NOT emitted (no state change occurred)
+            // and connectionCheckStarted was NOT emitted (no state change occurred)
             const checkStartedCalls = emit.getCalls().filter(
               call => call.args[0] === 'connectionManager.connectionCheckStarted'
             );
@@ -637,6 +637,111 @@ describe('ConnectionManagerPlugin', function() {
         });
 
       });
+
+
+      describe('connectionManager.connectionStatusChanged de-duplication', function() {
+
+        function createGetGlobal(checkConnection, settings) {
+          return (name) => {
+            if (name === 'deployment') {
+              return new Deployment({
+                getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
+                async setConnectionForFile() {},
+                getEndpoints() {
+                  return settings.get('connectionManagerPlugin.c8connections') || [];
+                }
+              });
+            } else if (name === 'zeebeAPI') {
+              return new ZeebeAPI({ checkConnection });
+            }
+          };
+        }
+
+        function createSubscribe() {
+          return (event, callback) => {
+            if (event === 'app.activeTabChanged') {
+              waitForNextCycle().then(() => callback({
+                activeTab: DEFAULT_ACTIVE_TAB
+              }));
+            }
+            return { cancel: () => {} };
+          };
+        }
+
+
+        it('should emit only once for repeated identical results', async function() {
+
+          // given
+          const settings = createMockSettings({
+            'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+          });
+
+          const checkConnection = () => ({ success: true, response: { gatewayVersion: '8.8.0' } });
+
+          const emit = sinon.spy();
+
+          createConnectionManagerPlugin({
+            subscribe: createSubscribe(),
+            settings,
+            emit,
+            _getGlobal: createGetGlobal(checkConnection, settings)
+          });
+
+          // when - initial check + several periodic checks all return the same result
+          await waitForNextCycle(3);
+          await clock.tickAsync(2000);
+          await clock.tickAsync(5000);
+          await clock.tickAsync(5000);
+
+          // then - status change is emitted exactly once
+          const statusChangedCalls = emit.getCalls().filter(
+            call => call.args[0] === 'connectionManager.connectionStatusChanged'
+          );
+          expect(statusChangedCalls).to.have.lengthOf(1);
+          expect(statusChangedCalls[0].args[1]).to.include({ success: true });
+        });
+
+
+        it('should emit again when the result changes', async function() {
+
+          // given
+          const settings = createMockSettings({
+            'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+          });
+
+          let currentResult = { success: true, response: { gatewayVersion: '8.8.0' } };
+          const checkConnection = () => currentResult;
+
+          const emit = sinon.spy();
+
+          createConnectionManagerPlugin({
+            subscribe: createSubscribe(),
+            settings,
+            emit,
+            _getGlobal: createGetGlobal(checkConnection, settings)
+          });
+
+          // when - first check succeeds
+          await waitForNextCycle(3);
+          await clock.tickAsync(2000);
+
+          // ...then the connection starts failing
+          currentResult = { success: false, reason: 'CONTACT_POINT_UNAVAILABLE' };
+          await clock.tickAsync(5000);
+
+          // then - status change emitted for both the success and the error
+          const statusChangedCalls = emit.getCalls().filter(
+            call => call.args[0] === 'connectionManager.connectionStatusChanged'
+          );
+
+          expect(statusChangedCalls.length).to.be.at.least(2);
+          expect(statusChangedCalls[0].args[1]).to.include({ success: true });
+          expect(statusChangedCalls[statusChangedCalls.length - 1].args[1])
+            .to.include({ success: false, reason: 'CONTACT_POINT_UNAVAILABLE' });
+        });
+
+      });
+
     });
   });
 
