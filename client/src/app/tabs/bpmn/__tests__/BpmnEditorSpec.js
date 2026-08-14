@@ -1721,7 +1721,7 @@ describe('<BpmnEditor>', function() {
 
       // then
       // BpmnEditor#componentDidMount is async
-      setTimeout(() => {
+      await waitFor(() => {
         expect(isImportNeededSpy).to.have.been.calledOnce;
         expect(isImportNeededSpy).to.have.always.returned(false);
       });
