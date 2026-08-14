@@ -1001,15 +1001,20 @@ export class App extends PureComponent {
 
   emitWithTab(type, tab, payload) {
 
+    // default to the given tab (typically the active one),
+    // but let producers override it via `payload.tab`
     return this.emit(type, {
-      ...payload,
-      tab
+      tab,
+      ...payload
     });
   }
 
   /**
    * Emit an application event on the shared event bus, enriched with the
    * currently active tab.
+   *
+   * The event carries the active tab by default; producers may target a
+   * different tab by passing `tab` in the payload.
    *
    * This is the public counterpart to `subscribe` (cf. `EventsContext`) and
    * the way components and plug-ins produce events.

@@ -23,8 +23,8 @@ export const EventsContext = createContext({
   },
   emit: (event, payload) => {
     return eventEmitter.emit(event, {
-      ...payload,
-      tab: null
+      tab: null,
+      ...payload
     });
   }
 });

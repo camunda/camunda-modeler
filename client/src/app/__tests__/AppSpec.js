@@ -4101,6 +4101,27 @@ describe('<App>', function() {
       expect(eventSpy).to.have.been.called;
     });
 
+
+    it('should allow overriding the tab via payload', function() {
+
+      // given
+      const { app } = createApp();
+
+      const overrideTab = { id: 'other-tab' };
+
+      const eventSpy = sinon.spy((event) => {
+        expect(event.tab).to.equal(overrideTab);
+      });
+
+      app.on('foo', eventSpy);
+
+      // when
+      app.emitEvent('foo', { tab: overrideTab });
+
+      // then
+      expect(eventSpy).to.have.been.called;
+    });
+
   });
 
 
