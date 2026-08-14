@@ -743,7 +743,7 @@ describe('<AppParent>', function() {
 
   describe('backend errors', function() {
 
-    it('should log backend error', function(done) {
+    it('should log backend error', async function() {
 
       // given
       const message = 'message from backend';
@@ -760,13 +760,11 @@ describe('<AppParent>', function() {
       backend.receive('backend:error', {}, message);
 
       // then
-      setTimeout(() => {
+      await waitFor(() => {
         expect(actionSpy).to.be.calledWith('log', {
           message,
           category: 'error'
         });
-
-        done();
       });
 
     });
