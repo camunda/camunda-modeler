@@ -103,19 +103,10 @@ export class FormEditor extends CachedComponent {
         const modeling = editor.get('modeling');
 
         modeling.editFormField(root, engineProfile);
-
-        const {
-          executionPlatform,
-          executionPlatformVersion
-        } = engineProfile;
-
-        this.props.emit('tab.engineProfileChanged', {
-          executionPlatform,
-          executionPlatformVersion
-        });
       },
       getCached: () => this.getCached(),
-      setCached: (state) => this.setCached(state)
+      setCached: (state) => this.setCached(state),
+      onChanged: (engineProfile) => this.emitEngineProfileChanged(engineProfile)
     });
 
     this.handleLintingDebounced = debounce(() => this.handleLinting());
@@ -264,12 +255,7 @@ export class FormEditor extends CachedComponent {
       });
 
       if (engineProfile) {
-        const { executionPlatform, executionPlatformVersion } = engineProfile;
-
-        this.props.emit('tab.engineProfileChanged', {
-          executionPlatform,
-          executionPlatformVersion
-        });
+        this.emitEngineProfileChanged(engineProfile);
       }
 
       this.handleLinting(engineProfile);
@@ -385,6 +371,18 @@ export class FormEditor extends CachedComponent {
       formPreviewNode.removeEventListener('focusout', this.handleFormPreviewInteractionEnd);
     }
   }
+
+  emitEngineProfileChanged = (engineProfile) => {
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = engineProfile;
+
+    this.props.emit('tab.engineProfileChanged', {
+      executionPlatform,
+      executionPlatformVersion
+    });
+  };
 
   handleChanged = () => {
 

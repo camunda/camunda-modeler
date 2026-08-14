@@ -14,11 +14,12 @@ import {
 } from './EngineProfile';
 
 export default class EngineProfileHelper {
-  constructor({ get, set, getCached, setCached }) {
+  constructor({ get, set, getCached, setCached, onChanged }) {
     this._get = get;
     this._set = set;
     this._getCached = getCached;
     this._setCached = setCached;
+    this._onChanged = onChanged;
   }
 
   get() {
@@ -50,6 +51,10 @@ export default class EngineProfileHelper {
       this._setCached({
         engineProfile
       });
+
+      if (this._onChanged) {
+        this._onChanged(engineProfile);
+      }
     }
   }
 }

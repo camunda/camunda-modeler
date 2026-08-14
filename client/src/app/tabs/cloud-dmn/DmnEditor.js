@@ -128,19 +128,10 @@ export class DmnEditor extends CachedComponent {
           name: engineProfile.executionPlatform,
           version: engineProfile.executionPlatformVersion
         });
-
-        const {
-          executionPlatform,
-          executionPlatformVersion
-        } = engineProfile;
-
-        this.props.emit('tab.engineProfileChanged', {
-          executionPlatform,
-          executionPlatformVersion
-        });
       },
       getCached: () => this.getCached(),
-      setCached: (state) => this.setCached(state)
+      setCached: (state) => this.setCached(state),
+      onChanged: (engineProfile) => this.emitEngineProfileChanged(engineProfile)
     });
   }
 
@@ -301,12 +292,7 @@ export class DmnEditor extends CachedComponent {
       });
 
       if (engineProfile) {
-        const { executionPlatform, executionPlatformVersion } = engineProfile;
-
-        this.props.emit('tab.engineProfileChanged', {
-          executionPlatform,
-          executionPlatformVersion
-        });
+        this.emitEngineProfileChanged(engineProfile);
       }
 
       this.setState({
@@ -387,6 +373,18 @@ export class DmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     modeler.getActiveViewer().get('commandStack').redo();
+  };
+
+  emitEngineProfileChanged = (engineProfile) => {
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = engineProfile;
+
+    this.props.emit('tab.engineProfileChanged', {
+      executionPlatform,
+      executionPlatformVersion
+    });
   };
 
   handleChanged = () => {

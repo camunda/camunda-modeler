@@ -83,19 +83,10 @@ export class RPAEditor extends CachedComponent {
           key: 'executionPlatformVersion',
           value: engineProfile.executionPlatformVersion
         });
-
-        const {
-          executionPlatform,
-          executionPlatformVersion
-        } = engineProfile;
-
-        this.props.emit('tab.engineProfileChanged', {
-          executionPlatform,
-          executionPlatformVersion
-        });
       },
       getCached: () => this.getCached(),
-      setCached: (state) => this.setCached(state)
+      setCached: (state) => this.setCached(state),
+      onChanged: (engineProfile) => this.emitEngineProfileChanged(engineProfile)
     });
   }
 
@@ -201,15 +192,7 @@ export class RPAEditor extends CachedComponent {
         engineProfile,
       });
 
-      const {
-        executionPlatform,
-        executionPlatformVersion
-      } = engineProfile;
-
-      this.props.emit('tab.engineProfileChanged', {
-        executionPlatform,
-        executionPlatformVersion
-      });
+      this.emitEngineProfileChanged(engineProfile);
     }
   }
 
@@ -372,6 +355,18 @@ export class RPAEditor extends CachedComponent {
 
     return isXMLChange(editor.getValue(), lastXML);
   }
+
+  emitEngineProfileChanged = (engineProfile) => {
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = engineProfile;
+
+    this.props.emit('tab.engineProfileChanged', {
+      executionPlatform,
+      executionPlatformVersion
+    });
+  };
 
   handleChanged = () => {
     const {
