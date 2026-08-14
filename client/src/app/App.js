@@ -149,7 +149,8 @@ export class App extends PureComponent {
         return {
           cancel: () => this.off(event, listener)
         };
-      }
+      },
+      emit: (event, payload) => this.emitEvent(event, payload)
     };
 
     // TODO(nikku): make state
@@ -563,11 +564,8 @@ export class App extends PureComponent {
       return false;
     }
 
-    this.triggerAction('emit-event', {
-      type: 'tab.closed',
-      payload: {
-        tab
-      }
+    this.emitEvent('tab.closed', {
+      tab
     });
 
     await this._removeTab(tab);
@@ -990,7 +988,7 @@ export class App extends PureComponent {
   }
 
   emit(event, ...args) {
-    this.events.emit(event, ...args);
+    return this.events.emit(event, ...args);
   }
 
   on(event, listener) {
@@ -1003,11 +1001,25 @@ export class App extends PureComponent {
 
   emitWithTab(type, tab, payload) {
 
-    this.emit(type, {
+    return this.emit(type, {
       ...payload,
       tab
     });
   }
+
+  /**
+   * Emit an application event on the shared event bus, enriched with the
+   * currently active tab.
+   *
+   * This is the public counterpart to `subscribe` (cf. `EventsContext`) and
+   * the way components and plug-ins produce events.
+   *
+   * @param {string} type
+   * @param {Object} [payload]
+   */
+  emitEvent = (type, payload) => {
+    return this.emitWithTab(type, this.state.activeTab, payload);
+  };
 
   openTabLinksMenu = (tab, event) => {
     event.preventDefault();
@@ -2384,15 +2396,6 @@ export class App extends PureComponent {
       return this.displayNotification(options);
     }
 
-    if (action === 'emit-event') {
-      const {
-        type,
-        payload
-      } = options;
-
-      return this.emitWithTab(type, activeTab, payload);
-    }
-
     if (action === 'toggle-panel') {
       const { panel } = this.state.layout;
       return panel.open ? this.closePanel() : this.openPanel(panel.tab);
@@ -2616,6 +2619,7 @@ export class App extends PureComponent {
                         onLayoutChanged={ this.handleLayoutChanged }
                         onContextMenu={ this.openTabMenu }
                         onAction={ this.triggerAction }
+                        emit={ this.emitEvent }
                         onModal={ this.openModal }
                         onUpdateMenu={ this.updateMenu }
                         getConfig={ this.getConfig }

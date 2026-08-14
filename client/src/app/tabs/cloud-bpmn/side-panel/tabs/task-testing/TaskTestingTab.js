@@ -67,7 +67,7 @@ export default function TaskTestingTab(props) {
     zeebeApi
   } = props;
 
-  const { subscribe } = useContext(EventsContext);
+  const { subscribe, emit } = useContext(EventsContext);
 
   const [ taskTestingConfig, setTaskTestingConfig ] = useState(DEFAULT_CONFIG);
 
@@ -80,8 +80,8 @@ export default function TaskTestingTab(props) {
   }), [ id, file ]);
 
   const taskTestingApi = useMemo(() => {
-    return new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction);
-  }, [ deployment, startInstance, zeebeApi, tab, onAction ]);
+    return new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction, emit);
+  }, [ deployment, startInstance, zeebeApi, tab, onAction, emit ]);
 
   const api = useMemo(() => taskTestingApi.getApi(), [ taskTestingApi ]);
 
@@ -136,13 +136,10 @@ export default function TaskTestingTab(props) {
   }, [ taskTestingConfig ]);
 
   const handleTaskExecutionStarted = useCallback((element) => {
-    onAction('emit-event', {
-      type: 'taskTesting.started',
-      payload: {
-        element
-      }
+    emit('taskTesting.started', {
+      element
     });
-  }, [ onAction ]);
+  }, [ emit ]);
 
   const handleTaskExecutionFinished = useCallback((element, result) => {
 
@@ -158,16 +155,13 @@ export default function TaskTestingTab(props) {
       return;
     }
 
-    onAction('emit-event', {
-      type: 'taskTesting.finished',
-      payload: {
-        element: element,
-        success,
-        incident,
-        output: lastPolledResult
-      }
+    emit('taskTesting.finished', {
+      element: element,
+      success,
+      incident,
+      output: lastPolledResult
     });
-  }, [ onAction ]);
+  }, [ emit ]);
 
   const handleTaskExecutionInterrupted = useCallback(() => {
     onAction('display-notification', {

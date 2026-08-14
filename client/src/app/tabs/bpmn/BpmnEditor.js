@@ -885,7 +885,7 @@ export class BpmnEditor extends CachedComponent {
 
     const {
       getPlugins,
-      onAction,
+      emit,
       onError,
       layout = {},
       settings
@@ -893,11 +893,8 @@ export class BpmnEditor extends CachedComponent {
 
     // notify interested parties that modeler will be configured
     const handleMiddlewareExtensions = (middlewares) => {
-      onAction('emit-event', {
-        type: 'bpmn.modeler.configure',
-        payload: {
-          middlewares
-        }
+      emit('bpmn.modeler.configure', {
+        middlewares
       });
     };
 
@@ -940,11 +937,8 @@ export class BpmnEditor extends CachedComponent {
     const stackIdx = commandStack._stackIdx;
 
     // notify interested parties that modeler was created
-    onAction('emit-event', {
-      type: 'bpmn.modeler.created',
-      payload: {
-        modeler
-      }
+    emit('bpmn.modeler.created', {
+      modeler
     });
 
     return {

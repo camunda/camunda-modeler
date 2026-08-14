@@ -20,5 +20,11 @@ export const EventsContext = createContext({
     return {
       cancel: () => eventEmitter.off(event, listener)
     };
+  },
+  emit: (event, payload) => {
+    return eventEmitter.emit(event, {
+      ...payload,
+      tab: null
+    });
   }
 });

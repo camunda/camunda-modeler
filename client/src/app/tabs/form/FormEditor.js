@@ -109,12 +109,9 @@ export class FormEditor extends CachedComponent {
           executionPlatformVersion
         } = engineProfile;
 
-        this.props.onAction('emit-event', {
-          type: 'tab.engineProfileChanged',
-          payload: {
-            executionPlatform,
-            executionPlatformVersion
-          }
+        this.props.emit('tab.engineProfileChanged', {
+          executionPlatform,
+          executionPlatformVersion
         });
       },
       getCached: () => this.getCached(),
@@ -269,12 +266,9 @@ export class FormEditor extends CachedComponent {
       if (engineProfile) {
         const { executionPlatform, executionPlatformVersion } = engineProfile;
 
-        this.props.onAction('emit-event', {
-          type: 'tab.engineProfileChanged',
-          payload: {
-            executionPlatform,
-            executionPlatformVersion
-          }
+        this.props.emit('tab.engineProfileChanged', {
+          executionPlatform,
+          executionPlatformVersion
         });
       }
 
@@ -322,16 +316,14 @@ export class FormEditor extends CachedComponent {
 
   handleDataEditorInteractionEnd = () => {
     const {
-      onAction
+      emit
     } = this.props;
 
     const newData = this.getInputData();
 
     // fire event once data was touched (changed)
     if (this.state.lastInputData !== newData) {
-      onAction('emit-event', {
-        type: 'form.modeler.inputDataChanged'
-      });
+      emit('form.modeler.inputDataChanged');
     }
 
     this.setState({
@@ -363,16 +355,14 @@ export class FormEditor extends CachedComponent {
 
   handleFormPreviewInteractionEnd = () => {
     const {
-      onAction
+      emit
     } = this.props;
 
     const newformPreviewState = this.getFormPreviewState();
 
     // fire event once preview was touched (changed)
     if (this.state.lastFormPreviewState !== newformPreviewState) {
-      onAction('emit-event', {
-        type: 'form.modeler.previewChanged'
-      });
+      emit('form.modeler.previewChanged');
     }
 
     this.setState({
@@ -471,7 +461,7 @@ export class FormEditor extends CachedComponent {
     } = event;
 
     const {
-      onAction,
+      emit,
       onLayoutChanged
     } = this.props;
 
@@ -483,14 +473,11 @@ export class FormEditor extends CachedComponent {
     }
 
     // (2) notify interested parties that playground layout has changed
-    onAction('emit-event', {
-      type: 'form.modeler.playgroundLayoutChanged',
-      payload: {
-        layout,
+    emit('form.modeler.playgroundLayoutChanged', {
+      layout,
 
-        // assumption: everything else is internally triggered by the playground
-        triggeredBy: this.state.triggeredBy || FORM_PREVIEW_TRIGGER.PREVIEW_PANEL
-      }
+      // assumption: everything else is internally triggered by the playground
+      triggeredBy: this.state.triggeredBy || FORM_PREVIEW_TRIGGER.PREVIEW_PANEL
     });
 
     // (3) toggle preview
@@ -666,7 +653,7 @@ export class FormEditor extends CachedComponent {
 
     const {
       layout = {},
-      onAction
+      emit
     } = props;
 
     const {
@@ -686,10 +673,7 @@ export class FormEditor extends CachedComponent {
       }
     });
 
-    onAction('emit-event', {
-      type: 'form.modeler.created',
-      payload: form
-    });
+    emit('form.modeler.created', form);
 
     return {
       __destroy: () => {

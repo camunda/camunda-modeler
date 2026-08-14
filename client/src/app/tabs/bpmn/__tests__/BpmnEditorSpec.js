@@ -242,6 +242,7 @@ describe('<BpmnEditor>', function() {
         },
         onError: onErrorSpy,
         onAction: noop,
+        emit: noop,
         settings,
       };
 
@@ -2289,8 +2290,8 @@ describe('<BpmnEditor>', function() {
     beforeEach(function() {
       emittedEvents = [];
 
-      recordActions = (action, options) => {
-        emittedEvents.push(options);
+      recordActions = (type, payload) => {
+        emittedEvents.push({ type, payload });
       };
     });
 
@@ -2298,7 +2299,7 @@ describe('<BpmnEditor>', function() {
 
       // when
       await renderEditor(diagramXML, {
-        onAction: recordActions
+        emit: recordActions
       });
 
       // then
@@ -2319,7 +2320,7 @@ describe('<BpmnEditor>', function() {
       const {
         instance
       } = await renderEditor(diagramXML, {
-        onAction: recordActions
+        emit: recordActions
       });
 
       // then

@@ -412,6 +412,80 @@ describe('<AppParent>', function() {
   });
 
 
+  describe('menu action', function() {
+
+    it('should emit application event for <emit-event>', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        instance
+      } = createAppParent({ globals: { backend } });
+
+      const app = instance.getApp();
+      const emitSpy = spy(app, 'emitEvent');
+
+      // when
+      backend.receive('menu:action', null, 'emit-event', {
+        type: 'versionInfo.open',
+        payload: { foo: 'bar' }
+      });
+
+      // then
+      expect(emitSpy).to.have.been.calledWith('versionInfo.open', { foo: 'bar' });
+    });
+
+
+    it('should trigger action for other actions', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        instance
+      } = createAppParent({ globals: { backend } });
+
+      const app = instance.getApp();
+      const actionSpy = spy(app, 'triggerAction');
+
+      // when
+      backend.receive('menu:action', null, 'undo', { foo: 'bar' });
+
+      // then
+      expect(actionSpy).to.have.been.calledWith('undo', { foo: 'bar' });
+    });
+
+
+    it('should handle error thrown while emitting', function() {
+
+      // given
+      const backend = new Backend();
+
+      const {
+        instance
+      } = createAppParent({ globals: { backend } });
+
+      const app = instance.getApp();
+
+      const error = new Error('emit failed');
+
+      sinon.stub(app, 'emitEvent').throws(error);
+
+      const handleErrorStub = sinon.stub(instance, 'handleError');
+
+      // when
+      backend.receive('menu:action', null, 'emit-event', {
+        type: 'versionInfo.open'
+      });
+
+      // then
+      expect(handleErrorStub).to.have.been.calledWith(error);
+    });
+
+  });
+
+
   describe('trigger action', function() {
 
     describe('quit', function() {

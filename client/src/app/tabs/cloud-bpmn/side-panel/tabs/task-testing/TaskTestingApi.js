@@ -15,11 +15,12 @@ import { getOperateBaseUrl, getTasklistBaseUrl } from '../../../../../zeebe/util
 const log = debug('TaskTestingApi');
 
 export default class TaskTestingApi {
-  constructor(deployment, startInstance, zeebeApi, tab, onAction) {
+  constructor(deployment, startInstance, zeebeApi, tab, onAction, emit) {
     this._deployment = deployment;
     this._startInstance = startInstance;
     this._zeebeApi = zeebeApi;
     this._onAction = onAction;
+    this._emit = emit;
     this._tab = tab;
   }
 
@@ -195,21 +196,15 @@ export default class TaskTestingApi {
   _handleDeployment({ context, deploymentResult, endpoint }) {
 
     if (deploymentResult.success) {
-      this._onAction('emit-event', {
-        type: 'deployment.done',
-        payload: {
-          context,
-          targetType: endpoint?.targetType,
-        }
+      this._emit('deployment.done', {
+        context,
+        targetType: endpoint?.targetType,
       });
     } else {
-      this._onAction('emit-event', {
-        type: 'deployment.error',
-        payload: {
-          context,
-          error: deploymentResult?.response,
-          targetType: endpoint?.targetType,
-        }
+      this._emit('deployment.error', {
+        context,
+        error: deploymentResult?.response,
+        targetType: endpoint?.targetType,
       });
     }
   }

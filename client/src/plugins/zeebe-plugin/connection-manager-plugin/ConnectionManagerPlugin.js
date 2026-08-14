@@ -53,6 +53,7 @@ export default function ConnectionManagerPlugin(props) {
     subscribe,
     settings,
     triggerAction,
+    emit,
     _getGlobal,
     connectionCheckResult,
     setConnectionCheckResult
@@ -174,12 +175,9 @@ export default function ConnectionManagerPlugin(props) {
   // update connection checker on connection change
   useEffect(() => {
     (async () => {
-      triggerAction('emit-event', {
-        type: 'connectionManager.connectionCheckStarted',
-        payload: {
-          connectionId: activeConnection?.id,
-          connection: activeConnection,
-        }
+      emit('connectionManager.connectionCheckStarted', {
+        connectionId: activeConnection?.id,
+        connection: activeConnection,
       });
 
       setConnectionCheckResult(null);
@@ -200,14 +198,11 @@ export default function ConnectionManagerPlugin(props) {
     const connectionCheckListener = (connectionCheckResult) => {
       const endpoint = extractEndpointUrl(activeConnection);
 
-      triggerAction('emit-event', {
-        type: 'connectionManager.connectionStatusChanged',
-        payload: {
-          ...connectionCheckResult,
-          connectionId: activeConnection?.id,
-          connection: activeConnection,
-          isLocal: endpoint ? isLocalEndpoint(endpoint) : null
-        }
+      emit('connectionManager.connectionStatusChanged', {
+        ...connectionCheckResult,
+        connectionId: activeConnection?.id,
+        connection: activeConnection,
+        isLocal: endpoint ? isLocalEndpoint(endpoint) : null
       });
       setConnectionCheckResult(connectionCheckResult);
     };
@@ -220,7 +215,7 @@ export default function ConnectionManagerPlugin(props) {
       globalConnectionChecker.current.off('connectionCheck', connectionCheckListener);
       globalConnectionChecker.current.stopChecking();
     };
-  }, [ activeConnection, globalConnectionChecker, deployment, setConnectionCheckResult, paused, triggerAction ]);
+  }, [ activeConnection, globalConnectionChecker, deployment, setConnectionCheckResult, paused, emit ]);
 
   function getStatus(connectionCheckResult, activeConnection) {
     if (activeConnection?.id === NO_CONNECTION.id || paused) {

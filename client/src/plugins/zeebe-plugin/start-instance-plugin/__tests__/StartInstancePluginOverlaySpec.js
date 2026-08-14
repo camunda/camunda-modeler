@@ -207,12 +207,12 @@ describe('StartInstancePluginOverlay', function() {
         startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult()))
       });
 
-      const triggerActionSpy = sinon.spy();
+      const emitSpy = sinon.spy();
 
       createStartInstancePluginOverlay({
         deployment,
         startInstance,
-        triggerAction: triggerActionSpy
+        emit: emitSpy
       });
 
       await waitFor(() => {
@@ -230,17 +230,14 @@ describe('StartInstancePluginOverlay', function() {
       });
 
       // then
-      expect(triggerActionSpy).to.have.been.calledOnce;
-      expect(triggerActionSpy).to.have.been.calledWith('emit-event', sinon.match({
-        type: 'deployment.done',
-        payload: {
-          deployment: mockDeploymentResult.response,
-          context: 'startInstanceTool',
-          targetType: 'camundaCloud',
-          deployedTo: {
-            executionPlatformVersion: '7.0.0',
-            executionPlatform: 'Camunda Cloud'
-          }
+      expect(emitSpy).to.have.been.calledOnce;
+      expect(emitSpy).to.have.been.calledWith('deployment.done', sinon.match({
+        deployment: mockDeploymentResult.response,
+        context: 'startInstanceTool',
+        targetType: 'camundaCloud',
+        deployedTo: {
+          executionPlatformVersion: '7.0.0',
+          executionPlatform: 'Camunda Cloud'
         }
       }));
     });
@@ -269,12 +266,12 @@ describe('StartInstancePluginOverlay', function() {
         startInstance: sinon.spy(() => Promise.resolve(createMockStartInstanceResult()))
       });
 
-      const triggerActionSpy = sinon.spy();
+      const emitSpy = sinon.spy();
 
       createStartInstancePluginOverlay({
         deployment,
         startInstance,
-        triggerAction: triggerActionSpy
+        emit: emitSpy
       });
 
       await waitFor(() => {
@@ -292,20 +289,17 @@ describe('StartInstancePluginOverlay', function() {
       });
 
       // then
-      expect(triggerActionSpy).to.have.been.calledOnce;
-      expect(triggerActionSpy).to.have.been.calledWith('emit-event', sinon.match({
-        type: 'deployment.error',
-        payload: {
-          error: {
-            ...mockDeploymentResult.response,
-            code: 'INVALID_ARGUMENT'
-          },
-          context: 'startInstanceTool',
-          targetType: 'camundaCloud',
-          deployedTo: {
-            executionPlatformVersion: '7.0.0',
-            executionPlatform: 'Camunda Cloud'
-          }
+      expect(emitSpy).to.have.been.calledOnce;
+      expect(emitSpy).to.have.been.calledWith('deployment.error', sinon.match({
+        error: {
+          ...mockDeploymentResult.response,
+          code: 'INVALID_ARGUMENT'
+        },
+        context: 'startInstanceTool',
+        targetType: 'camundaCloud',
+        deployedTo: {
+          executionPlatformVersion: '7.0.0',
+          executionPlatform: 'Camunda Cloud'
         }
       }));
     });
@@ -872,6 +866,7 @@ function createStartInstancePluginOverlay(props = {}) {
     StartInstanceConfigForm,
     startInstanceConfigValidator = MockConfigValidator,
     triggerAction = () => {},
+    emit = () => {},
   } = props;
 
   return render(
@@ -898,6 +893,7 @@ function createStartInstancePluginOverlay(props = {}) {
       startInstance={ startInstance }
       StartInstanceConfigForm={ StartInstanceConfigForm }
       startInstanceConfigValidator={ startInstanceConfigValidator }
-      triggerAction={ triggerAction } />
+      triggerAction={ triggerAction }
+      emit={ emit } />
   );
 }

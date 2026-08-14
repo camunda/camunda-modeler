@@ -290,8 +290,7 @@ describe('<StartInstanceTool>', function() {
 
       // given
       let deployedTo;
-      const actionTriggered = {
-        emitEvent: 'emit-event',
+      const eventEmitted = {
         type: 'deployment.done',
         handler: deployment => deployedTo = deployment.payload.deployedTo
       };
@@ -300,7 +299,7 @@ describe('<StartInstanceTool>', function() {
           throw new ConnectionError({ status: 404 });
         }
       };
-      const { instance } = createStartInstanceTool({ actionTriggered, deployService });
+      const { instance } = createStartInstanceTool({ eventEmitted, deployService });
 
       // when
       await instance.startInstance();
@@ -316,8 +315,7 @@ describe('<StartInstanceTool>', function() {
 
       // given
       const handler = sinon.spy();
-      const actionTriggered = {
-        emitEvent: 'emit-event',
+      const eventEmitted = {
         type: 'deployment.done',
         handler
       };
@@ -326,7 +324,7 @@ describe('<StartInstanceTool>', function() {
           throw new TypeError('we don\'t want to ignore that!');
         }
       };
-      const { instance } = createStartInstanceTool({ actionTriggered, deployService });
+      const { instance } = createStartInstanceTool({ eventEmitted, deployService });
 
       // when
       let error;
@@ -395,7 +393,7 @@ describe('<StartInstanceTool>', function() {
     });
 
 
-    describe('emit-event action', function() {
+    describe('events', function() {
 
       it('should trigger deployment.done action after successful deployment', async function() {
 
@@ -403,15 +401,14 @@ describe('<StartInstanceTool>', function() {
         const activeTab = createTab({ name: 'foo.bpmn' });
 
         const actionSpy = sinon.spy(),
-              actionTriggered = {
-                emitEvent: 'emit-event',
+              eventEmitted = {
                 type: 'deployment.done',
                 handler:actionSpy
               };
 
         const {
           instance
-        } = createStartInstanceTool({ activeTab, actionTriggered });
+        } = createStartInstanceTool({ activeTab, eventEmitted });
 
         // when
         await instance.startInstance();
@@ -428,8 +425,7 @@ describe('<StartInstanceTool>', function() {
 
         const actionSpy = sinon.spy(),
               getVersionSpy = sinon.spy(() => { return { version: '7.14.0' }; }),
-              actionTriggered = {
-                emitEvent: 'emit-event',
+              eventEmitted = {
                 type: 'deployment.done',
                 handler:actionSpy
               };
@@ -440,7 +436,7 @@ describe('<StartInstanceTool>', function() {
 
         const {
           instance
-        } = createStartInstanceTool({ activeTab, actionTriggered, deployService });
+        } = createStartInstanceTool({ activeTab, eventEmitted, deployService });
 
         // when
         await instance.startInstance();
@@ -461,8 +457,7 @@ describe('<StartInstanceTool>', function() {
         const activeTab = createTab({ name: 'foo.bpmn' });
 
         const actionSpy = sinon.spy(),
-              actionTriggered = {
-                emitEvent: 'emit-event',
+              eventEmitted = {
                 type: 'deployment.done',
                 handler:actionSpy
               };
@@ -471,7 +466,7 @@ describe('<StartInstanceTool>', function() {
 
         const {
           instance
-        } = createStartInstanceTool({ activeTab, actionTriggered, deployErrorThrown });
+        } = createStartInstanceTool({ activeTab, eventEmitted, deployErrorThrown });
 
         // when
         await instance.startInstance();
@@ -487,8 +482,7 @@ describe('<StartInstanceTool>', function() {
         const activeTab = createTab({ name: 'foo.bpmn' });
 
         const actionSpy = sinon.spy(),
-              actionTriggered = {
-                emitEvent: 'emit-event',
+              eventEmitted = {
                 type: 'deployment.error',
                 handler:actionSpy
               };
@@ -497,7 +491,7 @@ describe('<StartInstanceTool>', function() {
 
         const {
           instance
-        } = createStartInstanceTool({ activeTab, actionTriggered, deployErrorThrown });
+        } = createStartInstanceTool({ activeTab, eventEmitted, deployErrorThrown });
 
         // when
         await instance.startInstance();
@@ -513,8 +507,7 @@ describe('<StartInstanceTool>', function() {
         const activeTab = createTab({ name: 'foo.bpmn' });
 
         const actionSpy = sinon.spy(),
-              actionTriggered = {
-                emitEvent: 'emit-event',
+              eventEmitted = {
                 type: 'deployment.error',
                 handler:actionSpy
               };
@@ -523,7 +516,7 @@ describe('<StartInstanceTool>', function() {
 
         const {
           instance
-        } = createStartInstanceTool({ activeTab, actionTriggered, deployErrorThrown });
+        } = createStartInstanceTool({ activeTab, eventEmitted, deployErrorThrown });
 
         // when
         await instance.startInstance();
@@ -544,15 +537,14 @@ describe('<StartInstanceTool>', function() {
         const activeTab = createTab({ name: 'foo.bpmn' });
 
         const actionSpy = sinon.spy(),
-              actionTriggered = {
-                emitEvent: 'emit-event',
+              eventEmitted = {
                 type: 'deployment.error',
                 handler:actionSpy
               };
 
         const {
           instance
-        } = createStartInstanceTool({ activeTab, actionTriggered });
+        } = createStartInstanceTool({ activeTab, eventEmitted });
 
         // when
         await instance.startInstance();
@@ -817,8 +809,7 @@ describe('<StartInstanceTool>', function() {
       const displayNotification = sinon.spy();
 
       const actionSpy = sinon.spy(),
-            actionTriggered = {
-              emitEvent: 'emit-event',
+            eventEmitted = {
               type: 'deployment.done',
               handler: actionSpy
             };
@@ -831,7 +822,7 @@ describe('<StartInstanceTool>', function() {
         activeTab,
         displayNotification,
         startSpy,
-        actionTriggered
+        eventEmitted
       });
 
       // when
@@ -859,8 +850,7 @@ describe('<StartInstanceTool>', function() {
       const logSpy = sinon.spy();
 
       const actionSpy = sinon.spy(),
-            actionTriggered = {
-              emitEvent: 'emit-event',
+            eventEmitted = {
               type: 'deployment.done',
               handler: actionSpy
             };
@@ -873,7 +863,7 @@ describe('<StartInstanceTool>', function() {
         activeTab,
         log: logSpy,
         startSpy,
-        actionTriggered
+        eventEmitted
       });
 
       let error;
@@ -944,7 +934,7 @@ describe('<StartInstanceTool>', function() {
 
       const actionSpy = sinon.spy(),
             actionTriggered = {
-              emitEvent: 'open-log',
+              action: 'open-log',
               handler: actionSpy
             };
 
@@ -1285,9 +1275,15 @@ function createStartInstanceTool({
     case (event === 'save'):
       return activeTab;
     case (props.actionTriggered &&
-      props.actionTriggered.emitEvent == event &&
+      props.actionTriggered.action == event &&
       props.actionTriggered.type == (context ? context.type : undefined)):
       props.actionTriggered.handler(context);
+    }
+  };
+
+  const emit = (type, payload) => {
+    if (props.eventEmitted && props.eventEmitted.type === type) {
+      props.eventEmitted.handler({ type, payload });
     }
   };
 
@@ -1318,6 +1314,7 @@ function createStartInstanceTool({
       ref={ ref }
       subscribe={ props.subscribe || subscribe }
       triggerAction={ triggerAction }
+      emit={ emit }
       displayNotification={ noop }
       log={ props.log || noop }
       { ...props }

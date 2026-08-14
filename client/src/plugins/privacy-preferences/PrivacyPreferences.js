@@ -81,7 +81,7 @@ export default class PrivacyPreferences extends PureComponent {
   };
 
   emit(event, payload) {
-    this.props.triggerAction('emit-event', { type: event, payload });
+    this.props.emit(event, payload);
   }
 
   render() {

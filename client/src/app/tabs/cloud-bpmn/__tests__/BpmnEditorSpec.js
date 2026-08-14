@@ -234,6 +234,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       },
       onError: onErrorSpy,
       onAction: noop,
+      emit: noop,
       settings
     };
 
@@ -2516,8 +2517,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     beforeEach(function() {
       emittedEvents = [];
 
-      recordActions = (action, options) => {
-        emittedEvents.push(options);
+      recordActions = (type, payload) => {
+        emittedEvents.push({ type, payload });
       };
     });
 
@@ -2525,7 +2526,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // when
       await renderEditor(diagramXML, {
-        onAction: recordActions
+        emit: recordActions
       });
 
       // then
@@ -2544,7 +2545,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // when
       const { instance } = await renderEditor(diagramXML, {
-        onAction: recordActions
+        emit: recordActions
       });
 
       // then
@@ -2629,20 +2630,17 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     it('should emit tab.engineProfileChanged event on import', async function() {
 
       // given
-      const onActionSpy = sinon.spy();
+      const emitSpy = sinon.spy();
 
       // when
       await renderEditor(engineProfileXML, {
-        onAction: onActionSpy
+        emit: emitSpy
       });
 
       // then
-      expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
-        type: 'tab.engineProfileChanged',
-        payload: {
-          executionPlatform: 'Camunda Cloud',
-          executionPlatformVersion: '1.1.0'
-        }
+      expect(emitSpy).to.have.been.calledWithMatch('tab.engineProfileChanged', {
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '1.1.0'
       });
     });
 
@@ -2650,13 +2648,13 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     it('should emit tab.engineProfileChanged event on set engine profile', async function() {
 
       // given
-      const onActionSpy = sinon.spy();
+      const emitSpy = sinon.spy();
 
       const { instance } = await renderEditor(engineProfileXML, {
-        onAction: onActionSpy
+        emit: emitSpy
       });
 
-      onActionSpy.resetHistory();
+      emitSpy.resetHistory();
 
       // when
       instance.engineProfile.set({
@@ -2665,12 +2663,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       });
 
       // then
-      expect(onActionSpy).to.have.been.calledWithMatch('emit-event', {
-        type: 'tab.engineProfileChanged',
-        payload: {
-          executionPlatform: 'Camunda Cloud',
-          executionPlatformVersion: '1.2.0'
-        }
+      expect(emitSpy).to.have.been.calledWithMatch('tab.engineProfileChanged', {
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '1.2.0'
       });
     });
 

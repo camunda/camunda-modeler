@@ -2883,7 +2883,7 @@ describe('<App>', function() {
       await findByText('test-notification-3');
 
       // when
-      await app.triggerAction('emit-event', { type: 'tab.activeSheetChanged' });
+      await app.emitEvent('tab.activeSheetChanged');
 
       // then
       await waitFor(() => {
@@ -4060,6 +4060,42 @@ describe('<App>', function() {
 
       // when
       app.emitWithTab('foo', activeTab, payload);
+
+      // then
+      expect(eventSpy).to.have.been.called;
+    });
+
+  });
+
+
+  describe('#emitEvent', function() {
+
+    it('should emit event with active tab', function() {
+
+      // given
+      const { app } = createApp();
+
+      const {
+        activeTab
+      } = app.state;
+
+      const payload = { foo: 'bar' };
+
+      const eventSpy = sinon.spy((event) => {
+
+        const {
+          foo,
+          tab
+        } = event;
+
+        expect(foo).to.equal('bar');
+        expect(tab).to.eql(activeTab);
+      });
+
+      app.on('foo', eventSpy);
+
+      // when
+      app.emitEvent('foo', payload);
 
       // then
       expect(eventSpy).to.have.been.called;
