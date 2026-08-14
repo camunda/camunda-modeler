@@ -4104,6 +4104,39 @@ describe('<App>', function() {
   });
 
 
+  describe('deprecated #emit-event action', function() {
+
+    afterEach(sinon.restore);
+
+    it('should be a NOOP and log an error', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const errorSpy = sinon.stub(console, 'error');
+
+      const eventSpy = sinon.spy();
+
+      app.on('foo', eventSpy);
+
+      // when
+      const result = await app.triggerAction('emit-event', {
+        type: 'foo',
+        payload: { bar: 'baz' }
+      });
+
+      // then
+      expect(result).not.to.exist;
+      expect(eventSpy).not.to.have.been.called;
+
+      expect(errorSpy).to.have.been.calledOnce;
+      expect(errorSpy.getCall(0).args[0]).to.match(/emit-event/);
+      expect(errorSpy.getCall(0).args[0]).to.match(/pull\/6106/);
+    });
+
+  });
+
+
   describe('layout', function() {
 
     it('should emit <layout.changed> event on layout update', async function() {

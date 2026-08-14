@@ -2396,6 +2396,18 @@ export class App extends PureComponent {
       return this.displayNotification(options);
     }
 
+    if (action === 'emit-event') {
+      console.error(
+        'The \'emit-event\' action has been removed. ' +
+        'Application events are now emitted through the events context. ' +
+        'Use the `emit(type, payload)` prop (or `EventsContext#emit`) instead of ' +
+        '`triggerAction(\'emit-event\', { type, payload })`. ' +
+        'See https://github.com/camunda/camunda-modeler/pull/6106 for details.'
+      );
+
+      return;
+    }
+
     if (action === 'toggle-panel') {
       const { panel } = this.state.layout;
       return panel.open ? this.closePanel() : this.openPanel(panel.tab);
