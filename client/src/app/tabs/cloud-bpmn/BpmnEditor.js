@@ -124,18 +124,14 @@ export class BpmnEditor extends CachedComponent {
           'modeler:executionPlatform': executionPlatform,
           'modeler:executionPlatformVersion': executionPlatformVersion
         });
-
-        this.props.emit('tab.engineProfileChanged', {
-          executionPlatform,
-          executionPlatformVersion
-        });
       },
       getCached: () => this.getCached(),
       setCached: ({ engineProfile }) => {
         this.handleEngineProfileChangeDebounced({ engineProfile });
 
         this.setCached({ engineProfile });
-      }
+      },
+      onChanged: (engineProfile) => this.emitEngineProfileChanged(engineProfile)
     });
 
     this.gridBehavior = new GridBehavior({
@@ -292,6 +288,18 @@ export class BpmnEditor extends CachedComponent {
     });
   }
 
+  emitEngineProfileChanged = (engineProfile) => {
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = engineProfile;
+
+    this.props.emit('tab.engineProfileChanged', {
+      executionPlatform,
+      executionPlatformVersion
+    });
+  };
+
   handleEngineProfileChange = ({ engineProfile }) => {
     const { executionPlatformVersion: version } = engineProfile;
 
@@ -431,12 +439,7 @@ export class BpmnEditor extends CachedComponent {
       });
 
       if (engineProfile) {
-        const { executionPlatform, executionPlatformVersion } = engineProfile;
-
-        this.props.emit('tab.engineProfileChanged', {
-          executionPlatform,
-          executionPlatformVersion
-        });
+        this.emitEngineProfileChanged(engineProfile);
       }
     }
 
