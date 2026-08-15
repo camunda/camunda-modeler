@@ -168,31 +168,14 @@ export class RPAEditor extends CachedComponent {
   }
 
   handleEngineProfile() {
-    let engineProfile = null;
-    let error = null;
-
     try {
-      engineProfile = this.engineProfile.get();
+      const engineProfile = this.engineProfile.get();
+
+      this.engineProfile.setCached(engineProfile);
     } catch (err) {
-      error = err;
-    }
-
-    const { engineProfile: cachedEngineProfile } = this.getCached();
-
-    if (engineProfile?.executionPlatformVersion === cachedEngineProfile?.executionPlatformVersion) {
-      return;
-    }
-
-    if (error) {
       this.setCached({
-        engineProfile: null,
+        engineProfile: null
       });
-    } else {
-      this.setCached({
-        engineProfile,
-      });
-
-      this.emitEngineProfileChanged(engineProfile);
     }
   }
 
