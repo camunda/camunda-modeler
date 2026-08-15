@@ -11,7 +11,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `camunda-bpmn-js@5.31.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.63.0`
 * `DEPS`: update to `@camunda/linting@3.54.0`
-* `DEPS`: update to `@bpmn-io/variable-outline@3.3.0`
+* `DEPS`: update to `@bpmn-io/variable-outline@3.3.1`
 * `DEPS`: update to `@camunda/improved-canvas@1.10.4`
 * `DEPS`: update to `@camunda/task-testing@6.0.0`
 * `DEPS`: update to `diagram-js@15.24.0`
@@ -32,6 +32,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: do not copy message flows without participants ([bpmn-io/bpmn-js#1902](https://github.com/bpmn-io/bpmn-js/issues/1902), [bpmn-io/bpmn-js#2475](https://github.com/bpmn-io/bpmn-js/pull/2475))
 * `FIX`: ignore labels in `laneRef` updates ([bpmn-io/bpmn-js#2469](https://github.com/bpmn-io/bpmn-js/pull/2469))
 * `FIX`: correct create menu width ([#6085](https://github.com/camunda/camunda-modeler/issues/6085))
+* `FIX`: correct variable panel search blink on blur ([#5963](https://github.com/camunda/camunda-modeler/issues/5963), [bpmn-io/variable-outline#105](https://github.com/bpmn-io/variable-outline/pull/105))
 
 ## 5.50.1
 
