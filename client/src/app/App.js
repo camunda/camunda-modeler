@@ -1130,6 +1130,10 @@ export class App extends PureComponent {
 
     const linter = await tabProvider.getLinter(plugins, tab, this.getConfig);
 
+    if (this.lintRequests.get(tab) !== request) {
+      return;
+    }
+
     let results = [];
 
     if (linter) {

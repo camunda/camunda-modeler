@@ -4367,6 +4367,37 @@ describe('<App>', function() {
     });
 
 
+    it('should not run stale linter', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+      const formProvider = tabsProvider.getProvider('form');
+      const firstLinter = pDefer();
+      const firstLintSpy = sinon.spy();
+      const secondLintSpy = sinon.spy();
+
+      sinon.stub(formProvider, 'getLinter')
+        .onFirstCall().returns(firstLinter.promise)
+        .onSecondCall().returns({ lint: secondLintSpy });
+
+      const { app } = createApp({ tabsProvider });
+
+      const [ currentTab ] = await app.openFiles([ createFile('1.form') ]);
+
+      // when
+      const firstRequest = app.lintTab(currentTab, 'first');
+
+      await app.lintTab(currentTab, 'second');
+
+      firstLinter.resolve({ lint: firstLintSpy });
+      await firstRequest;
+
+      // then
+      expect(firstLintSpy).not.to.have.been.called;
+      expect(secondLintSpy).to.have.been.calledOnce;
+    });
+
+
     it('should not lint tab (no linter)', async function() {
 
       // given
