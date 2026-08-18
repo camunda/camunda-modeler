@@ -13,10 +13,14 @@ import * as sinon from 'sinon';
 
 import React, { createRef } from 'react';
 
+import EventEmitter from 'events';
+
 import { render, waitFor } from '@testing-library/react';
 
 import { SlotFillRoot } from '../../slot-fill';
 import Panel from '../../panel/Panel';
+
+import { EventsContext } from '../../EventsContext';
 
 import { WithCachedState } from '../../cached';
 import Cache from '../../cached/Cache';
@@ -69,14 +73,28 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
 
   const TestEditor = WithCachedState(EditorComponent);
 
+  const eventBus = options.eventBus || new EventEmitter();
+
+  const eventsContext = {
+    subscribe: (event, listener) => {
+      eventBus.on(event, listener);
+
+      return {
+        cancel: () => eventBus.off(event, listener)
+      };
+    }
+  };
+
   const {
     rerender,
     ...renderResults
   } = render(
-    <SlotFillRoot>
-      <TestEditor ref={ ref } { ...props } />
-      <Panel layout={ props.layout } />
-    </SlotFillRoot>
+    <EventsContext.Provider value={ eventsContext }>
+      <SlotFillRoot>
+        <TestEditor ref={ ref } { ...props } />
+        <Panel layout={ props.layout } />
+      </SlotFillRoot>
+    </EventsContext.Provider>
   );
 
   if (props.waitForImport) {
@@ -88,17 +106,20 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
   return {
     ...renderResults,
     instance: ref.current,
+    emit: (event, ...args) => eventBus.emit(event, ...args),
     rerender: (newXML, newOptions = {}) => {
       rerender(
-        <SlotFillRoot>
-          <TestEditor
-            ref={ ref }
-            { ...props }
-            xml={ newXML || xml }
-            { ...newOptions }
-          />
-          <Panel layout={ props.layout } />
-        </SlotFillRoot>
+        <EventsContext.Provider value={ eventsContext }>
+          <SlotFillRoot>
+            <TestEditor
+              ref={ ref }
+              { ...props }
+              xml={ newXML || xml }
+              { ...newOptions }
+            />
+            <Panel layout={ props.layout } />
+          </SlotFillRoot>
+        </EventsContext.Provider>
       );
     }
   };

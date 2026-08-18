@@ -2041,6 +2041,128 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     });
 
 
+    it('should reload templates when the app regains focus', async function() {
+
+      // given
+      // each fetch returns different templates so the reload is applied
+      let call = 0;
+
+      const getConfigStub = sinon.stub().callsFake(() => Promise.resolve([
+        {
+          '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+          'id': `template-${ call++ }`
+        }
+      ]));
+
+      const setTemplatesSpy = sinon.spy(),
+            elementTemplatesLoaderMock = { setTemplates: setTemplatesSpy };
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplatesLoader: elementTemplatesLoaderMock
+            }
+          })
+        }
+      });
+
+      const { emit } = await renderEditor(diagramXML, {
+        cache,
+        getConfig: getConfigStub
+      });
+
+      getConfigStub.resetHistory();
+      setTemplatesSpy.resetHistory();
+
+      // when
+      // an external process may have edited local templates while away
+      emit('app.focused');
+
+      // then
+      await waitFor(() => {
+        expect(getConfigStub).to.be.calledOnce;
+      });
+      expect(getConfigStub).to.be.calledWith('bpmn.elementTemplates');
+      expect(setTemplatesSpy).to.be.calledOnce;
+    });
+
+
+    it('should not re-set unchanged templates when the app regains focus', async function() {
+
+      // given
+      const getConfigStub = sinon.stub().resolves([
+        {
+          '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+          'id': 'template-1'
+        }
+      ]);
+
+      const setTemplatesSpy = sinon.spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplatesLoader: { setTemplates: setTemplatesSpy }
+            }
+          })
+        }
+      });
+
+      const { emit } = await renderEditor(diagramXML, {
+        cache,
+        getConfig: getConfigStub
+      });
+
+      // templates were set once on mount
+      expect(setTemplatesSpy).to.be.calledOnce;
+
+      // when
+      // focus fetches the same templates
+      emit('app.focused');
+
+      // then
+      // identical templates are not re-applied (no re-validation, linter kept)
+      await new Promise(resolve => setTimeout(resolve, 50));
+      expect(setTemplatesSpy).to.be.calledOnce;
+    });
+
+
+    it('should not reload templates on focus after unmount', async function() {
+
+      // given
+      let call = 0;
+
+      const getConfigStub = sinon.stub().callsFake(() => Promise.resolve([
+        {
+          '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+          'id': `template-${ call++ }`
+        }
+      ]));
+
+      const { emit, unmount } = await renderEditor(diagramXML, {
+        getConfig: getConfigStub
+      });
+
+      getConfigStub.resetHistory();
+
+      // when
+      // the subscription is cancelled on unmount
+      unmount();
+
+      emit('app.focused');
+
+      // then
+      await new Promise(resolve => setTimeout(resolve, 50));
+      expect(getConfigStub).not.to.have.been.called;
+    });
+
+
     it('should invalidate linter and re-lint when element templates change', async function() {
 
       // given
