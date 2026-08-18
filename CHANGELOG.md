@@ -6,10 +6,16 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: cache linter creation / prevent unnecessary element template reloading ([#https://github.com/camunda/camunda-modeler/pull/6092](https://github.com/camunda/camunda-modeler/pull/6092))
+* `FEAT`: cache parsed element templates ([#6091](https://github.com/camunda/camunda-modeler/pull/6091))
+* `FEAT`: reload element templates on application focus ([#6103](https://github.com/camunda/camunda-modeler/pull/6103))
 * `FEAT`: add ability to copy diagram file path ([#6059](https://github.com/camunda/camunda-modeler/pull/6059))
 * `FEAT`: allow event emitters to override tab context ([#6106](https://github.com/camunda/camunda-modeler/pull/6106))
 * `FEAT`: emit application events via event context ([#6106](https://github.com/camunda/camunda-modeler/pull/6106))
 * `FEAT`: rename Camunda 8 tenant to logical tenant ([#6109](https://github.com/camunda/camunda-modeler/pull/6109))
+* `FEAT`: de-duplicate connection manager status change devents ([#6104](https://github.com/camunda/camunda-modeler/pull/6104))
+* `FIX`: improve performance when loading large amounts of element templates ([#5557](https://github.com/camunda/camunda-modeler/issues/5557))
+* `FIX`: correct engine profile mis-match warning ([#6105](https://github.com/camunda/camunda-modeler/pull/6105))
 * `DEPS`: update to `bpmn-js@18.24.0`
 * `DEPS`: update to `camunda-bpmn-js@5.31.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.63.0`
