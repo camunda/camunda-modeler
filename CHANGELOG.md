@@ -9,6 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: add ability to copy diagram file path ([#6059](https://github.com/camunda/camunda-modeler/pull/6059))
 * `FEAT`: allow event emitters to override tab context ([#6106](https://github.com/camunda/camunda-modeler/pull/6106))
 * `FEAT`: emit application events via event context ([#6106](https://github.com/camunda/camunda-modeler/pull/6106))
+* `FEAT`: rename Camunda 8 tenant to logical tenant ([#6109](https://github.com/camunda/camunda-modeler/pull/6109))
 * `DEPS`: update to `bpmn-js@18.24.0`
 * `DEPS`: update to `camunda-bpmn-js@5.31.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.63.0`
