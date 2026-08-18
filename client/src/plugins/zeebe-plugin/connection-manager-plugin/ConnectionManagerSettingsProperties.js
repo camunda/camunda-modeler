@@ -27,7 +27,7 @@ const LABELS = {
   OAUTH_URL: 'OAuth token URL',
   SELF_HOSTED: 'Camunda 8 Self-Managed',
   TARGET: 'Target',
-  TENANT_ID: 'Tenant ID',
+  TENANT_ID: 'Logical Tenant ID',
   OPERATE_URL: 'Operate URL',
   TASKLIST_URL: 'Tasklist URL'
 };
@@ -54,7 +54,7 @@ const VALIDATION_ERROR_MESSAGES = {
   CLUSTER_URL_MUST_START_WITH_PROTOCOL: 'Cluster URL must start with "http://", "grpc://", "https://", or "grpcs://".',
   MUST_PROVIDE_A_VALUE: 'Must provide a value.',
   OAUTH_URL_MUST_NOT_BE_EMPTY: 'OAuth URL must not be empty.',
-  TENANT_ID_INVALID: 'Tenant ID must be 31 characters or fewer and contain only alphanumeric characters, dots (.), dashes (-), or underscores (_).'
+  TENANT_ID_INVALID: 'Logical Tenant ID must be 31 characters or fewer and contain only alphanumeric characters, dots (.), dashes (-), or underscores (_).'
 };
 
 const REGEXES = {
