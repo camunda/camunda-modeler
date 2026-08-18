@@ -54,6 +54,8 @@ class ElementTemplatesProvider {
      * depend on that file's location) rebuilds only its own scopes, leaving the
      * cached templates of unrelated scopes untouched.
      *
+     * Cached templates are handed out by reference. Callers must not mutate them.
+     *
      * @type {Map<string, Map<string, { mtimeMs: number | null, templates: Array<Template> }>>}
      */
     this._cache = new Map();
@@ -126,8 +128,7 @@ class ElementTemplatesProvider {
         ];
       }, templates);
 
-      // only keep scopes that actually contain templates, so an empty (or
-      // emptied) directory drops out of the cache rather than lingering
+      // only keep scopes with matched files
       if (scope.size) {
         this._cache.set(path, scope);
       } else {
