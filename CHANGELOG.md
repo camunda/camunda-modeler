@@ -36,12 +36,23 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: eagerly create category value when creating or updating a group ([bpmn-io/bpmn-js#2469](https://github.com/bpmn-io/bpmn-js/pull/2469))
 * `FEAT`: reveal the field defining a variable when navigating to its writer ([bpmn-io/variable-outline#100](https://github.com/bpmn-io/variable-outline/pull/100))
 * `FEAT`: use `number` input for priority and job priority ([bpmn-io/bpmn-js-properties-panel#1241](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1241))
+* `FEAT`: enable FEEL compatibility linting based on engine versions ([bpmn-io/properties-panel#533](https://github.com/bpmn-io/properties-panel/pull/533))
+* `FEAT`: support configuration templates via `zeebe:configuration` binding ([bpmn-io/bpmn-js-element-templates#263](https://github.com/bpmn-io/bpmn-js-element-templates/pull/263))
 * `FIX`: surface the reason of instance start failed during task testing ([#6076](https://github.com/camunda/camunda-modeler/pull/6076))
 * `FIX`: set explicit `z-index` on minimap ([bpmn-io/diagram-js-minimap#118](https://github.com/bpmn-io/diagram-js-minimap/pull/118))
 * `FIX`: do not copy message flows without participants ([bpmn-io/bpmn-js#1902](https://github.com/bpmn-io/bpmn-js/issues/1902), [bpmn-io/bpmn-js#2475](https://github.com/bpmn-io/bpmn-js/pull/2475))
 * `FIX`: ignore labels in `laneRef` updates ([bpmn-io/bpmn-js#2469](https://github.com/bpmn-io/bpmn-js/pull/2469))
 * `FIX`: correct create menu width ([#6085](https://github.com/camunda/camunda-modeler/issues/6085))
 * `FIX`: correct variable panel search blink on blur ([#5963](https://github.com/camunda/camunda-modeler/issues/5963), [bpmn-io/variable-outline#105](https://github.com/bpmn-io/variable-outline/pull/105))
+* `FIX`: correctly render sticky headers with multiple properties panels ([bpmn-io/properties-panel#539](https://github.com/bpmn-io/properties-panel/pull/539))
+* `FIX`: only show text popup editor scrollbar when content overflows ([bpmn-io/properties-panel#542](https://github.com/bpmn-io/properties-panel/issues/542))
+* `FIX`: do not report errors for element templates incompatible with configured engines ([bpmn-io/bpmn-js-element-templates#273](https://github.com/bpmn-io/bpmn-js-element-templates/pull/273))
+* `DEPS`: update to `bpmn-js@18.24.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.31.0`
+* `DEPS`: update to `camunda-bpmn-js@5.31.0`
+* `DEPS`: update to `camunda-bpmn-js@5.32.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.10.4`
+* `DEPS`: update to `@camunda/task-testing@6.0.0`
 
 ## 5.50.1
 
