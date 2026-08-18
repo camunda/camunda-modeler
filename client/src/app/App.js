@@ -221,8 +221,9 @@ export class App extends PureComponent {
    *
    * @param {string} id ID of the tab
    * @param {string} group Group name
+   * @param {string} [color] Group color
    */
-  setTabGroup(id, group) {
+  setTabGroup(id, group, color = null) {
     const tab = this.state.tabs.find((tab) => tab.id === id);
 
     if (!tab) {
@@ -233,7 +234,7 @@ export class App extends PureComponent {
       return {
         tabGroups: {
           ...tabGroups,
-          [ id ]: group
+          [ id ]: group ? { name: group, color } : null
         }
       };
     });
@@ -2199,10 +2200,11 @@ export class App extends PureComponent {
     if (action === 'set-tab-group') {
       const {
         id,
-        group
+        group,
+        color
       } = options;
 
-      return this.setTabGroup(id, group);
+      return this.setTabGroup(id, group, color);
     }
 
     if (action === 'lint-tab') {

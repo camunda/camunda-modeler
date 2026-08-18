@@ -39,6 +39,7 @@ const DEFAULT_OFFSET = {
  * @prop {string | number} [minHeight]
  * @prop {string | number} [minWidth]
  * @prop {string} [className]
+ * @prop {string} [color] accent color rendered as a strip on top of the overlay
  * @prop {function} [onClose]
  * @prop {boolean} [enableFocusTrap=true] evaluated once at mount time
  * @prop {boolean} [enableEscapeTrap=true] evaluated once at mount time
@@ -179,6 +180,7 @@ export class Overlay extends PureComponent {
       anchor,
       className,
       children,
+      color,
       id,
       enableKeyboardTrap = true
     } = this.props;
@@ -199,6 +201,9 @@ export class Overlay extends PureComponent {
           className={ classNames(css.Overlay, className) } style={ style } { ...optionalId }
           ref={ this.overlayRef } role="dialog"
         >
+          {
+            color && <div className="overlay__color" style={ { backgroundColor: color } } />
+          }
           { children }
         </div>
       </Wrapper>,

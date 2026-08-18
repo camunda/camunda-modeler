@@ -31,6 +31,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
     displayNotification,
     log,
     processApplication,
+    processApplicationColor,
     processApplicationItems,
     triggerAction,
     connectionCheckResult
@@ -97,6 +98,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
         _getFromApp={ _getFromApp }
         activeTab={ activeTab }
         anchor={ anchorRef.current }
+        color={ processApplicationColor }
         connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
         getResourceConfigs={ () => resourceConfigs }

@@ -62,6 +62,7 @@ export default function DeploymentPluginOverlay(props) {
     _getFromApp,
     activeTab,
     anchor,
+    color,
     connectionCheckResult,
     deployment,
     displayNotification,
@@ -167,7 +168,7 @@ export default function DeploymentPluginOverlay(props) {
   }, [ deployment, emit ]);
 
   return (
-    <Overlay className={ css.DeploymentPluginOverlay } onClose={ onClose } anchor={ anchor }>
+    <Overlay className={ css.DeploymentPluginOverlay } color={ color } onClose={ onClose } anchor={ anchor }>
       <DeploymentConfigForm
         onSubmit={ onSubmit }
         renderDescription={ renderDescription }

@@ -45,6 +45,7 @@ export default function StartInstancePluginOverlay(props) {
     _getFromApp,
     activeTab,
     anchor,
+    color,
     deployment,
     displayNotification,
     getConfigFile = defaultGetConfigFile,
@@ -218,7 +219,7 @@ export default function StartInstancePluginOverlay(props) {
   }, [ deployment, emit ]);
 
   return (
-    <Overlay className={ css.StartInstancePluginOverlay } onClose={ onClose } anchor={ anchor }>
+    <Overlay className={ css.StartInstancePluginOverlay } color={ color } onClose={ onClose } anchor={ anchor }>
       {startInstanceConfig ? (
         <StartInstanceConfigForm
           getFieldError={ getStartInstanceFieldError }

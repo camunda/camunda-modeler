@@ -31,7 +31,7 @@ export const defaultTabs = [
 ];
 
 export const defaultTabGroups = {
-  tab1: 'group1',
-  tab2: 'group1',
-  tab3: 'group2'
+  tab1: { name: 'group1', color: 'rgb(30, 136, 229)' },
+  tab2: { name: 'group1', color: 'rgb(30, 136, 229)' },
+  tab3: { name: 'group2', color: 'rgb(251, 140, 0)' }
 };
