@@ -20,7 +20,6 @@ import {
 import * as css from './RPAEditor.css';
 
 import {
-  debounce,
   isString
 } from 'min-dash';
 
@@ -42,13 +41,14 @@ import {
 } from '../EngineProfile';
 
 import EngineProfileHelper from '../EngineProfileHelper';
+
+import LintingHelper from '../LintingHelper';
+
 import { ENGINES } from '../../../util/Engines';
 
 export const DEFAULT_ENGINE_PROFILE = {
   executionPlatform: ENGINES.CLOUD
 };
-
-export const LINTING_DEBOUNCE_WAIT = 500;
 
 
 export class RPAEditor extends CachedComponent {
@@ -64,7 +64,12 @@ export class RPAEditor extends CachedComponent {
     this.propertiesPanelRef = React.createRef();
 
     this.handleLayoutChange = this.handleLayoutChange.bind(this);
-    this.handleLinting = debounce(this.handleLinting.bind(this), LINTING_DEBOUNCE_WAIT);
+
+    this.linting = new LintingHelper({
+      lint: () => this.handleLinting(),
+      getCached: () => this.getCached(),
+      setCached: (state) => this.setCached(state)
+    });
 
     this.engineProfile = new EngineProfileHelper({
       get: () => {
@@ -163,7 +168,7 @@ export class RPAEditor extends CachedComponent {
     this.setState({
       loading: false
     });
-    this.handleLinting();
+    this.linting.resume();
     this.props.onImport();
   }
 
@@ -238,6 +243,8 @@ export class RPAEditor extends CachedComponent {
   }
 
   componentWillUnmount() {
+    this.linting.cancel();
+
     const {
       editorContainer,
       propertiesContainer,
@@ -407,7 +414,7 @@ export class RPAEditor extends CachedComponent {
 
     this.handleEngineProfile();
 
-    this.handleLinting();
+    this.linting.schedule();
   };
 
   handleLayoutChange(newLayout) {
