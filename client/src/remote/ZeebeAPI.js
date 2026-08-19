@@ -185,6 +185,16 @@ export default class ZeebeAPI {
     });
   }
 
+  getCurrentUser(options) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:getCurrentUser', {
+      endpoint
+    });
+  }
+
   searchClusterVariables(options, filter, page) {
     let { endpoint } = options;
 

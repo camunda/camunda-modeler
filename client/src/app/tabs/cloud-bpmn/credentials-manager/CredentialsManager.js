@@ -256,8 +256,8 @@ export default class CredentialsManager extends PureComponent {
       return;
     }
 
-    const [ authorizationsResult, variablesResults ] = await Promise.all([
-      this.getAllAuthorizations(endpoint),
+    const [ permissions, variablesResults ] = await Promise.all([
+      this.resolvePermissions(endpoint),
       Promise.all(filters.map(filter => this.getAllClusterVariables(endpoint, filter)))
     ]);
 
@@ -283,10 +283,37 @@ export default class CredentialsManager extends PureComponent {
       available: true,
       loading: false,
       error: false,
-      permissions: getConfigurationPermissions(authorizationsResult),
+      permissions,
       selectableInstances,
       referencedInstances
     });
+  }
+
+  /**
+   * Resolve the user's create/update permissions for credentials.
+   *
+   * Authorizations are only enforced — and thus only searchable — when they are
+   * enabled on the cluster. When disabled, the authorization search returns
+   * empty even though everything is permitted, which would wrongly disable
+   * create/update. The current user's `authorizedComponents` is the only
+   * REST-visible tell: a `*` entry means full access (authorizations disabled or
+   * a wildcard admin), so we grant everything without searching. Otherwise we
+   * derive the concrete grants from the authorization search.
+   *
+   * @param {Object} endpoint
+   *
+   * @returns {Promise<{ create: boolean, update: boolean }>}
+   */
+  async resolvePermissions(endpoint) {
+    const currentUserResult = await this.props.zeebeApi.getCurrentUser({ endpoint });
+
+    if (hasFullAccess(currentUserResult)) {
+      return { create: true, update: true };
+    }
+
+    const authorizationsResult = await this.getAllAuthorizations(endpoint);
+
+    return getConfigurationPermissions(authorizationsResult);
   }
 
   getAllAuthorizations(endpoint) {
@@ -998,6 +1025,25 @@ function upsertInstance(instances, instance) {
     ...instances.filter(existing => existing.name !== instance.name),
     instance
   ];
+}
+
+/**
+ * Whether the current user has full access — either authorizations are disabled
+ * on the cluster or the user is a wildcard admin — signalled by a `*` entry in
+ * their `authorizedComponents`.
+ *
+ * @param {Object} currentUserResult
+ *
+ * @returns {boolean}
+ */
+function hasFullAccess(currentUserResult) {
+  if (!currentUserResult || !currentUserResult.success || !currentUserResult.response) {
+    return false;
+  }
+
+  const { authorizedComponents } = currentUserResult.response;
+
+  return Array.isArray(authorizedComponents) && authorizedComponents.includes('*');
 }
 
 /**

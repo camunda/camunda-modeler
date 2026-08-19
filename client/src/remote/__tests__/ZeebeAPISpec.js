@@ -1492,6 +1492,41 @@ describe('<ZeebeAPI>', function() {
   });
 
 
+  describe('#getCurrentUser', function() {
+
+    it('should get current user', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      // when
+      zeebeAPI.getCurrentUser({ endpoint });
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:getCurrentUser', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        }
+      });
+
+    });
+
+  });
+
+
   describe('#searchClusterVariables', function() {
 
     it('should search cluster variables', function() {
