@@ -319,6 +319,50 @@ describe('CamundaClientFactory', function() {
       expect(clients._cachedProtocol).to.equal('grpc');
     });
 
+
+    it('should reuse cached client for unchanged endpoint', async function() {
+
+      // given
+      const endpoint = {
+        type: ENDPOINT_TYPES.SELF_HOSTED,
+        url: 'http://localhost:8080'
+      };
+
+      clients._getProtocol.resolves('grpc');
+
+      // when
+      await clients.getSupportedCamundaClients(endpoint);
+      await clients.getSupportedCamundaClients({ ...endpoint });
+
+      // then
+      // client is created only once, protocol is not re-probed
+      expect(Camunda8).to.have.been.calledOnce;
+      expect(clients._getProtocol).to.have.been.calledOnce;
+      expect(mockCamundaClient.closeAllClients).not.to.have.been.called;
+    });
+
+
+    it('should recreate client for changed endpoint', async function() {
+
+      // given
+      const endpoint = {
+        type: ENDPOINT_TYPES.SELF_HOSTED,
+        url: 'http://localhost:8080'
+      };
+
+      clients._getProtocol.resolves('grpc');
+
+      // when
+      await clients.getSupportedCamundaClients(endpoint);
+      await clients.getSupportedCamundaClients({ ...endpoint, url: 'http://localhost:9090' });
+
+      // then
+      // previous client is closed and a new one is created
+      expect(Camunda8).to.have.been.calledTwice;
+      expect(clients._getProtocol).to.have.been.calledTwice;
+      expect(mockCamundaClient.closeAllClients).to.have.been.called;
+    });
+
   });
 
 
