@@ -2113,6 +2113,112 @@ describe('ZeebeAPI (REST)', function() {
   });
 
 
+  describe('#getCurrentUser', function() {
+
+    it('should set success=false when the REST client is not available', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI();
+
+      sinon.stub(zeebeAPI._camundaClients, 'getSupportedCamundaClients').resolves({});
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.getCurrentUser(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+    });
+
+
+    it('should set success=true on success', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => ({ authorizedComponents: [ '*' ] })
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.getCurrentUser(parameters);
+
+      // then
+      expect(result.success).to.be.true;
+      expect(result.response).to.exist;
+      expect(result.response.authorizedComponents).to.eql([ '*' ]);
+    });
+
+
+    it('should set success=false on failure', async function() {
+
+      // given
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.getCurrentUser(parameters);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.reason).to.exist;
+    });
+
+
+    it('should get the current user', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ authorizedComponents: [] }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        }
+      };
+
+      // when
+      await zeebeAPI.getCurrentUser(parameters);
+
+      // then
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'GET',
+        urlPath: 'authentication/me'
+      });
+    });
+
+  });
+
+
   describe('#searchClusterVariables', function() {
 
     it('should set success=false when the REST client is not available', async function() {
