@@ -286,13 +286,12 @@ export class DmnEditor extends CachedComponent {
     } else {
       this.setCached({
         dirty: false,
-        engineProfile,
         lastXML: xml,
         stackIdx
       });
 
       if (engineProfile) {
-        this.emitEngineProfileChanged(engineProfile);
+        this.engineProfile.setCached(engineProfile);
       }
 
       this.setState({
