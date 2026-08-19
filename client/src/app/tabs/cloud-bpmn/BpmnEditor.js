@@ -70,6 +70,7 @@ import { GridBehavior } from '../util/grid';
 
 import {
   EngineProfile,
+  engineProfilesEqual,
   getEngineProfileFromBpmn
 } from '../EngineProfile';
 
@@ -304,6 +305,17 @@ export class BpmnEditor extends CachedComponent {
   }
 
   emitEngineProfileChanged = (engineProfile) => {
+
+    // editors detect their engine profile on every import (e.g. tab open),
+    // not only on an actual change. Emit `tab.engineProfileChanged` only when
+    // the profile really changed so no consumer has to compensate for
+    // redundant events.
+    if (engineProfilesEqual(engineProfile, this._emittedEngineProfile)) {
+      return;
+    }
+
+    this._emittedEngineProfile = engineProfile;
+
     const {
       executionPlatform,
       executionPlatformVersion

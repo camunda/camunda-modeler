@@ -745,6 +745,32 @@ describe('<FormEditor>', function() {
     });
 
 
+    it('should NOT emit tab.engineProfileChanged event when engine profile unchanged', async function() {
+
+      // given
+      const emitSpy = spy();
+
+      const { instance } = await renderEditor(engineProfileSchema, {
+        emit: emitSpy
+      });
+
+      await waitFor(() => {
+        expect(emitSpy).to.have.been.calledWith('tab.engineProfileChanged');
+      });
+
+      emitSpy.resetHistory();
+
+      // when
+      instance.emitEngineProfileChanged({
+        executionPlatform: 'Camunda Platform',
+        executionPlatformVersion: '7.16.0'
+      });
+
+      // then
+      expect(emitSpy).not.to.have.been.calledWith('tab.engineProfileChanged');
+    });
+
+
   });
 
 

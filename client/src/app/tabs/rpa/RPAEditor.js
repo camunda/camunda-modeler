@@ -38,6 +38,7 @@ import { Loader } from '../../primitives';
 
 import {
   EngineProfile,
+  engineProfilesEqual,
   getEngineProfileFromForm
 } from '../EngineProfile';
 
@@ -340,6 +341,17 @@ export class RPAEditor extends CachedComponent {
   }
 
   emitEngineProfileChanged = (engineProfile) => {
+
+    // editors detect their engine profile on every import (e.g. tab open),
+    // not only on an actual change. Emit `tab.engineProfileChanged` only when
+    // the profile really changed so no consumer has to compensate for
+    // redundant events.
+    if (engineProfilesEqual(engineProfile, this._emittedEngineProfile)) {
+      return;
+    }
+
+    this._emittedEngineProfile = engineProfile;
+
     const {
       executionPlatform,
       executionPlatformVersion

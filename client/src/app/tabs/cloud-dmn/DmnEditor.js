@@ -66,7 +66,7 @@ import { migrateDiagram } from '@bpmn-io/dmn-migrate';
 
 import { DEFAULT_LAYOUT as overviewDefaultLayout } from '../dmn/OverviewContainer';
 
-import { EngineProfile, toSemver } from '../EngineProfile';
+import { EngineProfile, engineProfilesEqual, toSemver } from '../EngineProfile';
 
 import EngineProfileHelper from '../EngineProfileHelper';
 
@@ -376,6 +376,17 @@ export class DmnEditor extends CachedComponent {
   };
 
   emitEngineProfileChanged = (engineProfile) => {
+
+    // editors detect their engine profile on every import (e.g. tab open),
+    // not only on an actual change. Emit `tab.engineProfileChanged` only when
+    // the profile really changed so no consumer has to compensate for
+    // redundant events.
+    if (engineProfilesEqual(engineProfile, this._emittedEngineProfile)) {
+      return;
+    }
+
+    this._emittedEngineProfile = engineProfile;
+
     const {
       executionPlatform,
       executionPlatformVersion
