@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_agentic_tool" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_to_agent</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:adHocSubProcess id="AgentSubProcess_1" name="Agent">
+      <bpmn:extensionElements>
+        <zeebe:adHoc />
+        <zeebe:taskDefinition type="io.camunda:agent:1" />
+        <!-- What makes this container agentic, and therefore what makes the
+             autofix affordances eligible at all: a bare zeebe:adHoc is also
+             carried by plain ad-hoc sub-processes using output collection. -->
+        <zeebe:properties>
+          <zeebe:property name="io.camunda.agenticai.toolContainer" value="true" />
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_to_agent</bpmn:incoming>
+      <bpmn:outgoing>Flow_to_end</bpmn:outgoing>
+      <bpmn:serviceTask id="ToolTask_1" name="Fetch URL">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="tool" />
+          <zeebe:ioMapping>
+            <!-- Deliberately malformed: `fromAi()` needs `toolCall.<key>` as its
+                 first argument, so the agent never supplies this value. This is
+                 the mistake the "Fix" affordance corrects. -->
+            <zeebe:input source="=fromAi(url)" target="url" />
+            <zeebe:output source="=result" target="toolCallResult" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="ToolTask_BlankInput" name="Send Email">
+        <!-- A blank input source, which is what the input-side seeding pill
+             ("Input from agent") is offered on. The tool flow's entry element is
+             the only place that pill appears, and with no sequence flows inside
+             the sub-process every tool is an entry element. -->
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="tool" />
+          <zeebe:ioMapping>
+            <zeebe:input source="" target="recipient" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="ToolTask_NoOutput" name="Log Message">
+        <!-- A well-formed fromAi() key, so this task carries no input-side
+             correction — it is here so the suite can tell "the module offers a
+             fix where one is warranted" apart from "the module decorates
+             everything". -->
+        <bpmn:documentation>Writes a message to the agent's log.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="tool" />
+          <zeebe:ioMapping>
+            <zeebe:input source="=fromAi(toolCall.message, &quot;The message to log&quot;)" target="message" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:endEvent id="EndEvent_1">
+      <bpmn:incoming>Flow_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_to_agent" sourceRef="StartEvent_1" targetRef="AgentSubProcess_1" />
+    <bpmn:sequenceFlow id="Flow_to_end" sourceRef="AgentSubProcess_1" targetRef="EndEvent_1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="AgentSubProcess_1_di" bpmnElement="AgentSubProcess_1" isExpanded="true">
+        <dc:Bounds x="240" y="100" width="560" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ToolTask_1_di" bpmnElement="ToolTask_1">
+        <dc:Bounds x="300" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ToolTask_BlankInput_di" bpmnElement="ToolTask_BlankInput">
+        <dc:Bounds x="600" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ToolTask_NoOutput_di" bpmnElement="ToolTask_NoOutput">
+        <dc:Bounds x="460" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="860" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_to_agent_di" bpmnElement="Flow_to_agent">
+        <di:waypoint x="188" y="230" />
+        <di:waypoint x="240" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_to_end_di" bpmnElement="Flow_to_end">
+        <di:waypoint x="800" y="230" />
+        <di:waypoint x="860" y="230" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -67,7 +67,11 @@ module.exports = {
     ],
     alias: {
       'react': path.dirname(require.resolve('react/package.json')),
-      'react-dom': path.dirname(require.resolve('react-dom/package.json'))
+      'react-dom': path.dirname(require.resolve('react-dom/package.json')),
+      'bpmn-js': path.dirname(require.resolve('bpmn-js/package.json')),
+      'diagram-js': path.dirname(require.resolve('diagram-js/package.json')),
+      'bpmn-js-properties-panel': path.dirname(require.resolve('bpmn-js-properties-panel/package.json')),
+      '@bpmn-io/properties-panel': path.dirname(require.resolve('@bpmn-io/properties-panel/package.json'))
     }
   },
   module: {

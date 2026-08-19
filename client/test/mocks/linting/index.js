@@ -36,3 +36,19 @@ export class Linter {
     return [];
   }
 }
+
+export function hasFix(report) {
+  return Boolean(report?.data?.fix?.apply && report.data.fix.confidence === 'safe');
+}
+
+export function getFixLabel() {
+  return 'Fix';
+}
+
+export function canApplyFix() {
+  return false;
+}
+
+export function applyFix() {
+  return [];
+}

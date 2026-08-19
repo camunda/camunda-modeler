@@ -46,6 +46,8 @@
   }
 
   .linting-tab-item__content {
+    display: flex;
+    align-items: center;
     width: calc(100% - 200px);
     padding: var(--linting-tab-item-padding);
 
@@ -65,8 +67,7 @@
     }
 
     .linting-tab-item__button {
-      margin-left: 4px;
-      margin-right: 4px;
+      margin: 0;
 
       background: none;
       border: none;
@@ -85,6 +86,18 @@
         outline: 2px solid #0066cc;
         outline-offset: 2px;
       }
+    }
+
+    /*
+     * Follows the message and the documentation link rather than being pushed to
+     * the row's right edge. `margin-left: auto` parked it there, which separated
+     * the action from the sentence that explains why it is offered, and left a
+     * gap whose width varied with the message.
+     */
+    .linting-tab-item__actions {
+      display: flex;
+      flex-shrink: 0;
+      padding-left: 8px;
     }
 
     &.linting-tab-item__content--empty {

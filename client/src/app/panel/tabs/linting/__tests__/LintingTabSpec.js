@@ -286,6 +286,32 @@ describe('<LintingTab>', function() {
   });
 
 
+  it('should show a fix action next to the message', function() {
+
+    // when
+    const { container, getByRole } = renderLintingTab({
+      linting: [
+        {
+          category: 'error',
+          id: 'foo',
+          name: 'Agent tool configuration',
+          message: 'The tool result is not configured.',
+          rule: 'agent-tool-output-key',
+          action: {
+            label: 'Fix',
+            handler: 'apply-linting-fix'
+          }
+        }
+      ]
+    });
+
+    // then
+    const action = getByRole('button', { name: 'Fix' });
+    expect(action.parentElement.classList.contains('linting-tab-item__actions')).to.be.true;
+    expect(container.querySelector('.linting-tab-item__message').textContent).to.equal('The tool result is not configured.');
+  });
+
+
   it('should show lint error on click', function() {
 
     // given

@@ -128,7 +128,7 @@ function LintingTabItem(props) {
       <span className="linting-tab-item__label">{ reportName }</span>
     </button>
     <div className="linting-tab-item__content">
-      { message }
+      <span className="linting-tab-item__message">{ message }</span>
       {
         !isNil(documentationUrl) && <>
           <a
@@ -143,16 +143,18 @@ function LintingTabItem(props) {
       }
       {
         report.action && (
-          <button
-            className="linting-tab-item__button"
-            onClick={ (event) => {
-              event.preventDefault();
-              stopPropagation(event);
-              onAction(report.action.handler, report.action.options);
-            } }
-            title={ report.action.label }>
-            { report.action.label }
-          </button>
+          <span className="linting-tab-item__actions">
+            <button
+              className="linting-tab-item__button"
+              onClick={ (event) => {
+                event.preventDefault();
+                stopPropagation(event);
+                onAction(report.action.handler, report.action.options);
+              } }
+              title={ report.action.label }>
+              { report.action.label }
+            </button>
+          </span>
         )
       }
     </div>
