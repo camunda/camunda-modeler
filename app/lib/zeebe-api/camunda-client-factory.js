@@ -72,11 +72,14 @@ class CamundaClientFactory {
    * @param {import("./endpoints").Endpoint} endpoint
    */
   async getCamundaClient(endpoint) {
-    const protocol = await this._getProtocol(endpoint);
 
-    if (this._isCacheValid(endpoint, protocol)) {
+    // check the cache before protocol detection, as detection creates
+    // throwaway clients and must not run on every interaction
+    if (this._isCacheValid(endpoint)) {
       return this._cachedClient;
     }
+
+    const protocol = await this._getProtocol(endpoint);
 
     this._cachedClient?.closeAllClients();
 
@@ -186,14 +189,11 @@ class CamundaClientFactory {
   }
 
   /**
-   * Checks if the current cache is valid for the given endpoint and protocol
    * @param {import("./endpoints").Endpoint} endpoint
-   * @param {'grpc'|'grpcs'|'http'|'https'} protocol
    * @returns {boolean}
    */
-  _isCacheValid(endpoint, protocol) {
-    return this._cachedClient &&
-           this._cachedProtocol === protocol &&
+  _isCacheValid(endpoint) {
+    return Boolean(this._cachedClient) &&
            this._isEndpointEqual(endpoint, this._cachedEndpoint);
   }
 
