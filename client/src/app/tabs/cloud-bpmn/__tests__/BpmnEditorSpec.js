@@ -2304,6 +2304,41 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     });
 
 
+    it('should load element templates for existing diagram', async function() {
+
+      // given
+      const setTemplatesSpy = sinon.spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplatesLoader: { setTemplates: setTemplatesSpy }
+            }
+          })
+        }
+      });
+
+      // when
+      await renderEditor(engineProfileXML, {
+        cache,
+        isNew: false,
+        getConfig: () => Promise.resolve([
+          {
+            '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+            'id': 'template-1'
+          }
+        ])
+      });
+
+      // then
+      // templates are loaded once, on import
+      expect(setTemplatesSpy).to.be.calledOnce;
+    });
+
+
     it('should apply default templates to unsaved diagram', async function() {
 
       // given

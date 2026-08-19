@@ -1801,6 +1801,36 @@ describe('<BpmnEditor>', function() {
     });
 
 
+    it('should load element templates on import', async function() {
+
+      // given
+      const setTemplatesSpy = sinon.spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplatesLoader: { setTemplates: setTemplatesSpy }
+            }
+          })
+        }
+      });
+
+      // when
+      await renderEditor(diagramXML, {
+        cache,
+        isNew: false,
+        getConfig: () => Promise.resolve([ { 'id': 'template-1' } ])
+      });
+
+      // then
+      // templates are loaded once, on import
+      expect(setTemplatesSpy).to.be.calledOnce;
+    });
+
+
     it('should not reload templates on save (unchanged path)', async function() {
 
       // given
