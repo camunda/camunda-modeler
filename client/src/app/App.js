@@ -90,6 +90,20 @@ const FILTER_ALL_EXTENSIONS = {
 
 const EMPTY_LINTING_STATE = [];
 
+/**
+ * Additional lint sources contribute warnings on top of the content linter's
+ * results. Unlike content linting - which is expensive and cached per tab -
+ * these are cheap, derived purely from app state, and (re)composed with the
+ * stored content results whenever the linting state is read. A change to their
+ * inputs (e.g. the connected cluster version) therefore surfaces without
+ * re-running the content linter.
+ *
+ * Each source is a factory: (appState) => (tab) => LintEntry[].
+ */
+const ADDITIONAL_LINT_SOURCES = [
+  VersionMismatchChecker
+];
+
 const INITIAL_STATE = {
   activeTab: EMPTY_TAB,
   dirtyTabs: {},
@@ -1147,17 +1161,6 @@ export class App extends PureComponent {
       log('linted tab', { tabId: tab.id });
     }
 
-    const getWarnings = VersionMismatchChecker({
-      connectionCheckResult: this.state.connectionCheckResult,
-      engineProfiles: this.state.engineProfiles
-    });
-
-    const warnings = getWarnings(tab);
-
-    if (warnings.length) {
-      results = [ ...results, ...warnings ];
-    }
-
     this.setLintingState(tab, results);
   };
 
@@ -1228,30 +1231,10 @@ export class App extends PureComponent {
   };
 
   _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
-    const prev = this.state.connectionCheckResult;
 
-    // Only re-lint when the data relevant to version mismatch
-    // warning actually changes, not on every periodic poll
-    const prevVersion = prev && prev.success && prev.response
-      ? prev.response.gatewayVersion : null;
-    const nextVersion = connectionCheckResult.success && connectionCheckResult.response
-      ? connectionCheckResult.response.gatewayVersion : null;
-    const relevantChange = (prev && prev.success) !== connectionCheckResult.success
-      || prevVersion !== nextVersion;
-
-    this.setState({ connectionCheckResult }, async () => {
-      if (!relevantChange) {
-        return;
-      }
-
-      const { activeTab } = this.state;
-
-      if (activeTab && activeTab !== EMPTY_TAB) {
-        const contents = await this.getActiveTabContents();
-
-        this.lintTab(activeTab, contents);
-      }
-    });
+    // The cluster connection feeds the additional lint sources, not the content
+    // linter, so updating state is enough - the warning is recomposed on read.
+    this.setState({ connectionCheckResult });
   };
 
   _handleEngineProfileChanged = ({ tab, executionPlatform, executionPlatformVersion }) => {
@@ -1259,37 +1242,63 @@ export class App extends PureComponent {
       return;
     }
 
+    // An engine profile change is a document change, so the editor re-lints its
+    // contents on its own - we only record the selected version here, no
+    // App-side re-lint needed.
     this.setState(state => ({
       engineProfiles: {
         ...state.engineProfiles,
         [ tab.id ]: { executionPlatform, executionPlatformVersion }
       }
-    }), async () => {
-      if (this.state.activeTab === tab) {
-        const contents = await this.getActiveTabContents();
-
-        this.lintTab(tab, contents);
-      } else {
-        this.lintTab(tab);
-      }
-    });
+    }));
   };
 
   getLintingState = (tab) => {
-    return this.state.lintingState[ tab.id ] || EMPTY_LINTING_STATE;
+    const contentResults = this.state.lintingState[ tab.id ] || EMPTY_LINTING_STATE;
+
+    const additionalResults = this.getAdditionalLintResults(tab);
+
+    if (!additionalResults.length) {
+      return contentResults;
+    }
+
+    return [ ...contentResults, ...additionalResults ];
+  };
+
+  /**
+   * Compose the warnings contributed by the additional lint sources for a tab
+   * (see ADDITIONAL_LINT_SOURCES).
+   */
+  getAdditionalLintResults = (tab) => {
+    const appState = {
+      connectionCheckResult: this.state.connectionCheckResult,
+      engineProfiles: this.state.engineProfiles
+    };
+
+    return ADDITIONAL_LINT_SOURCES.reduce((results, createSource) => {
+      return [ ...results, ...createSource(appState)(tab) ];
+    }, []);
   };
 
   setLintingState = (tab, results) => {
     const { tabs } = this.state;
 
+    // store the raw content lint results; additional sources are composed on
+    // read (see getLintingState), so they must not be persisted here
     const lintingState = reduce(tabs, (lintingState, t) => {
       if (t === tab) {
         return lintingState;
       }
 
+      const existing = this.state.lintingState[ t.id ];
+
+      if (!existing) {
+        return lintingState;
+      }
+
       return {
         ...lintingState,
-        [ t.id ]: this.getLintingState(t)
+        [ t.id ]: existing
       };
     }, {
       [ tab.id ]: results
