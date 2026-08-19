@@ -383,7 +383,8 @@ describe('<BpmnEditor>', function() {
 
     describe('behavior', function() {
 
-      let modeler,
+      let instance,
+          modeler,
           onActionSpy,
           rerender;
 
@@ -402,7 +403,7 @@ describe('<BpmnEditor>', function() {
         });
 
 
-        ({ rerender } = await renderEditor(diagramXML, {
+        ({ instance, rerender } = await renderEditor(diagramXML, {
           id: 'editor',
           cache,
           onAction: onActionSpy
@@ -412,8 +413,15 @@ describe('<BpmnEditor>', function() {
 
       it('should lint on import', async function() {
 
-        expect(onActionSpy).to.have.been.calledOnce;
-        expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
+        // then
+        await waitFor(() => {
+
+          // flush the pending lint instead of waiting out the debounce
+          instance.linting.flush();
+
+          const matchingCalls = onActionSpy.getCalls().filter(call => call.calledWithMatch('lint-tab'));
+          expect(matchingCalls).to.have.lengthOf(1);
+        });
       });
 
 
@@ -423,6 +431,8 @@ describe('<BpmnEditor>', function() {
 
         // when
         modeler._emit('commandStack.changed');
+
+        instance.linting.flush();
 
         // then
         expect(onActionSpy).to.have.been.calledOnce;
@@ -439,6 +449,8 @@ describe('<BpmnEditor>', function() {
           rerender();
 
           modeler._emit('commandStack.changed');
+
+          instance.linting.flush();
 
           // then
           expect(onActionSpy).to.have.been.calledOnce;
@@ -2045,6 +2057,8 @@ describe('<BpmnEditor>', function() {
 
       // when
       instance.getModeler()._emit('elementTemplates.changed');
+
+      instance.linting.flush();
 
       // then
       // the app is asked to invalidate the cached linter for this tab ...
