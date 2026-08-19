@@ -367,6 +367,59 @@ describe('<CredentialsManager>', function() {
   });
 
 
+  it('should grant full permissions when authorizations are disabled', async function() {
+
+    // given
+    const getAuthorizations = sinon.stub().resolves({
+      success: true,
+      response: { items: [] }
+    });
+    const getCurrentUser = sinon.stub().resolves({
+      success: true,
+      response: { authorizedComponents: [ '*' ] }
+    });
+
+    const zeebeApi = createZeebeApi({ getAuthorizations, getCurrentUser });
+    const { configurationInstances } = renderManager({ zeebeApi });
+
+    // then
+    await waitFor(() => {
+      const call = fedInstancesCall(configurationInstances);
+
+      expect(call.permissions).to.eql({ create: true, update: true });
+    });
+
+    // does not fall back to the authorization search
+    expect(getAuthorizations).not.to.have.been.called;
+  });
+
+
+  it('should derive permissions from search when authorizations are enabled', async function() {
+
+    // given
+    const getAuthorizations = sinon.stub().resolves({
+      success: true,
+      response: { items: [ { permissionTypes: [ 'CREATE' ] } ] }
+    });
+    const getCurrentUser = sinon.stub().resolves({
+      success: true,
+      response: { authorizedComponents: [ 'operate', 'tasklist' ] }
+    });
+
+    const zeebeApi = createZeebeApi({ getAuthorizations, getCurrentUser });
+    const { configurationInstances } = renderManager({ zeebeApi });
+
+    // then
+    await waitFor(() => {
+      const call = fedInstancesCall(configurationInstances);
+
+      expect(call.permissions).to.eql({ create: true, update: false });
+    });
+
+    expect(getAuthorizations).to.have.been.called;
+  });
+
+
   it('should reload credentials for each connection status event', async function() {
 
     // given
@@ -718,6 +771,7 @@ function createElementTemplates(get = () => ({
 function createZeebeApi(overrides = {}) {
   return {
     getAuthorizations: sinon.stub().resolves({ success: true, response: { items: [] } }),
+    getCurrentUser: sinon.stub().resolves({ success: true, response: { authorizedComponents: [] } }),
     searchClusterVariables: sinon.stub().resolves({ success: true, response: { items: [] } }),
     getClusterVariable: sinon.stub().resolves({ success: true, response: { metadata: {}, value: {} } }),
     createClusterVariable: sinon.stub().resolves({ success: true }),
