@@ -375,7 +375,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
     describe('behavior', function() {
 
-      let modeler,
+      let instance,
+          modeler,
           onActionSpy,
           rerender;
 
@@ -399,6 +400,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
           onAction: onActionSpy
         });
 
+        instance = render.instance;
         rerender = render.rerender;
       });
 
@@ -407,6 +409,10 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         // then
         await waitFor(() => {
+
+          // flush the pending lint instead of waiting out the debounce
+          instance.linting.flush();
+
           const matchingCalls = onActionSpy.getCalls().filter(call => call.calledWithMatch('lint-tab'));
           expect(matchingCalls).to.have.lengthOf(1);
         });
@@ -419,6 +425,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         // when
         modeler._emit('commandStack.changed');
+
+        instance.linting.flush();
 
         // then
         expect(onActionSpy).to.have.been.calledOnce;
@@ -435,6 +443,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
           rerender();
 
           modeler._emit('commandStack.changed');
+
+          instance.linting.flush();
 
           // then
           expect(onActionSpy).to.have.been.calledOnce;
@@ -2176,6 +2186,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // when
       instance.getModeler()._emit('elementTemplates.changed');
+
+      instance.linting.flush();
 
       // then
       // the app is asked to invalidate the cached linter for this tab ...

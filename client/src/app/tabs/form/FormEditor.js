@@ -12,8 +12,6 @@ import React, { createRef } from 'react';
 
 import { isFunction, keys } from 'min-dash';
 
-import debounce from '../../../util/debounce';
-
 import {
   WithCache,
   WithCachedState,
@@ -41,6 +39,8 @@ import {
 } from '../EngineProfile';
 
 import EngineProfileHelper from '../EngineProfileHelper';
+
+import LintingHelper from '../LintingHelper';
 
 import { ENGINES } from '../../../util/Engines';
 
@@ -110,7 +110,11 @@ export class FormEditor extends CachedComponent {
       onChanged: (engineProfile) => this.emitEngineProfileChanged(engineProfile)
     });
 
-    this.handleLintingDebounced = debounce(() => this.handleLinting());
+    this.linting = new LintingHelper({
+      lint: () => this.handleLinting(),
+      getCached: () => this.getCached(),
+      setCached: (state) => this.setCached(state)
+    });
   }
 
   componentDidMount() {
@@ -128,10 +132,14 @@ export class FormEditor extends CachedComponent {
       // wait for proper instantiation
       form.on('formPlayground.rendered', this.handlePlaygroundRendered);
     }
+
+    this.linting.resume();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
+
+    this.linting.cancel();
 
     const { form, lastSchema } = this.getCached();
 
@@ -259,7 +267,7 @@ export class FormEditor extends CachedComponent {
         this.emitEngineProfileChanged(engineProfile);
       }
 
-      this.handleLinting(engineProfile);
+      this.linting.schedule();
     }
 
     this.setState({
@@ -287,10 +295,10 @@ export class FormEditor extends CachedComponent {
     this.handleFormPreviewInteraction(fn);
 
     if (fn === 'on') {
-      editor.on('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
+      editor.on('commandStack.changed', LOW_PRIORITY, this.linting.schedule);
       form.on('formPlayground.layoutChanged', this.handlePlaygroundLayoutChanged);
     } else if (fn === 'off') {
-      editor.off('commandStack.changed', this.handleLintingDebounced);
+      editor.off('commandStack.changed', this.linting.schedule);
       form.off('formPlayground.layoutChanged', this.handlePlaygroundLayoutChanged);
     }
   }

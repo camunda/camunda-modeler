@@ -238,7 +238,7 @@ describe('<RPAEditor>', function() {
           expect(onImportSpy).to.have.been.calledOnce;
         });
 
-        instance.handleLinting.flush();
+        instance.linting.flush();
 
         // then
         const calls = onActionSpy.getCalls()
@@ -263,7 +263,7 @@ describe('<RPAEditor>', function() {
           expect(onImportSpy).to.have.been.calledOnce;
         });
 
-        instance.handleLinting.flush();
+        instance.linting.flush();
 
         // when
         const { editor } = instance.getCached();
@@ -272,7 +272,7 @@ describe('<RPAEditor>', function() {
           editor.eventBus.fire('model.changed');
         });
 
-        instance.handleLinting.flush();
+        instance.linting.flush();
 
         // then
         const calls = onActionSpy.getCalls()
@@ -300,7 +300,7 @@ describe('<RPAEditor>', function() {
           expect(onImportSpy).to.have.been.calledOnce;
         });
 
-        instance.handleLinting.flush();
+        instance.linting.flush();
 
         const { editor } = instance.getCached();
 
