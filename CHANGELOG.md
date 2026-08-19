@@ -17,12 +17,13 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: improve performance when loading large amounts of element templates ([#5557](https://github.com/camunda/camunda-modeler/issues/5557))
 * `FIX`: correct engine profile mis-match warning ([#6105](https://github.com/camunda/camunda-modeler/pull/6105))
 * `DEPS`: update to `bpmn-js@18.24.0`
-* `DEPS`: update to `camunda-bpmn-js@5.31.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.31.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.63.0`
 * `DEPS`: update to `@camunda/linting@3.54.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@3.3.1`
 * `DEPS`: update to `@camunda/improved-canvas@1.10.4`
 * `DEPS`: update to `@camunda/task-testing@6.0.0`
+* `DEPS`: update to `camunda-bpmn-js@5.32.0`
 * `DEPS`: update to `diagram-js@15.24.0`
 * `DEPS`: update to `react@19.2.8`
 * `DEPS`: update to `semver@7.8.5`
@@ -38,6 +39,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: use `number` input for priority and job priority ([bpmn-io/bpmn-js-properties-panel#1241](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1241))
 * `FEAT`: enable FEEL compatibility linting based on engine versions ([bpmn-io/properties-panel#533](https://github.com/bpmn-io/properties-panel/pull/533))
 * `FEAT`: support configuration templates via `zeebe:configuration` binding ([bpmn-io/bpmn-js-element-templates#263](https://github.com/bpmn-io/bpmn-js-element-templates/pull/263))
+* `FEAT`: manage credentials for configuration templates ([#6099](https://github.com/camunda/camunda-modeler/pull/6099))
 * `FIX`: surface the reason of instance start failed during task testing ([#6076](https://github.com/camunda/camunda-modeler/pull/6076))
 * `FIX`: set explicit `z-index` on minimap ([bpmn-io/diagram-js-minimap#118](https://github.com/bpmn-io/diagram-js-minimap/pull/118))
 * `FIX`: do not copy message flows without participants ([bpmn-io/bpmn-js#1902](https://github.com/bpmn-io/bpmn-js/issues/1902), [bpmn-io/bpmn-js#2475](https://github.com/bpmn-io/bpmn-js/pull/2475))
@@ -47,13 +49,6 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correctly render sticky headers with multiple properties panels ([bpmn-io/properties-panel#539](https://github.com/bpmn-io/properties-panel/pull/539))
 * `FIX`: only show text popup editor scrollbar when content overflows ([bpmn-io/properties-panel#542](https://github.com/bpmn-io/properties-panel/issues/542))
 * `FIX`: do not report errors for element templates incompatible with configured engines ([bpmn-io/bpmn-js-element-templates#273](https://github.com/bpmn-io/bpmn-js-element-templates/pull/273))
-* `DEPS`: update to `bpmn-js@18.24.0`
-* `DEPS`: update to `bpmn-js-element-templates@2.31.0`
-* `DEPS`: update to `camunda-bpmn-js@5.31.0`
-* `DEPS`: update to `camunda-bpmn-js@5.32.0`
-* `DEPS`: update to `@camunda/improved-canvas@1.10.4`
-* `DEPS`: update to `@camunda/task-testing@6.0.0`
-
 ## 5.50.1
 
 * `FIX`: make `chrome_crashpad_handler` in Linux distribution executable ([#6080](https://github.com/camunda/camunda-modeler/pull/6080))
