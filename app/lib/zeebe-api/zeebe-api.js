@@ -755,6 +755,10 @@ class ZeebeAPI {
         }
       });
 
+      this._log.debug('get authorizations succeeded', {
+        permissionTypes: (response.items || []).flatMap(item => item.permissionTypes || [])
+      });
+
       return {
         success: true,
         response: response
