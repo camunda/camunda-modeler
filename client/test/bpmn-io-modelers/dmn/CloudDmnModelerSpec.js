@@ -581,16 +581,17 @@ async function createModeler(options = {}) {
 
   const modelerImport = new Promise(resolve => {
     modeler.once('views.changed', VERY_LOW_PRIORITY, resolve);
-
-    modeler.importXML(diagramXML, (err, warnings) => {
-
-      // assume
-      expect(err).not.to.exist;
-      expect(warnings).to.be.empty;
-    });
   });
 
-  return Promise.all([ overviewImport, modelerImport ]).then(() => modeler);
+  // when
+  const { warnings } = await modeler.importXML(diagramXML);
+
+  // then
+  expect(warnings).to.be.empty;
+
+  await Promise.all([ overviewImport, modelerImport ]);
+
+  return modeler;
 }
 
 function inlineCSS(css) {
