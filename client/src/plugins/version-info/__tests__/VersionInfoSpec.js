@@ -141,15 +141,15 @@ describe('<VersionInfo>', function() {
     it('should notify that overlay was opened', function() {
 
       // given
-      const triggerAction = sinon.spy();
-      createVersionInfo({ triggerAction });
+      const emit = sinon.spy();
+      createVersionInfo({ emit });
 
       // when
       fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(triggerAction).to.have.been.calledOnceWith(
-        'emit-event', { type: 'versionInfo.opened', payload: { type: 'open', source: 'statusBar' } }
+      expect(emit).to.have.been.calledOnceWith(
+        'versionInfo.opened', { type: 'open', source: 'statusBar' }
       );
     });
 
@@ -157,17 +157,17 @@ describe('<VersionInfo>', function() {
     it('should propagate the source', async function() {
 
       // given
-      const triggerAction = sinon.spy();
+      const emit = sinon.spy();
       const subscribe = createSubscribe();
-      createVersionInfo({ subscribe, triggerAction });
+      createVersionInfo({ subscribe, emit });
 
       // when
       subscribe.emit({ source: 'menu' });
 
       // then
       await waitFor(() => {
-        expect(triggerAction).to.have.been.calledOnceWith(
-          'emit-event', { type: 'versionInfo.opened', payload: { type: 'open', source: 'menu' } }
+        expect(emit).to.have.been.calledOnceWith(
+          'versionInfo.opened', { type: 'open', source: 'menu' }
         );
       });
     });
@@ -176,22 +176,22 @@ describe('<VersionInfo>', function() {
     it('should NOT notify again when overlay is already open', async function() {
 
       // given
-      const triggerAction = sinon.spy();
+      const emit = sinon.spy();
       const subscribe = createSubscribe();
-      createVersionInfo({ subscribe, triggerAction });
+      createVersionInfo({ subscribe, emit });
       subscribe.emit({ source: 'menu' });
 
       await waitFor(() => {
         expect(screen.getByRole('dialog')).to.exist;
       });
 
-      triggerAction.resetHistory();
+      emit.resetHistory();
 
       // when
       subscribe.emit({ source: 'menu' });
 
       // then
-      expect(triggerAction).to.not.have.been.called;
+      expect(emit).to.not.have.been.called;
     });
   });
 
@@ -236,7 +236,8 @@ function createVersionInfo(props = {}) {
   const {
     config = new Config(),
     subscribe = noop,
-    triggerAction = noop
+    triggerAction = noop,
+    emit = noop
   } = props;
 
   render(
@@ -246,6 +247,7 @@ function createVersionInfo(props = {}) {
         config={ config }
         subscribe={ subscribe }
         triggerAction={ triggerAction }
+        emit={ emit }
       />
     </SlotFillRoot>
   );

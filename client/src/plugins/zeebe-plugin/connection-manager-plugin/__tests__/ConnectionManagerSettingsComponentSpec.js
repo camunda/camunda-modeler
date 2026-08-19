@@ -320,7 +320,7 @@ describe('ConnectionManagerSettingsComponent', function() {
     });
 
 
-    it('should display tenant ID field for SaaS connections', async function() {
+    it('should display logical tenant ID field for SaaS connections', async function() {
 
       // given
       const connections = [
@@ -342,11 +342,12 @@ describe('ConnectionManagerSettingsComponent', function() {
       // then
       await waitFor(() => {
         expect(container.querySelector('input[name*="tenantId"]')).to.exist;
+        expect(container.textContent).to.contain('Logical Tenant ID');
       });
     });
 
 
-    it('should display tenant ID field for self-hosted connections', async function() {
+    it('should display logical tenant ID field for self-hosted connections', async function() {
 
       // given
       const connections = [
@@ -367,6 +368,7 @@ describe('ConnectionManagerSettingsComponent', function() {
       // then
       await waitFor(() => {
         expect(container.querySelector('input[name*="tenantId"]')).to.exist;
+        expect(container.textContent).to.contain('Logical Tenant ID');
       });
     });
 

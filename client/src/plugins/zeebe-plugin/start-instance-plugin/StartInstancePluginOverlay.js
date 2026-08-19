@@ -60,6 +60,7 @@ export default function StartInstancePluginOverlay(props) {
     StartInstanceConfigForm = DefaultStartInstanceConfigForm,
     startInstanceConfigValidator,
     triggerAction,
+    emit,
     connectionCheckResult
   } = props;
 
@@ -186,32 +187,26 @@ export default function StartInstancePluginOverlay(props) {
   useEffect(() => {
     const onDeployed = ({ deploymentResult, endpoint, gatewayVersion }) => {
       if (deploymentResult.success) {
-        triggerAction('emit-event', {
-          type: 'deployment.done',
-          payload: {
-            deployment: deploymentResult.response,
-            context: 'startInstanceTool',
-            targetType: endpoint.targetType,
-            deployedTo: {
-              executionPlatformVersion: gatewayVersion,
-              executionPlatform: ENGINES.CLOUD
-            }
+        emit('deployment.done', {
+          deployment: deploymentResult.response,
+          context: 'startInstanceTool',
+          targetType: endpoint.targetType,
+          deployedTo: {
+            executionPlatformVersion: gatewayVersion,
+            executionPlatform: ENGINES.CLOUD
           }
         });
       } else {
-        triggerAction('emit-event', {
-          type: 'deployment.error',
-          payload: {
-            error: {
-              ...deploymentResult.response,
-              code: getGRPCErrorCode(deploymentResult.response)
-            },
-            context: 'startInstanceTool',
-            targetType: endpoint.targetType,
-            deployedTo: {
-              executionPlatformVersion: gatewayVersion,
-              executionPlatform: ENGINES.CLOUD
-            }
+        emit('deployment.error', {
+          error: {
+            ...deploymentResult.response,
+            code: getGRPCErrorCode(deploymentResult.response)
+          },
+          context: 'startInstanceTool',
+          targetType: endpoint.targetType,
+          deployedTo: {
+            executionPlatformVersion: gatewayVersion,
+            executionPlatform: ENGINES.CLOUD
           }
         });
       }
@@ -220,7 +215,7 @@ export default function StartInstancePluginOverlay(props) {
     deployment.on('deployed', onDeployed);
 
     return () => deployment.off('deployed', onDeployed);
-  }, [ deployment, triggerAction ]);
+  }, [ deployment, emit ]);
 
   return (
     <Overlay className={ css.StartInstancePluginOverlay } onClose={ onClose } anchor={ anchor }>

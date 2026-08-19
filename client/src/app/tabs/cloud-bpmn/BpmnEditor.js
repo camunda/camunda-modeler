@@ -10,6 +10,8 @@
 
 import React from 'react';
 
+import debug from 'debug';
+
 import { isFunction } from 'min-dash';
 
 import {
@@ -25,6 +27,8 @@ import {
   WithCachedState,
   CachedComponent
 } from '../../cached';
+
+import { EventsContext } from '../../EventsContext';
 
 import { Settings } from '@carbon/icons-react';
 
@@ -85,8 +89,12 @@ export const DEFAULT_ENGINE_PROFILE = {
 
 const LOW_PRIORITY = 500;
 
+const log = debug('BpmnEditor:cloud');
+
 
 export class BpmnEditor extends CachedComponent {
+
+  static contextType = EventsContext;
 
   constructor(props) {
     super(props);
@@ -124,21 +132,14 @@ export class BpmnEditor extends CachedComponent {
           'modeler:executionPlatform': executionPlatform,
           'modeler:executionPlatformVersion': executionPlatformVersion
         });
-
-        this.props.onAction('emit-event', {
-          type: 'tab.engineProfileChanged',
-          payload: {
-            executionPlatform,
-            executionPlatformVersion
-          }
-        });
       },
       getCached: () => this.getCached(),
       setCached: ({ engineProfile }) => {
         this.handleEngineProfileChangeDebounced({ engineProfile });
 
         this.setCached({ engineProfile });
-      }
+      },
+      onChanged: (engineProfile) => this.emitEngineProfileChanged(engineProfile)
     });
 
     this.gridBehavior = new GridBehavior({
@@ -218,7 +219,7 @@ export class BpmnEditor extends CachedComponent {
       }
     }
 
-    if (prevProps.file !== this.props.file) {
+    if (prevProps.file?.path !== this.props.file?.path) {
       this.loadTemplates();
     }
 
@@ -276,6 +277,8 @@ export class BpmnEditor extends CachedComponent {
 
     modeler[fn]('elementTemplates.errors', this.handleElementTemplateErrors);
 
+    modeler[fn]('elementTemplates.changed', this.handleElementTemplatesChanged);
+
     modeler[fn]('error', 1500, this.handleError);
 
     modeler[fn]('minimap.toggle', this.handleMinimapToggle);
@@ -287,6 +290,15 @@ export class BpmnEditor extends CachedComponent {
     } else if (fn === 'off') {
       modeler[ fn ]('commandStack.changed', this.handleLintingDebounced);
     }
+
+    // reload templates on focus to pick up external edits to local template
+    // files made while the app was away. The editor owns this decision, not
+    // the app. Cheap: loadTemplates skips re-setting unchanged templates.
+    if (fn === 'on') {
+      this._appFocusedSubscription = this.context.subscribe('app.focused', this.handleAppFocused);
+    } else {
+      this._appFocusedSubscription?.cancel();
+    }
   }
 
   handlePropertiesPanelLayoutChange(e) {
@@ -294,6 +306,18 @@ export class BpmnEditor extends CachedComponent {
       propertiesPanel: e.layout
     });
   }
+
+  emitEngineProfileChanged = (engineProfile) => {
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = engineProfile;
+
+    this.props.emit('tab.engineProfileChanged', {
+      executionPlatform,
+      executionPlatformVersion
+    });
+  };
 
   handleEngineProfileChange = ({ engineProfile }) => {
     const { executionPlatformVersion: version } = engineProfile;
@@ -312,16 +336,42 @@ export class BpmnEditor extends CachedComponent {
     elementTemplates.setEngines(engines);
   };
 
+  handleAppFocused = () => {
+    this.loadTemplates().catch(error => this.handleError({ error }));
+  };
+
   async loadTemplates() {
-    const { getConfig } = this.props;
+    const {
+      getConfig,
+      tab
+    } = this.props;
 
     const modeler = this.getModeler();
 
     const templatesLoader = modeler.get('elementTemplatesLoader');
 
-    let templates = await getConfig('bpmn.elementTemplates');
+    const templates = getCloudTemplates(await getConfig('bpmn.elementTemplates'));
 
-    templatesLoader.setTemplates(getCloudTemplates(templates));
+    // skip (re-)setting identical templates: setting them re-validates every
+    // template and invalidates the linter. A (re-)load only warrants that work
+    // when the fetched templates actually changed (e.g. edited locally). The
+    // key lives in the (tab-scoped) cache so it survives editor remounts, i.e.
+    // switching away and back to the tab does not re-set unchanged templates.
+    const templatesKey = JSON.stringify(templates);
+
+    if (templatesKey === this.getCached().templatesKey) {
+      log('skip re-setting - element templates unchanged', { tabId: tab?.id, path: this.props.file?.path });
+
+      return;
+    }
+
+    this.setCached({ templatesKey });
+
+    log('setting element templates', { tabId: tab?.id, path: this.props.file?.path });
+
+    templatesLoader.setTemplates(templates);
+
+    log('element templates set', { tabId: tab?.id, path: this.props.file?.path });
   }
 
   undo = () => {
@@ -362,6 +412,20 @@ export class BpmnEditor extends CachedComponent {
     errors.forEach(error => {
       onWarning({ message: error.message });
     });
+  };
+
+  /**
+   * React to the modeler's element templates changing - e.g. after
+   * (re-)loading them. Templates are a linting input, so we let the app
+   * invalidate the (cached) linter for this tab and then re-lint through our
+   * own debounced path - coalescing with any concurrent modeling changes.
+   */
+  handleElementTemplatesChanged = () => {
+    log('element templates changed', { path: this.props.file?.path });
+
+    this.props.onAction('element-templates-changed');
+
+    this.handleLintingDebounced();
   };
 
   handleAttach = (event) => {
@@ -434,15 +498,7 @@ export class BpmnEditor extends CachedComponent {
       });
 
       if (engineProfile) {
-        const { executionPlatform, executionPlatformVersion } = engineProfile;
-
-        this.props.onAction('emit-event', {
-          type: 'tab.engineProfileChanged',
-          payload: {
-            executionPlatform,
-            executionPlatformVersion
-          }
-        });
+        this.emitEngineProfileChanged(engineProfile);
       }
     }
 
@@ -1018,7 +1074,7 @@ export class BpmnEditor extends CachedComponent {
 
     const {
       getPlugins,
-      onAction,
+      emit,
       onError,
       layout = {},
       settings
@@ -1026,11 +1082,8 @@ export class BpmnEditor extends CachedComponent {
 
     // notify interested parties that modeler will be configured
     const handleMiddlewareExtensions = (middlewares) => {
-      onAction('emit-event', {
-        type: 'bpmn.modeler.configure',
-        payload: {
-          middlewares
-        }
+      emit('bpmn.modeler.configure', {
+        middlewares
       });
     };
 
@@ -1084,11 +1137,8 @@ export class BpmnEditor extends CachedComponent {
     const stackIdx = commandStack._stackIdx;
 
     // notify interested parties that modeler was created
-    onAction('emit-event', {
-      type: 'bpmn.modeler.created',
-      payload: {
-        modeler
-      }
+    emit('bpmn.modeler.created', {
+      modeler
     });
 
     return {

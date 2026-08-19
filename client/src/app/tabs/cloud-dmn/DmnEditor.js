@@ -128,22 +128,10 @@ export class DmnEditor extends CachedComponent {
           name: engineProfile.executionPlatform,
           version: engineProfile.executionPlatformVersion
         });
-
-        const {
-          executionPlatform,
-          executionPlatformVersion
-        } = engineProfile;
-
-        this.props.onAction('emit-event', {
-          type: 'tab.engineProfileChanged',
-          payload: {
-            executionPlatform,
-            executionPlatformVersion
-          }
-        });
       },
       getCached: () => this.getCached(),
-      setCached: (state) => this.setCached(state)
+      setCached: (state) => this.setCached(state),
+      onChanged: (engineProfile) => this.emitEngineProfileChanged(engineProfile)
     });
   }
 
@@ -304,15 +292,7 @@ export class DmnEditor extends CachedComponent {
       });
 
       if (engineProfile) {
-        const { executionPlatform, executionPlatformVersion } = engineProfile;
-
-        this.props.onAction('emit-event', {
-          type: 'tab.engineProfileChanged',
-          payload: {
-            executionPlatform,
-            executionPlatformVersion
-          }
-        });
+        this.emitEngineProfileChanged(engineProfile);
       }
 
       this.setState({
@@ -393,6 +373,18 @@ export class DmnEditor extends CachedComponent {
     const modeler = this.getModeler();
 
     modeler.getActiveViewer().get('commandStack').redo();
+  };
+
+  emitEngineProfileChanged = (engineProfile) => {
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = engineProfile;
+
+    this.props.emit('tab.engineProfileChanged', {
+      executionPlatform,
+      executionPlatformVersion
+    });
   };
 
   handleChanged = () => {
@@ -1048,18 +1040,15 @@ export class DmnEditor extends CachedComponent {
 
     const {
       getPlugins,
-      onAction,
+      emit,
       onError,
       settings
     } = props;
 
     // notify interested parties that modeler will be configured
     const handleMiddlewareExtensions = (middlewares) => {
-      onAction('emit-event', {
-        type: 'dmn.modeler.configure',
-        payload: {
-          middlewares
-        }
+      emit('dmn.modeler.configure', {
+        middlewares
       });
     };
 
@@ -1093,11 +1082,8 @@ export class DmnEditor extends CachedComponent {
     const stackIdx = modeler.getStackIdx();
 
     // notify interested parties that modeler was created
-    onAction('emit-event', {
-      type: 'dmn.modeler.created',
-      payload: {
-        modeler
-      }
+    emit('dmn.modeler.created', {
+      modeler
     });
 
     return {

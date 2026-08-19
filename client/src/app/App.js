@@ -138,6 +138,11 @@ export class App extends PureComponent {
     };
 
     this.tabComponentCache = {};
+
+    // cache of constructed linters per tab, so we don't rebuild the linter
+    // (and re-fetch + re-validate element templates) on every modeling
+    // interaction. Invalidated when templates are (re-)loaded.
+    this.linterCache = {};
     this.lintRequests = new WeakMap();
 
     // TODO(nikku): make state
@@ -150,7 +155,8 @@ export class App extends PureComponent {
         return {
           cancel: () => this.off(event, listener)
         };
-      }
+      },
+      emit: (event, payload) => this.emitEvent(event, payload)
     };
 
     // TODO(nikku): make state
@@ -564,11 +570,8 @@ export class App extends PureComponent {
       return false;
     }
 
-    this.triggerAction('emit-event', {
-      type: 'tab.closed',
-      payload: {
-        tab
-      }
+    this.emitEvent('tab.closed', {
+      tab
     });
 
     await this._removeTab(tab);
@@ -659,6 +662,8 @@ export class App extends PureComponent {
     } = openedTabs;
 
     delete newOpenedTabs[tab.id];
+
+    delete this.linterCache[tab.id];
 
     const {
       [ tab.id ]: _removedProfile,
@@ -991,7 +996,7 @@ export class App extends PureComponent {
   }
 
   emit(event, ...args) {
-    this.events.emit(event, ...args);
+    return this.events.emit(event, ...args);
   }
 
   on(event, listener) {
@@ -1004,11 +1009,30 @@ export class App extends PureComponent {
 
   emitWithTab(type, tab, payload) {
 
-    this.emit(type, {
-      ...payload,
-      tab
+    // default to the given tab (typically the active one),
+    // but let producers override it via `payload.tab`
+    return this.emit(type, {
+      tab,
+      ...payload
     });
   }
+
+  /**
+   * Emit an application event on the shared event bus, enriched with the
+   * currently active tab.
+   *
+   * The event carries the active tab by default; producers may target a
+   * different tab by passing `tab` in the payload.
+   *
+   * This is the public counterpart to `subscribe` (cf. `EventsContext`) and
+   * the way components and plug-ins produce events.
+   *
+   * @param {string} type
+   * @param {Object} [payload]
+   */
+  emitEvent = (type, payload) => {
+    return this.emitWithTab(type, this.state.activeTab, payload);
+  };
 
   openTabLinksMenu = (tab, event) => {
     event.preventDefault();
@@ -1120,15 +1144,7 @@ export class App extends PureComponent {
 
     this.lintRequests.set(tab, request);
 
-    const { tabsProvider } = this.props;
-
-    const { type } = tab;
-
-    const tabProvider = tabsProvider.getProvider(type);
-
-    const plugins = this.getPlugins(`lintRules.${ type }`);
-
-    const linter = await tabProvider.getLinter(plugins, tab, this.getConfig);
+    const linter = await this.getTabLinter(tab);
 
     if (this.lintRequests.get(tab) !== request) {
       return;
@@ -1141,7 +1157,11 @@ export class App extends PureComponent {
         contents = tab.file.contents;
       }
 
+      log('linting tab', { tabId: tab.id, path: tab.file?.path });
+
       results = await linter.lint(contents);
+
+      log('linted tab', { tabId: tab.id });
     }
 
     const getWarnings = VersionMismatchChecker({
@@ -1160,6 +1180,68 @@ export class App extends PureComponent {
     }
 
     this.setLintingState(tab, results);
+  };
+
+  /**
+   * Get the (cached) linter for a tab, rebuilt only when its templates change.
+   *
+   * @param {Object} tab
+   *
+   * @returns {Promise<Object|null>}
+   */
+  getTabLinter = (tab) => {
+    const cached = this.linterCache[ tab.id ];
+
+    if (cached) {
+      return cached;
+    }
+
+    const { tabsProvider } = this.props;
+
+    const { type } = tab;
+
+    const tabProvider = tabsProvider.getProvider(type);
+
+    const plugins = this.getPlugins(`lintRules.${ type }`);
+
+    log('building linter', { tabId: tab.id, path: tab.file?.path });
+
+    // cache the in-flight promise so concurrent lints (lintTab is often not
+    // awaited) share one build instead of each re-validating all templates
+    const linterPromise = Promise.resolve(
+      tabProvider.getLinter(plugins, tab, this.getConfigForFile)
+    ).then((linter) => {
+      log('built linter', { tabId: tab.id });
+
+      return linter;
+    });
+
+    this.linterCache[ tab.id ] = linterPromise;
+
+    return linterPromise;
+  };
+
+  /**
+   * Invalidate a tab's cached linter after its element templates changed.
+   *
+   * The originating editor names its own tab, so invalidation targets exactly
+   * the tab whose templates were (re-)set - not merely whichever tab is active.
+   * Each tab loads its own, file-scoped templates, so other tabs are
+   * unaffected. Re-linting is left to the editor, which triggers it (debounced)
+   * through its own linting path - keeping cache ownership here and lint
+   * scheduling where the contents live. Runs only on genuine template
+   * (re-)loads, never on ordinary modeling interactions.
+   *
+   * @param {Object} tab
+   */
+  handleElementTemplatesChanged = (tab) => {
+    if (!tab) {
+      return;
+    }
+
+    log('invalidated linter', { tabId: tab.id });
+
+    delete this.linterCache[ tab.id ];
   };
 
   _handleConnectionCheckStarted = () => {
@@ -2190,242 +2272,255 @@ export class App extends PureComponent {
     } = this.state;
 
 
-    log('App#triggerAction %s %o', action, options);
+    log('trigger action %s %o', action, options);
 
-    if (action === 'set-tab-group') {
-      const {
-        id,
-        group
-      } = options;
+    try {
 
-      return this.setTabGroup(id, group);
-    }
+      if (action === 'set-tab-group') {
+        const {
+          id,
+          group
+        } = options;
 
-    if (action === 'lint-tab') {
-      const {
-        tab,
-        contents
-      } = options;
-
-      return this.lintTab(tab, contents);
-    }
-
-    if (action === 'select-tab') {
-      if (options === 'next') {
-        this.navigate(1);
+        return this.setTabGroup(id, group);
       }
 
-      if (options === 'previous') {
-        this.navigate(-1);
+      if (action === 'lint-tab') {
+        const {
+          tab,
+          contents
+        } = options;
+
+        return this.lintTab(tab, contents);
       }
 
-      return;
-    }
-
-    if (action === 'create-bpmn-diagram') {
-      return this.createDiagram('bpmn');
-    }
-
-    if (action === 'create-dmn-diagram') {
-      return this.createDiagram('dmn');
-    }
-
-    if (action === 'create-form') {
-      return this.createDiagram('form');
-    }
-
-    if (action === 'create-cloud-form') {
-      return this.createDiagram('cloud-form');
-    }
-
-    if (action === 'create-cloud-bpmn-diagram') {
-      return this.createDiagram('cloud-bpmn');
-    }
-
-    if (action === 'create-cloud-dmn-diagram') {
-      return this.createDiagram('cloud-dmn');
-    }
-
-    if (action === 'create-diagram') {
-      return this.createDiagram(options.type);
-    }
-
-    if (action === 'reopen-file') {
-      return this.openFiles([ options.file ]);
-    }
-
-    if (action === 'open-diagram') {
-      const { path } = options;
-
-      if (path) {
-        return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
+      if (action === 'element-templates-changed') {
+        return this.handleElementTemplatesChanged(options.tab);
       }
 
-      return this.showOpenFilesDialog();
+      if (action === 'select-tab') {
+        if (options === 'next') {
+          this.navigate(1);
+        }
+
+        if (options === 'previous') {
+          this.navigate(-1);
+        }
+
+        return;
+      }
+
+      if (action === 'create-bpmn-diagram') {
+        return this.createDiagram('bpmn');
+      }
+
+      if (action === 'create-dmn-diagram') {
+        return this.createDiagram('dmn');
+      }
+
+      if (action === 'create-form') {
+        return this.createDiagram('form');
+      }
+
+      if (action === 'create-cloud-form') {
+        return this.createDiagram('cloud-form');
+      }
+
+      if (action === 'create-cloud-bpmn-diagram') {
+        return this.createDiagram('cloud-bpmn');
+      }
+
+      if (action === 'create-cloud-dmn-diagram') {
+        return this.createDiagram('cloud-dmn');
+      }
+
+      if (action === 'create-diagram') {
+        return this.createDiagram(options.type);
+      }
+
+      if (action === 'reopen-file') {
+        return this.openFiles([ options.file ]);
+      }
+
+      if (action === 'open-diagram') {
+        const { path } = options;
+
+        if (path) {
+          return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
+        }
+
+        return this.showOpenFilesDialog();
+      }
+
+      if (action === 'save-all') {
+        return this.saveAllTabs();
+      }
+
+      if (action === 'save-tab') {
+        return this.saveTab(options.tab);
+      }
+
+      if (action === 'save') {
+        return this.saveTab(activeTab);
+      }
+
+      if (action === 'save-as') {
+        return this.saveTab(activeTab, { saveAs: true });
+      }
+
+      if (action === 'window-focused') {
+        return this.emit('app.focused');
+      }
+
+      if (action === 'window-blurred') {
+        return this.emit('app.blurred');
+      }
+
+      if (action === 'quit') {
+        return this.quit();
+      }
+
+      if (action === 'close-all-tabs') {
+        return this.closeTabs(t => true);
+      }
+
+      if (action === 'close-tab') {
+        return this.closeTabs(t => options && t.id === options.tabId);
+      }
+
+      if (action === 'close-active-tab') {
+        let activeId = this.state.activeTab.id;
+
+        return this.closeTabs(t => t.id === activeId);
+      }
+
+      if (action === 'close-other-tabs') {
+        let activeId = options && options.tabId || this.state.activeTab.id;
+
+        return this.closeTabs(t => t.id !== activeId);
+      }
+
+      if (action === 'reopen-last-tab') {
+        return this.reopenLastTab();
+      }
+
+      if (action === 'reveal-in-file-explorer') {
+        return this.revealInFileExplorer(options.filePath);
+      }
+
+      if (action === 'copy-file-path') {
+        return this.copyFilePath(options.filePath);
+      }
+
+      if (action === 'show-shortcuts') {
+        return this.showShortcuts();
+      }
+
+      if (action === 'update-menu') {
+        return this.updateMenu(options);
+      }
+
+      if (action === 'export-as') {
+        return this.exportAs(activeTab);
+      }
+
+      if (action === 'show-dialog') {
+        return this.showDialog(options);
+      }
+
+      if (action === 'open-modal') {
+        return this.setModal(options);
+      }
+
+      if (action === 'close-modal') {
+        return this.setModal(null);
+      }
+
+      if (action === 'open-external-url') {
+        return this.openExternalUrl(options);
+      }
+
+      if (action === 'check-file-changed') {
+        return this.checkFileChanged(activeTab);
+      }
+
+      if (action === 'resize') {
+        return this.resizeTab();
+      }
+
+      if (action === 'reload-modeler') {
+        return this.reloadModeler();
+      }
+
+      if (action === 'restart-modeler') {
+        return this.reloadModeler(true);
+      }
+
+      if (action === 'log') {
+        const {
+          action,
+          category,
+          message,
+          silent
+        } = options;
+
+        return this.logEntry(message, category, action, silent);
+      }
+
+      if (action === 'open-log') {
+        return this.openPanel('log');
+      }
+
+      if (action === 'open-panel') {
+        const { tab } = options;
+
+        return this.openPanel(tab);
+      }
+
+      if (action === 'close-panel') {
+        return this.closePanel();
+      }
+
+      if (action === 'display-notification') {
+        return this.displayNotification(options);
+      }
+
+      if (action === 'emit-event') {
+        console.error(
+          'The \'emit-event\' action has been removed. ' +
+          'Application events are now emitted through the events context. ' +
+          'Use the `emit(type, payload)` prop (or `EventsContext#emit`) instead of ' +
+          '`triggerAction(\'emit-event\', { type, payload })`. ' +
+          'See https://github.com/camunda/camunda-modeler/pull/6106 for details.'
+        );
+
+        return;
+      }
+
+      if (action === 'toggle-panel') {
+        const { panel } = this.state.layout;
+        return panel.open ? this.closePanel() : this.openPanel(panel.tab);
+      }
+
+      if (action === 'settings-open') {
+        return this.emit('app.settings-open', options);
+      }
+
+      if (action === 'open-deployment') {
+        return this.emitWithTab('app.open-deployment', activeTab);
+      }
+
+      if (action === 'open-connection-selector') {
+        return this.emitWithTab('app.open-connection-selector', activeTab);
+      }
+
+      const tab = this.tabRef.current;
+
+      return tab.triggerAction(action, options);
+
+    } finally {
+      log('triggered action %s', action);
     }
-
-    if (action === 'save-all') {
-      return this.saveAllTabs();
-    }
-
-    if (action === 'save-tab') {
-      return this.saveTab(options.tab);
-    }
-
-    if (action === 'save') {
-      return this.saveTab(activeTab);
-    }
-
-    if (action === 'save-as') {
-      return this.saveTab(activeTab, { saveAs: true });
-    }
-
-    if (action === 'window-focused') {
-      return this.emit('app.focused');
-    }
-
-    if (action === 'window-blurred') {
-      return this.emit('app.blurred');
-    }
-
-    if (action === 'quit') {
-      return this.quit();
-    }
-
-    if (action === 'close-all-tabs') {
-      return this.closeTabs(t => true);
-    }
-
-    if (action === 'close-tab') {
-      return this.closeTabs(t => options && t.id === options.tabId);
-    }
-
-    if (action === 'close-active-tab') {
-      let activeId = this.state.activeTab.id;
-
-      return this.closeTabs(t => t.id === activeId);
-    }
-
-    if (action === 'close-other-tabs') {
-      let activeId = options && options.tabId || this.state.activeTab.id;
-
-      return this.closeTabs(t => t.id !== activeId);
-    }
-
-    if (action === 'reopen-last-tab') {
-      return this.reopenLastTab();
-    }
-
-    if (action === 'reveal-in-file-explorer') {
-      return this.revealInFileExplorer(options.filePath);
-    }
-
-    if (action === 'copy-file-path') {
-      return this.copyFilePath(options.filePath);
-    }
-
-    if (action === 'show-shortcuts') {
-      return this.showShortcuts();
-    }
-
-    if (action === 'update-menu') {
-      return this.updateMenu(options);
-    }
-
-    if (action === 'export-as') {
-      return this.exportAs(activeTab);
-    }
-
-    if (action === 'show-dialog') {
-      return this.showDialog(options);
-    }
-
-    if (action === 'open-modal') {
-      return this.setModal(options);
-    }
-
-    if (action === 'close-modal') {
-      return this.setModal(null);
-    }
-
-    if (action === 'open-external-url') {
-      return this.openExternalUrl(options);
-    }
-
-    if (action === 'check-file-changed') {
-      return this.checkFileChanged(activeTab);
-    }
-
-    if (action === 'resize') {
-      return this.resizeTab();
-    }
-
-    if (action === 'reload-modeler') {
-      return this.reloadModeler();
-    }
-
-    if (action === 'restart-modeler') {
-      return this.reloadModeler(true);
-    }
-
-    if (action === 'log') {
-      const {
-        action,
-        category,
-        message,
-        silent
-      } = options;
-
-      return this.logEntry(message, category, action, silent);
-    }
-
-    if (action === 'open-log') {
-      return this.openPanel('log');
-    }
-
-    if (action === 'open-panel') {
-      const { tab } = options;
-
-      return this.openPanel(tab);
-    }
-
-    if (action === 'close-panel') {
-      return this.closePanel();
-    }
-
-    if (action === 'display-notification') {
-      return this.displayNotification(options);
-    }
-
-    if (action === 'emit-event') {
-      const {
-        type,
-        payload
-      } = options;
-
-      return this.emitWithTab(type, activeTab, payload);
-    }
-
-    if (action === 'toggle-panel') {
-      const { panel } = this.state.layout;
-      return panel.open ? this.closePanel() : this.openPanel(panel.tab);
-    }
-
-    if (action === 'settings-open') {
-      return this.emit('app.settings-open', options);
-    }
-
-    if (action === 'open-deployment') {
-      return this.emitWithTab('app.open-deployment', activeTab);
-    }
-
-    if (action === 'open-connection-selector') {
-      return this.emitWithTab('app.open-connection-selector', activeTab);
-    }
-
-    const tab = this.tabRef.current;
-
-    return tab.triggerAction(action, options);
   }, this.handleError);
 
   openExternalUrl(options) {
@@ -2461,11 +2556,14 @@ export class App extends PureComponent {
   };
 
   getConfig = (key, ...args) => {
-    const config = this.getGlobal('config');
-
     const { activeTab } = this.state;
-
     const { file } = activeTab;
+
+    return this.getConfigForFile(key, file, ...args);
+  };
+
+  getConfigForFile = (key, file, ...args) => {
+    const config = this.getGlobal('config');
 
     return config.get(key, file, ...args);
   };
@@ -2629,6 +2727,7 @@ export class App extends PureComponent {
                         onLayoutChanged={ this.handleLayoutChanged }
                         onContextMenu={ this.openTabMenu }
                         onAction={ this.triggerAction }
+                        emit={ this.emitEvent }
                         onModal={ this.openModal }
                         onUpdateMenu={ this.updateMenu }
                         getConfig={ this.getConfig }

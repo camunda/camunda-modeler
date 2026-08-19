@@ -69,7 +69,7 @@ export class VersionInfo extends PureComponent {
 
   _triggerEvent(event) {
     if (event.type === 'open') {
-      this.props.triggerAction('emit-event', { type: 'versionInfo.opened', payload: event });
+      this.props.emit('versionInfo.opened', event);
     }
   }
 

@@ -53,6 +53,7 @@ export default function ConnectionManagerPlugin(props) {
     subscribe,
     settings,
     triggerAction,
+    emit,
     _getGlobal,
     connectionCheckResult,
     setConnectionCheckResult
@@ -174,12 +175,9 @@ export default function ConnectionManagerPlugin(props) {
   // update connection checker on connection change
   useEffect(() => {
     (async () => {
-      triggerAction('emit-event', {
-        type: 'connectionManager.connectionCheckStarted',
-        payload: {
-          connectionId: activeConnection?.id,
-          connection: activeConnection,
-        }
+      emit('connectionManager.connectionCheckStarted', {
+        connectionId: activeConnection?.id,
+        connection: activeConnection,
       });
 
       setConnectionCheckResult(null);
@@ -197,17 +195,27 @@ export default function ConnectionManagerPlugin(props) {
       }
     })();
 
+    // Track the last emitted result (per active connection) so periodic
+    // re-checks that yield an unchanged status don't trigger useless
+    // event emissions and state updates, which cause expensive re-draws
+    // in components relying on the connection status.
+    let lastEmittedResult;
+
     const connectionCheckListener = (connectionCheckResult) => {
+      if (lastEmittedResult !== undefined
+        && isSameConnectionCheckResult(lastEmittedResult, connectionCheckResult)) {
+        return;
+      }
+
+      lastEmittedResult = connectionCheckResult;
+
       const endpoint = extractEndpointUrl(activeConnection);
 
-      triggerAction('emit-event', {
-        type: 'connectionManager.connectionStatusChanged',
-        payload: {
-          ...connectionCheckResult,
-          connectionId: activeConnection?.id,
-          connection: activeConnection,
-          isLocal: endpoint ? isLocalEndpoint(endpoint) : null
-        }
+      emit('connectionManager.connectionStatusChanged', {
+        ...connectionCheckResult,
+        connectionId: activeConnection?.id,
+        connection: activeConnection,
+        isLocal: endpoint ? isLocalEndpoint(endpoint) : null
       });
       setConnectionCheckResult(connectionCheckResult);
     };
@@ -220,7 +228,7 @@ export default function ConnectionManagerPlugin(props) {
       globalConnectionChecker.current.off('connectionCheck', connectionCheckListener);
       globalConnectionChecker.current.stopChecking();
     };
-  }, [ activeConnection, globalConnectionChecker, deployment, setConnectionCheckResult, paused, triggerAction ]);
+  }, [ activeConnection, globalConnectionChecker, deployment, setConnectionCheckResult, paused, emit ]);
 
   function getStatus(connectionCheckResult, activeConnection) {
     if (activeConnection?.id === NO_CONNECTION.id || paused) {
@@ -278,6 +286,31 @@ export default function ConnectionManagerPlugin(props) {
 }
 
 
+
+/**
+ * Checks whether two connection check results are equivalent with respect to
+ * the data consumers actually rely on (`success`, `reason`, and the gateway
+ * `protocol` + `gatewayVersion`). Used to suppress redundant status change
+ * emissions on periodic re-checks.
+ *
+ * @param {Object|null} a
+ * @param {Object|null} b
+ * @returns {boolean}
+ */
+function isSameConnectionCheckResult(a, b) {
+  if (a === b) {
+    return true;
+  }
+
+  if (!a || !b) {
+    return false;
+  }
+
+  return a.success === b.success &&
+    a.reason === b.reason &&
+    a.response?.protocol === b.response?.protocol &&
+    a.response?.gatewayVersion === b.response?.gatewayVersion;
+}
 
 /**
  * @param {{ type: string; }} tab

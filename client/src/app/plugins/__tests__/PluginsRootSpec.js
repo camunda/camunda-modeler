@@ -28,6 +28,7 @@ describe('<PluginsRoot>', function() {
       plugins: [
         props => {
           expect(props.triggerAction).to.exist;
+          expect(props.emit).to.exist;
           expect(props.config).to.exist;
           expect(props.getConfig).to.exist;
           expect(props.setConfig).to.exist;
@@ -72,6 +73,8 @@ class App {
   };
 
   triggerAction = () => {};
+
+  emitEvent = () => {};
 }
 
 class Config {

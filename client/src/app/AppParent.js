@@ -77,6 +77,34 @@ export default class AppParent extends PureComponent {
     return exec().catch(this.handleError);
   };
 
+  /**
+   * Handle an action received via the Electron menu channel.
+   *
+   * Menu items may emit application events (formerly routed through the
+   * removed `emit-event` action). These are forwarded to the events context;
+   * everything else is a regular action.
+   *
+   * @param {string} action
+   * @param {Object} [options]
+   */
+  handleMenuAction = (action, options) => {
+    if (action === 'emit-event') {
+      const {
+        type,
+        payload
+      } = options || {};
+
+      // fail-safe emit, mirroring #triggerAction
+      try {
+        return this.getApp().emitEvent(type, payload);
+      } catch (error) {
+        return this.handleError(error);
+      }
+    }
+
+    return this.triggerAction(action, options);
+  };
+
   handleOpenFiles = (event, newFiles) => {
 
     const { prereadyState } = this;
@@ -347,7 +375,7 @@ export default class AppParent extends PureComponent {
 
     this.subscriptions = [
       backend.once('client:started', this.handleStarted),
-      backend.on('menu:action', (_, action, options) => this.triggerAction(action, options)),
+      backend.on('menu:action', (_, action, options) => this.handleMenuAction(action, options)),
       backend.on('client:open-files', this.handleOpenFiles),
       backend.on('client:window-focused', this.handleFocused),
       backend.on('client:window-blurred', this.handleBlurred),

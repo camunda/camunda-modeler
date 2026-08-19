@@ -83,22 +83,10 @@ export class RPAEditor extends CachedComponent {
           key: 'executionPlatformVersion',
           value: engineProfile.executionPlatformVersion
         });
-
-        const {
-          executionPlatform,
-          executionPlatformVersion
-        } = engineProfile;
-
-        this.props.onAction('emit-event', {
-          type: 'tab.engineProfileChanged',
-          payload: {
-            executionPlatform,
-            executionPlatformVersion
-          }
-        });
       },
       getCached: () => this.getCached(),
-      setCached: (state) => this.setCached(state)
+      setCached: (state) => this.setCached(state),
+      onChanged: (engineProfile) => this.emitEngineProfileChanged(engineProfile)
     });
   }
 
@@ -180,41 +168,13 @@ export class RPAEditor extends CachedComponent {
   }
 
   handleEngineProfile() {
-    let engineProfile = null;
-    let error = null;
-
     try {
-      engineProfile = this.engineProfile.get();
+      const engineProfile = this.engineProfile.get();
+
+      this.engineProfile.setCached(engineProfile);
     } catch (err) {
-      error = err;
-    }
-
-    const { engineProfile: cachedEngineProfile } = this.getCached();
-
-    if (engineProfile?.executionPlatformVersion === cachedEngineProfile?.executionPlatformVersion) {
-      return;
-    }
-
-    if (error) {
       this.setCached({
-        engineProfile: null,
-      });
-    } else {
-      this.setCached({
-        engineProfile,
-      });
-
-      const {
-        executionPlatform,
-        executionPlatformVersion
-      } = engineProfile;
-
-      this.props.onAction('emit-event', {
-        type: 'tab.engineProfileChanged',
-        payload: {
-          executionPlatform,
-          executionPlatformVersion
-        }
+        engineProfile: null
       });
     }
   }
@@ -378,6 +338,18 @@ export class RPAEditor extends CachedComponent {
 
     return isXMLChange(editor.getValue(), lastXML);
   }
+
+  emitEngineProfileChanged = (engineProfile) => {
+    const {
+      executionPlatform,
+      executionPlatformVersion
+    } = engineProfile;
+
+    this.props.emit('tab.engineProfileChanged', {
+      executionPlatform,
+      executionPlatformVersion
+    });
+  };
 
   handleChanged = () => {
     const {

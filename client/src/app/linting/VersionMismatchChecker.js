@@ -72,15 +72,16 @@ export function getVersionMismatchWarning(selectedVersion, clusterVersion) {
     return null;
   }
 
+  const selectedMinorVersion = `${ selectedCoerced.major }.${ selectedCoerced.minor }`;
   const clusterMinorVersion = `${ clusterCoerced.major }.${ clusterCoerced.minor }`;
 
   return {
     category: 'warn',
-    name: 'Version mismatch',
-    message: `The selected version (${ selectedCoerced.major }.${ selectedCoerced.minor }) differs from the connected cluster version (${ clusterMinorVersion }).`,
+    name: 'Engine profile',
+    message: `This file targets Camunda ${ selectedMinorVersion }, but the connected cluster runs Camunda ${ clusterMinorVersion }.`,
     rule: 'camunda/version-mismatch',
     action: {
-      label: `Select ${ clusterMinorVersion } instead`,
+      label: `Update engine profile to ${ clusterMinorVersion }`,
       handler: 'set-engine-profile',
       options: {
         executionPlatformVersion: `${ clusterMinorVersion }.0`

@@ -580,7 +580,7 @@ describe('<DeploymentTool>', function() {
     });
 
 
-    describe('emit-event action', function() {
+    describe('events', function() {
 
       it('should trigger deployment.done action after successful deployment', async function() {
 
@@ -590,7 +590,6 @@ describe('<DeploymentTool>', function() {
 
         const actionSpy = sinon.spy(),
               actionTriggered = {
-                emitEvent: 'emit-event',
                 type: 'deployment.done',
                 handler: actionSpy
               };
@@ -614,7 +613,6 @@ describe('<DeploymentTool>', function() {
 
         const actionSpy = sinon.spy(),
               actionTriggered = {
-                emitEvent: 'emit-event',
                 type: 'deployment.done',
                 handler: actionSpy
               };
@@ -645,7 +643,6 @@ describe('<DeploymentTool>', function() {
 
         const actionSpy = sinon.spy(),
               actionTriggered = {
-                emitEvent: 'emit-event',
                 type: 'deployment.done',
                 handler:actionSpy
               };
@@ -676,7 +673,6 @@ describe('<DeploymentTool>', function() {
 
         const actionSpy = sinon.spy(),
               actionTriggered = {
-                emitEvent: 'emit-event',
                 type: 'deployment.done',
                 handler:actionSpy
               };
@@ -703,7 +699,6 @@ describe('<DeploymentTool>', function() {
 
         const actionSpy = sinon.spy(),
               actionTriggered = {
-                emitEvent: 'emit-event',
                 type: 'deployment.error',
                 handler:actionSpy
               };
@@ -730,7 +725,6 @@ describe('<DeploymentTool>', function() {
 
         const actionSpy = sinon.spy(),
               actionTriggered = {
-                emitEvent: 'emit-event',
                 type: 'deployment.error',
                 handler:actionSpy
               };
@@ -765,7 +759,6 @@ describe('<DeploymentTool>', function() {
 
         const actionSpy = sinon.spy(),
               actionTriggered = {
-                emitEvent: 'emit-event',
                 type: 'deployment.error',
                 handler:actionSpy
               };
@@ -790,7 +783,6 @@ describe('<DeploymentTool>', function() {
 
         const actionSpy = sinon.spy(),
               actionTriggered = {
-                emitEvent: 'emit-event',
                 type: 'deployment.error',
                 handler:actionSpy
               };
@@ -1437,10 +1429,13 @@ describe('<DeploymentTool>', function() {
       switch (true) {
       case (event === 'save-tab'):
         return activeTab;
-      case (props.actionTriggered &&
-      props.actionTriggered.emitEvent == event &&
-      props.actionTriggered.type == context.type):
-        return props.actionTriggered.handler(context);
+      }
+    };
+
+    const emit = (type, payload) => {
+      if (props.actionTriggered &&
+        props.actionTriggered.type == type) {
+        return props.actionTriggered.handler({ type, payload });
       }
     };
 
@@ -1456,6 +1451,7 @@ describe('<DeploymentTool>', function() {
         ref={ ref }
         subscribe={ props.subcribe || subscribe }
         triggerAction={ triggerAction }
+        emit={ emit }
         displayNotification={ noop }
         log={ noop }
         _getGlobal={ (name) => (name === 'fileSystem' && createFileSystem(props.fileSystem)) }

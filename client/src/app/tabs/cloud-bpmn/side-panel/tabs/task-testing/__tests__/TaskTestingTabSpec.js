@@ -268,6 +268,7 @@ describe('<TaskTestingTab>', function() {
 
       // given
       const onAction = sinon.spy();
+      const emit = sinon.spy();
 
       renderTab(modeler, {
         connectionCheckResult: {
@@ -280,7 +281,8 @@ describe('<TaskTestingTab>', function() {
         linting: [
           { category: 'error' }
         ],
-        onAction
+        onAction,
+        emit
       });
 
       await selectElement(modeler, 'Task_1');
@@ -292,11 +294,8 @@ describe('<TaskTestingTab>', function() {
 
       // then
       await waitFor(() => {
-        expect(onAction).to.have.been.calledWith('emit-event', {
-          type: 'taskTesting.started',
-          payload: {
-            element: modeler.get('elementRegistry').get('Task_1')
-          }
+        expect(emit).to.have.been.calledWith('taskTesting.started', {
+          element: modeler.get('elementRegistry').get('Task_1')
         });
       });
 
@@ -462,6 +461,7 @@ function renderTab(modeler, options = {}) {
       path: 'foo.bpmn'
     },
     onAction: () => {},
+    emit: () => {},
     ...options
   };
 
@@ -475,7 +475,8 @@ function renderTab(modeler, options = {}) {
   };
 
   const eventsContext = {
-    subscribe: mockSubscribe
+    subscribe: mockSubscribe,
+    emit: props.emit
   };
 
   render(

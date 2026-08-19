@@ -2883,7 +2883,7 @@ describe('<App>', function() {
       await findByText('test-notification-3');
 
       // when
-      await app.triggerAction('emit-event', { type: 'tab.activeSheetChanged' });
+      await app.emitEvent('tab.activeSheetChanged');
 
       // then
       await waitFor(() => {
@@ -3786,6 +3786,102 @@ describe('<App>', function() {
       expect(getConfigSpy).to.be.calledOnceWith('foo');
     });
 
+
+    it('should get config for the active tab file', async function() {
+
+      // given
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      const file = { path: '/some/dir/diagram.bpmn' };
+
+      app.state.activeTab = { id: 'tab-1', file };
+
+      getConfigSpy.resetHistory();
+
+      // when
+      app.getConfig('foo');
+
+      // then
+      // the active tab's file is forwarded so file-scoped config
+      // (e.g. local element templates) resolves against it
+      expect(getConfigSpy).to.be.calledOnceWith('foo', file);
+    });
+
+  });
+
+
+  describe('#getConfigForFile', function() {
+
+    afterEach(sinon.restore);
+
+
+    it('should get config for the given file', function() {
+
+      // given
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      const file = { path: '/some/dir/diagram.bpmn' };
+
+      getConfigSpy.resetHistory();
+
+      // when
+      app.getConfigForFile('foo', file, 'bar');
+
+      // then
+      // the passed file is forwarded, independent from the active tab
+      expect(getConfigSpy).to.be.calledOnceWith('foo', file, 'bar');
+    });
+
+
+    it('should be callable when detached from the app', function() {
+
+      // given
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      const { app } = createApp({
+        globals: {
+          config
+        }
+      });
+
+      getConfigSpy.resetHistory();
+
+      // when
+      // consumers (e.g. the linter) receive it as a bare callback
+      const getConfigForFile = app.getConfigForFile;
+
+      const file = { path: '/some/dir/diagram.bpmn' };
+
+      getConfigForFile('foo', file);
+
+      // then
+      expect(getConfigSpy).to.be.calledOnceWith('foo', file);
+    });
+
   });
 
 
@@ -4068,6 +4164,96 @@ describe('<App>', function() {
   });
 
 
+  describe('#emitEvent', function() {
+
+    it('should emit event with active tab', function() {
+
+      // given
+      const { app } = createApp();
+
+      const {
+        activeTab
+      } = app.state;
+
+      const payload = { foo: 'bar' };
+
+      const eventSpy = sinon.spy((event) => {
+
+        const {
+          foo,
+          tab
+        } = event;
+
+        expect(foo).to.equal('bar');
+        expect(tab).to.eql(activeTab);
+      });
+
+      app.on('foo', eventSpy);
+
+      // when
+      app.emitEvent('foo', payload);
+
+      // then
+      expect(eventSpy).to.have.been.called;
+    });
+
+
+    it('should allow overriding the tab via payload', function() {
+
+      // given
+      const { app } = createApp();
+
+      const overrideTab = { id: 'other-tab' };
+
+      const eventSpy = sinon.spy((event) => {
+        expect(event.tab).to.equal(overrideTab);
+      });
+
+      app.on('foo', eventSpy);
+
+      // when
+      app.emitEvent('foo', { tab: overrideTab });
+
+      // then
+      expect(eventSpy).to.have.been.called;
+    });
+
+  });
+
+
+  describe('deprecated #emit-event action', function() {
+
+    afterEach(sinon.restore);
+
+    it('should be a NOOP and log an error', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const errorSpy = sinon.stub(console, 'error');
+
+      const eventSpy = sinon.spy();
+
+      app.on('foo', eventSpy);
+
+      // when
+      const result = await app.triggerAction('emit-event', {
+        type: 'foo',
+        payload: { bar: 'baz' }
+      });
+
+      // then
+      expect(result).not.to.exist;
+      expect(eventSpy).not.to.have.been.called;
+
+      expect(errorSpy).to.have.been.calledOnce;
+      expect(errorSpy.getCall(0).args[0]).to.match(/emit-event/);
+      expect(errorSpy.getCall(0).args[0]).to.match(/pull\/6106/);
+    });
+
+  });
+
+
   describe('layout', function() {
 
     it('should emit <layout.changed> event on layout update', async function() {
@@ -4321,83 +4507,6 @@ describe('<App>', function() {
     });
 
 
-    it('should discard stale linting results', async function() {
-
-      // given
-      const tabsProvider = new TabsProvider();
-      const formProvider = tabsProvider.getProvider('form');
-      const firstLint = pDefer();
-      const secondLint = pDefer();
-
-      sinon.stub(formProvider, 'getLinter').returns({
-        lint(contents) {
-          if (contents === 'first') {
-            return firstLint.promise;
-          }
-
-          if (contents === 'second') {
-            return secondLint.promise;
-          }
-
-          return [];
-        }
-      });
-
-      const { app } = createApp({ tabsProvider });
-
-      const [ currentTab ] = await app.openFiles([ createFile('1.form') ]);
-
-      const firstResult = { id: 'first' };
-      const secondResult = { id: 'second' };
-      const setLintingStateSpy = sinon.spy(app, 'setLintingState');
-
-      // when
-      const firstRequest = app.lintTab(currentTab, 'first');
-      const secondRequest = app.lintTab(currentTab, 'second');
-
-      secondLint.resolve([ secondResult ]);
-      await secondRequest;
-
-      firstLint.resolve([ firstResult ]);
-      await firstRequest;
-
-      // then
-      expect(setLintingStateSpy).to.have.been.calledOnce;
-      expect(setLintingStateSpy).to.have.been.calledWith(currentTab, [ secondResult ]);
-    });
-
-
-    it('should not run stale linter', async function() {
-
-      // given
-      const tabsProvider = new TabsProvider();
-      const formProvider = tabsProvider.getProvider('form');
-      const firstLinter = pDefer();
-      const firstLintSpy = sinon.spy();
-      const secondLintSpy = sinon.spy();
-
-      sinon.stub(formProvider, 'getLinter')
-        .onFirstCall().returns(firstLinter.promise)
-        .onSecondCall().returns({ lint: secondLintSpy });
-
-      const { app } = createApp({ tabsProvider });
-
-      const [ currentTab ] = await app.openFiles([ createFile('1.form') ]);
-
-      // when
-      const firstRequest = app.lintTab(currentTab, 'first');
-
-      await app.lintTab(currentTab, 'second');
-
-      firstLinter.resolve({ lint: firstLintSpy });
-      await firstRequest;
-
-      // then
-      expect(firstLintSpy).not.to.have.been.called;
-      expect(secondLintSpy).to.have.been.calledOnce;
-    });
-
-
     it('should not lint tab (no linter)', async function() {
 
       // given
@@ -4466,6 +4575,87 @@ describe('<App>', function() {
     });
 
 
+    it('should discard stale linting results', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+      const formProvider = tabsProvider.getProvider('form');
+      const firstLint = pDefer();
+      const secondLint = pDefer();
+      const lintSpy = sinon.spy(contents => {
+        if (contents === 'first') {
+          return firstLint.promise;
+        }
+
+        if (contents === 'second') {
+          return secondLint.promise;
+        }
+
+        return [];
+      });
+
+      sinon.stub(formProvider, 'getLinter').returns({ lint: lintSpy });
+
+      const { app } = createApp({ tabsProvider });
+
+      const [ currentTab ] = await app.openFiles([ createFile('1.form') ]);
+
+      const firstResult = { id: 'first' };
+      const secondResult = { id: 'second' };
+      const setLintingStateSpy = sinon.spy(app, 'setLintingState');
+
+      // when
+      const firstRequest = app.lintTab(currentTab, 'first');
+
+      await waitFor(() => {
+        expect(lintSpy).to.have.been.calledWith('first');
+      });
+
+      const secondRequest = app.lintTab(currentTab, 'second');
+
+      await waitFor(() => {
+        expect(lintSpy).to.have.been.calledWith('second');
+      });
+
+      secondLint.resolve([ secondResult ]);
+      await secondRequest;
+
+      firstLint.resolve([ firstResult ]);
+      await firstRequest;
+
+      // then
+      expect(setLintingStateSpy).to.have.been.calledOnce;
+      expect(setLintingStateSpy).to.have.been.calledWith(currentTab, [ secondResult ]);
+    });
+
+
+    it('should not run superseded lint after shared linter build', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+      const formProvider = tabsProvider.getProvider('form');
+      const linter = pDefer();
+      const lintSpy = sinon.spy();
+      const getLinterSpy = sinon.stub(formProvider, 'getLinter').returns(linter.promise);
+
+      const { app } = createApp({ tabsProvider });
+
+      const [ currentTab ] = await app.openFiles([ createFile('1.form') ]);
+
+      // when
+      const firstRequest = app.lintTab(currentTab, 'first');
+      const secondRequest = app.lintTab(currentTab, 'second');
+
+      linter.resolve({ lint: lintSpy });
+
+      await Promise.all([ firstRequest, secondRequest ]);
+
+      // then
+      expect(getLinterSpy).to.have.been.calledOnce;
+      expect(lintSpy).to.have.been.calledOnceWith('second');
+    });
+
+
     it('should pass plugins to linter', async function() {
 
       // given
@@ -4498,6 +4688,211 @@ describe('<App>', function() {
       // then
       expect(getLinterSpy).to.have.been.calledOnce;
       expect(getLinterSpy).to.have.been.calledWith([ 'FooPlugin', 'BarPlugin', 'BazPlugin' ]);
+    });
+
+
+    it('should reuse linter across lints', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      const tab = {
+        id: 'cloud-bpmn-1',
+        type: 'cloud-bpmn',
+        file: { contents: '', path: null }
+      };
+
+      // when
+      await app.getTabLinter(tab);
+      await app.getTabLinter(tab);
+
+      // then
+      // linter is built once and reused, not rebuilt on every lint
+      expect(getLinterSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should build linter with a file-scoped config for the tab', async function() {
+
+      // given
+      const getConfigSpy = spy();
+
+      const config = new Config({
+        get: getConfigSpy
+      });
+
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({
+        globals: {
+          config
+        },
+        tabsProvider
+      });
+
+      // active tab differs from the tab we lint
+      app.state.activeTab = { id: 'other', file: { path: '/other/dir/diagram.bpmn' } };
+
+      const file = { contents: '', path: '/some/dir/diagram.bpmn' };
+
+      const tab = {
+        id: 'cloud-bpmn-1',
+        type: 'cloud-bpmn',
+        file
+      };
+
+      // when
+      await app.getTabLinter(tab);
+
+      // then
+      // the linter is built for the linted tab, with a config accessor that
+      // resolves against that tab's file - not the active tab
+      expect(getLinterSpy).to.have.been.calledOnce;
+
+      const [ , passedTab, getConfig ] = getLinterSpy.firstCall.args;
+
+      expect(passedTab).to.equal(tab);
+
+      getConfigSpy.resetHistory();
+
+      getConfig('bpmn.elementTemplates', tab.file);
+
+      expect(getConfigSpy).to.have.been.calledOnceWith('bpmn.elementTemplates', file);
+    });
+
+
+    it('should not rebuild linter for concurrent lints', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      const tab = {
+        id: 'cloud-bpmn-1',
+        type: 'cloud-bpmn',
+        file: { contents: '', path: null }
+      };
+
+      // when
+      // two lints start before the first build resolves (lintTab is often
+      // called without awaiting), so they must share the in-flight build
+      await Promise.all([
+        app.getTabLinter(tab),
+        app.getTabLinter(tab)
+      ]);
+
+      // then
+      // the linter (and template validation) is built once, not per lint
+      expect(getLinterSpy).to.have.been.calledOnce;
+    });
+
+
+    it('should rebuild linter after templates changed', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      const tab = {
+        id: 'cloud-bpmn-1',
+        type: 'cloud-bpmn',
+        file: { contents: '', path: null }
+      };
+
+      await app.getTabLinter(tab);
+
+      // when
+      // element templates were (re-)loaded, invalidating cached linters
+      app.linterCache = {};
+
+      await app.getTabLinter(tab);
+
+      // then
+      // templates changed, so the linter is rebuilt
+      expect(getLinterSpy).to.have.been.calledTwice;
+    });
+
+
+    it('should invalidate linter cache on element-templates-changed', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      await app.createDiagram('cloud-bpmn');
+
+      const { activeTab } = app.state;
+
+      await app.lintTab(activeTab);
+
+      expect(getLinterSpy).to.have.been.calledOnce;
+
+      // when
+      // templates changed - the cache entry is dropped
+      await app.triggerAction('element-templates-changed', { tab: activeTab });
+
+      // then
+      // the next lint rebuilds the linter (the handler itself does not re-lint)
+      await app.lintTab(activeTab);
+
+      expect(getLinterSpy).to.have.been.calledTwice;
+    });
+
+
+    it('should invalidate only the changed tab linter on element-templates-changed', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+
+      const getLinterSpy = sinon.spy(tabsProvider.getProvider('cloud-bpmn'), 'getLinter');
+
+      const { app } = createApp({ tabsProvider });
+
+      await app.createDiagram('cloud-bpmn');
+
+      const otherTab = app.state.activeTab;
+
+      await app.createDiagram('cloud-bpmn');
+
+      const changedTab = app.state.activeTab;
+
+      // cache linters for both tabs
+      await app.lintTab(otherTab);
+      await app.lintTab(changedTab);
+
+      expect(getLinterSpy).to.have.been.calledTwice;
+
+      // when
+      // templates changed for one specific tab
+      await app.triggerAction('element-templates-changed', { tab: changedTab });
+
+      getLinterSpy.resetHistory();
+
+      // then
+      // the other tab's linter is retained (its templates did not change)
+      await app.lintTab(otherTab);
+
+      expect(getLinterSpy).not.to.have.been.called;
+
+      // but the changed tab's linter is rebuilt on the next lint
+      await app.lintTab(changedTab);
+
+      expect(getLinterSpy).to.have.been.calledOnce;
     });
 
 

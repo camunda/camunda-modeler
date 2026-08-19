@@ -179,7 +179,7 @@ export default class DeploymentTool extends PureComponent {
   async handleDeploymentSuccess(tab, deployment, version, configuration) {
     const {
       displayNotification,
-      triggerAction
+      emit
     } = this.props;
 
     const {
@@ -200,17 +200,14 @@ export default class DeploymentTool extends PureComponent {
     });
 
     // notify interested parties
-    triggerAction('emit-event', {
-      type: 'deployment.done',
-      payload: {
-        deployment,
-        targetType: SELF_HOSTED,
-        deployedTo: {
-          executionPlatformVersion: version,
-          executionPlatform: ENGINES.PLATFORM
-        },
-        context: 'deploymentTool'
-      }
+    emit('deployment.done', {
+      deployment,
+      targetType: SELF_HOSTED,
+      deployedTo: {
+        executionPlatformVersion: version,
+        executionPlatform: ENGINES.PLATFORM
+      },
+      context: 'deploymentTool'
     });
   }
 
@@ -239,7 +236,8 @@ export default class DeploymentTool extends PureComponent {
     const {
       log,
       displayNotification,
-      triggerAction
+      triggerAction,
+      emit
     } = this.props;
 
     const logMessage = {
@@ -267,14 +265,11 @@ export default class DeploymentTool extends PureComponent {
       { executionPlatformVersion: version, executionPlatform: ENGINES.PLATFORM }) || undefined;
 
     // notify interested parties
-    triggerAction('emit-event', {
-      type: 'deployment.error',
-      payload: {
-        error,
-        targetType: SELF_HOSTED,
-        context: 'deploymentTool',
-        ...(deployedTo && { deployedTo: deployedTo })
-      }
+    emit('deployment.error', {
+      error,
+      targetType: SELF_HOSTED,
+      context: 'deploymentTool',
+      ...(deployedTo && { deployedTo: deployedTo })
     });
   }
 

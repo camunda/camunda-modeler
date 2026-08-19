@@ -303,7 +303,8 @@ describe('<DmnEditor>', function() {
           return [];
         },
         onError: onErrorSpy,
-        onAction: noop
+        onAction: noop,
+        emit: noop
       };
 
       // then
@@ -1926,7 +1927,7 @@ describe('<DmnEditor>', function() {
 
       // then
       // DmnEditor#componentDidMount is async
-      setTimeout(() => {
+      await waitFor(() => {
         expect(isImportNeededSpy).to.have.been.calledOnce;
         expect(isImportNeededSpy).to.have.always.returned(false);
       });
@@ -2273,8 +2274,8 @@ describe('<DmnEditor>', function() {
     beforeEach(function() {
       emittedEvents = [];
 
-      recordActions = (action, options) => {
-        emittedEvents.push(options);
+      recordActions = (type, payload) => {
+        emittedEvents.push({ type, payload });
       };
     });
 
@@ -2282,7 +2283,7 @@ describe('<DmnEditor>', function() {
 
       // when
       await renderEditor(diagramXML, {
-        onAction: recordActions
+        emit: recordActions
       });
 
       // then
@@ -2303,7 +2304,7 @@ describe('<DmnEditor>', function() {
       const {
         instance
       } = await renderEditor(diagramXML, {
-        onAction: recordActions
+        emit: recordActions
       });
 
       // then

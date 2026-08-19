@@ -1015,18 +1015,15 @@ export class DmnEditor extends CachedComponent {
 
     const {
       getPlugins,
-      onAction,
+      emit,
       onError,
       settings
     } = props;
 
     // notify interested parties that modeler will be configured
     const handleMiddlewareExtensions = (middlewares) => {
-      onAction('emit-event', {
-        type: 'dmn.modeler.configure',
-        payload: {
-          middlewares
-        }
+      emit('dmn.modeler.configure', {
+        middlewares
       });
     };
 
@@ -1060,11 +1057,8 @@ export class DmnEditor extends CachedComponent {
     const stackIdx = modeler.getStackIdx();
 
     // notify interested parties that modeler was created
-    onAction('emit-event', {
-      type: 'dmn.modeler.created',
-      payload: {
-        modeler
-      }
+    emit('dmn.modeler.created', {
+      modeler
     });
 
     return {

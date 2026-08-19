@@ -372,7 +372,7 @@ describe('<MultiSheetTab>', function() {
       // given
       const emitEventSpy = sinon.spy();
       const { instance } = renderTab({
-        onAction: (...args) => args[0] === 'emit-event' && emitEventSpy(...args),
+        emit: emitEventSpy,
         providers: [ {
           type: 'foo',
           editor: DefaultEditor,
@@ -392,7 +392,7 @@ describe('<MultiSheetTab>', function() {
       // then
       expect(emitEventSpy).to.have.been.calledOnce;
       expect(emitEventSpy.args).to.eql([
-        [ 'emit-event', { type: 'tab.activeSheetChanged', payload: { activeSheet: sheets[1] } } ]
+        [ 'tab.activeSheetChanged', { activeSheet: sheets[1] } ]
       ]);
     });
   });
@@ -559,6 +559,49 @@ describe('<MultiSheetTab>', function() {
       });
     });
 
+
+    it('should inject tab into element-templates-changed action', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      const {
+        instance
+      } = renderTab({
+        onAction
+      });
+
+      // when
+      await instance.onAction('element-templates-changed');
+
+      // then
+      expect(onAction).to.have.been.calledWith('element-templates-changed', {
+        tab: instance.props.tab
+      });
+    });
+
+
+    it('should preserve options on element-templates-changed action', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      const {
+        instance
+      } = renderTab({
+        onAction
+      });
+
+      // when
+      await instance.onAction('element-templates-changed', { foo: 'bar' });
+
+      // then
+      expect(onAction).to.have.been.calledWith('element-templates-changed', {
+        foo: 'bar',
+        tab: instance.props.tab
+      });
+    });
+
   });
 
 
@@ -611,6 +654,7 @@ function renderTab(options = {}) {
     onLayoutChanged,
     onContextMenu,
     onAction,
+    emit,
     providers
   } = options;
 
@@ -631,6 +675,7 @@ function renderTab(options = {}) {
         onLayoutChanged={ onLayoutChanged || noop }
         onContextMenu={ onContextMenu || noop }
         onAction={ onAction || noop }
+        emit={ emit || noop }
         providers={ providers || defaultProviders }
         cache={ cache || new Cache() }
         layout={ layout || {
@@ -665,6 +710,7 @@ function renderTab(options = {}) {
           onLayoutChanged={ mergedOptions.onLayoutChanged || noop }
           onContextMenu={ mergedOptions.onContextMenu || noop }
           onAction={ mergedOptions.onAction || noop }
+          emit={ mergedOptions.emit || noop }
           providers={ mergedOptions.providers || defaultProviders }
           cache={ mergedOptions.cache || new Cache() }
           layout={ mergedOptions.layout || {
