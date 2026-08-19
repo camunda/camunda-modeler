@@ -2951,6 +2951,39 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       });
     });
 
+
+    it('should NOT emit tab.engineProfileChanged event when engine profile unchanged', async function() {
+
+      // given
+      const emitSpy = sinon.spy();
+      const cache = new Cache();
+
+      const { unmount } = await renderEditor(engineProfileXML, {
+        cache,
+        emit: emitSpy,
+        id: 'editor'
+      });
+
+      emitSpy.resetHistory();
+      unmount();
+
+      const { instance } = await renderEditor(engineProfileXML, {
+        cache,
+        emit: emitSpy,
+        id: 'editor',
+        waitForImport: false
+      });
+
+      // when
+      instance.engineProfile.setCached({
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '1.1.0'
+      });
+
+      // then
+      expect(emitSpy).not.to.have.been.calledWith('tab.engineProfileChanged');
+    });
+
   });
 
 

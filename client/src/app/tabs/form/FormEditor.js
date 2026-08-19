@@ -249,13 +249,12 @@ export class FormEditor extends CachedComponent {
       });
     } else {
       this.setCached({
-        engineProfile,
         lastSchema: schema,
         stackIdx
       });
 
       if (engineProfile) {
-        this.emitEngineProfileChanged(engineProfile);
+        this.engineProfile.setCached(engineProfile);
       }
 
       this.handleLinting(engineProfile);

@@ -500,13 +500,12 @@ export class BpmnEditor extends CachedComponent {
     } else {
       this.setCached({
         defaultTemplatesApplied,
-        engineProfile,
         lastXML: xml,
         stackIdx
       });
 
       if (engineProfile) {
-        this.emitEngineProfileChanged(engineProfile);
+        this.engineProfile.setCached(engineProfile);
       }
     }
 
