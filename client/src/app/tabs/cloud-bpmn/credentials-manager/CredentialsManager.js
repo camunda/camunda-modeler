@@ -10,6 +10,8 @@
 
 import React, { PureComponent } from 'react';
 
+import debug from 'debug';
+
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil';
 
 import {
@@ -29,6 +31,8 @@ import {
 } from '../../../../plugins/zeebe-plugin/deployment-plugin/ConnectionCheckErrors';
 
 import { debounce } from '../../../../util';
+
+const log = debug('CredentialsManager');
 
 /**
  * @typedef {Object} ConfigurationInstance
@@ -129,6 +133,20 @@ export default class CredentialsManager extends PureComponent {
   }
 
   /**
+   * Push state into the credential chooser's `configurationInstances` registry,
+   * logging what is set for diagnostics (e.g. the resolved create/update
+   * permissions and why the chooser is available or not).
+   *
+   * @param {Object} configurationInstances
+   * @param {Object} state
+   */
+  setConfigurationInstancesState(configurationInstances, state) {
+    log('setting configuration instances state', state);
+
+    configurationInstances.setState(state);
+  }
+
+  /**
    * Resolve the cluster endpoint the tab is connected to.
    *
    * @returns {Promise<Object|null>} the endpoint, or null when there is no usable connection
@@ -189,17 +207,17 @@ export default class CredentialsManager extends PureComponent {
     const unavailableState = getUnavailableState(endpoint, connectionStatus);
 
     if (unavailableState) {
-      configurationInstances.setState(unavailableState);
+      this.setConfigurationInstancesState(configurationInstances, unavailableState);
 
       return;
     }
 
-    configurationInstances.setState({ available: true, loading: true, error: false });
+    this.setConfigurationInstancesState(configurationInstances, { available: true, loading: true, error: false });
 
     try {
       await this.loadConfigurationInstances(configurationInstances, endpoint);
     } catch (error) {
-      configurationInstances.setState({ loading: false, error: true });
+      this.setConfigurationInstancesState(configurationInstances, { loading: false, error: true });
     }
   }
 
@@ -220,7 +238,7 @@ export default class CredentialsManager extends PureComponent {
     );
 
     if (!filters.length) {
-      configurationInstances.setState({
+      this.setConfigurationInstancesState(configurationInstances, {
         available: false,
         loading: false,
         error: false,
@@ -240,7 +258,7 @@ export default class CredentialsManager extends PureComponent {
     const failedVariablesResult = variablesResults.find(result => !result.success);
 
     if (failedVariablesResult) {
-      configurationInstances.setState(getConfigurationUnavailableState(failedVariablesResult));
+      this.setConfigurationInstancesState(configurationInstances, getConfigurationUnavailableState(failedVariablesResult));
 
       return;
     }
@@ -252,7 +270,7 @@ export default class CredentialsManager extends PureComponent {
 
     const referencedInstances = await this.getReferencedInstances(endpoint, selectableInstances);
 
-    configurationInstances.setState({
+    this.setConfigurationInstancesState(configurationInstances, {
       available: true,
       loading: false,
       error: false,
@@ -594,7 +612,7 @@ export default class CredentialsManager extends PureComponent {
       return;
     }
 
-    configurationInstances.setState({
+    this.setConfigurationInstancesState(configurationInstances, {
       selectableInstances: upsertInstance(configurationInstances.getSelectableInstances(), instance)
     });
   }
@@ -617,7 +635,7 @@ export default class CredentialsManager extends PureComponent {
       .map(name => name === instance.name ? instance : configurationInstances.getReferencedInstanceByName(name))
       .filter(Boolean);
 
-    configurationInstances.setState({
+    this.setConfigurationInstancesState(configurationInstances, {
       selectableInstances: upsertInstance(configurationInstances.getSelectableInstances(), instance),
       referencedInstances
     });
