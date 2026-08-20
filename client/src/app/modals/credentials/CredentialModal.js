@@ -32,7 +32,7 @@ import {
   toCredentialId
 } from './credentialId';
 
-import * as css from './CredentialsModal.css';
+import * as css from './CredentialModal.css';
 
 import { debounce } from '../../../util';
 
@@ -50,7 +50,7 @@ const SUBMIT_LABELS = {
 
 const SECRET_REFERENCE_PLACEHOLDER = 'camunda.secrets.SECRET_NAME';
 
-class CredentialsModal extends PureComponent {
+class CredentialModal extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -282,7 +282,7 @@ class CredentialsModal extends PureComponent {
         }
         { field.description && <p className="form-text">{ renderDescription(field.description) }</p> }
         { fieldError && (
-          <p className="credentials-modal-error" id={ errorId }>
+          <p className="credential-modal-error" id={ errorId }>
             { fieldError }
           </p>
         ) }
@@ -314,9 +314,9 @@ class CredentialsModal extends PureComponent {
         <Modal.Title>{ TITLES[ mode ] || TITLES.create }</Modal.Title>
 
         <Modal.Body>
-          <div className={ css.credentialsModal }>
+          <div className={ css.credentialModal }>
             { loading ? (
-              <div className="credentials-modal-loading" role="status" aria-label="Loading credential">
+              <div className="credential-modal-loading" role="status" aria-label="Loading credential">
                 <Loader />
               </div>
             ) : <>
@@ -333,7 +333,7 @@ class CredentialsModal extends PureComponent {
                 />
                 { displayNameError && (
                   <p
-                    className="credentials-modal-error"
+                    className="credential-modal-error"
                     id="credential-display-name-error"
                   >
                     { displayNameError }
@@ -356,7 +356,7 @@ class CredentialsModal extends PureComponent {
                   onChange={ isCreate ? this.handleCredentialNameChange : undefined }
                 />
                 { showCredentialNameError && (
-                  <p className="credentials-modal-error" id="credential-id-error">{ credentialNameError }</p>
+                  <p className="credential-modal-error" id="credential-id-error">{ credentialNameError }</p>
                 ) }
                 { credentialName && (
                   <p className="form-text" id="credential-id-help">
@@ -366,13 +366,13 @@ class CredentialsModal extends PureComponent {
               </div>
 
               { this.getVisibleFieldGroups().map(group => (
-                <section className="credentials-modal-group" key={ group.id }>
+                <section className="credential-modal-group" key={ group.id }>
                   <h3>{ group.label }</h3>
                   { group.properties.map(field => this.renderField(field)) }
                 </section>
               )) }
 
-              { error && <p className="credentials-modal-error" role="alert">{ error }</p> }
+              { error && <p className="credential-modal-error" role="alert">{ error }</p> }
             </> }
           </div>
         </Modal.Body>
@@ -392,7 +392,7 @@ class CredentialsModal extends PureComponent {
   }
 }
 
-export default CredentialsModal;
+export default CredentialModal;
 
 
 // helpers //////////

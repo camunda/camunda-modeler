@@ -907,7 +907,7 @@
   {
     "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
     "name": "AWS with Credentials",
-    "id": "io.camunda.examples.AwsCredentialsManager",
+    "id": "io.camunda.examples.AwsCredentialManager",
     "description": "Reusable AWS credential chooser with dropdown-driven conditional fields.",
     "version": 1,
     "appliesTo": [

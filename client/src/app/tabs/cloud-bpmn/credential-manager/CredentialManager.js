@@ -15,7 +15,7 @@ import debug from 'debug';
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil';
 
 import {
-  CredentialsModal,
+  CredentialModal,
   getInitialFieldValues,
   getVisibleProperties,
   buildConfig,
@@ -32,7 +32,7 @@ import {
 
 import { debounce } from '../../../../util';
 
-const log = debug('CredentialsManager');
+const log = debug('CredentialManager');
 
 /**
  * @typedef {Object} ConfigurationInstance
@@ -80,7 +80,7 @@ const CREDENTIAL_UPDATE_FORBIDDEN_MESSAGE =
  * `configurationInstances` registry from the connected cluster and drives the
  * create / edit / upgrade modal in response to the chooser's eventBus events.
  */
-export default class CredentialsManager extends PureComponent {
+export default class CredentialManager extends PureComponent {
 
   static contextType = EventsContext;
 
@@ -690,7 +690,7 @@ export default class CredentialsManager extends PureComponent {
     }
 
     return (
-      <CredentialsModal
+      <CredentialModal
         mode={ modal.mode }
         configurationTemplate={ modal.configurationTemplate }
         existingCredentials={ modal.existingCredentials }

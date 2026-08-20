@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-export { default as CredentialsModal } from './CredentialsModal';
+export { default as CredentialModal } from './CredentialModal';
 export { getInitialFieldValues, getVisibleProperties } from './credentialForm';
 export { buildConfig, toFieldValues } from './config';
 export { toCredentialId } from './credentialId';
