@@ -2998,15 +2998,26 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       // given
       const emitSpy = sinon.spy();
+      const cache = new Cache();
 
-      const { instance } = await renderEditor(engineProfileXML, {
-        emit: emitSpy
+      const { unmount } = await renderEditor(engineProfileXML, {
+        cache,
+        emit: emitSpy,
+        id: 'editor'
       });
 
       emitSpy.resetHistory();
+      unmount();
+
+      const { instance } = await renderEditor(engineProfileXML, {
+        cache,
+        emit: emitSpy,
+        id: 'editor',
+        waitForImport: false
+      });
 
       // when
-      instance.emitEngineProfileChanged({
+      instance.engineProfile.setCached({
         executionPlatform: 'Camunda Cloud',
         executionPlatformVersion: '1.1.0'
       });

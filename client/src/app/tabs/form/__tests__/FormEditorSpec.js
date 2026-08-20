@@ -761,7 +761,7 @@ describe('<FormEditor>', function() {
       emitSpy.resetHistory();
 
       // when
-      instance.emitEngineProfileChanged({
+      instance.engineProfile.setCached({
         executionPlatform: 'Camunda Platform',
         executionPlatformVersion: '7.16.0'
       });

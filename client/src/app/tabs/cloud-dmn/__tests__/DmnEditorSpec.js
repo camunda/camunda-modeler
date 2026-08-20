@@ -2520,7 +2520,7 @@ describe('<DmnEditor>', function() {
       emitSpy.resetHistory();
 
       // when
-      instance.emitEngineProfileChanged({
+      instance.engineProfile.setCached({
         executionPlatform: 'Camunda Cloud',
         executionPlatformVersion: '8.0.0'
       });
