@@ -31,6 +31,10 @@ const {
  * @typedef {import('@camunda8/sdk/dist/c8').Camunda8} Camunda8
  * @typedef {typeof import('@camunda8/sdk').Camunda8} Camunda8Constructor
  * @typedef {import('@camunda8/sdk/dist/zeebe').ZeebeGrpcClient} ZeebeGrpcClient
+ * @typedef {import('@camunda8/sdk').CamundaRestClient} CamundaRestClient
+ * @typedef {import('@camunda8/sdk/dist/lib').Camunda8ClientConfiguration} Camunda8ClientConfiguration
+ * @typedef {import('./endpoints').Endpoint} Endpoint
+ * @typedef {'grpc'|'grpcs'|'http'|'https'} Protocol
  */
 
 /**
@@ -61,15 +65,17 @@ class CamundaClientFactory {
     /** @type {Camunda8} */
     this._cachedClient = null;
 
-    /** @type {import("./endpoints").Endpoint} */
+    /** @type {Endpoint} */
     this._cachedEndpoint = null;
 
-    /** @type {'http'|'https'|'grpc'|'grpcs'} */
+    /** @type {Protocol} */
     this._cachedProtocol = 'grpc';
   }
 
   /**
-   * @param {import("./endpoints").Endpoint} endpoint
+   * @param {Endpoint} endpoint
+   *
+   * @returns {Promise<Camunda8>}
    */
   async getCamundaClient(endpoint) {
 
@@ -91,9 +97,9 @@ class CamundaClientFactory {
   }
 
   /**
-   * @param {import("./endpoints").Endpoint} endpoint
+   * @param {Endpoint} endpoint
    *
-   * @returns {Promise<{ zeebeGrpcClient?: ZeebeGrpcClient, camundaRestClient?: import('@camunda8/sdk').CamundaRestClient}>}
+   * @returns {Promise<{ zeebeGrpcClient?: ZeebeGrpcClient, camundaRestClient?: CamundaRestClient}>}
    */
   async getSupportedCamundaClients(endpoint) {
     const camundaClient = await this.getCamundaClient(endpoint);
@@ -114,9 +120,9 @@ class CamundaClientFactory {
   /**
    * Get the appropriate protocol (gRPC or REST) for the endpoint.
    *
-   * @param {import("./endpoints").Endpoint} endpoint
+   * @param {Endpoint} endpoint
    *
-   * @returns {Promise<'grpc'|'grpcs'|'http'|'https'>}
+   * @returns {Promise<Protocol>}
    */
   async _getProtocol(endpoint) {
     const matchedProtocol = endpoint.url.match(/^(https?|grpcs?):\/\//)?.[1];
@@ -154,8 +160,8 @@ class CamundaClientFactory {
   /**
    * Check if the endpoint can be connected with the specified protocol.
    *
-   * @param {import("./endpoints").Endpoint} endpoint
-   * @param {'grpc'|'grpcs'|'http'|'https'} protocol
+   * @param {Endpoint} endpoint
+   * @param {Protocol} protocol
    *
    * @returns {Promise<boolean>}
    */
@@ -182,7 +188,10 @@ class CamundaClientFactory {
   }
 
   /**
-   * @param {import("./endpoints").Endpoint} endpoint
+   * Check if the current cache is valid for the given endpoint.
+   *
+   * @param {Endpoint} endpoint
+   *
    * @returns {boolean}
    */
   _isCacheValid(endpoint) {
@@ -193,8 +202,8 @@ class CamundaClientFactory {
   /**
    * Check if two endpoints are equal.
    *
-   * @param {import("./endpoints").Endpoint} endpoint1
-   * @param {import("./endpoints").Endpoint} endpoint2
+   * @param {Endpoint} endpoint1
+   * @param {Endpoint} endpoint2
    *
    * @returns {boolean}
    */
@@ -214,8 +223,10 @@ class CamundaClientFactory {
   }
 
   /**
-   * @param {import("./endpoints").Endpoint} endpoint
-   * @param {'grpc'|'grpcs'|'http'|'https'} protocol
+   * @param {Endpoint} endpoint
+   * @param {Protocol} protocol
+   *
+   * @returns {Promise<Camunda8|undefined>}
    */
   async _createCamundaClient(endpoint, protocol) {
     const {
@@ -241,6 +252,12 @@ class CamundaClientFactory {
     return new this._Camunda8(clientConfig);
   }
 
+  /**
+   * @param {Endpoint} endpoint
+   * @param {Protocol} protocol
+   *
+   * @returns {Promise<Camunda8ClientConfiguration>}
+   */
   async _getClientConfig(endpoint, protocol) {
 
     const {
@@ -249,7 +266,7 @@ class CamundaClientFactory {
       url
     } = endpoint;
 
-    /** @type {import('@camunda8/sdk/dist/lib').Camunda8ClientConfiguration} */
+    /** @type {Camunda8ClientConfiguration} */
     let clientConfig = {};
 
     if (endpoint.tenantId) {
@@ -320,6 +337,12 @@ class CamundaClientFactory {
     return clientConfig;
   }
 
+  /**
+   * @param {string} url
+   * @param {Camunda8ClientConfiguration} options
+   *
+   * @returns {Promise<Camunda8ClientConfiguration>}
+   */
   async _withTLSConfig(url, options) {
     const rootCerts = [];
 
@@ -351,6 +374,12 @@ class CamundaClientFactory {
     };
   }
 
+  /**
+   * @param {string} url
+   * @param {Camunda8ClientConfiguration} options
+   *
+   * @returns {Camunda8ClientConfiguration}
+   */
   _withPortConfig(url, options) {
 
     // do not override camunda cloud port (handled by zeebe-node)
@@ -371,6 +400,11 @@ class CamundaClientFactory {
     };
   }
 
+  /**
+   * @param {string} certPath
+   *
+   * @returns {string|undefined}
+   */
   _readRootCertificate(certPath) {
     let cert;
 
