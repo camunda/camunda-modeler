@@ -68,3 +68,52 @@ export function isC8RunConnection(connection) {
 
   return urlMatches && nameMatches;
 }
+
+/**
+ * Identity-bearing endpoint fields, in a stable order. Two connections that
+ * agree on all of these address the same cluster, tenant and principal, and
+ * therefore expose the same credentials and permissions. Secrets are
+ * deliberately excluded: rotating a secret for the same principal does not
+ * change the server-side data, and the fingerprint must be safe to log.
+ *
+ * @type {string[]}
+ */
+const CONNECTION_IDENTITY_FIELDS = [
+  'targetType',
+  'contactPoint',
+  'camundaCloudClusterUrl',
+  'tenantId',
+  'authType',
+  'clientId',
+  'camundaCloudClientId',
+  'basicAuthUsername',
+  'oauthURL',
+  'audience'
+];
+
+/**
+ * Compute an opaque fingerprint of a connection's identity.
+ *
+ * The connection id is a stable, persisted handle that does NOT change when a
+ * connection is edited in place, so it cannot by itself tell whether the
+ * cluster, tenant or principal behind it changed. This fingerprint fills that
+ * gap: it changes whenever an identity-bearing field changes and stays equal
+ * across tab activations and re-checks of an unchanged connection.
+ *
+ * Consumers must treat the value as opaque — compare for equality only, never
+ * parse it. It is intended as a cache/staleness token that lives alongside the
+ * connection id (see `connectionFingerprint` on the connection events).
+ *
+ * @param {Endpoint} connection
+ *
+ * @returns {string|null} the fingerprint, or null when there is no connection
+ */
+export function getConnectionFingerprint(connection) {
+  if (!connection) {
+    return null;
+  }
+
+  return CONNECTION_IDENTITY_FIELDS
+    .map(field => `${field}=${connection[field] ?? ''}`)
+    .join('|');
+}

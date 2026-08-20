@@ -10,6 +10,7 @@
 
 import { expect } from 'chai';
 import {
+  getConnectionFingerprint,
   getGRPCErrorCode,
   isC8RunConnection
 } from '../util';
@@ -182,6 +183,117 @@ describe('util', function() {
       expect(isC8RunConnection({})).to.be.false;
       expect(isC8RunConnection({ name: 'c8run' })).to.be.false;
       expect(isC8RunConnection({ contactPoint: 'http://localhost:8080' })).to.be.false;
+    });
+
+  });
+
+  describe('getConnectionFingerprint', function() {
+
+    it('should return null without a connection', function() {
+      expect(getConnectionFingerprint(null)).to.be.null;
+      expect(getConnectionFingerprint(undefined)).to.be.null;
+    });
+
+    it('should be stable for the same identity', function() {
+
+      // given
+      const connection = {
+        id: 'a',
+        contactPoint: 'http://localhost:26500',
+        authType: 'none'
+      };
+
+      // then
+      expect(getConnectionFingerprint(connection)).to.eql(
+        getConnectionFingerprint({ ...connection })
+      );
+    });
+
+    it('should ignore the connection id and non-identity fields', function() {
+
+      // given
+      const connection = {
+        id: 'a',
+        name: 'My Connection',
+        contactPoint: 'http://localhost:26500',
+        authType: 'none'
+      };
+
+      // then
+      expect(getConnectionFingerprint(connection)).to.eql(
+        getConnectionFingerprint({
+          ...connection,
+          id: 'b',
+          name: 'Renamed'
+        })
+      );
+    });
+
+    it('should ignore secrets', function() {
+
+      // given
+      const connection = {
+        contactPoint: 'http://localhost:26500',
+        authType: 'oauth',
+        clientId: 'client',
+        clientSecret: 'secret'
+      };
+
+      // then
+      expect(getConnectionFingerprint(connection)).to.eql(
+        getConnectionFingerprint({ ...connection, clientSecret: 'rotated' })
+      );
+    });
+
+    it('should change when the cluster changes', function() {
+
+      // given
+      const connection = { contactPoint: 'http://localhost:26500' };
+
+      // then
+      expect(getConnectionFingerprint(connection)).to.not.eql(
+        getConnectionFingerprint({ contactPoint: 'http://other:26500' })
+      );
+    });
+
+    it('should change when the tenant changes', function() {
+
+      // given
+      const connection = { contactPoint: 'http://localhost:26500', tenantId: 'a' };
+
+      // then
+      expect(getConnectionFingerprint(connection)).to.not.eql(
+        getConnectionFingerprint({ ...connection, tenantId: 'b' })
+      );
+    });
+
+    it('should change when the principal changes', function() {
+
+      // given
+      const connection = {
+        contactPoint: 'http://localhost:26500',
+        authType: 'oauth',
+        clientId: 'client-a'
+      };
+
+      // then
+      expect(getConnectionFingerprint(connection)).to.not.eql(
+        getConnectionFingerprint({ ...connection, clientId: 'client-b' })
+      );
+    });
+
+    it('should not log secrets in the fingerprint', function() {
+
+      // given
+      const connection = {
+        contactPoint: 'http://localhost:26500',
+        authType: 'oauth',
+        clientId: 'client',
+        clientSecret: 'super-secret'
+      };
+
+      // then
+      expect(getConnectionFingerprint(connection)).to.not.contain('super-secret');
     });
 
   });
