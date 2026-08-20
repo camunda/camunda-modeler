@@ -15,7 +15,7 @@ import React from 'react';
 
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
-import CredentialsManager from '../CredentialsManager';
+import CredentialManager from '../CredentialManager';
 import { EventsContext } from '../../../../EventsContext';
 
 const TEMPLATE = {
@@ -49,7 +49,7 @@ const INSTANCE_METADATA = {
 };
 
 
-describe('<CredentialsManager>', function() {
+describe('<CredentialManager>', function() {
 
   it('should render nothing before a chooser event', function() {
 
@@ -872,7 +872,7 @@ function renderManager(overrides = {}) {
   };
 
   const manager = (
-    <CredentialsManager
+    <CredentialManager
       injector={ injector }
       zeebeApi={ zeebeApi }
       deployment={ deployment }

@@ -81,7 +81,7 @@ import {
 
 import { getCloudTemplates } from '../../../util/elementTemplates';
 
-import CredentialsManager from './credentials-manager/CredentialsManager';
+import CredentialManager from './credential-manager/CredentialManager';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -1063,7 +1063,7 @@ export class BpmnEditor extends CachedComponent {
           onChange={ (engineProfile) => this.engineProfile.set(engineProfile) } />
         }
 
-        <CredentialsManager
+        <CredentialManager
           injector={ injector }
           zeebeApi={ zeebeApi }
           deployment={ deployment }

@@ -15,7 +15,7 @@ import React from 'react';
 
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
-import CredentialsModal from '../CredentialsModal';
+import CredentialModal from '../CredentialModal';
 import { getInitialFieldValues } from '../credentialForm';
 
 const OPTIONAL_FIELD = {
@@ -52,7 +52,7 @@ const DESCRIBED_FIELD = {
 };
 
 
-describe('<CredentialsModal>', function() {
+describe('<CredentialModal>', function() {
 
   it('should render the create title', function() {
 
@@ -177,7 +177,7 @@ describe('<CredentialsModal>', function() {
     });
 
     // when
-    rerender(<CredentialsModal
+    rerender(<CredentialModal
       { ...modalProps({
         mode: 'edit',
         credentialName: 'MY_CRED',
@@ -762,7 +762,7 @@ function conditionalTemplate(condition) {
 }
 
 function renderModal(props = {}) {
-  return render(<CredentialsModal { ...modalProps(props) } />);
+  return render(<CredentialModal { ...modalProps(props) } />);
 }
 
 function modalProps(props = {}) {
