@@ -113,20 +113,23 @@ function LintingTabItem(props) {
 
   const documentationUrl = meta?.documentation?.url;
   const reportName = getReportName(report);
+  const locatable = !isNil(report.id);
+  const clickHandler = locatable ? onClick : undefined;
+  const Header = locatable ? 'button' : 'div';
 
   return <div
-    onClick={ onClick }
+    onClick={ clickHandler }
     className={ classnames(css.LintingTabItem, 'linting-tab-item', {
       'linting-tab-item--error': category === 'error',
       'linting-tab-item--warning': category === 'warn',
       'linting-tab-item--info': category === 'info'
     }) }>
-    <button className="linting-tab-item__header" onClick={ onClick }>
+    <Header className="linting-tab-item__header" onClick={ clickHandler }>
       { category === 'error' ? <ErrorIcon width="16" height="16" /> : null }
       { category === 'warn' ? <WarningIcon width="16" height="16" /> : null }
       { category === 'info' ? <InfoIcon width="16" height="16" /> : null }
       <span className="linting-tab-item__label">{ reportName }</span>
-    </button>
+    </Header>
     <div className="linting-tab-item__content">
       { message }
       {

@@ -286,6 +286,31 @@ describe('<LintingTab>', function() {
   });
 
 
+  it('should NOT trigger action for report without element ID', function() {
+
+    // given
+    const onActionSpy = spy();
+
+    const { getByText } = renderLintingTab({
+      onAction: onActionSpy,
+      linting: [
+        {
+          category: 'warn',
+          name: 'Engine profile',
+          message: 'Version mismatch message',
+          rule: 'camunda/version-mismatch'
+        }
+      ]
+    });
+
+    // when
+    fireEvent.click(getByText('Engine profile'));
+
+    // then
+    expect(onActionSpy).not.to.have.been.called;
+  });
+
+
   it('should show lint error on click', function() {
 
     // given
