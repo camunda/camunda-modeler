@@ -375,17 +375,19 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
     describe('behavior', function() {
 
-      let instance,
+      let cache,
+          instance,
           modeler,
           onActionSpy,
-          rerender;
+          rerender,
+          unmount;
 
       beforeEach(async function() {
         modeler = new BpmnModeler();
 
         onActionSpy = spy();
 
-        const cache = new Cache();
+        cache = new Cache();
 
         cache.add('editor', {
           cached: {
@@ -402,6 +404,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         instance = render.instance;
         rerender = render.rerender;
+        unmount = render.unmount;
       });
 
 
@@ -451,6 +454,33 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
           expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
         }
       );
+
+
+      it('should resume pending lint on remount', async function() {
+
+        // given
+        instance.linting.flush();
+        onActionSpy.resetHistory();
+
+        modeler._emit('commandStack.changed');
+        unmount();
+
+        // when
+        const { instance: remountedInstance } = await renderEditor(diagramXML, {
+          id: 'editor',
+          cache,
+          onAction: onActionSpy,
+          waitForImport: false
+        });
+
+        remountedInstance.linting.flush();
+
+        // then
+        const matchingCalls = onActionSpy.getCalls()
+          .filter(call => call.calledWithMatch('lint-tab'));
+
+        expect(matchingCalls).to.have.lengthOf(1);
+      });
 
     });
 
