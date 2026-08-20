@@ -16,6 +16,8 @@ import { waitFor } from '@testing-library/react';
 
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 
+import Flags, { DISABLE_AGENT_CONFIG_AUTOFIX } from '../../../src/util/Flags';
+
 import BpmnModeler from '../../../src/app/tabs/cloud-bpmn/modeler/BpmnModeler';
 
 import diagramXML from './diagram.bpmn';
@@ -122,6 +124,37 @@ describe('BpmnModeler', function() {
             event = new KeyboardEvent('keydown', { target: modelerContainer });
 
       expect(() => editorActions.trigger('appendElement', event)).not.to.throw();
+    });
+
+  });
+
+
+  describe('agent config autofix kill switch', function() {
+
+    afterEach(Flags.reset);
+
+    it('should register the agent config autofix module by default', async function() {
+
+      // when
+      const modeler = await createModeler();
+
+      // then
+      expect(modeler.get('agentConfigAutofillPropertiesProvider', false)).to.exist;
+    });
+
+
+    it('should not register the agent config autofix module when disabled through the flag', async function() {
+
+      // given
+      Flags.init({
+        [ DISABLE_AGENT_CONFIG_AUTOFIX ]: true
+      });
+
+      // when
+      const modeler = await createModeler();
+
+      // then
+      expect(modeler.get('agentConfigAutofillPropertiesProvider', false)).not.to.exist;
     });
 
   });

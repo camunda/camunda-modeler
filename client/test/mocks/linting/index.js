@@ -36,3 +36,19 @@ export class Linter {
     return [];
   }
 }
+
+export function getFixLabel() {
+  return 'Fix';
+}
+
+export function hasFix() {
+  return false;
+}
+
+export function canApplyFix() {
+  return false;
+}
+
+export function applyFix() {
+  return [];
+}

@@ -10,6 +10,8 @@
 
 import React, { PureComponent } from 'react';
 
+import { getFixLabel, hasFix } from '@camunda/linting-autofix';
+
 import debug from 'debug';
 
 import {
@@ -1165,6 +1167,18 @@ export class App extends PureComponent {
     if (warnings.length) {
       results = [ ...results, ...warnings ];
     }
+
+    results = results.map(report => hasFix(report)
+      ? {
+        ...report,
+        action: {
+          handler: 'apply-linting-fix',
+          label: getFixLabel(report),
+          options: { report }
+        }
+      }
+      : report
+    );
 
     this.setLintingState(tab, results);
   };

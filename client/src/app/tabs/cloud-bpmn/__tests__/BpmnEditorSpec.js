@@ -13,6 +13,8 @@ import * as sinon from 'sinon';
 
 import { waitFor, fireEvent, getByRole } from '@testing-library/react';
 
+import { agentConfigAutofillModule } from '@camunda/linting-autofix';
+
 import { find } from 'min-dash';
 
 import { Cache } from '../../../cached';
@@ -45,6 +47,7 @@ import {
 } from '../../getEditMenu';
 
 import Metadata from '../../../../util/Metadata';
+import Flags, { DISABLE_AGENT_CONFIG_AUTOFIX } from '../../../../util/Flags';
 
 import renderEditorHelper from '../../../__tests__/helpers/renderEditor';
 import { Deployment, StartInstance, ZeebeAPI } from '../../../__tests__/mocks';
@@ -52,6 +55,10 @@ import { Deployment, StartInstance, ZeebeAPI } from '../../../__tests__/mocks';
 const { spy } = sinon;
 
 describe('cloud-bpmn - <BpmnEditor>', function() {
+
+  afterEach(function() {
+    Flags.reset();
+  });
 
   it('should render', async function() {
     const { instance } = await renderEditor(diagramXML);
@@ -199,6 +206,36 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       expect(modeler.options.moddleExtensions).to.not.have.property('platbar');
 
+    });
+
+
+    it('should register the agent config autofix module', async function() {
+
+      // when
+      const { instance } = await renderEditor(diagramXML);
+
+      // then
+      const { modeler } = instance.getCached();
+
+      expect(modeler.options.additionalModules).to.include(agentConfigAutofillModule);
+      expect(modeler.options.lintingAutofix.fromAiDocumentationUrl).to.contain('docs.camunda.io');
+    });
+
+
+    it('should omit the agent config autofix module when disabled', async function() {
+
+      // given
+      Flags.init({
+        [ DISABLE_AGENT_CONFIG_AUTOFIX ]: true
+      });
+
+      // when
+      const { instance } = await renderEditor(diagramXML);
+
+      // then
+      const { modeler } = instance.getCached();
+
+      expect(modeler.options.additionalModules).not.to.include(agentConfigAutofillModule);
     });
 
   });
@@ -2929,7 +2966,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // then
       expect(instance).to.exist;
       expect(instance.getModeler().additionalModules).to.exist;
-      expect(instance.getModeler().additionalModules).to.have.length(0);
+      expect(instance.getModeler().additionalModules).to.have.length(1);
     });
 
 
@@ -2945,7 +2982,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // then
       expect(instance).to.exist;
       expect(instance.getModeler().additionalModules).to.exist;
-      expect(instance.getModeler().additionalModules).to.have.length(1);
+      expect(instance.getModeler().additionalModules).to.have.length(2);
     });
 
   });
