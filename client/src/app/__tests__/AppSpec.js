@@ -5194,7 +5194,7 @@ describe('<App>', function() {
 
       describe('connection status changed', function() {
 
-        it('should update connection state without re-linting content', async function() {
+        it('should recompose version warning without re-linting content', async function() {
 
           // given
           const { app } = createApp();
@@ -5203,69 +5203,35 @@ describe('<App>', function() {
 
           const { activeTab } = app.state;
 
-          const setStateSpy = sinon.spy(app, 'setState');
+          app.emit('tab.engineProfileChanged', {
+            tab: activeTab,
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          });
+
+          await waitFor(() => {
+            expect(app.state.engineProfiles[ activeTab.id ].executionPlatformVersion).to.equal('8.7.0');
+          });
+
           const lintTabSpy = sinon.spy(app, 'lintTab');
 
-          // when - the connection status changes
-          app._handleConnectionStatusChanged({
+          // when
+          app.emit('connectionManager.connectionStatusChanged', {
             tab: activeTab,
             success: true,
-            response: { gatewayVersion: '8.8.0' }
-          });
-
-          // then - the content linter is not re-run; only state is updated
-          // (the cluster version only feeds the additional lint sources)
-          expect(lintTabSpy).to.not.have.been.called;
-
-          expect(setStateSpy).to.have.been.calledWithMatch({
-            connectionCheckResult: {
-              success: true,
-              response: { gatewayVersion: '8.8.0' }
-            }
-          });
-
-          setStateSpy.restore();
-          lintTabSpy.restore();
-        });
-
-
-        it('should recompose version warning from updated connection state', async function() {
-
-          // given
-          const { app } = createApp();
-
-          await app.createDiagram('cloud-bpmn');
-
-          const { activeTab } = app.state;
-
-          // selected version matches the connected cluster - no warning
-          app.state.engineProfiles = {
-            [ activeTab.id ]: {
-              executionPlatform: 'Camunda Cloud',
-              executionPlatformVersion: '8.7.0'
-            }
-          };
-          app.state.connectionCheckResult = {
-            success: true,
-            response: { gatewayVersion: '8.7.0' }
-          };
-
-          expect(
-            app.getLintingState(activeTab).find(r => r.rule === 'camunda/version-mismatch')
-          ).not.to.exist;
-
-          // when - the connected cluster reports a differing version
-          app.state.connectionCheckResult = {
-            success: true,
             response: { gatewayVersion: '8.9.0' }
-          };
+          });
 
-          // then - the warning is (re)composed on read, without re-linting
-          const warning = app.getLintingState(activeTab)
-            .find(r => r.rule === 'camunda/version-mismatch');
+          // then
+          await waitFor(() => {
+            const warning = app.getLintingState(activeTab)
+              .find(r => r.rule === 'camunda/version-mismatch');
 
-          expect(warning).to.exist;
-          expect(warning.message).to.include('8.9');
+            expect(warning).to.exist;
+            expect(warning.message).to.include('8.9');
+          });
+
+          expect(lintTabSpy).to.not.have.been.called;
         });
 
       });
@@ -5282,26 +5248,20 @@ describe('<App>', function() {
 
           const { activeTab } = app.state;
 
-          const setStateSpy = sinon.spy(app, 'setState');
-
           // when
-          app._handleEngineProfileChanged({
+          app.emit('tab.engineProfileChanged', {
             tab: activeTab,
             executionPlatform: 'Camunda Cloud',
             executionPlatformVersion: '8.8.0'
           });
 
-          // then - state is updated (through a functional update)
-          expect(setStateSpy).to.have.been.called;
-
-          const nextState = setStateSpy.firstCall.args[0](app.state);
-
-          expect(nextState.engineProfiles[ activeTab.id ]).to.eql({
-            executionPlatform: 'Camunda Cloud',
-            executionPlatformVersion: '8.8.0'
+          // then
+          await waitFor(() => {
+            expect(app.state.engineProfiles[ activeTab.id ]).to.eql({
+              executionPlatform: 'Camunda Cloud',
+              executionPlatformVersion: '8.8.0'
+            });
           });
-
-          setStateSpy.restore();
         });
 
 
@@ -5317,16 +5277,18 @@ describe('<App>', function() {
           const lintTabSpy = sinon.spy(app, 'lintTab');
 
           // when
-          app._handleEngineProfileChanged({
+          app.emit('tab.engineProfileChanged', {
             tab: activeTab,
             executionPlatform: 'Camunda Cloud',
             executionPlatformVersion: '8.8.0'
           });
 
-          // then - App does not trigger content linting; that is the editor's job
-          expect(lintTabSpy).to.not.have.been.called;
+          // then
+          await waitFor(() => {
+            expect(app.state.engineProfiles[ activeTab.id ].executionPlatformVersion).to.equal('8.8.0');
+          });
 
-          lintTabSpy.restore();
+          expect(lintTabSpy).to.not.have.been.called;
         });
 
 
@@ -5339,41 +5301,46 @@ describe('<App>', function() {
 
           const { activeTab } = app.state;
 
-          // selected version matches the connected cluster - no warning
-          app.state.engineProfiles = {
-            [ activeTab.id ]: {
-              executionPlatform: 'Camunda Cloud',
-              executionPlatformVersion: '8.7.0'
-            }
-          };
-          app.state.connectionCheckResult = {
+          app.emit('tab.engineProfileChanged', {
+            tab: activeTab,
+            executionPlatform: 'Camunda Cloud',
+            executionPlatformVersion: '8.7.0'
+          });
+
+          await waitFor(() => {
+            expect(app.state.engineProfiles[ activeTab.id ].executionPlatformVersion).to.equal('8.7.0');
+          });
+
+          app.emit('connectionManager.connectionStatusChanged', {
+            tab: activeTab,
             success: true,
             response: { gatewayVersion: '8.7.0' }
-          };
+          });
 
-          expect(
-            app.getLintingState(activeTab).find(r => r.rule === 'camunda/version-mismatch')
-          ).not.to.exist;
+          await waitFor(() => {
+            expect(app.state.connectionCheckResult.response.gatewayVersion).to.equal('8.7.0');
+            expect(app.state.engineProfiles[ activeTab.id ].executionPlatformVersion).to.equal('8.7.0');
+          });
 
-          const setStateSpy = sinon.spy(app, 'setState');
+          const lintTabSpy = sinon.spy(app, 'lintTab');
 
-          // when - the user selects a version differing from the cluster
-          app._handleEngineProfileChanged({
+          // when
+          app.emit('tab.engineProfileChanged', {
             tab: activeTab,
             executionPlatform: 'Camunda Cloud',
             executionPlatformVersion: '8.9.0'
           });
 
-          // apply the recorded state update (React would do this on re-render)
-          app.state.engineProfiles = setStateSpy.firstCall.args[0](app.state).engineProfiles;
-          setStateSpy.restore();
+          // then
+          await waitFor(() => {
+            const warning = app.getLintingState(activeTab)
+              .find(r => r.rule === 'camunda/version-mismatch');
 
-          // then - the warning is (re)composed on read, without re-linting
-          const warning = app.getLintingState(activeTab)
-            .find(r => r.rule === 'camunda/version-mismatch');
+            expect(warning).to.exist;
+            expect(warning.message).to.include('8.9');
+          });
 
-          expect(warning).to.exist;
-          expect(warning.message).to.include('8.9');
+          expect(lintTabSpy).to.not.have.been.called;
         });
 
 
@@ -5387,7 +5354,7 @@ describe('<App>', function() {
           const before = app.state.engineProfiles;
 
           // when
-          app._handleEngineProfileChanged({
+          app.emit('tab.engineProfileChanged', {
             tab: { id: undefined },
             executionPlatform: 'Camunda Cloud',
             executionPlatformVersion: '8.8.0'
