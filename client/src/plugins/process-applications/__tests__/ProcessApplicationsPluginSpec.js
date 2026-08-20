@@ -62,6 +62,29 @@ describe('<ProcessApplicationsPlugin>', function() {
       expect(triggerAction).not.to.have.been.calledWith('resources.reload');
     });
   });
+
+
+  describe('set-tab-groups dispatch', function() {
+
+    it('should dispatch set-tab-groups with the full tab group map', async function() {
+
+      // given
+      const triggerAction = sinon.spy();
+
+      const { emit } = createProcessApplicationsPlugin({ triggerAction });
+
+      // when
+      act(() => emit('app.tabsChanged', { tabs: [ CLOUD_TAB, PLATFORM_TAB ] }));
+
+      // then
+      await waitFor(() => {
+        expect(triggerAction).to.have.been.calledWith('set-tab-groups', {
+          cloud: null,
+          platform: null
+        });
+      });
+    });
+  });
 });
 
 

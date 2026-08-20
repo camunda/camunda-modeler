@@ -211,12 +211,7 @@ export default function ProcessApplicationsPlugin(props) {
       };
     }, {});
 
-    for (const [ id, group ] of Object.entries(tabGroups)) {
-      triggerAction('set-tab-group', {
-        id,
-        group
-      });
-    }
+    triggerAction('set-tab-groups', tabGroups);
   }, [ items, tabs, triggerAction ]);
 
   return <>
