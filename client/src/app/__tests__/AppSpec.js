@@ -4475,6 +4475,43 @@ describe('<App>', function() {
     });
 
 
+    it('should expose shared lint fixes as Problems actions', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const openedTabs = await app.openFiles([
+        createFile('1.form', {
+          contents: 'foo'
+        })
+      ]);
+
+      const currentTab = openedTabs[ 0 ];
+
+      sinon.stub(app, 'getTabLinter').resolves({
+        lint: async () => [ {
+          id: 'Task_1',
+          message: 'Fixable finding',
+          data: { fix: { kind: 'fix' } }
+        } ]
+      });
+
+      // when
+      await app.lintTab(currentTab);
+
+      // then
+      const [ report ] = app.getLintingState(currentTab);
+
+      expect(report.action.handler).to.equal('apply-linting-fix');
+      expect(report.action.label).to.equal('Fix');
+      expect(report.action.options.report).to.deep.equal({
+        id: 'Task_1',
+        message: 'Fixable finding',
+        data: { fix: { kind: 'fix' } }
+      });
+    });
+
+
     it('should lint tab (custom contents)', async function() {
 
       // given

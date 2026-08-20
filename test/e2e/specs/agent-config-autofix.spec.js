@@ -50,13 +50,11 @@ test.describe('agent config autofix', function() {
     });
 
     const sourceEntry = propertiesPanel.entry('ToolTask_1-input-0-source');
-    const fixEntry = propertiesPanel.entry('ToolTask_1-input-0-source-fix');
 
     // then the module is loaded and offers a correction on the offending field
     await expect(sourceEntry).toContainText('fromAi(url)');
-    await expect(fixEntry).toBeAttached();
 
-    const fixButton = fixEntry.locator('[data-test="agent-config-autofill-button"]');
+    const fixButton = sourceEntry.locator('[data-test="agent-config-autofill-button"]');
 
     /*
      * Visibility is asserted on the button, not on the entry around it. Once the
@@ -83,7 +81,7 @@ test.describe('agent config autofix', function() {
     // then the key is rewritten in place, and the offer withdraws because the
     // mistake it named is gone
     await expect(sourceEntry).toContainText('fromAi(toolCall.url)');
-    await expect(fixEntry).toHaveCount(0);
+    await expect(fixButton).toHaveCount(0);
 
     // and the fix is a single undo step
     await app.step('undo the correction', async () => {
@@ -91,7 +89,7 @@ test.describe('agent config autofix', function() {
     });
 
     await expect(sourceEntry).toContainText('fromAi(url)');
-    await expect(fixEntry).toBeAttached();
+    await expect(fixButton).toBeAttached();
     await expect(fixButton).toBeVisible();
   });
 
