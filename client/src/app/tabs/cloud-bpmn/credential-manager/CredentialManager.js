@@ -263,16 +263,15 @@ export default class CredentialManager extends PureComponent {
       return;
     }
 
-    this.setConfigurationInstancesState(configurationInstances, { available: true, loading: true, error: false });
-
-    // The connection is configured but its check has not succeeded yet: show
-    // loading and wait for `connectionStatusChanged`. Fetching now (on an early
-    // import.done / elementTemplates.changed) would only be invalidated and
-    // re-fetched by the establishing status change.
     if (!this.isConnectionEstablished()) {
       log('skip load - connection not established');
 
       return;
+    }
+
+    // keep current list during re-validation - no spinner wipe.
+    if (!configurationInstances.isAvailable()) {
+      this.setConfigurationInstancesState(configurationInstances, { available: true, loading: true, error: false });
     }
 
     try {

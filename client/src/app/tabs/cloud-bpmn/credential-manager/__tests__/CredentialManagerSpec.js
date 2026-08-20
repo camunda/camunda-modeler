@@ -505,6 +505,34 @@ describe('<CredentialManager>', function() {
   });
 
 
+  it('should show loading only for the first population, not on revalidation', async function() {
+
+    // given
+    const { configurationInstances, establishConnection } = renderManager({ establish: false });
+
+    // when the connection is first established
+    establishConnection();
+
+    await waitFor(() => {
+      expect(fedInstancesCall(configurationInstances)).to.exist;
+    });
+
+    // then a loading state is pushed so the chooser shows a spinner
+    const loadingBefore = loadingPushCount(configurationInstances);
+
+    expect(loadingBefore).to.be.above(0);
+
+    // when the connection is revalidated (same fingerprint: re-check, activation)
+    establishConnection();
+    establishConnection();
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // then no further loading flash is pushed — the current list stays visible
+    expect(loadingPushCount(configurationInstances)).to.equal(loadingBefore);
+  });
+
+
   it('should reload credentials when the connection identity changes', async function() {
 
     // given the connection is established, driving the first load
@@ -992,8 +1020,15 @@ function createConfigurationInstances(overrides = {}) {
   const selectableInstances = overrides.selectableInstances || [];
   const referencedInstances = overrides.referencedInstances || [];
 
+  let available = overrides.available || false;
+
   return {
-    setState: sinon.spy(),
+    setState: sinon.spy(state => {
+      if ('available' in state) {
+        available = !!state.available;
+      }
+    }),
+    isAvailable: () => available,
     getSelectableInstances: () => selectableInstances,
     getReferencedInstanceByName: name => referencedInstances.find(instance => instance.name === name) || null
   };
@@ -1132,6 +1167,11 @@ function fedInstancesCall(configurationInstances) {
   const call = configurationInstances.setState.getCalls().find(call => call.args[0].selectableInstances);
 
   return call && call.args[0];
+}
+
+function loadingPushCount(configurationInstances) {
+  return configurationInstances.setState.getCalls()
+    .filter(call => call.args[0].loading === true).length;
 }
 
 function unavailableCall(configurationInstances) {
