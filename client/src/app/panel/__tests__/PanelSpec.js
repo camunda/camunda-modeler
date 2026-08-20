@@ -137,6 +137,50 @@ describe('<Panel>', function() {
     });
 
 
+    it('should activate first available tab when active tab is removed', function() {
+
+      // given
+      const onLayoutChangedSpy = spy();
+
+      const tab = createTab({
+        id: 'foo',
+        label: 'Foo',
+        children: <div data-testid="foo" />
+      });
+
+      const testingTab = createTab({
+        id: 'RPA-output',
+        label: 'Testing',
+        priority: 2,
+        children: <div data-testid="testing" />
+      });
+
+      const options = {
+        children: [ tab, testingTab ],
+        layout: {
+          panel: {
+            open: true,
+            tab: 'RPA-output'
+          }
+        },
+        onLayoutChanged: onLayoutChangedSpy
+      };
+
+      const { getByTestId, queryByTestId, rerender } = renderPanel(options);
+
+      // when
+      rerender(createPanel({
+        ...options,
+        children: tab
+      }));
+
+      // then
+      expect(getByTestId('foo')).to.exist;
+      expect(queryByTestId('testing')).not.to.exist;
+      expect(onLayoutChangedSpy).not.to.have.been.called;
+    });
+
+
     it('should render number', function() {
 
       // when
@@ -262,6 +306,10 @@ function createTab(options = {}) {
 }
 
 function renderPanel(options = {}) {
+  return render(createPanel(options));
+}
+
+function createPanel(options = {}) {
   const {
     children,
     layout = defaultLayout,
@@ -269,7 +317,7 @@ function renderPanel(options = {}) {
     onUpdateMenu = noop
   } = options;
 
-  return render(
+  return (
     <SlotFillRoot>
       <Panel
         layout={ layout }
