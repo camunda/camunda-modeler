@@ -222,25 +222,17 @@ export class App extends PureComponent {
   }
 
   /**
-   * Set group for tab.
+   * Set groups for tabs, replacing the current mapping.
    *
-   * @param {string} id ID of the tab
-   * @param {string} group Group name
+   * @param {Object} tabGroups Map of tab ID to group name
    */
-  setTabGroup(id, group) {
-    const tab = this.state.tabs.find((tab) => tab.id === id);
+  setTabGroups(tabGroups) {
+    this.setState((state) => {
+      if (shallowEqual(state.tabGroups, tabGroups)) {
+        return null;
+      }
 
-    if (!tab) {
-      return;
-    }
-
-    this.setState(({ tabGroups }) => {
-      return {
-        tabGroups: {
-          ...tabGroups,
-          [ id ]: group
-        }
-      };
+      return { tabGroups };
     });
   }
 
@@ -2263,13 +2255,8 @@ export class App extends PureComponent {
 
     try {
 
-      if (action === 'set-tab-group') {
-        const {
-          id,
-          group
-        } = options;
-
-        return this.setTabGroup(id, group);
+      if (action === 'set-tab-groups') {
+        return this.setTabGroups(options);
       }
 
       if (action === 'lint-tab') {
@@ -3103,4 +3090,19 @@ function getProcessor(type) {
   }
 
   return null;
+}
+
+function shallowEqual(a, b) {
+  if (a === b) {
+    return true;
+  }
+
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  return keysA.every(key => a[ key ] === b[ key ]);
 }

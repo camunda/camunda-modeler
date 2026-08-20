@@ -12,7 +12,7 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import React, { createRef, Component } from 'react';
 
-import { render, waitFor, screen } from '@testing-library/react';
+import { act, render, waitFor, screen } from '@testing-library/react';
 
 import {
   App,
@@ -362,6 +362,69 @@ describe('<App>', function() {
       ]);
 
       expect(activeTab).to.eql(tabs[ tabs.length - 1 ]);
+    });
+
+  });
+
+
+  describe('#setTabGroups', function() {
+
+    it('should replace tab groups', async function() {
+
+      // given
+      const { app } = createApp();
+
+      // when
+      await app.triggerAction('set-tab-groups', { a: 'group-1', b: 'group-1' });
+
+      // then
+      await waitFor(() => {
+        expect(app.state.tabGroups).to.eql({ a: 'group-1', b: 'group-1' });
+      });
+    });
+
+
+    it('should replace wholesale, dropping stale entries', async function() {
+
+      // given
+      const { app } = createApp();
+
+      await app.triggerAction('set-tab-groups', { a: 'group-1', b: 'group-1' });
+
+      await waitFor(() => {
+        expect(app.state.tabGroups).to.eql({ a: 'group-1', b: 'group-1' });
+      });
+
+      // when
+      await app.triggerAction('set-tab-groups', { a: 'group-1' });
+
+      // then
+      await waitFor(() => {
+        expect(app.state.tabGroups).to.eql({ a: 'group-1' });
+      });
+    });
+
+
+    it('should not re-render when tab groups are unchanged', async function() {
+
+      // given
+      const { app } = createApp();
+
+      await app.triggerAction('set-tab-groups', { a: 'group-1', b: 'group-1' });
+
+      await waitFor(() => {
+        expect(app.state.tabGroups).to.eql({ a: 'group-1', b: 'group-1' });
+      });
+
+      const renderSpy = spy(app, 'render');
+
+      // when
+      await app.triggerAction('set-tab-groups', { a: 'group-1', b: 'group-1' });
+
+      await act(async () => {});
+
+      // then
+      expect(renderSpy).not.to.have.been.called;
     });
 
   });
