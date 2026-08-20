@@ -971,7 +971,8 @@ export class BpmnEditor extends CachedComponent {
       linting,
       onAction,
       startInstance,
-      zeebeApi
+      zeebeApi,
+      credentialCache
     } = this.props;
 
     const modeler = this.getModeler();
@@ -1077,8 +1078,7 @@ export class BpmnEditor extends CachedComponent {
         <CredentialManager
           injector={ injector }
           zeebeApi={ zeebeApi }
-          deployment={ deployment }
-          file={ file }
+          credentialCache={ credentialCache }
           onError={ this.handleError }
         />
       </div>

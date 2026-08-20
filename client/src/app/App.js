@@ -2736,6 +2736,7 @@ export class App extends PureComponent {
                         deployment={ this.getGlobal('deployment') }
                         startInstance={ this.getGlobal('startInstance') }
                         zeebeApi={ this.getGlobal('zeebeAPI') }
+                        credentialCache={ this.getGlobal('credentialCache') }
                       />
                     }
                   </TabContainer>

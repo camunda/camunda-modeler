@@ -493,6 +493,26 @@ export class ZeebeAPI extends Mock {
   checkConnection() {}
 }
 
+export class CredentialCache extends Mock {
+  getPermissions() {
+    return Promise.resolve({ create: false, update: false });
+  }
+
+  getCredentials() {
+    return Promise.resolve({ success: true, response: { items: [] } });
+  }
+
+  upsertCredential() {
+    return Promise.resolve();
+  }
+
+  invalidate() {}
+
+  invalidateAll() {}
+
+  revalidate() {}
+}
+
 export class Backend extends Mock {
 
   constructor(overrides) {

@@ -31,7 +31,8 @@ import {
   Deployment,
   StartInstance,
   SystemClipboard,
-  ZeebeAPI
+  ZeebeAPI,
+  CredentialCache
 } from './mocks';
 
 
@@ -254,7 +255,8 @@ function createAppParent(options = {}) {
     startInstance: new StartInstance(),
     systemClipboard: new SystemClipboard(),
     workspace: new Workspace(),
-    zeebeAPI: new ZeebeAPI()
+    zeebeAPI: new ZeebeAPI(),
+    credentialCache: new CredentialCache()
   };
 
   const onStarted = () => {

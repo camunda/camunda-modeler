@@ -32,7 +32,8 @@ import {
   SystemClipboard,
   TabsProvider,
   Workspace,
-  ZeebeAPI
+  ZeebeAPI,
+  CredentialCache
 } from './mocks';
 
 const { spy } = sinon;
@@ -1253,7 +1254,8 @@ function createAppParent(options = {}) {
     startInstance: new StartInstance(),
     systemClipboard: new SystemClipboard(),
     workspace: new Workspace(),
-    zeebeAPI: new ZeebeAPI()
+    zeebeAPI: new ZeebeAPI(),
+    credentialCache: new CredentialCache()
   };
 
   const globals = {

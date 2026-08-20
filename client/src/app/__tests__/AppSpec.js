@@ -36,7 +36,8 @@ import {
   TabsProvider,
   TabStorage,
   Workspace,
-  ZeebeAPI
+  ZeebeAPI,
+  CredentialCache
 } from './mocks';
 
 import pDefer from 'p-defer';
@@ -5536,7 +5537,8 @@ function createApp(options = {}) {
     systemClipboard: new SystemClipboard(),
     tabStorage: new TabStorage(),
     workspace: new Workspace(),
-    zeebeAPI: new ZeebeAPI()
+    zeebeAPI: new ZeebeAPI(),
+    credentialCache: new CredentialCache()
   };
 
   const globals = {

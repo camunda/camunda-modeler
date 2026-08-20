@@ -21,6 +21,7 @@ import Settings from './app/Settings';
 import TabStorage from './app/TabStorage';
 import StartInstance from './app/zeebe/StartInstance';
 import Deployment from './app/zeebe/Deployment';
+import CredentialCache from './app/zeebe/CredentialCache';
 
 const {
   metadata,
@@ -57,6 +58,8 @@ export const deployment = new Deployment(tabStorage, config, zeebeAPI, settings)
 
 export const startInstance = new StartInstance(config, zeebeAPI);
 
+export const credentialCache = new CredentialCache(zeebeAPI);
+
 export const isMac = backend.getPlatform() === 'darwin';
 
 export {
@@ -67,6 +70,7 @@ export {
 export const globals = {
   backend,
   config,
+  credentialCache,
   deployment,
   dialog,
   fileSystem,
