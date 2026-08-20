@@ -49,7 +49,7 @@ describe('LintingHelper', function() {
 
   describe('#schedule', function() {
 
-    it('should lint (debounced)', function() {
+    it('should NOT lint synchronously', function() {
 
       // given
       const { helper, lint } = createHelper();
@@ -59,6 +59,15 @@ describe('LintingHelper', function() {
 
       // then
       expect(lint).not.to.have.been.called;
+    });
+
+
+    it('should lint after debounce', function() {
+
+      // given
+      const { helper, lint } = createHelper();
+
+      helper.schedule();
 
       // when
       clock.tick(100);
@@ -143,10 +152,10 @@ describe('LintingHelper', function() {
 
   describe('#resume', function() {
 
-    it('should resume a pending lint', function() {
+    it('should clear pending lint on resume', function() {
 
       // given
-      const { helper, lint, getCached } = createHelper();
+      const { helper, getCached } = createHelper();
 
       helper.schedule();
       helper.cancel();
@@ -156,8 +165,17 @@ describe('LintingHelper', function() {
 
       // then
       expect(getCached().lintingPending).to.be.false;
+    });
 
-      expect(lint).not.to.have.been.called;
+
+    it('should lint after resumed debounce', function() {
+
+      // given
+      const { helper, lint } = createHelper();
+
+      helper.schedule();
+      helper.cancel();
+      helper.resume();
 
       // when
       clock.tick(100);
