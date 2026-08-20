@@ -1635,6 +1635,27 @@ describe('<App>', function() {
     });
 
 
+    it('should NOT auto-save discarded tab on close', async function() {
+
+      // given
+      const file = createFile('diagram_1.bpmn');
+      const [ tab ] = await app.openFiles([ file ]);
+
+      // mark as dirty
+      app.setState(app.setDirty(tab));
+      await waitFor(() => expect(app.isDirty(tab)).to.be.true);
+
+      // user chooses to discard the unsaved changes when closing
+      dialog.setShowCloseFileDialogResponse({ button: 'discard' });
+
+      // when
+      await app.closeTab(tab);
+
+      // then: the discarded changes must NOT be written back to the file
+      expect(writeFileSpy).not.to.have.been.called;
+    });
+
+
     it('should handle auto-save on window blur', async function() {
 
       // given

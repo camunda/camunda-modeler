@@ -477,11 +477,23 @@ export class App extends PureComponent {
   /**
    * Show the tab.
    *
+   * Showing a tab is treated as switching to it: the previously active tab is
+   * auto-saved. Pass `autoSavePreviousTab: false` when the previous tab must
+   * not be saved, e.g. while closing it (its unsaved changes may have been
+   * discarded on purpose).
+   *
    * @param {Tab} tab
+   * @param {Object} [options]
+   * @param {boolean} [options.autoSavePreviousTab=true] auto-save the previously
+   * active tab
    *
    * @return {Promise<Void>} tab shown promise
    */
-  async showTab(tab) {
+  async showTab(tab, options = {}) {
+
+    const {
+      autoSavePreviousTab = true
+    } = options;
 
     const {
       activeTab,
@@ -493,7 +505,7 @@ export class App extends PureComponent {
     }
 
     // auto-save the previously active tab when switching (async, non-blocking)
-    if (activeTab !== tab && this.shouldAutoSave(activeTab)) {
+    if (autoSavePreviousTab && activeTab !== tab && this.shouldAutoSave(activeTab)) {
 
       const contents = await this.getActiveTabContents();
 
@@ -696,7 +708,8 @@ export class App extends PureComponent {
         EMPTY_TAB
       );
 
-      await this.showTab(nextActive);
+      // discarded changes must not be auto-saved back to the closing tab
+      await this.showTab(nextActive, { autoSavePreviousTab: false });
     }
 
     return new Promise((resolve) => {
