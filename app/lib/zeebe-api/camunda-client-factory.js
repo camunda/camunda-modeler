@@ -84,7 +84,7 @@ class CamundaClientFactory {
     this._cachedClient?.closeAllClients();
 
     this._cachedProtocol = protocol;
-    this._cachedClient = await this._createCamundaClient(endpoint);
+    this._cachedClient = await this._createCamundaClient(endpoint, protocol);
     this._cachedEndpoint = endpoint;
 
     return this._cachedClient;
@@ -162,12 +162,8 @@ class CamundaClientFactory {
   async _canConnectWithProtocol(endpoint, protocol) {
     try {
 
-      // Temporarily set the protocol for testing
-      const originalProtocol = this._cachedProtocol;
-      this._cachedProtocol = protocol;
-
       // Create a test client with the specific protocol
-      const testClient = await this._createCamundaClient(endpoint);
+      const testClient = await this._createCamundaClient(endpoint, protocol);
 
       if ([ 'grpc', 'grpcs' ].includes(protocol)) {
         const zeebeClient = testClient.getZeebeGrpcApiClient();
@@ -178,9 +174,6 @@ class CamundaClientFactory {
       }
 
       testClient.closeAllClients();
-
-      // Restore original protocol
-      this._cachedProtocol = originalProtocol;
 
       return true;
     } catch (error) {
@@ -222,8 +215,9 @@ class CamundaClientFactory {
 
   /**
    * @param {import("./endpoints").Endpoint} endpoint
+   * @param {'grpc'|'grpcs'|'http'|'https'} protocol
    */
-  async _createCamundaClient(endpoint) {
+  async _createCamundaClient(endpoint, protocol) {
     const {
       type,
       authType = AUTH_TYPES.NONE,
@@ -237,7 +231,7 @@ class CamundaClientFactory {
       return;
     }
 
-    const clientConfig = await this._getClientConfig(endpoint);
+    const clientConfig = await this._getClientConfig(endpoint, protocol);
 
     this._log.debug('creating client', {
       url,
@@ -247,7 +241,7 @@ class CamundaClientFactory {
     return new this._Camunda8(clientConfig);
   }
 
-  async _getClientConfig(endpoint) {
+  async _getClientConfig(endpoint, protocol) {
 
     const {
       type,
@@ -262,10 +256,10 @@ class CamundaClientFactory {
       clientConfig.CAMUNDA_TENANT_ID = endpoint.tenantId;
     }
 
-    switch (this._cachedProtocol) {
+    switch (protocol) {
     case 'grpc':
     case 'grpcs':
-      clientConfig.ZEEBE_GRPC_ADDRESS = url ? overwriteProtocol(url, this._cachedProtocol) : '';
+      clientConfig.ZEEBE_GRPC_ADDRESS = url ? overwriteProtocol(url, protocol) : '';
       clientConfig.zeebeGrpcSettings = {
         ZEEBE_GRPC_CLIENT_RETRY: false
       };
