@@ -292,12 +292,16 @@ function buildMarkdownReport(results) {
 
   const lines = [ '## bpmn.io / Camunda pending releases', '' ];
 
-  lines.push(`Checked ${results.length} dependencies (direct + transitive) - ` +
-    `${pending.length} with pending changes, ${upToDate.length} up to date, ${issues.length} unresolved.`, '');
+  // Headline: packages with commits upstream that have NOT been released
+  // yet. This is the crucial signal this report exists for - it needs to
+  // be unmissable, not buried under "update available" noise.
+  lines.push(pending.length
+    ? `### ⚠️ ${pending.length} package(s) have unreleased feat/fix/deps commits upstream`
+    : '### ✅ No packages have unreleased feat/fix/deps commits upstream', '');
 
   if (pending.length) {
     for (const r of pending) {
-      lines.push(`### ${r.name} \`${r.version}\` [${r.direct ? 'direct' : 'transitive'}]`, '');
+      lines.push(`#### ${r.name} \`${r.version}\` [${r.direct ? 'direct' : 'transitive'}]`, '');
       lines.push(`[${r.owner}/${r.repo}](https://github.com/${r.owner}/${r.repo}) - ` +
         `${r.matchingCommits.length} relevant / ${r.totalCommitsAhead} commits ahead of \`${r.latestTag}\` ` +
         `([compare](${r.compareUrl}))`, '');
@@ -308,15 +312,17 @@ function buildMarkdownReport(results) {
 
       lines.push('');
     }
-  } else {
-    lines.push('No dependencies with pending feat/fix/deps commits found.', '');
   }
 
+  lines.push(`Checked ${results.length} dependencies (direct + transitive): ` +
+    `${pending.length} pending release, ${updatesAvailable.length} already released but not bumped here, ` +
+    `${upToDate.length} up to date, ${issues.length} unresolved.`, '');
+
   if (updatesAvailable.length) {
-    lines.push('<details><summary>Already released upstream, not yet bumped here</summary>', '');
+    lines.push('<details><summary>Already released upstream, not yet bumped here (secondary - a normal dependency bump, not a pending release)</summary>', '');
 
     for (const r of updatesAvailable) {
-      lines.push(`- ${r.name}: ${r.version} → ${r.latestVersion}`);
+      lines.push(`- [${r.name}](https://github.com/${r.owner}/${r.repo}): ${r.version} → ${r.latestVersion}`);
     }
 
     lines.push('', '</details>', '');
@@ -370,19 +376,22 @@ main(concurrency, (result, completed, total) => {
   const updatesAvailable = results.filter(r => r.updateAvailable);
   const issues = results.filter(r => ![ 'pending-release', 'up-to-date' ].includes(r.status));
 
-  console.log(`\nChecked ${results.length} bpmn.io / Camunda dependencies.\n`);
-
+  // Headline first: packages with commits upstream that have NOT been
+  // released yet. That's the crucial signal - everything else (available
+  // version bumps, unresolved packages) is secondary context.
   console.log(pending.length
-    ? `Pending release (unreleased feat/fix/deps commits past the latest npm version): ${pending.length} (details above)`
-    : 'No dependencies with pending feat/fix/deps commits found.');
+    ? `\n⚠️  ${pending.length} package(s) have unreleased feat/fix/deps commits upstream (details above)\n`
+    : '\n✅ No packages have unreleased feat/fix/deps commits upstream\n');
 
-  console.log(`Up to date (no unreleased feat/fix/deps commits): ${upToDate.length}`);
+  console.log(`Checked ${results.length} bpmn.io / Camunda dependencies: ` +
+    `${pending.length} pending release, ${updatesAvailable.length} already released but not bumped here, ` +
+    `${upToDate.length} up to date, ${issues.length} unresolved.`);
 
   if (updatesAvailable.length) {
-    console.log(`\nAlready released upstream but not yet bumped here: ${updatesAvailable.length}`);
+    console.log(`\nAlready released upstream but not yet bumped here (secondary - a normal dependency bump, not a pending release): ${updatesAvailable.length}`);
 
     for (const r of updatesAvailable) {
-      console.log(`- ${r.name}: ${r.version} -> ${r.latestVersion}`);
+      console.log(`- ${r.name}: ${r.version} -> ${r.latestVersion} (https://github.com/${r.owner}/${r.repo})`);
     }
   }
 
