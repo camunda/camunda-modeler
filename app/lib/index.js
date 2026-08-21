@@ -425,16 +425,6 @@ renderer.on('zeebe:getAuthorizations', async function(options, done) {
   }
 });
 
-renderer.on('zeebe:getCurrentUser', async function(options, done) {
-  try {
-    const getCurrentUserResponse = await zeebeAPI.getCurrentUser(options);
-
-    done(null, getCurrentUserResponse);
-  } catch (err) {
-    done(err);
-  }
-});
-
 renderer.on('zeebe:searchClusterVariables', async function(options, done) {
   try {
     const searchClusterVariablesResponse = await zeebeAPI.searchClusterVariables(options);

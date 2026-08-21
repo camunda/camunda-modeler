@@ -125,6 +125,7 @@ describe('<CredentialManager>', function() {
     getAuthorizations.onFirstCall().resolves({
       success: true,
       response: {
+        authorizationsEnabled: true,
         items: [ { permissionTypes: [ 'CREATE' ] } ],
         page: { endCursor: 'authorizations-page-2' }
       }
@@ -132,6 +133,7 @@ describe('<CredentialManager>', function() {
     getAuthorizations.onSecondCall().resolves({
       success: true,
       response: {
+        authorizationsEnabled: true,
         items: [ { permissionTypes: [ 'UPDATE' ] } ],
         page: {}
       }
@@ -343,7 +345,10 @@ describe('<CredentialManager>', function() {
     const zeebeApi = createZeebeApi({
       getAuthorizations: sinon.stub().resolves({
         success: true,
-        response: { items: [ { permissionTypes: [ 'CREATE', 'UPDATE' ] } ] }
+        response: {
+          authorizationsEnabled: true,
+          items: [ { permissionTypes: [ 'CREATE', 'UPDATE' ] } ]
+        }
       }),
       searchClusterVariables: sinon.stub().resolves({
         success: true,
@@ -372,14 +377,13 @@ describe('<CredentialManager>', function() {
     // given
     const getAuthorizations = sinon.stub().resolves({
       success: true,
-      response: { items: [] }
-    });
-    const getCurrentUser = sinon.stub().resolves({
-      success: true,
-      response: { authorizedComponents: [ '*' ] }
+      response: {
+        authorizationsEnabled: false,
+        items: []
+      }
     });
 
-    const zeebeApi = createZeebeApi({ getAuthorizations, getCurrentUser });
+    const zeebeApi = createZeebeApi({ getAuthorizations });
     const { configurationInstances } = renderManager({ zeebeApi });
 
     // then
@@ -388,9 +392,6 @@ describe('<CredentialManager>', function() {
 
       expect(call.permissions).to.eql({ create: true, update: true });
     });
-
-    // does not fall back to the authorization search
-    expect(getAuthorizations).not.to.have.been.called;
   });
 
 
@@ -399,14 +400,13 @@ describe('<CredentialManager>', function() {
     // given
     const getAuthorizations = sinon.stub().resolves({
       success: true,
-      response: { items: [ { permissionTypes: [ 'CREATE' ] } ] }
-    });
-    const getCurrentUser = sinon.stub().resolves({
-      success: true,
-      response: { authorizedComponents: [ 'operate', 'tasklist' ] }
+      response: {
+        authorizationsEnabled: true,
+        items: [ { permissionTypes: [ 'CREATE' ] } ]
+      }
     });
 
-    const zeebeApi = createZeebeApi({ getAuthorizations, getCurrentUser });
+    const zeebeApi = createZeebeApi({ getAuthorizations });
     const { configurationInstances } = renderManager({ zeebeApi });
 
     // then
@@ -415,8 +415,6 @@ describe('<CredentialManager>', function() {
 
       expect(call.permissions).to.eql({ create: true, update: false });
     });
-
-    expect(getAuthorizations).to.have.been.called;
   });
 
 
@@ -820,8 +818,10 @@ function createElementTemplates(get = () => ({
 
 function createZeebeApi(overrides = {}) {
   return {
-    getAuthorizations: sinon.stub().resolves({ success: true, response: { items: [] } }),
-    getCurrentUser: sinon.stub().resolves({ success: true, response: { authorizedComponents: [] } }),
+    getAuthorizations: sinon.stub().resolves({
+      success: true,
+      response: { authorizationsEnabled: true, items: [] }
+    }),
     searchClusterVariables: sinon.stub().resolves({ success: true, response: { items: [] } }),
     getClusterVariable: sinon.stub().resolves({ success: true, response: { metadata: {}, value: {} } }),
     createClusterVariable: sinon.stub().resolves({ success: true }),
