@@ -63,8 +63,6 @@ const CONFIGURATION_UNAVAILABLE_MESSAGES = {
   unsupported: 'The connected cluster does not support credentials. Camunda 8.10 or later is required.'
 };
 
-const SEARCH_PAGE_SIZE = 100;
-
 const CREDENTIAL_REFERENCE_PREFIX = '=camunda.vars.env.';
 
 const CREDENTIAL_VARIABLE_KIND = 'SECRET_REFERENCE';
@@ -90,9 +88,21 @@ export default class CredentialManager extends PureComponent {
     this.state = { modal: null };
 
     this.updateConfigurationInstancesDebounced = debounce(() => this.updateConfigurationInstances());
+    this.refreshReferencedInstancesDebounced = debounce(() => this.refreshReferencedInstances());
     this._configurationUpdatePromise = null;
     this._configurationUpdatePending = false;
-    this._pendingConnectionStatus = undefined;
+
+    // the tab's cluster connection and its latest check result, both pushed in
+    // by the connection events (never resolved from the tab/endpoint here).
+    // A successful status is what gates credential loading, so early triggers
+    // (import.done, elementTemplates.changed) don't fetch before the connection
+    // is confirmed and then get thrown away by the establishing status change.
+    this._connection = null;
+    this._connectionStatus = undefined;
+
+    // signature of the referenced-credential name set last fed to the chooser,
+    // so model changes that don't touch it can be skipped
+    this._referencedNamesSignature = null;
   }
 
   componentDidMount() {
@@ -103,13 +113,34 @@ export default class CredentialManager extends PureComponent {
     eventBus.on('configuration.upgrade', this.handleConfigurationUpgrade);
     eventBus.on('import.done', this.updateConfigurationInstancesDebounced);
     eventBus.on('elementTemplates.changed', this.updateConfigurationInstancesDebounced);
+    eventBus.on('commandStack.changed', this.refreshReferencedInstancesDebounced);
+
+    // The connection is pushed in by the connection lifecycle: `checkStarted`
+    // gives us the tab's connection (or none), `statusChanged` its check result.
+    // Credentials load on a successful status, never on mount, so we don't race
+    // the connection check and get invalidated by it (redundant double fetch).
+    //
+    // This relies on ConnectionManagerPlugin re-emitting these events on every
+    // tab activation (its effect re-runs because `activeConnection` is a fresh
+    // object each time — see getEndpoints().map(sanitizeEndpoint)). That is what
+    // drives the reload for a re-activated tab in place of a mount-time load. If
+    // the plugin is ever changed to reuse connection objects across activations,
+    // a re-activated tab would receive no event and this manager must load on
+    // mount (or another activation signal) instead.
+    this._checkStartedSubscription = this.context.subscribe(
+      'connectionManager.connectionCheckStarted',
+      this.handleConnectionCheckStarted
+    );
 
     this._connectionSubscription = this.context.subscribe(
       'connectionManager.connectionStatusChanged',
       this.handleConnectionStatusChanged
     );
 
-    this.updateConfigurationInstances();
+    this._appFocusedSubscription = this.context.subscribe(
+      'app.focused',
+      this.handleAppFocused
+    );
   }
 
   componentWillUnmount() {
@@ -120,22 +151,56 @@ export default class CredentialManager extends PureComponent {
     eventBus.off('configuration.upgrade', this.handleConfigurationUpgrade);
     eventBus.off('import.done', this.updateConfigurationInstancesDebounced);
     eventBus.off('elementTemplates.changed', this.updateConfigurationInstancesDebounced);
+    eventBus.off('commandStack.changed', this.refreshReferencedInstancesDebounced);
 
     this.updateConfigurationInstancesDebounced.cancel();
+    this.refreshReferencedInstancesDebounced.cancel();
+
+    if (this._checkStartedSubscription) {
+      this._checkStartedSubscription.cancel();
+    }
 
     if (this._connectionSubscription) {
       this._connectionSubscription.cancel();
     }
-  }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.file !== this.props.file) {
-      this.updateConfigurationInstances();
+    if (this._appFocusedSubscription) {
+      this._appFocusedSubscription.cancel();
     }
   }
 
   getService(name, strict = true) {
     return this.props.injector.get(name, strict);
+  }
+
+  /**
+   * The connection-scoped credential cache, shared across tabs on the same
+   * connection so they fetch the credential source once.
+   *
+   * @returns {CredentialCache}
+   */
+  getCredentialCache() {
+    return this.props.credentialCache;
+  }
+
+  /**
+   * The cluster endpoint the tab is connected to, as pushed in by the
+   * connection events; null when there is no usable connection.
+   *
+   * @returns {Object|null}
+   */
+  getConnection() {
+    return this._connection;
+  }
+
+  /**
+   * Whether the connection check has completed successfully — the point at
+   * which credentials can be loaded. Earlier triggers only render loading.
+   *
+   * @returns {boolean}
+   */
+  isConnectionEstablished() {
+    return Boolean(this._connection && this._connectionStatus && this._connectionStatus.success);
   }
 
   /**
@@ -153,31 +218,10 @@ export default class CredentialManager extends PureComponent {
   }
 
   /**
-   * Resolve the cluster endpoint the tab is connected to.
-   *
-   * @returns {Promise<Object|null>} the endpoint, or null when there is no usable connection
-   */
-  async getEndpoint() {
-    const { deployment, file } = this.props;
-
-    const endpoint = await deployment.getConnectionForTab({ file });
-
-    if (!endpoint || endpoint.id === NO_CONNECTION_ID) {
-      return null;
-    }
-
-    return endpoint;
-  }
-
-  /**
    * Feed the credential chooser's `configurationInstances` registry from the
    * connected cluster, or mark it unavailable when there is no usable connection.
-   *
-   * @param {Object} [connectionStatus] - latest status from the connection check
    */
-  async updateConfigurationInstances(connectionStatus) {
-    this._pendingConnectionStatus = connectionStatus;
-
+  async updateConfigurationInstances() {
     if (this._configurationUpdatePromise) {
       this._configurationUpdatePending = true;
 
@@ -197,20 +241,21 @@ export default class CredentialManager extends PureComponent {
     do {
       this._configurationUpdatePending = false;
 
-      await this.updateConfigurationInstancesOnce(this._pendingConnectionStatus);
+      await this.updateConfigurationInstancesOnce();
     } while (this._configurationUpdatePending);
   }
 
-  async updateConfigurationInstancesOnce(connectionStatus) {
+  async updateConfigurationInstancesOnce() {
     const configurationInstances = this.getService('configurationInstances', false);
 
     if (!configurationInstances) {
       return;
     }
 
-    const endpoint = await this.getEndpoint();
+    const connection = this._connection;
+    const status = this._connectionStatus;
 
-    const unavailableState = getUnavailableState(endpoint, connectionStatus);
+    const unavailableState = getUnavailableState(connection, status);
 
     if (unavailableState) {
       this.setConfigurationInstancesState(configurationInstances, unavailableState);
@@ -218,18 +263,28 @@ export default class CredentialManager extends PureComponent {
       return;
     }
 
-    this.setConfigurationInstancesState(configurationInstances, { available: true, loading: true, error: false });
+    if (!this.isConnectionEstablished()) {
+      log('skip load - connection not established');
+
+      return;
+    }
+
+    // keep current list during re-validation - no spinner wipe.
+    if (!configurationInstances.isAvailable()) {
+      this.setConfigurationInstancesState(configurationInstances, { available: true, loading: true, error: false });
+    }
 
     try {
-      await this.loadConfigurationInstances(configurationInstances, endpoint);
+      await this.loadConfigurationInstances(configurationInstances, connection);
     } catch (error) {
       this.setConfigurationInstancesState(configurationInstances, { loading: false, error: true });
     }
   }
 
   /**
-   * Query the cluster for credential permissions and instances and push the
-   * result into the `configurationInstances` registry.
+   * Feed the credential chooser from the connection-scoped cache: the user's
+   * permissions and the cluster's credential source, filtered client-side to
+   * the configuration templates this diagram uses.
    *
    * @param {Object} configurationInstances - the registry to feed
    * @param {Object} endpoint - the connected cluster endpoint
@@ -238,12 +293,14 @@ export default class CredentialManager extends PureComponent {
     const elementRegistry = this.getService('elementRegistry', false);
     const elementTemplates = this.getService('elementTemplates', false);
 
-    const filters = getConfigurationSearchFilters(
+    const configurationTemplates = getConfigurationTemplateIds(
       elementRegistry,
       elementTemplates
     );
 
-    if (!filters.length) {
+    if (!configurationTemplates.length) {
+      this._referencedNamesSignature = null;
+
       this.setConfigurationInstancesState(configurationInstances, {
         available: false,
         loading: false,
@@ -256,28 +313,34 @@ export default class CredentialManager extends PureComponent {
       return;
     }
 
-    const [ permissions, variablesResults ] = await Promise.all([
-      this.resolvePermissions(endpoint),
-      Promise.all(filters.map(filter => this.getAllClusterVariables(endpoint, filter)))
+    const [ permissions, credentialsResult ] = await Promise.all([
+      this.getCredentialCache().getPermissions(endpoint),
+      this.getCredentialsForTemplates(endpoint, configurationTemplates)
     ]);
 
-    const failedVariablesResult = variablesResults.find(result => !result.success);
-
-    if (failedVariablesResult) {
+    if (!credentialsResult.success) {
       this.setConfigurationInstancesState(
         configurationInstances,
-        getConfigurationUnavailableState(failedVariablesResult)
+        getConfigurationUnavailableState(credentialsResult)
       );
 
       return;
     }
 
-    const selectableInstances = toSelectableInstances(uniqueByName(
-      variablesResults.flatMap(result => result.response.items)
-    ))
+    const credentials = credentialsResult.response.items || [];
+
+    const selectableInstances = toSelectableInstances(uniqueByName(credentials))
       .map(instance => this.withInstanceIcon(instance));
 
-    const referencedInstances = await this.getReferencedInstances(endpoint, selectableInstances);
+    const names = getReferencedCredentialNames(this.getService('elementRegistry'));
+
+    this._referencedNamesSignature = toReferencedNamesSignature(names);
+
+    const referencedInstances = await this.resolveReferencedInstances(
+      endpoint,
+      names,
+      toSelectableInstances(credentials)
+    );
 
     this.setConfigurationInstancesState(configurationInstances, {
       available: true,
@@ -290,64 +353,115 @@ export default class CredentialManager extends PureComponent {
   }
 
   /**
-   * Resolve the user's create/update permissions for credentials.
-   *
-   * Authorizations are only enforced — and thus only searchable — when they are
-   * enabled on the cluster. When disabled, the authorization search returns
-   * empty even though everything is permitted, which would wrongly disable
-   * create/update. The current user's `authorizedComponents` is the only
-   * REST-visible tell: a `*` entry means full access (authorizations disabled or
-   * a wildcard admin), so we grant everything without searching. Otherwise we
-   * derive the concrete grants from the authorization search.
+   * Fetch the credential source for every configuration template the diagram
+   * uses — each server-filtered by template and cached per (connection,
+   * template) — and merge into a single search result. If any template's fetch
+   * failed, that failing result is returned so the caller renders the
+   * unavailable state.
    *
    * @param {Object} endpoint
+   * @param {string[]} configurationTemplates
    *
-   * @returns {Promise<{ create: boolean, update: boolean }>}
+   * @returns {Promise<Object>}
    */
-  async resolvePermissions(endpoint) {
-    const currentUserResult = await this.props.zeebeApi.getCurrentUser({ endpoint });
+  async getCredentialsForTemplates(endpoint, configurationTemplates) {
+    const cache = this.getCredentialCache();
 
-    if (hasFullAccess(currentUserResult)) {
-      return { create: true, update: true };
+    const results = await Promise.all(
+      configurationTemplates.map(template => cache.getCredentials(endpoint, template))
+    );
+
+    const failed = results.find(result => !result || !result.success);
+
+    if (failed) {
+      return failed;
     }
 
-    const authorizationsResult = await this.getAllAuthorizations(endpoint);
-
-    return getConfigurationPermissions(authorizationsResult);
-  }
-
-  getAllAuthorizations(endpoint) {
-    return getAllSearchResults(page => {
-      return this.props.zeebeApi.getAuthorizations({ endpoint }, 'CLUSTER_VARIABLE', page);
-    });
-  }
-
-  getAllClusterVariables(endpoint, filter) {
-    return getAllSearchResults(page => {
-      return this.props.zeebeApi.searchClusterVariables({ endpoint }, filter, page);
-    });
+    return {
+      success: true,
+      response: {
+        items: results.flatMap(result => result.response.items || [])
+      }
+    };
   }
 
   /**
-   * Resolve the credentials referenced by the diagram's Configuration bindings
-   * (`=camunda.vars.env.<name>`), reusing the search results where possible and
-   * fetching the rest, so the chooser can render "missing" / "incompatible type"
-   * / "version too old" states and offer the upgrade action.
+   * Re-resolve just the referenced credentials after a model change, when the
+   * referenced-name set actually changed (e.g. paste, undo/redo, delete). The
+   * cheap common case — model changes that don't touch a credential binding —
+   * is skipped. Reuses the cached credential source and the registry's current
+   * selectable list (which includes optimistic creations), fetching only names
+   * not found in either.
+   */
+  async refreshReferencedInstances() {
+    if (!this.isConnectionEstablished()) {
+      return;
+    }
+
+    const configurationInstances = this.getService('configurationInstances', false);
+
+    if (!configurationInstances) {
+      return;
+    }
+
+    const elementRegistry = this.getService('elementRegistry', false);
+
+    if (!elementRegistry) {
+      return;
+    }
+
+    // established ⇒ a connection is set
+    const endpoint = this.getConnection();
+
+    const names = getReferencedCredentialNames(elementRegistry);
+
+    const signature = toReferencedNamesSignature(names);
+
+    if (signature === this._referencedNamesSignature) {
+      return;
+    }
+
+    this._referencedNamesSignature = signature;
+
+    const configurationTemplates = getConfigurationTemplateIds(
+      elementRegistry,
+      this.getService('elementTemplates', false)
+    );
+
+    const credentialsResult = await this.getCredentialsForTemplates(endpoint, configurationTemplates);
+
+    const known = [
+      ...(credentialsResult.success ? toSelectableInstances(credentialsResult.response.items || []) : []),
+      ...configurationInstances.getSelectableInstances()
+    ];
+
+    const referencedInstances = await this.resolveReferencedInstances(endpoint, names, known);
+
+    this.setConfigurationInstancesState(configurationInstances, { referencedInstances });
+  }
+
+  /**
+   * Resolve the referenced credentials by name, reusing known instances where
+   * possible and fetching the rest, so the chooser can render "missing" /
+   * "incompatible type" / "version too old" states and offer the upgrade action.
    *
    * @param {Object} endpoint
-   * @param {ConfigurationInstance[]} selectableInstances
+   * @param {string[]} names - referenced cluster-variable names
+   * @param {ConfigurationInstance[]} knownInstances - already-resolved instances to reuse
    *
    * @returns {Promise<ConfigurationInstance[]>}
    */
-  async getReferencedInstances(endpoint, selectableInstances) {
-    const selectableByName = new Map(selectableInstances.map(instance => [ instance.name, instance ]));
+  async resolveReferencedInstances(endpoint, names, knownInstances) {
+    const knownByName = new Map(
+      knownInstances.filter(instance => instance && instance.name).map(instance => [ instance.name, instance ])
+    );
 
     const referencedInstances = [];
     const namesToFetch = [];
 
-    getReferencedCredentialNames(this.getService('elementRegistry')).forEach(name => {
-      if (selectableByName.has(name)) {
-        referencedInstances.push(selectableByName.get(name));
+    names.forEach(name => {
+      if (knownByName.has(name)) {
+        referencedInstances.push(this.withInstanceIcon(knownByName.get(name)));
       } else {
         namesToFetch.push(name);
       }
@@ -369,9 +483,57 @@ export default class CredentialManager extends PureComponent {
     return referencedInstances;
   }
 
-  /** @param {Object} [connectionStatus] */
-  handleConnectionStatusChanged = (connectionStatus = {}) => {
-    this.updateConfigurationInstances(connectionStatus);
+  /**
+   * A connection check began for the tab: record the connection (or none) the
+   * check is for. Rendered as loading (real connection) or unavailable (no
+   * connection); credentials only load once the check succeeds.
+   *
+   * @param {{ connection?: Object }} [event]
+   */
+  handleConnectionCheckStarted = ({ connection } = {}) => {
+    this._connection = toConnection(connection);
+    this._connectionStatus = undefined;
+
+    this.updateConfigurationInstances();
+  };
+
+  /**
+   * The connection check completed: record the connection and its result, then
+   * reconcile the connection-scoped cache against the connection's identity
+   * fingerprint before reloading. `revalidate` is a no-op when the fingerprint
+   * is unchanged (the common case — the plugin re-emits on every tab activation
+   * and periodic re-check), so activating a tab does not refetch; it only clears
+   * and reloads when the cluster/tenant/principal behind the connection changed.
+   *
+   * @param {{ connection?: Object, connectionId?: string, connectionFingerprint?: string }} [event]
+   */
+  handleConnectionStatusChanged = ({ connection, connectionId, connectionFingerprint, ...status } = {}) => {
+    this._connection = toConnection(connection);
+    this._connectionStatus = status;
+
+    if (connectionId) {
+      this.getCredentialCache().revalidate(connectionId, connectionFingerprint);
+    }
+
+    this.updateConfigurationInstances();
+  };
+
+  /**
+   * On app focus, refresh the connection-scoped cache so credentials created in
+   * Hub or another tab while away are picked up. Invalidation is synchronous, so
+   * every tab's manager clears the connection before any reload runs — the
+   * subsequent reloads then coalesce on a single fetch per connection.
+   */
+  handleAppFocused = () => {
+    const connection = this._connection;
+
+    if (!connection) {
+      return;
+    }
+
+    this.getCredentialCache().invalidate(connection.id);
+
+    this.updateConfigurationInstances();
   };
 
   handleConfigurationCreate = (event) => {
@@ -464,7 +626,7 @@ export default class CredentialManager extends PureComponent {
       return null;
     }
 
-    const endpoint = await this.getEndpoint();
+    const endpoint = this.getConnection();
 
     if (!endpoint) {
       return null;
@@ -516,7 +678,7 @@ export default class CredentialManager extends PureComponent {
       return initialValues;
     }
 
-    const endpoint = await this.getEndpoint();
+    const endpoint = this.getConnection();
 
     if (!endpoint) {
       return initialValues;
@@ -546,7 +708,7 @@ export default class CredentialManager extends PureComponent {
   handleSubmit = async ({ displayName, name, values }) => {
     const { mode, event, configurationTemplate } = this.state.modal;
 
-    const endpoint = await this.getEndpoint();
+    const endpoint = this.getConnection();
 
     if (!endpoint) {
       throw new Error('No connection to the cluster.');
@@ -588,6 +750,8 @@ export default class CredentialManager extends PureComponent {
 
     const instance = this.withInstanceIcon({ name, metadata });
 
+    this.getCredentialCache().upsertCredential(endpoint.id, { name, metadata });
+
     this.registerSelectableInstance(instance);
 
     this.getService('eventBus').fire('configuration.created', {
@@ -615,6 +779,8 @@ export default class CredentialManager extends PureComponent {
         ? CREDENTIAL_UPDATE_FORBIDDEN_MESSAGE
         : result.reason || 'Could not update the credential.');
     }
+
+    this.getCredentialCache().upsertCredential(endpoint.id, { name, metadata });
 
     this.refreshSavedInstance(this.withInstanceIcon({ name, metadata }));
   }
@@ -710,56 +876,14 @@ export default class CredentialManager extends PureComponent {
 // helpers //////////
 
 /**
- * Fetch every page from a search endpoint using cursor pagination.
- *
- * @param {Function} search
- * @returns {Promise<Object>}
- */
-async function getAllSearchResults(search) {
-  const items = [];
-  let after;
-  let hasNextPage = true;
-
-  while (hasNextPage) {
-    const page = {
-      limit: SEARCH_PAGE_SIZE,
-      ...(after ? { after } : {})
-    };
-    const result = await search(page);
-
-    if (!result.success) {
-      return result;
-    }
-
-    const responseItems = result.response.items || [];
-    const endCursor = result.response.page && result.response.page.endCursor;
-
-    items.push(...responseItems);
-
-    hasNextPage = responseItems.length > 0 && !!endCursor && endCursor !== after;
-    after = endCursor;
-
-    if (!hasNextPage) {
-      return {
-        ...result,
-        response: {
-          ...result.response,
-          items
-        }
-      };
-    }
-  }
-}
-
-/**
- * Build one server-side credential filter per Configuration property used by
- * an applied element template.
+ * The configuration-template ids used by the diagram's applied element
+ * templates (via their `Configuration` properties).
  *
  * @param {Object|null} elementRegistry
  * @param {Object|null} elementTemplates
- * @returns {Object[]}
+ * @returns {string[]}
  */
-function getConfigurationSearchFilters(elementRegistry, elementTemplates) {
+function getConfigurationTemplateIds(elementRegistry, elementTemplates) {
   const configurationTemplates = new Set();
 
   if (!elementRegistry || !elementTemplates) {
@@ -776,12 +900,18 @@ function getConfigurationSearchFilters(elementRegistry, elementTemplates) {
     });
   });
 
-  return [ ...configurationTemplates ].map(configurationTemplate => ({
-    metadata: {
-      kind: { '$eq': 'CREDENTIAL' },
-      configurationTemplate: { '$eq': configurationTemplate }
-    }
-  }));
+  return [ ...configurationTemplates ];
+}
+
+/**
+ * A stable signature of a referenced-credential name set, used to skip model
+ * changes that don't alter which credentials the diagram references.
+ *
+ * @param {string[]} names
+ * @returns {string}
+ */
+function toReferencedNamesSignature(names) {
+  return [ ...names ].sort().join('\n');
 }
 
 /**
@@ -792,6 +922,22 @@ function getConfigurationSearchFilters(elementRegistry, elementTemplates) {
  */
 function uniqueByName(instances) {
   return [ ...new Map(instances.map(instance => [ instance.name, instance ])).values() ];
+}
+
+/**
+ * Normalize a connection from a connection event: the "no connection"
+ * placeholder maps to null so callers can treat it uniformly as "no cluster".
+ *
+ * @param {Object} [connection]
+ *
+ * @returns {Object|null}
+ */
+function toConnection(connection) {
+  if (!connection || connection.id === NO_CONNECTION_ID) {
+    return null;
+  }
+
+  return connection;
 }
 
 /**
@@ -1025,46 +1171,6 @@ function upsertInstance(instances, instance) {
     ...instances.filter(existing => existing.name !== instance.name),
     instance
   ];
-}
-
-/**
- * Whether the current user has full access — either authorizations are disabled
- * on the cluster or the user is a wildcard admin — signalled by a `*` entry in
- * their `authorizedComponents`.
- *
- * @param {Object} currentUserResult
- *
- * @returns {boolean}
- */
-function hasFullAccess(currentUserResult) {
-  if (!currentUserResult || !currentUserResult.success || !currentUserResult.response) {
-    return false;
-  }
-
-  const { authorizedComponents } = currentUserResult.response;
-
-  return Array.isArray(authorizedComponents) && authorizedComponents.includes('*');
-}
-
-/**
- * Derive create/update permissions from an authorizations search result.
- *
- * @param {Object} authorizationsResult
- *
- * @returns {{ create: boolean, update: boolean }}
- */
-function getConfigurationPermissions(authorizationsResult) {
-  if (!authorizationsResult || !authorizationsResult.success) {
-    return { create: false, update: false };
-  }
-
-  const permissions = (authorizationsResult.response.items || [])
-    .flatMap(item => item.permissionTypes || []);
-
-  return {
-    create: permissions.includes('CREATE'),
-    update: permissions.includes('UPDATE')
-  };
 }
 
 /**

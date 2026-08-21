@@ -16,6 +16,7 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
 import CredentialManager from '../CredentialManager';
+import CredentialCache from '../../../../zeebe/CredentialCache';
 import { EventsContext } from '../../../../EventsContext';
 
 const TEMPLATE = {
@@ -48,6 +49,14 @@ const INSTANCE_METADATA = {
   configurationTemplateVersion: 1
 };
 
+// the connection the default test harness establishes
+const DEFAULT_CONNECTION_ID = 'cluster';
+const DEFAULT_CONNECTION = { id: DEFAULT_CONNECTION_ID };
+
+// the identity fingerprint the plugin emits alongside the connection; a stable
+// default means repeated status events for the same connection are no-ops
+const DEFAULT_CONNECTION_FINGERPRINT = 'cluster-fingerprint';
+
 
 describe('<CredentialManager>', function() {
 
@@ -61,7 +70,7 @@ describe('<CredentialManager>', function() {
   });
 
 
-  it('should feed the selectable instances on mount', async function() {
+  it('should feed the selectable instances once the connection is established', async function() {
 
     // given
     const zeebeApi = createZeebeApi({
@@ -83,6 +92,33 @@ describe('<CredentialManager>', function() {
   });
 
 
+  it('should not load credentials before the connection is established', async function() {
+
+    // given
+    const zeebeApi = createZeebeApi();
+
+    // when mounted but the connection has not been established yet
+    const { eventBus, establishConnection } = renderManager({ zeebeApi, establish: false });
+
+    // then early triggers do not fetch (they would only be invalidated and
+    // re-fetched by the establishing status change)
+    eventBus.fire('import.done');
+    eventBus.fire('elementTemplates.changed');
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    expect(zeebeApi.searchClusterVariables).not.to.have.been.called;
+
+    // when the connection is established
+    establishConnection();
+
+    // then the first (and only) load runs
+    await waitFor(() => {
+      expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
+    });
+  });
+
+
   it('should search credentials per configuration template', async function() {
 
     // given
@@ -94,27 +130,39 @@ describe('<CredentialManager>', function() {
         configurationTemplate: element.id === 'Task_1' ? 'template-a' : 'template-b'
       } ]
     }));
-    const zeebeApi = createZeebeApi();
 
-    renderManager({ elementRegistry, elementTemplates, zeebeApi });
+    const credentialsByTemplate = {
+      'template-a': [ { name: 'CRED_A', metadata: { configurationTemplate: 'template-a' } } ],
+      'template-b': [ { name: 'CRED_B', metadata: { configurationTemplate: 'template-b' } } ]
+    };
+
+    const zeebeApi = createZeebeApi({
+      searchClusterVariables: sinon.stub().callsFake((_, filter) => Promise.resolve({
+        success: true,
+        response: { items: credentialsByTemplate[filter.metadata.configurationTemplate['$eq']] || [] }
+      }))
+    });
+
+    const { configurationInstances } = renderManager({ elementRegistry, elementTemplates, zeebeApi });
 
     // then
     await waitFor(() => {
-      expect(zeebeApi.searchClusterVariables).to.have.been.calledTwice;
+      expect(fedInstancesCall(configurationInstances)).to.exist;
     });
 
+    // one server-filtered search per configuration template
+    expect(zeebeApi.searchClusterVariables).to.have.been.calledTwice;
     expect(zeebeApi.searchClusterVariables).to.have.been.calledWithMatch({}, {
       metadata: {
         kind: { '$eq': 'CREDENTIAL' },
         configurationTemplate: { '$eq': 'template-a' }
       }
     });
-    expect(zeebeApi.searchClusterVariables).to.have.been.calledWithMatch({}, {
-      metadata: {
-        kind: { '$eq': 'CREDENTIAL' },
-        configurationTemplate: { '$eq': 'template-b' }
-      }
-    });
+
+    // selectable merged from each template's server-filtered search
+    const call = fedInstancesCall(configurationInstances);
+
+    expect(call.selectableInstances.map(instance => instance.name)).to.eql([ 'CRED_A', 'CRED_B' ]);
   });
 
 
@@ -180,7 +228,12 @@ describe('<CredentialManager>', function() {
     // given
     const elementRegistry = { getAll: () => [] };
     const zeebeApi = createZeebeApi();
-    const { configurationInstances } = renderManager({ elementRegistry, zeebeApi });
+    const { configurationInstances, eventBus } = renderManager({ elementRegistry, zeebeApi });
+
+    // when — no configuration templates, so nothing is queried; the state is
+    // reported unavailable (both the establishing load and import.done evaluate
+    // to this)
+    eventBus.fire('import.done');
 
     // then
     await waitFor(() => {
@@ -222,8 +275,7 @@ describe('<CredentialManager>', function() {
 
     expect(zeebeApi.searchClusterVariables).to.have.been.calledWithMatch({}, {
       metadata: {
-        kind: { '$eq': 'CREDENTIAL' },
-        configurationTemplate: { '$eq': TEMPLATE.id }
+        kind: { '$eq': 'CREDENTIAL' }
       }
     });
   });
@@ -258,7 +310,7 @@ describe('<CredentialManager>', function() {
   });
 
 
-  it('should serialize concurrent credential reloads', async function() {
+  it('should coalesce concurrent credential reloads', async function() {
 
     // given
     let resolveSearch;
@@ -270,13 +322,13 @@ describe('<CredentialManager>', function() {
     searchClusterVariables.onSecondCall().resolves({ success: true, response: { items: [] } });
 
     const zeebeApi = createZeebeApi({ searchClusterVariables });
-    const { eventBus } = renderManager({ zeebeApi });
+    const { eventBus, configurationInstances } = renderManager({ zeebeApi });
 
     await waitFor(() => {
       expect(searchClusterVariables).to.have.been.calledOnce;
     });
 
-    // when
+    // when reloads are triggered while the first search is still in flight
     eventBus.fire('import.done');
     eventBus.fire('elementTemplates.changed');
 
@@ -284,19 +336,25 @@ describe('<CredentialManager>', function() {
 
     resolveSearch({ success: true, response: { items: [] } });
 
-    // then
+    // then the coalesced reload is served from the connection-scoped cache,
+    // so no additional cluster search is issued
     await waitFor(() => {
-      expect(searchClusterVariables).to.have.been.calledTwice;
+      const call = fedInstancesCall(configurationInstances);
+
+      expect(call).to.exist;
     });
+
+    expect(searchClusterVariables).to.have.been.calledOnce;
   });
 
 
   it('should mark the chooser unavailable without a connection', async function() {
 
     // given
-    const deployment = createDeployment({ getConnectionForTab: sinon.stub().resolves(null) });
+    const { configurationInstances, startConnectionCheck } = renderManager({ establish: false });
 
-    const { configurationInstances } = renderManager({ deployment });
+    // when a connection check starts for a tab without a connection
+    startConnectionCheck(null);
 
     // then
     await waitFor(() => {
@@ -420,34 +478,167 @@ describe('<CredentialManager>', function() {
   });
 
 
-  it('should reload credentials for each connection status event', async function() {
+  it('should not reload credentials while the connection is unchanged', async function() {
 
     // given
-    let connectionStatusListener;
+    const { zeebeApi, establishConnection } = renderManager({ establish: false });
 
-    const subscribe = sinon.stub().callsFake((event, listener) => {
-      if (event === 'connectionManager.connectionStatusChanged') {
-        connectionStatusListener = listener;
-      }
+    // no load before the connection is established
+    expect(zeebeApi.searchClusterVariables).not.to.have.been.called;
 
-      return { cancel: sinon.spy() };
+    // when the connection is established, credentials load once
+    establishConnection();
+
+    await waitFor(() => {
+      expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
     });
-    const zeebeApi = createZeebeApi();
 
-    renderManager({ subscribe, zeebeApi });
+    // when further status events fire for the SAME connection (re-check, tab
+    // activation) — same fingerprint
+    establishConnection();
+    establishConnection();
+
+    // then the cache is not refetched
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
+  });
+
+
+  it('should show loading only for the first population, not on revalidation', async function() {
+
+    // given
+    const { configurationInstances, establishConnection } = renderManager({ establish: false });
+
+    // when the connection is first established
+    establishConnection();
+
+    await waitFor(() => {
+      expect(fedInstancesCall(configurationInstances)).to.exist;
+    });
+
+    // then a loading state is pushed so the chooser shows a spinner
+    const loadingBefore = loadingPushCount(configurationInstances);
+
+    expect(loadingBefore).to.be.above(0);
+
+    // when the connection is revalidated (same fingerprint: re-check, activation)
+    establishConnection();
+    establishConnection();
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // then no further loading flash is pushed — the current list stays visible
+    expect(loadingPushCount(configurationInstances)).to.equal(loadingBefore);
+  });
+
+
+  it('should reload credentials when the connection identity changes', async function() {
+
+    // given the connection is established, driving the first load
+    const { zeebeApi, establishConnection } = renderManager({ establish: false });
+
+    establishConnection();
+
+    await waitFor(() => {
+      expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
+    });
+
+    // when a status event carries a different fingerprint (cluster, tenant or
+    // principal changed behind the same connection)
+    establishConnection({ connectionFingerprint: 'other-fingerprint' });
+
+    // then the connection is revalidated and credentials refetched
+    await waitFor(() => {
+      expect(zeebeApi.searchClusterVariables).to.have.been.calledTwice;
+    });
+  });
+
+
+  it('should reload credentials on app focus', async function() {
+
+    // given the connection is established, driving the first load
+    const { zeebeApi, focusApp } = renderManager();
 
     await waitFor(() => {
       expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
     });
 
     // when
-    connectionStatusListener({ connectionId: 'cluster', success: true });
-    connectionStatusListener({ connectionId: 'cluster', success: true });
+    focusApp();
 
-    // then
+    // then — cache is invalidated on focus, so the source is re-fetched
     await waitFor(() => {
-      expect(zeebeApi.searchClusterVariables).to.have.callCount(3);
+      expect(zeebeApi.searchClusterVariables).to.have.been.calledTwice;
     });
+  });
+
+
+  it('should refresh referenced credentials when a binding appears', async function() {
+
+    // given
+    const elements = [ { id: 'Task_1' } ];
+    const elementRegistry = { getAll: () => elements };
+    const getClusterVariable = sinon.stub().resolves({
+      success: true,
+      response: { metadata: INSTANCE_METADATA }
+    });
+    const zeebeApi = createZeebeApi({ getClusterVariable });
+
+    const { eventBus, configurationInstances } = renderManager({ elementRegistry, zeebeApi });
+
+    await waitFor(() => {
+      expect(fedInstancesCall(configurationInstances)).to.exist;
+    });
+
+    expect(getClusterVariable).not.to.have.been.called;
+
+    // when a pasted element introduces a credential binding
+    elements.push(elementWithReferences([ 'CRED_X' ]));
+    eventBus.fire('commandStack.changed');
+
+    // then only the newly-referenced name is resolved
+    await waitFor(() => {
+      expect(getClusterVariable).to.have.been.calledWithMatch({}, 'CRED_X');
+    });
+
+    const referencedCall = configurationInstances.setState.getCalls()
+      .reverse()
+      .find(call => call.args[0].referencedInstances);
+
+    expect(referencedCall.args[0].referencedInstances.map(instance => instance.name)).to.eql([ 'CRED_X' ]);
+  });
+
+
+  it('should not refresh referenced credentials when the referenced set is unchanged', async function() {
+
+    // given
+    const elementRegistry = {
+      getAll: () => [ elementWithReferences([ 'CRED_X' ]) ]
+    };
+    const getClusterVariable = sinon.stub().resolves({
+      success: true,
+      response: { metadata: INSTANCE_METADATA }
+    });
+    const zeebeApi = createZeebeApi({ getClusterVariable });
+
+    const { eventBus, configurationInstances } = renderManager({ elementRegistry, zeebeApi });
+
+    await waitFor(() => {
+      expect(getClusterVariable).to.have.been.calledOnce;
+    });
+
+    const setStateCount = configurationInstances.setState.callCount;
+
+    // when a model change does not alter the referenced set
+    eventBus.fire('commandStack.changed');
+    eventBus.fire('commandStack.changed');
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // then no additional referenced fetch or state push
+    expect(getClusterVariable).to.have.been.calledOnce;
+    expect(configurationInstances.setState.callCount).to.equal(setStateCount);
   });
 
 
@@ -687,6 +878,39 @@ describe('<CredentialManager>', function() {
   });
 
 
+  it('should write a created credential through to the shared connection cache', async function() {
+
+    // given
+    const zeebeApi = createZeebeApi();
+    const credentialCache = new CredentialCache(zeebeApi);
+
+    const { eventBus, getByRole } = renderManager({ zeebeApi, credentialCache });
+
+    // wait for the initial source load so the cache is populated
+    await waitFor(() => {
+      expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
+    });
+
+    eventBus.fire('configuration.create', createEvent());
+
+    const submit = await waitFor(() => getByRole('button', { name: 'Create and select' }));
+
+    // when
+    fireEvent.click(submit);
+
+    await waitFor(() => {
+      expect(zeebeApi.createClusterVariable).to.have.been.calledOnce;
+    });
+
+    // then — the shared cache reflects the new credential without a refetch
+    const created = zeebeApi.createClusterVariable.firstCall.args[1];
+    const cached = await credentialCache.getCredentials({ id: 'cluster' }, 'io.camunda:test:1');
+
+    expect(cached.response.items.map(item => item.name)).to.include(created.name);
+    expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
+  });
+
+
   it('should show an error when credential submission fails', async function() {
 
     // given
@@ -796,8 +1020,15 @@ function createConfigurationInstances(overrides = {}) {
   const selectableInstances = overrides.selectableInstances || [];
   const referencedInstances = overrides.referencedInstances || [];
 
+  let available = overrides.available || false;
+
   return {
-    setState: sinon.spy(),
+    setState: sinon.spy(state => {
+      if ('available' in state) {
+        available = !!state.available;
+      }
+    }),
+    isAvailable: () => available,
     getSelectableInstances: () => selectableInstances,
     getReferencedInstanceByName: name => referencedInstances.find(instance => instance.name === name) || null
   };
@@ -831,13 +1062,6 @@ function createZeebeApi(overrides = {}) {
   };
 }
 
-function createDeployment(overrides = {}) {
-  return {
-    getConnectionForTab: sinon.stub().resolves({ id: 'cluster' }),
-    ...overrides
-  };
-}
-
 function renderManager(overrides = {}) {
   const eventBus = overrides.eventBus || createEventBus();
   const configurationInstances = overrides.configurationInstances || createConfigurationInstances();
@@ -845,9 +1069,21 @@ function renderManager(overrides = {}) {
   const elementRegistry = overrides.elementRegistry || { getAll: () => [ { id: 'Task_1' } ] };
   const elementTemplates = overrides.elementTemplates || createElementTemplates();
   const zeebeApi = overrides.zeebeApi || createZeebeApi();
-  const deployment = overrides.deployment || createDeployment();
   const onError = overrides.onError || sinon.spy();
-  const subscribe = overrides.subscribe;
+  const credentialCache = overrides.credentialCache || new CredentialCache(zeebeApi);
+
+  // credentials are loaded once the connection is established, so the harness
+  // captures the connection handlers and establishes by default
+  const handlers = {};
+  const subscribe = overrides.subscribe || ((event, listener) => {
+    (handlers[event] = handlers[event] || []).push(listener);
+
+    return {
+      cancel() {
+        handlers[event] = (handlers[event] || []).filter(l => l !== listener);
+      }
+    };
+  });
 
   const services = {
     eventBus,
@@ -875,25 +1111,67 @@ function renderManager(overrides = {}) {
     <CredentialManager
       injector={ injector }
       zeebeApi={ zeebeApi }
-      deployment={ deployment }
-      file={ overrides.file || {} }
+      credentialCache={ credentialCache }
       onError={ onError }
     />
   );
 
   const result = render(
-    subscribe
-      ? <EventsContext.Provider value={ { subscribe } }>{ manager }</EventsContext.Provider>
-      : manager
+    <EventsContext.Provider value={ { subscribe } }>{ manager }</EventsContext.Provider>
   );
 
-  return { eventBus, configurationInstances, configurationTemplates, zeebeApi, deployment, onError, ...result };
+  const fire = (event, payload) => {
+    (handlers[event] || []).forEach(listener => listener(payload));
+  };
+
+  // the connection the check runs for; null renders the "no connection" message
+  const startConnectionCheck = (connection = DEFAULT_CONNECTION) => {
+    fire('connectionManager.connectionCheckStarted', { connection });
+  };
+
+  // the connection check completed with a result (success by default); the
+  // fingerprint identifies the connection so equal fingerprints are no-ops
+  const establishConnection = (status = {}) => {
+    fire('connectionManager.connectionStatusChanged', {
+      connection: DEFAULT_CONNECTION,
+      connectionId: DEFAULT_CONNECTION_ID,
+      connectionFingerprint: DEFAULT_CONNECTION_FINGERPRINT,
+      success: true,
+      ...status
+    });
+  };
+
+  const focusApp = () => fire('app.focused');
+
+  // mirror the real flow: the connection is established shortly after mount,
+  // which drives the first load. Tests providing their own `subscribe` or
+  // passing `establish: false` drive establishment themselves.
+  if (!overrides.subscribe && overrides.establish !== false) {
+    establishConnection();
+  }
+
+  return {
+    eventBus,
+    configurationInstances,
+    configurationTemplates,
+    zeebeApi,
+    onError,
+    startConnectionCheck,
+    establishConnection,
+    focusApp,
+    ...result
+  };
 }
 
 function fedInstancesCall(configurationInstances) {
   const call = configurationInstances.setState.getCalls().find(call => call.args[0].selectableInstances);
 
   return call && call.args[0];
+}
+
+function loadingPushCount(configurationInstances) {
+  return configurationInstances.setState.getCalls()
+    .filter(call => call.args[0].loading === true).length;
 }
 
 function unavailableCall(configurationInstances) {

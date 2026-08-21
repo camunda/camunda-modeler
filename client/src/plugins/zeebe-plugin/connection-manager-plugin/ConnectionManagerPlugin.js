@@ -19,6 +19,7 @@ import ConnectionChecker from '../deployment-plugin/ConnectionChecker';
 import { CONNECTION_MANAGER_PLUGIN_ID, SETTINGS_KEY_CONNECTIONS, initializeSettings } from './ConnectionManagerSettings';
 import { ConnectionManagerOverlay } from './ConnectionManagerOverlay';
 import { StatusIndicator } from '../shared/StatusIndicator';
+import { getConnectionFingerprint } from '../shared/util';
 import { CONNECTION_CHECK_ERROR_REASONS } from '../deployment-plugin/ConnectionCheckErrors';
 import { NO_CONNECTION_ID } from './constants';
 import { AUTH_TYPES, TARGET_TYPES } from '../../../remote/ZeebeAPI';
@@ -178,6 +179,7 @@ export default function ConnectionManagerPlugin(props) {
       emit('connectionManager.connectionCheckStarted', {
         connectionId: activeConnection?.id,
         connection: activeConnection,
+        connectionFingerprint: getConnectionFingerprint(activeConnection),
       });
 
       setConnectionCheckResult(null);
@@ -215,6 +217,7 @@ export default function ConnectionManagerPlugin(props) {
         ...connectionCheckResult,
         connectionId: activeConnection?.id,
         connection: activeConnection,
+        connectionFingerprint: getConnectionFingerprint(activeConnection),
         isLocal: endpoint ? isLocalEndpoint(endpoint) : null
       });
       setConnectionCheckResult(connectionCheckResult);

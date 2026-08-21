@@ -47,7 +47,7 @@ import {
 import Metadata from '../../../../util/Metadata';
 
 import renderEditorHelper from '../../../__tests__/helpers/renderEditor';
-import { Deployment, StartInstance, ZeebeAPI } from '../../../__tests__/mocks';
+import { CredentialCache, Deployment, StartInstance, ZeebeAPI } from '../../../__tests__/mocks';
 
 const { spy } = sinon;
 
@@ -3084,6 +3084,7 @@ async function renderEditor(xml, options = {}) {
     deployment: new Deployment(),
     startInstance: new StartInstance(),
     zeebeApi: new ZeebeAPI(),
+    credentialCache: new CredentialCache(),
     ...options
   });
 }
