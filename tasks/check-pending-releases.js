@@ -287,14 +287,14 @@ function printPendingDetail(r) {
 function buildMarkdownReport(results) {
   const pending = results.filter(r => r.status === 'pending-release');
   const upToDate = results.filter(r => r.status === 'up-to-date');
-  const updatesAvailable = results.filter(r => r.updateAvailable);
   const issues = results.filter(r => ![ 'pending-release', 'up-to-date' ].includes(r.status));
 
   const lines = [ '## bpmn.io / Camunda pending releases', '' ];
 
   // Headline: packages with commits upstream that have NOT been released
-  // yet. This is the crucial signal this report exists for - it needs to
-  // be unmissable, not buried under "update available" noise.
+  // yet. This is the crucial signal this report exists for. Whether a
+  // dependency also needs bumping here (an ordinary update) is out of
+  // scope - only unreleased upstream work belongs in this summary.
   lines.push(pending.length
     ? `### ⚠️ ${pending.length} package(s) have unreleased feat/fix/deps commits upstream`
     : '### ✅ No packages have unreleased feat/fix/deps commits upstream', '');
@@ -315,18 +315,7 @@ function buildMarkdownReport(results) {
   }
 
   lines.push(`Checked ${results.length} dependencies (direct + transitive): ` +
-    `${pending.length} pending release, ${updatesAvailable.length} already released but not bumped here, ` +
-    `${upToDate.length} up to date, ${issues.length} unresolved.`, '');
-
-  if (updatesAvailable.length) {
-    lines.push('<details><summary>Already released upstream, not yet bumped here (secondary - a normal dependency bump, not a pending release)</summary>', '');
-
-    for (const r of updatesAvailable) {
-      lines.push(`- [${r.name}](https://github.com/${r.owner}/${r.repo}): ${r.version} → ${r.latestVersion}`);
-    }
-
-    lines.push('', '</details>', '');
-  }
+    `${pending.length} pending release, ${upToDate.length} up to date, ${issues.length} unresolved.`, '');
 
   if (issues.length) {
     lines.push('<details><summary>Could not check</summary>', '');
@@ -373,27 +362,17 @@ main(concurrency, (result, completed, total) => {
 
   const pending = results.filter(r => r.status === 'pending-release');
   const upToDate = results.filter(r => r.status === 'up-to-date');
-  const updatesAvailable = results.filter(r => r.updateAvailable);
   const issues = results.filter(r => ![ 'pending-release', 'up-to-date' ].includes(r.status));
 
   // Headline first: packages with commits upstream that have NOT been
-  // released yet. That's the crucial signal - everything else (available
-  // version bumps, unresolved packages) is secondary context.
+  // released yet. That's the only thing this summary reports on - whether
+  // a dependency also needs bumping here is a separate, unrelated concern.
   console.log(pending.length
     ? `\n⚠️  ${pending.length} package(s) have unreleased feat/fix/deps commits upstream (details above)\n`
     : '\n✅ No packages have unreleased feat/fix/deps commits upstream\n');
 
   console.log(`Checked ${results.length} bpmn.io / Camunda dependencies: ` +
-    `${pending.length} pending release, ${updatesAvailable.length} already released but not bumped here, ` +
-    `${upToDate.length} up to date, ${issues.length} unresolved.`);
-
-  if (updatesAvailable.length) {
-    console.log(`\nAlready released upstream but not yet bumped here (secondary - a normal dependency bump, not a pending release): ${updatesAvailable.length}`);
-
-    for (const r of updatesAvailable) {
-      console.log(`- ${r.name}: ${r.version} -> ${r.latestVersion} (https://github.com/${r.owner}/${r.repo})`);
-    }
-  }
+    `${pending.length} pending release, ${upToDate.length} up to date, ${issues.length} unresolved.`);
 
   if (issues.length) {
     console.log(`\nCould not check ${issues.length}:`);
