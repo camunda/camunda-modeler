@@ -127,6 +127,20 @@ describe('BpmnModeler', function() {
   });
 
 
+  describe('agent config autofix', function() {
+
+    it('should register the agent config autofix module', async function() {
+
+      // when
+      const modeler = await createModeler();
+
+      // then
+      expect(modeler.get('agentConfigAutofillPropertiesProvider', false)).to.exist;
+    });
+
+  });
+
+
   describe('element template chooser', function() {
 
     it('should open chooser on <elementTemplates.select>', async function() {

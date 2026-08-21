@@ -20,6 +20,7 @@
 @import '~camunda-dmn-js/dist/assets/dmn-js-boxed-expression.css';
 @import '~camunda-dmn-js/dist/assets/dmn-js-shared.css';
 @import '~@camunda/linting/assets/linting.css';
+@import '~@camunda/linting-autofix/assets/linting-autofix.css';
 
 /* render popup menu on top of all elements */
 .djs-popup-backdrop {
