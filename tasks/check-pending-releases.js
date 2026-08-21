@@ -31,10 +31,10 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const { execFile } = require('child_process');
-const { promisify } = require('util');
+const fs = require('node:fs');
+const path = require('node:path');
+const { execFile } = require('node:child_process');
+const { promisify } = require('node:util');
 const semver = require('semver');
 
 const execFileAsync = promisify(execFile);
