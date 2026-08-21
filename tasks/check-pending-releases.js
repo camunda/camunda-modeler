@@ -166,20 +166,80 @@ async function getDefaultBranch(owner, repo) {
   return info ? info.default_branch : null;
 }
 
-async function getPendingCommits(owner, repo, tag, branch) {
+const packageDirectoryCache = new Map();
+
+/**
+ * In an independently-versioned monorepo (tags like `<name>@<version>`), a
+ * commit ahead of one package's tag is only actually relevant to that
+ * package if it touches that package's own directory - otherwise it's a
+ * sibling package's change (e.g. camunda/element-templates-json-schema has
+ * 4 independently-tagged packages under packages/*, and a commit scoped to
+ * one of them shows up as "ahead" for all of them without this check).
+ *
+ * Convention across these monorepos is packages/<unscoped-name>; verified
+ * by finding a package.json there whose own `name` matches. Cached per repo
+ * since sibling packages share one lookup.
+ */
+async function findPackageDirectory(owner, repo, branch, name) {
+  const cacheKey = `${owner}/${repo}`;
+
+  if (!packageDirectoryCache.has(cacheKey)) {
+    packageDirectoryCache.set(cacheKey, (async () => {
+      const tree = await ghApiSafe(`repos/${owner}/${repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`);
+
+      if (!tree || tree.truncated) return null;
+
+      return (tree.tree || [])
+        .filter(entry => entry.type === 'blob' && entry.path.endsWith('/package.json'))
+        .map(entry => entry.path.slice(0, -'/package.json'.length));
+    })());
+  }
+
+  const candidateDirs = await packageDirectoryCache.get(cacheKey);
+
+  if (!candidateDirs) return null;
+
+  const unscopedName = name.replace(/^@[^/]+\//, '');
+  const byBasename = candidateDirs.filter(dir => dir.split('/').pop() === unscopedName);
+
+  for (const dir of byBasename) {
+    const pkg = await ghApiSafe(`repos/${owner}/${repo}/contents/${dir}/package.json?ref=${encodeURIComponent(branch)}`);
+    const content = pkg && pkg.content && JSON.parse(Buffer.from(pkg.content, 'base64').toString('utf8'));
+
+    if (content && content.name === name) return dir;
+  }
+
+  return null;
+}
+
+async function commitTouchesDirectory(owner, repo, sha, dir) {
+  const commit = await ghApiSafe(`repos/${owner}/${repo}/commits/${sha}`);
+  const files = (commit && commit.files) || [];
+
+  return files.some(f => f.filename === dir || f.filename.startsWith(`${dir}/`));
+}
+
+async function getPendingCommits(owner, repo, tag, branch, packageDir) {
   const compare = await ghApiSafe(`repos/${owner}/${repo}/compare/${encodeURIComponent(tag)}...${encodeURIComponent(branch)}`);
 
   if (!compare) return null;
 
-  const commits = (compare.commits || []).map(c => c.commit.message.split('\n')[0]);
+  const commits = compare.commits || [];
 
-  const matching = commits.filter(subject => CONVENTIONAL_TYPES.some(
-    type => new RegExp(`^${type}(\\(.+\\))?!?:`).test(subject)
+  let matching = commits.filter(c => CONVENTIONAL_TYPES.some(
+    type => new RegExp(`^${type}(\\(.+\\))?!?:`).test(c.commit.message.split('\n')[0])
   ));
+
+  // Narrow to commits that actually touch this package's own directory -
+  // a monorepo sibling's changes aren't pending for this package.
+  if (packageDir) {
+    const touches = await Promise.all(matching.map(c => commitTouchesDirectory(owner, repo, c.sha, packageDir)));
+    matching = matching.filter((c, i) => touches[i]);
+  }
 
   return {
     totalCommitsAhead: commits.length,
-    matchingCommits: matching,
+    matchingCommits: matching.map(c => c.commit.message.split('\n')[0]),
     compareUrl: `https://github.com/${owner}/${repo}/compare/${tag}...${branch}`
   };
 }
@@ -222,7 +282,14 @@ async function checkPackage({ name, version, direct }) {
     return { ...base, owner, repo, status: 'tag-not-found' };
   }
 
-  const pending = await getPendingCommits(owner, repo, latest.tag, branch);
+  // A `<name>@<version>` tag means this package is independently versioned
+  // within a monorepo - scope the pending-commit check to its own
+  // directory, or a sibling package's changes would count as pending here.
+  const packageDir = latest.tag.startsWith(`${name}@`)
+    ? await findPackageDirectory(owner, repo, branch, name)
+    : null;
+
+  const pending = await getPendingCommits(owner, repo, latest.tag, branch, packageDir);
 
   if (!pending) {
     return { ...base, latestVersion: latest.version, owner, repo, latestTag: latest.tag, status: 'compare-failed' };
