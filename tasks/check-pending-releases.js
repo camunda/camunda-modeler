@@ -342,14 +342,10 @@ main(concurrency, (result, completed, total) => {
   const progress = `[${completed}/${total}] ${result.name} - ${describe(result)}`;
 
   // Progress always goes to stderr, so --json's stdout stays clean and
-  // pipeable while still showing live progress in a terminal. Completion
-  // order isn't input order once checks run concurrently, so this counts
-  // finished items rather than labeling which one.
+  // pipeable while still showing live progress in a terminal. Pending-release
+  // details are reported together in the final summary instead of here, so
+  // they aren't scattered across out-of-order concurrent progress lines.
   console.error(progress);
-
-  if (!jsonMode && result.status === 'pending-release') {
-    printPendingDetail(result);
-  }
 }).then(results => {
   if (markdownPath) {
     fs.appendFileSync(markdownPath, buildMarkdownReport(results) + '\n');
@@ -368,8 +364,12 @@ main(concurrency, (result, completed, total) => {
   // released yet. That's the only thing this summary reports on - whether
   // a dependency also needs bumping here is a separate, unrelated concern.
   console.log(pending.length
-    ? `\n⚠️  ${pending.length} package(s) have unreleased feat/fix/deps commits upstream (details above)\n`
+    ? `\n⚠️  ${pending.length} package(s) have unreleased feat/fix/deps commits upstream\n`
     : '\n✅ No packages have unreleased feat/fix/deps commits upstream\n');
+
+  for (const r of pending) {
+    printPendingDetail(r);
+  }
 
   console.log(`Checked ${results.length} bpmn.io / Camunda dependencies: ` +
     `${pending.length} pending release, ${upToDate.length} up to date, ${issues.length} unresolved.`);
