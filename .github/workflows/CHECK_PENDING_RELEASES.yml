@@ -1,0 +1,47 @@
+name: CHECK_PENDING_RELEASES
+
+on:
+  workflow_dispatch:
+    inputs:
+      concurrency:
+        description: 'Number of dependencies to check in parallel'
+        default: '10'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check:
+    name: Check for pending upstream releases
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 15
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+    - name: Use Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: 24
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Compile tracked dependency list
+      run: node tasks/list-tracked-dependencies.js
+    - name: Check pending releases
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        node tasks/check-pending-releases.js \
+          --concurrency="${{ github.event.inputs.concurrency }}" \
+          --json \
+          --markdown="$GITHUB_STEP_SUMMARY" \
+          > pending-releases.json
+    - name: Upload results
+      uses: actions/upload-artifact@v7
+      with:
+        name: pending-releases
+        path: pending-releases.json
