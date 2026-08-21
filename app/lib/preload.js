@@ -68,7 +68,6 @@ const allowedEvents = [
   'zeebe:searchMessageSubscriptions',
   'zeebe:searchUserTasks',
   'zeebe:getAuthorizations',
-  'zeebe:getCurrentUser',
   'zeebe:searchClusterVariables',
   'zeebe:getClusterVariable',
   'zeebe:createClusterVariable',
