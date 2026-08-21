@@ -1433,6 +1433,319 @@ describe('<ZeebeAPI>', function() {
 
   });
 
+
+  describe('#getAuthorizations', function() {
+
+    it('should get authorizations', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const resourceType = 'CLUSTER_VARIABLE';
+
+      // when
+      zeebeAPI.getAuthorizations({ endpoint }, resourceType);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:getAuthorizations', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        resourceType
+      });
+
+    });
+
+
+    it('should get authorizations with pagination', function() {
+
+      // given
+      const backend = new MockBackend({ send: sinon.spy() });
+      const zeebeAPI = new ZeebeAPI(backend);
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+      const page = { from: 100, limit: 100 };
+
+      // when
+      zeebeAPI.getAuthorizations({ endpoint }, 'CLUSTER_VARIABLE', page);
+
+      // then
+      expect(backend.send).to.have.been.calledWithMatch('zeebe:getAuthorizations', { page });
+    });
+
+  });
+
+
+  describe('#getCurrentUser', function() {
+
+    it('should get current user', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      // when
+      zeebeAPI.getCurrentUser({ endpoint });
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:getCurrentUser', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        }
+      });
+
+    });
+
+  });
+
+
+  describe('#searchClusterVariables', function() {
+
+    it('should search cluster variables', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const filter = {
+        metadata: {
+          kind: { '$eq': 'CREDENTIAL' }
+        }
+      };
+
+      // when
+      zeebeAPI.searchClusterVariables({ endpoint }, filter);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:searchClusterVariables', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        filter
+      });
+
+    });
+
+
+    it('should search cluster variables with pagination', function() {
+
+      // given
+      const backend = new MockBackend({ send: sinon.spy() });
+      const zeebeAPI = new ZeebeAPI(backend);
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+      const page = { from: 100, limit: 100 };
+
+      // when
+      zeebeAPI.searchClusterVariables({ endpoint }, {}, page);
+
+      // then
+      expect(backend.send).to.have.been.calledWithMatch('zeebe:searchClusterVariables', { page });
+    });
+
+  });
+
+
+  describe('#getClusterVariable', function() {
+
+    it('should get cluster variable', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const name = 'MY_VAR';
+
+      // when
+      zeebeAPI.getClusterVariable({ endpoint }, name);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:getClusterVariable', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        name
+      });
+
+    });
+
+  });
+
+
+  describe('#createClusterVariable', function() {
+
+    it('should create cluster variable', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const variable = {
+        name: 'MY_VAR',
+        value: '"secret"',
+        kind: 'SECRET_REFERENCE'
+      };
+
+      // when
+      zeebeAPI.createClusterVariable({ endpoint }, variable);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:createClusterVariable', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        variable
+      });
+
+    });
+
+  });
+
+
+  describe('#updateClusterVariable', function() {
+
+    it('should update cluster variable', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      const name = 'MY_VAR';
+
+      const variable = {
+        value: '"secret"'
+      };
+
+      // when
+      zeebeAPI.updateClusterVariable({ endpoint }, name, variable);
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:updateClusterVariable', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        },
+        name,
+        variable
+      });
+
+    });
+
+  });
+
+
+  describe('#listSecrets', function() {
+
+    it('should list secrets', function() {
+
+      // given
+      const backend = new MockBackend({
+        send: sinon.spy()
+      });
+
+      const zeebeAPI = new ZeebeAPI(backend);
+
+      const endpoint = {
+        targetType: TARGET_TYPES.SELF_HOSTED,
+        authType: AUTH_TYPES.NONE,
+        contactPoint: 'http://localhost:26500'
+      };
+
+      // when
+      zeebeAPI.listSecrets({ endpoint });
+
+      // then
+      expect(backend.send).to.have.been.calledWith('zeebe:listSecrets', {
+        endpoint: {
+          type: TARGET_TYPES.SELF_HOSTED,
+          authType: AUTH_TYPES.NONE,
+          url: endpoint.contactPoint,
+          tenantId: undefined
+        }
+      });
+
+    });
+
+  });
+
 });
 
 class Mock {

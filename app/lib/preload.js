@@ -66,7 +66,14 @@ const allowedEvents = [
   'zeebe:searchIncidents',
   'zeebe:searchJobs',
   'zeebe:searchMessageSubscriptions',
-  'zeebe:searchUserTasks'
+  'zeebe:searchUserTasks',
+  'zeebe:getAuthorizations',
+  'zeebe:getCurrentUser',
+  'zeebe:searchClusterVariables',
+  'zeebe:getClusterVariable',
+  'zeebe:createClusterVariable',
+  'zeebe:updateClusterVariable',
+  'zeebe:listSecrets'
 ];
 
 let executed = false;

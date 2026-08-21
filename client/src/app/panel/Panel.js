@@ -70,7 +70,8 @@ export default function Panel({ children, layout = {}, onLayoutChanged, onUpdate
   const [ tabs, setTabs ] = useState([]);
 
   const { tab: activeTabId } = panel;
-  const activeTab = tabs.find(t => t.id === activeTabId) || {};
+  const sortedTabs = [ ...tabs ].sort((a, b) => b.priority - a.priority);
+  const activeTab = sortedTabs.find(t => t.id === activeTabId) || sortedTabs[ 0 ] || {};
 
   const contextValue = {
     tabs,
@@ -95,7 +96,7 @@ export default function Panel({ children, layout = {}, onLayoutChanged, onUpdate
     <div className={ css.Panel }>
       <div className="panel__header">
         <div className="panel__links">
-          {tabs.sort((a, b) => b.priority - a.priority).map(tab => (
+          {sortedTabs.map(tab => (
             <button
               key={ tab.id }
               className={ classnames('panel__link', { 'panel__link--active': tab === activeTab }) }

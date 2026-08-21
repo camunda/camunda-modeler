@@ -70,6 +70,8 @@ import {
 
 import EngineProfileHelper from '../EngineProfileHelper';
 
+import LintingHelper from '../LintingHelper';
+
 import {
   ENGINES
 } from '../../../util/Engines';
@@ -142,12 +144,16 @@ export class BpmnEditor extends CachedComponent {
 
     this.handleResize = debounce(this.handleResize);
 
-    this.handleLintingDebounced = debounce(this.handleLinting.bind(this));
+    this.linting = new LintingHelper({
+      lint: () => this.handleLinting(),
+      getCached: () => this.getCached(),
+      setCached: (state) => this.setCached(state)
+    });
     this.handlePropertiesPanelLayoutChange = this.handlePropertiesPanelLayoutChange.bind(this);
     this.handleLayoutChange = this.handleLayoutChange.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this._isMounted = true;
 
     const {
@@ -175,17 +181,15 @@ export class BpmnEditor extends CachedComponent {
     propertiesPanel.attachTo(this.propertiesPanelRef.current);
 
 
-    try {
-      await this.loadTemplates();
-    } catch (error) {
-      this.handleError({ error });
-    }
-
     this.checkImport();
+
+    this.linting.resume();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
+
+    this.linting.cancel();
 
     const modeler = this.getModeler();
 
@@ -276,9 +280,9 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('propertiesPanel.layoutChanged', this.handlePropertiesPanelLayoutChange);
 
     if (fn === 'on') {
-      modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
+      modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.linting.schedule);
     } else if (fn === 'off') {
-      modeler[ fn ]('commandStack.changed', this.handleLintingDebounced);
+      modeler[ fn ]('commandStack.changed', this.linting.schedule);
     }
 
     // reload templates on focus to pick up external edits to local template
@@ -386,7 +390,7 @@ export class BpmnEditor extends CachedComponent {
 
     this.props.onAction('element-templates-changed');
 
-    this.handleLintingDebounced();
+    this.linting.schedule();
   };
 
   handleAttach = (event) => {
@@ -437,7 +441,7 @@ export class BpmnEditor extends CachedComponent {
     return button === 'yes';
   }
 
-  handleImport = (error, warnings) => {
+  handleImport = async (error, warnings) => {
     const {
       isNew,
       onImport,
@@ -459,6 +463,18 @@ export class BpmnEditor extends CachedComponent {
     if (!error) {
       try {
         engineProfile = this.engineProfile.get(true);
+      } catch (err) {
+        error = err;
+      }
+    }
+
+    if (!error) {
+      try {
+
+        // load the element templates now that the diagram is imported, so they
+        // are validated once - against the imported diagram - rather than on
+        // mount (before the document is known)
+        await this.loadTemplates();
       } catch (err) {
         error = err;
       }
@@ -490,11 +506,7 @@ export class BpmnEditor extends CachedComponent {
     }
 
     if (!error) {
-      try {
-        this.handleLinting(engineProfile);
-      } catch (err) {
-        error = err;
-      }
+      this.linting.schedule();
     }
 
     this.setState({

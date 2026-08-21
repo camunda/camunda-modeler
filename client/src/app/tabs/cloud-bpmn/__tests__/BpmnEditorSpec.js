@@ -375,16 +375,19 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
     describe('behavior', function() {
 
-      let modeler,
+      let cache,
+          instance,
+          modeler,
           onActionSpy,
-          rerender;
+          rerender,
+          unmount;
 
       beforeEach(async function() {
         modeler = new BpmnModeler();
 
         onActionSpy = spy();
 
-        const cache = new Cache();
+        cache = new Cache();
 
         cache.add('editor', {
           cached: {
@@ -399,7 +402,9 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
           onAction: onActionSpy
         });
 
+        instance = render.instance;
         rerender = render.rerender;
+        unmount = render.unmount;
       });
 
 
@@ -407,6 +412,10 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         // then
         await waitFor(() => {
+
+          // flush the pending lint instead of waiting out the debounce
+          instance.linting.flush();
+
           const matchingCalls = onActionSpy.getCalls().filter(call => call.calledWithMatch('lint-tab'));
           expect(matchingCalls).to.have.lengthOf(1);
         });
@@ -419,6 +428,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
         // when
         modeler._emit('commandStack.changed');
+
+        instance.linting.flush();
 
         // then
         expect(onActionSpy).to.have.been.calledOnce;
@@ -436,11 +447,40 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
           modeler._emit('commandStack.changed');
 
+          instance.linting.flush();
+
           // then
           expect(onActionSpy).to.have.been.calledOnce;
           expect(onActionSpy).to.have.been.calledWithMatch('lint-tab');
         }
       );
+
+
+      it('should resume pending lint on remount', async function() {
+
+        // given
+        instance.linting.flush();
+        onActionSpy.resetHistory();
+
+        modeler._emit('commandStack.changed');
+        unmount();
+
+        // when
+        const { instance: remountedInstance } = await renderEditor(diagramXML, {
+          id: 'editor',
+          cache,
+          onAction: onActionSpy,
+          waitForImport: false
+        });
+
+        remountedInstance.linting.flush();
+
+        // then
+        const matchingCalls = onActionSpy.getCalls()
+          .filter(call => call.calledWithMatch('lint-tab'));
+
+        expect(matchingCalls).to.have.lengthOf(1);
+      });
 
     });
 
@@ -2177,6 +2217,8 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // when
       instance.getModeler()._emit('elementTemplates.changed');
 
+      instance.linting.flush();
+
       // then
       // the app is asked to invalidate the cached linter for this tab ...
       expect(onActionSpy).to.have.been.calledWith('element-templates-changed');
@@ -2301,6 +2343,41 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       };
 
       expect(elementTemplatesMock.setEngines).to.be.calledWith(expectedEngines);
+    });
+
+
+    it('should load element templates for existing diagram', async function() {
+
+      // given
+      const setTemplatesSpy = sinon.spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new BpmnModeler({
+            modules: {
+              elementTemplatesLoader: { setTemplates: setTemplatesSpy }
+            }
+          })
+        }
+      });
+
+      // when
+      await renderEditor(engineProfileXML, {
+        cache,
+        isNew: false,
+        getConfig: () => Promise.resolve([
+          {
+            '$schema': 'https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json',
+            'id': 'template-1'
+          }
+        ])
+      });
+
+      // then
+      // templates are loaded once, on import
+      expect(setTemplatesSpy).to.be.calledOnce;
     });
 
 
@@ -2914,6 +2991,39 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         executionPlatform: 'Camunda Cloud',
         executionPlatformVersion: '1.2.0'
       });
+    });
+
+
+    it('should NOT emit tab.engineProfileChanged event when engine profile unchanged', async function() {
+
+      // given
+      const emitSpy = sinon.spy();
+      const cache = new Cache();
+
+      const { unmount } = await renderEditor(engineProfileXML, {
+        cache,
+        emit: emitSpy,
+        id: 'editor'
+      });
+
+      emitSpy.resetHistory();
+      unmount();
+
+      const { instance } = await renderEditor(engineProfileXML, {
+        cache,
+        emit: emitSpy,
+        id: 'editor',
+        waitForImport: false
+      });
+
+      // when
+      instance.engineProfile.setCached({
+        executionPlatform: 'Camunda Cloud',
+        executionPlatformVersion: '1.1.0'
+      });
+
+      // then
+      expect(emitSpy).not.to.have.been.calledWith('tab.engineProfileChanged');
     });
 
   });

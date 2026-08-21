@@ -415,6 +415,76 @@ renderer.on('zeebe:searchUserTasks', async function(options, done) {
   }
 });
 
+renderer.on('zeebe:getAuthorizations', async function(options, done) {
+  try {
+    const getAuthorizationsResponse = await zeebeAPI.getAuthorizations(options);
+
+    done(null, getAuthorizationsResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:getCurrentUser', async function(options, done) {
+  try {
+    const getCurrentUserResponse = await zeebeAPI.getCurrentUser(options);
+
+    done(null, getCurrentUserResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:searchClusterVariables', async function(options, done) {
+  try {
+    const searchClusterVariablesResponse = await zeebeAPI.searchClusterVariables(options);
+
+    done(null, searchClusterVariablesResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:getClusterVariable', async function(options, done) {
+  try {
+    const getClusterVariableResponse = await zeebeAPI.getClusterVariable(options);
+
+    done(null, getClusterVariableResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:createClusterVariable', async function(options, done) {
+  try {
+    const createClusterVariableResponse = await zeebeAPI.createClusterVariable(options);
+
+    done(null, createClusterVariableResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:updateClusterVariable', async function(options, done) {
+  try {
+    const updateClusterVariableResponse = await zeebeAPI.updateClusterVariable(options);
+
+    done(null, updateClusterVariableResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
+renderer.on('zeebe:listSecrets', async function(options, done) {
+  try {
+    const listSecretsResponse = await zeebeAPI.listSecrets(options);
+
+    done(null, listSecretsResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
 // config //////////
 
 renderer.on('config:get', function(key, ...args) {
