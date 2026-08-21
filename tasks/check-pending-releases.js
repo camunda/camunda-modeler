@@ -74,7 +74,7 @@ async function ghApiSafe(endpoint) {
 }
 
 async function fetchNpmRepoUrl(name) {
-  const res = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name).replace('%40', '@')}/latest`);
+  const res = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name).replace(/%40/g, '@')}/latest`);
 
   if (!res.ok) {
     return null;
