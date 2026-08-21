@@ -61,6 +61,8 @@ class PropertiesPanel {
   update() {}
 
   setLayout() {}
+
+  setFeelLanguageContext() {}
 }
 
 class Linting {

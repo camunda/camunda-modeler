@@ -18,7 +18,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correct engine profile mis-match warning ([#6105](https://github.com/camunda/camunda-modeler/pull/6105))
 * `DEPS`: update to `bpmn-js@18.24.0`
 * `DEPS`: update to `bpmn-js-element-templates@2.31.1`
-* `DEPS`: update to `bpmn-js-properties-panel@5.63.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.51.2`
+* `DEPS`: update to `bpmn-js-properties-panel@5.65.0`
 * `DEPS`: update to `@camunda/linting@3.54.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@3.3.1`
 * `DEPS`: update to `@camunda/improved-canvas@1.10.4`
@@ -37,7 +38,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: eagerly create category value when creating or updating a group ([bpmn-io/bpmn-js#2469](https://github.com/bpmn-io/bpmn-js/pull/2469))
 * `FEAT`: reveal the field defining a variable when navigating to its writer ([bpmn-io/variable-outline#100](https://github.com/bpmn-io/variable-outline/pull/100))
 * `FEAT`: use `number` input for priority and job priority ([bpmn-io/bpmn-js-properties-panel#1241](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1241))
-* `FEAT`: enable FEEL compatibility linting based on engine versions ([bpmn-io/properties-panel#533](https://github.com/bpmn-io/properties-panel/pull/533))
+* `FEAT`: enable FEEL compatibility linting based on the configured engine version ([#5735](https://github.com/camunda/camunda-modeler/issues/5735), [bpmn-io/bpmn-js-properties-panel#1247](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1247), [bpmn-io/properties-panel#533](https://github.com/bpmn-io/properties-panel/pull/533))
 * `FEAT`: support configuration templates via `zeebe:configuration` binding ([bpmn-io/bpmn-js-element-templates#263](https://github.com/bpmn-io/bpmn-js-element-templates/pull/263))
 * `FEAT`: manage credentials for configuration templates ([#6099](https://github.com/camunda/camunda-modeler/pull/6099))
 * `FIX`: surface the reason of instance start failed during task testing ([#6076](https://github.com/camunda/camunda-modeler/pull/6076))

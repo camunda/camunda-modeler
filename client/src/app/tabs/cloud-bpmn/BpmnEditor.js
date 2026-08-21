@@ -332,7 +332,8 @@ export class BpmnEditor extends CachedComponent {
       return;
     }
 
-    const elementTemplates = this.getModeler().get('elementTemplates');
+    const modeler = this.getModeler();
+    const elementTemplates = modeler.get('elementTemplates');
 
     const engines = {
       ...elementTemplates.getEngines(),
@@ -340,6 +341,12 @@ export class BpmnEditor extends CachedComponent {
     };
 
     elementTemplates.setEngines(engines);
+
+    modeler.get('propertiesPanel').setFeelLanguageContext({
+      engines: {
+        camunda: version
+      }
+    });
   };
 
   handleAppFocused = () => {
