@@ -2304,7 +2304,35 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     });
 
 
-    it('should set templates engines when runtime version changes', async function() {
+    it('should set FEEL engines from imported runtime version', async function() {
+
+      // given
+      const modeler = new BpmnModeler();
+      const propertiesPanel = modeler.get('propertiesPanel');
+
+      sinon.spy(propertiesPanel, 'setFeelLanguageContext');
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler
+        }
+      });
+
+      // when
+      await renderEditor(engineProfileXML, { cache });
+
+      // then
+      expect(propertiesPanel.setFeelLanguageContext).to.be.calledWith({
+        engines: {
+          camunda: '1.1.0'
+        }
+      });
+    });
+
+
+    it('should set engines when runtime version changes', async function() {
 
       // given
       const appVersion = '5.30.0';
@@ -2316,15 +2344,21 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
         getEngines: () => ({ camundaDesktopModeler: appVersion })
       };
 
+      const modeler = new BpmnModeler({
+        modules: {
+          elementTemplates: elementTemplatesMock
+        }
+      });
+
+      const propertiesPanel = modeler.get('propertiesPanel');
+
+      sinon.spy(propertiesPanel, 'setFeelLanguageContext');
+
       const cache = new Cache();
 
       cache.add('editor', {
         cached: {
-          modeler: new BpmnModeler({
-            modules: {
-              elementTemplates: elementTemplatesMock
-            }
-          })
+          modeler
         }
       });
 
@@ -2343,6 +2377,11 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       };
 
       expect(elementTemplatesMock.setEngines).to.be.calledWith(expectedEngines);
+      expect(propertiesPanel.setFeelLanguageContext).to.be.calledWith({
+        engines: {
+          camunda: '8.5'
+        }
+      });
     });
 
 
