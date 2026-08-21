@@ -776,57 +776,6 @@ class ZeebeAPI {
   }
 
   /**
-   * Get the authenticated user, including the components they are authorized for.
-   * An `authorizedComponents` of `[ "*" ]` signals full access — either
-   * authorizations are disabled on the cluster, or the user is a wildcard admin.
-   * Requires Camunda REST client.
-   *
-   * @param {{ endpoint: import("./endpoints").Endpoint }} config
-   *
-   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
-   */
-  async getCurrentUser(config) {
-    const {
-      endpoint
-    } = config;
-
-    this._log.debug('get current user', {
-      parameters: sanitizeConfigWithEndpoint(config)
-    });
-
-    try {
-      const { camundaRestClient } = await this._getClients(endpoint);
-
-      if (!camundaRestClient) {
-        throw new Error('Camunda REST client is not available');
-      }
-
-      const response = await camundaRestClient.callApiEndpoint({
-        method: 'GET',
-        urlPath: 'authentication/me'
-      });
-
-      this._log.debug('get current user succeeded', {
-        authorizedComponents: response.authorizedComponents
-      });
-
-      return {
-        success: true,
-        response: response
-      };
-    } catch (err) {
-      this._log.error('get current user failed', {
-        parameters: sanitizeConfigWithEndpoint(config)
-      }, err);
-
-      return {
-        success: false,
-        reason: getErrorReason(err, endpoint)
-      };
-    }
-  }
-
-  /**
    * Search cluster variables. Requires Camunda REST client.
    *
    * @param {{ endpoint: import("./endpoints").Endpoint, filter: object, page?: object }} config
