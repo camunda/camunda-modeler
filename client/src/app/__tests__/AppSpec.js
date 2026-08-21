@@ -4659,6 +4659,87 @@ describe('<App>', function() {
     });
 
 
+    it('should discard stale linting results', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+      const formProvider = tabsProvider.getProvider('form');
+      const firstLint = pDefer();
+      const secondLint = pDefer();
+      const lintSpy = sinon.spy(contents => {
+        if (contents === 'first') {
+          return firstLint.promise;
+        }
+
+        if (contents === 'second') {
+          return secondLint.promise;
+        }
+
+        return [];
+      });
+
+      sinon.stub(formProvider, 'getLinter').returns({ lint: lintSpy });
+
+      const { app } = createApp({ tabsProvider });
+
+      const [ currentTab ] = await app.openFiles([ createFile('1.form') ]);
+
+      const firstResult = { id: 'first' };
+      const secondResult = { id: 'second' };
+      const setLintingStateSpy = sinon.spy(app, 'setLintingState');
+
+      // when
+      const firstRequest = app.lintTab(currentTab, 'first');
+
+      await waitFor(() => {
+        expect(lintSpy).to.have.been.calledWith('first');
+      });
+
+      const secondRequest = app.lintTab(currentTab, 'second');
+
+      await waitFor(() => {
+        expect(lintSpy).to.have.been.calledWith('second');
+      });
+
+      secondLint.resolve([ secondResult ]);
+      await secondRequest;
+
+      firstLint.resolve([ firstResult ]);
+      await firstRequest;
+
+      // then
+      expect(setLintingStateSpy).to.have.been.calledOnce;
+      expect(setLintingStateSpy).to.have.been.calledWith(currentTab, [ secondResult ]);
+    });
+
+
+    it('should not run superseded lint after shared linter build', async function() {
+
+      // given
+      const tabsProvider = new TabsProvider();
+      const formProvider = tabsProvider.getProvider('form');
+      const linter = pDefer();
+      const lintSpy = sinon.spy();
+      const getLinterSpy = sinon.stub(formProvider, 'getLinter').returns(linter.promise);
+
+      const { app } = createApp({ tabsProvider });
+
+      const [ currentTab ] = await app.openFiles([ createFile('1.form') ]);
+
+      // when
+      const firstRequest = app.lintTab(currentTab, 'first');
+      const secondRequest = app.lintTab(currentTab, 'second');
+
+      linter.resolve({ lint: lintSpy });
+
+      await Promise.all([ firstRequest, secondRequest ]);
+
+      // then
+      expect(getLinterSpy).to.have.been.calledOnce;
+      expect(lintSpy).to.have.been.calledOnceWith('second');
+    });
+
+
     it('should pass plugins to linter', async function() {
 
       // given
