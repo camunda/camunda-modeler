@@ -17,6 +17,7 @@ import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from '../../bpmn/modeler/features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 import lintingAnnotationsModule from '@camunda/linting/modeler';
+import { agentConfigAutofillModule } from '@camunda/linting-autofix';
 
 import { BpmnJSTracking as bpmnJSTracking } from 'bpmn-js-tracking';
 
@@ -78,6 +79,7 @@ CloudBpmnModeler.prototype._modules = [
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,
   lintingAnnotationsModule,
+  agentConfigAutofillModule,
   bpmnJSTracking,
   contextPadTracking,
   elementTemplates,
