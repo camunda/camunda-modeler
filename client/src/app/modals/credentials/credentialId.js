@@ -50,6 +50,32 @@ export function toCredentialId(displayName) {
   return /^[A-Z_]/.test(slug) ? slug : `${ FALLBACK }_${ slug }`;
 }
 
+export function getUniqueCredentialIdentity(displayName, existingCredentials = []) {
+  const normalizedDisplayName = displayName.trim();
+  const displayNames = new Set(
+    existingCredentials.map(credential => credential.metadata?.displayName?.trim())
+  );
+  const credentialIds = new Set(
+    existingCredentials.map(credential => credential.name)
+  );
+
+  for (let suffix = 0; suffix <= existingCredentials.length * 2; suffix++) {
+    const uniqueDisplayName = suffix
+      ? `${ normalizedDisplayName } ${ suffix }`
+      : normalizedDisplayName;
+    const credentialId = toCredentialId(uniqueDisplayName);
+
+    if (!displayNames.has(uniqueDisplayName) && !credentialIds.has(credentialId)) {
+      return {
+        displayName: uniqueDisplayName,
+        credentialId
+      };
+    }
+  }
+
+  throw new Error('Unable to generate a unique credential identity.');
+}
+
 /**
  * Validate a credential ID against cluster-variable naming rules.
  *
