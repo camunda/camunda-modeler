@@ -13,19 +13,19 @@
   "dependencies": {
     "@camunda8/sdk": "^8.7.28",
     "@sentry/electron": "^7.15.0",
-    "bpmn-moddle": "^10.0.0",
+    "bpmn-moddle": "^10.1.0",
     "chokidar": "^5.0.0",
     "dmn-moddle": "^12.0.1",
     "epipebomb": "^1.0.0",
     "fast-glob": "^3.3.3",
-    "ids": "^3.0.1",
-    "min-dash": "^5.0.0",
+    "ids": "^3.0.2",
+    "min-dash": "^5.1.0",
     "mri": "^1.1.6",
     "p-limit": "^7.3.1",
     "parents": "^1.0.1",
-    "saxen": "^11.0.0",
+    "saxen": "^11.1.1",
     "semver": "^7.8.5",
-    "zeebe-bpmn-moddle": "^1.15.0"
+    "zeebe-bpmn-moddle": "^1.18.0"
   },
   "homepage": "https://github.com/camunda/camunda-modeler",
   "repository": {
