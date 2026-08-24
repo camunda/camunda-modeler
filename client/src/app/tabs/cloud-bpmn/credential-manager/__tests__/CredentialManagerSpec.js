@@ -491,10 +491,13 @@ describe('<CredentialManager>', function() {
         metadata: INSTANCE_METADATA
       } ]
     });
-    const { eventBus, getByRole, getByText } = renderManager({ configurationInstances });
+    const { eventBus, findByLabelText, getByRole, getByText } = renderManager({ configurationInstances });
+
+    eventBus.fire('configuration.create', createEvent());
+    const displayNameInput = await findByLabelText('Credential name');
 
     // when
-    eventBus.fire('configuration.create', createEvent());
+    fireEvent.change(displayNameInput, { target: { value: 'My Cred' } });
 
     // then
     await waitFor(() => {

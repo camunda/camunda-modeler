@@ -28,6 +28,7 @@ import {
 } from './config';
 
 import {
+  getUniqueCredentialIdentity,
   getCredentialIdError,
   toCredentialId
 } from './credentialId';
@@ -54,12 +55,17 @@ class CredentialModal extends PureComponent {
   constructor(props) {
     super(props);
 
+    const identity = props.mode === 'create'
+      ? getUniqueCredentialIdentity(props.displayName || '', props.existingCredentials)
+      : {
+        displayName: props.displayName || '',
+        credentialId: props.credentialName || ''
+      };
+
     this.state = {
-      displayName: props.displayName || '',
+      displayName: identity.displayName,
       displayNameChanged: false,
-      credentialName: props.mode === 'create'
-        ? toCredentialId(props.displayName || '')
-        : props.credentialName || '',
+      credentialName: identity.credentialId,
       credentialNameChanged: false,
       initialValues: props.initialValues,
       values: props.initialValues || {},
