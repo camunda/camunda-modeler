@@ -6,29 +6,43 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FEAT`: cache linter creation / prevent unnecessary element template reloading ([#https://github.com/camunda/camunda-modeler/pull/6092](https://github.com/camunda/camunda-modeler/pull/6092))
+* `FEAT`: cache linter creation / prevent unnecessary element template reloading ([#6092](https://github.com/camunda/camunda-modeler/pull/6092))
 * `FEAT`: cache parsed element templates ([#6091](https://github.com/camunda/camunda-modeler/pull/6091))
 * `FEAT`: reload element templates on application focus ([#6103](https://github.com/camunda/camunda-modeler/pull/6103))
 * `FEAT`: add ability to copy diagram file path ([#6059](https://github.com/camunda/camunda-modeler/pull/6059))
 * `FEAT`: allow event emitters to override tab context ([#6106](https://github.com/camunda/camunda-modeler/pull/6106))
 * `FEAT`: emit application events via event context ([#6106](https://github.com/camunda/camunda-modeler/pull/6106))
 * `FEAT`: rename Camunda 8 tenant to logical tenant ([#6109](https://github.com/camunda/camunda-modeler/pull/6109))
-* `FEAT`: de-duplicate connection manager status change devents ([#6104](https://github.com/camunda/camunda-modeler/pull/6104))
+* `FEAT`: de-duplicate connection manager status change events ([#6104](https://github.com/camunda/camunda-modeler/pull/6104))
 * `FIX`: improve performance when loading large amounts of element templates ([#5557](https://github.com/camunda/camunda-modeler/issues/5557))
 * `FIX`: correct engine profile mis-match warning ([#6105](https://github.com/camunda/camunda-modeler/pull/6105))
-* `DEPS`: update to `bpmn-js@18.24.0`
-* `DEPS`: update to `bpmn-js-element-templates@2.31.1`
+* `FIX`: do not auto-save a discarded tab on close ([#6125](https://github.com/camunda/camunda-modeler/pull/6125))
+* `FIX`: fall back to first available tab when active bottom panel tab is closed ([#6120](https://github.com/camunda/camunda-modeler/pull/6120))
+* `FIX`: avoid redundant, blocking linting on import and tab switching ([#6117](https://github.com/camunda/camunda-modeler/pull/6117))
+* `FIX`: batch tab group updates to avoid redundant re-renders in process applications ([#6116](https://github.com/camunda/camunda-modeler/pull/6116))
+* `FIX`: reuse cached Zeebe client without re-probing protocol on every connection ([#6113](https://github.com/camunda/camunda-modeler/pull/6113))
+* `DEPS`: update to `@bpmn-io/form-js@1.25.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.51.2`
-* `DEPS`: update to `bpmn-js-properties-panel@5.65.0`
-* `DEPS`: update to `@camunda/linting@3.54.0`
-* `DEPS`: update to `@bpmn-io/variable-outline@3.3.1`
-* `DEPS`: update to `@camunda/improved-canvas@1.10.4`
+* `DEPS`: update to `@bpmn-io/variable-outline@3.3.2`
+* `DEPS`: update to `@camunda/form-linting@0.25.0`
+* `DEPS`: update to `@camunda/form-playground@0.26.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.11.0`
+* `DEPS`: update to `@camunda/linting@3.54.1`
 * `DEPS`: update to `@camunda/task-testing@6.0.1`
-* `DEPS`: update to `camunda-bpmn-js@5.32.0`
-* `DEPS`: update to `diagram-js@15.24.0`
-* `DEPS`: update to `react@19.2.8`
-* `DEPS`: update to `semver@7.8.5`
+* `DEPS`: update to `bpmn-js@18.25.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.33.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.65.0`
+* `DEPS`: update to `bpmn-moddle@10.1.0`
+* `DEPS`: update to `camunda-bpmn-js@5.33.0`
+* `DEPS`: update to `diagram-js@15.24.1`
+* `DEPS`: update to `ids@3.0.2`
+* `DEPS`: update to `min-dash@5.1.0`
+* `DEPS`: update to `min-dom@5.3.0`
 * `DEPS`: update to `p-limit@7.3.1`
+* `DEPS`: update to `react@19.2.8`
+* `DEPS`: update to `saxen@11.1.1`
+* `DEPS`: update to `semver@7.8.5`
+* `DEPS`: update to `zeebe-bpmn-moddle@1.18.0`
 
 ### BPMN
 
@@ -41,6 +55,12 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: enable FEEL compatibility linting based on the configured engine version ([#5735](https://github.com/camunda/camunda-modeler/issues/5735), [bpmn-io/bpmn-js-properties-panel#1247](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1247), [bpmn-io/properties-panel#533](https://github.com/bpmn-io/properties-panel/pull/533))
 * `FEAT`: support configuration templates via `zeebe:configuration` binding ([bpmn-io/bpmn-js-element-templates#263](https://github.com/bpmn-io/bpmn-js-element-templates/pull/263))
 * `FEAT`: manage credentials for configuration templates ([#6099](https://github.com/camunda/camunda-modeler/pull/6099))
+* `FEAT`: support credential management for clusters with disabled authentication ([#6130](https://github.com/camunda/camunda-modeler/pull/6130))
+* `FEAT`: support `zeebe:agentDefinition` extension element and element template binding for service tasks and ad-hoc sub-processes ([camunda/zeebe-bpmn-moddle#94](https://github.com/camunda/zeebe-bpmn-moddle/pull/94), [bpmn-io/bpmn-js-element-templates#286](https://github.com/bpmn-io/bpmn-js-element-templates/pull/286))
+* `FEAT`: surface element template configuration state via warnings and descriptions ([bpmn-io/bpmn-js-element-templates#287](https://github.com/bpmn-io/bpmn-js-element-templates/pull/287))
+* `FEAT`: add semantic warning tokens and `.has-warning` entry modifier ([bpmn-io/properties-panel#544](https://github.com/bpmn-io/properties-panel/pull/544))
+* `FEAT`: use CSS for textarea auto-resize ([bpmn-io/properties-panel#540](https://github.com/bpmn-io/properties-panel/pull/540))
+* `FEAT`: show the append indicator instead of the full pad when the selected element has an outgoing sequence flow ([camunda/improved-canvas#99](https://github.com/camunda/improved-canvas/pull/99))
 * `FIX`: surface the reason of instance start failed during task testing ([#6076](https://github.com/camunda/camunda-modeler/pull/6076))
 * `FIX`: set explicit `z-index` on minimap ([bpmn-io/diagram-js-minimap#118](https://github.com/bpmn-io/diagram-js-minimap/pull/118))
 * `FIX`: do not copy message flows without participants ([bpmn-io/bpmn-js#1902](https://github.com/bpmn-io/bpmn-js/issues/1902), [bpmn-io/bpmn-js#2475](https://github.com/bpmn-io/bpmn-js/pull/2475))
@@ -50,6 +70,17 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: correctly render sticky headers with multiple properties panels ([bpmn-io/properties-panel#539](https://github.com/bpmn-io/properties-panel/pull/539))
 * `FIX`: only show text popup editor scrollbar when content overflows ([bpmn-io/properties-panel#542](https://github.com/bpmn-io/properties-panel/issues/542))
 * `FIX`: do not report errors for element templates incompatible with configured engines ([bpmn-io/bpmn-js-element-templates#273](https://github.com/bpmn-io/bpmn-js-element-templates/pull/273))
+* `FIX`: make breadcrumbs keyboard accessible and give them a background ([bpmn-io/bpmn-js#2487](https://github.com/bpmn-io/bpmn-js/pull/2487), [bpmn-io/bpmn-js#2482](https://github.com/bpmn-io/bpmn-js/issues/2482))
+* `FIX`: react to FEEL editor engine changes and force re-linting ([bpmn-io/properties-panel#543](https://github.com/bpmn-io/properties-panel/issues/543), [bpmn-io/feel-editor#114](https://github.com/bpmn-io/feel-editor/pull/114))
+* `FIX`: correct checkbox alignment and spacing across warning, error and description attachments ([bpmn-io/properties-panel#545](https://github.com/bpmn-io/properties-panel/pull/545))
+* `FIX`: preserve FEEL unsupported function message in properties panel ([camunda/linting#177](https://github.com/camunda/linting/pull/177))
+* `FIX`: render variable scope badge as non-interactive span ([bpmn-io/variable-outline#106](https://github.com/bpmn-io/variable-outline/pull/106))
+* `FIX`: do not keep selection visible after diagram destroy ([bpmn-io/diagram-js#1098](https://github.com/bpmn-io/diagram-js/pull/1098))
+
+### Forms
+
+* `FIX`: wrap long checkbox, checkbox group and radio group option labels ([bpmn-io/form-js#1545](https://github.com/bpmn-io/form-js/issues/1545))
+
 ## 5.50.1
 
 * `FIX`: make `chrome_crashpad_handler` in Linux distribution executable ([#6080](https://github.com/camunda/camunda-modeler/pull/6080))
