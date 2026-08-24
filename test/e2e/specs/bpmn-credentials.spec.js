@@ -107,9 +107,9 @@ function chooser(app) {
 }
 
 function unavailable(app) {
-  return app.page.locator('.bio-properties-panel-configuration-chooser-unavailable');
+  return app.page.locator('.bio-properties-panel-configuration-chooser .bio-properties-panel-description');
 }
 
 function placeholder(app) {
-  return app.page.locator('.bio-properties-panel-configuration-chooser-placeholder');
+  return app.page.locator('.bio-properties-panel-configuration-chooser-card--placeholder');
 }
