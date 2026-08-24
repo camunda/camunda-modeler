@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.51.0
+
 * `FEAT`: cache linter creation / prevent unnecessary element template reloading ([#6092](https://github.com/camunda/camunda-modeler/pull/6092))
 * `FEAT`: cache parsed element templates ([#6091](https://github.com/camunda/camunda-modeler/pull/6091))
 * `FEAT`: reload element templates on application focus ([#6103](https://github.com/camunda/camunda-modeler/pull/6103))
