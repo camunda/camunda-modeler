@@ -467,6 +467,30 @@ describe('<CredentialModal>', function() {
   });
 
 
+  it('should suggest a unique credential name and ID', function() {
+
+    // when
+    const { getByLabelText } = renderModal({
+      mode: 'create',
+      displayName: 'Name ',
+      existingCredentials: [
+        {
+          name: 'NAME',
+          metadata: { displayName: 'Name' }
+        },
+        {
+          name: 'NAME_1',
+          metadata: { displayName: 'Name 1' }
+        }
+      ]
+    });
+
+    // then
+    expect(getByLabelText('Credential name').value).to.equal('Name 2');
+    expect(getByLabelText('Credential ID *').value).to.equal('NAME_2');
+  });
+
+
   it('should show a required ID error when the display name is cleared', function() {
 
     // given
@@ -560,7 +584,7 @@ describe('<CredentialModal>', function() {
 
   it('should disable submit when the credential name already exists', function() {
 
-    // when
+    // given
     const { getByLabelText, getByRole, getByText } = renderModal({
       mode: 'create',
       displayName: 'My cred',
@@ -569,6 +593,9 @@ describe('<CredentialModal>', function() {
         metadata: { displayName: 'My cred' }
       } ]
     });
+
+    // when
+    fireEvent.change(getByLabelText('Credential name'), { target: { value: 'My cred' } });
 
     // then
     const input = getByLabelText('Credential name');
@@ -583,7 +610,7 @@ describe('<CredentialModal>', function() {
 
   it('should disable submit when the credential ID already exists', function() {
 
-    // when
+    // given
     const { getByLabelText, getByRole, getByText } = renderModal({
       mode: 'create',
       displayName: 'My cred',
@@ -592,6 +619,9 @@ describe('<CredentialModal>', function() {
         metadata: { displayName: 'Other credential' }
       } ]
     });
+
+    // when
+    fireEvent.change(getByLabelText('Credential ID *'), { target: { value: 'MY_CRED' } });
 
     // then
     const input = getByLabelText('Credential ID *');
