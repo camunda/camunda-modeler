@@ -73,7 +73,12 @@ export function getUniqueCredentialIdentity(displayName, existingCredentials = [
     }
   }
 
-  throw new Error('Unable to generate a unique credential identity.');
+  console.error('Unable to generate a unique credential identity.');
+
+  return {
+    displayName: normalizedDisplayName,
+    credentialId: toCredentialId(normalizedDisplayName)
+  };
 }
 
 /**
