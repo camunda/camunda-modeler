@@ -1,0 +1,85 @@
+name: CHECK_PENDING_RELEASES
+
+on:
+  workflow_dispatch:
+    inputs:
+      concurrency:
+        description: 'Number of dependencies to check in parallel'
+        default: '10'
+  schedule:
+    # noon UTC, daily
+    - cron: '0 12 * * *'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check:
+    name: Check for pending upstream releases
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # Vault OIDC/JWT auth (Slack reminder, scheduled runs only)
+    timeout-minutes: 15
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+    - name: Use Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: 24
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Compile tracked dependency list
+      run: node tasks/list-tracked-dependencies.js
+    # Only the daily reminder needs a Slack channel - manual runs are
+    # already watched live via the job summary, so skip importing/posting
+    # to avoid double notifications when someone triggers this by hand.
+    - name: Import Secrets
+      if: ${{ github.event_name == 'schedule' }}
+      id: secrets
+      uses: hashicorp/vault-action@v4.0.0
+      with:
+        url: ${{ secrets.VAULT_ADDR }}
+        method: jwt
+        role: ${{ secrets.VAULT_JWT_ROLE }}
+        path: ${{ secrets.VAULT_JWT_PATH }}
+        jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
+        exportEnv: false
+        secrets: |
+          secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;
+          secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
+    - name: Check pending releases
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_CHANNEL_ID: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
+        # Routed through env rather than interpolated directly into the
+        # script - a workflow_dispatch input is user-controlled, and
+        # splicing it into the run block as `${{ }}` would let a value
+        # like `"; rm -rf . #` break out of the quoted argument and run
+        # arbitrary shell (with GH_TOKEN in scope).
+        CONCURRENCY_INPUT: ${{ github.event.inputs.concurrency }}
+      run: |
+        node tasks/check-pending-releases.js \
+          --concurrency="${CONCURRENCY_INPUT:-10}" \
+          --json \
+          --markdown="$GITHUB_STEP_SUMMARY" \
+          --slack=pending-releases-slack.json \
+          > pending-releases.json
+    - name: Upload results
+      uses: actions/upload-artifact@v7
+      with:
+        name: pending-releases
+        path: pending-releases.json
+    # pending-releases-slack.json only exists when the check found pending
+    # releases - a quiet day sends no message, rather than a daily "all good".
+    - name: Post reminder to Slack
+      if: ${{ github.event_name == 'schedule' && hashFiles('pending-releases-slack.json') != '' }}
+      uses: slackapi/slack-github-action@v4
+      with:
+        method: chat.postMessage
+        token: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
+        payload-file-path: pending-releases-slack.json
