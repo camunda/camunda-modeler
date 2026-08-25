@@ -36,7 +36,9 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-properties-panel@5.65.0`
 * `DEPS`: update to `bpmn-moddle@10.1.0`
 * `DEPS`: update to `camunda-bpmn-js@5.33.0`
+* `DEPS`: update to `camunda-dmn-js@3.8.2`
 * `DEPS`: update to `diagram-js@15.24.1`
+* `DEPS`: update to `dmn-js@17.10.2`
 * `DEPS`: update to `ids@3.0.2`
 * `DEPS`: update to `min-dash@5.1.0`
 * `DEPS`: update to `min-dom@5.3.0`
@@ -79,6 +81,11 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: preserve FEEL unsupported function message in properties panel ([camunda/linting#177](https://github.com/camunda/linting/pull/177))
 * `FIX`: render variable scope badge as non-interactive span ([bpmn-io/variable-outline#106](https://github.com/bpmn-io/variable-outline/pull/106))
 * `FIX`: do not keep selection visible after diagram destroy ([bpmn-io/diagram-js#1098](https://github.com/bpmn-io/diagram-js/pull/1098))
+
+### DMN
+
+* `FIX`: do not create a variable per default ([#6136](https://github.com/camunda/camunda-modeler/issues/6136), [camunda/camunda-dmn-js#176](https://github.com/camunda/camunda-dmn-js/pull/176))
+* `FIX`: open literal expression decisions without variable element ([bpmn-io/dmn-js#1023](https://github.com/bpmn-io/dmn-js/pull/1023))
 
 ### Forms
 
