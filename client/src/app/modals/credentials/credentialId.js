@@ -8,6 +8,8 @@
  * except in compliance with the MIT License.
  */
 
+import { generateId } from '../../../util';
+
 const FALLBACK = 'CREDENTIAL';
 
 const RESERVED_NAMES = new Set([
@@ -32,53 +34,54 @@ const MAX_NAME_LENGTH = 256;
 /**
  * Derive the cluster-variable name a credential is stored under. It becomes the
  * FEEL handle (`=camunda.vars.env.<id>`) and is fixed once created, so it must
- * satisfy the `^[a-z_][a-z0-9_]*$` shape.
+ * use lowercase snake case and satisfy the `^[a-z_][a-z0-9_]*$` shape.
  *
  * @param {string} displayName
  * @returns {string}
  */
 export function toCredentialId(displayName) {
   const slug = displayName
-    .toUpperCase()
-    .replace(/[^A-Z0-9]+/g, '_')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '');
 
   if (!slug) {
     return '';
   }
 
-  return /^[A-Z_]/.test(slug) ? slug : `${ FALLBACK }_${ slug }`;
+  return /^[a-z_]/.test(slug) ? slug : `${ FALLBACK.toLowerCase() }_${ slug }`;
 }
 
-export function getUniqueCredentialIdentity(displayName, existingCredentials = []) {
+export function generateCredentialIdSuffix() {
+  return generateId().slice(-6);
+}
+
+export function getUniqueCredentialIdentity(displayName, existingCredentials = [], suffix) {
   const normalizedDisplayName = displayName.trim();
   const displayNames = new Set(
     existingCredentials.map(credential => credential.metadata?.displayName?.trim())
   );
-  const credentialIds = new Set(
-    existingCredentials.map(credential => credential.name)
-  );
 
-  for (let suffix = 0; suffix <= existingCredentials.length * 2; suffix++) {
-    const uniqueDisplayName = suffix
-      ? `${ normalizedDisplayName } ${ suffix }`
+  for (let index = 0; index <= existingCredentials.length; index++) {
+    const uniqueDisplayName = index
+      ? `${ normalizedDisplayName } ${ index + 1 }`
       : normalizedDisplayName;
-    const credentialId = toCredentialId(uniqueDisplayName);
 
-    if (!displayNames.has(uniqueDisplayName) && !credentialIds.has(credentialId)) {
+    if (!displayNames.has(uniqueDisplayName)) {
       return {
         displayName: uniqueDisplayName,
-        credentialId
+        credentialId: toRandomCredentialId(uniqueDisplayName, suffix)
       };
     }
   }
 
   console.error('Unable to generate a unique credential identity.');
+}
 
-  return {
-    displayName: normalizedDisplayName,
-    credentialId: toCredentialId(normalizedDisplayName)
-  };
+export function toRandomCredentialId(displayName, suffix) {
+  const credentialId = toCredentialId(displayName);
+
+  return credentialId ? `${ credentialId }_${ suffix }` : '';
 }
 
 /**
