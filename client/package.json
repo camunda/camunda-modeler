@@ -10,6 +10,7 @@
     "@bpmn-io/align-to-origin": "^0.7.0",
     "@bpmn-io/cm-theme": "^0.2.2",
     "@bpmn-io/dmn-migrate": "^0.7.1",
+    "@bpmn-io/element-template-chooser": "^3.0.0",
     "@bpmn-io/extract-process-variables": "^2.2.1",
     "@bpmn-io/form-js": "^1.25.0",
     "@bpmn-io/properties-panel": "^3.51.2",

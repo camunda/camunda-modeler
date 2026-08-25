@@ -11,6 +11,7 @@
 import BpmnModeler from 'camunda-bpmn-js/lib/camunda-platform/Modeler';
 
 import addExporterModule from '@bpmn-io/add-exporter';
+import elementTemplateChooserModule from '@bpmn-io/element-template-chooser';
 
 import completeDirectEditingModule from './features/complete-direct-editing';
 import globalClipboardModule from './features/global-clipboard';
@@ -72,6 +73,7 @@ const defaultModules = BpmnModeler.prototype._modules;
 const extensionModules = [
   addExporterModule,
   completeDirectEditingModule,
+  elementTemplateChooserModule,
   globalClipboardModule,
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,

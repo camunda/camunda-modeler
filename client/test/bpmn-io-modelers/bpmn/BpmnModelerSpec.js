@@ -11,6 +11,8 @@
 import { expect } from 'chai';
 import TestContainer from 'mocha-test-container-support';
 
+import { waitFor } from '@testing-library/react';
+
 import BpmnModeler from '../../../src/app/tabs/bpmn/modeler/BpmnModeler';
 
 import diagramXML from './diagram.bpmn';
@@ -108,6 +110,31 @@ describe('BpmnModeler', function() {
             event = new KeyboardEvent('keydown', { target: modelerContainer });
 
       expect(() => editorActions.trigger('appendElement', event)).not.to.throw();
+    });
+
+  });
+
+
+  describe('element template chooser', function() {
+
+    it('should open chooser on <elementTemplates.select>', async function() {
+
+      // given
+      const modeler = await createModeler({ container: modelerContainer });
+
+      const eventBus = modeler.get('eventBus'),
+            popupMenu = modeler.get('popupMenu'),
+            elementRegistry = modeler.get('elementRegistry');
+
+      const element = elementRegistry.get('StartEvent_1');
+
+      // when
+      eventBus.fire('elementTemplates.select', { element });
+
+      // then
+      await waitFor(() => {
+        expect(popupMenu.isOpen()).to.be.true;
+      });
     });
 
   });
