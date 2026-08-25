@@ -795,6 +795,10 @@ export class DmnEditor extends CachedComponent {
       });
     }
 
+    if (action === 'showLintError') {
+      return;
+    }
+
     return modeler.getActiveViewer()
       .get('editorActions')
       .trigger(action, context);

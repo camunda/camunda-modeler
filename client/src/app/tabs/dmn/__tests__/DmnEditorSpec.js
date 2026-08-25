@@ -1405,6 +1405,35 @@ describe('<DmnEditor>', function() {
 
   describe('#triggerAction', function() {
 
+    it('should NOT trigger editor action for lint error', async function() {
+
+      // given
+      const triggerSpy = sinon.spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new DmnModeler({
+            editorActions: {
+              trigger: triggerSpy
+            }
+          })
+        }
+      });
+
+      const { instance } = await renderEditor(diagramXML, { cache });
+
+      triggerSpy.resetHistory();
+
+      // when
+      instance.triggerAction('showLintError', { id: 'foo' });
+
+      // then
+      expect(triggerSpy).not.to.have.been.called;
+    });
+
+
     it('should return value of editor action', async function() {
 
       // given
