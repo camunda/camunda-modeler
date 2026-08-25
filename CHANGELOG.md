@@ -59,6 +59,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: manage credentials for configuration templates ([#6099](https://github.com/camunda/camunda-modeler/pull/6099))
 * `FEAT`: support credential management for clusters with disabled authentication ([#6130](https://github.com/camunda/camunda-modeler/pull/6130))
 * `FEAT`: support `zeebe:agentDefinition` extension element and element template binding for service tasks and ad-hoc sub-processes ([#6094](https://github.com/camunda/camunda-modeler/issues/6094))
+* `FEAT`: fix agent tool configuration mistakes from the properties panel ([#6115](https://github.com/camunda/camunda-modeler/issues/6115))
 * `FEAT`: surface element template configuration state via warnings and descriptions ([bpmn-io/bpmn-js-element-templates#287](https://github.com/bpmn-io/bpmn-js-element-templates/pull/287))
 * `FEAT`: add semantic warning tokens and `.has-warning` entry modifier ([bpmn-io/properties-panel#544](https://github.com/bpmn-io/properties-panel/pull/544))
 * `FEAT`: use CSS for textarea auto-resize ([bpmn-io/properties-panel#540](https://github.com/bpmn-io/properties-panel/pull/540))
