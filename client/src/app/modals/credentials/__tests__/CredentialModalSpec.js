@@ -104,16 +104,14 @@ describe('<CredentialModal>', function() {
   });
 
 
-  it('should allow submit when the credential name is empty', function() {
-
-    // given
-    const { getByLabelText, getByRole } = renderModal({ mode: 'create', displayName: '' });
+  it('should disable submit when the credential name is empty', function() {
 
     // when
-    fireEvent.change(getByLabelText('Credential ID *'), { target: { value: 'MY_CRED' } });
+    const { getByRole, queryByText } = renderModal({ mode: 'create', displayName: '' });
 
     // then
-    expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
+    expect(queryByText(/=camunda\.vars\.env\./)).not.to.exist;
+    expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
   });
 
 
@@ -424,9 +422,9 @@ describe('<CredentialModal>', function() {
     });
 
     expect(onSubmit.firstCall.args[0]).to.include({
-      displayName: 'My cred',
-      name: 'MY_CRED'
+      displayName: 'My cred'
     });
+    expect(onSubmit.firstCall.args[0].name).to.match(/^my_cred_[a-z0-9]{6}$/);
   });
 
 
@@ -454,23 +452,24 @@ describe('<CredentialModal>', function() {
   });
 
 
-  it('should suggest the credential ID from the display name', function() {
+  it('should generate the credential reference from the display name', function() {
 
     // when
-    const { getByLabelText } = renderModal({
+    const { getByText, queryByLabelText } = renderModal({
       mode: 'create',
       displayName: 'My Slack workspace'
     });
 
     // then
-    expect(getByLabelText('Credential ID *').value).to.equal('MY_SLACK_WORKSPACE');
+    expect(queryByLabelText('Credential ID *')).not.to.exist;
+    expect(getByText(/^=camunda\.vars\.env\.my_slack_workspace_[a-z0-9]{6}$/)).to.exist;
   });
 
 
-  it('should show a required ID error when the display name is cleared', function() {
+  it('should hide the credential reference when the display name is cleared', function() {
 
     // given
-    const { getByLabelText, getByRole, getByText } = renderModal({
+    const { getByLabelText, getByRole, queryByText } = renderModal({
       mode: 'create',
       displayName: 'My Slack workspace'
     });
@@ -479,89 +478,50 @@ describe('<CredentialModal>', function() {
     fireEvent.change(getByLabelText('Credential name'), { target: { value: '' } });
 
     // then
-    const input = getByLabelText('Credential ID *');
-
-    expect(input.value).to.equal('');
-    expect(input.classList.contains('is-invalid')).to.be.true;
-    expect(getByText('Credential ID is required.')).to.exist;
+    expect(queryByText(/=camunda\.vars\.env\./)).not.to.exist;
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
   });
 
 
-  it('should submit an overridden credential ID', async function() {
+  it('should preserve the generated suffix when the display name changes', function() {
 
     // given
-    const onSubmit = sinon.spy();
-    const { getByLabelText, getByRole } = renderModal({
-      mode: 'create',
-      displayName: 'My Slack workspace',
-      onSubmit
-    });
-
-    // when
-    fireEvent.change(getByLabelText('Credential ID *'), { target: { value: 'SLACK_PROD' } });
-    fireEvent.click(getByRole('button', { name: 'Create and select' }));
-
-    // then
-    await waitFor(() => {
-      expect(onSubmit).to.have.been.calledWithMatch({ name: 'SLACK_PROD' });
-    });
-  });
-
-
-  it('should not replace an overridden credential ID when the display name changes', function() {
-
-    // given
-    const { getByLabelText } = renderModal({
+    const { getByLabelText, getByText } = renderModal({
       mode: 'create',
       displayName: 'My Slack workspace'
     });
-
-    fireEvent.change(getByLabelText('Credential ID *'), { target: { value: 'SLACK_PROD' } });
+    const suffix = getByText(/^=camunda\.vars\.env\.my_slack_workspace_[a-z0-9]{6}$/)
+      .textContent.slice(-6);
 
     // when
     fireEvent.change(getByLabelText('Credential name'), { target: { value: 'Renamed credential' } });
 
     // then
-    expect(getByLabelText('Credential ID *').value).to.equal('SLACK_PROD');
+    expect(getByText(`=camunda.vars.env.renamed_credential_${ suffix }`)).to.exist;
   });
 
 
-  it('should render the credential ID as read-only in edit mode', function() {
-
-    // when
-    const { getByLabelText } = renderModal({
-      mode: 'edit',
-      displayName: 'My cred',
-      credentialName: 'MY_CRED'
-    });
-
-    // then
-    expect(getByLabelText('Credential ID *').readOnly).to.be.true;
-  });
-
-
-  it('should disable submit when the credential ID is invalid', function() {
+  it('should preserve the credential reference when the display name changes in edit mode', function() {
 
     // given
-    const { getByLabelText, getByRole, getByText } = renderModal({
-      mode: 'create',
-      displayName: 'My cred'
+    const { getByLabelText, getByText } = renderModal({
+      mode: 'edit',
+      displayName: 'My Slack workspace',
+      credentialName: 'my_slack_workspace_abcdef'
     });
 
     // when
-    fireEvent.change(getByLabelText('Credential ID *'), { target: { value: '123-invalid' } });
+    fireEvent.change(getByLabelText('Credential name'), { target: { value: 'Renamed credential' } });
 
     // then
-    expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
-    expect(getByText(/must contain only letters, numbers, and underscores/)).to.exist;
+    expect(getByText('=camunda.vars.env.my_slack_workspace_abcdef')).to.exist;
   });
 
 
-  it('should disable submit when the credential name already exists', function() {
+  it('should suggest a unique credential name and reference', function() {
 
     // when
-    const { getByLabelText, getByRole, getByText } = renderModal({
+    const { getByLabelText, getByRole, getByText, queryByText } = renderModal({
       mode: 'create',
       displayName: 'My cred',
       existingCredentials: [ {
@@ -573,34 +533,10 @@ describe('<CredentialModal>', function() {
     // then
     const input = getByLabelText('Credential name');
 
-    expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
-    expect(getByText('A credential with this name already exists. Choose a different name.')).to.exist;
-    expect(input.classList.contains('is-invalid')).to.be.true;
-    expect(input.closest('.form-group').classList.contains('has-error')).to.be.true;
-    expect(input.getAttribute('aria-invalid')).to.equal('true');
-  });
-
-
-  it('should disable submit when the credential ID already exists', function() {
-
-    // when
-    const { getByLabelText, getByRole, getByText } = renderModal({
-      mode: 'create',
-      displayName: 'My cred',
-      existingCredentials: [ {
-        name: 'MY_CRED',
-        metadata: { displayName: 'Other credential' }
-      } ]
-    });
-
-    // then
-    const input = getByLabelText('Credential ID *');
-
-    expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
-    expect(getByText('A credential with this ID already exists. Choose a different ID.')).to.exist;
-    expect(input.classList.contains('is-invalid')).to.be.true;
-    expect(input.closest('.form-group').classList.contains('has-error')).to.be.true;
-    expect(input.getAttribute('aria-invalid')).to.equal('true');
+    expect(input.value).to.equal('My cred 2');
+    expect(getByText(/^=camunda\.vars\.env\.my_cred_2_[a-z0-9]{6}$/)).to.exist;
+    expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
+    expect(queryByText(/already exists/)).not.to.exist;
   });
 
 
@@ -639,7 +575,7 @@ describe('<CredentialModal>', function() {
     const { getByText } = renderModal({ mode: 'create', displayName: 'My cred' });
 
     // then
-    expect(getByText(/=camunda\.vars\.env\.MY_CRED/)).to.exist;
+    expect(getByText(/^=camunda\.vars\.env\.my_cred_[a-z0-9]{6}$/)).to.exist;
   });
 
 

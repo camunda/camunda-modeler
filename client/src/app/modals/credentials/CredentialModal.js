@@ -28,8 +28,10 @@ import {
 } from './config';
 
 import {
+  generateCredentialIdSuffix,
+  getUniqueCredentialIdentity,
   getCredentialIdError,
-  toCredentialId
+  toRandomCredentialId
 } from './credentialId';
 
 import * as css from './CredentialModal.css';
@@ -54,13 +56,24 @@ class CredentialModal extends PureComponent {
   constructor(props) {
     super(props);
 
+    const credentialIdSuffix = props.mode === 'create'
+      ? generateCredentialIdSuffix()
+      : null;
+    const identity = props.mode === 'create'
+      ? getUniqueCredentialIdentity(
+        props.displayName || '',
+        props.existingCredentials,
+        credentialIdSuffix
+      )
+      : {
+        displayName: props.displayName || '',
+        credentialId: props.credentialName || ''
+      };
+
     this.state = {
-      displayName: props.displayName || '',
-      displayNameChanged: false,
-      credentialName: props.mode === 'create'
-        ? toCredentialId(props.displayName || '')
-        : props.credentialName || '',
-      credentialNameChanged: false,
+      displayName: identity.displayName,
+      credentialName: identity.credentialId,
+      credentialIdSuffix,
       initialValues: props.initialValues,
       values: props.initialValues || {},
       checkedValues: props.initialValues || {},
@@ -171,20 +184,12 @@ class CredentialModal extends PureComponent {
   handleDisplayNameChange = (event) => {
     const displayName = event.target.value;
 
-    this.setState(state => ({
+    this.setState(({ credentialIdSuffix, credentialName }) => ({
       displayName,
-      displayNameChanged: true,
-      credentialName: this.props.mode === 'create' && !state.credentialNameChanged
-        ? toCredentialId(displayName)
-        : state.credentialName
+      credentialName: this.props.mode === 'create'
+        ? toRandomCredentialId(displayName, credentialIdSuffix)
+        : credentialName
     }));
-  };
-
-  handleCredentialNameChange = (event) => {
-    this.setState({
-      credentialName: event.target.value,
-      credentialNameChanged: true
-    });
   };
 
   handleFieldChange(id, value) {
@@ -294,19 +299,12 @@ class CredentialModal extends PureComponent {
     const { loading, mode, onClose } = this.props;
     const {
       credentialName,
-      credentialNameChanged,
       displayName,
-      displayNameChanged,
       submitting,
       error
     } = this.state;
 
     const displayNameError = this.getDuplicateDisplayNameError();
-    const credentialNameError = getCredentialIdError(credentialName) || this.getDuplicateCredentialNameError();
-    const showCredentialNameError = credentialNameError
-      && (credentialNameChanged || displayNameChanged || credentialName);
-
-    const isCreate = mode === 'create';
 
     return (
       <Modal onClose={ submitting ? null : onClose }>
@@ -338,25 +336,6 @@ class CredentialModal extends PureComponent {
                   >
                     { displayNameError }
                   </p>
-                ) }
-              </div>
-
-              <div className={ showCredentialNameError ? 'form-group has-error' : 'form-group' }>
-                <label htmlFor="credential-id">Credential ID *</label>
-                <input
-                  id="credential-id"
-                  className={ showCredentialNameError ? 'form-control is-invalid' : 'form-control' }
-                  type="text"
-                  value={ credentialName }
-                  readOnly={ !isCreate }
-                  aria-invalid={ showCredentialNameError ? 'true' : undefined }
-                  aria-describedby={ showCredentialNameError
-                    ? 'credential-id-error credential-id-help'
-                    : credentialName ? 'credential-id-help' : undefined }
-                  onChange={ isCreate ? this.handleCredentialNameChange : undefined }
-                />
-                { showCredentialNameError && (
-                  <p className="credential-modal-error" id="credential-id-error">{ credentialNameError }</p>
                 ) }
                 { credentialName && (
                   <p className="form-text" id="credential-id-help">

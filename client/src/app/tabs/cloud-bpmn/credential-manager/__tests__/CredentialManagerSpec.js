@@ -464,10 +464,10 @@ describe('<CredentialManager>', function() {
   });
 
 
-  it('should suggest a display name and credential ID from the element name', async function() {
+  it('should suggest a display name and credential reference from the element name', async function() {
 
     // given
-    const { eventBus, getByLabelText } = renderManager();
+    const { eventBus, getByLabelText, getByText } = renderManager();
 
     // when
     eventBus.fire('configuration.create', createEvent({
@@ -477,12 +477,12 @@ describe('<CredentialManager>', function() {
     // then
     await waitFor(() => {
       expect(getByLabelText('Credential name').value).to.equal('My credential');
-      expect(getByLabelText('Credential ID *').value).to.equal('MY_CREDENTIAL');
+      expect(getByText(/^=camunda\.vars\.env\.my_credential_[a-z0-9]{6}$/)).to.exist;
     });
   });
 
 
-  it('should prevent creating a duplicate credential', async function() {
+  it('should suggest a unique name when a credential already exists', async function() {
 
     // given
     const configurationInstances = createConfigurationInstances({
@@ -491,16 +491,17 @@ describe('<CredentialManager>', function() {
         metadata: INSTANCE_METADATA
       } ]
     });
-    const { eventBus, getByRole, getByText } = renderManager({ configurationInstances });
+    const { eventBus, findByLabelText, getByRole, getByText } = renderManager({ configurationInstances });
 
     // when
     eventBus.fire('configuration.create', createEvent());
+    const displayNameInput = await findByLabelText('Credential name');
 
     // then
     await waitFor(() => {
-      expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
-      expect(getByText(/A credential with this name already exists/)).to.exist;
-      expect(getByText(/A credential with this ID already exists/)).to.exist;
+      expect(displayNameInput.value).to.equal('My Cred 2');
+      expect(getByText(/^=camunda\.vars\.env\.my_cred_2_[a-z0-9]{6}$/)).to.exist;
+      expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
     });
   });
 
