@@ -511,11 +511,16 @@ function buildSlackPayload(results, channel) {
 
   if (!pending.length) return null;
 
-  const lines = [ `:warning: *${pending.length} bpmn.io/Camunda package(s) have unreleased upstream changes*` ];
+  const lines = [
+    `[fyi] [dependencies] I found the following package${ pending.length === 1 ? '' : 's' } with unreleased changes:`,
+    ''
+  ];
 
   for (const r of pending) {
-    lines.push(`• <${r.compareUrl}|${r.name}> - ${r.matchingCommits.length} commit(s) past \`${r.latestTag}\``);
+    lines.push(`* <${r.compareUrl}|${r.name}> - ${r.matchingCommits.length} commit(s) past \`${r.latestTag}\``);
   }
+
+  lines.push('', 'What is not released does not ship to the user - let\'s get them released and incorporated!');
 
   return { channel, text: lines.join('\n') };
 }
