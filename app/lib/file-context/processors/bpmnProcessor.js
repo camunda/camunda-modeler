@@ -10,7 +10,7 @@
 
 const { BpmnModdle } = require('bpmn-moddle');
 
-const zeebe = require('zeebe-bpmn-moddle/resources/zeebe');
+const zeebe = require('zeebe-bpmn-moddle/resources/zeebe.json');
 
 const moddle = new BpmnModdle({ zeebe });
 
