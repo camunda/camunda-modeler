@@ -4559,6 +4559,94 @@ describe('<App>', function() {
     });
 
 
+    it('should expose shared lint fixes as Problems actions', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const [ currentTab ] = await app.openFiles([
+        createFile('1.form', {
+          contents: 'foo'
+        })
+      ]);
+
+      const report = {
+        id: 'Task_1',
+        message: 'Fixable finding'
+      };
+
+      sinon.stub(app, 'getTabLinter').resolves({
+        lint: async () => [ report ]
+      });
+
+      const resolvedFix = {
+        label: 'Input from agent',
+        ariaLabel: 'Input from agent: fill in the key as count',
+        tooltip: 'Fill in the key as count.'
+      };
+
+      const triggerAction = sinon.stub().resolves(resolvedFix);
+
+      app.tabRef.current = { triggerAction };
+
+      // when
+      await app.lintTab(currentTab);
+
+      // then
+      await waitFor(() => {
+        expect(app.getLintingState(currentTab)).to.have.length(1);
+      });
+
+      const [ result ] = app.getLintingState(currentTab);
+
+      expect(triggerAction).to.have.been.calledOnceWith(
+        'resolve-linting-fix',
+        { report }
+      );
+      expect(result.action).to.deep.equal({
+        handler: 'apply-linting-fix',
+        label: resolvedFix.label,
+        ariaLabel: resolvedFix.ariaLabel,
+        title: resolvedFix.tooltip,
+        options: { report }
+      });
+    });
+
+
+    it('should not expose a Problems action without a shared resolved fix', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const [ currentTab ] = await app.openFiles([
+        createFile('1.form', {
+          contents: 'foo'
+        })
+      ]);
+
+      const report = {
+        id: 'Task_1',
+        message: 'Stale finding'
+      };
+
+      sinon.stub(app, 'getTabLinter').resolves({
+        lint: async () => [ report ]
+      });
+
+      app.tabRef.current = {
+        triggerAction: sinon.stub().resolves(null)
+      };
+
+      // when
+      await app.lintTab(currentTab);
+
+      // then
+      await waitFor(() => {
+        expect(app.getLintingState(currentTab)).to.deep.equal([ report ]);
+      });
+    });
+
+
     it('should lint tab (custom contents)', async function() {
 
       // given

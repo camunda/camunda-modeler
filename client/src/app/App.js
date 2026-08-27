@@ -1174,7 +1174,34 @@ export class App extends PureComponent {
       log('linted tab', { tabId: tab.id });
     }
 
+    results = await Promise.all(results.map(async report => {
+      const resolvedFix = await this.resolveLintingFix(tab, report);
+
+      if (!resolvedFix) {
+        return report;
+      }
+
+      return {
+        ...report,
+        action: {
+          handler: 'apply-linting-fix',
+          label: resolvedFix.label,
+          ariaLabel: resolvedFix.ariaLabel,
+          title: resolvedFix.tooltip,
+          options: { report }
+        }
+      };
+    }));
+
     this.setLintingState(tab, results);
+  };
+
+  resolveLintingFix = (tab, report) => {
+    if (tab !== this.state.activeTab || !this.tabRef.current) {
+      return null;
+    }
+
+    return this.tabRef.current.triggerAction('resolve-linting-fix', { report });
   };
 
   /**

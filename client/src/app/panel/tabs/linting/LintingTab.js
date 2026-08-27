@@ -150,7 +150,8 @@ function LintingTabItem(props) {
               stopPropagation(event);
               onAction(report.action.handler, report.action.options);
             } }
-            title={ report.action.label }>
+            aria-label={ report.action.ariaLabel }
+            title={ report.action.title || report.action.label }>
             { report.action.label }
           </button>
         )
