@@ -1101,6 +1101,10 @@ export class App extends PureComponent {
       },
       tabLoadingState: 'shown'
     });
+
+    this.resolveStoredLintingFixes(tab).catch(error => {
+      this.handleError(error, tab);
+    });
   };
 
   /**
@@ -1179,26 +1183,56 @@ export class App extends PureComponent {
       log('linted tab', { tabId: tab.id });
     }
 
-    results = await Promise.all(results.map(async report => {
-      const resolvedFix = await this.resolveLintingFix(tab, report);
+    if (tab !== this.state.activeTab) {
+      this.setLintingState(tab, results);
+
+      return;
+    }
+
+    results = await this.resolveLintingFixes(tab, results);
+
+    this.setLintingState(tab, results);
+  };
+
+  resolveLintingFixes = (tab, reports) => {
+    return Promise.all(reports.map(async report => {
+      const unresolvedReport = removeLintingFixAction(report);
+      const resolvedFix = await this.resolveLintingFix(tab, unresolvedReport);
 
       if (!resolvedFix) {
-        return report;
+        return unresolvedReport;
       }
 
       return {
-        ...report,
+        ...unresolvedReport,
         action: {
           handler: 'apply-linting-fix',
           label: resolvedFix.label,
           ariaLabel: resolvedFix.ariaLabel,
           title: resolvedFix.tooltip,
-          options: { report }
+          options: { report: unresolvedReport }
         }
       };
     }));
+  };
 
-    this.setLintingState(tab, results);
+  resolveStoredLintingFixes = async (tab) => {
+    const results = this.state.lintingState[ tab.id ];
+
+    if (!results || !LINTING_FIX_TAB_TYPES.includes(tab.type)) {
+      return;
+    }
+
+    const resolvedResults = await this.resolveLintingFixes(tab, results);
+
+    if (
+      tab !== this.state.activeTab ||
+      results !== this.state.lintingState[ tab.id ]
+    ) {
+      return;
+    }
+
+    this.setLintingState(tab, resolvedResults);
   };
 
   resolveLintingFix = (tab, report) => {
@@ -2924,6 +2958,18 @@ function getNextTab(tabs, activeTab, direction) {
   }
 
   return tabs[nextIdx];
+}
+
+function removeLintingFixAction(report) {
+  if (report.action?.handler !== 'apply-linting-fix') {
+    return report;
+  }
+
+  const unresolvedReport = { ...report };
+
+  delete unresolvedReport.action;
+
+  return unresolvedReport;
 }
 
 export default WithCache(App);

@@ -4613,6 +4613,114 @@ describe('<App>', function() {
     });
 
 
+    it('should resolve shared lint fixes after returning to a tab', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const [ currentTab ] = await app.openFiles([
+        createFile('1.bpmn', {
+          contents: 'foo'
+        })
+      ]);
+
+      const report = {
+        id: 'Task_1',
+        message: 'Fixable finding'
+      };
+
+      const linting = pDefer();
+
+      sinon.stub(app, 'getTabLinter').resolves({
+        lint: () => linting.promise
+      });
+
+      sinon.stub(app, 'setLintingState').callsFake((tab, results) => {
+        app.state.lintingState = {
+          ...app.state.lintingState,
+          [ tab.id ]: results
+        };
+      });
+
+      const resolvedFix = {
+        label: 'Input from agent',
+        ariaLabel: 'Input from agent: fill in the key as count',
+        tooltip: 'Fill in the key as count.'
+      };
+
+      const resolveLintingFix = sinon.stub(app, 'resolveLintingFix').resolves(resolvedFix);
+
+      const lintTab = app.lintTab(currentTab);
+
+      app.state.activeTab = { id: 'other-tab' };
+      linting.resolve([ report ]);
+
+      await lintTab;
+
+      expect(app.getLintingState(currentTab)).to.deep.equal([ report ]);
+      expect(resolveLintingFix).not.to.have.been.called;
+
+      // when
+      app.state.activeTab = currentTab;
+      await app.resolveStoredLintingFixes(currentTab);
+
+      // then
+      expect(app.getLintingState(currentTab)[0].action).to.deep.equal({
+        handler: 'apply-linting-fix',
+        label: resolvedFix.label,
+        ariaLabel: resolvedFix.ariaLabel,
+        title: resolvedFix.tooltip,
+        options: { report }
+      });
+
+      expect(resolveLintingFix).to.have.been.calledWith(currentTab, report);
+    });
+
+
+    it('should remove a stale shared lint fix after returning to a tab', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const [ currentTab ] = await app.openFiles([
+        createFile('1.bpmn', {
+          contents: 'foo'
+        })
+      ]);
+
+      const report = {
+        id: 'Task_1',
+        message: 'Stale finding'
+      };
+
+      sinon.stub(app, 'setLintingState').callsFake((tab, results) => {
+        app.state.lintingState = {
+          ...app.state.lintingState,
+          [ tab.id ]: results
+        };
+      });
+
+      app.state.lintingState = {
+        [ currentTab.id ]: [ {
+          ...report,
+          action: {
+            handler: 'apply-linting-fix',
+            label: 'Fix',
+            options: { report }
+          }
+        } ]
+      };
+
+      sinon.stub(app, 'resolveLintingFix').resolves(null);
+
+      // when
+      await app.resolveStoredLintingFixes(currentTab);
+
+      // then
+      expect(app.getLintingState(currentTab)).to.deep.equal([ report ]);
+    });
+
+
     it('should not resolve BPMN fixes for DMN reports', async function() {
 
       // given
