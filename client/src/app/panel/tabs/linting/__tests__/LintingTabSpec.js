@@ -249,6 +249,7 @@ describe('<LintingTab>', function() {
     expect(link).to.exist;
     expect(link.textContent).to.equal('Input from agent');
     expect(link.title).to.equal('Fill in the key as count.');
+    expect(link.classList.contains('agent-config-autofill-button')).to.be.true;
   });
 
 
