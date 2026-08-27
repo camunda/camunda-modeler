@@ -88,6 +88,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: do not create a variable per default ([#6136](https://github.com/camunda/camunda-modeler/issues/6136), [camunda/camunda-dmn-js#176](https://github.com/camunda/camunda-dmn-js/pull/176))
 * `FIX`: open literal expression decisions without variable element ([bpmn-io/dmn-js#1023](https://github.com/bpmn-io/dmn-js/pull/1023))
 * `FIX`: remove Variable properties panel group for decisions ([camunda/camunda-dmn-js#177](https://github.com/camunda/camunda-dmn-js/pull/177))
+* `FIX`: do not throw when clicking the engine version mismatch message ([#6124](https://github.com/camunda/camunda-modeler/issues/6124))
 
 ### Forms
 
