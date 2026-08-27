@@ -12,9 +12,9 @@ import { is } from 'bpmn-js/lib/util/ModelUtil';
 
 import { BpmnModdle } from 'bpmn-moddle';
 
-import CamundaBpmnModdle from 'camunda-bpmn-moddle/resources/camunda';
-import ZeebeBpmnModdle from 'zeebe-bpmn-moddle/resources/zeebe';
-import ModelerModdle from 'modeler-moddle/resources/modeler';
+import CamundaBpmnModdle from 'camunda-bpmn-moddle/resources/camunda.json';
+import ZeebeBpmnModdle from 'zeebe-bpmn-moddle/resources/zeebe.json';
+import ModelerModdle from 'modeler-moddle/resources/modeler.json';
 
 import { selfAndAllFlowElements } from './elementsUtil';
 import parseExecutionPlatform from '../app/util/parseExecutionPlatform';
