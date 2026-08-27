@@ -71,9 +71,23 @@ describe('LintingFix', function() {
     expect(commandStack.execute).not.to.have.been.called;
   });
 
+
+  it('should do nothing when the reported element was removed', function() {
+
+    // given
+    const { commandStack, linting, modeler, report } = createScenario('=fromAi(url)', false);
+
+    // when
+    applyLintingFix(modeler, report);
+
+    // then
+    expect(linting.showError).not.to.have.been.called;
+    expect(commandStack.execute).not.to.have.been.called;
+  });
+
 });
 
-function createScenario(source) {
+function createScenario(source, elementExists = true) {
   const moddleElement = {
     source,
     target: 'url',
@@ -107,7 +121,7 @@ function createScenario(source) {
   const services = {
     commandStack,
     elementRegistry: {
-      get: () => element
+      get: () => elementExists ? element : null
     },
     linting
   };

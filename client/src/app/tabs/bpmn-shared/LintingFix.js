@@ -32,8 +32,7 @@ export function resolveLintingFix(modeler, report) {
 }
 
 export function applyLintingFix(modeler, report) {
-  const element = getReportElement(modeler, report);
-  const resolvedFix = resolveFix(report, element);
+  const resolvedFix = resolveLintingFix(modeler, report);
 
   if (!resolvedFix) {
     return;
