@@ -90,6 +90,11 @@ const FILTER_ALL_EXTENSIONS = {
 
 const EMPTY_LINTING_STATE = [];
 
+const LINTING_FIX_TAB_TYPES = [
+  'bpmn',
+  'cloud-bpmn'
+];
+
 /**
  * Additional lint sources contribute warnings on top of the content linter's
  * results. Unlike content linting - which is expensive and cached per tab -
@@ -1197,7 +1202,11 @@ export class App extends PureComponent {
   };
 
   resolveLintingFix = (tab, report) => {
-    if (tab !== this.state.activeTab || !this.tabRef.current) {
+    if (
+      tab !== this.state.activeTab ||
+      !LINTING_FIX_TAB_TYPES.includes(tab.type) ||
+      !this.tabRef.current
+    ) {
       return null;
     }
 

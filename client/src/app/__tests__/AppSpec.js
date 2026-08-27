@@ -4565,7 +4565,7 @@ describe('<App>', function() {
       const { app } = createApp();
 
       const [ currentTab ] = await app.openFiles([
-        createFile('1.form', {
+        createFile('1.bpmn', {
           contents: 'foo'
         })
       ]);
@@ -4613,13 +4613,49 @@ describe('<App>', function() {
     });
 
 
+    it('should not resolve BPMN fixes for DMN reports', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const [ currentTab ] = await app.openFiles([
+        createFile('1.dmn', {
+          contents: 'foo'
+        })
+      ]);
+
+      const report = {
+        id: 'Decision_1',
+        message: 'DMN finding'
+      };
+
+      sinon.stub(app, 'getTabLinter').resolves({
+        lint: async () => [ report ]
+      });
+
+      const triggerAction = sinon.stub().throws(new Error('unknown action'));
+
+      app.tabRef.current = { triggerAction };
+
+      // when
+      await app.lintTab(currentTab);
+
+      // then
+      await waitFor(() => {
+        expect(app.getLintingState(currentTab)).to.deep.equal([ report ]);
+      });
+
+      expect(triggerAction).not.to.have.been.called;
+    });
+
+
     it('should not expose a Problems action without a shared resolved fix', async function() {
 
       // given
       const { app } = createApp();
 
       const [ currentTab ] = await app.openFiles([
-        createFile('1.form', {
+        createFile('1.bpmn', {
           contents: 'foo'
         })
       ]);
