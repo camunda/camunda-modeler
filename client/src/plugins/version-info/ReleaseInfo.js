@@ -47,24 +47,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Browse the append and create menus by category</h4>
-          Elements are now grouped into categories with short descriptions, making them easier to find.
+          <h4>Configure connectors through credentials</h4>
+          Set up connectors that reference cluster-provided credentials. Manage cluster credentials from within Modeler.
         </li>
         <li>
-          <h4>Improved context pad</h4>
-          Unfinished flows now display an append indicator that opens the append menu on hover.
+          <h4>Reorganized BPMN element menus</h4>
+          The append and create menus now group elements into tabs, making the one you need easier to find.
         </li>
         <li>
-          <h4>Smoother FEEL editing</h4>
-          FEEL inputs now provide clearer syntax highlighting and easier snippet navigation.
+          <h4>Improved performance in many areas</h4>
+          Faster element template loading and linting, plus quicker cluster connections, make the Modeler noticeably snappier — especially in large process applications.
         </li>
         <li>
-          <h4>More accurate variable outline</h4>
-          The variable outline now recognizes more FEEL built-ins and understands expressions better.
-        </li>
-        <li>
-          <h4>Support for new C8 features</h4>
-          You can now set the Business ID of a Call Activity, and specify the priority of a job.
+          <h4>Support for Camunda 8.10 and quality of life</h4>
+          Model AI agents using the new agent definitions for service tasks and ad-hoc sub-processes, and enjoy many smaller fixes and refinements across the app.
         </li>
       </ul>
     </div>
