@@ -25,7 +25,7 @@
     "parents": "^1.0.1",
     "saxen": "^11.1.1",
     "semver": "^7.8.5",
-    "zeebe-bpmn-moddle": "^1.18.0"
+    "zeebe-bpmn-moddle": "^2.0.0"
   },
   "homepage": "https://github.com/camunda/camunda-modeler",
   "repository": {
