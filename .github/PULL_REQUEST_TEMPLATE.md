@@ -10,6 +10,10 @@ changes.
 
 Ensure you provide everything we need to review your contribution:
 
+<!--
+Do not alter this checklist beyond checking items; provide context above.
+-->
+
 * [ ] Contribution __meets our [definition of done](https://github.com/bpmn-io/.github/blob/main/resources/DEFINITION_OF_DONE.md)__
 * [ ] Pull request __establishes context__
   * [ ] __Link to related issue(s)__, i.e. `Closes {LINK_TO_ISSUE}` or `Related to {LINK_TO_ISSUE}`
