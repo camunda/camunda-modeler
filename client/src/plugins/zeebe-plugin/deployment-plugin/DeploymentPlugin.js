@@ -26,7 +26,8 @@ export default function DeploymentPlugin(props) {
     log,
     subscribe,
     triggerAction,
-    connectionCheckResult
+    connectionCheckResult,
+    emit
   } = props;
 
   const [ activeTab, setActiveTab ] = useState(null);
@@ -102,6 +103,7 @@ export default function DeploymentPlugin(props) {
         renderHeader={ <><TabIcon width="16" height="16" />Deploy { tabName }</> }
         renderSubmit={ `Deploy ${ tabName }` }
         triggerAction={ triggerAction }
+        emit={ emit }
       />
     ) }
   </>;

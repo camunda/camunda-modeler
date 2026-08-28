@@ -124,6 +124,60 @@ describe('DeploymentPlugin', function() {
     });
   });
 
+
+  it('should forward <emit> to overlay (deployment event)', async function() {
+
+    // given
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
+    });
+
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const deployment = new Deployment({
+      async getConnectionForTab() {
+        return { deployment: {}, endpoint: DEFAULT_ENDPOINT };
+      },
+      on: sinon.spy()
+    });
+
+    const emit = sinon.spy();
+
+    const { getByTitle, getByRole } = createDeploymentPlugin({
+      subscribe,
+      triggerAction,
+      emit,
+      _getGlobal: (name) => name === 'deployment' ? deployment : undefined
+    });
+
+    fireEvent.click(getByTitle('Open file deployment'));
+
+    await waitFor(() => {
+      expect(getByRole('dialog')).to.exist;
+    });
+
+    expect(deployment.on).to.have.been.calledWith('deployed', sinon.match.func);
+
+    // when
+    // simulating <deployed> event as emitted by the deployment
+    deployment.on.getCall(0).args[1]({
+      deploymentResult: { success: true, response: {} },
+      endpoint: { targetType: 'camundaCloud' },
+      gatewayVersion: '8.0.0'
+    });
+
+    // then
+    expect(emit).to.have.been.calledWith('deployment.done', sinon.match.object);
+  });
+
 });
 
 const DEFAULT_ACTIVE_TAB = {
@@ -163,7 +217,8 @@ function createDeploymentPlugin(props = {}) {
     displayNotification = () => {},
     log = () => {},
     subscribe = () => {},
-    triggerAction = () => {}
+    triggerAction = () => {},
+    emit = () => {}
   } = props;
 
   return render(<SlotFillRoot>
@@ -174,6 +229,7 @@ function createDeploymentPlugin(props = {}) {
       displayNotification={ displayNotification }
       log={ log }
       subscribe={ subscribe }
-      triggerAction={ triggerAction } />
+      triggerAction={ triggerAction }
+      emit={ emit } />
   </SlotFillRoot>);
 }
