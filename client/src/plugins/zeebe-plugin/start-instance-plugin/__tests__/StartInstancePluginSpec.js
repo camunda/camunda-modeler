@@ -151,6 +151,72 @@ describe('StartInstancePlugin', function() {
     });
   });
 
+
+  it('should forward <emit> to overlay (deployment event)', async function() {
+
+    // given
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
+    });
+
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const deployment = new Deployment({
+      async getConnectionForTab() {
+        return { deployment: {}, endpoint: DEFAULT_ENDPOINT };
+      },
+      on: sinon.spy()
+    });
+
+    const emit = sinon.spy();
+
+    const { container } = createStartInstancePlugin({
+      subscribe,
+      triggerAction,
+      emit,
+      _getGlobal: (name) => {
+        if (name === 'deployment') {
+          return deployment;
+        } else if (name === 'startInstance') {
+          return new StartInstance({
+            async getConfigForFile() {
+              return {};
+            }
+          });
+        } else if (name === 'zeebeAPI') {
+          return new ZeebeAPI();
+        }
+      }
+    });
+
+    fireEvent.click(container.querySelector('.btn'));
+
+    await waitFor(() => {
+      expect(document.querySelector('[role="dialog"]')).to.exist;
+    });
+
+    expect(deployment.on).to.have.been.calledWith('deployed', sinon.match.func);
+
+    // when
+    // simulating <deployed> event as emitted by the deployment
+    deployment.on.getCall(0).args[1]({
+      deploymentResult: { success: true, response: {} },
+      endpoint: { targetType: 'camundaCloud' },
+      gatewayVersion: '8.0.0'
+    });
+
+    // then
+    expect(emit).to.have.been.calledWith('deployment.done', sinon.match.object);
+  });
+
 });
 
 const DEFAULT_ACTIVE_TAB = {
@@ -185,7 +251,7 @@ function createStartInstancePlugin(props = {}) {
         });
       } else if (name === 'startInstance') {
         return new StartInstance({
-          async getConnectionForTab(file) {
+          async getConfigForFile(file) {
             return {};
           }
         });
@@ -196,7 +262,8 @@ function createStartInstancePlugin(props = {}) {
     displayNotification = () => {},
     log = () => {},
     subscribe = () => {},
-    triggerAction = () => {}
+    triggerAction = () => {},
+    emit = () => {}
   } = props;
 
   return render(<SlotFillRoot>
@@ -207,6 +274,7 @@ function createStartInstancePlugin(props = {}) {
       displayNotification={ displayNotification }
       log={ log }
       subscribe={ subscribe }
-      triggerAction={ triggerAction } />
+      triggerAction={ triggerAction }
+      emit={ emit } />
   </SlotFillRoot>);
 }
