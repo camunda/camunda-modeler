@@ -202,7 +202,7 @@ This project incorporates components from the projects listed below. The origina
 195.  @carbon/utilities@0.16.0 (https://github.com/carbon-design-system/carbon.git)
 196.  @uiw/codemirror-theme-vscode@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
 197.  @uiw/codemirror-themes@4.23.12 (https://github.com/uiwjs/react-codemirror.git)
-198.  camunda-modeler@5.51.0-rc.1 (https://github.com/camunda/camunda-modeler)
+198.  camunda-modeler@5.51.0-rc.2 (https://github.com/camunda/camunda-modeler)
 199.  bpmn-js-element-templates@2.33.0 (https://github.com/bpmn-io/bpmn-js-element-templates)
 200.  bpmn-js-properties-panel@5.65.0 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 201.  bpmn-js@18.25.1 (https://github.com/bpmn-io/bpmn-js)
@@ -9804,11 +9804,11 @@ null
 END OF @uiw/codemirror-themes@4.23.12 NOTICES AND INFORMATION
 
 
-%% camunda-modeler@5.51.0-rc.1 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-modeler@5.51.0-rc.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 null
 ==========================================
-END OF camunda-modeler@5.51.0-rc.1 NOTICES AND INFORMATION
+END OF camunda-modeler@5.51.0-rc.2 NOTICES AND INFORMATION
 
 
 %% bpmn-js-element-templates@2.33.0 NOTICES AND INFORMATION BEGIN HERE
