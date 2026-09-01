@@ -231,7 +231,7 @@ describe('<LintingTab>', function() {
           category: 'warn',
           id: 'foo',
           name: 'Engine profile',
-          message: 'This file targets Camunda 8.7, but the connected cluster runs Camunda 8.8.',
+          message: 'This file targets Camunda 8.7, but you are connected to Camunda 8.8.',
           rule: 'camunda/version-mismatch',
           action: {
             label: 'Update engine profile to 8.8',

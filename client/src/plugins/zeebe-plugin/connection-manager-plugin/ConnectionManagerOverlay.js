@@ -121,7 +121,7 @@ export function ConnectionManagerOverlay({
           </div>
 
           <div className={ classNames('form-group form-description') }>
-            A connection to a running <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>orchestration cluster</a> lets you test tasks, deploy resources, and run processes.
+            A connection to <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/connect-to-camunda-8/') }>Camunda 8</a> lets you test tasks, deploy resources, and run processes.
           </div>
         </form>
       </Section.Body>

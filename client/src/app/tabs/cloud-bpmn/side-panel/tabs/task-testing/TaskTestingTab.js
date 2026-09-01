@@ -38,11 +38,11 @@ export const DEFAULT_CONFIG = {
 export const MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION = '8.8.0';
 export const SUPPORTED_PROTOCOL = 'rest';
 
-export const CANNOT_CONNECT_TITLE = 'Couldn\'t connect to Camunda';
-export const CANNOT_CONNECT_DESCRIPTION = 'Configure a REST connection to a Camunda 8 cluster.';
+export const CANNOT_CONNECT_TITLE = 'Couldn\'t connect to Camunda 8';
+export const CANNOT_CONNECT_DESCRIPTION = 'Configure a REST connection to Camunda 8.';
 
 export const UNSUPPORTED_PROTOCOL_TITLE = 'REST connection required';
-export const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST connection to a Camunda 8 cluster. The current connection uses gRPC.';
+export const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST connection. The current connection uses gRPC.';
 
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE = 'Execution platform version not supported';
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
@@ -50,7 +50,7 @@ export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing 
 export const LINTING_ERRORS_TITLE = 'Diagram has errors';
 export const LINTING_ERRORS_DESCRIPTION = 'Task testing requires a diagram without errors.';
 
-export const DEFAULT_CONFIGURE_DESCRIPTION = 'Configure cluster connection.';
+export const DEFAULT_CONFIGURE_DESCRIPTION = 'Configure connection.';
 
 const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/');
 
