@@ -185,13 +185,22 @@ export default function ConnectionManagerPlugin(props) {
       if (activeConnection && activeConnection.id !== NO_CONNECTION.id && !paused) {
         globalConnectionChecker.current.updateConfig({ endpoint: activeConnection });
       }
-      else {
+      else if (activeConnection) {
         globalConnectionChecker.current.stopChecking();
         globalConnectionChecker.current.updateConfig(null, false);
         setConnectionCheckResult({
           success: false,
           reason: CONNECTION_CHECK_ERROR_REASONS.NO_CONFIG,
         });
+      }
+      else {
+
+        // `activeConnection` is `null` while there is no active tab, or while
+        // the active tab's connection is still being resolved. Neither means
+        // "no connection configured", so we must not report that status - doing
+        // so surfaced a spurious connection error whenever resolving the
+        // connection took longer than `DELAYS.SHORT`.
+        globalConnectionChecker.current.stopChecking();
       }
     })();
 

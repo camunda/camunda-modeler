@@ -418,11 +418,8 @@ describe('ConnectionManagerPlugin', function() {
           connectionCheckResult: { success: true }
         });
 
-        // make React state settle
-        await waitForNextCycle(3);
-
-        // advance past ConnectionChecker SHORT delay (1000ms)
-        await clock.tickAsync(2000);
+        // wait for the connection to resolve and the first check to run
+        await waitForStatusChanges(clock, emit, 1);
 
         // then
         expect(emit).to.have.been.calledWith(
@@ -512,9 +509,9 @@ describe('ConnectionManagerPlugin', function() {
             emit,
           });
 
-          // make React state settle and let the connection resolve
-          await waitForNextCycle(3);
-          await clock.tickAsync(2000);
+          // wait for the active tab's connection to resolve
+          await waitForClock(clock, () => getEmits(emit, 'connectionManager.connectionCheckStarted')
+            .some(call => call.args[1].connectionId === DEFAULT_CONNECTIONS[0].id));
 
           // then
           expect(emit).to.have.been.calledWith(
@@ -556,9 +553,8 @@ describe('ConnectionManagerPlugin', function() {
               connectionCheckResult: { success }
             });
 
-            // make React state settle and let initial checks run
-            await waitForNextCycle(3);
-            await clock.tickAsync(2000);
+            // let the connection resolve and the initial check run
+            await waitForStatusChanges(clock, emit, 1);
 
             // isolate: reset history so assertions only cover the next check cycle
             emit.resetHistory();
@@ -612,9 +608,8 @@ describe('ConnectionManagerPlugin', function() {
             connectionCheckResult: { success: true }
           });
 
-          // make React state settle and let initial checks run
-          await waitForNextCycle(3);
-          await clock.tickAsync(2000);
+          // let the connection resolve and the initial check run
+          await waitForStatusChanges(clock, emit, 1);
 
           // cancel the in-progress check by opening settings (triggers stopChecking)
           openSettings();
@@ -641,11 +636,11 @@ describe('ConnectionManagerPlugin', function() {
 
       describe('connectionManager.connectionStatusChanged de-duplication', function() {
 
-        function createGetGlobal(checkConnection, settings) {
+        function createGetGlobal(checkConnection, settings, getConnectionForTab = () => Promise.resolve(DEFAULT_CONNECTIONS[0])) {
           return (name) => {
             if (name === 'deployment') {
               return new Deployment({
-                getConnectionForTab: () => Promise.resolve(DEFAULT_CONNECTIONS[0]),
+                getConnectionForTab,
                 async setConnectionForFile() {},
                 getEndpoints() {
                   return settings.get('connectionManagerPlugin.c8connections') || [];
@@ -688,15 +683,13 @@ describe('ConnectionManagerPlugin', function() {
           });
 
           // when - initial check + several periodic checks all return the same result
-          await waitForNextCycle(3);
-          await clock.tickAsync(2000);
+          await waitForStatusChanges(clock, emit, 1);
           await clock.tickAsync(5000);
           await clock.tickAsync(5000);
 
           // then - status change is emitted exactly once
-          const statusChangedCalls = emit.getCalls().filter(
-            call => call.args[0] === 'connectionManager.connectionStatusChanged'
-          );
+          const statusChangedCalls = getStatusChanges(emit);
+
           expect(statusChangedCalls).to.have.lengthOf(1);
           expect(statusChangedCalls[0].args[1]).to.include({ success: true });
         });
@@ -722,22 +715,53 @@ describe('ConnectionManagerPlugin', function() {
           });
 
           // when - first check succeeds
-          await waitForNextCycle(3);
-          await clock.tickAsync(2000);
+          await waitForStatusChanges(clock, emit, 1);
 
           // ...then the connection starts failing
           currentResult = { success: false, reason: 'CONTACT_POINT_UNAVAILABLE' };
-          await clock.tickAsync(5000);
+          await waitForStatusChanges(clock, emit, 2);
 
           // then - status change emitted for both the success and the error
-          const statusChangedCalls = emit.getCalls().filter(
-            call => call.args[0] === 'connectionManager.connectionStatusChanged'
+          const statusChangedCalls = getStatusChanges(emit);
+
+          expect(statusChangedCalls).to.have.lengthOf(2);
+          expect(statusChangedCalls[0].args[1]).to.include({ success: true });
+          expect(statusChangedCalls[1].args[1])
+            .to.include({ success: false, reason: 'CONTACT_POINT_UNAVAILABLE' });
+        });
+
+
+        it('should not report a connection error while the connection is still being resolved', async function() {
+
+          // given
+          const settings = createMockSettings({
+            'connectionManagerPlugin.c8connections': DEFAULT_CONNECTIONS
+          });
+
+          const checkConnection = () => ({ success: true, response: { gatewayVersion: '8.8.0' } });
+
+          // resolving the active tab's connection takes longer than `DELAYS.SHORT`
+          const getConnectionForTab = () => new Promise(
+            resolve => setTimeout(() => resolve(DEFAULT_CONNECTIONS[0]), 2000)
           );
 
-          expect(statusChangedCalls.length).to.be.at.least(2);
+          const emit = sinon.spy();
+
+          createConnectionManagerPlugin({
+            subscribe: createSubscribe(),
+            settings,
+            emit,
+            _getGlobal: createGetGlobal(checkConnection, settings, getConnectionForTab)
+          });
+
+          // when
+          await waitForStatusChanges(clock, emit, 1);
+
+          // then - only the actual check result is reported, no `NO_CONFIG` error
+          const statusChangedCalls = getStatusChanges(emit);
+
+          expect(statusChangedCalls).to.have.lengthOf(1);
           expect(statusChangedCalls[0].args[1]).to.include({ success: true });
-          expect(statusChangedCalls[statusChangedCalls.length - 1].args[1])
-            .to.include({ success: false, reason: 'CONTACT_POINT_UNAVAILABLE' });
         });
 
       });
@@ -1417,6 +1441,37 @@ function createPluginProps(props = {}, globals = {}) {
     connectionCheckResult,
     setConnectionCheckResult
   };
+}
+
+function getEmits(emit, event) {
+  return emit.getCalls().filter(call => call.args[0] === event);
+}
+
+function getStatusChanges(emit) {
+  return getEmits(emit, 'connectionManager.connectionStatusChanged');
+}
+
+/**
+ * Advance the fake clock until `condition` holds.
+ *
+ * Waiting for the actual condition instead of a fixed number of event loop
+ * turns keeps these assertions independent of how React schedules the
+ * intermediate re-renders, which differs between platforms.
+ */
+async function waitForClock(clock, condition, timeout = 30000) {
+  for (let elapsed = 0; elapsed <= timeout; elapsed += 100) {
+    if (condition()) {
+      return;
+    }
+
+    await clock.tickAsync(100);
+  }
+
+  throw new Error('timeout waiting for condition');
+}
+
+async function waitForStatusChanges(clock, emit, count) {
+  return waitForClock(clock, () => getStatusChanges(emit).length >= count);
 }
 
 async function waitForNextCycle(n = 1) {
