@@ -606,7 +606,7 @@ describe('<CredentialModal>', function() {
     // then
     const input = getByLabelText('API key');
 
-    expect(getByText(/was not found on this cluster/)).to.exist;
+    expect(getByText(/was not found/)).to.exist;
     expect(input.classList.contains('is-invalid')).to.be.true;
     expect(input.closest('.form-group').classList.contains('has-error')).to.be.true;
     expect(input.getAttribute('aria-invalid')).to.equal('true');
@@ -625,7 +625,7 @@ describe('<CredentialModal>', function() {
     });
 
     // then
-    expect(queryByText(/was not found on this cluster/)).not.to.exist;
+    expect(queryByText(/was not found/)).not.to.exist;
   });
 
 

@@ -305,7 +305,7 @@ describe('<CredentialManager>', function() {
       const call = unavailableCall(configurationInstances);
 
       expect(call).to.exist;
-      expect(call.unavailableMessage).to.match(/Connect to a Camunda 8 cluster/);
+      expect(call.unavailableMessage).to.match(/Connect to Camunda 8/);
     });
   });
 
@@ -313,7 +313,7 @@ describe('<CredentialManager>', function() {
   [
     [ 400, /Camunda 8\.10 or later/ ],
     [ 404, /Camunda 8\.10 or later/ ],
-    [ undefined, /Cannot reach the cluster/ ]
+    [ undefined, /Cannot reach Camunda 8/ ]
   ].forEach(([ status, unavailableMessage ]) => {
 
     it(`should mark the chooser unavailable for a failed credential search (${ status || 'offline' })`,
@@ -726,7 +726,7 @@ describe('<CredentialManager>', function() {
     // then
     await waitFor(() => {
       expect(getByRole('alert').textContent).to.equal(
-        'You do not have permission to create credentials on this cluster. Contact your cluster administrator.'
+        'You do not have permission to create credentials. Contact your administrator.'
       );
     });
   });
@@ -752,7 +752,7 @@ describe('<CredentialManager>', function() {
     // then
     await waitFor(() => {
       expect(getByRole('alert').textContent).to.equal(
-        'You do not have permission to update credentials on this cluster. Contact your cluster administrator.'
+        'You do not have permission to update credentials. Contact your administrator.'
       );
     });
   });

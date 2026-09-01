@@ -186,7 +186,7 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.equal('Cannot connect to Orchestration Cluster.');
+      expect(errorMessage.textContent).to.equal('Cannot connect to Camunda 8.');
       expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
     });
 
@@ -207,7 +207,7 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.equal('Cannot connect to Orchestration Cluster.');
+      expect(errorMessage.textContent).to.equal('Cannot connect to Camunda 8.');
       expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
     });
 
@@ -228,7 +228,7 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.equal('Unknown error. Please check Orchestration Cluster status.');
+      expect(errorMessage.textContent).to.equal('Unknown error. Please check Camunda 8 status.');
       expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
     });
 

@@ -21,7 +21,7 @@ const LABELS = {
   CAMUNDA_CLOUD: 'Camunda 8 SaaS',
   CLIENT_ID: 'Client ID',
   CLIENT_SECRET: 'Client secret',
-  CLUSTER_URL: 'Cluster URL',
+  CONNECTION_URL: 'Connection URL',
   OAUTH_AUDIENCE: 'OAuth audience',
   OAUTH_SCOPE: 'OAuth scope',
   OAUTH_URL: 'OAuth token URL',
@@ -33,7 +33,7 @@ const LABELS = {
 };
 
 const HINTS = {
-  CLUSTER_URL: 'http://localhost:8080/v2',
+  CONNECTION_URL: 'http://localhost:8080/v2',
   TENANT_ID: 'Optional',
   OPERATE_URL: 'Optional',
   TASKLIST_URL: 'Optional'
@@ -45,13 +45,13 @@ const VALIDATION_ERROR_MESSAGES = {
   BASIC_AUTH_USERNAME_MUST_NOT_BE_EMPTY: 'Username must not be empty.',
   CLIENT_ID_MUST_NOT_BE_EMPTY: 'Client ID must not be empty.',
   CLIENT_SECRET_MUST_NOT_BE_EMPTY: 'Client secret must not be empty.',
-  CLUSTER_URL_MUST_BE_VALID_CLOUD_URL: 'Must be a valid Camunda 8 SaaS URL.',
-  CONTACT_POINT_MUST_BE_URL: 'Cluster URL must be a valid URL.',
+  CONNECTION_URL_MUST_BE_VALID_CLOUD_URL: 'Must be a valid Camunda 8 SaaS URL.',
+  CONTACT_POINT_MUST_BE_URL: 'Connection URL must be a valid URL.',
   OPERATE_URL_MUST_BE_URL: 'Operate URL must be a valid URL starting with "http://" or "https://".',
   TASKLIST_URL_MUST_BE_URL: 'Tasklist URL must be a valid URL starting with "http://" or "https://".',
-  CONTACT_POINT_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
-  CLUSTER_URL_MUST_NOT_BE_EMPTY: 'Cluster URL must not be empty.',
-  CLUSTER_URL_MUST_START_WITH_PROTOCOL: 'Cluster URL must start with "http://", "grpc://", "https://", or "grpcs://".',
+  CONTACT_POINT_MUST_NOT_BE_EMPTY: 'URL must not be empty.',
+  CONNECTION_URL_MUST_NOT_BE_EMPTY: 'URL must not be empty.',
+  CONNECTION_URL_MUST_START_WITH_PROTOCOL: 'Connection URL must start with "http://", "grpc://", "https://", or "grpcs://".',
   MUST_PROVIDE_A_VALUE: 'Must provide a value.',
   OAUTH_URL_MUST_NOT_BE_EMPTY: 'OAuth URL must not be empty.',
   TENANT_ID_INVALID: 'Logical Tenant ID must be 31 characters or fewer and contain only alphanumeric characters, dots (.), dashes (-), or underscores (_).'
@@ -82,13 +82,13 @@ export const properties = [
 
   { key: 'camundaCloudClusterUrl',
     type: 'text',
-    label: LABELS.CLUSTER_URL,
+    label: LABELS.CONNECTION_URL,
     condition: { property: 'targetType', equals: TARGET_TYPES.CAMUNDA_CLOUD },
     constraints: {
-      notEmpty: VALIDATION_ERROR_MESSAGES.CLUSTER_URL_MUST_NOT_BE_EMPTY,
+      notEmpty: VALIDATION_ERROR_MESSAGES.CONNECTION_URL_MUST_NOT_BE_EMPTY,
       pattern: {
         value: REGEXES.CAMUNDA_CLOUD_URL,
-        message: VALIDATION_ERROR_MESSAGES.CLUSTER_URL_MUST_BE_VALID_CLOUD_URL
+        message: VALIDATION_ERROR_MESSAGES.CONNECTION_URL_MUST_BE_VALID_CLOUD_URL
       }
     }
   },
@@ -111,7 +111,7 @@ export const properties = [
 
   { key: 'contactPoint',
     type: 'text',
-    label: LABELS.CLUSTER_URL,
+    label: LABELS.CONNECTION_URL,
     condition: { property: 'targetType', equals: TARGET_TYPES.SELF_HOSTED },
     constraints: {
       notEmpty: VALIDATION_ERROR_MESSAGES.CONTACT_POINT_MUST_NOT_BE_EMPTY,

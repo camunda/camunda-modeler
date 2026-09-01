@@ -6,6 +6,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: rename cluster connection terminology to plain connection ([#6158](https://github.com/camunda/camunda-modeler/pull/6158))
 * `FIX`: do not report a connection error while the tab's connection is still being resolved
 
 ## 5.51.0

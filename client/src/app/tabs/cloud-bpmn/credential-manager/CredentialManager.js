@@ -58,9 +58,9 @@ const log = debug('CredentialManager');
  */
 
 const CONFIGURATION_UNAVAILABLE_MESSAGES = {
-  noConnection: 'Connect to a Camunda 8 cluster to manage credentials.',
-  offline: 'Cannot reach the cluster. Reconnect to manage credentials.',
-  unsupported: 'The connected cluster does not support credentials. Camunda 8.10 or later is required.'
+  noConnection: 'Connect to Camunda 8 to manage credentials.',
+  offline: 'Cannot reach Camunda 8. Reconnect to manage credentials.',
+  unsupported: 'Your connection does not support credentials. Camunda 8.10 or later is required.'
 };
 
 const SEARCH_PAGE_SIZE = 100;
@@ -70,10 +70,10 @@ const CREDENTIAL_REFERENCE_PREFIX = '=camunda.vars.env.';
 const CREDENTIAL_VARIABLE_KIND = 'SECRET_REFERENCE';
 
 const CREDENTIAL_CREATE_FORBIDDEN_MESSAGE =
-  'You do not have permission to create credentials on this cluster. Contact your cluster administrator.';
+  'You do not have permission to create credentials. Contact your administrator.';
 
 const CREDENTIAL_UPDATE_FORBIDDEN_MESSAGE =
-  'You do not have permission to update credentials on this cluster. Contact your cluster administrator.';
+  'You do not have permission to update credentials. Contact your administrator.';
 
 /**
  * Hosts the element-template credential chooser for a cloud BPMN tab: feeds the
@@ -522,7 +522,7 @@ export default class CredentialManager extends PureComponent {
     const endpoint = await this.getEndpoint();
 
     if (!endpoint) {
-      throw new Error('No connection to the cluster.');
+      throw new Error('No connection to Camunda 8.');
     }
 
     const value = buildCredentialValue(configurationTemplate, values);

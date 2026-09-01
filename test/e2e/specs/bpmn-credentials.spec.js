@@ -18,10 +18,10 @@ const { copyFixture } = require('../harness/files');
 
 const Modeler = require('../pages/Modeler');
 
-// The credential create / edit flow is gated on a live Camunda 8 cluster, which
+// The credential create / edit flow is gated on a live Camunda 8 connection, which
 // the offline e2e harness has none of. These specs therefore cover the offline
 // contract: the chooser renders for a credential-enabled template and prompts to
-// connect a cluster instead of offering the (unusable) create action.
+// connect instead of offering the (unusable) create action.
 test.describe('BPMN credentials chooser (Camunda 8)', function() {
 
   test('should render the credential chooser for a templated element', async function({ launch, tmp }) {
@@ -50,7 +50,7 @@ test.describe('BPMN credentials chooser (Camunda 8)', function() {
   });
 
 
-  test('should prompt to connect a cluster when offline', async function({ launch, tmp }) {
+  test('should prompt to connect when offline', async function({ launch, tmp }) {
 
     // given
     const app = await launchWithTemplate(launch, tmp);
@@ -59,7 +59,7 @@ test.describe('BPMN credentials chooser (Camunda 8)', function() {
     await revealChooser(app);
 
     // then
-    await expect(unavailable(app)).toHaveText(/Connect to a Camunda 8 cluster/);
+    await expect(unavailable(app)).toHaveText(/Connect to Camunda 8/);
   });
 
 
