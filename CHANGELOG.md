@@ -6,7 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: drop support for 32-bit Windows distributables
 * `FIX`: do not report a connection error while the tab's connection is still being resolved
+* `DEPS`: update to `electron@44.0.0`
 
 ## 5.51.0
 

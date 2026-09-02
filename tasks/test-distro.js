@@ -45,10 +45,11 @@ const {
   'on-demand': onDemand
 } = argv;
 
-const archs = [
-  (argv.ia32 || !argv.x64) && 'ia32',
-  (argv.x64 || !argv.ia32) && 'x64'
-].filter(f => f);
+if (argv.ia32) {
+  throw new Error('Windows ia32 builds are no longer supported');
+}
+
+const archs = [ 'x64' ];
 
 const platforms = [
   win && 'win',
