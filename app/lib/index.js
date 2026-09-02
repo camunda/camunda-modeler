@@ -425,6 +425,16 @@ renderer.on('zeebe:getAuthorizations', async function(options, done) {
   }
 });
 
+renderer.on('zeebe:evaluateExpression', async function(options, done) {
+  try {
+    const evaluateExpressionResponse = await zeebeAPI.evaluateExpression(options);
+
+    done(null, evaluateExpressionResponse);
+  } catch (err) {
+    done(err);
+  }
+});
+
 renderer.on('zeebe:searchClusterVariables', async function(options, done) {
   try {
     const searchClusterVariablesResponse = await zeebeAPI.searchClusterVariables(options);

@@ -776,6 +776,56 @@ class ZeebeAPI {
   }
 
   /**
+   * Evaluate a FEEL expression. Requires Camunda REST client.
+   *
+   * @param {{ endpoint: import("./endpoints").Endpoint, expression: string, variables: object }} config
+   *
+   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
+   */
+  async evaluateExpression(config) {
+    const {
+      endpoint,
+      expression,
+      variables
+    } = config;
+
+    this._log.debug('evaluate expression', {
+      parameters: sanitizeConfigWithEndpoint(config)
+    });
+
+    try {
+      const { camundaRestClient } = await this._getClients(endpoint);
+
+      if (!camundaRestClient) {
+        throw new Error('Camunda REST client is not available');
+      }
+
+      const response = await camundaRestClient.callApiEndpoint({
+        method: 'POST',
+        urlPath: 'expression/evaluation',
+        body: {
+          expression,
+          variables
+        }
+      });
+
+      return {
+        success: true,
+        response
+      };
+    } catch (err) {
+      this._log.error('evaluate expression failed', {
+        parameters: sanitizeConfigWithEndpoint(config)
+      }, err);
+
+      return {
+        success: false,
+        reason: getErrorReason(err, endpoint)
+      };
+    }
+  }
+
+  /**
    * Search cluster variables. Requires Camunda REST client.
    *
    * @param {{ endpoint: import("./endpoints").Endpoint, filter: object, page?: object }} config
