@@ -185,6 +185,18 @@ export default class ZeebeAPI {
     });
   }
 
+  evaluateExpression(options, expression, variables) {
+    let { endpoint } = options;
+
+    endpoint = getEndpointForTargetType(endpoint);
+
+    return this._backend.send('zeebe:evaluateExpression', {
+      endpoint,
+      expression,
+      variables
+    });
+  }
+
   searchClusterVariables(options, filter, page) {
     let { endpoint } = options;
 
