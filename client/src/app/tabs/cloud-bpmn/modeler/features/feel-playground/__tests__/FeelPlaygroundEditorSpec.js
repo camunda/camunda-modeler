@@ -12,6 +12,8 @@ import React from 'react';
 
 import { expect } from 'chai';
 
+import sinon from 'sinon';
+
 import {
   act,
   render,
@@ -68,6 +70,55 @@ describe('<FeelPlaygroundEditor>', function() {
     await waitFor(() => {
       expect(screen.getByText('Cluster unavailable.')).to.exist;
     });
+  });
+
+
+  it('should update context while open', async function() {
+
+    // given
+    const feelPlayground = new FeelPlayground();
+
+    render(
+      <FeelPlaygroundEditor
+        contextKey="Task_1#expression"
+        feelPlayground={ feelPlayground }
+        onInput={ () => {} }
+        value="1 + 1"
+        variables={ [] }
+      />
+    );
+
+    // when
+    act(() => feelPlayground.setContext('Task_1#expression', '{ "amount": 42 }'));
+
+    // then
+    await waitFor(() => {
+      expect(screen.getByLabelText('Evaluation context').textContent).to.equal('{ "amount": 42 }');
+    });
+  });
+
+
+  it('should save contexts when closed', function() {
+
+    // given
+    const feelPlayground = new FeelPlayground();
+    const saveContextsSpy = sinon.spy(feelPlayground, 'saveContexts');
+
+    const { unmount } = render(
+      <FeelPlaygroundEditor
+        contextKey="Task_1#expression"
+        feelPlayground={ feelPlayground }
+        onInput={ () => {} }
+        value="1 + 1"
+        variables={ [] }
+      />
+    );
+
+    // when
+    unmount();
+
+    // then
+    expect(saveContextsSpy).to.have.been.calledOnce;
   });
 
 });

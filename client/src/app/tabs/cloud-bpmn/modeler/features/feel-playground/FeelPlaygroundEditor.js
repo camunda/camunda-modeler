@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useSyncExternalStore } from 'react';
 
 import { FeelPlayground } from '@camunda/feel-playground';
 
@@ -35,19 +35,22 @@ export default function FeelPlaygroundEditor(props) {
   } = props;
 
   const config = useSyncExternalStore(feelPlayground.subscribe, feelPlayground.getConfig);
-
-  const cachedContext = feelPlayground.getContext(contextKey);
-  const [ context, setContext ] = useState(
-    () => cachedContext || EMPTY_CONTEXT
+  const context = useSyncExternalStore(
+    feelPlayground.subscribeContext,
+    () => feelPlayground.getContext(contextKey) ?? EMPTY_CONTEXT
   );
+
+  useEffect(() => {
+    return () => {
+      feelPlayground.saveContexts();
+    };
+  }, [ feelPlayground ]);
 
   const handleExpressionChange = (nextExpression) => {
     onInput(nextExpression);
   };
 
   const handleContextChange = (nextContext) => {
-    setContext(nextContext);
-
     feelPlayground.setContext(contextKey, nextContext);
   };
 
