@@ -231,6 +231,8 @@ export class BpmnEditor extends CachedComponent {
 
     if (prevProps.file?.path !== this.props.file?.path) {
       this.loadTemplates();
+
+      this.getCached().feelPlayground.setFile(this.props.file);
     }
 
     const { layout = {} } = this.props;
@@ -1118,13 +1120,11 @@ export class BpmnEditor extends CachedComponent {
     } = Metadata;
 
     const {
-      connectionCheckResult,
       getPlugins,
       emit,
       onError,
       layout = {},
-      settings,
-      zeebeApi
+      settings
     } = props;
 
     // notify interested parties that modeler will be configured
@@ -1153,7 +1153,7 @@ export class BpmnEditor extends CachedComponent {
       );
     }
 
-    const feelPlayground = new FeelPlayground();
+    const feelPlayground = new FeelPlayground(props.config);
 
     const modeler = new BpmnModeler({
       ...options,
@@ -1182,9 +1182,7 @@ export class BpmnEditor extends CachedComponent {
       createFeelPlaygroundPopup(feelPlayground)
     );
 
-    feelPlayground.setConfig(
-      getFeelPlaygroundConfig(connectionCheckResult, zeebeApi)
-    );
+    feelPlayground.setFile(props.file);
 
     modeler.on('elementTemplates.errors', (event) => {
       console.warn('Element templates errors', event.errors);
@@ -1201,6 +1199,7 @@ export class BpmnEditor extends CachedComponent {
 
     return {
       __destroy: () => {
+        feelPlayground.saveContexts();
         modeler.destroy();
       },
       engineProfile: null,
