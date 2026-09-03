@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
-import { waitFor, fireEvent, getByRole } from '@testing-library/react';
+import { act, waitFor, fireEvent, getByRole } from '@testing-library/react';
 
 import { find } from 'min-dash';
 
@@ -109,6 +109,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // then
       expect(createSpy).not.to.have.been.called;
     });
+
 
   });
 
@@ -3095,6 +3096,30 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(instance).to.exist;
       expect(instance.getModeler().additionalModules).to.exist;
       expect(instance.getModeler().additionalModules).to.have.length(1);
+    });
+
+  });
+
+
+  describe('FEEL expression evaluation', function() {
+
+    it('should update playground configuration when the connection changes', async function() {
+
+      // given
+      const { instance, emit } = await renderEditor(diagramXML);
+      const { feelPlayground } = instance.getCached();
+      const setConfigSpy = sinon.spy(feelPlayground, 'setConfig');
+
+      // when
+      act(() => emit('connectionManager.connectionStatusChanged', {
+        connection: { id: 'cluster' },
+        response: { gatewayVersion: '8.9.0' },
+        success: true
+      }));
+
+      // then
+      expect(setConfigSpy).to.have.been.calledOnce;
+      expect(setConfigSpy.firstCall.args[0].onEvaluate).to.be.a('function');
     });
 
   });
