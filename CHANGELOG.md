@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: do not block drag and drop inside nested editors (e.g. reordering DMN decision table rows/columns) ([#6168](https://github.com/camunda/camunda-modeler/pull/6168))
+
 ## 5.51.0
 
 * `FEAT`: cache linter creation / prevent unnecessary element template reloading ([#6092](https://github.com/camunda/camunda-modeler/pull/6092))

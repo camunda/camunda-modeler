@@ -158,6 +158,45 @@ describe('<DropZone>', function() {
     });
 
 
+    it('should let a drop that carries no file bubble past the zone (e.g. an internal drag-and-drop)', function() {
+
+      // a non-file drop (e.g. reordering rows in a nested dmn-js decision
+      // table) relies on its own `drop` handler further up the DOM tree, on
+      // `document`; this drop zone wraps that tree and must let such events
+      // bubble on past it rather than swallowing them
+      // (https://github.com/camunda/camunda-modeler/issues/6166)
+      //
+      // `fireEvent.drop` builds a real native DragEvent from `MockDragEvent`
+      // (used only as a property bag — its own no-op `stopPropagation` is
+      // never actually invoked), so this spies on the real `Event.prototype`
+      // method rather than on the mock, and independently confirms the event
+      // still reaches a `document`-level listener, i.e. it truly bubbles
+
+      // given — a listener above the zone's own React root, mirroring where
+      // dmn-js's own drag-and-drop handling lives in the real app
+      const { dropzone } = renderDropZone();
+
+      const stopPropagationSpy = sinon.spy(window.Event.prototype, 'stopPropagation');
+      const outerDropSpy = sinon.spy();
+
+      document.addEventListener('drop', outerDropSpy);
+
+      try {
+
+        // when
+        fireEvent.drop(dropzone, new MockDragEvent());
+
+        // then
+        expect(stopPropagationSpy).to.have.not.been.called;
+        expect(outerDropSpy).to.have.been.calledOnce;
+      } finally {
+        document.removeEventListener('drop', outerDropSpy);
+        stopPropagationSpy.restore();
+      }
+
+    });
+
+
     it('should call passed onDrop prop with filepaths from file', async function() {
 
       // given
