@@ -83,6 +83,10 @@ export const EMPTY_TAB = {
 
 const ENCODING_UTF8 = 'utf8';
 
+// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+const BACK_MOUSE_BUTTON = 3;
+const FORWARD_MOUSE_BUTTON = 4;
+
 const FILTER_ALL_EXTENSIONS = {
   name: 'All Files',
   extensions: [ '*' ]
@@ -1443,7 +1447,39 @@ export class App extends PureComponent {
     this.on('tab.activeSheetChanged', () => {
       this.closeNotifications();
     });
+
+    window.addEventListener('mousedown', this.handleMouseDown);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('mousedown', this.handleMouseDown);
+  }
+
+  /**
+   * Navigate the tab history via the pointer device's back / forward buttons.
+   *
+   * @param {MouseEvent} event
+   */
+  handleMouseDown = (event) => {
+    const { button } = event;
+
+    if (button !== BACK_MOUSE_BUTTON && button !== FORWARD_MOUSE_BUTTON) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const { tabs } = this.state;
+
+    if (!tabs.length) {
+      return;
+    }
+
+    this.triggerAction(
+      'select-tab',
+      button === BACK_MOUSE_BUTTON ? 'previous' : 'next'
+    );
+  };
 
   componentDidUpdate(prevProps, prevState) {
 
