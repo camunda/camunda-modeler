@@ -12,7 +12,7 @@
     "@bpmn-io/dmn-migrate": "^0.7.1",
     "@bpmn-io/extract-process-variables": "^2.2.1",
     "@bpmn-io/form-js": "^1.25.0",
-    "@bpmn-io/properties-panel": "^3.51.2",
+    "@bpmn-io/properties-panel": "^3.54.0",
     "@bpmn-io/replace-ids": "^0.2.0",
     "@bpmn-io/svg-to-image": "^1.0.1",
     "@bpmn-io/variable-outline": "^3.3.2",
