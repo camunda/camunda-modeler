@@ -130,8 +130,7 @@ describe('<FeelPlaygroundPopup>', function() {
 
 // helpers //////////
 
-function renderPopup(container, props = {}) {
-  const Popup = createFeelPlaygroundPopup(new FeelPlayground());
+function renderPopup(container, props = {}, Popup = createFeelPlaygroundPopup(new FeelPlayground())) {
 
   act(() => render(
     <Popup
