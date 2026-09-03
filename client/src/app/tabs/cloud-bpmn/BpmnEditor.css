@@ -20,6 +20,29 @@
     --bjs-font-family: var(--font-family);
   }
 
+  /* @camunda/feel-playground popup */
+  .feel-playground-popup .feel-playground-popup__body {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .feel-playground-popup__content,
+  .feel-playground-popup__editor {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
+
   /* @camunda/improved-canvas resets */
   .djs-container.bio-improved-canvas {
     background-color: var(--color-white);
@@ -78,4 +101,8 @@
   margin: 4px;
   width: 64px;
   height: 16px;
+}
+
+:global(.feel-playground__context-reset-tooltip) {
+  z-index: 1002;
 }

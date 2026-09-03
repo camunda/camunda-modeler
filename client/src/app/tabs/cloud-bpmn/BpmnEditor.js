@@ -48,6 +48,10 @@ import { SidePanelGroup, SidePanelConsumer } from '../../side-panel/SidePanelGro
 
 import BpmnModeler from './modeler';
 
+import FeelPlayground from './modeler/features/feel-playground/FeelPlayground';
+import { getFeelPlaygroundConfig } from './modeler/features/feel-playground/FeelPlaygroundConfig';
+import { createFeelPlaygroundPopup } from './modeler/features/feel-playground/FeelPlaygroundPopup';
+
 import { active as isInputActive, isTextInput } from '../../../util/dom/isInput';
 
 import getBpmnContextMenu from '../bpmn/getBpmnContextMenu';
@@ -292,8 +296,16 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('propertiesPanel.layoutChanged', this.handlePropertiesPanelLayoutChange);
 
     if (fn === 'on') {
+      this._connectionStatusSubscription = this.context.subscribe(
+        'connectionManager.connectionStatusChanged',
+        this.handleConnectionStatusChanged
+      );
+
       modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.linting.schedule);
-    } else if (fn === 'off') {
+    } else {
+      this._connectionStatusSubscription?.cancel();
+      this._connectionStatusSubscription = null;
+
       modeler[ fn ]('commandStack.changed', this.linting.schedule);
     }
 
@@ -351,6 +363,12 @@ export class BpmnEditor extends CachedComponent {
 
   handleAppFocused = () => {
     this.loadTemplates().catch(error => this.handleError({ error }));
+  };
+
+  handleConnectionStatusChanged = (connectionStatus) => {
+    this.getCached().feelPlayground.setConfig(
+      getFeelPlaygroundConfig(connectionStatus, this.props.zeebeApi)
+    );
   };
 
   async loadTemplates() {
@@ -1100,11 +1118,13 @@ export class BpmnEditor extends CachedComponent {
     } = Metadata;
 
     const {
+      connectionCheckResult,
       getPlugins,
       emit,
       onError,
       layout = {},
-      settings
+      settings,
+      zeebeApi
     } = props;
 
     // notify interested parties that modeler will be configured
@@ -1133,6 +1153,8 @@ export class BpmnEditor extends CachedComponent {
       );
     }
 
+    const feelPlayground = new FeelPlayground();
+
     const modeler = new BpmnModeler({
       ...options,
       position: 'absolute',
@@ -1155,6 +1177,15 @@ export class BpmnEditor extends CachedComponent {
       }
     });
 
+    modeler.get('feelPopup').registerProvider(
+      'feel',
+      createFeelPlaygroundPopup(feelPlayground)
+    );
+
+    feelPlayground.setConfig(
+      getFeelPlaygroundConfig(connectionCheckResult, zeebeApi)
+    );
+
     modeler.on('elementTemplates.errors', (event) => {
       console.warn('Element templates errors', event.errors);
     });
@@ -1173,6 +1204,7 @@ export class BpmnEditor extends CachedComponent {
         modeler.destroy();
       },
       engineProfile: null,
+      feelPlayground,
       lastXML: null,
       modeler,
       stackIdx,
