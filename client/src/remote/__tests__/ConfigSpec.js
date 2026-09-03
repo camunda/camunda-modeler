@@ -232,6 +232,91 @@ describe('config', function() {
   });
 
 
+  describe('#updateFiles', function() {
+
+    beforeEach(function() {
+      backend = new FilesBackend();
+
+      config = new Config(backend);
+    });
+
+
+    it('should serialize updates', async function() {
+
+      // when
+      await Promise.all([
+        config.updateFiles(files => ({ ...files, first: true })),
+        config.updateFiles(files => ({ ...files, second: true }))
+      ]);
+
+      // then
+      expect(backend.files).to.eql({
+        first: true,
+        second: true
+      });
+    });
+
+
+    it('should skip write if files did not change', async function() {
+
+      // when
+      await config.updateFiles(files => files);
+
+      // then
+      expect(backend.writes).to.equal(0);
+    });
+
+
+    it('should continue after failed update', async function() {
+
+      // given
+      const failed = config.updateFiles(() => {
+        throw new Error('update failed');
+      });
+
+      // when
+      const update = config.updateFiles(files => ({ ...files, first: true }));
+
+      // then
+      expect(await getError(failed)).to.exist;
+
+      await update;
+
+      expect(backend.files).to.eql({ first: true });
+    });
+
+
+    it('should read file config after pending updates', async function() {
+
+      // given
+      const update = config.updateFiles(files => ({
+        ...files,
+        'foo.bpmn': { foo: 42 }
+      }));
+
+      // when
+      const value = await config.getForFile({ path: 'foo.bpmn' }, 'foo');
+
+      // then
+      expect(value).to.equal(42);
+
+      await update;
+    });
+
+
+    it('should reject async updater', async function() {
+
+      // when
+      const error = await getError(config.updateFiles(async files => files));
+
+      // then
+      expect(error.message).to.equal('updater must be synchronous');
+      expect(backend.writes).to.equal(0);
+    });
+
+  });
+
+
   describe('#getForPlugin', function() {
 
     it('should get', async function() {
@@ -360,3 +445,34 @@ describe('config', function() {
   });
 
 });
+
+
+// helpers //////////
+
+/**
+ * Backend that keeps the written configuration, so serialized read/modify/write
+ * cycles can be observed.
+ */
+class FilesBackend {
+  constructor() {
+    this.files = {};
+    this.writes = 0;
+  }
+
+  async send(event, key, value) {
+    if (event === 'config:get') {
+      return key === 'files' ? this.files : null;
+    }
+
+    this.files = value;
+    this.writes++;
+  }
+}
+
+async function getError(promise) {
+  try {
+    await promise;
+  } catch (error) {
+    return error;
+  }
+}
