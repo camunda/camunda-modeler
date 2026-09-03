@@ -28,6 +28,7 @@ export default class Config {
    */
   constructor(backend) {
     this.backend = backend;
+    this._filesUpdate = Promise.resolve();
   }
 
   /**
@@ -70,7 +71,7 @@ export default class Config {
   async getForFile(file, key, defaultValue = null) {
     const { path } = file;
 
-    const files = await this.get('files') || {};
+    const files = await this.updateFiles(files => files);
 
     const configForFile = files[ path ];
 
@@ -103,19 +104,54 @@ export default class Config {
   async setForFile(file, key, value) {
     const { path } = file;
 
-    const files = await this.get('files') || {};
+    const files = await this.updateFiles(files => {
+      const nextFiles = { ...files };
 
-    const configForFile = files[ path ] = files[ path ] || {};
+      if (key) {
+        nextFiles[ path ] = { ...nextFiles[ path ], [ key ]: value };
+      } else {
+        nextFiles[ path ] = value;
+      }
 
-    if (key) {
-      configForFile[ key ] = value;
-    } else {
-      files[ path ] = value;
-    }
-
-    await this.set('files', files);
+      return nextFiles;
+    });
 
     return files[ path ];
+  }
+
+  /**
+   * Read and update file configuration, serialized to avoid overlapping
+   * read/modify/write cycles.
+   *
+   * The updater must be synchronous; awaiting configuration from within it
+   * would deadlock the queue. Return the passed files to skip writing.
+   *
+   * @param {(files: Object) => Object} updater
+   *
+   * @returns {Promise<Object>}
+   */
+  updateFiles(updater) {
+    const update = async () => {
+      const files = await this.get('files') || {};
+      const nextFiles = updater(files);
+
+      // an async updater would deadlock waiting on the queue it is running in
+      if (nextFiles && typeof nextFiles.then === 'function') {
+        throw new Error('updater must be synchronous');
+      }
+
+      if (nextFiles !== files) {
+        await this.set('files', nextFiles);
+      }
+
+      return nextFiles;
+    };
+
+    const result = this._filesUpdate.then(update);
+
+    this._filesUpdate = result.catch(() => {});
+
+    return result;
   }
 
   /**
