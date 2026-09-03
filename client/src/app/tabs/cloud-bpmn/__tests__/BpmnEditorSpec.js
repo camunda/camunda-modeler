@@ -35,6 +35,8 @@ import namespaceEngineProfileXML from '../../__tests__/EngineProfile.namespace.c
 
 import applyDefaultTemplates from '../../bpmn-shared/modeler/features/apply-default-templates/applyDefaultTemplates';
 
+import FeelPlayground from '../modeler/features/feel-playground/FeelPlayground';
+
 import {
   getCanvasEntries,
   getCopyCutPasteEntries,
@@ -2050,6 +2052,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       cache.add('editor', {
         cached: {
+          feelPlayground: new FeelPlayground(),
           modeler: new BpmnModeler({
             modules: {
               elementTemplatesLoader: elementTemplatesLoaderMock
@@ -3120,6 +3123,28 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // then
       expect(setConfigSpy).to.have.been.calledOnce;
       expect(setConfigSpy.firstCall.args[0].onEvaluate).to.be.a('function');
+    });
+
+
+    it('should update playground file when the path changes', async function() {
+
+      // given
+      const { instance, rerender } = await renderEditor(diagramXML, {
+        file: { path: '/tmp/source.bpmn' }
+      });
+      const { feelPlayground } = instance.getCached();
+      const setFileSpy = sinon.spy(feelPlayground, 'setFile');
+
+      // when
+      rerender(diagramXML, {
+        file: { path: '/tmp/copy.bpmn' }
+      });
+
+      // then
+      await waitFor(() => {
+        expect(setFileSpy).to.have.been.calledOnce;
+      });
+      expect(setFileSpy.firstCall.args[0]).to.eql({ path: '/tmp/copy.bpmn' });
     });
 
   });

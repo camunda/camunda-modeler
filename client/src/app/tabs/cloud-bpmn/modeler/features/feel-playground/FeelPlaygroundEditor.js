@@ -8,21 +8,20 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 
 import { FeelPlayground } from '@camunda/feel-playground';
 
 import '@camunda/feel-playground/style.css';
 
 const DIALECT = 'expression';
-const EMPTY_CONTEXT = '{}';
 
 /**
  * The React side of the FEEL playground popup.
  *
  * The expression is owned by the properties panel entry and passed through as a
- * prop; the evaluation context is owned by the playground service so it
- * survives closing and re-opening the popup.
+ * prop; contexts changed by the user are owned by the playground service so
+ * they survive closing and re-opening the popup.
  */
 export default function FeelPlaygroundEditor(props) {
   const {
@@ -34,29 +33,38 @@ export default function FeelPlaygroundEditor(props) {
     variables
   } = props;
 
+  const [ expression, setExpression ] = useState(value);
   const config = useSyncExternalStore(feelPlayground.subscribe, feelPlayground.getConfig);
-
-  const cachedContext = feelPlayground.getContext(contextKey);
-  const [ context, setContext ] = useState(
-    () => cachedContext || EMPTY_CONTEXT
+  const storedContext = useSyncExternalStore(
+    feelPlayground.subscribeContext,
+    () => feelPlayground.getContext(contextKey)
   );
 
+  useEffect(() => {
+    setExpression(value);
+  }, [ value ]);
+
+  useEffect(() => {
+    return () => {
+      feelPlayground.saveContexts();
+    };
+  }, [ feelPlayground ]);
+
   const handleExpressionChange = (nextExpression) => {
+    setExpression(nextExpression);
     onInput(nextExpression);
   };
 
   const handleContextChange = (nextContext) => {
-    setContext(nextContext);
-
     feelPlayground.setContext(contextKey, nextContext);
   };
 
   return (
     <div className="feel-playground-popup__editor">
       <FeelPlayground
-        expression={ value }
+        expression={ expression }
         onExpressionChange={ handleExpressionChange }
-        context={ context }
+        context={ storedContext }
         onContextChange={ handleContextChange }
         dialect={ DIALECT }
         feelLanguageContext={ feelLanguageContext }
