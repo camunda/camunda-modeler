@@ -166,7 +166,10 @@ export default class Modeler {
       propertiesPanel: new PropertiesPanel(),
       selection: new Selection(),
       linting: new Linting(options.linting),
-      variableResolver: {}
+      variableResolver: {},
+      feelPopup: {
+        registerProvider() {}
+      }
     };
   }
 
