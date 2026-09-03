@@ -73,6 +73,32 @@ describe('<FeelPlaygroundPopup>', function() {
   });
 
 
+  it('should regenerate untouched context when reopened', async function() {
+
+    // given
+    const feelPlayground = new FeelPlayground();
+    const Popup = createFeelPlaygroundPopup(feelPlayground);
+
+    renderPopup(container, { value: 'foo' }, Popup);
+
+    await waitFor(() => {
+      expect(container.querySelector('[aria-label="Evaluation context"]').textContent).to.contain('"foo": null');
+    });
+
+    // when
+    act(() => render(null, container));
+    renderPopup(container, { value: 'bar' }, Popup);
+
+    // then
+    await waitFor(() => {
+      expect(container.querySelector('[aria-label="Evaluation context"]').textContent).to.contain('"bar": null');
+    });
+
+    expect(container.querySelector('[aria-label="Evaluation context"]').textContent).not.to.contain('"foo": null');
+    expect(feelPlayground.getContext('#expression')).not.to.exist;
+  });
+
+
   it('should close on Escape', async function() {
 
     // given
@@ -130,8 +156,7 @@ describe('<FeelPlaygroundPopup>', function() {
 
 // helpers //////////
 
-function renderPopup(container, props = {}) {
-  const Popup = createFeelPlaygroundPopup(new FeelPlayground());
+function renderPopup(container, props = {}, Popup = createFeelPlaygroundPopup(new FeelPlayground())) {
 
   act(() => render(
     <Popup
