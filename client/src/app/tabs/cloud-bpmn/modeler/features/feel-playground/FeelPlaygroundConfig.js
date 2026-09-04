@@ -38,8 +38,12 @@ export function getFeelPlaygroundConfig(connectionStatus, zeebeApi) {
   const gatewayVersion = semver.coerce(response?.gatewayVersion);
 
   if (!gatewayVersion || semver.lt(gatewayVersion, MIN_FEEL_EVALUATION_VERSION)) {
+    const connectedVersion = gatewayVersion
+      ? ` You are connected to Camunda ${ gatewayVersion }.`
+      : '';
+
     return {
-      evaluationUnavailable: 'FEEL expression evaluation requires Camunda 8.9 or newer.',
+      evaluationUnavailable: `FEEL expression evaluation requires Camunda 8.9 or newer.${ connectedVersion }`,
       onEvaluate: undefined
     };
   }
@@ -63,7 +67,8 @@ export function createFeelEvaluator(zeebeApi, endpoint) {
     signal.throwIfAborted();
 
     if (!response.success) {
-      throw new Error(response.reason || 'Failed to evaluate expression.');
+      const reason = response.reason?.toLowerCase() || 'unknown error';
+      throw new Error(`Failed to evaluate expression. Reason: ${reason}`);
     }
 
     return {

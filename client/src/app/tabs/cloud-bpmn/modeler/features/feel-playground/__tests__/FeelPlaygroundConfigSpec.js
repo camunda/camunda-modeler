@@ -60,6 +60,14 @@ describe('FeelPlaygroundConfig', function() {
         success: true
       });
 
+      // then
+      expect(config).to.eql({
+        evaluationUnavailable: 'FEEL expression evaluation requires Camunda 8.9 or newer. You are connected to Camunda 8.8.0.',
+        onEvaluate: undefined
+      });
+    });
+
+
     it('should disable evaluation for a gRPC connection', function() {
 
       // when
@@ -80,6 +88,13 @@ describe('FeelPlaygroundConfig', function() {
     });
 
 
+    it('should disable evaluation if the cluster version is unavailable', function() {
+
+      // when
+      const config = getFeelPlaygroundConfig({
+        connection: { id: 'cluster' },
+        success: true
+      });
 
       // then
       expect(config).to.eql({
@@ -172,7 +187,26 @@ describe('FeelPlaygroundConfig', function() {
       const error = await getRejection(evaluateExpression(evaluate));
 
       // then
-      expect(error).to.have.property('message', 'Evaluation failed');
+      expect(error).to.have.property('message', 'Failed to evaluate expression. Reason: evaluation failed');
+    });
+
+
+    it('should expose unknown evaluation failure', async function() {
+
+      // given
+      const zeebeApi = {
+        evaluateExpression: sinon.stub().resolves({
+          success: false,
+          reason: 'UNKNOWN'
+        })
+      };
+      const evaluate = createFeelEvaluator(zeebeApi, { id: 'cluster' });
+
+      // when
+      const error = await getRejection(evaluateExpression(evaluate));
+
+      // then
+      expect(error).to.have.property('message', 'Failed to evaluate expression. Reason: unknown');
     });
 
 
