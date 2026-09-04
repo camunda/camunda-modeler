@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useSyncExternalStore } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 
 import { FeelPlayground } from '@camunda/feel-playground';
 
@@ -34,11 +34,16 @@ export default function FeelPlaygroundEditor(props) {
     variables
   } = props;
 
+  const [ expression, setExpression ] = useState(value);
   const config = useSyncExternalStore(feelPlayground.subscribe, feelPlayground.getConfig);
   const context = useSyncExternalStore(
     feelPlayground.subscribeContext,
     () => feelPlayground.getContext(contextKey) ?? EMPTY_CONTEXT
   );
+
+  useEffect(() => {
+    setExpression(value);
+  }, [ value ]);
 
   useEffect(() => {
     return () => {
@@ -47,6 +52,7 @@ export default function FeelPlaygroundEditor(props) {
   }, [ feelPlayground ]);
 
   const handleExpressionChange = (nextExpression) => {
+    setExpression(nextExpression);
     onInput(nextExpression);
   };
 
@@ -57,7 +63,7 @@ export default function FeelPlaygroundEditor(props) {
   return (
     <div className="feel-playground-popup__editor">
       <FeelPlayground
-        expression={ value }
+        expression={ expression }
         onExpressionChange={ handleExpressionChange }
         context={ context }
         onContextChange={ handleContextChange }

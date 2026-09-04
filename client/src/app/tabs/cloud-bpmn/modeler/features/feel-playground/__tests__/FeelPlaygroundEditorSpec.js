@@ -16,10 +16,13 @@ import sinon from 'sinon';
 
 import {
   act,
+  fireEvent,
   render,
   screen,
   waitFor
 } from '@testing-library/react';
+
+import { EditorView } from '@codemirror/view';
 
 import FeelPlayground from '../FeelPlayground';
 
@@ -94,6 +97,41 @@ describe('<FeelPlaygroundEditor>', function() {
     // then
     await waitFor(() => {
       expect(screen.getByLabelText('Evaluation context').textContent).to.equal('{ "amount": 42 }');
+    });
+  });
+
+
+  it('should reset context from the current expression', async function() {
+
+    // given
+    const feelPlayground = new FeelPlayground();
+
+    render(
+      <FeelPlaygroundEditor
+        contextKey="Task_1#expression"
+        feelPlayground={ feelPlayground }
+        onInput={ () => {} }
+        value="1 + 1"
+        variables={ [] }
+      />
+    );
+
+    const expression = screen.getByLabelText('FEEL expression');
+    const editor = EditorView.findFromDOM(expression);
+
+    // when
+    act(() => editor.dispatch({
+      changes: {
+        from: 0,
+        to: editor.state.doc.length,
+        insert: 'foo'
+      }
+    }));
+    fireEvent.click(screen.getByRole('button', { name: 'Reset to prefilled context' }));
+
+    // then
+    await waitFor(() => {
+      expect(screen.getByLabelText('Evaluation context').textContent).to.contain('"foo": null');
     });
   });
 
