@@ -159,4 +159,101 @@ describe('<FeelPlaygroundEditor>', function() {
     expect(saveContextsSpy).to.have.been.calledOnce;
   });
 
+
+  it('should regenerate untouched prefilled context when reopened', async function() {
+
+    // given
+    const config = {
+      getForFile: sinon.stub().resolves(null),
+      setForFile: sinon.stub().resolves()
+    };
+    const feelPlayground = new FeelPlayground(config);
+
+    await feelPlayground.setFile({ path: '/tmp/diagram.bpmn' });
+
+    const { unmount } = render(
+      <FeelPlaygroundEditor
+        contextKey="Task_1#expression"
+        feelPlayground={ feelPlayground }
+        onInput={ () => {} }
+        value="foo"
+        variables={ [] }
+      />
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Evaluation context').textContent).to.contain('"foo": null');
+    });
+
+    // when
+    unmount();
+
+    render(
+      <FeelPlaygroundEditor
+        contextKey="Task_1#expression"
+        feelPlayground={ feelPlayground }
+        onInput={ () => {} }
+        value="bar"
+        variables={ [] }
+      />
+    );
+
+    // then
+    await waitFor(() => {
+      expect(screen.getByLabelText('Evaluation context').textContent).to.contain('"bar": null');
+    });
+
+    expect(screen.getByLabelText('Evaluation context').textContent).not.to.contain('"foo": null');
+    expect(feelPlayground.getContext('Task_1#expression')).not.to.exist;
+    expect(config.setForFile).not.to.have.been.called;
+  });
+
+
+  it('should persist prefilled context after user changes it', async function() {
+
+    // given
+    const config = {
+      getForFile: sinon.stub().resolves(null),
+      setForFile: sinon.stub().resolves()
+    };
+    const feelPlayground = new FeelPlayground(config);
+
+    await feelPlayground.setFile({ path: '/tmp/diagram.bpmn' });
+
+    const { unmount } = render(
+      <FeelPlaygroundEditor
+        contextKey="Task_1#expression"
+        feelPlayground={ feelPlayground }
+        onInput={ () => {} }
+        value="foo"
+        variables={ [] }
+      />
+    );
+
+    const context = await screen.findByLabelText('Evaluation context');
+
+    await waitFor(() => {
+      expect(context.textContent).to.contain('"foo": null');
+    });
+
+    const editor = EditorView.findFromDOM(context);
+
+    act(() => editor.dispatch({
+      changes: {
+        from: 0,
+        to: editor.state.doc.length,
+        insert: '{ "foo": 42 }'
+      }
+    }));
+
+    // when
+    unmount();
+
+    // then
+    expect(config.setForFile).to.have.been.calledOnce;
+    expect(config.setForFile.firstCall.args[2].contexts).to.eql({
+      'Task_1#expression': '{ "foo": 42 }'
+    });
+  });
+
 });

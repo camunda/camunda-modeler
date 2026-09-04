@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 
 import { FeelPlayground } from '@camunda/feel-playground';
 
@@ -21,8 +21,8 @@ const EMPTY_CONTEXT = '{}';
  * The React side of the FEEL playground popup.
  *
  * The expression is owned by the properties panel entry and passed through as a
- * prop; the evaluation context is owned by the playground service so it
- * survives closing and re-opening the popup.
+ * prop; contexts changed by the user are owned by the playground service so
+ * they survive closing and re-opening the popup.
  */
 export default function FeelPlaygroundEditor(props) {
   const {
@@ -35,15 +35,25 @@ export default function FeelPlaygroundEditor(props) {
   } = props;
 
   const [ expression, setExpression ] = useState(value);
+  const initializingContext = useRef(true);
   const config = useSyncExternalStore(feelPlayground.subscribe, feelPlayground.getConfig);
-  const context = useSyncExternalStore(
+  const storedContext = useSyncExternalStore(
     feelPlayground.subscribeContext,
-    () => feelPlayground.getContext(contextKey) ?? EMPTY_CONTEXT
+    () => feelPlayground.getContext(contextKey)
   );
+  const [ context, setContext ] = useState(storedContext ?? EMPTY_CONTEXT);
 
   useEffect(() => {
     setExpression(value);
   }, [ value ]);
+
+  useEffect(() => {
+    setContext(storedContext ?? EMPTY_CONTEXT);
+  }, [ contextKey, storedContext ]);
+
+  useEffect(() => {
+    initializingContext.current = false;
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -57,7 +67,11 @@ export default function FeelPlaygroundEditor(props) {
   };
 
   const handleContextChange = (nextContext) => {
-    feelPlayground.setContext(contextKey, nextContext);
+    setContext(nextContext);
+
+    if (!initializingContext.current) {
+      feelPlayground.setContext(contextKey, nextContext);
+    }
   };
 
   return (
