@@ -158,6 +158,8 @@ export class App extends PureComponent {
     // interaction. Invalidated when templates are (re-)loaded.
     this.linterCache = {};
 
+    this.lintRequests = new WeakMap();
+
     // TODO(nikku): make state
     this.navigationHistory = new History();
 
@@ -1158,7 +1160,15 @@ export class App extends PureComponent {
   };
 
   lintTab = async (tab, contents) => {
+    const request = (this.lintRequests.get(tab) || 0) + 1;
+
+    this.lintRequests.set(tab, request);
+
     const linter = await this.getTabLinter(tab);
+
+    if (this.lintRequests.get(tab) !== request) {
+      return;
+    }
 
     let results = [];
 
@@ -1172,6 +1182,10 @@ export class App extends PureComponent {
       results = await linter.lint(contents);
 
       log('linted tab', { tabId: tab.id });
+    }
+
+    if (this.lintRequests.get(tab) !== request) {
+      return;
     }
 
     this.setLintingState(tab, results);
