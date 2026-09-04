@@ -49,6 +49,10 @@ export class DropHandler {
   }
 
   async handleDrop(event) {
+    if (!this.isDragAllowed(event)) {
+      return DropHandler.STATES.NOT_DRAGGING;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 
