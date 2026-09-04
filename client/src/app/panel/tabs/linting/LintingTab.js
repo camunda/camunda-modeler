@@ -144,13 +144,16 @@ function LintingTabItem(props) {
       {
         report.action && (
           <button
-            className="linting-tab-item__button"
+            className={ classnames('linting-tab-item__button', {
+              'agent-config-autofill-button': report.action.handler === 'apply-linting-fix'
+            }) }
             onClick={ (event) => {
               event.preventDefault();
               stopPropagation(event);
               onAction(report.action.handler, report.action.options);
             } }
-            title={ report.action.label }>
+            aria-label={ report.action.ariaLabel }
+            title={ report.action.title || report.action.label }>
             { report.action.label }
           </button>
         )

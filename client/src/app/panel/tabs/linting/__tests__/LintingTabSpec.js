@@ -234,20 +234,22 @@ describe('<LintingTab>', function() {
           message: 'This file targets Camunda 8.7, but you are connected to Camunda 8.8.',
           rule: 'camunda/version-mismatch',
           action: {
-            label: 'Update engine profile to 8.8',
-            handler: 'set-engine-profile',
-            options: {
-              executionPlatformVersion: '8.8.0'
-            }
+            label: 'Input from agent',
+            ariaLabel: 'Input from agent: fill in the key as count',
+            title: 'Fill in the key as count.',
+            handler: 'apply-linting-fix',
+            options: { report: {} }
           }
         }
       ]
     });
 
     // then
-    const link = getByRole('button', { name: 'Update engine profile to 8.8' });
+    const link = getByRole('button', { name: 'Input from agent: fill in the key as count' });
     expect(link).to.exist;
-    expect(link.textContent).to.equal('Update engine profile to 8.8');
+    expect(link.textContent).to.equal('Input from agent');
+    expect(link.title).to.equal('Fill in the key as count.');
+    expect(link.classList.contains('agent-config-autofill-button')).to.be.true;
   });
 
 
