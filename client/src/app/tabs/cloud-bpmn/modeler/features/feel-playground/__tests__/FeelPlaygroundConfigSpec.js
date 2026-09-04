@@ -60,6 +60,27 @@ describe('FeelPlaygroundConfig', function() {
         success: true
       });
 
+    it('should disable evaluation for a gRPC connection', function() {
+
+      // when
+      const config = getFeelPlaygroundConfig({
+        connection: { id: 'cluster' },
+        response: {
+          gatewayVersion: '8.9.0',
+          protocol: 'grpc'
+        },
+        success: true
+      });
+
+      // then
+      expect(config).to.eql({
+        evaluationUnavailable: 'FEEL expression evaluation requires a REST connection to a Camunda 8 cluster. The current connection uses gRPC.',
+        onEvaluate: undefined
+      });
+    });
+
+
+
       // then
       expect(config).to.eql({
         evaluationUnavailable: 'FEEL expression evaluation requires Camunda 8.9 or newer.',

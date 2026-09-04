@@ -28,6 +28,13 @@ export function getFeelPlaygroundConfig(connectionStatus, zeebeApi) {
     };
   }
 
+  if (response?.protocol === 'grpc') {
+    return {
+      evaluationUnavailable: 'FEEL expression evaluation requires a REST connection to a Camunda 8 cluster. The current connection uses gRPC.',
+      onEvaluate: undefined
+    };
+  }
+
   const gatewayVersion = semver.coerce(response?.gatewayVersion);
 
   if (!gatewayVersion || semver.lt(gatewayVersion, MIN_FEEL_EVALUATION_VERSION)) {
