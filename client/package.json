@@ -18,7 +18,7 @@
     "@bpmn-io/variable-outline": "^3.3.2",
     "@camunda/design-system": "^0.51.0",
     "@camunda/execution-platform": "^0.3.2",
-    "@camunda/feel-playground": "1.0.0-alpha.0",
+    "@camunda/feel-playground": "1.0.0-alpha.1",
     "@camunda/form-linting": "^0.25.0",
     "@camunda/form-playground": "^0.26.0",
     "@camunda/improved-canvas": "^1.11.0",
