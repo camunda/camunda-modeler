@@ -165,15 +165,8 @@ describe('<DropZone>', function() {
       // `document`; this drop zone wraps that tree and must let such events
       // bubble on past it rather than swallowing them
       // (https://github.com/camunda/camunda-modeler/issues/6166)
-      //
-      // `fireEvent.drop` builds a real native DragEvent from `MockDragEvent`
-      // (used only as a property bag — its own no-op `stopPropagation` is
-      // never actually invoked), so this spies on the real `Event.prototype`
-      // method rather than on the mock, and independently confirms the event
-      // still reaches a `document`-level listener, i.e. it truly bubbles
 
-      // given — a listener above the zone's own React root, mirroring where
-      // dmn-js's own drag-and-drop handling lives in the real app
+      // given
       const { dropzone } = renderDropZone();
 
       const stopPropagationSpy = sinon.spy(window.Event.prototype, 'stopPropagation');
