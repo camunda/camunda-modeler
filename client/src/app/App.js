@@ -1245,7 +1245,7 @@ export class App extends PureComponent {
 
   _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
 
-    // The cluster connection feeds the additional lint sources, not the content
+    // The connection feeds the additional lint sources, not the content
     // linter, so updating state is enough - the warning is recomposed on read.
     this.setState({ connectionCheckResult });
   };

@@ -83,6 +83,87 @@ class DmnEditorPage extends DiagramEditorPage {
   decisionTable() {
     return this.page.locator('.dmn-decision-table-container');
   }
+
+  /**
+   * @param {string} ruleId
+   *
+   * @return {import('@playwright/test').Locator} the rule's (row's) input cell
+   */
+  ruleInputCell(ruleId) {
+    return this.page.locator(`[data-row-id="${ ruleId }"].input-cell`).first();
+  }
+
+  /**
+   * Type a FEEL value into a rule's input cell — the FEEL editor is a
+   * `contenteditable` widget, not an `<input>`, so it is clicked and typed
+   * into rather than filled.
+   *
+   * @param {string} ruleId
+   * @param {string} value
+   *
+   * @return {Promise<void>}
+   */
+  async setRuleInputValue(ruleId, value) {
+    const cell = this.ruleInputCell(ruleId);
+
+    await cell.click();
+    await cell.locator('.content-editable').pressSequentially(value);
+  }
+
+  /**
+   * Drag a rule via its rule-index drag handle and drop it above/below
+   * another rule's row — the same gesture as dragging the "Move rule" icon.
+   *
+   * The handle is only visually revealed on hover (`color: transparent`
+   * otherwise), but keeps its layout box, so its position can be read without
+   * hovering first. A real HTML5 drag only starts once the browser sees the
+   * pointer move past its drag threshold, so the move to the target is split
+   * into steps rather than jumping there in one go.
+   *
+   * @param {string} ruleId the rule to drag
+   * @param {string} targetRuleId the rule whose row to drop onto
+   * @param {'top'|'bottom'} position drop above or below the target row
+   *
+   * @return {Promise<void>}
+   */
+  async dragRule(ruleId, targetRuleId, position) {
+    const handle = this.page.locator(`[data-row-id="${ ruleId }"] .dmn-icon-drag.vertical`);
+    const targetRow = this.page.locator(`[data-row-id="${ targetRuleId }"]`).first();
+
+    await handle.waitFor();
+    await targetRow.waitFor();
+
+    const handleBox = await handle.boundingBox();
+    const targetBox = await targetRow.boundingBox();
+
+    if (!handleBox) {
+      throw new Error(`could not determine the drag handle position for rule "${ ruleId }"`);
+    }
+
+    if (!targetBox) {
+      throw new Error(`could not determine the row position for rule "${ targetRuleId }"`);
+    }
+
+    const startX = handleBox.x + handleBox.width / 2;
+    const startY = handleBox.y + handleBox.height / 2;
+
+    const endX = targetBox.x + targetBox.width / 2;
+    const endY = targetBox.y + (position === 'bottom' ? targetBox.height - 2 : 2);
+
+    await this.page.mouse.move(startX, startY);
+    await this.page.mouse.down();
+
+    const steps = 8;
+
+    for (let i = 1; i <= steps; i++) {
+      await this.page.mouse.move(
+        startX + (endX - startX) * i / steps,
+        startY + (endY - startY) * i / steps
+      );
+    }
+
+    await this.page.mouse.up();
+  }
 }
 
 module.exports = DmnEditorPage;

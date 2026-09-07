@@ -332,4 +332,41 @@ test.describe('DMN modeling', function() {
     });
   });
 
+
+  test('should reorder decision table rules via drag and drop after editing a cell', async function({ launch, tmp }) {
+
+    // given a decision table with two rules, having just typed a value into
+    // the first rule's input cell (https://github.com/camunda/camunda-modeler/issues/6166)
+    const app = await launch({ openFile: await copyFixture('decision-table-rows.dmn', tmp) });
+
+    const editor = new Modeler(app).dmnEditor;
+
+    await editor.openDecisionTable('Decision_1');
+    await expect(editor.decisionTable()).toBeVisible();
+
+    await editor.setRuleInputValue('Rule_1', '"a"');
+
+    // when dragging the first rule below the second one
+    await editor.dragRule('Rule_1', 'Rule_2', 'bottom');
+
+    const output = path.join(tmp, 'reordered.dmn');
+
+    // then the saved file reflects the new rule order
+    await app.step('save and verify the rule order', async () => {
+      await app.expectSaveDialog(output);
+      await app.shortcut('CommandOrControl+Shift+S');
+
+      await expectFileExists(output);
+
+      const xml = await readFile(output);
+
+      const rule1Index = xml.indexOf('id="Rule_1"');
+      const rule2Index = xml.indexOf('id="Rule_2"');
+
+      expect(rule1Index).toBeGreaterThan(-1);
+      expect(rule2Index).toBeGreaterThan(-1);
+      expect(rule2Index).toBeLessThan(rule1Index);
+    });
+  });
+
 });

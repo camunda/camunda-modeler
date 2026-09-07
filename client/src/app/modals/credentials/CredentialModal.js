@@ -241,8 +241,8 @@ class CredentialModal extends PureComponent {
     const fieldError = validationError || (missingSecret
       ? (
         <>
-          Secret <code>{ missingSecret }</code> was not found on this cluster.
-          { ' Add it to the cluster\'s secret store before deploying.' }
+          Secret <code>{ missingSecret }</code> was not found.
+          { ' Add it to the secret store before deploying.' }
         </>
       )
       : null);

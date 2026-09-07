@@ -626,7 +626,7 @@ describe('ConnectionManagerSettingsComponent', function() {
         expect(getByLabelText('Error')).to.exist;
 
         // Verify full message text content
-        expect(container.textContent).to.contain('Cannot connect to your local Orchestration Cluster');
+        expect(container.textContent).to.contain('Cannot connect to your local Camunda 8 instance');
         expect(container.textContent).to.contain('Download');
         expect(container.textContent).to.contain('or start Camunda 8 Run to connect');
         expect(container.textContent).to.contain('See troubleshooting information about C8 Run');
@@ -781,7 +781,7 @@ describe('ConnectionManagerSettingsComponent', function() {
     // then
     const description = container.querySelector('.custom-control-description');
     expect(description).to.exist;
-    expect(description.textContent).to.equal('Deploy and run your processes on Camunda 8 Orchestration Clusters, including Camunda 8 Run.');
+    expect(description.textContent).to.equal('Deploy and run your processes on Camunda 8, including Camunda 8 Run.');
   });
 
 

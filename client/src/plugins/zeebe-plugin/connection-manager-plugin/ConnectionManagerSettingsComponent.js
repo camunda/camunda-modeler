@@ -160,7 +160,7 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
       if (isC8RunConnection(connection)) {
         return (
           <>
-            Cannot connect to your local Orchestration Cluster. <a data-testid="c8run-download-link" href={ C8RUN_DOWNLOAD_URL }>Download</a> or start Camunda 8 Run to connect. See troubleshooting information about C8 Run <a data-testid="c8run-troubleshoot-link" href={ C8RUN_TROUBLESHOOTING_URL }>here</a>.
+            Cannot connect to your local Camunda 8 instance. <a data-testid="c8run-download-link" href={ C8RUN_DOWNLOAD_URL }>Download</a> or start Camunda 8 Run to connect. See troubleshooting information about C8 Run <a data-testid="c8run-troubleshoot-link" href={ C8RUN_TROUBLESHOOTING_URL }>here</a>.
           </>
         );
       }
@@ -184,14 +184,14 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
 
       return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings" id={ fieldName }>
         <div className="custom-control">
-          <div className="custom-control-description">Deploy and run your processes on Camunda 8 Orchestration Clusters, including <a href="https://docs.camunda.io/docs/self-managed/quickstart/developer-quickstart/c8run/">Camunda 8 Run</a>.</div>
+          <div className="custom-control-description">Deploy and run your processes on Camunda 8, including <a href="https://docs.camunda.io/docs/self-managed/quickstart/developer-quickstart/c8run/">Camunda 8 Run</a>.</div>
         </div>
         {(!fieldValue || fieldValue.length === 0) && (
           <div className="empty-placeholder">
             <ErrorFilled size={ 20 } />
             <div className="placeholder-content">
               <h1>No connections configured</h1>
-              <p>Add a cluster connection to deploy and run processes</p>
+              <p>Add a connection to deploy and run processes</p>
             </div>
           </div>
         )}

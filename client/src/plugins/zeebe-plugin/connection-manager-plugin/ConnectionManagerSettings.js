@@ -21,13 +21,13 @@ export async function initializeSettings({ settings, connectionChecker }) {
   /** @type import("../../../app/Settings").SettingsGroup */
   const pluginSettings = {
     id: CONNECTION_MANAGER_PLUGIN_ID,
-    title: 'Camunda 8 cluster connections',
+    title: 'Camunda 8 connections',
     order: 1,
     properties: {
       [SETTINGS_KEY_CONNECTIONS]: {
         type: 'custom',
         component: (props) => ConnectionManagerSettingsComponent({ ...props, connectionChecker }),
-        description: 'Manage Camunda 8 Orchestration Cluster connections.'
+        description: 'Manage your Camunda 8 connections.'
       },
 
     }

@@ -78,7 +78,7 @@ export function getVersionMismatchWarning(selectedVersion, clusterVersion) {
   return {
     category: 'warn',
     name: 'Engine profile',
-    message: `This file targets Camunda ${ selectedMinorVersion }, but the connected cluster runs Camunda ${ clusterMinorVersion }.`,
+    message: `This file targets Camunda ${ selectedMinorVersion }, but you are connected to Camunda ${ clusterMinorVersion }.`,
     rule: 'camunda/version-mismatch',
     action: {
       label: `Update engine profile to ${ clusterMinorVersion }`,
