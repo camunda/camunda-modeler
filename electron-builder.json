@@ -12,7 +12,6 @@
     }
   ],
   "afterPack": "./tasks/after-pack.js",
-  "afterSign": "./tasks/after-sign.mjs",
   "win": {
     "target": [
       {
