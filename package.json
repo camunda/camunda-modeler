@@ -55,7 +55,6 @@
   },
   "devDependencies": {
     "@bpmn-io/release": "^0.5.1",
-    "@electron/notarize": "^3.1.1",
     "@playwright/test": "^1.62.1",
     "chai": "^6.0.0",
     "chai-subset": "^1.6.0",
