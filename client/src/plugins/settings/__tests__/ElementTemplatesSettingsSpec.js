@@ -50,7 +50,7 @@ describe('CustomTemplateSources', function() {
       renderSources([ value ]);
 
       // then
-      expect(await screen.findByText('Enter an HTTP(S) URL without credentials.')).to.exist;
+      expect(await screen.findByText('Enter an HTTP(S) URL.')).to.exist;
     });
   });
 
@@ -62,14 +62,14 @@ describe('CustomTemplateSources', function() {
     const { getSources } = renderSources(sources);
 
     // then
-    expect(await screen.findByText('This source URL is already configured.')).to.exist;
+    expect(await screen.findByText('This custom source URL is already configured.')).to.exist;
     expect(getSources()).to.eql(sources);
 
     // when
     fireEvent.change(screen.getByRole('textbox', { name: 'Source 1 URL' }), { target: { value: 'https://example.com/index?group=2' } });
 
     // then
-    await waitFor(() => expect(screen.queryByText('This source URL is already configured.')).not.to.exist);
+    await waitFor(() => expect(screen.queryByText('This custom source URL is already configured.')).not.to.exist);
     expect(screen.getByRole('textbox', { name: 'Source 2 URL' }).value).to.equal(sources[1]);
   });
 
@@ -84,7 +84,7 @@ describe('CustomTemplateSources', function() {
 
     // then
     expect(screen.getAllByRole('textbox')).to.have.length(3);
-    await waitFor(() => expect(screen.getAllByText('Enter an HTTP(S) URL without credentials.')).to.have.length(3));
+    await waitFor(() => expect(screen.getAllByText('Enter an HTTP(S) URL.')).to.have.length(3));
     expect(getSources()).to.eql(sources);
   });
 
