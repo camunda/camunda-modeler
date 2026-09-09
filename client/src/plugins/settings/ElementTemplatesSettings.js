@@ -116,11 +116,11 @@ function validateSourceUrl(value, previous) {
   const url = normalizeUrl(value);
 
   if (!url) {
-    return 'Enter an HTTP(S) URL without credentials.';
+    return 'Enter an HTTP(S) URL.';
   }
 
   if (previous.some(source => normalizeUrl(source) === url)) {
-    return 'This source URL is already configured.';
+    return 'This custom source URL is already configured.';
   }
 }
 
