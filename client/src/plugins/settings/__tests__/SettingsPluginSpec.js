@@ -115,7 +115,7 @@ describe('SettingsPlugin', function() {
 
     // then
     expect(settings.get('app.customTemplateSources')).to.eql([ '' ]);
-    expect(screen.getByText('Enter an HTTP(S) URL without credentials.')).to.exist;
+    expect(screen.getByText('Enter an HTTP(S) URL.')).to.exist;
     expect(screen.getByText(/Restart the modeler to apply/)).to.exist;
   });
 
