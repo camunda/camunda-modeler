@@ -18,6 +18,8 @@ const { Agent, MockAgent, setGlobalDispatcher } = require('undici');
 const { isString } = require('min-dash');
 
 const { TemplateUpdater, OOTB_CONNECTORS_ENDPOINT } = require('../template-updater');
+const { getTemplateSourceConfig } = require('../sources');
+const Config = require('../../config');
 
 const userPath = path.resolve(__dirname, 'tmp');
 
@@ -225,6 +227,200 @@ describe('template-updater - TemplateUpdater', function() {
       ]);
     });
 
+  });
+
+
+  describe('custom sources', function() {
+
+    const origin = 'http://127.0.0.1:8123';
+    const sourceA = require('./fixtures/custom-sources/source-a.json');
+    const sourceB = require('./fixtures/custom-sources/source-b.json');
+    const templateA1 = require('./fixtures/custom-sources/template-a-v1.json');
+    const templateA2 = require('./fixtures/custom-sources/template-a-v2.json');
+    const templateB2 = require('./fixtures/custom-sources/template-b-v2.json');
+
+    let pool;
+
+    beforeEach(function() {
+      pool = mockAgent.get(origin);
+    });
+
+
+    it('should fetch isolated caches and resolve remote conflicts through Config', async function() {
+
+      // given
+      const { updater, config, templateSourcePaths } = configureSources();
+      mockSourceA();
+      mockSourceB();
+
+      // when
+      const result = await updater.update('Camunda Cloud', '8.8');
+      const templates = config.get('bpmn.elementTemplates');
+
+      // then
+      expect(result).to.eql({ hasNew: true, warnings: [] });
+      expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
+      expect(readCache(templateSourcePaths[0]).map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
+      expect(readCache(templateSourcePaths[1]).map(({ name }) => name)).to.eql([ templateB2.name ]);
+    });
+
+
+    it('should discover a first-fetched override through the already-used Config', async function() {
+
+      // given
+      const { updater, config, endpoints } = configureSources();
+      expect(config.get('bpmn.elementTemplates')).to.eql([]);
+      mockSourceA();
+      await new TemplateUpdater(userPath, [ endpoints[0] ]).update('Camunda Cloud', '8.8');
+      const earlier = config.get('bpmn.elementTemplates');
+      expect(earlier.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
+      pool.intercept({ path: '/source-a.json' }).reply(200, sourceA);
+      mockSourceB();
+      const done = sinon.spy();
+      updater.on('update:done', done);
+
+      // when
+      await updater.update('Camunda Cloud', '8.8');
+      const current = config.get('bpmn.elementTemplates');
+
+      // then
+      expect(done).to.have.been.calledWith(true, []);
+      expect(current.map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
+      expect(earlier.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
+    });
+
+
+    it('should retain but stop loading a removed cache and reuse it when re-added', async function() {
+
+      // given
+      const { updater, templateSourcePaths } = configureSources();
+      mockSourceA();
+      mockSourceB();
+      await updater.update('Camunda Cloud', '8.8');
+      const cachedB = fs.readFileSync(templateSourcePaths[1], 'utf8');
+
+      // when
+      const removed = configureSources([ 'source-a.json' ]);
+      const templates = removed.config.get('bpmn.elementTemplates');
+      const readded = configureSources();
+      const cleared = configureSources([]);
+
+      // then
+      expect(removed.endpoints).to.have.length(1);
+      expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
+      expect(fs.readFileSync(templateSourcePaths[1], 'utf8')).to.equal(cachedB);
+      expect(readded.config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
+      expect(cleared.config.get('bpmn.elementTemplates')).to.eql([]);
+    });
+
+
+    [ { status: 503, body: 'Unavailable' }, { status: 200, body: 'Invalid JSON' } ].forEach(({ status, body }) => {
+      it(`should continue after a source failure (${ status })`, async function() {
+
+        // given
+        const { updater, config } = configureSources();
+        pool.intercept({ path: '/source-a.json' }).reply(status, body);
+        mockSourceB();
+
+        // when
+        const result = await updater.update('Camunda Cloud', '8.8');
+
+        // then
+        expect(result.hasNew).to.be.true;
+        expect(result.warnings).to.have.length(1);
+        expect(result.warnings[0]).to.include(`${ origin }/source-a.json`);
+        expect(config.get('bpmn.elementTemplates').map(({ name }) => name)).to.eql([ templateB2.name ]);
+      });
+    });
+
+
+    it('should preserve a failed later source cache and unchanged-reference caching', async function() {
+
+      // given
+      const { updater, config, templateSourcePaths } = configureSources();
+      mockSourceA();
+      mockSourceB();
+      await updater.update('Camunda Cloud', '8.8');
+      config.get('bpmn.elementTemplates');
+      const before = templateSourcePaths.map(file => fs.readFileSync(file, 'utf8'));
+      pool.intercept({ path: '/source-a.json' }).reply(200, sourceA);
+      pool.intercept({ path: '/source-b.json' }).reply(503, 'Unavailable');
+      log.length = 0;
+
+      // when
+      const result = await updater.update('Camunda Cloud', '8.8');
+
+      // then
+      expect(result.hasNew).to.be.false;
+      expect(result.warnings).to.have.length(1);
+      expect(log).to.have.length(2);
+      expect(config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
+      expect(templateSourcePaths.map(file => fs.readFileSync(file, 'utf8'))).to.eql(before);
+    });
+
+
+    it('should fetch only compatible custom versions', async function() {
+
+      // given
+      const { updater, config } = configureSources();
+      pool.intercept({ path: '/source-a.json' }).reply(200, sourceA);
+      pool.intercept({ path: '/source-b.json' }).reply(200, sourceB);
+      pool.intercept({ path: '/template-a-v1.json' }).reply(200, templateA1);
+
+      // when
+      const result = await updater.update('Camunda Cloud', '8.6');
+
+      // then
+      expect(result).to.eql({ hasNew: true, warnings: [] });
+      expect(config.get('bpmn.elementTemplates').map(({ name }) => name)).to.eql([ templateA1.name ]);
+      expect(log).to.have.length(3);
+    });
+
+
+    it('should not fetch custom sources for Camunda 7', async function() {
+
+      // given
+      const { updater } = configureSources();
+
+      // when
+      const result = await updater.update('Camunda Platform', '7.24');
+
+      // then
+      expect(result).to.eql({ hasNew: false, warnings: [] });
+      expect(log).to.eql([]);
+    });
+
+
+    function configureSources(sources = [ 'source-a.json', 'source-b.json' ]) {
+      const sourceConfig = getTemplateSourceConfig({
+        userPath,
+        settings: {
+          'app.disableConnectorTemplates': true,
+          'app.customTemplateSources': sources.map(source => `${ origin }/${ source }`)
+        }
+      });
+
+      return {
+        ...sourceConfig,
+        updater: new TemplateUpdater(userPath, sourceConfig.endpoints),
+        config: new Config({ userPath, resourcesPaths: [ path.join(userPath, 'resources') ], ...sourceConfig })
+      };
+    }
+
+    function mockSourceA() {
+      pool.intercept({ path: '/source-a.json' }).reply(200, sourceA);
+      pool.intercept({ path: '/template-a-v1.json' }).reply(200, templateA1);
+      pool.intercept({ path: '/template-a-v2.json' }).reply(200, templateA2);
+    }
+
+    function mockSourceB() {
+      pool.intercept({ path: '/source-b.json' }).reply(200, sourceB);
+      pool.intercept({ path: '/template-b-v2.json' }).reply(200, templateB2);
+    }
+
+    function readCache(file) {
+      return JSON.parse(fs.readFileSync(file, 'utf8'));
+    }
   });
 
 
