@@ -128,6 +128,66 @@ describe('ProcessApplicationsStartInstancePlugin', function() {
     });
   });
 
+
+  it('should forward <emit> to overlay (deployment event)', async function() {
+
+    // given
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const deployment = new Deployment({
+      async getConnectionForTab() {
+        return DEFAULT_ENDPOINT;
+      },
+      on: sinon.spy()
+    });
+
+    const emit = sinon.spy();
+
+    const { container } = createProcessApplicationsStartInstancePlugin({
+      _getGlobal: (name) => {
+        if (name === 'deployment') {
+          return deployment;
+        } else if (name === 'startInstance') {
+          return new StartInstance({
+            async getConnectionForTab() {
+              return {};
+            }
+          });
+        } else if (name === 'zeebeAPI') {
+          return new ZeebeAPI();
+        }
+      },
+      emit,
+      processApplication: DEFAULT_PROCESS_APPLICATION,
+      triggerAction
+    });
+
+    // when
+    fireEvent.click(container.querySelector('.btn'));
+
+    await waitFor(() => {
+      const overlay = document.querySelector('[role="dialog"]');
+
+      expect(overlay).to.exist;
+    });
+
+    expect(deployment.on).to.have.been.calledWith('deployed', sinon.match.func);
+
+    // simulating <deployed> event as emitted by the deployment
+    deployment.on.getCalls().find(call => call.args[0] === 'deployed').args[1]({
+      deploymentResult: { success: true, response: {} },
+      endpoint: { targetType: 'camundaCloud' },
+      gatewayVersion: '8.0.0'
+    });
+
+    // then
+    expect(emit).to.have.been.calledWith('deployment.done', sinon.match.object);
+  });
+
 });
 
 const DEFAULT_PROCESS_APPLICATION = {
@@ -161,6 +221,7 @@ function createProcessApplicationsStartInstancePlugin(props = {}) {
     },
     activeTab = DEFAULT_ACTIVE_TAB,
     displayNotification = () => {},
+    emit = () => {},
     log = () => {},
     processApplication = null,
     processApplicationItems = [],
@@ -173,6 +234,7 @@ function createProcessApplicationsStartInstancePlugin(props = {}) {
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
+      emit={ emit }
       log={ log }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }
