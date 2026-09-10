@@ -229,6 +229,7 @@ export default function ProcessApplicationsPlugin(props) {
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
+      emit={ emit }
       log={ log }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }
@@ -239,6 +240,7 @@ export default function ProcessApplicationsPlugin(props) {
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
+      emit={ emit }
       log={ log }
       processApplication={ processApplication }
       processApplicationItems={ processApplicationItems }

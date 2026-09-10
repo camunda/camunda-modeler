@@ -29,6 +29,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
     _getGlobal,
     activeTab,
     displayNotification,
+    emit,
     log,
     processApplication,
     processApplicationItems,
@@ -99,6 +100,7 @@ export default function ProcessApplicationsStartInstancePlugin(props) {
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
+        emit={ emit }
         getResourceConfigs={ () => resourceConfigs }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
         log={ log }
