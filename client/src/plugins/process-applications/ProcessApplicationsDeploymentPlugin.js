@@ -27,6 +27,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     _getGlobal,
     activeTab,
     displayNotification,
+    emit,
     log,
     processApplication,
     processApplicationItems,
@@ -113,6 +114,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
+        emit={ emit }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
         log={ log }
         onClose={ () => setOverlayOpen(false) }
