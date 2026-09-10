@@ -178,7 +178,7 @@ describe('ProcessApplicationsStartInstancePlugin', function() {
     expect(deployment.on).to.have.been.calledWith('deployed', sinon.match.func);
 
     // simulating <deployed> event as emitted by the deployment
-    deployment.on.getCall(0).args[1]({
+    deployment.on.getCalls().find(call => call.args[0] === 'deployed').args[1]({
       deploymentResult: { success: true, response: {} },
       endpoint: { targetType: 'camundaCloud' },
       gatewayVersion: '8.0.0'
