@@ -63,6 +63,7 @@ describe('CamundaClientFactory', function() {
 
     // Reset instance state to prevent test bleed
     clients._cachedProtocol = 'rest';
+    clients._cachedProtocolIsFallback = false;
     clients._cachedClient = null;
     clients._cachedEndpoint = undefined;
 
@@ -81,10 +82,10 @@ describe('CamundaClientFactory', function() {
       };
 
       // when
-      const protocol = await clients._getProtocol(endpoint);
+      const result = await clients._getProtocol(endpoint);
 
       // then
-      expect(protocol).to.equal('grpcs');
+      expect(result).to.deep.equal({ protocol: 'grpcs', fallback: false });
     });
 
 
@@ -97,10 +98,10 @@ describe('CamundaClientFactory', function() {
       };
 
       // when
-      const protocol = await clients._getProtocol(endpoint);
+      const result = await clients._getProtocol(endpoint);
 
       // then
-      expect(protocol).to.equal('https');
+      expect(result).to.deep.equal({ protocol: 'https', fallback: false });
     });
 
 
@@ -113,31 +114,32 @@ describe('CamundaClientFactory', function() {
       };
 
       // when
-      const protocol = await clients._getProtocol(endpoint);
+      const result = await clients._getProtocol(endpoint);
 
       // then
-      expect(protocol).to.equal('grpcs');
+      expect(result).to.deep.equal({ protocol: 'grpcs', fallback: false });
     });
 
 
-    it('should fallback to gRPC for Self-Managed HTTP URLs when REST connection fails', async function() {
+    it('should detect gRPC for Self-Managed HTTP URLs when only gRPC connects', async function() {
 
       // given
       const endpoint = {
         type: ENDPOINT_TYPES.SELF_HOSTED,
-        url: 'http://localhost:25600'
+        url: 'http://localhost:26500'
       };
       mockRestClient.getTopology.rejects(new Error('Connection failed'));
+      mockZeebeClient.topology.resolves({ brokers: [] });
 
       // when
-      const protocol = await clients._getProtocol(endpoint);
+      const result = await clients._getProtocol(endpoint);
 
-      // then
-      expect(protocol).to.equal('grpc');
+      // then - gRPC is verified by probe
+      expect(result).to.deep.equal({ protocol: 'grpc', fallback: false });
     });
 
 
-    it('should fallback to secure gRPC for Self-Managed HTTPS URLs when REST fails', async function() {
+    it('should detect secure gRPC for Self-Managed HTTPS URLs when only gRPC connects', async function() {
 
       // given
       const endpoint = {
@@ -145,12 +147,49 @@ describe('CamundaClientFactory', function() {
         url: 'https://localhost:8080'
       };
       mockRestClient.getTopology.rejects(new Error('Connection failed'));
+      mockZeebeClient.topology.resolves({ brokers: [] });
 
       // when
-      const protocol = await clients._getProtocol(endpoint);
+      const result = await clients._getProtocol(endpoint);
 
-      // then
-      expect(protocol).to.equal('grpcs');
+      // then - gRPC is verified by probe
+      expect(result).to.deep.equal({ protocol: 'grpcs', fallback: false });
+    });
+
+
+    it('should assume REST for Self-Managed HTTP URLs when no protocol connects', async function() {
+
+      // given
+      const endpoint = {
+        type: ENDPOINT_TYPES.SELF_HOSTED,
+        url: 'http://localhost:8080'
+      };
+      mockRestClient.getTopology.rejects(new Error('Connection failed'));
+      mockZeebeClient.topology.rejects(new Error('Connection failed'));
+
+      // when
+      const result = await clients._getProtocol(endpoint);
+
+      // then - REST is assumed as unverified fallback
+      expect(result).to.deep.equal({ protocol: 'http', fallback: true });
+    });
+
+
+    it('should assume secure REST for Self-Managed HTTPS URLs when no protocol connects', async function() {
+
+      // given
+      const endpoint = {
+        type: ENDPOINT_TYPES.SELF_HOSTED,
+        url: 'https://localhost:8080'
+      };
+      mockRestClient.getTopology.rejects(new Error('Connection failed'));
+      mockZeebeClient.topology.rejects(new Error('Connection failed'));
+
+      // when
+      const result = await clients._getProtocol(endpoint);
+
+      // then - REST is assumed as unverified fallback
+      expect(result).to.deep.equal({ protocol: 'https', fallback: true });
     });
 
 
@@ -166,10 +205,10 @@ describe('CamundaClientFactory', function() {
       mockZeebeClient.topology.returns(new Promise(() => {})); // Never resolves
 
       // when
-      const protocol = await clients._getProtocol(endpoint);
+      const result = await clients._getProtocol(endpoint);
 
       // then - should fall back to HTTP when gRPC times out
-      expect(protocol).to.equal('http');
+      expect(result).to.deep.equal({ protocol: 'http', fallback: false });
     });
 
   });
@@ -230,6 +269,23 @@ describe('CamundaClientFactory', function() {
 
       // then
       expect(result).to.be.false;
+      expect(mockCamundaClient.closeAllClients).to.have.been.called;
+    });
+
+
+    it('should return false when client cannot be created', async function() {
+
+      // given - invalid endpoint type yields no client, cf. #_createCamundaClient
+      const endpoint = {
+        type: 'INVALID',
+        url: 'http://localhost:8080'
+      };
+
+      // when
+      const result = await clients._canConnectWithProtocol(endpoint, 'http');
+
+      // then
+      expect(result).to.be.false;
     });
 
   });
@@ -250,7 +306,7 @@ describe('CamundaClientFactory', function() {
         url: 'http://localhost:26500'
       };
 
-      clients._getProtocol.resolves('grpc');
+      clients._getProtocol.resolves({ protocol: 'grpc', fallback: false });
 
       // when
       const result = await clients.getSupportedCamundaClients(endpoint);
@@ -270,7 +326,7 @@ describe('CamundaClientFactory', function() {
         url: 'grpc://localhost:8080'
       };
 
-      clients._getProtocol.resolves('http');
+      clients._getProtocol.resolves({ protocol: 'http', fallback: false });
 
       // when
       const result = await clients.getSupportedCamundaClients(endpoint);
@@ -290,7 +346,7 @@ describe('CamundaClientFactory', function() {
         url: 'grpcs://localhost:26500'
       };
 
-      clients._getProtocol.resolves('grpcs');
+      clients._getProtocol.resolves({ protocol: 'grpcs', fallback: false });
 
       // when
       const result = await clients.getSupportedCamundaClients(endpoint);
@@ -310,7 +366,7 @@ describe('CamundaClientFactory', function() {
         url: 'http://localhost:8080'
       };
 
-      clients._getProtocol.resolves('grpc');
+      clients._getProtocol.resolves({ protocol: 'grpc', fallback: false });
 
       // when
       await clients.getSupportedCamundaClients(endpoint);
@@ -328,7 +384,7 @@ describe('CamundaClientFactory', function() {
         url: 'http://localhost:8080'
       };
 
-      clients._getProtocol.resolves('grpc');
+      clients._getProtocol.resolves({ protocol: 'grpc', fallback: false });
 
       // when
       await clients.getSupportedCamundaClients(endpoint);
@@ -342,6 +398,28 @@ describe('CamundaClientFactory', function() {
     });
 
 
+    it('should re-probe fallback protocol for unchanged endpoint', async function() {
+
+      // given - cluster unreachable, REST probe failed
+      const endpoint = {
+        type: ENDPOINT_TYPES.SELF_HOSTED,
+        url: 'http://localhost:8080'
+      };
+
+      clients._getProtocol.resolves({ protocol: 'grpc', fallback: true });
+
+      // when
+      await clients.getSupportedCamundaClients(endpoint);
+      await clients.getSupportedCamundaClients({ ...endpoint });
+
+      // then
+      // protocol is re-probed, previous client is closed and a new one created
+      expect(Camunda8).to.have.been.calledTwice;
+      expect(clients._getProtocol).to.have.been.calledTwice;
+      expect(mockCamundaClient.closeAllClients).to.have.been.called;
+    });
+
+
     it('should recreate client for changed endpoint', async function() {
 
       // given
@@ -350,7 +428,7 @@ describe('CamundaClientFactory', function() {
         url: 'http://localhost:8080'
       };
 
-      clients._getProtocol.resolves('grpc');
+      clients._getProtocol.resolves({ protocol: 'grpc', fallback: false });
 
       // when
       await clients.getSupportedCamundaClients(endpoint);
@@ -401,6 +479,7 @@ describe('CamundaClientFactory', function() {
 
       // then
       expect(clients._cachedProtocol).to.equal('grpc');
+      expect(clients._cachedProtocolIsFallback).to.be.false;
       expect(result.camundaRestClient).to.not.exist;
       expect(result.zeebeGrpcClient).to.exist;
     });
@@ -422,6 +501,74 @@ describe('CamundaClientFactory', function() {
       expect(clients._cachedProtocol).to.equal('https');
       expect(result.camundaRestClient).to.exist;
       expect(result.zeebeGrpcClient).to.not.exist;
+    });
+
+
+    it('should recover once an initially unreachable cluster comes up', async function() {
+
+      // given - cluster is down, no protocol connects, REST is assumed
+      const endpoint = {
+        type: ENDPOINT_TYPES.SELF_HOSTED,
+        url: 'http://localhost:8080'
+      };
+      mockRestClient.getTopology.rejects(new Error('Connection failed'));
+      mockZeebeClient.topology.rejects(new Error('Connection failed'));
+
+      // when
+      const downResult = await clients.getSupportedCamundaClients(endpoint);
+
+      // then
+      expect(clients._cachedProtocol).to.equal('http');
+      expect(clients._cachedProtocolIsFallback).to.be.true;
+      expect(downResult.camundaRestClient).to.exist;
+
+      // when - cluster comes up, REST probe succeeds for the same endpoint
+      mockRestClient.getTopology.resetBehavior();
+      mockRestClient.getTopology.resolves({ brokers: [] });
+
+      const upResult = await clients.getSupportedCamundaClients({ ...endpoint });
+
+      // then - protocol is re-probed and the verified REST client is cached
+      expect(clients._cachedProtocol).to.equal('http');
+      expect(clients._cachedProtocolIsFallback).to.be.false;
+      expect(upResult.camundaRestClient).to.exist;
+      expect(upResult.zeebeGrpcClient).to.not.exist;
+
+      // when - subsequent interactions reuse the verified client
+      const callCount = Camunda8.callCount;
+
+      await clients.getSupportedCamundaClients({ ...endpoint });
+
+      // then - no further client is created
+      expect(Camunda8.callCount).to.equal(callCount);
+    });
+
+
+    it('should permanently cache verified gRPC fallback for gRPC-only endpoints', async function() {
+
+      // given - REST is not served, gRPC connects
+      const endpoint = {
+        type: ENDPOINT_TYPES.SELF_HOSTED,
+        url: 'http://localhost:26500'
+      };
+      mockRestClient.getTopology.rejects(new Error('Connection failed'));
+      mockZeebeClient.topology.resolves({ brokers: [] });
+
+      // when
+      const result = await clients.getSupportedCamundaClients(endpoint);
+
+      // then - gRPC is verified and cached
+      expect(clients._cachedProtocol).to.equal('grpc');
+      expect(clients._cachedProtocolIsFallback).to.be.false;
+      expect(result.zeebeGrpcClient).to.exist;
+
+      // when - subsequent interactions reuse the verified client
+      const callCount = Camunda8.callCount;
+
+      await clients.getSupportedCamundaClients({ ...endpoint });
+
+      // then - no further client is created, no re-probing happens
+      expect(Camunda8.callCount).to.equal(callCount);
     });
 
   });

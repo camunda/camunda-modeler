@@ -10,6 +10,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: rename cluster connection terminology to plain connection ([#6158](https://github.com/camunda/camunda-modeler/pull/6158))
 * `FIX`: do not report a connection error while the tab's connection is still being resolved
 * `FIX`: warn about plain-text values in credential secret fields ([#6187](https://github.com/camunda/camunda-modeler/pull/6187))
+* `FIX`: recover connection once an initially unreachable cluster comes back up ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
 * `DEPS`: update to `electron@44.0.0`
 
 ## 5.51.1
