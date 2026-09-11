@@ -26,6 +26,10 @@
   --color-yellow-47-88-53: hsl(47, 88%, 53%); /* warning */
   --color-yellow-47-86-91: hsl(47, 86%, 91%); /* backgrounds */
 
+  --color-amber-39-100-33: hsl(39, 100%, 33%); /* warning text */
+  --color-amber-35-84-62: hsl(35, 84%, 62%); /* warning borders */
+  --color-amber-38-100-96: hsl(38, 100%, 96%); /* warning backgrounds */
+
   --color-orange-20-98-52: hsl(20, 98%, 52%); /* new badges */
 
   --color-white: hsl(0, 0%, 100%);
