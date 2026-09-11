@@ -459,6 +459,7 @@
   }
 
   .custom-control-description:not(:empty) {
+    margin-top: 6px;
     margin-bottom: 10px;
     font-size: 13px;
     color: var(--color-grey-225-10-35);
