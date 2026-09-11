@@ -55,10 +55,25 @@ module.exports = defineConfig({
 
   projects: [
     {
-      name: 'base'
-    }
+      name: 'base',
 
-    // the opt-in engine suite (deployment, Local engine connection) is added
-    // here later with its own `testMatch` and a c8run globalSetup
+      // the engine suite is opt-in; without this it would be swept up here and
+      // run without a cluster
+      testIgnore: 'engine/**'
+    },
+
+    // The opt-in engine suite (deployment, start instance) against a local
+    // Camunda 8 Run cluster. The cluster lifecycle is not part of the test run:
+    // CI starts and stops it around this step, and locally you bring your own
+    // (`npm run c8run:start`). See test/e2e/README.md.
+    {
+      name: 'engine',
+      testMatch: 'engine/**/*.spec.js',
+
+      // one retry absorbs a not-quite-warm cluster; the assertions are
+      // version-agnostic, so a retry cannot mask a regression by deploying
+      // into different cluster state
+      retries: 1
+    }
   ]
 });

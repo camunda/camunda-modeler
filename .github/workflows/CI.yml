@@ -100,3 +100,96 @@ jobs:
         name: e2e-results-${{ matrix.os }}
         path: test/e2e/test-results/
         if-no-files-found: ignore
+
+
+  e2e-engine-tests:
+    name: Deployment e2e (Camunda 8 Run, ${{ matrix.os }})
+    # The deployment path itself is REST over localhost, but getting a cluster
+    # there is not: the archive, the extractor that unpacks it and the way the
+    # process is spawned and stopped all differ per OS. That is the surface this
+    # job exercises, so it runs on the same matrix as the base e2e suite.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-2022 ]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+    - name: Use Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: 24
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Project setup
+      uses: bpmn-io/actions/setup@latest
+    - name: Build preload
+      run: npm run preload:build
+    - name: Build client
+      run: npm run client:build
+    # The pinned Camunda 8 Run URL is a rolling minor-line alias: the bytes
+    # behind it change on every release while the URL stays the same, so the
+    # cache is keyed on the artifact's content hash. Keying on the version would
+    # serve stale bytes forever and the suite would go on passing against an
+    # engine nobody ships.
+    - name: Resolve Camunda 8 Run artifact
+      id: c8run
+      run: |
+        ETAG=$(node test/e2e/harness/c8run.js etag)
+        if [ -z "$ETAG" ]; then
+          echo "could not resolve the Camunda 8 Run artifact" >&2
+          exit 1
+        fi
+        echo "etag=$ETAG" >> "$GITHUB_OUTPUT"
+    # Only the archive, never the extracted distribution: Camunda 8 Run keeps
+    # its database inside the distribution directory (`camunda-data/h2db.mv.db`),
+    # so caching that would restore one run's deployed resources into every
+    # later run. Extraction takes seconds; a pristine cluster is worth more.
+    - name: Cache Camunda 8 Run
+      uses: actions/cache@v6
+      with:
+        path: .c8run/camunda8-run-*
+        # `archive` names what is cached, not just which build, so an entry
+        # saved under a different definition of this path can never be restored
+        # here. No restore-keys either — a partial match would be a different
+        # engine build.
+        key: c8run-archive-${{ runner.os }}-${{ steps.c8run.outputs.etag }}
+    # The cluster lifecycle lives here rather than in the test run: the tests
+    # assume a cluster is already answering, so a boot failure is reported as a
+    # failed step of its own instead of as a failing test.
+    - name: Start Camunda 8 Run
+      run: npm run c8run:start
+    # Electron is headed, so Linux needs a virtual display (xvfb); macOS and
+    # Windows runners have one.
+    - name: Run deployment integration tests (${{ runner.os }})
+      run: |
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          xvfb-run --auto-servernum npm run test:e2e:engine
+        else
+          npm run test:e2e:engine
+        fi
+    - name: Stop Camunda 8 Run
+      if: ${{ always() }}
+      run: npm run c8run:stop
+    - name: Upload integration test artifacts
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: e2e-engine-results-${{ matrix.os }}
+        path: test/e2e/test-results/
+        if-no-files-found: ignore
+    # without these a failed boot is undiagnosable from the job log alone
+    - name: Upload Camunda 8 Run logs
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: e2e-engine-c8run-logs-${{ matrix.os }}
+        path: |
+          .c8run/c8run.log
+          .c8run/*/log/
+        if-no-files-found: ignore
