@@ -212,6 +212,27 @@ describe('ConnectionManagerOverlay', function() {
     });
 
 
+    it('should display error message without prefix (CLUSTER_TEMPORARILY_UNAVAILABLE)', function() {
+
+      // given
+      const connections = DEFAULT_CONNECTIONS;
+      const activeConnection = connections[0];
+      const connectionCheckResult = {
+        success: false,
+        reason: 'CLUSTER_TEMPORARILY_UNAVAILABLE'
+      };
+
+      // when
+      const { container } = createConnectionManagerOverlay({ connections, connectionCheckResult, activeConnection });
+
+      // then
+      const errorMessage = container.querySelector('.invalid-feedback');
+      expect(errorMessage).to.exist;
+      expect(errorMessage.textContent).to.equal('Camunda 8 is temporarily unavailable. The instance may be paused or starting up.');
+      expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
+    });
+
+
     it('should display error message without prefix (UNKNOWN)', function() {
 
       // given
