@@ -60,6 +60,7 @@ export function ConnectionManagerOverlay({
       const shouldOmitPrefix = [
         CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE,
         CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE,
+        CONNECTION_CHECK_ERROR_REASONS.CLUSTER_TEMPORARILY_UNAVAILABLE,
         CONNECTION_CHECK_ERROR_REASONS.UNKNOWN
       ].includes(reason);
 
@@ -102,7 +103,7 @@ export function ConnectionManagerOverlay({
       </Section.Header>
       <Section.Body className="form-body">
         <form className="fields">
-          <div className={ classNames('form-group', 'form-group-spacing') }>
+          <div className="form-group">
             <div>
               <Select
                 field={ {
