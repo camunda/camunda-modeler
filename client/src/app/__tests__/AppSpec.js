@@ -2043,6 +2043,100 @@ describe('<App>', function() {
     });
 
 
+    describe('mouse history buttons', function() {
+
+      function dispatchMouseDown(button) {
+        return act(() => {
+          window.dispatchEvent(new MouseEvent('mousedown', {
+            button,
+            bubbles: true,
+            cancelable: true
+          }));
+        });
+      }
+
+
+      it('should navigate back on back button', async function() {
+
+        // when
+        await dispatchMouseDown(3);
+
+        // then
+        await waitFor(() => {
+          expect(app.state.activeTab).to.eql(openedTabs[2]);
+        });
+      });
+
+
+      it('should navigate forward on forward button', async function() {
+
+        // given
+        await app.navigate(-1);
+
+        // when
+        await dispatchMouseDown(4);
+
+        // then
+        await waitFor(() => {
+          expect(app.state.activeTab).to.eql(openedTabs[3]);
+        });
+      });
+
+
+      it('should ignore other buttons', async function() {
+
+        // given
+        const triggerActionSpy = spy(app, 'triggerAction');
+
+        // when
+        await dispatchMouseDown(0);
+        await dispatchMouseDown(1);
+        await dispatchMouseDown(2);
+
+        // then
+        expect(triggerActionSpy).not.to.have.been.called;
+        expect(app.state.activeTab).to.eql(openedTabs[3]);
+      });
+
+
+      it('should not navigate without tabs', async function() {
+
+        // given
+        await app.triggerAction('close-all-tabs');
+
+        const triggerActionSpy = spy(app, 'triggerAction');
+
+        // assume
+        expect(app.state.tabs).to.be.empty;
+
+        // when
+        await dispatchMouseDown(3);
+
+        // then
+        expect(triggerActionSpy).not.to.have.been.called;
+        expect(app.navigationHistory.idx).to.eql(-1);
+      });
+
+
+      it('should not navigate once unmounted', async function() {
+
+        // given
+        const { app: unmountedApp, unmount } = createApp();
+
+        const triggerActionSpy = spy(unmountedApp, 'triggerAction');
+
+        unmount();
+
+        // when
+        await dispatchMouseDown(3);
+
+        // then
+        expect(triggerActionSpy).not.to.have.been.called;
+      });
+
+    });
+
+
     describe('tab moving', function() {
 
       let app, openedTabs;
