@@ -70,6 +70,14 @@ class CamundaClientFactory {
 
     /** @type {Protocol} */
     this._cachedProtocol = 'grpc';
+
+    /**
+     * Whether the cached protocol is a fallback guess that no probe could
+     * verify, cf. {@link CamundaClientFactory#_getProtocol}.
+     *
+     * @type {boolean}
+     */
+    this._cachedProtocolIsFallback = false;
   }
 
   /**
@@ -80,16 +88,19 @@ class CamundaClientFactory {
   async getCamundaClient(endpoint) {
 
     // check the cache before protocol detection, as detection creates
-    // throwaway clients and must not run on every interaction
-    if (this._isCacheValid(endpoint)) {
+    // throwaway clients and must not run on every interaction; unverified
+    // fallback protocols are re-probed as they may stem from an unreachable
+    // cluster
+    if (this._isCacheValid(endpoint) && !this._cachedProtocolIsFallback) {
       return this._cachedClient;
     }
 
-    const protocol = await this._getProtocol(endpoint);
+    const { protocol, fallback } = await this._getProtocol(endpoint);
 
     this._cachedClient?.closeAllClients();
 
     this._cachedProtocol = protocol;
+    this._cachedProtocolIsFallback = fallback;
     this._cachedClient = await this._createCamundaClient(endpoint, protocol);
     this._cachedEndpoint = endpoint;
 
@@ -118,43 +129,52 @@ class CamundaClientFactory {
   }
 
   /**
-   * Get the appropriate protocol (gRPC or REST) for the endpoint.
+   * Get the appropriate protocol (gRPC or REST) for the endpoint. A
+   * `fallback` protocol was not verified by a probe; the endpoint may simply
+   * be unreachable, so it must be re-probed on subsequent requests.
    *
    * @param {Endpoint} endpoint
    *
-   * @returns {Promise<Protocol>}
+   * @returns {Promise<{ protocol: Protocol, fallback: boolean }>}
    */
   async _getProtocol(endpoint) {
     const matchedProtocol = endpoint.url.match(/^(https?|grpcs?):\/\//)?.[1];
 
     if (!matchedProtocol) {
-      return 'grpc';
+      return { protocol: 'grpc', fallback: false };
     }
 
     // Use explicit gRPC protocol from URL
-    if (matchedProtocol && [ 'grpc', 'grpcs' ].includes(matchedProtocol)) {
-      return matchedProtocol;
+    if ([ 'grpc', 'grpcs' ].includes(matchedProtocol)) {
+      return { protocol: matchedProtocol, fallback: false };
     }
 
     // For SaaS, get protocol from URL
     if (endpoint.type === ENDPOINT_TYPES.CAMUNDA_CLOUD) {
       if (isGrpcSaasUrl(endpoint.url)) {
-        return 'grpcs';
+        return { protocol: 'grpcs', fallback: false };
       } else if (isRestSaasUrl(endpoint.url)) {
-        return 'https';
+        return { protocol: 'https', fallback: false };
       }
     }
 
-    // Test REST first, fallback to gRPC
+    // Test REST first, then gRPC
     const isSecure = matchedProtocol === 'https';
 
     const grpcProtocol = isSecure ? 'grpcs' : 'grpc';
 
     if (await this._canConnectWithProtocol(endpoint, matchedProtocol)) {
-      return matchedProtocol;
+      return { protocol: matchedProtocol, fallback: false };
     }
 
-    return grpcProtocol;
+    if (await this._canConnectWithProtocol(endpoint, grpcProtocol)) {
+      return { protocol: grpcProtocol, fallback: false };
+    }
+
+    // Neither protocol could be reached, the endpoint is likely down. Assume
+    // REST (the common case for http(s) endpoints) and flag it as fallback,
+    // so it is re-probed instead of trusted from the cache.
+    return { protocol: matchedProtocol, fallback: true };
   }
 
   /**
@@ -166,10 +186,12 @@ class CamundaClientFactory {
    * @returns {Promise<boolean>}
    */
   async _canConnectWithProtocol(endpoint, protocol) {
+    let testClient;
+
     try {
 
       // Create a test client with the specific protocol
-      const testClient = await this._createCamundaClient(endpoint, protocol);
+      testClient = await this._createCamundaClient(endpoint, protocol);
 
       if ([ 'grpc', 'grpcs' ].includes(protocol)) {
         const zeebeClient = testClient.getZeebeGrpcApiClient();
@@ -179,11 +201,11 @@ class CamundaClientFactory {
         await restClient.getTopology();
       }
 
-      testClient.closeAllClients();
-
       return true;
     } catch (error) {
       return false;
+    } finally {
+      testClient?.closeAllClients();
     }
   }
 
