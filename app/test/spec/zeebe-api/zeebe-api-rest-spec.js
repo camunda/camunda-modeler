@@ -155,6 +155,110 @@ describe('ZeebeAPI (REST)', function() {
       });
 
 
+      it('for <connection-refused> (Self-Managed)', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            getTopology: function() {
+              throw new NetworkError('connect ECONNREFUSED 127.0.0.1:8080', 'ECONNREFUSED');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: 'http://localhost:8080'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.checkConnection(parameters);
+
+        // then
+        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
+      });
+
+
+      it('for <connection-refused> (Cloud)', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            getTopology: function() {
+              throw new NetworkError('connect ECONNREFUSED 127.0.0.1:8080', 'ECONNREFUSED');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.checkConnection(parameters);
+
+        // then
+        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+      });
+
+
+      it('for <service-unavailable> (Cloud), e.g. paused cluster', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            getTopology: function() {
+              throw new HttpError(503, 'Service Unavailable');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.checkConnection(parameters);
+
+        // then
+        expect(result.reason).to.eql('CLUSTER_TEMPORARILY_UNAVAILABLE');
+      });
+
+
+      it('for <bad-gateway> (Self-Managed)', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            getTopology: function() {
+              throw new HttpError(502, 'Bad Gateway');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: 'http://localhost:8080'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.checkConnection(parameters);
+
+        // then
+        expect(result.reason).to.eql('CLUSTER_TEMPORARILY_UNAVAILABLE');
+      });
+
+
       it('for <not-found> (Cloud)', async function() {
 
         // given
@@ -3574,5 +3678,14 @@ class NetworkError extends Error {
     super(message);
 
     this.code = code;
+  }
+}
+
+// mirrors the shape of got's HTTPError thrown by the Camunda REST client
+class HttpError extends Error {
+  constructor(statusCode, statusMessage) {
+    super(`Response code ${statusCode} (${statusMessage})`);
+
+    this.response = { statusCode };
   }
 }
