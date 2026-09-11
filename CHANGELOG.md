@@ -6,7 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FIX`: do not block drag and drop inside nested editors (e.g. reordering DMN decision table rows/columns) ([#6166](https://github.com/camunda/camunda-modeler/issue/6166))
+## 5.51.1
+
+* `FIX`: do not block drag and drop inside nested editors (e.g. reordering DMN decision table rows/columns) ([#6166](https://github.com/camunda/camunda-modeler/issues/6166))
+* `FIX`: report successful deployment and instance start in process applications ([#6151](https://github.com/camunda/camunda-modeler/issues/6151))
 
 ## 5.51.0
 
