@@ -103,7 +103,7 @@ export function ConnectionManagerOverlay({
       </Section.Header>
       <Section.Body className="form-body">
         <form className="fields">
-          <div className={ classNames('form-group', 'form-group-spacing') }>
+          <div className="form-group">
             <div>
               <Select
                 field={ {
