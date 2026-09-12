@@ -52,6 +52,8 @@ const SUBMIT_LABELS = {
 
 const SECRET_REFERENCE_PLACEHOLDER = 'camunda.secrets.SECRET_NAME';
 
+const SECRET_REFERENCE_PREFIX = 'camunda.secrets.';
+
 class CredentialModal extends PureComponent {
   constructor(props) {
     super(props);
@@ -225,30 +227,76 @@ class CredentialModal extends PureComponent {
 
   renderField(field) {
     const { values, checkedValues } = this.state;
+    const { secretReferences } = this.props;
 
     const fieldKey = getFieldKey(field);
     const id = `credential-field-${ fieldKey }`;
     const errorId = `${ id }-error`;
+    const warningId = `${ id }-warning`;
     const value = values[ fieldKey ] ?? '';
     const required = isFieldRequired(field);
 
     const validationError = getFieldError(field, value);
 
-    const missingSecret = field.secret
-      ? getMissingSecretReference(checkedValues[ fieldKey ] ?? '', this.props.secretReferences)
+    const secretField = isSecretField(field);
+
+    const missingSecret = secretField
+      ? getMissingSecretReference(checkedValues[ fieldKey ] ?? '', secretReferences)
       : null;
 
-    const fieldError = validationError || (missingSecret
+    const fieldError = validationError;
+
+    // Non-blocking nudges, distinct from `fieldError`: a plain-text value (no
+    // reference anywhere in the value), a bare prefix (an incomplete reference,
+    // stored verbatim by the engine), or a reference to a not-yet-existing secret
+    // is still saved (there is no create-secret API to redirect the user to), so
+    // these are flagged as hints rather than treated as invalid. Plain text takes
+    // precedence: the value contains no reference at all.
+    const plainTextSecret = isPlainTextSecretValue(field, value);
+    const incompleteReference = !plainTextSecret && isIncompleteSecretReference(field, value);
+
+    const fieldWarning = !fieldError && (plainTextSecret
       ? (
         <>
-          Secret <code>{ missingSecret }</code> was not found.
-          { ' Add it to the secret store before deploying.' }
+          Storing this as plaintext exposes sensitive information on the connected
+          { ' Camunda instance. Reference a secret instead, e.g. ' }
+          <code>{ SECRET_REFERENCE_PREFIX }NAME</code>.
         </>
       )
-      : null);
+      : incompleteReference
+        ? (
+          <>
+            Incomplete secret reference: <code>{ SECRET_REFERENCE_PREFIX }</code> is missing the secret name.
+          </>
+        )
+        : missingSecret
+          ? (
+            <>
+              Secret <code>{ missingSecret }</code> does not exist on the connected Camunda instance.
+            </>
+          )
+          : null);
+
+    const describedBy = fieldError ? errorId : (fieldWarning ? warningId : undefined);
+
+    let controlClassName = 'form-control';
+
+    if (fieldError) {
+      controlClassName += ' is-invalid';
+    } else if (fieldWarning) {
+      controlClassName += ' is-warning';
+    }
+
+    let groupClassName = 'form-group';
+
+    if (fieldError) {
+      groupClassName += ' has-error';
+    } else if (fieldWarning) {
+      groupClassName += ' has-warning';
+    }
 
     return (
-      <div className={ fieldError ? 'form-group has-error' : 'form-group' } key={ fieldKey }>
+      <div className={ groupClassName } key={ fieldKey }>
         <label htmlFor={ id }>
           { field.label || fieldKey }
           { required && <span> *</span> }
@@ -258,10 +306,10 @@ class CredentialModal extends PureComponent {
             ? (
               <select
                 id={ id }
-                className={ fieldError ? 'form-control is-invalid' : 'form-control' }
+                className={ controlClassName }
                 value={ value }
                 aria-invalid={ fieldError ? 'true' : undefined }
-                aria-describedby={ fieldError ? errorId : undefined }
+                aria-describedby={ describedBy }
                 onChange={ event => this.handleFieldChange(fieldKey, event.target.value) }
               >
                 { field.optional && <option value=""></option> }
@@ -275,22 +323,36 @@ class CredentialModal extends PureComponent {
             : (
               <input
                 id={ id }
-                className={ fieldError ? 'form-control is-invalid' : 'form-control' }
+                className={ controlClassName }
                 type="text"
                 value={ value }
                 placeholder={ field.secret ? SECRET_REFERENCE_PLACEHOLDER : undefined }
                 aria-invalid={ fieldError ? 'true' : undefined }
-                aria-describedby={ fieldError ? errorId : undefined }
+                aria-describedby={ describedBy }
                 onChange={ event => this.handleFieldChange(fieldKey, event.target.value) }
               />
             )
         }
-        { field.description && <p className="form-text">{ renderDescription(field.description) }</p> }
         { fieldError && (
           <p className="credential-modal-error" id={ errorId }>
             { fieldError }
           </p>
         ) }
+        {
+
+          /*
+           * Mounted for every secret field, not only once a warning exists: several screen
+           * readers only announce a change to a live region already in the accessible tree,
+           * not one inserted together with its content already set.
+           */
+
+          isSecretField(field) && (
+            <p className="credential-modal-warning" id={ warningId } role="status">
+              { fieldWarning }
+            </p>
+          )
+        }
+        { field.description && <p className="form-text">{ renderDescription(field.description) }</p> }
       </div>
     );
   }
@@ -418,7 +480,61 @@ function renderDescription(description) {
   return nodes;
 }
 
-const SECRET_REFERENCE_PATTERN = /camunda\.secrets\.[A-Za-z0-9_]+/;
+/**
+ * Whether a field is one where a `camunda.secrets.<name>` reference is expected,
+ * i.e. not a `Dropdown` (its value is choice-constrained, not free text).
+ *
+ * @param {Object} field
+ *
+ * @returns {boolean}
+ */
+function isSecretField(field) {
+  return !!field.secret && field.type !== 'Dropdown';
+}
+
+/**
+ * A `camunda.secrets.<name>` occurrence. The name charset `[A-Za-z0-9_-]` mirrors
+ * the engine's (`[\p{Alnum}_-]+` restricted to ASCII), so detection agrees with
+ * resolution: any occurrence in the value is detected and substituted at runtime,
+ * literal surroundings included.
+ */
+const SECRET_REFERENCE_PATTERN = /camunda\.secrets\.[A-Za-z0-9_-]+/;
+
+/**
+ * Whether a secret field's current value holds no complete `camunda.secrets.<name>`
+ * reference, i.e. is stored and resolved as plain text verbatim. The bare prefix
+ * (`camunda.secrets.` with no name) is reported separately as an incomplete
+ * reference. The raw (untrimmed) value is classified: padding is stored too, so
+ * ` camunda.secrets.X ` is plain text, not a reference.
+ *
+ * @param {Object} field
+ * @param {string} value
+ *
+ * @returns {boolean}
+ */
+function isPlainTextSecretValue(field, value) {
+  return isSecretField(field)
+    && typeof value === 'string'
+    && value !== ''
+    && value !== SECRET_REFERENCE_PREFIX
+    && !SECRET_REFERENCE_PATTERN.test(value);
+}
+
+/**
+ * Whether a secret field's current value is the bare `camunda.secrets.` prefix,
+ * i.e. a reference without a name. The engine stores it verbatim, so it is
+ * flagged as incomplete rather than treated as a valid reference.
+ *
+ * @param {Object} field
+ * @param {string} value
+ *
+ * @returns {boolean}
+ */
+function isIncompleteSecretReference(field, value) {
+  return isSecretField(field)
+    && typeof value === 'string'
+    && value === SECRET_REFERENCE_PREFIX;
+}
 
 /**
  * The `camunda.secrets.<name>` reference that is missing from the cluster, or
