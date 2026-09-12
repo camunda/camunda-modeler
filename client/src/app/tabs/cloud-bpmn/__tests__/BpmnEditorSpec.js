@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
-import { waitFor, fireEvent, getByRole } from '@testing-library/react';
+import { act, waitFor, fireEvent, getByRole } from '@testing-library/react';
 
 import { find } from 'min-dash';
 
@@ -34,6 +34,8 @@ import patchEngineProfileXML from '../../__tests__/EngineProfile.patch.cloud.bpm
 import namespaceEngineProfileXML from '../../__tests__/EngineProfile.namespace.cloud.bpmn';
 
 import applyDefaultTemplates from '../../bpmn-shared/modeler/features/apply-default-templates/applyDefaultTemplates';
+
+import FeelPlayground from '../modeler/features/feel-playground/FeelPlayground';
 
 import {
   getCanvasEntries,
@@ -109,6 +111,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       // then
       expect(createSpy).not.to.have.been.called;
     });
+
 
   });
 
@@ -2049,6 +2052,7 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
       cache.add('editor', {
         cached: {
+          feelPlayground: new FeelPlayground(),
           modeler: new BpmnModeler({
             modules: {
               elementTemplatesLoader: elementTemplatesLoaderMock
@@ -3095,6 +3099,52 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(instance).to.exist;
       expect(instance.getModeler().additionalModules).to.exist;
       expect(instance.getModeler().additionalModules).to.have.length(1);
+    });
+
+  });
+
+
+  describe('FEEL expression evaluation', function() {
+
+    it('should update playground configuration when the connection changes', async function() {
+
+      // given
+      const { instance, emit } = await renderEditor(diagramXML);
+      const { feelPlayground } = instance.getCached();
+      const setConfigSpy = sinon.spy(feelPlayground, 'setConfig');
+
+      // when
+      act(() => emit('connectionManager.connectionStatusChanged', {
+        connection: { id: 'cluster' },
+        response: { gatewayVersion: '8.9.0' },
+        success: true
+      }));
+
+      // then
+      expect(setConfigSpy).to.have.been.calledOnce;
+      expect(setConfigSpy.firstCall.args[0].onEvaluate).to.be.a('function');
+    });
+
+
+    it('should update playground file when the path changes', async function() {
+
+      // given
+      const { instance, rerender } = await renderEditor(diagramXML, {
+        file: { path: '/tmp/source.bpmn' }
+      });
+      const { feelPlayground } = instance.getCached();
+      const setFileSpy = sinon.spy(feelPlayground, 'setFile');
+
+      // when
+      rerender(diagramXML, {
+        file: { path: '/tmp/copy.bpmn' }
+      });
+
+      // then
+      await waitFor(() => {
+        expect(setFileSpy).to.have.been.calledOnce;
+      });
+      expect(setFileSpy.firstCall.args[0]).to.eql({ path: '/tmp/copy.bpmn' });
     });
 
   });

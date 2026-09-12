@@ -1573,6 +1573,55 @@ describe('ZeebeAPI (REST)', function() {
   });
 
 
+  describe('#evaluateExpression', function() {
+
+    it('should evaluate expression', async function() {
+
+      // given
+      const callApiEndpointSpy = sinon.spy(() => ({ result: 3 }));
+
+      const zeebeAPI = createZeebeAPI({
+        CamundaRestClient: {
+          callApiEndpoint: callApiEndpointSpy
+        }
+      });
+
+      const parameters = {
+        endpoint: {
+          type: ENDPOINT_TYPES.SELF_HOSTED,
+          url: TEST_URL
+        },
+        expression: '=x + 1',
+        variables: {
+          x: 2
+        }
+      };
+
+      // when
+      const result = await zeebeAPI.evaluateExpression(parameters);
+
+      // then
+      expect(result).to.eql({
+        success: true,
+        response: {
+          result: 3
+        }
+      });
+      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
+        method: 'POST',
+        urlPath: 'expression/evaluation',
+        body: {
+          expression: '=x + 1',
+          variables: {
+            x: 2
+          }
+        }
+      });
+    });
+
+  });
+
+
   describe('#searchVariables', function() {
 
     it('should set success=true on success', async function() {
