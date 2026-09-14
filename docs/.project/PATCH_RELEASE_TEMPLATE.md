@@ -30,7 +30,7 @@ _To be done to prepare and build the release._
 _To be done to make the release publicly available._
 
 * [ ] publish release on [Github Releases](https://github.com/camunda/camunda-modeler/releases)
-* [ ] trigger [downloads page](https://camunda.com/download/modeler/) update via [marketing request form](https://confluence.camunda.com/display/MAR/Marketing+Request+Form)
+* [ ] update the version in [camunda-docs](https://github.com/camunda/camunda-docs/blob/main/src/pages/downloads.js) for the [self-managed download page](https://camunda.com/download/self-managed/)
 * [ ] add new version to [update server releases](https://github.com/camunda/camunda-modeler-update-server/blob/master/releases.json)
   * Usually this does not contain an updated release info
 * [ ] publish release via update server (push to `live`)
