@@ -141,6 +141,72 @@ describe('BpmnModeler', function() {
   });
 
 
+  describe('multi-instance', function() {
+
+    it('should not error when updating input collection', async function() {
+
+      // given
+      const modeler = await createModeler({
+        container: modelerContainer
+      });
+
+      const propertiesPanelContainer = document.createElement('div');
+
+      TestContainer.get(this).appendChild(propertiesPanelContainer);
+
+      const elementRegistry = modeler.get('elementRegistry'),
+            eventBus = modeler.get('eventBus'),
+            propertiesPanel = modeler.get('propertiesPanel');
+
+      const element = elementRegistry.get('SubProcess_MultiInstance'),
+            businessObject = getBusinessObject(element),
+            loopCharacteristics = businessObject.get('loopCharacteristics'),
+            zeebeLoopCharacteristics = loopCharacteristics.get('extensionElements').get('values')[0],
+            selection = modeler.get('selection');
+
+      // when
+      propertiesPanel.attachTo(propertiesPanelContainer);
+
+      await waitFor(() => {
+        expect(propertiesPanelContainer.querySelector(
+          '[data-group-id="group-general"]'
+        )).to.exist;
+      });
+
+      selection.select(element);
+
+      await waitFor(() => {
+        expect(propertiesPanelContainer.querySelector(
+          '[data-group-id="group-multiInstance"]'
+        )).to.exist;
+      });
+
+      eventBus.fire('propertiesPanel.showEntry', {
+        id: 'multiInstance-inputCollection'
+      });
+
+      await waitFor(() => {
+        expect(propertiesPanelContainer.querySelector(
+          '[data-entry-id="multiInstance-inputCollection"] .cm-content'
+        )).to.exist;
+      });
+
+      const input = propertiesPanelContainer.querySelector(
+        '[data-entry-id="multiInstance-inputCollection"] .cm-content'
+      );
+
+      input.focus();
+      input.textContent = 'a';
+
+      // then
+      await waitFor(() => {
+        expect(zeebeLoopCharacteristics.get('inputCollection')).to.equal('=a');
+      });
+    });
+
+  });
+
+
   describe('element template chooser', function() {
 
     it('should open chooser on <elementTemplates.select>', async function() {
