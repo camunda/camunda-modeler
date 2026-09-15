@@ -524,6 +524,28 @@ describe('<CredentialManager>', function() {
   });
 
 
+  it('should show loaded secret references in the create modal', async function() {
+
+    // given
+    const zeebeApi = createZeebeApi({
+      listSecrets: sinon.stub().resolves({
+        success: true,
+        response: { references: [ 'camunda.secrets.API_KEY' ] }
+      })
+    });
+    const configurationTemplates = createConfigurationTemplates(SECRET_TEMPLATE);
+    const { eventBus, findByRole, getByLabelText } = renderManager({ zeebeApi, configurationTemplates });
+
+    // when
+    eventBus.fire('configuration.create', createEvent());
+    await findByRole('dialog');
+    fireEvent.click(getByLabelText('API token'));
+
+    // then
+    expect(await findByRole('option', { name: 'camunda.secrets.API_KEY' })).to.exist;
+  });
+
+
   it('should open the edit modal on configuration.edit', async function() {
 
     // given

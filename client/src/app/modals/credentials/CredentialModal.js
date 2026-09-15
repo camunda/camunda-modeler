@@ -14,6 +14,8 @@ import {
   Modal
 } from '../../../shared/ui';
 
+import { ComboBox } from '../../../shared/ui/form';
+
 import { Loader } from '../../primitives';
 
 import {
@@ -320,18 +322,31 @@ class CredentialModal extends PureComponent {
                 }
               </select>
             )
-            : (
-              <input
-                id={ id }
-                className={ controlClassName }
-                type="text"
-                value={ value }
-                placeholder={ field.secret ? SECRET_REFERENCE_PLACEHOLDER : undefined }
-                aria-invalid={ fieldError ? 'true' : undefined }
-                aria-describedby={ describedBy }
-                onChange={ event => this.handleFieldChange(fieldKey, event.target.value) }
-              />
-            )
+            : secretField
+              ? (
+                <ComboBox
+                  id={ id }
+                  className="credential-modal-secret-input"
+                  options={ secretReferences || [] }
+                  value={ value }
+                  placeholder={ SECRET_REFERENCE_PLACEHOLDER }
+                  aria-invalid={ fieldError ? 'true' : undefined }
+                  aria-describedby={ describedBy }
+                  onChange={ value => this.handleFieldChange(fieldKey, value) }
+                />
+              )
+              : (
+                <input
+                  id={ id }
+                  className={ controlClassName }
+                  type="text"
+                  value={ value }
+                  placeholder={ field.secret ? SECRET_REFERENCE_PLACEHOLDER : undefined }
+                  aria-invalid={ fieldError ? 'true' : undefined }
+                  aria-describedby={ describedBy }
+                  onChange={ event => this.handleFieldChange(fieldKey, event.target.value) }
+                />
+              )
         }
         { fieldError && (
           <p className="credential-modal-error" id={ errorId }>
