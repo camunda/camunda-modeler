@@ -239,6 +239,8 @@ class ElectronApp {
  * @param {string[]} [options.args] extra CLI args / flags (e.g. '--disable-dmn')
  * @param {string} [options.openFile] absolute path to a diagram to open at startup
  * @param {Object} [options.env] extra environment variables
+ * @param {boolean} [options.connectToEngine] leave the connection unset so the
+ *   app resolves its own `c8run (local)` connection (see below)
  *
  * @return {Promise<ElectronApp>}
  */
@@ -246,19 +248,27 @@ async function launch(options = {}) {
   const {
     args = [],
     openFile,
-    env = {}
+    env = {},
+    connectToEngine = false
   } = options;
 
   // isolated config / workspace per instance so tests don't bleed into each other
   const userDataDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cm-e2e-'));
 
   // pre-seed the profile so first-run onboarding hints (which overlay the
-  // properties panel and intercept clicks) don't appear
+  // properties panel and intercept clicks) don't appear.
+  //
+  // `lastUsedConnection: 'NO_CONNECTION'` keeps the connection status indicator
+  // quiet for tests that have no engine to talk to. It must be OMITTED for the
+  // engine suite: `Deployment#getConnectionForTab` returns NO_CONNECTION as soon
+  // as it sees that id and never falls back, so deployment would be impossible.
+  // Left unset, the app migrates in its own `c8run (local)` connection and finds
+  // it through `getDefaultEndpoint()` — the same path a user gets out of the box.
   await fs.writeFile(
     path.join(userDataDir, 'config.json'),
     JSON.stringify({
       hints: { panelToggleDismissed: true },
-      lastUsedConnection: 'NO_CONNECTION'
+      ...(connectToEngine ? {} : { lastUsedConnection: 'NO_CONNECTION' })
     })
   );
 
