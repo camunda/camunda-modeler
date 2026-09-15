@@ -1248,6 +1248,26 @@ describe('<BpmnEditor>', function() {
       expect(showErrorSpy).to.have.been.calledWithMatch(lintError);
     });
 
+
+    it('should route linting fix actions', async function() {
+
+      // given
+      const { instance } = await renderEditor(diagramXML);
+      const context = {
+        report: {
+          id: 'missing'
+        }
+      };
+
+      // when
+      const resolvedFix = instance.triggerAction('resolve-linting-fix', context);
+      const applyResult = instance.triggerAction('apply-linting-fix', context);
+
+      // then
+      expect(resolvedFix).to.be.null;
+      expect(applyResult).to.be.undefined;
+    });
+
   });
 
 

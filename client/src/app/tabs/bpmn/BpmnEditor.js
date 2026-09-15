@@ -19,6 +19,11 @@ import {
 } from '../../primitives';
 
 import {
+  applyLintingFix,
+  resolveLintingFix
+} from '../bpmn-shared/LintingFix';
+
+import {
   debounce
 } from '../../../util';
 
@@ -839,6 +844,14 @@ export class BpmnEditor extends CachedComponent {
       this.getModeler().get('linting').showError(context);
 
       return;
+    }
+
+    if (action === 'resolve-linting-fix') {
+      return resolveLintingFix(modeler, context.report);
+    }
+
+    if (action === 'apply-linting-fix') {
+      return applyLintingFix(modeler, context.report);
     }
 
     if (action === 'elementTemplates.reload') {
