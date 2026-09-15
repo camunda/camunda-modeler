@@ -334,8 +334,8 @@ describe('<CredentialModal>', function() {
 
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
     expect(getByText('API key must not be empty.')).to.exist;
-    expect(input.classList.contains('is-invalid')).to.be.true;
     expect(input.closest('.form-group').classList.contains('has-error')).to.be.true;
+    expect(input.getAttribute('aria-describedby')).to.equal('credential-field-apiKey-error');
   });
 
 
@@ -592,6 +592,80 @@ describe('<CredentialModal>', function() {
   });
 
 
+  it('should select an available secret reference', async function() {
+
+    // given
+    const onSubmit = sinon.spy();
+    const { getByLabelText, getByRole } = renderModal({
+      mode: 'create',
+      displayName: 'My cred',
+      configurationTemplate: template(SECRET_FIELD),
+      secretReferences: [ 'camunda.secrets.API_KEY', 'camunda.secrets.PASSWORD' ],
+      onSubmit
+    });
+
+    // when
+    fireEvent.click(getByLabelText('API key'));
+    fireEvent.click(getByRole('option', { name: 'camunda.secrets.PASSWORD' }));
+    fireEvent.click(getByRole('button', { name: 'Create and select' }));
+
+    // then
+    await waitFor(() => {
+      expect(onSubmit).to.have.been.calledOnce;
+      expect(onSubmit.firstCall.args[0].values.apiKey).to.equal('camunda.secrets.PASSWORD');
+    });
+  });
+
+
+  it('should accept a custom secret value', async function() {
+
+    // given
+    const onSubmit = sinon.spy();
+    const { getByLabelText, getByRole } = renderModal({
+      mode: 'create',
+      displayName: 'My cred',
+      configurationTemplate: template(SECRET_FIELD),
+      secretReferences: [],
+      onSubmit
+    });
+
+    // when
+    fireEvent.change(getByLabelText('API key'), { target: { value: 'custom-value' } });
+    fireEvent.click(getByRole('button', { name: 'Create and select' }));
+
+    // then
+    await waitFor(() => {
+      expect(onSubmit).to.have.been.calledOnce;
+      expect(onSubmit.firstCall.args[0].values.apiKey).to.equal('custom-value');
+    });
+  });
+
+
+  it('should preserve a custom value when secret references load', async function() {
+
+    // given
+    const props = {
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      secretReferences: null
+    };
+    const { getByLabelText, rerender } = renderModal(props);
+    const input = getByLabelText('API key');
+
+    // when
+    fireEvent.change(input, { target: { value: 'custom-value' } });
+    rerender(<CredentialModal { ...modalProps({
+      ...props,
+      secretReferences: [ 'camunda.secrets.API_KEY' ]
+    }) } />);
+
+    // then
+    await waitFor(() => {
+      expect(getByLabelText('API key').value).to.equal('custom-value');
+    });
+  });
+
+
   it('should show a non-blocking warning for a missing secret reference', function() {
 
     // when
@@ -607,8 +681,6 @@ describe('<CredentialModal>', function() {
     const input = getByLabelText('API key');
 
     expect(getByText(/does not exist on the connected Camunda instance/)).to.exist;
-    expect(input.classList.contains('is-warning')).to.be.true;
-    expect(input.classList.contains('is-invalid')).to.be.false;
     expect(input.closest('.form-group').classList.contains('has-warning')).to.be.true;
     expect(input.getAttribute('aria-invalid')).to.be.null;
     expect(input.getAttribute('aria-describedby')).to.equal('credential-field-apiKey-warning');
@@ -696,8 +768,6 @@ describe('<CredentialModal>', function() {
     const input = getByLabelText('API key');
 
     expect(getByText(/exposes sensitive information/)).to.exist;
-    expect(input.classList.contains('is-warning')).to.be.true;
-    expect(input.classList.contains('is-invalid')).to.be.false;
     expect(input.closest('.form-group').classList.contains('has-warning')).to.be.true;
     expect(input.getAttribute('aria-invalid')).to.be.null;
     expect(input.getAttribute('aria-describedby')).to.equal('credential-field-apiKey-warning');
@@ -720,7 +790,6 @@ describe('<CredentialModal>', function() {
 
     expect(getByText(/Incomplete secret reference/)).to.exist;
     expect(queryByText(/exposes sensitive information/)).not.to.exist;
-    expect(input.classList.contains('is-warning')).to.be.true;
     expect(input.getAttribute('aria-invalid')).to.be.null;
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
   });
@@ -791,7 +860,7 @@ describe('<CredentialModal>', function() {
     // then
     expect(getByText(/exposes sensitive information/)).to.exist;
     expect(queryByText(/Incomplete secret reference/)).not.to.exist;
-    expect(getByLabelText('API key').classList.contains('is-invalid')).to.be.false;
+    expect(getByLabelText('API key').getAttribute('aria-invalid')).to.be.null;
   });
 
 
@@ -809,7 +878,7 @@ describe('<CredentialModal>', function() {
     // then
     expect(queryByText(/exposes sensitive information/)).not.to.exist;
     expect(getByText(/does not exist on the connected Camunda instance/)).to.exist;
-    expect(getByLabelText('API key').classList.contains('is-warning')).to.be.true;
+    expect(getByLabelText('API key').getAttribute('aria-describedby')).to.equal('credential-field-apiKey-warning');
   });
 
 
