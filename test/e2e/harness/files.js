@@ -21,16 +21,36 @@ const { fixture } = require('./paths');
  * Copy a fixture diagram into a directory so tests never mutate the committed
  * fixture (opening + saving writes back to the file's own path).
  *
- * @param {string} name fixture file name
+ * @param {string} name fixture file name, optionally in a subdirectory
  * @param {string} targetDir
- * @param {string} [as] target file name (defaults to the fixture name)
+ * @param {string} [as] target file name (defaults to the fixture's base name,
+ *   so a nested fixture lands directly in `targetDir`)
  *
  * @return {Promise<string>} absolute path to the copy
  */
-async function copyFixture(name, targetDir, as = name) {
+async function copyFixture(name, targetDir, as = path.basename(name)) {
   const target = path.join(targetDir, as);
 
   await fs.copyFile(fixture(name), target);
+
+  return target;
+}
+
+/**
+ * Copy a fixture directory (with its dotfiles) into a directory. Process
+ * application fixtures are directories: the `.process-application` marker plus
+ * the resources beside it, all of which the app's file context indexes.
+ *
+ * @param {string} name fixture directory name
+ * @param {string} targetDir
+ * @param {string} [as] target directory name (defaults to the fixture name)
+ *
+ * @return {Promise<string>} absolute path to the copy
+ */
+async function copyFixtureDir(name, targetDir, as = path.basename(name)) {
+  const target = path.join(targetDir, as);
+
+  await fs.cp(fixture(name), target, { recursive: true });
 
   return target;
 }
@@ -106,6 +126,7 @@ async function expectFileContains(filePath, substring, timeout = 10000) {
 
 module.exports = {
   copyFixture,
+  copyFixtureDir,
   readFile,
   fileExists,
   countMatches,
