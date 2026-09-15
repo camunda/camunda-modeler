@@ -1,0 +1,44 @@
+.form-combobox {
+  position: relative;
+}
+
+.form-combobox-control {
+  position: relative;
+}
+
+.form-combobox-options {
+  position: absolute;
+  z-index: 1;
+  top: calc(100% + 2px);
+  right: 0;
+  left: 0;
+  max-height: 180px;
+  margin: 0;
+  padding: 4px 0;
+  overflow-y: auto;
+  border: solid 1px var(--color-grey-225-10-75);
+  border-radius: 3px;
+  background: var(--color-white);
+  box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.15);
+  list-style: none;
+
+  &.open-above {
+    top: auto;
+    bottom: calc(100% + 2px);
+  }
+}
+
+.form-combobox-option {
+  padding: 6px 8px;
+  overflow: hidden;
+  color: var(--color-grey-225-10-15);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.form-combobox-option:hover,
+.form-combobox-option.active {
+  background: var(--color-grey-225-10-90);
+}
