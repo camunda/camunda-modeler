@@ -334,6 +334,77 @@ describe('template-updater - TemplateUpdater', function() {
     });
 
 
+    [ 'index request', 'index body', 'template request', 'template body' ].forEach(stage => {
+      it(`should continue after a timeout (${ stage })`, async function() {
+
+        // given
+        const { updater, config, endpoints, templateSourcePaths } = configureSources();
+        mockSourceA();
+        await new TemplateUpdater(userPath, [ endpoints[0] ]).update('Camunda Cloud', '8.8');
+        const cached = fs.readFileSync(templateSourcePaths[0], 'utf8');
+        const done = sinon.spy();
+        updater.on('update:done', done);
+        mockSourceB();
+
+        const clock = sinon.useFakeTimers({ toFake: [ 'setTimeout', 'clearTimeout' ] });
+        const fetchStub = sinon.stub(global, 'fetch').callThrough();
+        const stalledUrl = stage.startsWith('index')
+          ? `${ origin }/source-a.json`
+          : `${ origin }/stalled-template.json`;
+        let signal;
+        let started;
+        const stalled = new Promise(resolve => {
+          started = resolve;
+        });
+
+        if (stage.startsWith('template')) {
+          pool.intercept({ path: '/source-a.json' }).reply(200, {
+            foo: [ { version: 1, ref: stalledUrl } ]
+          });
+        }
+
+        fetchStub.withArgs(stalledUrl).callsFake((url, options) => {
+          signal = options?.signal;
+
+          const pending = () => {
+            started();
+
+            return new Promise((resolve, reject) => {
+              signal?.addEventListener('abort', () => reject(signal.reason), { once: true });
+            });
+          };
+
+          return stage.endsWith('body')
+            ? Promise.resolve({ ok: true, json: pending, text: pending })
+            : pending();
+        });
+
+        try {
+
+          // when
+          const updating = updater.update('Camunda Cloud', '8.8');
+          await stalled;
+          await clock.tickAsync(30000);
+          const result = await updating;
+
+          // then
+          expect(signal.aborted).to.be.true;
+          expect(result.hasNew).to.be.true;
+          expect(result.warnings).to.eql([
+            `Failed to update templates from ${ origin }/source-a.json: Timed out after 30000 ms`
+          ]);
+          expect(done).to.have.been.calledOnceWith(true, result.warnings);
+          expect(fs.readFileSync(templateSourcePaths[0], 'utf8')).to.equal(cached);
+          expect(config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
+          expect(clock.countTimers()).to.equal(0);
+        } finally {
+          fetchStub.restore();
+          clock.restore();
+        }
+      });
+    });
+
+
     it('should preserve a failed later source cache and unchanged-reference caching', async function() {
 
       // given

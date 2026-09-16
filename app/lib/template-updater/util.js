@@ -24,6 +24,8 @@ const semver = require('semver');
 
 const log = require('../log')('app:template-updater:util');
 
+const SOURCE_TIMEOUT = 30000;
+
 function getTemplatesPath(userPath, fileName) {
   return path.join(userPath, 'resources/element-templates', fileName);
 }
@@ -46,6 +48,13 @@ async function updateTemplates(endpoint, executionPlatformVersion, userPath) {
   } = endpoint;
 
   log.info(`Updating templates from ${ url } for execution platform version ${ executionPlatformVersion }`);
+
+  // Share one deadline across the index, template downloads, and response bodies.
+  const controller = new AbortController();
+  const timeout = setTimeout(() => {
+    controller.abort(new Error(`Timed out after ${ SOURCE_TIMEOUT } ms`));
+  }, SOURCE_TIMEOUT);
+  const { signal } = controller;
 
   try {
     const templatesPath = getTemplatesPath(userPath, fileName);
@@ -70,7 +79,9 @@ async function updateTemplates(endpoint, executionPlatformVersion, userPath) {
     const {
       updatedTemplates,
       warnings
-    } = await fetchAndUpdateTemplates(templates, executionPlatformVersion, url);
+    } = await fetchAndUpdateTemplates(templates, executionPlatformVersion, url, signal);
+
+    signal.throwIfAborted();
 
     fs.mkdirSync(path.dirname(templatesPath), { recursive: true });
 
@@ -81,9 +92,11 @@ async function updateTemplates(endpoint, executionPlatformVersion, userPath) {
     log.error(`Failed to update templates from ${ url }`, error);
 
     return {
-      warnings: [ `Failed to update templates from ${ url }: ${ error.message }` ],
+      warnings: [ `Failed to update templates from ${ url }: ${ signal.aborted ? signal.reason.message : error.message }` ],
       hasNew: false
     };
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
@@ -96,16 +109,17 @@ module.exports.updateTemplates = updateTemplates;
  * @param {Template[]} templates
  * @param {string} executionPlatformVersion
  * @param {string} url
+ * @param {AbortSignal} signal Source update deadline.
  *
  * @returns {Promise<{ updatedTemplates: Template[], warnings: string[] }>}
  */
-async function fetchAndUpdateTemplates(templates, executionPlatformVersion, url) {
+async function fetchAndUpdateTemplates(templates, executionPlatformVersion, url, signal) {
   log.info('Fetching and updating templates');
 
   let updatedTemplates = [ ...templates ],
       warnings = [];
 
-  const response = await fetch(url);
+  const response = await fetch(url, { signal });
 
   if (!response.ok) {
     log.warn(`Failed to fetch templates from ${ url } (HTTP ${ response.status })`);
@@ -161,7 +175,9 @@ async function fetchAndUpdateTemplates(templates, executionPlatformVersion, url)
     toFetch.map(({ id, templateMetadata }) =>
       limit(async () => {
         try {
-          const res = await fetch(templateMetadata.ref);
+          signal.throwIfAborted();
+
+          const res = await fetch(templateMetadata.ref, { signal });
 
           if (!res.ok) {
             return { id, templateMetadata, error: `HTTP ${ res.status }` };
