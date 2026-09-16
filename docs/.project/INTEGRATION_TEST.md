@@ -138,6 +138,14 @@ Based on the [test diagram](./test.bpmn.png):
 
 #### BPMN + Camunda Forms deployment
 
+> __Automated:__ deploying a BPMN file, a form file and a process application,
+> and starting an instance from a file and from a process application, are
+> covered by the [engine e2e suite](../../test/e2e/README.md#engine-suite-camunda-8-run)
+> (`npm run test:e2e:engine`) against a local Camunda 8 Run cluster. The suite
+> also deploys a DMN file, which this checklist has never covered. Keep testing
+> these manually anyway: the suite runs against a development build, and only
+> against the Local cluster type.
+
 * [ ] Create a simple `Start Event -> User Task -> End Event` process
 * [ ] Create a simple form with id `foo`
 * [ ] Reference the form in the user task via `Camunda Form -> reference=foo`

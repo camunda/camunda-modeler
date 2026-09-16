@@ -1,0 +1,15 @@
+{
+  "components": [
+    {
+      "key": "invoiceNumber",
+      "label": "Invoice Number",
+      "type": "textfield",
+      "id": "Field_1"
+    }
+  ],
+  "type": "default",
+  "id": "invoice-application-form",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.10.0",
+  "schemaVersion": 18
+}

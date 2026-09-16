@@ -334,8 +334,8 @@ describe('<CredentialModal>', function() {
 
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
     expect(getByText('API key must not be empty.')).to.exist;
-    expect(input.classList.contains('is-invalid')).to.be.true;
     expect(input.closest('.form-group').classList.contains('has-error')).to.be.true;
+    expect(input.getAttribute('aria-describedby')).to.equal('credential-field-apiKey-error');
   });
 
 
@@ -592,7 +592,81 @@ describe('<CredentialModal>', function() {
   });
 
 
-  it('should show a non-blocking error for a missing secret reference', function() {
+  it('should select an available secret reference', async function() {
+
+    // given
+    const onSubmit = sinon.spy();
+    const { getByLabelText, getByRole } = renderModal({
+      mode: 'create',
+      displayName: 'My cred',
+      configurationTemplate: template(SECRET_FIELD),
+      secretReferences: [ 'camunda.secrets.API_KEY', 'camunda.secrets.PASSWORD' ],
+      onSubmit
+    });
+
+    // when
+    fireEvent.click(getByLabelText('API key'));
+    fireEvent.click(getByRole('option', { name: 'camunda.secrets.PASSWORD' }));
+    fireEvent.click(getByRole('button', { name: 'Create and select' }));
+
+    // then
+    await waitFor(() => {
+      expect(onSubmit).to.have.been.calledOnce;
+      expect(onSubmit.firstCall.args[0].values.apiKey).to.equal('camunda.secrets.PASSWORD');
+    });
+  });
+
+
+  it('should accept a custom secret value', async function() {
+
+    // given
+    const onSubmit = sinon.spy();
+    const { getByLabelText, getByRole } = renderModal({
+      mode: 'create',
+      displayName: 'My cred',
+      configurationTemplate: template(SECRET_FIELD),
+      secretReferences: [],
+      onSubmit
+    });
+
+    // when
+    fireEvent.change(getByLabelText('API key'), { target: { value: 'custom-value' } });
+    fireEvent.click(getByRole('button', { name: 'Create and select' }));
+
+    // then
+    await waitFor(() => {
+      expect(onSubmit).to.have.been.calledOnce;
+      expect(onSubmit.firstCall.args[0].values.apiKey).to.equal('custom-value');
+    });
+  });
+
+
+  it('should preserve a custom value when secret references load', async function() {
+
+    // given
+    const props = {
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      secretReferences: null
+    };
+    const { getByLabelText, rerender } = renderModal(props);
+    const input = getByLabelText('API key');
+
+    // when
+    fireEvent.change(input, { target: { value: 'custom-value' } });
+    rerender(<CredentialModal { ...modalProps({
+      ...props,
+      secretReferences: [ 'camunda.secrets.API_KEY' ]
+    }) } />);
+
+    // then
+    await waitFor(() => {
+      expect(getByLabelText('API key').value).to.equal('custom-value');
+    });
+  });
+
+
+  it('should show a non-blocking warning for a missing secret reference', function() {
 
     // when
     const { getByLabelText, getByRole, getByText } = renderModal({
@@ -606,10 +680,10 @@ describe('<CredentialModal>', function() {
     // then
     const input = getByLabelText('API key');
 
-    expect(getByText(/was not found/)).to.exist;
-    expect(input.classList.contains('is-invalid')).to.be.true;
-    expect(input.closest('.form-group').classList.contains('has-error')).to.be.true;
-    expect(input.getAttribute('aria-invalid')).to.equal('true');
+    expect(getByText(/does not exist on the connected Camunda instance/)).to.exist;
+    expect(input.closest('.form-group').classList.contains('has-warning')).to.be.true;
+    expect(input.getAttribute('aria-invalid')).to.be.null;
+    expect(input.getAttribute('aria-describedby')).to.equal('credential-field-apiKey-warning');
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
   });
 
@@ -625,7 +699,271 @@ describe('<CredentialModal>', function() {
     });
 
     // then
-    expect(queryByText(/was not found/)).not.to.exist;
+    expect(queryByText(/does not exist on the connected Camunda instance/)).not.to.exist;
+  });
+
+
+  it('should warn about a missing reference beyond an existing one', function() {
+
+    // when: the engine resolves every occurrence — an existing first reference
+    // must not suppress the missing second one
+    const { getByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'camunda.secrets.PRESENT camunda.secrets.MISSING' },
+      secretReferences: [ 'camunda.secrets.PRESENT' ]
+    });
+
+    // then
+    expect(getByText(/does not exist on the connected Camunda instance/)).to.exist;
+  });
+
+
+  it('should read a doubled prefix as the reference to `camunda`', function() {
+
+    // when: the reference must start at a token boundary (name charset and `.`),
+    // so the nested `camunda.secrets.` is part of the first name; the value
+    // holds the single reference `camunda.secrets.camunda`, resolved or not
+    const { getByText, queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'camunda.secrets.camunda.secrets.B' },
+      secretReferences: [ 'camunda.secrets.B' ]
+    });
+
+    // then
+    expect(queryByText(/exposes sensitive information/)).not.to.exist;
+    expect(getByText(/does not exist on the connected Camunda instance/)).to.exist;
+    expect(queryByText(/Incomplete secret reference/)).not.to.exist;
+  });
+
+
+  it('should not match a reference inside another token', function() {
+
+    // when: `foo.camunda.secrets.B` is a single token, not a reference
+    const { getByText, queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'foo.camunda.secrets.B' },
+      secretReferences: [ 'camunda.secrets.B' ]
+    });
+
+    // then
+    expect(getByText(/exposes sensitive information/)).to.exist;
+    expect(queryByText(/does not exist on the connected Camunda instance/)).not.to.exist;
+  });
+
+
+  it('should warn about a plain-text value in a secret field', function() {
+
+    // when
+    const { getByLabelText, getByRole, getByText } = renderModal({
+      mode: 'create',
+      displayName: 'My cred',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'hunter2' }
+    });
+
+    // then
+    const input = getByLabelText('API key');
+
+    expect(getByText(/exposes sensitive information/)).to.exist;
+    expect(input.closest('.form-group').classList.contains('has-warning')).to.be.true;
+    expect(input.getAttribute('aria-invalid')).to.be.null;
+    expect(input.getAttribute('aria-describedby')).to.equal('credential-field-apiKey-warning');
+    expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
+  });
+
+
+  it('should warn about a bare secret reference prefix (incomplete, stored verbatim)', function() {
+
+    // when
+    const { getByLabelText, getByRole, getByText, queryByText } = renderModal({
+      mode: 'create',
+      displayName: 'My cred',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'camunda.secrets.' }
+    });
+
+    // then
+    const input = getByLabelText('API key');
+
+    expect(getByText(/Incomplete secret reference/)).to.exist;
+    expect(queryByText(/exposes sensitive information/)).not.to.exist;
+    expect(input.getAttribute('aria-invalid')).to.be.null;
+    expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
+  });
+
+
+
+  it('should not warn about a complete secret reference', function() {
+
+    // when
+    const { queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'camunda.secrets.PASSWORD' },
+      secretReferences: [ 'camunda.secrets.PASSWORD' ]
+    });
+
+    // then
+    expect(queryByText(/exposes sensitive information/)).not.to.exist;
+  });
+
+
+  it('should never flag a non-secret field as plain text', function() {
+
+    // when
+    const { queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(OPTIONAL_FIELD),
+      initialValues: { token: 'hunter2' }
+    });
+
+    // then
+    expect(queryByText(/exposes sensitive information/)).not.to.exist;
+  });
+
+
+  it('should never flag a plain-text dropdown value', function() {
+
+    // when
+    const { queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template({
+        id: 'type',
+        label: 'Type',
+        type: 'Dropdown',
+        secret: true,
+        choices: [ { name: 'Custom', value: 'hunter2' } ],
+        value: 'hunter2',
+        binding: { type: 'property', name: 'type' }
+      })
+    });
+
+    // then
+    expect(queryByText(/exposes sensitive information/)).not.to.exist;
+  });
+
+
+  it('should prioritize the plain-text warning over the incomplete-reference warning', function() {
+
+    // when: the value holds the prefix but no name — padding makes it plain text,
+    // not an incomplete reference
+    const { getByLabelText, getByText, queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'camunda.secrets. ' },
+      secretReferences: []
+    });
+
+    // then
+    expect(getByText(/exposes sensitive information/)).to.exist;
+    expect(queryByText(/Incomplete secret reference/)).not.to.exist;
+    expect(getByLabelText('API key').getAttribute('aria-invalid')).to.be.null;
+  });
+
+
+  it('should not warn when a reference is embedded in surrounding text', function() {
+
+    // when: the engine resolves the reference substring, keeping the literal
+    // surroundings — an explicitly chosen mix, not plain text
+    const { getByLabelText, getByText, queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'camunda.secrets.MISSING + b' },
+      secretReferences: []
+    });
+
+    // then
+    expect(queryByText(/exposes sensitive information/)).not.to.exist;
+    expect(getByText(/does not exist on the connected Camunda instance/)).to.exist;
+    expect(getByLabelText('API key').getAttribute('aria-describedby')).to.equal('credential-field-apiKey-warning');
+  });
+
+
+  it('should not warn about a padded but resolvable reference', function() {
+
+    // when: the engine matches the reference substring regardless of padding,
+    // so the value is not plain text
+    const { queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: ' camunda.secrets.PASSWORD ' },
+      secretReferences: [ 'camunda.secrets.PASSWORD' ]
+    });
+
+    // then
+    expect(queryByText(/exposes sensitive information/)).not.to.exist;
+    expect(queryByText(/does not exist on the connected Camunda instance/)).not.to.exist;
+  });
+
+
+  it('should warn about whitespace-only secret values', function() {
+
+    // when: a whitespace-only value is stored verbatim like any plain text
+    const { getByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: '   ' }
+    });
+
+    // then
+    expect(getByText(/exposes sensitive information/)).to.exist;
+  });
+
+
+  it('should recognize a dashed secret reference', function() {
+
+    // when: the engine charset allows dashes in secret names
+    const { queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'camunda.secrets.my-name' },
+      secretReferences: [ 'camunda.secrets.my-name' ]
+    });
+
+    // then
+    expect(queryByText(/exposes sensitive information/)).not.to.exist;
+    expect(queryByText(/does not exist on the connected Camunda instance/)).not.to.exist;
+  });
+
+
+  it('should not warn about a missing reference in a secret dropdown', function() {
+
+    // when: dropdown values are choice-constrained, so no secret semantics apply
+    const { queryByText } = renderModal({
+      mode: 'create',
+      configurationTemplate: template({
+        id: 'type',
+        label: 'Type',
+        type: 'Dropdown',
+        secret: true,
+        choices: [ { name: 'Missing', value: 'camunda.secrets.MISSING' } ],
+        value: 'camunda.secrets.MISSING',
+        binding: { type: 'property', name: 'type' }
+      }),
+      secretReferences: []
+    });
+
+    // then
+    expect(queryByText(/does not exist on the connected Camunda instance/)).not.to.exist;
+    expect(queryByText(/exposes sensitive information/)).not.to.exist;
+  });
+
+
+  it('should still allow submission with a plain-text secret value', function() {
+
+    // when
+    const { getByRole } = renderModal({
+      mode: 'create',
+      displayName: 'My cred',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'hunter2' }
+    });
+
+    // then
+    expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
   });
 
 

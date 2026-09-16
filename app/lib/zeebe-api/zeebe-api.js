@@ -38,12 +38,21 @@ const ERROR_REASONS = {
   CONTACT_POINT_UNAVAILABLE: 'CONTACT_POINT_UNAVAILABLE',
   UNAUTHORIZED: 'UNAUTHORIZED',
   CLUSTER_UNAVAILABLE: 'CLUSTER_UNAVAILABLE',
+  CLUSTER_TEMPORARILY_UNAVAILABLE: 'CLUSTER_TEMPORARILY_UNAVAILABLE',
   FORBIDDEN: 'FORBIDDEN',
   OAUTH_URL: 'OAUTH_URL',
   UNSUPPORTED_ENGINE: 'UNSUPPORTED_ENGINE',
   INVALID_CLIENT_ID: 'INVALID_CLIENT_ID',
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS'
 };
+
+// system-level network error codes, raised e.g. by REST calls against an
+// unreachable endpoint
+const NETWORK_ERROR_CODES = [ 'ECONNREFUSED', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH' ];
+
+// HTTP status codes a proxy/ingress returns when the cluster behind it is
+// unreachable, paused or scaled to zero
+const UNAVAILABLE_HTTP_STATUSES = [ 502, 503, 504 ];
 
 const {
   AUTH_TYPES,
@@ -1144,6 +1153,20 @@ function getGrpcErrorCode(message) {
 }
 
 /**
+ * Checks whether the error indicates a connection-level network failure, i.e.
+ * the endpoint could not be reached at all.
+ *
+ * @param {Error} error
+ *
+ * @returns {boolean}
+ */
+function isNetworkError(error) {
+  return NETWORK_ERROR_CODES.some(code =>
+    error.code === code || (error.message || '').includes(code)
+  );
+}
+
+/**
  * @param {string} message
  *
  * @returns {number|undefined}
@@ -1167,12 +1190,18 @@ function getErrorReason(error, endpoint) {
   } = endpoint;
 
   // (1) handle errors
-  if (code === 14 || code === 13 || httpStatus === 503) {
+  if (code === 14 || code === 13 || isNetworkError(error)) {
     return type === ENDPOINT_TYPES.CAMUNDA_CLOUD
       ? ERROR_REASONS.CLUSTER_UNAVAILABLE
       : ERROR_REASONS.CONTACT_POINT_UNAVAILABLE;
   } else if (code === 12) {
     return ERROR_REASONS.UNSUPPORTED_ENGINE;
+  }
+
+  // (1a) a proxy/ingress answered, but the instance behind it is
+  // unavailable, e.g. paused or still starting up
+  if (httpStatus === 503 || UNAVAILABLE_HTTP_STATUSES.includes(getResponseStatus(error))) {
+    return ERROR_REASONS.CLUSTER_TEMPORARILY_UNAVAILABLE;
   }
 
   // (2) handle <unknown>
