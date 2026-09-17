@@ -35,7 +35,7 @@ export function getSuccessNotification(tab, config, deploymentResult, resourceCo
 
   return {
     type: 'success',
-    title: 'Camunda project deployed',
+    title: 'Project deployed',
     content: (
       <div className={ css.CamundaProjectsDeploymentNotification }>
         <div>

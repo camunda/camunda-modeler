@@ -276,7 +276,7 @@ class MenuBuilder {
 
   appendNewCamundaProject() {
     this.menu.append(new MenuItem({
-      label: 'New Camunda Project...',
+      label: 'New Project...',
       click: function() {
         app.emit('menu:action', 'emit-event', { type: 'create-camunda-project' });
       }

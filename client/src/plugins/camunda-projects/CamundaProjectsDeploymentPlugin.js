@@ -99,7 +99,7 @@ export default function CamundaProjectsDeploymentPlugin(props) {
       <Fill name="camunda-project-deployment" replaces="deployment" slot="status-bar__file" group="8_deploy" priority={ 1 }>
         <button
           onClick={ onClick }
-          title="Open Camunda project deployment"
+          title="Open project deployment"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
@@ -121,9 +121,9 @@ export default function CamundaProjectsDeploymentPlugin(props) {
         displayNotification={ displayNotification }
         renderDescription={ `${ resourceConfigs.length } ${ resourceConfigs.length === 1 ? 'file' : 'files' } will be deployed` }
         renderHeader={ <>
-          <CamundaProjectIcon width="16" height="16" />Deploy Camunda project
+          <CamundaProjectIcon width="16" height="16" />Deploy project
         </> }
-        renderSubmit="Deploy Camunda project"
+        renderSubmit="Deploy project"
         triggerAction={ triggerAction }
       />
     ) }

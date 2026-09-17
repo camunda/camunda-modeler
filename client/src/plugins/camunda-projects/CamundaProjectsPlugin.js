@@ -78,7 +78,7 @@ export default function CamundaProjectsPlugin(props) {
           'createDirectory', // Allow creating new directories from dialog on macOS
           'openDirectory'
         ],
-        title: 'Create Camunda Project'
+        title: 'Create Project'
       });
 
       if (!directoryPath) {
@@ -95,8 +95,8 @@ export default function CamundaProjectsPlugin(props) {
 
       triggerAction('display-notification', {
         type: 'success',
-        title: 'Camunda project created',
-        content: <a href={ DOCUMENTATION_URL }>Learn more about Camunda projects</a>
+        title: 'Project created',
+        content: <a href={ DOCUMENTATION_URL }>Learn more about projects</a>
       });
     });
 

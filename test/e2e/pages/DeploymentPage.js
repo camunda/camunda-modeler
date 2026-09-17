@@ -47,7 +47,7 @@ class DeploymentPage {
    * @return {Promise<void>}
    */
   async openCamundaProjectDeployment() {
-    await this.page.getByTitle('Open Camunda project deployment').click();
+    await this.page.getByTitle('Open project deployment').click();
   }
 
   /**
@@ -65,7 +65,7 @@ class DeploymentPage {
    * @return {Promise<void>}
    */
   async openCamundaProjectStartInstance() {
-    await this.page.getByTitle('Open Camunda project start instance').click();
+    await this.page.getByTitle('Open project start instance').click();
   }
 
   /**

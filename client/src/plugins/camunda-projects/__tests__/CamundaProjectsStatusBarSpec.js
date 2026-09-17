@@ -119,7 +119,7 @@ describe('<CamundaProjectsStatusBar>', function() {
       fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(screen.getByText(/Create a new Camunda project/i)).to.exist;
+      expect(screen.getByText(/Create a new project/i)).to.exist;
     });
 
 
@@ -159,7 +159,7 @@ describe('<CamundaProjectsStatusBar>', function() {
       fireEvent.click(screen.getByRole('button'));
 
       // when
-      fireEvent.click(screen.getByText(/Create a new Camunda project/i));
+      fireEvent.click(screen.getByText(/Create a new project/i));
 
       // then
       expect(onCreateCamundaProjectSpy).to.have.been.calledOnce;

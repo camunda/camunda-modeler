@@ -65,7 +65,7 @@ export default function CamundaProjectsStatusBar(props) {
           className={ classnames('btn', css.CamundaProjectsButton, { 'has-camunda-project': !!camundaProject }) }
           ref={ ref }
           onClick={ () => setIsOpen(!isOpen) }
-          title={ camundaProject ? 'This file is part of a Camunda project' : 'New Camunda project...' }
+          title={ camundaProject ? 'This file is part of a project' : 'New project...' }
         >
           <CamundaProjectIcon width="16" height="16" />
         </button>
@@ -81,14 +81,14 @@ export default function CamundaProjectsStatusBar(props) {
             ? <>
               <Section className="camunda-project-section">
                 <Section.Body>
-                  <p>Create a <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/process-applications/') }>Camunda project</a>:</p>
+                  <p>Create a <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/process-applications/') }>project</a>:</p>
                   <ul>
                     <li>Deploy and test resources (BPMN, DMN, forms) as a single unit</li>
                     <li>Benefit from cross-file editor intelligence and improved discovery</li>
                   </ul>
                   <p>
                     <button type="button" className="btn btn-primary create-camunda-project-btn" onClick={ onClickCreateCamundaProject }>
-                      Create a new Camunda project
+                      Create a new project
                     </button>
                   </p>
                 </Section.Body>
@@ -97,7 +97,7 @@ export default function CamundaProjectsStatusBar(props) {
             : <>
               <Section>
                 <Section.Header>
-                  Camunda project
+                  Project
                 </Section.Header>
                 <Section.Body>
                   <ul className="files camunda-project-file" role="menu">
