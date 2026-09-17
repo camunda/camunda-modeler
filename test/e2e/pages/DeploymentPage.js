@@ -18,10 +18,10 @@ const OPERATE_LINK = 'Open in Camunda Operate';
  * The status bar deployment and start-instance controls, their overlays, and the
  * notifications they produce.
  *
- * The process application variants are separate controls, not modes of the same
+ * The Camunda project variants are separate controls, not modes of the same
  * one: their fills declare `replaces="deployment"` / `replaces="start-instance"`,
  * so exactly one of each pair is mounted depending on whether the active file
- * belongs to a process application.
+ * belongs to a Camunda project.
  */
 class DeploymentPage {
 
@@ -42,12 +42,12 @@ class DeploymentPage {
   }
 
   /**
-   * Open the deployment overlay for a process application.
+   * Open the deployment overlay for a Camunda project.
    *
    * @return {Promise<void>}
    */
-  async openProcessApplicationDeployment() {
-    await this.page.getByTitle('Open process application deployment').click();
+  async openCamundaProjectDeployment() {
+    await this.page.getByTitle('Open Camunda project deployment').click();
   }
 
   /**
@@ -60,12 +60,12 @@ class DeploymentPage {
   }
 
   /**
-   * Open the start instance overlay for a process application.
+   * Open the start instance overlay for a Camunda project.
    *
    * @return {Promise<void>}
    */
-  async openProcessApplicationStartInstance() {
-    await this.page.getByTitle('Open process application start instance').click();
+  async openCamundaProjectStartInstance() {
+    await this.page.getByTitle('Open Camunda project start instance').click();
   }
 
   /**
@@ -73,7 +73,7 @@ class DeploymentPage {
    *
    * The count comes from the file context indexer, which populates
    * asynchronously after the app opens a file — not from the open tabs. Gating
-   * on the rendered count is what keeps a process application deployment from
+   * on the rendered count is what keeps a Camunda project deployment from
    * racing the indexer and shipping only the active file.
    *
    * @param {number} count

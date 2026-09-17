@@ -1,5 +1,5 @@
-:local(.ProcessApplicationsButton) {
-  &.has-process-application {
+:local(.CamundaProjectsButton) {
+  &.has-camunda-project {
     background: hsl(205, 100%, 45%) !important;
   
     svg {
@@ -16,7 +16,7 @@
   }
 }
   
-:local(.ProcessApplicationsOverlay) {
+:local(.CamundaProjectsOverlay) {
   .section__header {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -28,8 +28,12 @@
       cursor: pointer;
     }
 
-    .create-process-application-btn {
+    .create-camunda-project-btn {
       width: 100%;
+    }
+
+    .camunda-project-file {
+      overflow: hidden;
     }
   }
 
@@ -37,8 +41,23 @@
     border: none;
     margin: 0 -12px 5px 0;
     padding: 0 12px 0 0;
-    max-height: 75vh;
-    overflow-y: auto;
+    list-style: none;
+
+    &.camunda-project-files {
+      overflow-x: auto;
+      overflow-y: hidden;
+
+      li.file button {
+        width: max-content;
+        min-width: 100%;
+
+        span.file-name {
+          flex: none;
+          overflow: visible;
+          text-overflow: clip;
+        }
+      }
+    }
 
     li.file {
       &.file-active button {
@@ -78,6 +97,7 @@
 
         span.file-name {
           flex: 1;
+          min-width: 0;
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;

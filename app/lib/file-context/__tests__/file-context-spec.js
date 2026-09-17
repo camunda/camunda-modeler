@@ -17,8 +17,8 @@ const { toFileUrl } = require('../util');
 
 const { isDefined, omit } = require('min-dash');
 
-const fooXML = readFile(path.resolve(__dirname, './fixtures/foo-process-application/foo.bpmn')),
-      barXML = readFile(path.resolve(__dirname, './fixtures/foo-process-application/bar/bar.bpmn'));
+const fooXML = readFile(path.resolve(__dirname, './fixtures/foo-camunda-project/foo.bpmn')),
+      barXML = readFile(path.resolve(__dirname, './fixtures/foo-camunda-project/bar/bar.bpmn'));
 
 const fixturesPath = path.resolve(__dirname, './fixtures');
 const tmpPath = path.resolve(__dirname, './tmp');
@@ -46,7 +46,7 @@ describe('FileContext', function() {
   it('adding file', async function() {
 
     // given
-    const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn'),
+    const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/foo.bpmn'),
           uri = toFileUrl(filePath);
 
     // when
@@ -119,7 +119,7 @@ describe('FileContext', function() {
   it('updating file', async function() {
 
     // given
-    const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn'),
+    const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/foo.bpmn'),
           uri = toFileUrl(filePath);
 
     // when
@@ -165,7 +165,7 @@ describe('FileContext', function() {
   it('removing file', async function() {
 
     // given
-    const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn');
+    const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/foo.bpmn');
 
     // when
     await waitForEvent(() => {
@@ -188,7 +188,7 @@ describe('FileContext', function() {
     it('should remove all indexed items', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn');
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/foo.bpmn');
 
       await waitForEvent(() => {
         fileContext.addFile(filePath);
@@ -207,7 +207,7 @@ describe('FileContext', function() {
     it('should remove all roots', async function() {
 
       // given
-      const directoryPath = path.resolve(__dirname, './tmp/foo-process-application');
+      const directoryPath = path.resolve(__dirname, './tmp/foo-camunda-project');
 
       await waitForEvent(() => {
         fileContext.addRoot(directoryPath);
@@ -227,7 +227,7 @@ describe('FileContext', function() {
     it('should allow re-adding a file after reset', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn'),
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/foo.bpmn'),
             uri = toFileUrl(filePath);
 
       await waitForEvent(() => {
@@ -261,7 +261,7 @@ describe('FileContext', function() {
     it('adding root', async function() {
 
       // given
-      const directoryPath = path.resolve(__dirname, './tmp/foo-process-application');
+      const directoryPath = path.resolve(__dirname, './tmp/foo-camunda-project');
 
       // when
       await waitForEvent(() => {
@@ -273,19 +273,19 @@ describe('FileContext', function() {
 
       expectItemsLength(fileContext, 6);
 
-      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/.process-application')))).to.exist;
-      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn')))).to.exist;
-      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/bar/bar.bpmn')))).to.exist;
-      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.dmn')))).to.exist;
-      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.form')))).to.exist;
-      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.rpa')))).to.exist;
+      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-camunda-project/camunda-project.json')))).to.exist;
+      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-camunda-project/foo.bpmn')))).to.exist;
+      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-camunda-project/bar/bar.bpmn')))).to.exist;
+      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-camunda-project/bar/baz/baz.dmn')))).to.exist;
+      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-camunda-project/bar/baz/baz.form')))).to.exist;
+      expect(getItem(fileContext, toFileUrl(path.resolve(__dirname, './tmp/foo-camunda-project/bar/baz/baz.rpa')))).to.exist;
     });
 
 
     it('removing root', async function() {
 
       // given
-      const directoryPath = path.resolve(__dirname, './tmp/foo-process-application');
+      const directoryPath = path.resolve(__dirname, './tmp/foo-camunda-project');
 
       // when
       await waitForEvent(() => {
@@ -308,10 +308,10 @@ describe('FileContext', function() {
     it('adding file', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/new.bpmn'),
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/new.bpmn'),
             uri = toFileUrl(filePath);
 
-      const directoryPath = path.resolve(__dirname, './tmp/foo-process-application');
+      const directoryPath = path.resolve(__dirname, './tmp/foo-camunda-project');
 
       await waitForEvent(() => {
         fileContext.addRoot(directoryPath);
@@ -332,10 +332,10 @@ describe('FileContext', function() {
     it('updating file', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn'),
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/foo.bpmn'),
             uri = toFileUrl(filePath);
 
-      const directoryPath = path.resolve(__dirname, './tmp/foo-process-application');
+      const directoryPath = path.resolve(__dirname, './tmp/foo-camunda-project');
 
       // when
       await waitForEvent(() => {
@@ -378,9 +378,9 @@ describe('FileContext', function() {
     it('removing file', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn');
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/foo.bpmn');
 
-      const directoryPath = path.resolve(__dirname, './tmp/foo-process-application');
+      const directoryPath = path.resolve(__dirname, './tmp/foo-camunda-project');
 
       // when
       await waitForEvent(() => {
@@ -577,7 +577,7 @@ describe('FileContext', function() {
     it('BPMN file', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/foo.bpmn'),
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/foo.bpmn'),
             uri = toFileUrl(filePath);
 
       // when
@@ -614,7 +614,7 @@ describe('FileContext', function() {
     it('DMN file', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.dmn'),
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/bar/baz/baz.dmn'),
             uri = toFileUrl(filePath);
 
       // when
@@ -653,7 +653,7 @@ describe('FileContext', function() {
     it('form file', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.form'),
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/bar/baz/baz.form'),
             uri = toFileUrl(filePath);
 
       // when
@@ -681,10 +681,10 @@ describe('FileContext', function() {
     });
 
 
-    it('process application file', async function() {
+    it('Camunda project file', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/.process-application'),
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/camunda-project.json'),
             uri = toFileUrl(filePath);
 
       // when
@@ -700,7 +700,28 @@ describe('FileContext', function() {
       expect(item).to.exist;
 
       expect(item.metadata).to.eql({
-        'type': 'processApplication'
+        'type': 'camundaProject'
+      });
+    });
+
+
+    it('legacy Camunda project file', async function() {
+
+      // given
+      const filePath = path.resolve(__dirname, './tmp/extensions/.process-application'),
+            uri = toFileUrl(filePath);
+
+      // when
+      await waitForEvent(() => {
+        fileContext.addFile(filePath);
+      });
+
+      // then
+      const item = getItem(fileContext, uri);
+
+      expect(item).to.exist;
+      expect(item.metadata).to.eql({
+        'type': 'camundaProject'
       });
     });
 
@@ -708,7 +729,7 @@ describe('FileContext', function() {
     it('rpa file', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/foo-process-application/bar/baz/baz.rpa'),
+      const filePath = path.resolve(__dirname, './tmp/foo-camunda-project/bar/baz/baz.rpa'),
             uri = toFileUrl(filePath);
 
       // when

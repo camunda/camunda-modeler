@@ -10,23 +10,23 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-import ProcessApplications from './ProcessApplications';
-import ProcessApplicationsStatusBar from './ProcessApplicationsStatusBar';
-import ProcessApplicationsDeploymentPlugin from './ProcessApplicationsDeploymentPlugin';
-import ProcessApplicationsStartInstancePlugin from './ProcessApplicationsStartInstancePlugin';
+import CamundaProjects from './CamundaProjects';
+import CamundaProjectsStatusBar from './CamundaProjectsStatusBar';
+import CamundaProjectsDeploymentPlugin from './CamundaProjectsDeploymentPlugin';
+import CamundaProjectsStartInstancePlugin from './CamundaProjectsStartInstancePlugin';
 import { ResourcesProviderModule } from './ResourcesProvider';
 
 import { utmTag } from '../../util/utmTag';
 import { useConnectionStatus } from '../../app/hooks/useConnectionStatus';
 
 
-const processApplications = new ProcessApplications();
+const camundaProjects = new CamundaProjects();
 
 const DOCUMENTATION_URL = utmTag(
   'https://docs.camunda.io/docs/components/modeler/desktop-modeler/process-applications/'
 );
 
-export default function ProcessApplicationsPlugin(props) {
+export default function CamundaProjectsPlugin(props) {
   const {
     _getFromApp,
     _getGlobal,
@@ -40,8 +40,8 @@ export default function ProcessApplicationsPlugin(props) {
   const [ activeTab, setActiveTab ] = useState(null);
   const [ tabs, setTabs ] = useState([]);
   const [ items, setItems ] = useState([]);
-  const [ processApplication, setProcessApplication ] = useState(null);
-  const [ processApplicationItems, setProcessApplicationItems ] = useState([]);
+  const [ camundaProject, setCamundaProject ] = useState(null);
+  const [ camundaProjectItems, setCamundaProjectItems ] = useState([]);
 
   // active tab mirrored synchronously from `app.activeTabChanged`.
   const activeTabRef = useRef(null);
@@ -54,7 +54,7 @@ export default function ProcessApplicationsPlugin(props) {
 
       setActiveTab(event.activeTab);
 
-      processApplications.emit('activeTab-changed', event.activeTab);
+      camundaProjects.emit('activeTab-changed', event.activeTab);
     });
 
     return () => subscription.cancel();
@@ -69,7 +69,7 @@ export default function ProcessApplicationsPlugin(props) {
   }, [ subscribe ]);
 
   useEffect(() => {
-    const subscription = subscribe('create-process-application', async () => {
+    const subscription = subscribe('create-camunda-project', async () => {
       const dialog = _getGlobal('dialog');
 
       const [ directoryPath ] = await dialog.showOpenFilesDialog({
@@ -78,14 +78,14 @@ export default function ProcessApplicationsPlugin(props) {
           'createDirectory', // Allow creating new directories from dialog on macOS
           'openDirectory'
         ],
-        title: 'Create Process Application'
+        title: 'Create Camunda Project'
       });
 
       if (!directoryPath) {
         return;
       }
 
-      const file = createProcessApplicationFile();
+      const file = createCamundaProjectFile();
 
       const fileSystem = _getGlobal('fileSystem');
 
@@ -95,8 +95,8 @@ export default function ProcessApplicationsPlugin(props) {
 
       triggerAction('display-notification', {
         type: 'success',
-        title: 'Process application created',
-        content: <a href={ DOCUMENTATION_URL }>Learn more about process applications</a>
+        title: 'Camunda project created',
+        content: <a href={ DOCUMENTATION_URL }>Learn more about Camunda projects</a>
       });
     });
 
@@ -107,7 +107,7 @@ export default function ProcessApplicationsPlugin(props) {
     const backend = _getGlobal('backend');
 
     const onItemsChanged = (_, items) => {
-      processApplications.emit('items-changed', items);
+      camundaProjects.emit('items-changed', items);
 
       setItems(items);
     };
@@ -118,24 +118,24 @@ export default function ProcessApplicationsPlugin(props) {
   }, [ _getGlobal ]);
 
   useEffect(() => {
-    const handleProcessApplicationsChanged = () => {
-      const hasOpen = processApplications.hasOpen();
+    const handleCamundaProjectsChanged = () => {
+      const hasOpen = camundaProjects.hasOpen();
 
       if (hasOpen) {
-        setProcessApplication(processApplications.getOpen());
+        setCamundaProject(camundaProjects.getOpen());
 
-        const items = processApplications.getItems();
+        const items = camundaProjects.getItems();
 
-        setProcessApplicationItems(items);
+        setCamundaProjectItems(items);
       } else {
-        setProcessApplication(null);
-        setProcessApplicationItems([]);
+        setCamundaProject(null);
+        setCamundaProjectItems([]);
       }
     };
 
-    processApplications.on('changed', handleProcessApplicationsChanged);
+    camundaProjects.on('changed', handleCamundaProjectsChanged);
 
-    return () => processApplications.off('changed', handleProcessApplicationsChanged);
+    return () => camundaProjects.off('changed', handleCamundaProjectsChanged);
   }, []);
 
   useEffect(() => {
@@ -146,9 +146,9 @@ export default function ProcessApplicationsPlugin(props) {
         return;
       }
 
-      const processApplicationsHelper = {
+      const camundaProjectsHelper = {
         getItems() {
-          return processApplications.getItems();
+          return camundaProjects.getItems();
         }
       };
 
@@ -158,7 +158,7 @@ export default function ProcessApplicationsPlugin(props) {
           additionalModules: [
             ...config.additionalModules || [],
             {
-              processApplications: [ 'value', processApplicationsHelper ]
+              camundaProjects: [ 'value', camundaProjectsHelper ]
             },
             ResourcesProviderModule
           ]
@@ -176,7 +176,7 @@ export default function ProcessApplicationsPlugin(props) {
     if (activeTabRef.current?.type === 'cloud-bpmn') {
       triggerAction('resources.reload');
     }
-  }, [ activeTab, processApplicationItems, triggerAction, _getFromApp ]);
+  }, [ activeTab, camundaProjectItems, triggerAction, _getFromApp ]);
 
   useEffect(() => {
     const tabGroups = tabs.reduce((tabGroups, tab) => {
@@ -187,7 +187,7 @@ export default function ProcessApplicationsPlugin(props) {
         };
       }
 
-      const item = processApplications.findItem(tab.file.path);
+      const item = camundaProjects.findItem(tab.file.path);
 
       if (!item) {
         return {
@@ -196,9 +196,9 @@ export default function ProcessApplicationsPlugin(props) {
         };
       }
 
-      const processApplicationItemForItem = processApplications.findProcessApplicationItemForItem(item);
+      const camundaProjectItemForItem = camundaProjects.findCamundaProjectItemForItem(item);
 
-      if (!processApplicationItemForItem) {
+      if (!camundaProjectItemForItem) {
         return {
           ...tabGroups,
           [ tab.id ]: null
@@ -207,7 +207,7 @@ export default function ProcessApplicationsPlugin(props) {
 
       return {
         ...tabGroups,
-        [ tab.id ]: processApplicationItemForItem.file.path
+        [ tab.id ]: camundaProjectItemForItem.file.path
       };
     }, {});
 
@@ -215,43 +215,43 @@ export default function ProcessApplicationsPlugin(props) {
   }, [ items, tabs, triggerAction ]);
 
   return <>
-    <ProcessApplicationsStatusBar
+    <CamundaProjectsStatusBar
       activeTab={ activeTab }
-      processApplication={ processApplication }
-      processApplicationItems={ processApplicationItems }
+      camundaProject={ camundaProject }
+      camundaProjectItems={ camundaProjectItems }
       onOpen={ (path) => triggerAction('open-diagram', { path }) }
       onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }
-      onCreateProcessApplication={ () => emit('create-process-application') }
+      onCreateCamundaProject={ () => emit('create-camunda-project') }
       tabsProvider={ _getFromApp('props').tabsProvider }
     />
-    <ProcessApplicationsDeploymentPlugin
+    <CamundaProjectsDeploymentPlugin
       _getFromApp={ _getFromApp }
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
       emit={ emit }
       log={ log }
-      processApplication={ processApplication }
-      processApplicationItems={ processApplicationItems }
+      camundaProject={ camundaProject }
+      camundaProjectItems={ camundaProjectItems }
       triggerAction={ triggerAction }
       connectionCheckResult={ connectionCheckResult } />
-    <ProcessApplicationsStartInstancePlugin
+    <CamundaProjectsStartInstancePlugin
       _getFromApp={ _getFromApp }
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
       emit={ emit }
       log={ log }
-      processApplication={ processApplication }
-      processApplicationItems={ processApplicationItems }
+      camundaProject={ camundaProject }
+      camundaProjectItems={ camundaProjectItems }
       triggerAction={ triggerAction }
       connectionCheckResult={ connectionCheckResult } />
   </>;
 }
 
-function createProcessApplicationFile(contents = {}) {
+function createCamundaProjectFile(contents = {}) {
   return {
-    name: '.process-application',
+    name: 'camunda-project.json',
     contents: JSON.stringify(contents, null, 2),
     path: null
   };

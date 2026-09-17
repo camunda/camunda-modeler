@@ -10,23 +10,23 @@
 
 import EventEmitter from 'events';
 
-export default class ProcessApplications {
+export default class CamundaProjects {
   constructor() {
     const events = this._events = new EventEmitter();
 
     this._items = [];
-    this._processApplication = null;
-    this._processApplicationItems = [];
+    this._camundaProject = null;
+    this._camundaProjectItems = [];
     this._activeTab = null;
 
     events.on('items-changed', (items) => {
       this._items = items;
 
       if (this.hasOpen()) {
-        const processApplicationItem = this.findItem(this._processApplication.file.path);
+        const camundaProjectItem = this.findItem(this._camundaProject.file.path);
 
-        if (processApplicationItem) {
-          this._processApplicationItems = this._items.filter(item => this.isProcessApplicationItem(item));
+        if (camundaProjectItem) {
+          this._camundaProjectItems = this._items.filter(item => this.isCamundaProjectItem(item));
 
           events.emit('changed');
         } else {
@@ -45,10 +45,10 @@ export default class ProcessApplications {
           return;
         }
 
-        const processApplicationItem = this.findProcessApplicationItemForItem(item);
+        const camundaProjectItem = this.findCamundaProjectItemForItem(item);
 
-        if (processApplicationItem) {
-          this.open(processApplicationItem);
+        if (camundaProjectItem) {
+          this.open(camundaProjectItem);
         }
       }
     });
@@ -72,10 +72,10 @@ export default class ProcessApplications {
         return;
       }
 
-      const processApplicationItem = this.findProcessApplicationItemForItem(item);
+      const camundaProjectItem = this.findCamundaProjectItemForItem(item);
 
-      if (processApplicationItem) {
-        this.open(processApplicationItem);
+      if (camundaProjectItem) {
+        this.open(camundaProjectItem);
       } else {
         this.close();
       }
@@ -83,20 +83,20 @@ export default class ProcessApplications {
   }
 
   /**
-   * @param {Item}
+   * @param {Item} camundaProjectItem
    */
-  async open(processApplicationItem) {
+  async open(camundaProjectItem) {
     try {
-      const { file } = processApplicationItem;
+      const { file } = camundaProjectItem;
 
       const { contents } = file;
 
-      this._processApplication = {
+      this._camundaProject = {
         file,
         ...JSON.parse(contents.length ? contents : '{}')
       };
 
-      this._processApplicationItems = this._items.filter(item => this.isProcessApplicationItem(item));
+      this._camundaProjectItems = this._items.filter(item => this.isCamundaProjectItem(item));
 
       this._events.emit('changed');
     } catch (err) {
@@ -104,8 +104,8 @@ export default class ProcessApplications {
 
       this._events.emit('error', err);
 
-      this._processApplication = null;
-      this._processApplicationItems = [];
+      this._camundaProject = null;
+      this._camundaProjectItems = [];
     }
   }
 
@@ -114,22 +114,22 @@ export default class ProcessApplications {
       return;
     }
 
-    this._processApplication = null;
-    this._processApplicationItems = [];
+    this._camundaProject = null;
+    this._camundaProjectItems = [];
 
     this._events.emit('changed');
   }
 
   getOpen() {
-    return this._processApplication;
+    return this._camundaProject;
   }
 
   hasOpen() {
-    return !!this._processApplication;
+    return !!this._camundaProject;
   }
 
   getItems() {
-    return this._processApplicationItems;
+    return this._camundaProjectItems;
   }
 
   emit(...args) {
@@ -145,29 +145,34 @@ export default class ProcessApplications {
   }
 
   /**
-   * Check if item is process application item.
+  * Check if item is part of the open Camunda project.
    *
    * @param {Item} item
    *
    * @returns {boolean}
    */
-  isProcessApplicationItem(item) {
-    const processApplicationItem = this.findProcessApplicationItemForItem(item);
+  isCamundaProjectItem(item) {
+    const camundaProjectItem = this.findCamundaProjectItemForItem(item);
 
-    return processApplicationItem && processApplicationItem.file.path === this._processApplication.file.path;
+    return camundaProjectItem && camundaProjectItem.file.path === this._camundaProject.file.path;
   }
 
   /**
-   * Find process application item for item.
+  * Find Camunda project item for item.
    *
    * @param {Item} item
    *
    * @returns {Item|undefined}
    */
-  findProcessApplicationItemForItem(item) {
-    return this._items.find(otherItem => {
-      return otherItem.metadata?.type === 'processApplication' && item.file.path.startsWith(otherItem.file.dirname);
-    });
+  findCamundaProjectItemForItem(item) {
+    return this._items
+      .filter(otherItem => {
+        const { dirname } = otherItem.file;
+        const isInProject = item.file.path.startsWith(`${ dirname }/`) || item.file.path.startsWith(`${ dirname }\\`);
+
+        return otherItem.metadata?.type === 'camundaProject' && isInProject;
+      })
+      .sort((a, b) => b.file.dirname.length - a.file.dirname.length)[0];
   }
 
   /**

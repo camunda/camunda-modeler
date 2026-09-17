@@ -44,8 +44,8 @@ test.describe('start instance', function() {
   });
 
 
-  test('starts an instance from a process application', async function({ launch, tmp }) {
-    const dir = await copyFixtureDir('deploy/process-application', tmp);
+  test('starts an instance from a Camunda project', async function({ launch, tmp }) {
+    const dir = await copyFixtureDir('deploy/camunda-project', tmp);
 
     const app = await launch({
       openFile: path.join(dir, 'invoice.bpmn'),
@@ -56,10 +56,10 @@ test.describe('start instance', function() {
 
     const deployment = new DeploymentPage(app.page);
 
-    // this control is only mounted once the process application is open, so
+    // this control is only mounted once the Camunda project is open, so
     // clicking it is itself the gate on the file context indexer. How many
     // resources get deployed is the deployment spec's subject.
-    await deployment.openProcessApplicationStartInstance();
+    await deployment.openCamundaProjectStartInstance();
 
     await deployment.submit('Start BPMN process instance');
 

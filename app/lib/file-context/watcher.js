@@ -12,6 +12,8 @@ const {
   FSWatcher
 } = require('chokidar');
 
+const pathUtil = require('path');
+
 const {
   getFileExtension,
   toFilePath,
@@ -35,6 +37,11 @@ module.exports = class Watcher {
     this._eventBus = eventBus;
 
     const extensions = processors.flatMap(processor => processor.extensions);
+    const fileNames = processors.flatMap(processor => processor.fileNames || []);
+
+    const isSupported = path => {
+      return extensions.includes(getFileExtension(path)) || fileNames.includes(pathUtil.basename(path));
+    };
 
     /**
      * @type { string[] }
@@ -58,7 +65,7 @@ module.exports = class Watcher {
     });
 
     this._chokidar.on('add', path => {
-      if (!extensions.includes(getFileExtension(path))) {
+      if (!isSupported(path)) {
         this._logger.info('watcher:ignore', path);
 
         return;
@@ -74,7 +81,7 @@ module.exports = class Watcher {
     });
 
     this._chokidar.on('change', path => {
-      if (!extensions.includes(getFileExtension(path))) {
+      if (!isSupported(path)) {
         this._logger.info('watcher:ignore', path);
 
         return;

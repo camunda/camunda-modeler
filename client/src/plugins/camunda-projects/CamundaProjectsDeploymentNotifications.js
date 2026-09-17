@@ -18,7 +18,7 @@ import React from 'react';
 
 import { getDeploymentUrls } from '../../app/zeebe/util';
 
-import * as css from './ProcessApplicationsDeploymentNotifications.css';
+import * as css from './CamundaProjectsDeploymentNotifications.css';
 
 /**
  * Get success notification for deployment.
@@ -35,9 +35,9 @@ export function getSuccessNotification(tab, config, deploymentResult, resourceCo
 
   return {
     type: 'success',
-    title: 'Process application deployed',
+    title: 'Camunda project deployed',
     content: (
-      <div className={ css.ProcessApplicationsDeploymentNotification }>
+      <div className={ css.CamundaProjectsDeploymentNotification }>
         <div>
           <code>{ tab.file.name }</code> and { resourceConfigs.length - 1} additional { resourceConfigs.length - 1 === 1 ? 'file' : 'files' } deployed.
         </div>
