@@ -8,20 +8,22 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import classNames from 'classnames';
 
 import { Fill } from '../../app/slot-fill';
 
-import DeployIcon from 'icons/Deploy.svg';
-import ProcessApplicationIcon from 'icons/file-types/ProcessApplication.svg';
+import StartInstanceConfigValidator from '../zeebe-plugin/start-instance-plugin/StartInstanceConfigValidator';
 
-import DeploymentPluginOverlay from '../zeebe-plugin/deployment-plugin/DeploymentPluginOverlay';
+import CamundaProjectIcon from 'icons/file-types/CamundaProject.svg';
+import StartInstanceIcon from 'icons/Play.svg';
 
-import { getSuccessNotification } from './ProcessApplicationsDeploymentNotifications';
+import StartInstancePluginOverlay from '../zeebe-plugin/start-instance-plugin/StartInstancePluginOverlay';
 
-export default function ProcessApplicationsDeploymentPlugin(props) {
+import { getSuccessNotification } from './CamundaProjectsStartInstanceNotifications';
+
+export default function CamundaProjectsStartInstancePlugin(props) {
   const {
     _getFromApp,
     _getGlobal,
@@ -29,8 +31,8 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     displayNotification,
     emit,
     log,
-    processApplication,
-    processApplicationItems,
+    camundaProject,
+    camundaProjectItems,
     triggerAction,
     connectionCheckResult
   } = props;
@@ -38,6 +40,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
   const deployment = _getGlobal('deployment');
+  const startInstance = _getGlobal('startInstance');
 
   const anchorRef = useRef();
 
@@ -48,7 +51,7 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
       return;
     }
 
-    // TODO: save all tabs of process application
+    // TODO: save all tabs of Camunda project
     // currently this is not possible because to save a tab we need to select it first
     // see https://github.com/camunda/camunda-modeler/blob/develop/client/src/app/App.js#L1509
     const saved = await triggerAction('save-tab', { tab: activeTab });
@@ -60,7 +63,11 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     setOverlayOpen(true);
   };
 
-  const resourceConfigs = processApplicationItems.filter(canDeployItem).map((item) => {
+  if (!camundaProject) {
+    return null;
+  }
+
+  const resourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
     const { file, metadata } = item;
 
     const { path } = file;
@@ -73,57 +80,41 @@ export default function ProcessApplicationsDeploymentPlugin(props) {
     };
   });
 
-  useEffect(() => {
-    const getResourceConfigs = (previousResourceConfigs) => {
-      return [
-        ...previousResourceConfigs,
-        ...resourceConfigs.filter((resourceConfig) => {
-          return !previousResourceConfigs.some((prevConfig) => {
-            return prevConfig.path === resourceConfig.path;
-          });
-        })
-      ];
-    };
-
-    deployment.registerResourcesProvider(getResourceConfigs);
-
-    return () => deployment.unregisterResourcesProvider(getResourceConfigs);
-  }, [ processApplicationItems ]);
-
-  if (!processApplication) {
-    return null;
-  }
-
   return <>
-    { canDeployTab(activeTab) && (
-      <Fill name="process-application-deployment" replaces="deployment" slot="status-bar__file" group="8_deploy" priority={ 1 }>
+    { canDeployTab(activeTab) && canStartInstanceTab(activeTab) && (
+      <Fill name="camunda-project-start-instance" replaces="start-instance" slot="status-bar__file" group="8_deploy" priority={ 1 }>
         <button
           onClick={ onClick }
-          title="Open process application deployment"
+          title="Open Camunda project start instance"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
-          <DeployIcon className="icon" />
+          <StartInstanceIcon className="icon" />
         </button>
       </Fill>
     ) }
     { overlayOpen && (
-      <DeploymentPluginOverlay
+      <StartInstancePluginOverlay
         _getFromApp={ _getFromApp }
         activeTab={ activeTab }
         anchor={ anchorRef.current }
         connectionCheckResult={ connectionCheckResult }
         deployment={ deployment }
         emit={ emit }
+        getResourceConfigs={ () => resourceConfigs }
         getSuccessNotification={ (...args) => getSuccessNotification(...args, resourceConfigs) }
         log={ log }
         onClose={ () => setOverlayOpen(false) }
         displayNotification={ displayNotification }
-        renderDescription={ `${ resourceConfigs.length } ${ resourceConfigs.length === 1 ? 'file' : 'files' } will be deployed` }
-        renderHeader={ <>
-          <ProcessApplicationIcon width="16" height="16" />Deploy process application
+        renderDeploymentDescription={ `${ camundaProjectItems.length } files will be deployed` }
+        renderDeploymentHeader={ <>
+          <CamundaProjectIcon width="16" height="16" />Configure deployment
         </> }
-        renderSubmit="Deploy process application"
+        renderDeploymentSubmit="Go to start instance"
+        renderStartInstanceHeader={ <><CamundaProjectIcon width="16" height="16" />Start BPMN process instance</> }
+        renderStartInstanceSubmit="Start BPMN process instance"
+        startInstance={ startInstance }
+        startInstanceConfigValidator={ StartInstanceConfigValidator }
         triggerAction={ triggerAction }
       />
     ) }
@@ -134,7 +125,7 @@ function canDeployTab(tab) {
   return tab && [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form', 'rpa' ].includes(tab.type);
 }
 
-export function canDeployItem(item) {
+function canDeployItem(item) {
   const { metadata } = item;
 
   if (!metadata) {
@@ -146,7 +137,10 @@ export function canDeployItem(item) {
   return [
     'bpmn',
     'dmn',
-    'form',
-    'rpa'
+    'form'
   ].includes(type);
+}
+
+function canStartInstanceTab(tab) {
+  return tab && tab.type === 'cloud-bpmn';
 }
