@@ -47,7 +47,7 @@ describe('CamundaProjectsDeploymentPlugin', function() {
     const statusBarItem = container.querySelector('.btn');
 
     expect(statusBarItem).to.not.be.null;
-    expect(statusBarItem.getAttribute('title')).to.equal('Open Camunda project deployment');
+    expect(statusBarItem.getAttribute('title')).to.equal('Open project deployment');
   });
 
 

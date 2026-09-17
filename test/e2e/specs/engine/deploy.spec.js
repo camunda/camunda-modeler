@@ -117,9 +117,9 @@ test.describe('deployment', function() {
     // from the indexed Camunda project, not from the open tabs
     await deployment.expectResourceCount(2);
 
-    await deployment.submit('Deploy Camunda project');
+    await deployment.submit('Deploy project');
 
-    const notification = deployment.notification('Camunda project deployed');
+    const notification = deployment.notification('Project deployed');
 
     await expect(notification).toBeVisible();
     await expect(notification).toContainText('invoice.bpmn');

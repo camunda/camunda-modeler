@@ -102,7 +102,7 @@ describe('<CamundaProjectsPlugin>', function() {
     expect(send).to.have.been.calledWith('file-context:file-opened', '/project/camunda-project.json', undefined);
     expect(triggerAction).to.have.been.calledWith('display-notification', sinon.match({
       type: 'success',
-      title: 'Camunda project created'
+      title: 'Project created'
     }));
   });
 
@@ -222,7 +222,7 @@ describe('<CamundaProjectsPlugin>', function() {
       act(() => onItemsChanged(null, CAMUNDA_PROJECT_ITEMS));
 
       const statusBarItem = await waitFor(() => {
-        const button = document.querySelector('[title="Open Camunda project deployment"]');
+        const button = document.querySelector('[title="Open project deployment"]');
 
         expect(button).to.exist;
 

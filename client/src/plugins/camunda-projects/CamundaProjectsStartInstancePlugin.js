@@ -85,7 +85,7 @@ export default function CamundaProjectsStartInstancePlugin(props) {
       <Fill name="camunda-project-start-instance" replaces="start-instance" slot="status-bar__file" group="8_deploy" priority={ 1 }>
         <button
           onClick={ onClick }
-          title="Open Camunda project start instance"
+          title="Open project start instance"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >

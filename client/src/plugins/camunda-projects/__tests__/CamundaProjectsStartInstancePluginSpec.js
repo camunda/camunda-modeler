@@ -47,7 +47,7 @@ describe('CamundaProjectsStartInstancePlugin', function() {
     const statusBarItem = container.querySelector('.btn');
 
     expect(statusBarItem).to.not.be.null;
-    expect(statusBarItem.getAttribute('title')).to.equal('Open Camunda project start instance');
+    expect(statusBarItem.getAttribute('title')).to.equal('Open project start instance');
   });
 
 
