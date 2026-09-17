@@ -235,6 +235,10 @@ describe('util', function() {
 
     describe('should handle EPERM error during directory scan', function() {
 
+      afterEach(function() {
+        sinon.restore();
+      });
+
       it('should return false', function() {
 
         // given
