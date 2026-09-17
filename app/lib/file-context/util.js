@@ -57,8 +57,14 @@ function toFilePath(value) {
 
 module.exports.toFilePath = toFilePath;
 
+function getFileName(value) {
+  return path.basename(value);
+}
+
+module.exports.getFileName = getFileName;
+
 function getFileExtension(value) {
-  const baseName = path.basename(value);
+  const baseName = getFileName(value);
 
   if (baseName.startsWith('.')) {
     return baseName;

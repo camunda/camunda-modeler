@@ -15,9 +15,10 @@
  * @typedef { import('./types').Processor } Processor
  */
 
-const path = require('path');
-
-const { getFileExtension } = require('./util');
+const {
+  getFileExtension,
+  getFileName
+} = require('./util');
 
 module.exports = class Processor {
 
@@ -52,7 +53,7 @@ module.exports = class Processor {
 
     const processor = this._processors.find(processor => {
       return processor.extensions.includes(getFileExtension(item.file.path))
-        || processor.fileNames?.includes(path.basename(item.file.path));
+        || processor.fileNames?.includes(getFileName(item.file.path));
     });
 
     if (!processor) {

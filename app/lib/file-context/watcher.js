@@ -12,10 +12,9 @@ const {
   FSWatcher
 } = require('chokidar');
 
-const pathUtil = require('path');
-
 const {
   getFileExtension,
+  getFileName,
   toFilePath,
   toFileUrl
 } = require('./util');
@@ -40,7 +39,7 @@ module.exports = class Watcher {
     const fileNames = processors.flatMap(processor => processor.fileNames || []);
 
     const isSupported = path => {
-      return extensions.includes(getFileExtension(path)) || fileNames.includes(pathUtil.basename(path));
+      return extensions.includes(getFileExtension(path)) || fileNames.includes(getFileName(path));
     };
 
     /**
