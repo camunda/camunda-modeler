@@ -395,6 +395,26 @@ describe('<CredentialManager>', function() {
   });
 
 
+  it('should grant full permissions when authorizations cannot be resolved', async function() {
+
+    // given
+    const getAuthorizations = sinon.stub().resolves({
+      success: false,
+      reason: 'UNAUTHORIZED'
+    });
+
+    const zeebeApi = createZeebeApi({ getAuthorizations });
+    const { configurationInstances } = renderManager({ zeebeApi });
+
+    // then
+    await waitFor(() => {
+      const call = fedInstancesCall(configurationInstances);
+
+      expect(call.permissions).to.eql({ create: true, update: true });
+    });
+  });
+
+
   it('should derive permissions from search when authorizations are enabled', async function() {
 
     // given
