@@ -15,13 +15,13 @@ import classNames from 'classnames';
 import { Fill } from '../../app/slot-fill';
 
 import DeployIcon from 'icons/Deploy.svg';
-import CamundaProjectIcon from 'icons/file-types/CamundaProject.svg';
+import ProcessApplicationIcon from 'icons/file-types/ProcessApplication.svg';
 
 import DeploymentPluginOverlay from '../zeebe-plugin/deployment-plugin/DeploymentPluginOverlay';
 
-import { getSuccessNotification } from './CamundaProjectsDeploymentNotifications';
+import { getSuccessNotification } from './ProcessApplicationsDeploymentNotifications';
 
-export default function CamundaProjectsDeploymentPlugin(props) {
+export default function ProcessApplicationsDeploymentPlugin(props) {
   const {
     _getFromApp,
     _getGlobal,
@@ -29,8 +29,8 @@ export default function CamundaProjectsDeploymentPlugin(props) {
     displayNotification,
     emit,
     log,
-    camundaProject,
-    camundaProjectItems,
+    processApplication,
+    processApplicationItems,
     triggerAction,
     connectionCheckResult
   } = props;
@@ -48,7 +48,7 @@ export default function CamundaProjectsDeploymentPlugin(props) {
       return;
     }
 
-    // TODO: save all tabs of Camunda project
+    // TODO: save all tabs of process application
     // currently this is not possible because to save a tab we need to select it first
     // see https://github.com/camunda/camunda-modeler/blob/develop/client/src/app/App.js#L1509
     const saved = await triggerAction('save-tab', { tab: activeTab });
@@ -60,7 +60,7 @@ export default function CamundaProjectsDeploymentPlugin(props) {
     setOverlayOpen(true);
   };
 
-  const resourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
+  const resourceConfigs = processApplicationItems.filter(canDeployItem).map((item) => {
     const { file, metadata } = item;
 
     const { path } = file;
@@ -88,18 +88,18 @@ export default function CamundaProjectsDeploymentPlugin(props) {
     deployment.registerResourcesProvider(getResourceConfigs);
 
     return () => deployment.unregisterResourcesProvider(getResourceConfigs);
-  }, [ camundaProjectItems ]);
+  }, [ processApplicationItems ]);
 
-  if (!camundaProject) {
+  if (!processApplication) {
     return null;
   }
 
   return <>
     { canDeployTab(activeTab) && (
-      <Fill name="camunda-project-deployment" replaces="deployment" slot="status-bar__file" group="8_deploy" priority={ 1 }>
+      <Fill name="process-application-deployment" replaces="deployment" slot="status-bar__file" group="8_deploy" priority={ 1 }>
         <button
           onClick={ onClick }
-          title="Open project deployment"
+          title="Open process application deployment"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
@@ -121,9 +121,9 @@ export default function CamundaProjectsDeploymentPlugin(props) {
         displayNotification={ displayNotification }
         renderDescription={ `${ resourceConfigs.length } ${ resourceConfigs.length === 1 ? 'file' : 'files' } will be deployed` }
         renderHeader={ <>
-          <CamundaProjectIcon width="16" height="16" />Deploy project
+          <ProcessApplicationIcon width="16" height="16" />Deploy process application
         </> }
-        renderSubmit="Deploy project"
+        renderSubmit="Deploy process application"
         triggerAction={ triggerAction }
       />
     ) }

@@ -17,9 +17,9 @@ const DEFAULT_ITEMS = [
   {
     file: {
       name: 'foo.bpmn',
-      uri: 'file:///C:/camunda-project/foo.bpmn',
-      path: 'C://camunda-project/foo.bpmn',
-      dirname: 'C://camunda-project',
+      uri: 'file:///C:/process-application/foo.bpmn',
+      path: 'C://process-application/foo.bpmn',
+      dirname: 'C://process-application',
       contents: '<?xml version="1.0" encoding="UTF-8"?>'
     },
     metadata: {
@@ -52,17 +52,17 @@ const DEFAULT_ITEMS = [
   }
 ];
 
-const DEFAULT_ITEMS_CAMUNDA_PROJECT = [
+const DEFAULT_ITEMS_PROCESS_APPLICATION = [
   {
     file: {
-      name: 'camunda-project.json',
-      uri: 'file:///C:/camunda-project/camunda-project.json',
-      path: 'C://camunda-project/camunda-project.json',
-      dirname: 'C://camunda-project',
+      name: '.process-application',
+      uri: 'file:///C:/process-application/.process-application',
+      path: 'C://process-application/.process-application',
+      dirname: 'C://process-application',
       contents: '{}'
     },
     metadata: {
-      type: 'camundaProject'
+      type: 'processApplication'
     }
   }
 ];
@@ -71,9 +71,9 @@ const DEFAULT_ITEMS_DMN = [
   {
     file: {
       name: 'foo.dmn',
-      uri: 'file:///C:/camunda-project/foo.dmn',
-      path: 'C://camunda-project/foo.dmn',
-      dirname: 'C://camunda-project',
+      uri: 'file:///C:/process-application/foo.dmn',
+      path: 'C://process-application/foo.dmn',
+      dirname: 'C://process-application',
       contents: '<?xml version="1.0" encoding="UTF-8"?>'
     },
     metadata: {
@@ -114,9 +114,9 @@ const DEFAULT_ITEMS_FORM = [
   {
     file: {
       name: 'foo.form',
-      uri: 'file:///C:/camunda-project/foo.form',
-      path: 'C://camunda-project/foo.form',
-      dirname: 'C://camunda-project',
+      uri: 'file:///C:/process-application/foo.form',
+      path: 'C://process-application/foo.form',
+      dirname: 'C://process-application',
       contents: '<?xml version="1.0" encoding="UTF-8"?>'
     },
     metadata: {
@@ -169,9 +169,9 @@ describe('ResourcesProvider', function() {
 
     // given
     const resourceLoader = createResourceLoader();
-    const camundaProjects = createCamundaProjects(DEFAULT_ITEMS);
+    const processApplications = createProcessApplications(DEFAULT_ITEMS);
 
-    const resourcesProvider = new ResourcesProvider(resourceLoader, camundaProjects);
+    const resourcesProvider = new ResourcesProvider(resourceLoader, processApplications);
 
     // when
     const resources = resourcesProvider.getResources();
@@ -196,9 +196,9 @@ describe('ResourcesProvider', function() {
 
     // given
     const resourceLoader = createResourceLoader();
-    const camundaProjects = createCamundaProjects(DEFAULT_ITEMS_DMN);
+    const processApplications = createProcessApplications(DEFAULT_ITEMS_DMN);
 
-    const resourcesProvider = new ResourcesProvider(resourceLoader, camundaProjects);
+    const resourcesProvider = new ResourcesProvider(resourceLoader, processApplications);
 
     // when
     const resources = resourcesProvider.getResources();
@@ -228,9 +228,9 @@ describe('ResourcesProvider', function() {
 
     // given
     const resourceLoader = createResourceLoader();
-    const camundaProjects = createCamundaProjects(DEFAULT_ITEMS_FORM);
+    const processApplications = createProcessApplications(DEFAULT_ITEMS_FORM);
 
-    const resourcesProvider = new ResourcesProvider(resourceLoader, camundaProjects);
+    const resourcesProvider = new ResourcesProvider(resourceLoader, processApplications);
 
     // when
     const resources = resourcesProvider.getResources();
@@ -251,13 +251,13 @@ describe('ResourcesProvider', function() {
   });
 
 
-  it('should ignore Camunda project', function() {
+  it('should ignore process application', function() {
 
     // given
     const resourceLoader = createResourceLoader();
-    const camundaProjects = createCamundaProjects(DEFAULT_ITEMS_CAMUNDA_PROJECT);
+    const processApplications = createProcessApplications(DEFAULT_ITEMS_PROCESS_APPLICATION);
 
-    const resourcesProvider = new ResourcesProvider(resourceLoader, camundaProjects);
+    const resourcesProvider = new ResourcesProvider(resourceLoader, processApplications);
 
     // when
     const resources = resourcesProvider.getResources();
@@ -271,9 +271,9 @@ describe('ResourcesProvider', function() {
 
     // given
     const resourceLoader = createResourceLoader();
-    const camundaProjects = createCamundaProjects(NO_METADATA);
+    const processApplications = createProcessApplications(NO_METADATA);
 
-    const resourcesProvider = new ResourcesProvider(resourceLoader, camundaProjects);
+    const resourcesProvider = new ResourcesProvider(resourceLoader, processApplications);
 
     // when
     const resources = resourcesProvider.getResources();
@@ -293,7 +293,7 @@ function createResourceLoader() {
   };
 }
 
-function createCamundaProjects(items) {
+function createProcessApplications(items) {
   return {
     getItems() {
       return items || [];

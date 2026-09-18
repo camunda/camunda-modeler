@@ -16,14 +16,14 @@ import { Fill } from '../../app/slot-fill';
 
 import StartInstanceConfigValidator from '../zeebe-plugin/start-instance-plugin/StartInstanceConfigValidator';
 
-import CamundaProjectIcon from 'icons/file-types/CamundaProject.svg';
+import ProcessApplicationIcon from 'icons/file-types/ProcessApplication.svg';
 import StartInstanceIcon from 'icons/Play.svg';
 
 import StartInstancePluginOverlay from '../zeebe-plugin/start-instance-plugin/StartInstancePluginOverlay';
 
-import { getSuccessNotification } from './CamundaProjectsStartInstanceNotifications';
+import { getSuccessNotification } from './ProcessApplicationsStartInstanceNotifications';
 
-export default function CamundaProjectsStartInstancePlugin(props) {
+export default function ProcessApplicationsStartInstancePlugin(props) {
   const {
     _getFromApp,
     _getGlobal,
@@ -31,8 +31,8 @@ export default function CamundaProjectsStartInstancePlugin(props) {
     displayNotification,
     emit,
     log,
-    camundaProject,
-    camundaProjectItems,
+    processApplication,
+    processApplicationItems,
     triggerAction,
     connectionCheckResult
   } = props;
@@ -51,7 +51,7 @@ export default function CamundaProjectsStartInstancePlugin(props) {
       return;
     }
 
-    // TODO: save all tabs of Camunda project
+    // TODO: save all tabs of process application
     // currently this is not possible because to save a tab we need to select it first
     // see https://github.com/camunda/camunda-modeler/blob/develop/client/src/app/App.js#L1509
     const saved = await triggerAction('save-tab', { tab: activeTab });
@@ -63,11 +63,11 @@ export default function CamundaProjectsStartInstancePlugin(props) {
     setOverlayOpen(true);
   };
 
-  if (!camundaProject) {
+  if (!processApplication) {
     return null;
   }
 
-  const resourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
+  const resourceConfigs = processApplicationItems.filter(canDeployItem).map((item) => {
     const { file, metadata } = item;
 
     const { path } = file;
@@ -82,10 +82,10 @@ export default function CamundaProjectsStartInstancePlugin(props) {
 
   return <>
     { canDeployTab(activeTab) && canStartInstanceTab(activeTab) && (
-      <Fill name="camunda-project-start-instance" replaces="start-instance" slot="status-bar__file" group="8_deploy" priority={ 1 }>
+      <Fill name="process-application-start-instance" replaces="start-instance" slot="status-bar__file" group="8_deploy" priority={ 1 }>
         <button
           onClick={ onClick }
-          title="Open project start instance"
+          title="Open process application start instance"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
@@ -106,12 +106,12 @@ export default function CamundaProjectsStartInstancePlugin(props) {
         log={ log }
         onClose={ () => setOverlayOpen(false) }
         displayNotification={ displayNotification }
-        renderDeploymentDescription={ `${ camundaProjectItems.length } files will be deployed` }
+        renderDeploymentDescription={ `${ processApplicationItems.length } files will be deployed` }
         renderDeploymentHeader={ <>
-          <CamundaProjectIcon width="16" height="16" />Configure deployment
+          <ProcessApplicationIcon width="16" height="16" />Configure deployment
         </> }
         renderDeploymentSubmit="Go to start instance"
-        renderStartInstanceHeader={ <><CamundaProjectIcon width="16" height="16" />Start BPMN process instance</> }
+        renderStartInstanceHeader={ <><ProcessApplicationIcon width="16" height="16" />Start BPMN process instance</> }
         renderStartInstanceSubmit="Start BPMN process instance"
         startInstance={ startInstance }
         startInstanceConfigValidator={ StartInstanceConfigValidator }

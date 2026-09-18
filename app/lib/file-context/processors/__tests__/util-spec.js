@@ -16,8 +16,7 @@ const {
   isCamunda8BPMN,
   isCamunda8DMN,
   isCamunda8Form,
-  findCamundaProjectFile,
-  isCamundaProjectFile
+  findProcessApplicationFile
 } = require('../util');
 
 
@@ -99,13 +98,9 @@ describe('util', function() {
   });
 
 
-  describe('findCamundaProjectFile', function() {
+  describe('findProcessApplicationFile', function() {
 
-    afterEach(function() {
-      sinon.restore();
-    });
-
-    describe('should find Camunda project', function() {
+    describe('should find process application', function() {
 
       it('for absolute file reference', function() {
 
@@ -114,7 +109,7 @@ describe('util', function() {
         const expectedApplicationPath = path.resolve(__dirname, './fixtures/application/.process-application');
 
         // when
-        const applicationFile = findCamundaProjectFile(diagramPath);
+        const applicationFile = findProcessApplicationFile(diagramPath);
 
         // then
         expect(applicationFile).to.eql(expectedApplicationPath);
@@ -135,57 +130,10 @@ describe('util', function() {
         );
 
         // when
-        const applicationFile = findCamundaProjectFile(diagramPath);
+        const applicationFile = findProcessApplicationFile(diagramPath);
 
         // then
         expect(applicationFile).to.eql(expectedApplicationPath);
-      });
-
-
-      it('with new marker', function() {
-
-        // given
-        const diagramPath = path.resolve('/project/nested/diagram.bpmn');
-        sinon.stub(fs, 'readdirSync').returns([ 'camunda-project.json' ]);
-
-        // when
-        const projectFile = findCamundaProjectFile(diagramPath);
-
-        // then
-        expect(projectFile).to.eql(path.resolve('/project/nested/camunda-project.json'));
-      });
-
-
-      it('should prefer new marker in same directory', function() {
-
-        // given
-        const diagramPath = path.resolve('/project/diagram.bpmn');
-        sinon.stub(fs, 'readdirSync').returns([ '.process-application', 'camunda-project.json' ]);
-
-        // when
-        const projectFile = findCamundaProjectFile(diagramPath);
-
-        // then
-        expect(projectFile).to.eql(path.resolve('/project/camunda-project.json'));
-      });
-
-
-      it('should prefer legacy marker in nested directory over new marker in parent', function() {
-
-        // given
-        const diagramPath = path.resolve('/project/nested/diagram.bpmn');
-
-        sinon.stub(fs, 'readdirSync').callsFake(dirName => {
-          return dirName === path.dirname(diagramPath)
-            ? [ '.process-application' ]
-            : [ 'camunda-project.json' ];
-        });
-
-        // when
-        const projectFile = findCamundaProjectFile(diagramPath);
-
-        // then
-        expect(projectFile).to.eql(path.resolve('/project/nested/.process-application'));
       });
 
     });
@@ -199,7 +147,7 @@ describe('util', function() {
         const diagramPath = path.resolve(__dirname, './fixtures/camunda8.bpmn');
 
         // when
-        const applicationFile = findCamundaProjectFile(diagramPath);
+        const applicationFile = findProcessApplicationFile(diagramPath);
 
         // then
         expect(applicationFile).to.eql(false);
@@ -212,7 +160,7 @@ describe('util', function() {
         const diagramPath = './app/non-existing.bpmn';
 
         // when
-        const applicationFile = findCamundaProjectFile(diagramPath);
+        const applicationFile = findProcessApplicationFile(diagramPath);
 
         // then
         expect(applicationFile).to.eql(false);
@@ -227,7 +175,7 @@ describe('util', function() {
       const diagramPath = path.resolve(__dirname, './fixtures/non-existing.bpmn');
 
       // when
-      const applicationFile = findCamundaProjectFile(diagramPath);
+      const applicationFile = findProcessApplicationFile(diagramPath);
 
       expect(applicationFile).to.eql(false);
     });
@@ -239,6 +187,7 @@ describe('util', function() {
         sinon.restore();
       });
 
+
       it('should return false', function() {
 
         // given
@@ -248,37 +197,13 @@ describe('util', function() {
         sinon.stub(fs, 'readdirSync').throws(epermError);
 
         // when
-        const applicationFile = findCamundaProjectFile(diagramPath);
+        const applicationFile = findProcessApplicationFile(diagramPath);
 
         // then
         expect(applicationFile).to.eql(false);
       });
 
     });
-  });
-
-
-  describe('isCamundaProjectFile', function() {
-
-    it('should recognize Camunda project file', function() {
-
-      // when
-      const result = isCamundaProjectFile('/project/camunda-project.json');
-
-      // then
-      expect(result).to.be.true;
-    });
-
-
-    it('should recognize legacy Camunda project file', function() {
-
-      // when
-      const result = isCamundaProjectFile('/project/.process-application');
-
-      // then
-      expect(result).to.be.true;
-    });
-
   });
 
 });

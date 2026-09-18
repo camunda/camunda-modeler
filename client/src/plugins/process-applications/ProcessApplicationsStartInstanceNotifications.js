@@ -18,7 +18,7 @@ import React from 'react';
 
 import { getStartInstanceUrl } from '../../app/zeebe/util';
 
-import * as css from './CamundaProjectsStartInstanceNotifications.css';
+import * as css from './ProcessApplicationsStartInstanceNotifications.css';
 
 /**
  * Get success notification for instance started.
@@ -34,7 +34,7 @@ export function getSuccessNotification(tab, config, startInstanceResult, resourc
   const url = getStartInstanceUrl(config, startInstanceResult);
 
   const content = (
-    <div className={ css.CamundaProjectsStartInstanceNotification }>
+    <div className={ css.ProcessApplicationsStartInstanceNotification }>
       <div>
         <code>{ tab.file.name }</code> and { resourceConfigs.length } additional files deployed and process instance started.
       </div>

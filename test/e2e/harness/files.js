@@ -37,8 +37,8 @@ async function copyFixture(name, targetDir, as = path.basename(name)) {
 }
 
 /**
- * Copy a fixture directory (with its dotfiles) into a directory. Camunda
- * project fixtures are directories: the `camunda-project.json` marker plus
+ * Copy a fixture directory (with its dotfiles) into a directory. Process
+ * application fixtures are directories: the `.process-application` marker plus
  * the resources beside it, all of which the app's file context indexes.
  *
  * @param {string} name fixture directory name

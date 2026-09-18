@@ -56,7 +56,7 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>Improved performance in many areas</h4>
-          Faster element template loading and linting, plus quicker cluster connections, make the Modeler noticeably snappier — especially in large projects.
+          Faster element template loading and linting, plus quicker cluster connections, make the Modeler noticeably snappier — especially in large process applications.
         </li>
         <li>
           <h4>Support for Camunda 8.10 and quality of life</h4>

@@ -1,5 +1,5 @@
 {
-  "name": "Foo Camunda project",
+  "name": "Foo process application",
   "executionPlatform": "camunda-cloud",
   "executionPlatformVersion": "8.2.0"
 }

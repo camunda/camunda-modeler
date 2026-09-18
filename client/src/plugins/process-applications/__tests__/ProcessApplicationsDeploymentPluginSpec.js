@@ -15,19 +15,19 @@ import React from 'react';
 
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
-import CamundaProjectsDeploymentPlugin, { canDeployItem } from '../CamundaProjectsDeploymentPlugin';
+import ProcessApplicationsDeploymentPlugin, { canDeployItem } from '../ProcessApplicationsDeploymentPlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 import { DEFAULT_ENDPOINT } from '../../../app/zeebe/Deployment';
 
 import { Deployment, ZeebeAPI } from '../../../app/__tests__/mocks';
 
-describe('CamundaProjectsDeploymentPlugin', function() {
+describe('ProcessApplicationsDeploymentPlugin', function() {
 
   it('should not render status bar item by default', function() {
 
     // when
-    const { container } = createCamundaProjectsDeploymentPlugin();
+    const { container } = createProcessApplicationsDeploymentPlugin();
 
     const statusBarItem = container.querySelector('.btn');
 
@@ -36,18 +36,18 @@ describe('CamundaProjectsDeploymentPlugin', function() {
   });
 
 
-  it('should render status bar item when active tab can be deployed and Camunda project exists', async function() {
+  it('should render status bar item when active tab can be deployed and process application exists', async function() {
 
     // when
-    const { container } = createCamundaProjectsDeploymentPlugin({
-      camundaProject: DEFAULT_CAMUNDA_PROJECT
+    const { container } = createProcessApplicationsDeploymentPlugin({
+      processApplication: DEFAULT_PROCESS_APPLICATION
     });
 
     // then
     const statusBarItem = container.querySelector('.btn');
 
     expect(statusBarItem).to.not.be.null;
-    expect(statusBarItem.getAttribute('title')).to.equal('Open project deployment');
+    expect(statusBarItem.getAttribute('title')).to.equal('Open process application deployment');
   });
 
 
@@ -60,8 +60,8 @@ describe('CamundaProjectsDeploymentPlugin', function() {
       }
     });
 
-    const { container } = createCamundaProjectsDeploymentPlugin({
-      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+    const { container } = createProcessApplicationsDeploymentPlugin({
+      processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
@@ -86,9 +86,9 @@ describe('CamundaProjectsDeploymentPlugin', function() {
       }
     });
 
-    const { container } = createCamundaProjectsDeploymentPlugin({
-      camundaProject: DEFAULT_CAMUNDA_PROJECT,
-      camundaProjectItems: DEFAULT_ITEMS.filter((item) => [ 'bpmn', 'camundaProject' ].includes(item.metadata.type)),
+    const { container } = createProcessApplicationsDeploymentPlugin({
+      processApplication: DEFAULT_PROCESS_APPLICATION,
+      processApplicationItems: DEFAULT_ITEMS.filter((item) => [ 'bpmn', 'processApplication' ].includes(item.metadata.type)),
       triggerAction
     });
 
@@ -117,8 +117,8 @@ describe('CamundaProjectsDeploymentPlugin', function() {
       }
     });
 
-    const { container } = createCamundaProjectsDeploymentPlugin({
-      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+    const { container } = createProcessApplicationsDeploymentPlugin({
+      processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
@@ -147,8 +147,8 @@ describe('CamundaProjectsDeploymentPlugin', function() {
       }
     });
 
-    const { container } = createCamundaProjectsDeploymentPlugin({
-      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+    const { container } = createProcessApplicationsDeploymentPlugin({
+      processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
@@ -189,7 +189,7 @@ describe('CamundaProjectsDeploymentPlugin', function() {
         true, // dmn
         true, // form
         true, // rpa
-        false, // camundaProject
+        false, // processApplication
         false // foo
       ]);
     });
@@ -216,10 +216,10 @@ describe('CamundaProjectsDeploymentPlugin', function() {
 
     const emit = sinon.spy();
 
-    const { container } = createCamundaProjectsDeploymentPlugin({
+    const { container } = createProcessApplicationsDeploymentPlugin({
       _getGlobal: (name) => name === 'deployment' ? deployment : new ZeebeAPI(),
       emit,
-      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+      processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
@@ -267,9 +267,9 @@ describe('CamundaProjectsDeploymentPlugin', function() {
     };
 
     // when
-    const { unmount } = createCamundaProjectsDeploymentPlugin({
+    const { unmount } = createProcessApplicationsDeploymentPlugin({
       _getGlobal: getGlobal,
-      camundaProject: DEFAULT_CAMUNDA_PROJECT
+      processApplication: DEFAULT_PROCESS_APPLICATION
     });
 
     // then
@@ -288,9 +288,9 @@ describe('CamundaProjectsDeploymentPlugin', function() {
 
 });
 
-const DEFAULT_CAMUNDA_PROJECT = {
+const DEFAULT_PROCESS_APPLICATION = {
   file: {
-    path: 'camunda-project.json'
+    path: '.process-application'
   }
 };
 
@@ -317,14 +317,14 @@ const DEFAULT_ITEMS = [
   },
   {
     file: {
-      name: 'camunda-project.json',
-      uri: 'file:///C:/camunda-project/camunda-project.json',
-      path: 'C://camunda-project/camunda-project.json',
-      dirname: 'C://camunda-project',
+      name: '.process-application',
+      uri: 'file:///C:/process-application/.process-application',
+      path: 'C://process-application/.process-application',
+      dirname: 'C://process-application',
       contents: '{}'
     },
     metadata: {
-      type: 'camundaProject'
+      type: 'processApplication'
     }
   },
   {
@@ -337,7 +337,7 @@ const DEFAULT_ITEMS = [
   }
 ];
 
-function createCamundaProjectsDeploymentPlugin(props = {}) {
+function createProcessApplicationsDeploymentPlugin(props = {}) {
   const {
     _getGlobal = (name) => {
       if (name === 'deployment') {
@@ -356,21 +356,21 @@ function createCamundaProjectsDeploymentPlugin(props = {}) {
     displayNotification = () => {},
     emit = () => {},
     log = () => {},
-    camundaProject = null,
-    camundaProjectItems = DEFAULT_ITEMS,
+    processApplication = null,
+    processApplicationItems = DEFAULT_ITEMS,
     triggerAction = () => {}
   } = props;
 
   return render(<SlotFillRoot>
     <Slot name="status-bar__file" />
-    <CamundaProjectsDeploymentPlugin
+    <ProcessApplicationsDeploymentPlugin
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
       emit={ emit }
       log={ log }
-      camundaProject={ camundaProject }
-      camundaProjectItems={ camundaProjectItems }
+      processApplication={ processApplication }
+      processApplicationItems={ processApplicationItems }
       triggerAction={ triggerAction } />
   </SlotFillRoot>);
 }

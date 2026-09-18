@@ -12,6 +12,6 @@ module.exports = [
   require('./bpmnProcessor'),
   require('./dmnProcessor'),
   require('./formProcessor'),
-  require('./camundaProjectProcessor'),
+  require('./processApplicationProcessor'),
   require('./rpaProcessor')
 ];

@@ -9,14 +9,14 @@
  */
 
 export class ResourcesProvider {
-  constructor(resourceLoader, camundaProjects) {
-    this._camundaProjects = camundaProjects;
+  constructor(resourceLoader, processApplications) {
+    this._processApplications = processApplications;
 
     resourceLoader.register(this);
   }
 
   getResources() {
-    const items = this._camundaProjects.getItems();
+    const items = this._processApplications.getItems();
 
     const resources = items.map((item) => {
       switch (item.metadata?.type) {
@@ -35,7 +35,7 @@ export class ResourcesProvider {
   }
 }
 
-ResourcesProvider.$inject = [ 'resources.resourceLoader', 'camundaProjects' ];
+ResourcesProvider.$inject = [ 'resources.resourceLoader', 'processApplications' ];
 
 export const ResourcesProviderModule = {
   __init__: [ 'resourcesProvider' ],

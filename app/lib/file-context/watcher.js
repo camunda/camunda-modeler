@@ -14,7 +14,6 @@ const {
 
 const {
   getFileExtension,
-  getFileName,
   toFilePath,
   toFileUrl
 } = require('./util');
@@ -36,11 +35,6 @@ module.exports = class Watcher {
     this._eventBus = eventBus;
 
     const extensions = processors.flatMap(processor => processor.extensions);
-    const fileNames = processors.flatMap(processor => processor.fileNames || []);
-
-    const isSupported = path => {
-      return extensions.includes(getFileExtension(path)) || fileNames.includes(getFileName(path));
-    };
 
     /**
      * @type { string[] }
@@ -64,7 +58,7 @@ module.exports = class Watcher {
     });
 
     this._chokidar.on('add', path => {
-      if (!isSupported(path)) {
+      if (!extensions.includes(getFileExtension(path))) {
         this._logger.info('watcher:ignore', path);
 
         return;
@@ -80,7 +74,7 @@ module.exports = class Watcher {
     });
 
     this._chokidar.on('change', path => {
-      if (!isSupported(path)) {
+      if (!extensions.includes(getFileExtension(path))) {
         this._logger.info('watcher:ignore', path);
 
         return;
