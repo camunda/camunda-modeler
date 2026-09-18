@@ -15,30 +15,30 @@ import React from 'react';
 
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
 
-import CamundaProjectsPlugin from '../CamundaProjectsPlugin';
+import ProcessApplicationsPlugin from '../ProcessApplicationsPlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 
 import { Deployment, ZeebeAPI } from '../../../app/__tests__/mocks';
 
-const CAMUNDA_PROJECT_FILE = {
-  name: 'camunda-project.json',
-  uri: 'file:///C:/camunda-project/camunda-project.json',
-  path: 'C://camunda-project/camunda-project.json',
-  dirname: 'C://camunda-project',
+const PROCESS_APPLICATION_FILE = {
+  name: '.process-application',
+  uri: 'file:///C:/process-application/.process-application',
+  path: 'C://process-application/.process-application',
+  dirname: 'C://process-application',
   contents: '{}'
 };
 
 const DIAGRAM_FILE = {
   name: 'foo.bpmn',
-  uri: 'file:///C:/camunda-project/foo.bpmn',
-  path: 'C://camunda-project/foo.bpmn',
-  dirname: 'C://camunda-project',
+  uri: 'file:///C:/process-application/foo.bpmn',
+  path: 'C://process-application/foo.bpmn',
+  dirname: 'C://process-application',
   contents: '<?xml version="1.0" encoding="UTF-8"?>'
 };
 
-const CAMUNDA_PROJECT_ITEMS = [
-  { file: CAMUNDA_PROJECT_FILE, metadata: { type: 'camundaProject' } },
+const PROCESS_APPLICATION_ITEMS = [
+  { file: PROCESS_APPLICATION_FILE, metadata: { type: 'processApplication' } },
   { file: DIAGRAM_FILE, metadata: { type: 'bpmn' } }
 ];
 
@@ -47,64 +47,7 @@ const PLATFORM_TAB = { id: 'platform', type: 'bpmn', file: {} };
 const EMPTY_TAB = { id: 'empty', type: 'cloud-bpmn', file: null };
 
 
-describe('<CamundaProjectsPlugin>', function() {
-
-  it('should create Camunda project', async function() {
-
-    // given
-    const showOpenFilesDialog = sinon.stub().resolves([ '/project' ]);
-    const writeFile = sinon.stub().resolves();
-    const send = sinon.spy();
-    const triggerAction = sinon.spy();
-
-    const { emit } = createCamundaProjectsPlugin({
-      triggerAction,
-      _getGlobal: (name) => {
-        if (name === 'dialog') {
-          return { showOpenFilesDialog };
-        } else if (name === 'fileSystem') {
-          return { writeFile };
-        } else if (name === 'backend') {
-          return {
-            on() {
-              return { cancel() {} };
-            },
-            send
-          };
-        } else if (name === 'deployment') {
-          return new Deployment({
-            async getConnectionForTab() {
-              return {};
-            },
-            registerResourcesProvider() {},
-            unregisterResourcesProvider() {}
-          });
-        } else if (name === 'zeebeAPI') {
-          return new ZeebeAPI();
-        } else if (name === 'startInstance') {
-          return {};
-        }
-      }
-    });
-
-    // when
-    act(() => emit('create-camunda-project'));
-
-    // then
-    await waitFor(() => {
-      expect(writeFile).to.have.been.calledWith('/project/camunda-project.json', {
-        name: 'camunda-project.json',
-        contents: '{}',
-        path: null
-      });
-    });
-
-    expect(send).to.have.been.calledWith('file-context:file-opened', '/project/camunda-project.json', undefined);
-    expect(triggerAction).to.have.been.calledWith('display-notification', sinon.match({
-      type: 'success',
-      title: 'Project created'
-    }));
-  });
+describe('<ProcessApplicationsPlugin>', function() {
 
   describe('resources.reload dispatch', function() {
 
@@ -113,7 +56,7 @@ describe('<CamundaProjectsPlugin>', function() {
       // given
       const triggerAction = sinon.spy();
 
-      const { emit } = createCamundaProjectsPlugin({ triggerAction });
+      const { emit } = createProcessApplicationsPlugin({ triggerAction });
 
       // when
       act(() => emit('app.activeTabChanged', { activeTab: CLOUD_TAB }));
@@ -130,7 +73,7 @@ describe('<CamundaProjectsPlugin>', function() {
       // given
       const triggerAction = sinon.spy();
 
-      const { emit } = createCamundaProjectsPlugin({ triggerAction });
+      const { emit } = createProcessApplicationsPlugin({ triggerAction });
 
       // when
       act(() => emit('app.activeTabChanged', { activeTab: PLATFORM_TAB }));
@@ -150,7 +93,7 @@ describe('<CamundaProjectsPlugin>', function() {
       // given
       const triggerAction = sinon.spy();
 
-      const { emit } = createCamundaProjectsPlugin({ triggerAction });
+      const { emit } = createProcessApplicationsPlugin({ triggerAction });
 
       // when
       act(() => emit('app.tabsChanged', { tabs: [ CLOUD_TAB, PLATFORM_TAB ] }));
@@ -190,7 +133,7 @@ describe('<CamundaProjectsPlugin>', function() {
 
       let onItemsChanged;
 
-      const { emit: internalEmit } = createCamundaProjectsPlugin({
+      const { emit: internalEmit } = createProcessApplicationsPlugin({
         triggerAction,
         emit,
         _getGlobal: (name) => {
@@ -216,13 +159,13 @@ describe('<CamundaProjectsPlugin>', function() {
       });
 
       // when
-      // simulate a Camunda project being opened for the active tab
+      // simulate a process application being opened for the active tab
       act(() => internalEmit('app.tabsChanged', { tabs: [ CLOUD_TAB ] }));
       act(() => internalEmit('app.activeTabChanged', { activeTab: CLOUD_TAB }));
-      act(() => onItemsChanged(null, CAMUNDA_PROJECT_ITEMS));
+      act(() => onItemsChanged(null, PROCESS_APPLICATION_ITEMS));
 
       const statusBarItem = await waitFor(() => {
-        const button = document.querySelector('[title="Open project deployment"]');
+        const button = document.querySelector('[title="Open process application deployment"]');
 
         expect(button).to.exist;
 
@@ -247,7 +190,7 @@ describe('<CamundaProjectsPlugin>', function() {
       // then
       expect(emit).to.have.been.calledWith('deployment.done', sinon.match.object);
 
-      // close the Camunda project so module-level state does
+      // close the process application so module-level state does
       // not leak into subsequent tests
       act(() => internalEmit('app.activeTabChanged', { activeTab: EMPTY_TAB }));
     });
@@ -258,7 +201,7 @@ describe('<CamundaProjectsPlugin>', function() {
 
 // helpers //////////
 
-function createCamundaProjectsPlugin(props = {}) {
+function createProcessApplicationsPlugin(props = {}) {
   const {
     triggerAction = () => {},
     displayNotification = () => {},
@@ -313,7 +256,7 @@ function createCamundaProjectsPlugin(props = {}) {
 
   const result = render(<SlotFillRoot>
     <Slot name="status-bar__file" />
-    <CamundaProjectsPlugin
+    <ProcessApplicationsPlugin
       _getFromApp={ _getFromApp }
       _getGlobal={ _getGlobal }
       displayNotification={ displayNotification }

@@ -67,7 +67,7 @@ class MenuBuilder {
     this.appendFileMenu(
       new MenuBuilder(this.options)
         .appendNewFile()
-        .appendNewCamundaProject()
+        .appendNewProcessApplication()
         .appendOpen()
         .appendSeparator()
         .appendSwitchTab()
@@ -274,11 +274,11 @@ class MenuBuilder {
     return this;
   }
 
-  appendNewCamundaProject() {
+  appendNewProcessApplication() {
     this.menu.append(new MenuItem({
-      label: 'New Project...',
+      label: 'New Process Application...',
       click: function() {
-        app.emit('menu:action', 'emit-event', { type: 'create-camunda-project' });
+        app.emit('menu:action', 'emit-event', { type: 'create-process-application' });
       }
     }));
 

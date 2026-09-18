@@ -99,8 +99,8 @@ test.describe('deployment', function() {
   });
 
 
-  test('deploys a Camunda project', async function({ launch, tmp }) {
-    const dir = await copyFixtureDir('deploy/camunda-project', tmp);
+  test('deploys a process application', async function({ launch, tmp }) {
+    const dir = await copyFixtureDir('deploy/process-application', tmp);
 
     const app = await launch({
       openFile: path.join(dir, 'invoice.bpmn'),
@@ -111,15 +111,15 @@ test.describe('deployment', function() {
 
     const deployment = new DeploymentPage(app.page);
 
-    await deployment.openCamundaProjectDeployment();
+    await deployment.openProcessApplicationDeployment();
 
     // the form is deployed although its tab was never opened: resources come
-    // from the indexed Camunda project, not from the open tabs
+    // from the indexed process application, not from the open tabs
     await deployment.expectResourceCount(2);
 
-    await deployment.submit('Deploy project');
+    await deployment.submit('Deploy process application');
 
-    const notification = deployment.notification('Project deployed');
+    const notification = deployment.notification('Process application deployed');
 
     await expect(notification).toBeVisible();
     await expect(notification).toContainText('invoice.bpmn');

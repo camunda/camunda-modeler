@@ -15,19 +15,19 @@ import React from 'react';
 
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
-import CamundaProjectsStartInstancePlugin from '../CamundaProjectsStartInstancePlugin';
+import ProcessApplicationsStartInstancePlugin from '../ProcessApplicationsStartInstancePlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 import { DEFAULT_ENDPOINT } from '../../../app/zeebe/Deployment';
 
 import { Deployment, StartInstance, ZeebeAPI } from '../../../app/__tests__/mocks';
 
-describe('CamundaProjectsStartInstancePlugin', function() {
+describe('ProcessApplicationsStartInstancePlugin', function() {
 
   it('should not render status bar item by default', function() {
 
     // when
-    const { container } = createCamundaProjectsStartInstancePlugin();
+    const { container } = createProcessApplicationsStartInstancePlugin();
 
     const statusBarItem = container.querySelector('.btn');
 
@@ -36,29 +36,29 @@ describe('CamundaProjectsStartInstancePlugin', function() {
   });
 
 
-  it('should render status bar item when active tab can be started and Camunda project exists', async function() {
+  it('should render status bar item when active tab can be started and process application exists', async function() {
 
     // when
-    const { container } = createCamundaProjectsStartInstancePlugin({
-      camundaProject: DEFAULT_CAMUNDA_PROJECT
+    const { container } = createProcessApplicationsStartInstancePlugin({
+      processApplication: DEFAULT_PROCESS_APPLICATION
     });
 
     // then
     const statusBarItem = container.querySelector('.btn');
 
     expect(statusBarItem).to.not.be.null;
-    expect(statusBarItem.getAttribute('title')).to.equal('Open project start instance');
+    expect(statusBarItem.getAttribute('title')).to.equal('Open process application start instance');
   });
 
 
   it('should not render status bar item when active tab cannot be started', async function() {
 
     // when
-    const { container } = createCamundaProjectsStartInstancePlugin({
+    const { container } = createProcessApplicationsStartInstancePlugin({
       activeTab: {
         type: 'cloud-dmn'
       },
-      camundaProject: DEFAULT_CAMUNDA_PROJECT
+      processApplication: DEFAULT_PROCESS_APPLICATION
     });
 
     // then
@@ -77,8 +77,8 @@ describe('CamundaProjectsStartInstancePlugin', function() {
       }
     });
 
-    const { container } = createCamundaProjectsStartInstancePlugin({
-      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+    const { container } = createProcessApplicationsStartInstancePlugin({
+      processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
@@ -103,8 +103,8 @@ describe('CamundaProjectsStartInstancePlugin', function() {
       }
     });
 
-    const { container } = createCamundaProjectsStartInstancePlugin({
-      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+    const { container } = createProcessApplicationsStartInstancePlugin({
+      processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
@@ -147,7 +147,7 @@ describe('CamundaProjectsStartInstancePlugin', function() {
 
     const emit = sinon.spy();
 
-    const { container } = createCamundaProjectsStartInstancePlugin({
+    const { container } = createProcessApplicationsStartInstancePlugin({
       _getGlobal: (name) => {
         if (name === 'deployment') {
           return deployment;
@@ -162,7 +162,7 @@ describe('CamundaProjectsStartInstancePlugin', function() {
         }
       },
       emit,
-      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+      processApplication: DEFAULT_PROCESS_APPLICATION,
       triggerAction
     });
 
@@ -190,9 +190,9 @@ describe('CamundaProjectsStartInstancePlugin', function() {
 
 });
 
-const DEFAULT_CAMUNDA_PROJECT = {
+const DEFAULT_PROCESS_APPLICATION = {
   file: {
-    path: 'camunda-project.json'
+    path: '.process-application'
   }
 };
 
@@ -200,7 +200,7 @@ const DEFAULT_ACTIVE_TAB = {
   type: 'cloud-bpmn'
 };
 
-function createCamundaProjectsStartInstancePlugin(props = {}) {
+function createProcessApplicationsStartInstancePlugin(props = {}) {
   const {
     _getGlobal = (name) => {
       if (name === 'deployment') {
@@ -223,21 +223,21 @@ function createCamundaProjectsStartInstancePlugin(props = {}) {
     displayNotification = () => {},
     emit = () => {},
     log = () => {},
-    camundaProject = null,
-    camundaProjectItems = [],
+    processApplication = null,
+    processApplicationItems = [],
     triggerAction = () => {}
   } = props;
 
   return render(<SlotFillRoot>
     <Slot name="status-bar__file" />
-    <CamundaProjectsStartInstancePlugin
+    <ProcessApplicationsStartInstancePlugin
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
       emit={ emit }
       log={ log }
-      camundaProject={ camundaProject }
-      camundaProjectItems={ camundaProjectItems }
+      processApplication={ processApplication }
+      processApplicationItems={ processApplicationItems }
       triggerAction={ triggerAction } />
   </SlotFillRoot>);
 }

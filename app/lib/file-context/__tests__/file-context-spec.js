@@ -282,24 +282,6 @@ describe('FileContext', function() {
     });
 
 
-    it('adding Camunda project root', async function() {
-
-      // given
-      const directoryPath = path.resolve(__dirname, './tmp/camunda-project');
-
-      // when
-      await waitForEvent(() => {
-        fileContext.addRoot(directoryPath);
-      }, 'watcher:ready');
-
-      // then
-      expectRootsLength(fileContext, 1);
-      expectItemsLength(fileContext, 1);
-
-      expect(getItem(fileContext, toFileUrl(path.resolve(directoryPath, 'camunda-project.json')))).to.exist;
-    });
-
-
     it('removing root', async function() {
 
       // given
@@ -699,10 +681,10 @@ describe('FileContext', function() {
     });
 
 
-    it('Camunda project file', async function() {
+    it('process application file', async function() {
 
       // given
-      const filePath = path.resolve(__dirname, './tmp/camunda-project/camunda-project.json'),
+      const filePath = path.resolve(__dirname, './tmp/foo-process-application/.process-application'),
             uri = toFileUrl(filePath);
 
       // when
@@ -718,28 +700,7 @@ describe('FileContext', function() {
       expect(item).to.exist;
 
       expect(item.metadata).to.eql({
-        'type': 'camundaProject'
-      });
-    });
-
-
-    it('legacy Camunda project file', async function() {
-
-      // given
-      const filePath = path.resolve(__dirname, './tmp/extensions/.process-application'),
-            uri = toFileUrl(filePath);
-
-      // when
-      await waitForEvent(() => {
-        fileContext.addFile(filePath);
-      });
-
-      // then
-      const item = getItem(fileContext, uri);
-
-      expect(item).to.exist;
-      expect(item.metadata).to.eql({
-        'type': 'camundaProject'
+        'type': 'processApplication'
       });
     });
 

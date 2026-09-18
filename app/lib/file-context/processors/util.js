@@ -15,6 +15,8 @@ const log = require('../../log')('app:file-context:processors:util');
 
 const { Parser } = require('saxen');
 
+const { getFileExtension } = require('../util');
+
 function findExtensionElement(element, type) {
   const extensionElements = element.get('extensionElements');
 
@@ -70,10 +72,7 @@ function traverse(element, options) {
 
 module.exports.traverse = traverse;
 
-const CAMUNDA_PROJECT_FILE = 'camunda-project.json';
-const LEGACY_CAMUNDA_PROJECT_FILE = '.process-application';
-
-function findCamundaProjectFile(filePath) {
+function findProcessApplicationFile(filePath) {
   let dirName = path.dirname(filePath);
 
   while (dirName !== path.dirname(dirName)) {
@@ -86,9 +85,9 @@ function findCamundaProjectFile(filePath) {
       return false;
     }
 
-    const fileName = fileNames.includes(CAMUNDA_PROJECT_FILE)
-      ? CAMUNDA_PROJECT_FILE
-      : fileNames.find(fileName => fileName === LEGACY_CAMUNDA_PROJECT_FILE);
+    const fileName = fileNames.find(fileName => {
+      return getFileExtension(fileName) === '.process-application';
+    });
 
     if (fileName) {
       return path.join(dirName, fileName);
@@ -100,15 +99,13 @@ function findCamundaProjectFile(filePath) {
   return false;
 }
 
-module.exports.findCamundaProjectFile = findCamundaProjectFile;
+module.exports.findProcessApplicationFile = findProcessApplicationFile;
 
-function isCamundaProjectFile(filePath) {
-  const fileName = path.basename(filePath);
-
-  return fileName === CAMUNDA_PROJECT_FILE || fileName === LEGACY_CAMUNDA_PROJECT_FILE;
+function isProcessApplicationFile(filePath) {
+  return getFileExtension(filePath) === '.process-application';
 }
 
-module.exports.isCamundaProjectFile = isCamundaProjectFile;
+module.exports.isProcessApplicationFile = isProcessApplicationFile;
 
 const XML_NS_MODELER = 'http://camunda.org/schema/modeler/1.0';
 const XML_NS_ZEEBE = 'http://camunda.org/schema/zeebe/1.0';

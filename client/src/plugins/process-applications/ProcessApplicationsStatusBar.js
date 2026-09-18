@@ -20,12 +20,12 @@ import { Overlay, Section } from '../../shared/ui';
 
 import { utmTag } from '../../util/utmTag';
 
-import CamundaProjectIcon from '../../../resources/icons/file-types/CamundaProject.svg';
+import ProcessApplicationIcon from '../../../resources/icons/file-types/ProcessApplication.svg';
 import ErrorIcon from '../../../resources/icons/Error.svg';
 
-import * as css from './CamundaProjectsStatusBar.css';
+import * as css from './ProcessApplicationsStatusBar.css';
 
-export default function CamundaProjectsStatusBar(props) {
+export default function ProcessApplicationsStatusBar(props) {
   const ref = useRef();
 
   const [ isOpen, setIsOpen ] = useState(false);
@@ -34,17 +34,17 @@ export default function CamundaProjectsStatusBar(props) {
     activeTab,
     onOpen,
     onRevealInFileExplorer,
-    onCreateCamundaProject,
-    camundaProject,
-    camundaProjectItems,
+    onCreateProcessApplication,
+    processApplication,
+    processApplicationItems,
     tabsProvider
   } = props;
 
   useEffect(() => {
-    if (!camundaProject) {
+    if (!processApplication) {
       setIsOpen(false);
     }
-  }, [ camundaProject ]);
+  }, [ processApplication ]);
 
   const onClickOpenPath = (path) => {
     onOpen(path);
@@ -52,43 +52,43 @@ export default function CamundaProjectsStatusBar(props) {
     setIsOpen(false);
   };
 
-  const onClickCreateCamundaProject = () => {
-    onCreateCamundaProject();
+  const onClickCreateProcessApplication = () => {
+    onCreateProcessApplication();
 
     setIsOpen(false);
   };
 
   return <>
     {
-      isCamundaProjectAllowed(activeTab) && <Fill slot="status-bar__file" group="0_camunda-project">
+      isProcessApplicationAllowed(activeTab) && <Fill slot="status-bar__file" group="0_process-application">
         <button
-          className={ classnames('btn', css.CamundaProjectsButton, { 'has-camunda-project': !!camundaProject }) }
+          className={ classnames('btn', css.ProcessApplicationsButton, { 'has-process-application': !!processApplication }) }
           ref={ ref }
           onClick={ () => setIsOpen(!isOpen) }
-          title={ camundaProject ? 'This file is part of a project' : 'New project...' }
+          title={ processApplication ? 'This file is part of a process application' : 'New process application...' }
         >
-          <CamundaProjectIcon width="16" height="16" />
+          <ProcessApplicationIcon width="16" height="16" />
         </button>
       </Fill>
     }
     {
-      isOpen && <Overlay className={ classnames(css.CamundaProjectsOverlay, {
-        'camunda-project': camundaProject,
-        'no-camunda-project': !camundaProject
-      }) } id="camunda-project-overlay" anchor={ ref.current } maxHeight="calc(100vh - 40px)" onClose={ () => setIsOpen(false) }>
+      isOpen && <Overlay className={ classnames(css.ProcessApplicationsOverlay, {
+        'process-application': processApplication,
+        'no-process-application': !processApplication
+      }) } id="process-application-overlay" anchor={ ref.current } onClose={ () => setIsOpen(false) }>
         {
-          !camundaProject
+          !processApplication
             ? <>
-              <Section className="camunda-project-section">
+              <Section>
                 <Section.Body>
-                  <p>Create a <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/process-applications/') }>project</a>:</p>
+                  <p>Turn your project into a <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/process-applications/') }>process application</a>:</p>
                   <ul>
                     <li>Deploy and test resources (BPMN, DMN, forms) as a single unit</li>
                     <li>Benefit from cross-file editor intelligence and improved discovery</li>
                   </ul>
                   <p>
-                    <button type="button" className="btn btn-primary create-camunda-project-btn" onClick={ onClickCreateCamundaProject }>
-                      Create a new project
+                    <button type="button" className="btn btn-primary create-process-application-btn" onClick={ onClickCreateProcessApplication }>
+                      Create a new process application
                     </button>
                   </p>
                 </Section.Body>
@@ -97,13 +97,13 @@ export default function CamundaProjectsStatusBar(props) {
             : <>
               <Section>
                 <Section.Header>
-                  Project
+                  Process application
                 </Section.Header>
                 <Section.Body>
-                  <ul className="files camunda-project-file" role="menu">
-                    <li role="menuitem" className="file" key={ camundaProject.file.path } title={ camundaProject.file.path }>
-                      <button type="button" onClick={ () => onRevealInFileExplorer(camundaProject.file.path) }>
-                        <CamundaProjectIcon className="file-icon" width="16" height="16" /><span className="file-name">{ camundaProject.file.name }</span>
+                  <ul className="files process-application-file" role="menu">
+                    <li role="menuitem" className="file" key={ processApplication.file.path } title={ processApplication.file.path }>
+                      <button type="button" onClick={ () => onRevealInFileExplorer(processApplication.file.path) }>
+                        <ProcessApplicationIcon className="file-icon" width="16" height="16" /><span className="file-name">{ processApplication.file.name }</span>
                       </button>
                     </li>
                   </ul>
@@ -114,9 +114,9 @@ export default function CamundaProjectsStatusBar(props) {
                   Files
                 </Section.Header>
                 <Section.Body>
-                  <ul className="files camunda-project-files" role="menu">
+                  <ul className="files process-application-files" role="menu">
                     {
-                      sortByType(camundaProjectItems.filter(item => item.metadata?.type !== 'camundaProject')).map(item => {
+                      sortByType(processApplicationItems.filter(item => item.metadata?.type !== 'processApplication')).map(item => {
                         const { file } = item;
 
                         const error = hasErrorMessage(item);
@@ -194,7 +194,7 @@ function getErrorMessages(item) {
   return item.file.messages?.filter(({ error }) => error).map(({ message }) => message).join(', ');
 }
 
-function isCamundaProjectAllowed(tab) {
+function isProcessApplicationAllowed(tab) {
   if (!tab) {
     return false;
   }

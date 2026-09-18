@@ -19,28 +19,28 @@ import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 
 import { TabsProvider } from '../../../app/__tests__/mocks';
 
-import CamundaProjectsStatusBar from '../CamundaProjectsStatusBar';
+import ProcessApplicationsStatusBar from '../ProcessApplicationsStatusBar';
 
-describe('<CamundaProjectsStatusBar>', function() {
+describe('<ProcessApplicationsStatusBar>', function() {
 
-  describe('Camunda project', function() {
+  describe('process application', function() {
 
-    it('should render and indicate Camunda project', function() {
+    it('should render and indicate process application', function() {
 
       // when
-      createCamundaProjectsStatusBar();
+      createProcessApplicationsStatusBar();
 
       // then
       const button = screen.getByRole('button');
       expect(button).to.exist;
-      expect(button.classList.contains('has-camunda-project')).to.be.true;
+      expect(button.classList.contains('has-process-application')).to.be.true;
     });
 
 
     it('should open overlay on click', function() {
 
       // given
-      createCamundaProjectsStatusBar();
+      createProcessApplicationsStatusBar();
 
       // when
       fireEvent.click(screen.getByRole('button'));
@@ -53,7 +53,7 @@ describe('<CamundaProjectsStatusBar>', function() {
     it('should close overlay on click', function() {
 
       // given
-      createCamundaProjectsStatusBar();
+      createProcessApplicationsStatusBar();
 
       // when
       fireEvent.click(screen.getByRole('button'));
@@ -74,7 +74,7 @@ describe('<CamundaProjectsStatusBar>', function() {
       // given
       const onOpenSpy = sinon.spy();
 
-      createCamundaProjectsStatusBar({
+      createProcessApplicationsStatusBar({
         onOpen: onOpenSpy
       });
 
@@ -90,45 +90,45 @@ describe('<CamundaProjectsStatusBar>', function() {
   });
 
 
-  describe('no Camunda project', function() {
+  describe('no process application', function() {
 
-    it('should render and indicate no Camunda project', function() {
+    it('should render and indicate no process application', function() {
 
       // when
-      createCamundaProjectsStatusBar({
-        camundaProject: null,
-        camundaProjectItems: []
+      createProcessApplicationsStatusBar({
+        processApplication: null,
+        processApplicationItems: []
       });
 
       // then
       const button = screen.getByRole('button');
       expect(button).to.exist;
-      expect(button.classList.contains('has-camunda-project')).to.be.false;
+      expect(button.classList.contains('has-process-application')).to.be.false;
     });
 
 
     it('should open overlay on click', function() {
 
       // given
-      createCamundaProjectsStatusBar({
-        camundaProject: null,
-        camundaProjectItems: []
+      createProcessApplicationsStatusBar({
+        processApplication: null,
+        processApplicationItems: []
       });
 
       // when
       fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(screen.getByText(/Create a new project/i)).to.exist;
+      expect(screen.getByText(/Create a new process application/i)).to.exist;
     });
 
 
     it('should close overlay on click', function() {
 
       // given
-      createCamundaProjectsStatusBar({
-        camundaProject: null,
-        camundaProjectItems: []
+      createProcessApplicationsStatusBar({
+        processApplication: null,
+        processApplicationItems: []
       });
 
       // when
@@ -145,24 +145,24 @@ describe('<CamundaProjectsStatusBar>', function() {
     });
 
 
-    it('should trigger Camunda project creation on click', function() {
+    it('should trigger process application creation on click', function() {
 
       // given
-      const onCreateCamundaProjectSpy = sinon.spy();
+      const onCreateProcessApplicationSpy = sinon.spy();
 
-      createCamundaProjectsStatusBar({
-        camundaProject: null,
-        camundaProjectItems: [],
-        onCreateCamundaProject: onCreateCamundaProjectSpy
+      createProcessApplicationsStatusBar({
+        processApplication: null,
+        processApplicationItems: [],
+        onCreateProcessApplication: onCreateProcessApplicationSpy
       });
 
       fireEvent.click(screen.getByRole('button'));
 
       // when
-      fireEvent.click(screen.getByText(/Create a new project/i));
+      fireEvent.click(screen.getByText(/Create a new process application/i));
 
       // then
-      expect(onCreateCamundaProjectSpy).to.have.been.calledOnce;
+      expect(onCreateProcessApplicationSpy).to.have.been.calledOnce;
     });
 
   });
@@ -171,9 +171,9 @@ describe('<CamundaProjectsStatusBar>', function() {
   it('should not render for Camunda 7 files', function() {
 
     // when
-    createCamundaProjectsStatusBar({
-      camundaProject: null,
-      camundaProjectItems: [],
+    createProcessApplicationsStatusBar({
+      processApplication: null,
+      processApplicationItems: [],
       activeTab: {
         ...DEFAULT_OPEN_TAB,
         type: 'bpmn'
@@ -187,41 +187,41 @@ describe('<CamundaProjectsStatusBar>', function() {
 
   describe('<Overlay>', function() {
 
-    it('should render name of Camunda project file', function() {
+    it('should render name of process application file', function() {
 
       // when
-      createCamundaProjectsStatusBar();
+      createProcessApplicationsStatusBar();
 
       fireEvent.click(screen.getByRole('button'));
 
       // then
-      expect(screen.getByText('camunda-project.json')).to.exist;
+      expect(screen.getByText('.process-application')).to.exist;
     });
 
 
-    it('should reveal Camunda project file in file explorer on click', function() {
+    it('should reveal process application file in file explorer on click', function() {
 
       // given
       const revealInFileExplorerSpy = sinon.spy();
 
-      createCamundaProjectsStatusBar({
+      createProcessApplicationsStatusBar({
         onRevealInFileExplorer: revealInFileExplorerSpy
       });
 
       fireEvent.click(screen.getByRole('button'));
 
       // when
-      fireEvent.click(screen.getByText('camunda-project.json'));
+      fireEvent.click(screen.getByText('.process-application'));
 
       // then
-      expect(revealInFileExplorerSpy).to.have.been.calledOnceWith('C://camunda-project/camunda-project.json');
+      expect(revealInFileExplorerSpy).to.have.been.calledOnceWith('C://process-application/.process-application');
     });
 
 
-    it('should render names Camunda project files sorted', function() {
+    it('should render names process application files sorted', function() {
 
       // when
-      createCamundaProjectsStatusBar();
+      createProcessApplicationsStatusBar();
 
       fireEvent.click(screen.getByRole('button'));
 
@@ -232,12 +232,12 @@ describe('<CamundaProjectsStatusBar>', function() {
     });
 
 
-    it('should open Camunda project file on click', function() {
+    it('should open process application file on click', function() {
 
       // given
       const onOpenSpy = sinon.spy();
 
-      createCamundaProjectsStatusBar({
+      createProcessApplicationsStatusBar({
         onOpen: onOpenSpy
       });
 
@@ -247,21 +247,21 @@ describe('<CamundaProjectsStatusBar>', function() {
       fireEvent.click(screen.getByText('foo.bpmn'));
 
       // then
-      expect(onOpenSpy).to.have.been.calledOnceWith('C://camunda-project/foo.bpmn');
+      expect(onOpenSpy).to.have.been.calledOnceWith('C://process-application/foo.bpmn');
     });
 
 
     it('should render names of files with error messages sorted', function() {
 
       // given
-      const camundaProjectItems = [
-        ...DEFAULT_CAMUNDA_PROJECT_ITEMS,
-        CAMUNDA_PROJECT_ITEM_ERROR
+      const processApplicationItems = [
+        ...DEFAULT_PROCESS_APPLICATION_ITEMS,
+        PROCESS_APPLICATION_ITEM_ERROR
       ];
 
       // when
-      createCamundaProjectsStatusBar({
-        camundaProjectItems
+      createProcessApplicationsStatusBar({
+        processApplicationItems
       });
 
       fireEvent.click(screen.getByRole('button'));
@@ -271,19 +271,19 @@ describe('<CamundaProjectsStatusBar>', function() {
     });
 
 
-    it('should not open Camunda project file with error message on click', function() {
+    it('should not open process application file with error message on click', function() {
 
       // given
       const onOpenSpy = sinon.spy();
 
-      const camundaProjectItems = [
-        ...DEFAULT_CAMUNDA_PROJECT_ITEMS,
-        CAMUNDA_PROJECT_ITEM_ERROR
+      const processApplicationItems = [
+        ...DEFAULT_PROCESS_APPLICATION_ITEMS,
+        PROCESS_APPLICATION_ITEM_ERROR
       ];
 
-      createCamundaProjectsStatusBar({
+      createProcessApplicationsStatusBar({
         onOpen: onOpenSpy,
-        camundaProjectItems
+        processApplicationItems
       });
 
       fireEvent.click(screen.getByRole('button'));
@@ -306,26 +306,26 @@ const DEFAULT_OPEN_TAB = {
   type: 'cloud-bpmn'
 };
 
-const DEFAULT_CAMUNDA_PROJECT = {
+const DEFAULT_PROCESS_APPLICATION = {
   file: {
-    name: 'camunda-project.json',
-    uri: 'file:///C:/camunda-project/camunda-project.json',
-    path: 'C://camunda-project/camunda-project.json',
-    dirname: 'C://camunda-project',
+    name: '.process-application',
+    uri: 'file:///C:/process-application/.process-application',
+    path: 'C://process-application/.process-application',
+    dirname: 'C://process-application',
     contents: '{}'
   },
   metadata: {
-    type: 'camundaProject'
+    type: 'processApplication'
   }
 };
 
-const DEFAULT_CAMUNDA_PROJECT_ITEMS = [
+const DEFAULT_PROCESS_APPLICATION_ITEMS = [
   {
     file: {
       name: 'foo.bpmn',
-      uri: 'file:///C:/camunda-project/foo.bpmn',
-      path: 'C://camunda-project/foo.bpmn',
-      dirname: 'C://camunda-project',
+      uri: 'file:///C:/process-application/foo.bpmn',
+      path: 'C://process-application/foo.bpmn',
+      dirname: 'C://process-application',
       contents: '<?xml version="1.0" encoding="UTF-8"?>'
     },
     metadata: {
@@ -335,9 +335,9 @@ const DEFAULT_CAMUNDA_PROJECT_ITEMS = [
   {
     file: {
       name: 'bar.dmn',
-      uri: 'file:///C:/camunda-project/bar.dmn',
-      path: 'C://camunda-project/bar.dmn',
-      dirname: 'C://camunda-project',
+      uri: 'file:///C:/process-application/bar.dmn',
+      path: 'C://process-application/bar.dmn',
+      dirname: 'C://process-application',
       contents: '<?xml version="1.0" encoding="UTF-8"?>'
     },
     metadata: {
@@ -347,24 +347,24 @@ const DEFAULT_CAMUNDA_PROJECT_ITEMS = [
   {
     file: {
       name: 'baz.form',
-      uri: 'file:///C:/camunda-project/baz.form',
-      path: 'C://camunda-project/baz.form',
-      dirname: 'C://camunda-project',
+      uri: 'file:///C:/process-application/baz.form',
+      path: 'C://process-application/baz.form',
+      dirname: 'C://process-application',
       contents: '{}'
     },
     metadata: {
       type: 'form'
     }
   },
-  DEFAULT_CAMUNDA_PROJECT
+  DEFAULT_PROCESS_APPLICATION
 ];
 
-const CAMUNDA_PROJECT_ITEM_ERROR = {
+const PROCESS_APPLICATION_ITEM_ERROR = {
   file: {
     name: 'error.bpmn',
-    uri: 'file:///C:/camunda-project/error.bpmn',
-    path: 'C://camunda-project/error.bpmn',
-    dirname: 'C://camunda-project',
+    uri: 'file:///C:/process-application/error.bpmn',
+    path: 'C://process-application/error.bpmn',
+    dirname: 'C://process-application',
     contents: '<',
     messages: [
       {
@@ -376,26 +376,26 @@ const CAMUNDA_PROJECT_ITEM_ERROR = {
   }
 };
 
-function createCamundaProjectsStatusBar(props = {}) {
+function createProcessApplicationsStatusBar(props = {}) {
   const {
     activeTab = DEFAULT_OPEN_TAB,
     onOpen = () => {},
-    onCreateCamundaProject = () => {},
+    onCreateProcessApplication = () => {},
     onRevealInFileExplorer = () => {},
-    camundaProject = DEFAULT_CAMUNDA_PROJECT,
-    camundaProjectItems = DEFAULT_CAMUNDA_PROJECT_ITEMS,
+    processApplication = DEFAULT_PROCESS_APPLICATION,
+    processApplicationItems = DEFAULT_PROCESS_APPLICATION_ITEMS,
     tabsProvider = new TabsProvider(activeTab)
   } = props;
 
   render(<SlotFillRoot>
     <Slot name="status-bar__file" />
-    <CamundaProjectsStatusBar
+    <ProcessApplicationsStatusBar
       activeTab={ activeTab }
       onOpen={ onOpen }
-      onCreateCamundaProject={ onCreateCamundaProject }
+      onCreateProcessApplication={ onCreateProcessApplication }
       onRevealInFileExplorer={ onRevealInFileExplorer }
-      camundaProject={ camundaProject }
-      camundaProjectItems={ camundaProjectItems }
+      processApplication={ processApplication }
+      processApplicationItems={ processApplicationItems }
       tabsProvider={ tabsProvider }
       { ...props }
     />
