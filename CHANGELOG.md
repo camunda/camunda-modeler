@@ -14,7 +14,54 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: warn about plain-text values in credential secret fields ([#6187](https://github.com/camunda/camunda-modeler/pull/6187))
 * `FIX`: recover connection once an initially unreachable cluster comes back up ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
 * `FIX`: correct spacing of connection error description in connection chooser ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
+* `DEPS`: update to `@bpmn-io/form-js@2.0.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.55.0`
+* `DEPS`: update to `@camunda/form-playground@0.27.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.11.2`
+* `DEPS`: update to `@camunda/linting@3.56.0`
+* `DEPS`: update to `@camunda/linting-autofix@0.2.0`
+* `DEPS`: update to `bpmn-js@18.28.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.36.3`
+* `DEPS`: update to `bpmn-moddle@10.2.0`
+* `DEPS`: update to `camunda-bpmn-js@5.34.0`
+* `DEPS`: update to `camunda-bpmn-moddle@8.0.1`
+* `DEPS`: update to `diagram-js@15.26.0`
+* `DEPS`: update to `diagram-js-origin@1.4.1`
+* `DEPS`: update to `dmn-js-properties-panel@3.12.0`
+* `DEPS`: update to `dmn-moddle@12.1.0`
 * `DEPS`: update to `electron@44.0.0`
+* `DEPS`: update to `zeebe-bpmn-moddle@2.0.0`
+
+### BPMN
+
+* `FEAT`: add tooltip with title and shortcut on palette entries ([bpmn-io/bpmn-js#2465](https://github.com/bpmn-io/bpmn-js/pull/2465), [bpmn-io/diagram-js#1082](https://github.com/bpmn-io/diagram-js/pull/1082))
+* `FEAT`: add tooltip with shortcut for the create element menu entry ([bpmn-io/bpmn-js-create-append-anything#91](https://github.com/bpmn-io/bpmn-js-create-append-anything/pull/91))
+* `FEAT`: keep selection visible on canvas resize ([bpmn-io/bpmn-js#2435](https://github.com/bpmn-io/bpmn-js/pull/2435), [bpmn-io/diagram-js#1038](https://github.com/bpmn-io/diagram-js/pull/1038))
+* `FEAT`: offer `Change` element template action ([bpmn-io/bpmn-js-element-templates#294](https://github.com/bpmn-io/bpmn-js-element-templates/pull/294))
+* `FEAT`: give resize handle and segment dragger a border radius ([bpmn-io/diagram-js#1100](https://github.com/bpmn-io/diagram-js/pull/1100))
+* `FIX`: use WCAG AA compliant accent color ([bpmn-io/bpmn-js#2492](https://github.com/bpmn-io/bpmn-js/pull/2492), [bpmn-io/diagram-js#1099](https://github.com/bpmn-io/diagram-js/pull/1099), [bpmn-io/properties-panel#549](https://github.com/bpmn-io/properties-panel/pull/549), [bpmn-io/bpmn-js-element-templates#290](https://github.com/bpmn-io/bpmn-js-element-templates/pull/290))
+* `FIX`: use accessible foreground color for warning list badge ([bpmn-io/properties-panel#547](https://github.com/bpmn-io/properties-panel/pull/547))
+* `FIX`: use standard warning color for incompatible element template indicator ([bpmn-io/bpmn-js-element-templates@2.34.0](https://github.com/bpmn-io/bpmn-js-element-templates/releases/tag/v2.34.0))
+* `FIX`: do not move group label away from the group ([bpmn-io/bpmn-js#2495](https://github.com/bpmn-io/bpmn-js/pull/2495))
+* `FIX`: point label link to the closest point of the connection ([bpmn-io/bpmn-js#2493](https://github.com/bpmn-io/bpmn-js/pull/2493))
+* `FIX`: keep explicitly configured properties on element template (re-)application ([bpmn-io/bpmn-js-element-templates#297](https://github.com/bpmn-io/bpmn-js-element-templates/pull/297))
+* `FIX`: compare `zeebe:calledElement` against old element template value ([bpmn-io/bpmn-js-element-templates#296](https://github.com/bpmn-io/bpmn-js-element-templates/issues/296))
+* `FIX`: wire `$parent` on element template task header and property setters ([bpmn-io/bpmn-js-element-templates#299](https://github.com/bpmn-io/bpmn-js-element-templates/pull/299))
+* `FIX`: correct tooltip display for `type=Configuration` entry ([bpmn-io/bpmn-js-element-templates#291](https://github.com/bpmn-io/bpmn-js-element-templates/pull/291))
+* `FIX`: reserve space for open pop-up button in FEEL editor ([bpmn-io/properties-panel#525](https://github.com/bpmn-io/properties-panel/pull/525))
+* `FIX`: center popup based on its own size ([bpmn-io/properties-panel#550](https://github.com/bpmn-io/properties-panel/pull/550))
+* `FIX`: hide append button for linked compensation boundary event ([camunda/improved-canvas#98](https://github.com/camunda/improved-canvas/pull/98))
+* `FIX`: remove the append indicator when its element is removed ([camunda/improved-canvas#100](https://github.com/camunda/improved-canvas/pull/100))
+* `FIX`: accept `fromAi()` named arguments in `agent-fromai-contract` ([camunda/bpmnlint-plugin-camunda-compat#261](https://github.com/camunda/bpmnlint-plugin-camunda-compat/issues/261))
+* `FIX`: detect agentic ad-hoc sub-process by AI Agent job worker type ([camunda/bpmnlint-plugin-camunda-compat#260](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/260))
+
+### Forms
+
+* `FEAT`: add translations support for viewer and editor ([bpmn-io/form-js#1055](https://github.com/bpmn-io/form-js/issues/1055), [bpmn-io/form-js#1169](https://github.com/bpmn-io/form-js/issues/1169))
+* `FIX`: render the form editor in bpmn.io colors instead of picking up Carbon's palette ([bpmn-io/form-js#1560](https://github.com/bpmn-io/form-js/pull/1560))
+* `FIX`: do not trust document response content type when creating the document preview object URL ([GHSA-763f-qrmm-5w8g](https://github.com/bpmn-io/form-js/security/advisories/GHSA-763f-qrmm-5w8g))
+* `FIX`: align option labels with their checkbox or radio ([bpmn-io/form-js#1561](https://github.com/bpmn-io/form-js/pull/1561))
+* `FIX`: do not style every button as read-only, which made submit buttons look primary instead of gray ([bpmn-io/form-js#1559](https://github.com/bpmn-io/form-js/pull/1559))
 
 ## 5.51.1
 
