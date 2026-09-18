@@ -1009,7 +1009,12 @@ function upsertInstance(instances, instance) {
  */
 function getConfigurationPermissions(authorizationsResult) {
   if (!authorizationsResult || !authorizationsResult.success) {
-    return { create: false, update: false };
+
+    // the authorizations introspection endpoint is not available on every
+    // deployment (e.g. self-managed clusters without Identity); the actual
+    // write is still enforced server-side, so fail open rather than hiding
+    // a capability the user may in fact have
+    return { create: true, update: true };
   }
 
   if (authorizationsResult.response.authorizationsEnabled === false) {
