@@ -39,8 +39,8 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
-const { getTemplatesPath } = require('./template-updater/util');
-const { TemplateUpdater, OOTB_CONNECTORS_ENDPOINT } = require('./template-updater/template-updater');
+const { getTemplateSourceConfig } = require('./template-updater/sources');
+const { TemplateUpdater } = require('./template-updater/template-updater');
 
 const FileContext = require('./file-context/file-context');
 const { toFileUrl } = require('./file-context/util');
@@ -840,17 +840,15 @@ function bootstrap() {
   });
 
   // (3) config
-  const ignoredPaths = [];
-
-  if (isConnectorTemplatesDisabled(flags, userPath)) {
-    ignoredPaths.push(getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName));
-  }
+  const settings = new Config({ userPath }).get('settings');
+  const { endpoints, ignoredPaths, templateSourcePaths } = getTemplateSourceConfig({ userPath, settings, flags });
 
   const config = new Config({
     appPath,
     resourcesPaths,
     userPath,
-    ignoredPaths
+    ignoredPaths,
+    templateSourcePaths
   });
 
   // error tracking can start as soon as config and flags are initialized.
@@ -905,7 +903,7 @@ function bootstrap() {
   const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
   // (10) template updater
-  const templateUpdater = new TemplateUpdater(userPath, isConnectorTemplatesDisabled(flags, userPath) ? [] : [ OOTB_CONNECTORS_ENDPOINT ]);
+  const templateUpdater = new TemplateUpdater(userPath, endpoints);
 
   templateUpdater.on('update:done', (hasNew, warnings) => {
     renderer.send('client:templates-update-done', hasNew, warnings);
@@ -986,15 +984,6 @@ function setUserPath(path = DEFAULT_USER_PATH) {
   app.setPath('userData', path);
 }
 
-function isConnectorTemplatesDisabled(flags, userPath) {
-
-  // TODO(@barmac): use bootstrapped config or extract settings to a separate module
-  const settings = new Config({ userPath }).get('settings');
-
-  return (
-    flags.get('disable-connector-templates', false) || settings['app.disableConnectorTemplates']
-  );
-}
 
 function arePluginsDisabled(flags, config) {
   const settings = config.get('settings');
