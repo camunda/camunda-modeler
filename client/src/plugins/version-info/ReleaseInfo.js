@@ -47,20 +47,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Configure connectors through credentials</h4>
-          Set up connectors that reference cluster-provided credentials. Manage cluster credentials from within Modeler.
+          <h4>FEEL expression playground</h4>
+          The FEEL popup editor includes now a playground which allows to evaluate an expression against the connected Camunda instance.
         </li>
         <li>
-          <h4>Reorganized BPMN element menus</h4>
-          The append and create menus now group elements into tabs, making the one you need easier to find.
+          <h4>Credential secrets from your cluster</h4>
+          Secret fields now list the secrets available on the connected cluster and warn about missing or plain-text values. Cluster connections are now called connections, and Cluster URL is now Connection URL.
         </li>
         <li>
-          <h4>Improved performance in many areas</h4>
-          Faster element template loading and linting, plus quicker cluster connections, make the Modeler noticeably snappier — especially in large process applications.
+          <h4>Change an applied element template</h4>
+          Applied element templates can now be changed from the Applied dropdown, without unlinking first.
         </li>
         <li>
-          <h4>Support for Camunda 8.10 and quality of life</h4>
-          Model AI agents using the new agent definitions for service tasks and ad-hoc sub-processes, and enjoy many smaller fixes and refinements across the app.
+          <h4>Bug fixes and more</h4>
+          As always, this release incorporates bug fixes and additional minor improvements.
         </li>
       </ul>
     </div>
