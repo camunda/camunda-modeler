@@ -13,9 +13,9 @@
   "dependencies": {
     "@camunda8/sdk": "^8.7.28",
     "@sentry/electron": "^7.15.0",
-    "bpmn-moddle": "^10.3.0",
+    "bpmn-moddle": "^10.3.1",
     "chokidar": "^5.0.0",
-    "dmn-moddle": "^12.2.0",
+    "dmn-moddle": "^12.2.1",
     "epipebomb": "^1.0.0",
     "fast-glob": "^3.3.3",
     "ids": "^3.0.2",
