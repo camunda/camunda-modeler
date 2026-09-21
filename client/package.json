@@ -43,7 +43,7 @@
     "bpmn-js-element-templates": "^2.33.0",
     "bpmn-js-properties-panel": "^5.65.0",
     "bpmn-js-tracking": "^0.6.0",
-    "bpmn-moddle": "^10.3.0",
+    "bpmn-moddle": "^10.3.1",
     "camunda-bpmn-js": "^5.33.1",
     "camunda-bpmn-moddle": "^8.0.0",
     "camunda-dmn-js": "^3.8.3",

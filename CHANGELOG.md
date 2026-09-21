@@ -15,6 +15,8 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: recover connection once an initially unreachable cluster comes back up ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
 * `FIX`: correct spacing of connection error description in connection chooser ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
 * `DEPS`: update to `electron@44.0.0`
+* `DEPS`: update to `bpmn-moddle@10.3.1`
+* `DEPS`: update to `dmn-moddle@12.2.1`
 
 ## 5.51.1
 
