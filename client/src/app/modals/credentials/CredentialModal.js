@@ -40,6 +40,8 @@ import * as css from './CredentialModal.css';
 
 import { debounce } from '../../../util';
 
+import { utmTag } from '../../../util/utmTag';
+
 const TITLES = {
   create: 'Add credential',
   edit: 'Edit credential',
@@ -55,6 +57,12 @@ const SUBMIT_LABELS = {
 const SECRET_REFERENCE_PLACEHOLDER = 'camunda.secrets.SECRET_NAME';
 
 const SECRET_REFERENCE_PREFIX = 'camunda.secrets.';
+
+const SECRET_MANAGEMENT_DOCS_URL = utmTag('https://docs.camunda.io/docs/components/concepts/secret-management/');
+
+const SECRET_MANAGEMENT_DOCS_LINK = (
+  <a href={ SECRET_MANAGEMENT_DOCS_URL } target="_blank" rel="noopener noreferrer">Learn more</a>
+);
 
 class CredentialModal extends PureComponent {
   constructor(props) {
@@ -263,18 +271,21 @@ class CredentialModal extends PureComponent {
           Storing this as plaintext exposes sensitive information on the connected
           { ' Camunda instance. Reference a secret instead, e.g. ' }
           <code>{ SECRET_REFERENCE_PREFIX }NAME</code>.
+          { ' ' }{ SECRET_MANAGEMENT_DOCS_LINK }.
         </>
       )
       : incompleteReference
         ? (
           <>
             Incomplete secret reference: <code>{ SECRET_REFERENCE_PREFIX }</code> is missing the secret name.
+            { ' ' }{ SECRET_MANAGEMENT_DOCS_LINK }.
           </>
         )
         : missingSecret
           ? (
             <>
               Secret <code>{ missingSecret }</code> does not exist on the connected Camunda instance.
+              { ' ' }{ SECRET_MANAGEMENT_DOCS_LINK }.
             </>
           )
           : null);

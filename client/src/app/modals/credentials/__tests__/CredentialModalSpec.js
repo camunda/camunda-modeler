@@ -688,6 +688,24 @@ describe('<CredentialModal>', function() {
   });
 
 
+  it('should link to the secret management docs for a missing secret reference', function() {
+
+    // when
+    const { getByRole } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'camunda.secrets.MISSING' },
+      secretReferences: []
+    });
+
+    // then
+    const link = getByRole('link', { name: 'Learn more' });
+
+    expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/concepts\/secret-management\//);
+    expect(link.target).to.equal('_blank');
+  });
+
+
   it('should not warn when the secret reference exists', function() {
 
     // when
@@ -775,6 +793,22 @@ describe('<CredentialModal>', function() {
   });
 
 
+  it('should link to the secret management docs for a plain-text secret value', function() {
+
+    // when
+    const { getByRole } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'hunter2' }
+    });
+
+    // then
+    const link = getByRole('link', { name: 'Learn more' });
+
+    expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/concepts\/secret-management\//);
+  });
+
+
   it('should warn about a bare secret reference prefix (incomplete, stored verbatim)', function() {
 
     // when
@@ -792,6 +826,22 @@ describe('<CredentialModal>', function() {
     expect(queryByText(/exposes sensitive information/)).not.to.exist;
     expect(input.getAttribute('aria-invalid')).to.be.null;
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
+  });
+
+
+  it('should link to the secret management docs for an incomplete secret reference', function() {
+
+    // when
+    const { getByRole } = renderModal({
+      mode: 'create',
+      configurationTemplate: template(SECRET_FIELD),
+      initialValues: { apiKey: 'camunda.secrets.' }
+    });
+
+    // then
+    const link = getByRole('link', { name: 'Learn more' });
+
+    expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/concepts\/secret-management\//);
   });
 
 
