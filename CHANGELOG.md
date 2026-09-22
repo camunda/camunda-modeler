@@ -17,7 +17,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/form-js@2.0.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.55.0`
 * `DEPS`: update to `@camunda/form-playground@0.27.0`
-* `DEPS`: update to `@camunda/improved-canvas@1.11.2`
+* `DEPS`: update to `@camunda/improved-canvas@1.11.3`
 * `DEPS`: update to `@camunda/linting@3.56.1`
 * `DEPS`: update to `@camunda/linting-autofix@0.2.0`
 * `DEPS`: update to `bpmn-js@18.29.1`
