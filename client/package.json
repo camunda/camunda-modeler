@@ -21,7 +21,7 @@
     "@camunda/feel-playground": "1.0.0",
     "@camunda/form-linting": "^0.25.0",
     "@camunda/form-playground": "^0.27.0",
-    "@camunda/improved-canvas": "^1.11.2",
+    "@camunda/improved-canvas": "^1.11.3",
     "@camunda/linting": "^3.56.1",
     "@camunda/linting-autofix": "^0.2.0",
     "@camunda/rpa-integration": "^1.3.4",
