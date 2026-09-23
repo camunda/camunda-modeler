@@ -18,7 +18,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/properties-panel@3.55.0`
 * `DEPS`: update to `@camunda/form-playground@0.27.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.11.3`
-* `DEPS`: update to `@camunda/linting@3.56.1`
+* `DEPS`: update to `@camunda/linting@3.57.0`
 * `DEPS`: update to `@camunda/linting-autofix@0.2.0`
 * `DEPS`: update to `bpmn-js@18.29.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.36.4`
@@ -42,6 +42,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: offer `Change` element template action ([bpmn-io/bpmn-js-element-templates#294](https://github.com/bpmn-io/bpmn-js-element-templates/pull/294))
 * `FEAT`: give resize handle and segment dragger a border radius ([bpmn-io/diagram-js#1100](https://github.com/bpmn-io/diagram-js/pull/1100))
 * `FEAT`: recommend camunda.secrets.* for legacy and deprecated secret expressions from Camunda 8.10 ((#6156)[https://github.com/camunda/camunda-modeler/issues/6156))
+* `FEAT`: flag secret references invalid in input mappings from Camunda 8.10 ([camunda/bpmnlint-plugin-camunda-compat#272](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/272))
 * `FIX`: use WCAG AA compliant accent color ([bpmn-io/bpmn-js#2492](https://github.com/bpmn-io/bpmn-js/pull/2492), [bpmn-io/diagram-js#1099](https://github.com/bpmn-io/diagram-js/pull/1099), [bpmn-io/properties-panel#549](https://github.com/bpmn-io/properties-panel/pull/549), [bpmn-io/bpmn-js-element-templates#290](https://github.com/bpmn-io/bpmn-js-element-templates/pull/290))
 * `FIX`: use accessible foreground color for warning list badge ([bpmn-io/properties-panel#547](https://github.com/bpmn-io/properties-panel/pull/547))
 * `FIX`: use standard warning color for incompatible element template indicator ([bpmn-io/bpmn-js-element-templates@2.34.0](https://github.com/bpmn-io/bpmn-js-element-templates/releases/tag/v2.34.0))
