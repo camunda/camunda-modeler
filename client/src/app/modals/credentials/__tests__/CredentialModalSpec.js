@@ -701,7 +701,7 @@ describe('<CredentialModal>', function() {
     // then
     const link = getByRole('link', { name: 'Learn more' });
 
-    expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/concepts\/secret-management\//);
+    expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/concepts\/secrets\//);
     expect(link.target).to.equal('_blank');
   });
 
@@ -805,7 +805,7 @@ describe('<CredentialModal>', function() {
     // then
     const link = getByRole('link', { name: 'Learn more' });
 
-    expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/concepts\/secret-management\//);
+    expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/concepts\/secrets\//);
   });
 
 
@@ -841,7 +841,7 @@ describe('<CredentialModal>', function() {
     // then
     const link = getByRole('link', { name: 'Learn more' });
 
-    expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/concepts\/secret-management\//);
+    expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/concepts\/secrets\//);
   });
 
 
