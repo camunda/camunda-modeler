@@ -56,6 +56,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: remove the append indicator when its element is removed ([camunda/improved-canvas#100](https://github.com/camunda/improved-canvas/pull/100))
 * `FIX`: accept `fromAi()` named arguments in `agent-fromai-contract` ([camunda/bpmnlint-plugin-camunda-compat#261](https://github.com/camunda/bpmnlint-plugin-camunda-compat/issues/261))
 * `FIX`: detect agentic ad-hoc sub-process by AI Agent job worker type ([camunda/bpmnlint-plugin-camunda-compat#260](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/260))
+* `FIX`: label invalid `fromAi()` input as `Input from agent` instead of `Autofill` ([#6145](https://github.com/camunda/camunda-modeler/issues/6145))
 
 ### Forms
 
