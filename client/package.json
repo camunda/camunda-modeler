@@ -41,7 +41,7 @@
     "@uiw/codemirror-theme-vscode": "^4.23.12",
     "bpmn-js": "^18.29.1",
     "bpmn-js-element-templates": "^2.36.4",
-    "bpmn-js-properties-panel": "^5.65.0",
+    "bpmn-js-properties-panel": "^5.65.1",
     "bpmn-js-tracking": "^0.6.0",
     "bpmn-moddle": "^10.3.1",
     "camunda-bpmn-js": "^5.35.0",

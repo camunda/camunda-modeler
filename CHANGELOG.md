@@ -22,6 +22,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/linting-autofix@0.2.0`
 * `DEPS`: update to `bpmn-js@18.29.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.36.4`
+* `DEPS`: update to `bpmn-js-properties-panel@5.65.1`
 * `DEPS`: update to `bpmn-moddle@10.3.1`
 * `DEPS`: update to `camunda-bpmn-js@5.35.0`
 * `DEPS`: update to `camunda-bpmn-moddle@8.0.1`
