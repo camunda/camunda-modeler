@@ -305,7 +305,7 @@ describe('<CredentialManager>', function() {
       const call = unavailableCall(configurationInstances);
 
       expect(call).to.exist;
-      expect(call.unavailableMessage).to.match(/Connect to Camunda 8/);
+      expect(call.unavailableMessage).to.match(/Connect to Camunda/);
     });
   });
 
@@ -313,7 +313,7 @@ describe('<CredentialManager>', function() {
   [
     [ 400, /Camunda 8\.10 or later/ ],
     [ 404, /Camunda 8\.10 or later/ ],
-    [ undefined, /Cannot reach Camunda 8/ ]
+    [ undefined, /Connect to Camunda/ ]
   ].forEach(([ status, unavailableMessage ]) => {
 
     it(`should mark the chooser unavailable for a failed credential search (${ status || 'offline' })`,

@@ -59,7 +59,7 @@ test.describe('BPMN credentials chooser (Camunda 8)', function() {
     await revealChooser(app);
 
     // then
-    await expect(unavailable(app)).toHaveText(/Connect to Camunda 8/);
+    await expect(unavailable(app)).toHaveText(/Connect to Camunda/);
   });
 
 

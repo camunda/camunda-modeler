@@ -58,8 +58,7 @@ const log = debug('CredentialManager');
  */
 
 const CONFIGURATION_UNAVAILABLE_MESSAGES = {
-  noConnection: 'Connect to Camunda 8 to manage credentials.',
-  offline: 'Cannot reach Camunda 8. Reconnect to manage credentials.',
+  offline: 'Connect to Camunda to manage credentials.',
   unsupported: 'Your connection does not support credentials. Camunda 8.10 or later is required.'
 };
 
@@ -781,7 +780,7 @@ function getUnavailableState(endpoint, connectionStatus) {
     return {
       available: false,
       loading: false,
-      unavailableMessage: CONFIGURATION_UNAVAILABLE_MESSAGES.noConnection
+      unavailableMessage: CONFIGURATION_UNAVAILABLE_MESSAGES.offline
     };
   }
 
