@@ -58,7 +58,7 @@ const SECRET_REFERENCE_PLACEHOLDER = 'camunda.secrets.SECRET_NAME';
 
 const SECRET_REFERENCE_PREFIX = 'camunda.secrets.';
 
-const SECRET_MANAGEMENT_DOCS_URL = utmTag('https://docs.camunda.io/docs/components/concepts/secret-management/');
+const SECRET_MANAGEMENT_DOCS_URL = utmTag('https://docs.camunda.io/docs/components/concepts/secrets/');
 
 const SECRET_MANAGEMENT_DOCS_LINK = (
   <a href={ SECRET_MANAGEMENT_DOCS_URL } target="_blank" rel="noopener noreferrer">Learn more</a>
