@@ -335,6 +335,33 @@ describe('<CredentialManager>', function() {
   });
 
 
+  it('should mark the chooser unavailable for a gRPC connection', async function() {
+
+    // given
+    let connectionStatusListener;
+
+    const subscribe = sinon.stub().callsFake((event, listener) => {
+      if (event === 'connectionManager.connectionStatusChanged') {
+        connectionStatusListener = listener;
+      }
+
+      return { cancel: sinon.spy() };
+    });
+
+    const { configurationInstances } = renderManager({ subscribe });
+
+    // when
+    connectionStatusListener({ success: true, response: { protocol: 'grpc' } });
+
+    // then
+    await waitFor(() => {
+      const call = unavailableCall(configurationInstances);
+
+      expect(call.unavailableMessage).to.match(/REST connection/);
+    });
+  });
+
+
   it('should feed permissions and referenced credentials', async function() {
 
     // given
