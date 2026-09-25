@@ -59,8 +59,11 @@ const log = debug('CredentialManager');
 
 const CONFIGURATION_UNAVAILABLE_MESSAGES = {
   offline: 'Connect to Camunda to manage credentials.',
+  unsupportedProtocol: 'Credentials require a REST connection to Camunda. The current connection uses gRPC.',
   unsupported: 'Your connection does not support credentials. Camunda 8.10 or later is required.'
 };
+
+const SUPPORTED_PROTOCOL = 'rest';
 
 const SEARCH_PAGE_SIZE = 100;
 
@@ -793,6 +796,16 @@ function getUnavailableState(endpoint, connectionStatus) {
       unavailableMessage: unsupported
         ? CONFIGURATION_UNAVAILABLE_MESSAGES.unsupported
         : CONFIGURATION_UNAVAILABLE_MESSAGES.offline
+    };
+  }
+
+  if (connectionStatus?.success
+    && connectionStatus.response?.protocol
+    && connectionStatus.response.protocol !== SUPPORTED_PROTOCOL) {
+    return {
+      available: false,
+      loading: false,
+      unavailableMessage: CONFIGURATION_UNAVAILABLE_MESSAGES.unsupportedProtocol
     };
   }
 
