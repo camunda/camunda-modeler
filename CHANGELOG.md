@@ -14,7 +14,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: warn about plain-text values in credential secret fields ([#6187](https://github.com/camunda/camunda-modeler/pull/6187))
 * `FIX`: recover connection once an initially unreachable cluster comes back up ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
 * `FIX`: correct spacing of connection error description in connection chooser ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
-* `DEPS`: update to `@bpmn-io/form-js@2.0.0`
+* `DEPS`: update to `@bpmn-io/form-js@2.0.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.55.0`
 * `DEPS`: update to `@camunda/form-playground@0.27.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.11.3`
