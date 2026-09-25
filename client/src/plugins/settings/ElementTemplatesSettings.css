@@ -1,0 +1,17 @@
+:local(.ElementTemplatesSettings) {
+  .source-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .source-row .form-group {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .remove-source {
+    flex-shrink: 0;
+    margin-top: 36px;
+  }
+}

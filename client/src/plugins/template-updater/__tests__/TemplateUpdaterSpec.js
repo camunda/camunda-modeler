@@ -106,7 +106,7 @@ describe('<TemplateUpdater>', function() {
 
     // then
     await waitFor(() => {
-      expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'success', title: 'Camunda Connector templates updated' });
+      expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'success', title: 'Element templates updated' });
       expect(triggerActionSpy).to.have.been.calledWith('elementTemplates.reload');
     });
   });
@@ -159,7 +159,7 @@ describe('<TemplateUpdater>', function() {
     backend.receive('client:templates-update-done', null, true, [ 'foo', 'bar' ]);
 
     // then
-    expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'warning', title: 'Camunda Connector templates updated with errors' });
+    expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'warning', title: 'Element templates updated with errors' });
 
     expect(logSpy).to.have.been.calledTwice;
     expect(logSpy.args[0][0]).to.include({ category: 'templates-update-error', message: 'foo' });

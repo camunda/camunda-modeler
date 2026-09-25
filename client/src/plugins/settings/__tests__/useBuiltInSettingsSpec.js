@@ -10,9 +10,34 @@
 
 import { expect } from 'chai';
 import { schema } from '../useBuiltInSettings';
+import { CustomTemplateSources, OOTBTemplatesToggle } from '../ElementTemplatesSettings';
 
 
 describe('useBuiltInSettings', function() {
+
+  it('should configure independent restart-required template settings', function() {
+
+    // then
+    expect(schema.sections.elementTemplates).to.exist;
+    expect(schema.properties['app.disableConnectorTemplates']).to.include({
+      type: 'custom',
+      component: OOTBTemplatesToggle,
+      default: false,
+      flag: 'disable-connector-templates',
+      label: 'OOTB connector templates',
+      restartRequired: true,
+      section: 'elementTemplates'
+    });
+    expect(schema.properties['app.customTemplateSources']).to.deep.include({
+      type: 'custom',
+      component: CustomTemplateSources,
+      default: [],
+      restartRequired: true,
+      section: 'elementTemplates'
+    });
+    expect(schema.properties['app.customTemplateSources'].flag).not.to.exist;
+  });
+
 
   it('should use latest stable versions', function() {
 
