@@ -2,12 +2,13 @@
 @import '~@camunda/form-playground/dist/assets/form-js-editor-base.css';
 @import '~@camunda/form-playground/dist/assets/draggle.css';
 @import '~@camunda/form-playground/dist/assets/camunda-form-playground.css';
-@import '~camunda-bpmn-js/dist/assets/diagram-js.css';
-@import '~camunda-bpmn-js/dist/assets/bpmn-js.css';
+/* TODO: switch back to `camunda-bpmn-js/dist/assets` once camunda-bpmn-js bundles the theme-adopted styles */
+@import '~diagram-js/assets/diagram-js.css';
+@import '~bpmn-js/dist/assets/bpmn-js.css';
 @import '~camunda-bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
-@import '~camunda-bpmn-js/dist/assets/diagram-js-minimap.css';
+@import '~diagram-js-minimap/assets/diagram-js-minimap.css';
 @import '~camunda-bpmn-js/dist/assets/properties-panel.css';
-@import '~camunda-bpmn-js/dist/assets/element-templates.css';
+@import '~bpmn-js-element-templates/dist/assets/element-templates.css';
 @import '~camunda-bpmn-js/dist/assets/element-template-chooser.css';
 @import '~camunda-bpmn-js/dist/assets/color-picker.css';
 @import '~camunda-bpmn-js/dist/assets/popup-menu.css';
