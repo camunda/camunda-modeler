@@ -14,7 +14,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: warn about plain-text values in credential secret fields ([#6187](https://github.com/camunda/camunda-modeler/pull/6187))
 * `FIX`: recover connection once an initially unreachable cluster comes back up ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
 * `FIX`: correct spacing of connection error description in connection chooser ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
-* `DEPS`: update to `@bpmn-io/form-js@2.0.1`
+* `DEPS`: update to `@bpmn-io/form-js@2.0.2`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.55.0`
 * `DEPS`: update to `@camunda/form-playground@0.27.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.11.3`
@@ -65,6 +65,7 @@ ___Note:__ Yet to be released changes appear here._
 ### Forms
 
 * `FEAT`: add translations support for viewer and editor ([bpmn-io/form-js#1055](https://github.com/bpmn-io/form-js/issues/1055), [bpmn-io/form-js#1169](https://github.com/bpmn-io/form-js/issues/1169))
+* `FIX`: resolve nested variable in HTML component when related group is hidden ([#6219](https://github.com/camunda/camunda-modeler/issues/6219))
 * `FIX`: render the form editor in bpmn.io colors instead of picking up Carbon's palette ([bpmn-io/form-js#1560](https://github.com/bpmn-io/form-js/pull/1560))
 * `FIX`: do not trust document response content type when creating the document preview object URL ([GHSA-763f-qrmm-5w8g](https://github.com/bpmn-io/form-js/security/advisories/GHSA-763f-qrmm-5w8g))
 * `FIX`: align option labels with their checkbox or radio ([bpmn-io/form-js#1561](https://github.com/bpmn-io/form-js/pull/1561))
