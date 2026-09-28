@@ -64,8 +64,8 @@ ___Note:__ Yet to be released changes appear here._
 
 ### Forms
 
-* `FIX`: resolve nested variable in HTML component when related group is hidden ([#6219](https://github.com/camunda/camunda-modeler/issues/6219))
 * `FEAT`: add translations support for viewer and editor ([bpmn-io/form-js#1055](https://github.com/bpmn-io/form-js/issues/1055), [bpmn-io/form-js#1169](https://github.com/bpmn-io/form-js/issues/1169))
+* `FIX`: resolve nested variable in HTML component when related group is hidden ([#6219](https://github.com/camunda/camunda-modeler/issues/6219))
 * `FIX`: render the form editor in bpmn.io colors instead of picking up Carbon's palette ([bpmn-io/form-js#1560](https://github.com/bpmn-io/form-js/pull/1560))
 * `FIX`: do not trust document response content type when creating the document preview object URL ([GHSA-763f-qrmm-5w8g](https://github.com/bpmn-io/form-js/security/advisories/GHSA-763f-qrmm-5w8g))
 * `FIX`: align option labels with their checkbox or radio ([bpmn-io/form-js#1561](https://github.com/bpmn-io/form-js/pull/1561))
