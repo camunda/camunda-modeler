@@ -10,6 +10,8 @@
 
 import React, { useState, useEffect } from 'react';
 
+import { Button } from '@camunda/design-system';
+
 import { Section } from '../../shared/ui';
 
 import {
@@ -84,56 +86,57 @@ export function ReportFeedbackSystemInfoSection(props) {
           {formik => {
             return (
               <Form>
-                <Field name="version">
-                  {({ field, form }) => (
-                    <CheckBox
-                      field={ field }
-                      form={ form }
-                      type="checkbox"
-                      label="Version"
-                    />
-                  )}
-                </Field>
-                <Field name="operatingSystem">
-                  {({ field, form }) => (
-                    <CheckBox
-                      field={ field }
-                      form={ form }
-                      type="checkbox"
-                      label="Operating system"
-                    />
-                  )}
-                </Field>
-                <Field name="installedPlugins">
-                  {({ field, form }) => (
-                    <CheckBox
-                      field={ field }
-                      form={ form }
-                      type="checkbox"
-                      label="Installed plugins"
-                    />
-                  )}
-                </Field>
-                <Field name="executionPlatform">
-                  {({ field, form }) => (
-                    <CheckBox
-                      field={ field }
-                      form={ form }
-                      type="checkbox"
-                      label="Execution platform"
-                    />
-                  )}
-                </Field>
+                <div className="system-info-options">
+                  <Field name="version">
+                    {({ field, form }) => (
+                      <CheckBox
+                        field={ field }
+                        form={ form }
+                        type="checkbox"
+                        label="Version"
+                      />
+                    )}
+                  </Field>
+                  <Field name="operatingSystem">
+                    {({ field, form }) => (
+                      <CheckBox
+                        field={ field }
+                        form={ form }
+                        type="checkbox"
+                        label="Operating system"
+                      />
+                    )}
+                  </Field>
+                  <Field name="installedPlugins">
+                    {({ field, form }) => (
+                      <CheckBox
+                        field={ field }
+                        form={ form }
+                        type="checkbox"
+                        label="Installed plugins"
+                      />
+                    )}
+                  </Field>
+                  <Field name="executionPlatform">
+                    {({ field, form }) => (
+                      <CheckBox
+                        field={ field }
+                        form={ form }
+                        type="checkbox"
+                        label="Execution platform"
+                      />
+                    )}
+                  </Field>
+                </div>
                 {formik.errors._form && allFieldsTruthy(formik.touched) && <div className="feedback__message">{formik.errors._form}</div>}
 
                 <Section.Actions>
-                  <button
+                  <Button
                     type="submit"
-                    className="btn btn-primary"
                     disabled={ hasSubmitCompleted }
                   >
                     {!hasSubmitCompleted ? 'Copy system information' : 'Copied!' }
-                  </button>
+                  </Button>
                 </Section.Actions>
               </Form>
             );

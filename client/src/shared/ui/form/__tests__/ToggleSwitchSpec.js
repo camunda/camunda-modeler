@@ -35,10 +35,10 @@ describe('<ToggleSwitch>', function() {
         }
     });
 
-    const input = screen.getByRole('checkbox');
+    const input = screen.getByRole('switch');
 
     // then
-    expect(input.checked).to.be.true;
+    expect(input.getAttribute('aria-checked')).to.eql('true');
   });
 
 
@@ -54,10 +54,10 @@ describe('<ToggleSwitch>', function() {
         }
     });
 
-    const input = screen.getByRole('checkbox');
+    const input = screen.getByRole('switch');
 
     // then
-    expect(input.checked).to.be.false;
+    expect(input.getAttribute('aria-checked')).to.eql('false');
   });
 
 });

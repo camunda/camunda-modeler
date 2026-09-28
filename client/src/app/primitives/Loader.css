@@ -1,0 +1,27 @@
+:local(.Loader) {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--background);
+  color: var(--neutral-foreground-subtle);
+
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loader__icon {
+    width: 24px;
+    height: 24px;
+    animation: loader-spin 1s linear infinite;
+  }
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

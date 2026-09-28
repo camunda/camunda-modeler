@@ -24,6 +24,8 @@ import {
   mapStackTrace
 } from 'sourcemapped-stacktrace';
 
+import { C4Provider } from '@camunda/design-system';
+
 import App from './App';
 
 import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../util/Flags';
@@ -414,17 +416,19 @@ export default class AppParent extends PureComponent {
     } = this.props;
 
     return (
-      <App
-        ref={ this.appRef }
-        tabsProvider={ tabsProvider }
-        globals={ globals }
-        onMenuUpdate={ this.handleMenuUpdate }
-        onContextMenu={ this.handleContextMenu }
-        onWorkspaceChanged={ this.handleWorkspaceChanged }
-        onReady={ this.handleReady }
-        onError={ this.handleError }
-        onWarning={ this.handleWarning }
-      />
+      <C4Provider>
+        <App
+          ref={ this.appRef }
+          tabsProvider={ tabsProvider }
+          globals={ globals }
+          onMenuUpdate={ this.handleMenuUpdate }
+          onContextMenu={ this.handleContextMenu }
+          onWorkspaceChanged={ this.handleWorkspaceChanged }
+          onReady={ this.handleReady }
+          onError={ this.handleError }
+          onWarning={ this.handleWarning }
+        />
+      </C4Provider>
     );
   }
 

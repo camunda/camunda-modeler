@@ -15,12 +15,14 @@ import { uniqueBy } from 'min-dash';
 import { getIn } from 'formik';
 import classNames from 'classnames';
 
-import DeteleIcon from '../../../../resources/icons/Delete.svg';
-import CreateIcon from '../../../../resources/icons/Create.svg';
+import { IconButton } from '@camunda/design-system';
+import { CircleAlert, File, Plus, Trash2 } from '@camunda/design-system/icons';
+
 import BPMNIcon from '../../../../resources/icons/file-types/BPMN.svg';
 import DMNIcon from '../../../../resources/icons/file-types/DMN.svg';
 import FormIcon from '../../../../resources/icons/file-types/Form.svg';
-import ErrorIcon from '../../../../resources/icons/Error.svg';
+
+import * as css from './FileInput.css';
 
 /**
  * @typedef FileDescriptor
@@ -57,21 +59,27 @@ export default function FileInput(props) {
   }
 
   return (
-    <div className="form-group">
+    <div className={ css.FileInput }>
       <input
-        className="form-control"
         name={ name }
         id={ name }
         onBlur={ onBlur }
         onChange={ onChange }
         multiple
+        hidden
         type="file"
         ref={ inputRef }
       />
 
-      <label aria-label={ label } htmlFor={ name }>
-        <CreateIcon />
-      </label>
+      <IconButton
+        className="file-input__add"
+        type="button"
+        variant="ghost"
+        size="xs"
+        label={ label }
+        icon={ Plus }
+        onClick={ () => inputRef.current.click() }
+      />
 
       <FileList
         errors={ form.errors }
@@ -115,15 +123,19 @@ function ListItem(props) {
     <li
       className={ classNames('file-list-item', { 'is-invalid': !!error }) }
       title={ getFileLabel(name, error) }>
-      <span className="file-list-item-content">
-        {getIconFromFileType(name, error)}
-        <span className="file-list-item-name">
-          { name }
-        </span>
-        <button className="remove" type="button" onClick={ onRemove } aria-label={ `Remove ${name}` }>
-          <DeteleIcon aria-hidden="true" />
-        </button>
+      { getIconFromFileType(name, error) }
+      <span className="file-list-item-name">
+        { name }
       </span>
+      <IconButton
+        className="remove"
+        type="button"
+        variant="ghost"
+        size="xs"
+        label={ `Remove ${name}` }
+        icon={ Trash2 }
+        onClick={ onRemove }
+      />
     </li>
   );
 }
@@ -158,7 +170,7 @@ function getFileLabel(name, error) {
 function getIconFromFileType(name, error) {
   const extension = getTypeFromFileExtension(name);
 
-  if (error) return <ErrorIcon className="error-icon" />;
+  if (error) return <CircleAlert className="error-icon" aria-hidden="true" />;
 
   switch (extension) {
   case 'bpmn':
@@ -168,7 +180,7 @@ function getIconFromFileType(name, error) {
   case 'form':
     return <FormIcon />;
   default:
-    return <div className="default_file-icon" />;
+    return <File aria-hidden="true" />;
   }
 }
 
