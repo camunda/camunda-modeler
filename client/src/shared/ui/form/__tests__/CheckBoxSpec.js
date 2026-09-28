@@ -28,17 +28,21 @@ describe('<CheckBox>', function() {
   it('should show error', function() {
 
     // when
-    const { container } = createCheckBox({
+    const { getByRole, getByText } = createCheckBox({
+      field: {
+        name: 'foo'
+      },
       fieldMeta: {
-        error: 'foo',
+        error: 'foo error',
         touched: true
       },
     });
 
     // then
-    const invalidFeedback = container.querySelector('.form-group>.custom-control>.invalid-feedback');
+    const checkbox = getByRole('checkbox');
 
-    expect(invalidFeedback).to.exist;
+    expect(checkbox.getAttribute('aria-invalid')).to.eql('true');
+    expect(document.getElementById(checkbox.getAttribute('aria-errormessage'))).to.equal(getByText('foo error'));
   });
 
 

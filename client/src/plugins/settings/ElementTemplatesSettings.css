@@ -1,7 +1,13 @@
 :local(.ElementTemplatesSettings) {
-  margin-top: 12px;
+
+  /* align the documentation icon like in field labels */
+  .source-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
   .flag-warning {
-    margin: 0 0 12px 0;
+    margin-bottom: 16px;
   }
 }

@@ -10,9 +10,17 @@
 
 import React from 'react';
 
-import { Tooltip } from '@carbon/react';
+import classNames from 'classnames';
 
-import LaunchIcon from '../../../../resources/icons/Launch.svg';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@camunda/design-system';
+
+import { ExternalLink } from '@camunda/design-system/icons';
+
+import * as css from './DocumentationIcon.css';
 
 export default function DocumentationIcon(props) {
 
@@ -27,17 +35,21 @@ export default function DocumentationIcon(props) {
   }
 
   return (
-    <Tooltip label="Open documentation" align="bottom">
-      <a
-        className="documentation-icon"
-        href={ url }
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={ onClick }
-        { ...rest }
-      >
-        <LaunchIcon width="12" height="12" viewBox="0 0 12 12" />
-      </a>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <a
+          className={ classNames(css.DocumentationIcon, 'documentation-icon') }
+          href={ url }
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open documentation"
+          onClick={ onClick }
+          { ...rest }
+        >
+          <ExternalLink aria-hidden="true" />
+        </a>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">Open documentation</TooltipContent>
     </Tooltip>
   );
 }

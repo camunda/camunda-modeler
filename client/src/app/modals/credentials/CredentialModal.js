@@ -11,6 +11,22 @@
 import React, { PureComponent } from 'react';
 
 import {
+  Alert,
+  Button,
+  Heading,
+  InlineCode,
+  Input,
+  Label,
+  Link,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Text
+} from '@camunda/design-system';
+
+import {
   Modal
 } from '../../../shared/ui';
 
@@ -61,8 +77,10 @@ const SECRET_REFERENCE_PREFIX = 'camunda.secrets.';
 const SECRET_MANAGEMENT_DOCS_URL = utmTag('https://docs.camunda.io/docs/components/concepts/secrets/');
 
 const SECRET_MANAGEMENT_DOCS_LINK = (
-  <a href={ SECRET_MANAGEMENT_DOCS_URL } target="_blank" rel="noopener noreferrer">Learn more</a>
+  <Link href={ SECRET_MANAGEMENT_DOCS_URL } target="_blank" rel="noopener noreferrer">Learn more</Link>
 );
+
+const EMPTY_CHOICE_LABEL = 'None';
 
 class CredentialModal extends PureComponent {
   constructor(props) {
@@ -270,21 +288,21 @@ class CredentialModal extends PureComponent {
         <>
           Storing this as plaintext exposes sensitive information on the connected
           { ' Camunda instance. Reference a secret instead, e.g. ' }
-          <code>{ SECRET_REFERENCE_PREFIX }NAME</code>.
+          <InlineCode>{ SECRET_REFERENCE_PREFIX }NAME</InlineCode>.
           { ' ' }{ SECRET_MANAGEMENT_DOCS_LINK }.
         </>
       )
       : incompleteReference
         ? (
           <>
-            Incomplete secret reference: <code>{ SECRET_REFERENCE_PREFIX }</code> is missing the secret name.
+            Incomplete secret reference: <InlineCode>{ SECRET_REFERENCE_PREFIX }</InlineCode> is missing the secret name.
             { ' ' }{ SECRET_MANAGEMENT_DOCS_LINK }.
           </>
         )
         : missingSecret
           ? (
             <>
-              Secret <code>{ missingSecret }</code> does not exist on the connected Camunda instance.
+              Secret <InlineCode>{ missingSecret }</InlineCode> does not exist on the connected Camunda instance.
               { ' ' }{ SECRET_MANAGEMENT_DOCS_LINK }.
             </>
           )
@@ -292,52 +310,23 @@ class CredentialModal extends PureComponent {
 
     const describedBy = fieldError ? errorId : (fieldWarning ? warningId : undefined);
 
-    let controlClassName = 'form-control';
-
-    if (fieldError) {
-      controlClassName += ' is-invalid';
-    } else if (fieldWarning) {
-      controlClassName += ' is-warning';
-    }
-
-    let groupClassName = 'form-group';
-
-    if (fieldError) {
-      groupClassName += ' has-error';
-    } else if (fieldWarning) {
-      groupClassName += ' has-warning';
-    }
-
     return (
-      <div className={ groupClassName } key={ fieldKey }>
-        <label htmlFor={ id }>
+      <div
+        className="credential-modal-field"
+        key={ fieldKey }
+        data-invalid={ fieldError ? '' : undefined }
+        data-warning={ !fieldError && fieldWarning ? '' : undefined }
+      >
+        <Label htmlFor={ id } required={ required }>
           { field.label || fieldKey }
-          { required && <span> *</span> }
-        </label>
+        </Label>
         {
           field.type === 'Dropdown'
-            ? (
-              <select
-                id={ id }
-                className={ controlClassName }
-                value={ value }
-                aria-invalid={ fieldError ? 'true' : undefined }
-                aria-describedby={ describedBy }
-                onChange={ event => this.handleFieldChange(fieldKey, event.target.value) }
-              >
-                { field.optional && <option value=""></option> }
-                {
-                  (field.choices || []).map(choice => (
-                    <option key={ choice.value } value={ choice.value }>{ choice.name }</option>
-                  ))
-                }
-              </select>
-            )
+            ? this.renderDropdown(field, id, value, fieldError, describedBy)
             : secretField
               ? (
                 <ComboBox
                   id={ id }
-                  className="credential-modal-secret-input"
                   options={ secretReferences || [] }
                   value={ value }
                   placeholder={ SECRET_REFERENCE_PLACEHOLDER }
@@ -347,9 +336,8 @@ class CredentialModal extends PureComponent {
                 />
               )
               : (
-                <input
+                <Input
                   id={ id }
-                  className={ controlClassName }
                   type="text"
                   value={ value }
                   placeholder={ field.secret ? SECRET_REFERENCE_PLACEHOLDER : undefined }
@@ -360,9 +348,9 @@ class CredentialModal extends PureComponent {
               )
         }
         { fieldError && (
-          <p className="credential-modal-error" id={ errorId }>
+          <Text as="p" variant="helper" className="credential-modal-error" id={ errorId }>
             { fieldError }
-          </p>
+          </Text>
         ) }
         {
 
@@ -373,13 +361,51 @@ class CredentialModal extends PureComponent {
            */
 
           isSecretField(field) && (
-            <p className="credential-modal-warning" id={ warningId } role="status">
+            <Text as="p" variant="helper" className="credential-modal-warning" id={ warningId } role="status">
               { fieldWarning }
-            </p>
+            </Text>
           )
         }
-        { field.description && <p className="form-text">{ renderDescription(field.description) }</p> }
+        { field.description && !fieldError && (
+          <Text as="p" variant="helper" className="credential-modal-description">
+            { renderDescription(field.description) }
+          </Text>
+        ) }
       </div>
+    );
+  }
+
+  renderDropdown(field, id, value, fieldError, describedBy) {
+    const fieldKey = getFieldKey(field);
+
+    const choices = [
+      ...(field.optional ? [ { name: EMPTY_CHOICE_LABEL, value: '' } ] : []),
+      ...(field.choices || [])
+    ];
+
+    // select values must be non-empty strings, so use the choice index
+    const selectedIndex = choices.findIndex(choice => choice.value === value);
+
+    return (
+      <Select
+        value={ selectedIndex === -1 ? '' : String(selectedIndex) }
+        onValueChange={ index => this.handleFieldChange(fieldKey, choices[ index ].value) }
+      >
+        <SelectTrigger
+          id={ id }
+          aria-invalid={ fieldError ? 'true' : undefined }
+          aria-describedby={ describedBy }
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {
+            choices.map((choice, index) => (
+              <SelectItem key={ index } value={ String(index) }>{ choice.name }</SelectItem>
+            ))
+          }
+        </SelectContent>
+      </Select>
     );
   }
 
@@ -406,11 +432,13 @@ class CredentialModal extends PureComponent {
                 <Loader />
               </div>
             ) : <>
-              <div className={ displayNameError ? 'form-group has-error' : 'form-group' }>
-                <label htmlFor="credential-display-name">Credential name</label>
-                <input
+              <div
+                className="credential-modal-field"
+                data-invalid={ displayNameError ? '' : undefined }
+              >
+                <Label htmlFor="credential-display-name">Credential name</Label>
+                <Input
                   id="credential-display-name"
-                  className={ displayNameError ? 'form-control is-invalid' : 'form-control' }
                   type="text"
                   value={ displayName }
                   aria-invalid={ displayNameError ? 'true' : undefined }
@@ -418,41 +446,41 @@ class CredentialModal extends PureComponent {
                   onChange={ this.handleDisplayNameChange }
                 />
                 { displayNameError && (
-                  <p
+                  <Text
+                    as="p"
+                    variant="helper"
                     className="credential-modal-error"
                     id="credential-display-name-error"
                   >
                     { displayNameError }
-                  </p>
+                  </Text>
                 ) }
-                { credentialName && (
-                  <p className="form-text" id="credential-id-help">
-                    Referenced as <code>=camunda.vars.env.{ credentialName }</code>
-                  </p>
+                { credentialName && !displayNameError && (
+                  <Text as="p" variant="helper" className="credential-modal-description" id="credential-id-help">
+                    Referenced as <InlineCode>=camunda.vars.env.{ credentialName }</InlineCode>
+                  </Text>
                 ) }
               </div>
 
               { this.getVisibleFieldGroups().map(group => (
                 <section className="credential-modal-group" key={ group.id }>
-                  <h3>{ group.label }</h3>
+                  <Heading as="h3" variant="heading-xs">{ group.label }</Heading>
                   { group.properties.map(field => this.renderField(field)) }
                 </section>
               )) }
 
-              { error && <p className="credential-modal-error" role="alert">{ error }</p> }
+              { error && <Alert variant="destructive" description={ error } /> }
             </> }
           </div>
         </Modal.Body>
 
         <Modal.Footer>
-          <div className="buttonDiv">
-            <button className="btn btn-secondary" onClick={ onClose } disabled={ submitting }>
-              Cancel
-            </button>
-            <button className="btn btn-primary" onClick={ this.handleSubmit } disabled={ !this.canSubmit() }>
-              { SUBMIT_LABELS[ mode ] || SUBMIT_LABELS.edit }
-            </button>
-          </div>
+          <Button variant="secondary" onClick={ onClose } disabled={ submitting }>
+            Cancel
+          </Button>
+          <Button onClick={ this.handleSubmit } disabled={ !this.canSubmit() }>
+            { SUBMIT_LABELS[ mode ] || SUBMIT_LABELS.edit }
+          </Button>
         </Modal.Footer>
       </Modal>
     );
@@ -490,7 +518,7 @@ function renderDescription(description) {
 
     if (/^https?:\/\//i.test(href)) {
       nodes.push(
-        <a key={ key++ } href={ href } target="_blank" rel="noopener noreferrer">{ text }</a>
+        <Link key={ key++ } href={ href } target="_blank" rel="noopener noreferrer">{ text }</Link>
       );
     } else {
       nodes.push(text);

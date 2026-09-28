@@ -28,11 +28,10 @@ describe('<OptionsMenu>', function() {
     const button = screen.getByRole('button', { name: 'Options' });
 
     // when
-    fireEvent.click(button);
+    openMenu(button);
 
     // then
     expect(screen.getAllByRole('menuitem').map(item => item.textContent)).to.eql([ 'Edit', 'Remove' ]);
-    expect(button.closest('[data-floating-menu-container]').contains(screen.getByRole('menu')), 'rendered next to button').to.be.true;
   });
 
 
@@ -47,7 +46,7 @@ describe('<OptionsMenu>', function() {
     const button = screen.getByRole('button', { name: 'Options' });
 
     // when
-    fireEvent.click(button);
+    openMenu(button);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Edit' }));
 
     // then
@@ -67,7 +66,7 @@ describe('<OptionsMenu>', function() {
     </form>);
 
     // when
-    fireEvent.click(screen.getByRole('button', { name: 'Options' }));
+    openMenu(screen.getByRole('button', { name: 'Options' }));
     fireEvent.click(screen.getByRole('menuitem', { name: 'Edit' }));
 
     // then
@@ -85,7 +84,7 @@ describe('<OptionsMenu>', function() {
       <OptionsMenu label="Options" items={ [ { label: 'Edit', onSelect } ] } />
     </Modal>);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Options' }));
+    openMenu(screen.getByRole('button', { name: 'Options' }));
 
     // when
     fireEvent.keyDown(screen.getByRole('menuitem', { name: 'Edit' }), { key: 'Escape' });
@@ -100,6 +99,13 @@ describe('<OptionsMenu>', function() {
 
 
 // helpers //////////
+
+/**
+ * Open the menu like a keyboard user; the menu does not open on `click`.
+ */
+function openMenu(button) {
+  fireEvent.keyDown(button, { key: 'Enter' });
+}
 
 function renderMenu({ onSelect = () => {} } = {}) {
   return render(<OptionsMenu label="Options" items={ [

@@ -127,9 +127,10 @@ class DeploymentPage {
    * @return {import('@playwright/test').Locator}
    */
   notification(title) {
-    return this.page.getByRole('status').filter({
-      has: this.page.getByRole('heading', { name: title, exact: true })
-    });
+    return this.page
+      .getByRole('region', { name: /^Notifications/ })
+      .getByRole('listitem')
+      .filter({ has: this.page.getByText(title, { exact: true }) });
   }
 
   /**

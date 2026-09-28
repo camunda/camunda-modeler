@@ -12,14 +12,26 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import FormFeedback from './FormFeedback';
+import {
+  Input,
+  Label,
+  Textarea
+} from '@camunda/design-system';
+
 import DocumentationIcon from './DocumentationIcon';
+import FormFeedback from './FormFeedback';
 
 import {
   fieldError as defaultFieldError
 } from './Util';
 
+import * as css from './Field.css';
 
+
+/**
+ * Text field for Formik, exposed to plugins via `global.components`; keep the
+ * props stable.
+ */
 export default function TextInput(props) {
 
   const {
@@ -44,60 +56,34 @@ export default function TextInput(props) {
 
   const error = (fieldError || defaultFieldError)(meta, fieldName);
 
-  function textElement() {
-    function getTextarea() {
-      return <textarea
+  const errorId = `${ fieldName }-error-msg`;
+  const descriptionId = `${ fieldName }-description`;
+
+  const Control = multiline ? Textarea : Input;
+
+  // own messages, as the input re-mounts (and loses focus) when its `invalidText` toggles
+  return (
+    <div className={ classNames('form-group', css.Field) }>
+      { (label || documentationUrl) && (
+        <Label htmlFor={ fieldName }>
+          { label }
+          <DocumentationIcon url={ documentationUrl } />
+        </Label>
+      ) }
+      <Control
         { ...field }
+        type={ multiline ? undefined : 'text' }
         value={ fieldValue || '' }
         disabled={ form.isSubmitting }
-        className={ classNames('form-control', {
-          'is-invalid': !!error
-        }) }
         id={ fieldName }
         placeholder={ hint }
+        aria-invalid={ !!error }
+        aria-errormessage={ error ? errorId : undefined }
+        aria-describedby={ description ? descriptionId : undefined }
         { ...restProps }
-      />;
-    }
-
-    if (multiline) {
-      return getTextarea();
-    } else {
-      return <React.Fragment>
-        <input
-          { ...field }
-          type="text"
-          value={ fieldValue || '' }
-          disabled={ form.isSubmitting }
-          className={ classNames('form-control', {
-            'is-invalid': !!error
-          }) }
-          id={ fieldName }
-          placeholder={ hint }
-          { ...restProps }
-        />
-      </React.Fragment>;
-    }
-  }
-
-  return (
-    <React.Fragment>
-      <div className="form-group">
-        <div className={
-          classNames('custom-control', 'custom-text-input')
-        }>
-          <label htmlFor={ fieldName }>
-            { label }
-            <DocumentationIcon url={ documentationUrl } />
-          </label>
-          { textElement() }
-          <FormFeedback
-            error={ error }
-          />
-          { description &&
-          <p className="custom-control-description">{ description }</p>
-          }
-        </div>
-      </div>
-    </React.Fragment>
+      />
+      <FormFeedback id={ errorId } error={ error } />
+      { description && <div id={ descriptionId } className="field__description">{ description }</div> }
+    </div>
   );
 }

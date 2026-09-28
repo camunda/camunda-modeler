@@ -12,6 +12,10 @@ import React from 'react';
 
 import classNames from 'classnames';
 
+import { Loader2 } from '@camunda/design-system/icons';
+
+import * as css from './Loader.css';
+
 export default function Loader(props) {
 
   const {
@@ -19,6 +23,8 @@ export default function Loader(props) {
   } = props;
 
   return (
-    <div className={ classNames('spinner-border', { hidden }) }></div>
+    <div className={ classNames(css.Loader, { hidden }) }>
+      <Loader2 className="loader__icon" aria-hidden="true" />
+    </div>
   );
 }

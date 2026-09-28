@@ -8,13 +8,17 @@
  * except in compliance with the MIT License.
  */
 
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
+
+import {
+  Button,
+  Checkbox,
+  Label
+} from '@camunda/design-system';
 
 import {
   Modal
 } from '../../shared/ui';
-
-import classNames from 'classnames';
 
 import * as css from './PrivacyPreferencesView.css';
 
@@ -60,30 +64,22 @@ class PrivacyPreferencesView extends PureComponent {
   renderPreferences() {
 
     return PREFERENCES_LIST.map((item) => (
-      <Fragment key={ item.key }>
-        <div className="privacyPreferencesCheckbox">
-          <div className="form-group">
-            <div className={
-              classNames('custom-control', 'custom-checkbox')
-            }>
-              <input
-                id={ item.key }
-                type="checkbox"
-                className="custom-control-input"
-                defaultChecked={ this.isEnabled(item.key) }
-                autoFocus={ this.hasAutoFocus(item.key) }
-                onChange={ (event) => {
-                  this.setState({ [item.key]: event.target.checked });
-                } } />
-              <label className="custom-control-option" htmlFor={ item.key }> </label>
-            </div>
-          </div>
+      <div className="privacy-preference" key={ item.key }>
+        <Checkbox
+          id={ item.key }
+          defaultChecked={ this.isEnabled(item.key) }
+          autoFocus={ this.hasAutoFocus(item.key) }
+          aria-describedby={ `${ item.key }-description` }
+          onCheckedChange={ (checked) => {
+            this.setState({ [item.key]: checked === true });
+          } } />
+        <div className="privacy-preference__text">
+          <Label htmlFor={ item.key }>{ item.title }</Label>
+          <p className="privacy-preference__description" id={ `${ item.key }-description` }>
+            { item.explanation }
+          </p>
         </div>
-        <label htmlFor={ item.key }>
-          <div className="checkboxLabel">{ item.title }</div>
-          <div className="checkboxExplanation">{ item.explanation }</div>
-        </label>
-      </Fragment>
+      </div>
     ));
   }
 
@@ -101,38 +97,33 @@ class PrivacyPreferencesView extends PureComponent {
         <Modal.Title>{ TITLE }</Modal.Title>
 
         <Modal.Body>
-          <div className="privacyTextField">
-            <p>
-              { PRIVACY_TEXT_FIELD }
-            </p>
-          </div>
+          <p>
+            { PRIVACY_TEXT_FIELD }
+          </p>
 
-          <div className="privacyPreferencesField">
+          <div className="privacy-preferences">
             { this.renderPreferences() }
           </div>
-          <div className="privacyMoreInfoField">
-            <p>
-              { LEARN_MORE_TEXT }{' '}
-              <a href={ PRIVACY_POLICY_URL }>
-                { PRIVACY_POLICY_TEXT }
-              </a>
-            </p>
-          </div>
+
+          <p>
+            { LEARN_MORE_TEXT }{' '}
+            <a href={ PRIVACY_POLICY_URL }>
+              { PRIVACY_POLICY_TEXT }
+            </a>
+          </p>
         </Modal.Body>
 
         <Modal.Footer>
-          <div className="form-submit">
-            { canCloseWithoutSave && (
-              <button className="btn btn-secondary" type="submit" onClick={ onClose }>
-                { CANCEL_BUTTON_TEXT }
-              </button>
-            ) }
-            <button className="btn btn-primary" type="submit" onClick={ () => {
-              onSaveAndClose(this.state);
-            } }>
-              { OK_BUTTON_TEXT }
-            </button>
-          </div>
+          { canCloseWithoutSave && (
+            <Button variant="secondary" type="button" onClick={ onClose }>
+              { CANCEL_BUTTON_TEXT }
+            </Button>
+          ) }
+          <Button type="button" onClick={ () => {
+            onSaveAndClose(this.state);
+          } }>
+            { OK_BUTTON_TEXT }
+          </Button>
         </Modal.Footer>
 
       </Modal>

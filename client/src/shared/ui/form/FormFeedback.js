@@ -10,16 +10,19 @@
 
 import React from 'react';
 
+import * as css from './FormFeedback.css';
+
 export default function FormFeedback(props) {
 
   const {
-    error
+    error,
+    id
   } = props;
 
   return (
     <React.Fragment>
       { error && (
-        <div className="invalid-feedback">
+        <div className={ css.FormFeedback } id={ id }>
           { error }
         </div>
       ) }
