@@ -2878,7 +2878,9 @@ describe('<App>', function() {
         expect(getByText(newTitle)).to.exist;
       });
 
-      expect(queryByText('test')).to.not.exist;
+      await waitFor(() => {
+        expect(queryByText('test')).to.not.exist;
+      });
     });
 
 

@@ -134,8 +134,8 @@ describe('<PrivacyPreferencesView>', function() {
 
       // then
       PREFERENCES_LIST.forEach(preference => {
-        const checkbox = screen.getByLabelText(new RegExp(preference.title, 'i'));
-        expect(checkbox.checked).to.be.true;
+        const checkbox = screen.getByRole('checkbox', { name: new RegExp(preference.title, 'i') });
+        expect(checkbox.getAttribute('aria-checked')).to.equal('true');
       });
     });
 
@@ -147,8 +147,8 @@ describe('<PrivacyPreferencesView>', function() {
 
       // then
       PREFERENCES_LIST.forEach(preference => {
-        const checkbox = screen.getByLabelText(new RegExp(preference.title, 'i'));
-        expect(checkbox.checked).to.be.false;
+        const checkbox = screen.getByRole('checkbox', { name: new RegExp(preference.title, 'i') });
+        expect(checkbox.getAttribute('aria-checked')).to.equal('false');
       });
     });
 
@@ -166,9 +166,9 @@ describe('<PrivacyPreferencesView>', function() {
       render(<PrivacyPreferencesView preferences={ privacyPreferences } />);
 
       // then
-      expect(screen.getByLabelText(/Enable Error Reports/i).checked).to.be.false;
-      expect(screen.getByLabelText(/Enable Usage Statistics/i).checked).to.be.true;
-      expect(screen.getByLabelText(/Enable Update Checks/i).checked).to.be.false;
+      expect(screen.getByRole('checkbox', { name: /Enable Error Reports/i }).getAttribute('aria-checked')).to.equal('false');
+      expect(screen.getByRole('checkbox', { name: /Enable Usage Statistics/i }).getAttribute('aria-checked')).to.equal('true');
+      expect(screen.getByRole('checkbox', { name: /Enable Update Checks/i }).getAttribute('aria-checked')).to.equal('false');
     });
 
 
@@ -206,6 +206,35 @@ describe('<PrivacyPreferencesView>', function() {
 
       // then
       expect(onSaveAndClose).to.have.been.calledWith(currentPreferences);
+    });
+
+
+    it('should save changed privacy preferences', function() {
+
+      // given
+      const onSaveAndClose = spy();
+
+      render(
+        <PrivacyPreferencesView
+          preferences={ {
+            ENABLE_CRASH_REPORTS: true,
+            ENABLE_USAGE_STATISTICS: true,
+            ENABLE_UPDATE_CHECKS: true
+          } }
+          onSaveAndClose={ onSaveAndClose } />
+      );
+
+      fireEvent.click(screen.getByRole('checkbox', { name: /Enable Update Checks/i }));
+
+      // when
+      fireEvent.click(screen.getByRole('button', { name: OK_BUTTON_TEXT }));
+
+      // then
+      expect(onSaveAndClose).to.have.been.calledWith({
+        ENABLE_CRASH_REPORTS: true,
+        ENABLE_USAGE_STATISTICS: true,
+        ENABLE_UPDATE_CHECKS: false
+      });
     });
 
 

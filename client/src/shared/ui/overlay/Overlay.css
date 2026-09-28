@@ -1,30 +1,20 @@
 :root {
-  --overlay-border-color: var(--color-grey-225-10-85);
-  --overlay-background-color: var(--color-white);
-  --overlay-font-color: var(--color-grey-225-10-15);
-  --overlay-title-color: var(--color-grey-225-10-15);
-  --overlay-link-color: var(--color-blue-205-100-50);
+  --overlay-border-color: var(--border);
+  --overlay-background-color: var(--popover);
+  --overlay-font-color: var(--popover-foreground);
+  --overlay-title-color: var(--foreground);
+  --overlay-link-color: var(--info-action-default);
   --overlay-max-height: auto;
   --overlay-max-width: auto;
   --overlay-min-height: auto;
   --overlay-min-width: auto;
 }
 
+/* layout on the design system popover; its parts keep the previous spacing */
 :local(.Overlay) {
-
-  display: flex;
-  flex: auto;
-  flex-direction: column;
-
+  gap: 0;
   width: 300px;
-
   padding: 0;
-  z-index: 1001;
-
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .16), 0 2px 16px 0 rgba(0, 0, 0, .16);
-
-  background-color: var(--overlay-background-color);
-  color: var(--overlay-font-color);
 
   max-height: var(--overlay-max-height);
   max-width: var(--overlay-max-width);
@@ -39,15 +29,6 @@
 
   a[href] {
     color: var(--overlay-link-color);
-  }
-
-  :focus {
-    outline: none;
-  }
-
-  :focus-visible {
-    outline-style: auto;
-    outline-color: var(--focus-outline-color);
   }
 
   .overlay__header,
@@ -71,7 +52,7 @@
     font-weight: 500;
     color: var(--overlay-title-color);
   }
-  
+
   .overlay__body {
     font-size: inherit;
   }
@@ -79,15 +60,16 @@
   .overlay__footer {
     border-top: 1px solid var(--overlay-border-color);
   }
-  
+
   fieldset {
     border: none;
-    margin: 0 -12px 5px 0;
-    padding: 0 12px 0 0;
+    min-width: 0;
+    margin: -4px -12px 0 -4px;
+    padding: 4px 12px 4px 4px;
     max-height: calc(100vh - 176px);
     overflow-y: auto;
   }
-  
+
   .fields {
     display: grid;
     grid-gap: 12px;
@@ -127,7 +109,7 @@
     & > li:before {
       content: "–";
       position: absolute;
-      margin-left: -1em; 
+      margin-left: -1em;
       font-weight: 500;
     }
   }

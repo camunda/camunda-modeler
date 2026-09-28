@@ -13,10 +13,17 @@ import React from 'react';
 import semver from 'semver';
 
 import {
+  Button,
+  Link,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@camunda/design-system';
+
+import {
   JSONInput,
   Section,
-  TextInput,
-  DefinitionTooltip
+  TextInput
 } from '../../../shared/ui';
 
 import {
@@ -30,6 +37,8 @@ import { getMessageForReason } from '../shared/util';
 import FormFeedback from '../../../shared/ui/form/FormFeedback';
 
 import { utmTag } from '../../../util/utmTag';
+
+import * as css from './StartInstanceConfigForm.css';
 
 const MIN_VERSION_SUPPORTING_BUSINESS_ID = '8.9.0';
 
@@ -98,23 +107,23 @@ export default function StartInstanceConfigForm(props) {
                             form={ form }
                             label={
                               <>
-                                <DefinitionTooltip
+                                <TermTooltip
+                                  term="Variables"
                                   definition={
-                                    <p>
+                                    <>
                                       JSON data passed into the process instance at startup. Variables can drive routing decisions, feed
                                       service tasks, and be read or updated throughout the process.{ ' ' }
-                                      <a
+                                      <Link
+                                        inline
                                         href={ utmTag('https://docs.camunda.io/docs/components/concepts/variables') }
                                         target="_blank"
                                         rel="noopener noreferrer"
                                       >
                                         Learn more.
-                                      </a>
-                                    </p>
+                                      </Link>
+                                    </>
                                   }
-                                >
-                                  Variables
-                                </DefinitionTooltip>
+                                />
                                 { ' ' }(optional)
                               </>
                             }
@@ -136,23 +145,23 @@ export default function StartInstanceConfigForm(props) {
                               form={ form }
                               label={
                                 <>
-                                  <DefinitionTooltip
+                                  <TermTooltip
+                                    term="Business ID"
                                     definition={
-                                      <p>
+                                      <>
                                         Assign an ID from your own systems (e.g., an order or case number) to this instance for easier lookup,
                                         tracing, and duplicate prevention.{ ' ' }
-                                        <a
+                                        <Link
+                                          inline
                                           href={ utmTag('https://docs.camunda.io/docs/components/concepts/process-instance-creation/#business-id') }
                                           target="_blank"
                                           rel="noopener noreferrer"
                                         >
                                           Learn more.
-                                        </a>
-                                      </p>
+                                        </Link>
+                                      </>
                                     }
-                                  >
-                                    Business ID
-                                  </DefinitionTooltip>
+                                  />
                                   { ' ' }(optional)
                                 </>
                               }
@@ -169,30 +178,27 @@ export default function StartInstanceConfigForm(props) {
                     </div>
                   </fieldset>
                   <Section.Actions>
-                    <div className="form-group">
-                      <button
-                        type="submit"
-                        className="btn btn-primary"
-                        disabled={ props.isSubmitting }>
-                        { renderSubmit }
-                      </button>
-                      { connectionCheckResult?.success === false && (
-                        <FormFeedback
-                          error={ <>
-                            Could not establish connection: <br />
-                            { getMessageForReason(connectionCheckResult?.reason) } <br />
-                            <a href="#" onClick={ handleChangeConnections }>Change</a> or <a href="#" onClick={ handleManageConnections }>manage connections.</a>
-                          </> }
-                        />
-                      )}
-                      { connectionCheckResult?.success !== false && hasLintErrors && (
-                        <FormFeedback
-                          error={ <>
-                            Diagram has errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
-                          </> }
-                        />
-                      )}
-                    </div>
+                    <Button
+                      type="submit"
+                      disabled={ props.isSubmitting }>
+                      { renderSubmit }
+                    </Button>
+                    { connectionCheckResult?.success === false && (
+                      <FormFeedback
+                        error={ <>
+                          Could not establish connection: <br />
+                          { getMessageForReason(connectionCheckResult?.reason) } <br />
+                          <a href="#" onClick={ handleChangeConnections }>Change</a> or <a href="#" onClick={ handleManageConnections }>manage connections.</a>
+                        </> }
+                      />
+                    )}
+                    { connectionCheckResult?.success !== false && hasLintErrors && (
+                      <FormFeedback
+                        error={ <>
+                          Diagram has errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
+                        </> }
+                      />
+                    )}
                   </Section.Actions>
                 </Section.Body>
               </Section>
@@ -218,4 +224,21 @@ function isBusinessIdUnsupportedInConnectedCluster(connectionCheckResult) {
   const coercedVersion = semver.coerce(gatewayVersion);
 
   return semver.compare(coercedVersion || '0', MIN_VERSION_SUPPORTING_BUSINESS_ID) < 0;
+}
+
+/**
+ * Defined term whose definition may hold a link: the tooltip stays open while
+ * the pointer moves onto it, unlike the design system `DefinitionTooltip`.
+ */
+function TermTooltip({ term, definition }) {
+  return (
+    <Tooltip delayDuration={ 250 }>
+      <TooltipTrigger asChild>
+        <span className={ css.DefinitionTerm } tabIndex={ 0 }>{ term }</span>
+      </TooltipTrigger>
+      <TooltipContent side="left" className={ css.DefinitionTooltip }>
+        { definition }
+      </TooltipContent>
+    </Tooltip>
+  );
 }

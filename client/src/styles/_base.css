@@ -9,20 +9,19 @@ body {
   overflow: hidden;
 }
 
+/* keep app z-indexes below design system overlays, which portal to <body> */
+#root {
+  isolation: isolate;
+}
+
 :root {
-  --focus-outline-color: var(--color-blue-205-100-40);
+  --focus-outline-color: var(--ring);
   --focus-shadow: 0 0 0 2px var(--focus-outline-color);
 }
 
 :focus {
   outline-color: var(--focus-outline-color);
 }
-
-/* TODO(c4-migration): disabled because it covers the design system focus ring; remove once the chrome is migrated
-:focus-visible {
-  outline: 2px solid var(--focus-outline-color);
-}
-*/
 
 .djs-container svg:focus {
   outline: none;

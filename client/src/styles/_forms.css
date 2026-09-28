@@ -36,47 +36,6 @@
     resize: vertical;
   }
 
-  /* hide but remain accessible: https://snook.ca/archives/html_and_css/hiding-content-for-accessibility */
-  input[type=file].form-control {
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    clip: rect(1px 1px 1px 1px);
-  }
-
-  /* make sure outline doesn't cover the block */
-  input[type=file].form-control + label {
-    height: 20px;
-    width: 20px;
-    padding: 2px;
-    position: absolute;
-    right: 9px;
-    top: 11px;
-    /* display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-left: 4px;
-    min-width: 50px;
-    height: 25px;
-
-    font-size: 13px;
-    color: var(--color-white);
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
-    border: solid 1px var(--color-blue-205-100-45);
-    background-color: var(--color-blue-205-100-50); */
-
-    &:hover {
-      border-radius: 100%;
-      background-color: var(--color-blue-205-100-45);
-
-      path {
-        fill: var(--color-white);
-      }
-    }
-  }
-
   input[type=password].form-control::placeholder,
   textarea.form-control::placeholder,
   input[type=text].form-control::placeholder {
@@ -120,7 +79,8 @@
     border: solid 1px var(--color-red-360-100-45) !important;
   }
 
-  label {
+  /* skip design system labels */
+  label:not([data-slot]) {
     display: block;
     margin-bottom: 6px;
     font-size: 12px;
@@ -362,102 +322,6 @@
     }
   }
 
-  .file-list {
-    padding: 0;
-    margin: 10px 0;
-
-    list-style-type: none;
-    max-height: 86px;
-    overflow-y: auto;
-  }
-
-  .file-list-item {
-    display: grid;
-    align-items: center;
-    grid-template-columns: 100% auto;
-  }
-
-  .file-list-item-content {
-    display: flex;
-    align-items: center;
-    grid-column: 1;
-    position: relative;
-    padding: 4px 0 3px;
-    height: 24px;
-
-    svg {
-      width: 16px;
-      height: 16px;
-      margin-right: 5px;
-    }
-
-    .error-icon {
-      margin-right: 2px;
-      margin-left: -3px;
-      width: 22px;
-      height: 22px;
-      fill: var(--color-red-360-100-45);
-    }
-
-    .file-list-item-name {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      max-width: 234px;
-      white-space: nowrap;
-    }
-
-
-    .default_file-icon {
-      background-color: var(--overlay-font-color);
-      border-radius: 100%;
-      padding: 2px;
-      margin: 6px;
-      margin-right: 10px;
-    }
-
-    &:hover .remove {
-      visibility: visible;
-    }
-
-    .remove {
-      visibility: hidden;
-      padding: 2px;
-      display: flex;
-      border: none;
-      background-color: transparent;
-      margin-right: 2px;
-      position: absolute;
-      right: -2px;
-      top: 1px;
-
-      svg {
-        color: var(--color-red-360-100-45);
-        margin: 0;
-      }
-
-      &:hover,
-      &:focus
-       {
-        background-color: var(--color-red-360-100-92);
-        border-radius: 100%;
-      }
-    }
-  }
-
-  .file-list-item .invalid-feedback {
-    grid-column: 2;
-
-    margin-top: 0;
-  }
-
-  .file-list-item.is-invalid {
-    color: var(--color-red-360-100-45);
-
-    .error {
-      margin-left: 3px;
-    }
-  }
-
   .custom-control-description:not(:empty) {
     margin-top: 6px;
     margin-bottom: 10px;
@@ -540,17 +404,3 @@
   }
 }
 
-.documentation-icon {
-  margin-left: 8px;
-  margin-right: 8px;
-
-  svg {
-    color: var(--color-blue-205-100-50);
-    position: relative;
-    top: 2px;
-  }
-
-  &:hover svg {
-    color: var(--color-blue-205-100-45);
-  }
-}

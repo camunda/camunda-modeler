@@ -1,0 +1,41 @@
+:local(.Field) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .field__option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* as wide as the design system inputs around it */
+  [data-slot="select-trigger"] {
+    width: 100%;
+  }
+
+  .field__description {
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    color: var(--neutral-foreground-subtle);
+  }
+
+  /* match the design system input frame */
+  .field__code-editor .cm-editor {
+    border: 1px solid var(--input);
+    border-radius: var(--radius);
+    background-color: var(--input-background);
+    overflow: hidden;
+
+    &.cm-focused {
+      outline: none;
+      border-color: var(--ring);
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 20%, transparent);
+    }
+  }
+
+  .field__code-editor[data-invalid] .cm-editor {
+    border-color: var(--danger-foreground-subtle);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--danger-foreground-subtle) 20%, transparent);
+  }
+}

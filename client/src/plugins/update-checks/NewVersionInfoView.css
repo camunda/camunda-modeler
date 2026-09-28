@@ -1,48 +1,33 @@
 :local(.NewVersionInfo) {
 
-  button + button {
-    margin-left: 10px;
+  p {
+    margin: 0;
   }
 
-  button {
-    padding: 6px 10px;
-  }
-
-  .formSubmit {
-    text-align: right;
-    margin-top: 10px;
-  }
-
-  .htmlSnippet * {
-    user-select: text;
-  }
-
-  .releaseNotesContainer h4 {
-    margin-bottom: .25rem;
-    margin-top: .5rem;
-  }
-
-  .releaseNotesContainer p {
-    margin: 0.25rem 0 1rem;
-  }
-
-  .doNotShowContainer {
-    margin-top: 20px;
-  }
-
-  .doNotShowText {
-    margin-left: 2px;
+  .releaseNotesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .htmlSnippet {
     height: 200px;
     overflow-y: auto;
-    border: 1px solid gray;
-    margin: .5rem 0;
-    padding: 0 .5rem;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: var(--neutral-background-subtle);
+
+    * {
+      user-select: text;
+    }
+
+    p {
+      margin: 4px 0 16px;
+    }
   }
 
   .htmlSnippetItem + .htmlSnippetItem {
-    margin-top: 2rem;
+    margin-top: 24px;
   }
 }

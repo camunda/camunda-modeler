@@ -33,12 +33,16 @@ import {
 
 import { vscodeLight } from '@uiw/codemirror-theme-vscode';
 
+import { Label } from '@camunda/design-system';
+
 import FormFeedback from './FormFeedback';
 import DocumentationIcon from './DocumentationIcon';
 
 import {
   fieldError as defaultFieldError
 } from './Util';
+
+import * as css from './Field.css';
 
 export default function JSONInput(props) {
   const {
@@ -83,23 +87,18 @@ export default function JSONInput(props) {
   };
 
   return (
-    <React.Fragment>
-      <div className="form-group">
-        <label htmlFor={ fieldName }>
-          { label }
-          <DocumentationIcon url={ documentationUrl } />
-        </label>
-        <div
-          onBlur={ onBlur }
-          ref={ ref }
-          className={ classNames('custom-control-codemirror', {
-            'is-invalid': !!error
-          }) }></div>
-        <FormFeedback
-          error={ error }
-        />
-      </div>
-    </React.Fragment>
+    <div className={ classNames('form-group', css.Field) }>
+      <Label htmlFor={ fieldName }>
+        { label }
+        <DocumentationIcon url={ documentationUrl } />
+      </Label>
+      <div
+        onBlur={ onBlur }
+        ref={ ref }
+        className="field__code-editor"
+        data-invalid={ !!error || undefined }></div>
+      <FormFeedback error={ error } />
+    </div>
   );
 }
 

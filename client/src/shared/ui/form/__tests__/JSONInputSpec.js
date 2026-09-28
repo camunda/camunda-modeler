@@ -30,18 +30,16 @@ describe('<JSONInput>', function() {
   it('should show error', function() {
 
     // when
-    const { container } = createJSONInput({
+    const { container, getByText } = createJSONInput({
       fieldMeta: {
         error: 'foo',
         touched: true
       }
     });
 
-    const formControl = container.querySelector('.custom-control-codemirror');
-
     // then
-    expect(formControl).to.exist;
-    expect(formControl.classList.contains('is-invalid')).to.be.true;
+    expect(container.querySelector('.field__code-editor[data-invalid]')).to.exist;
+    expect(getByText('foo')).to.exist;
   });
 
 

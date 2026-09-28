@@ -31,7 +31,7 @@
 
   &.resizing .resizer-border,
   .resizer:hover .resizer-border {
-    background-color: var(--color-blue-205-100-50);
+    background-color: var(--accent-border-strong);
   }
 
   .resizer-top .resizer-border {
@@ -85,12 +85,12 @@
   }
 
   .handlebar {
-    fill: var(--color-grey-225-10-85);
+    fill: var(--neutral-border-subtle);
   }
 
   &.resizing .handlebar,
   .resizer:hover .handlebar {
-    fill: var(--color-grey-225-10-75);
+    fill: var(--neutral-border-strong);
   }
 
   &.open .handlebar {

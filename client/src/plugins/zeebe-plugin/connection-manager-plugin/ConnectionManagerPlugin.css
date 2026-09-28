@@ -13,24 +13,22 @@
   }
 
   .manage-connections-link {
+    margin-left: auto;
+    font-weight: var(--font-weight-normal);
     color: var(--link-color);
-    float: right;
-  }
-
-  select#connection{
-    text-overflow: ellipsis;
   }
 
   .form-description {
-    font-size: 13px;
-    color: var(--color-grey-225-10-35);
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    color: var(--neutral-foreground-subtle);
   }
 }
 
 :local(.ConnectionSelector) {
   span {
     /* non linear scaling with min and max values */
-    max-width: clamp(5rem, calc(25vw - 5rem), 30rem);
+    max-width: clamp(80px, calc(25vw - 80px), 480px);
     overflow: hidden;
     text-overflow: ellipsis;
   }
