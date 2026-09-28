@@ -312,10 +312,26 @@ export default class CamundaDmnModeler extends DmnModeler {
 
     const attached = this._attachOverview(parentNode);
 
+    // the overview panel is only ever attached once; afterwards it is just
+    // toggled via CSS, so its cached viewbox may have gone stale against a
+    // zero-width container while it was closed (cf. #4549) -- resync it
+    // whenever the panel becomes visible again
+    if (open) {
+      this._resizeOverview();
+    }
+
     if (attached && open) {
       this._emit('overviewOpen');
     }
   };
+
+  _resizeOverview() {
+    const activeViewer = this._overview.getActiveViewer();
+
+    if (activeViewer) {
+      activeViewer.get('canvas').resized();
+    }
+  }
 
   _attachOverview(parentNode) {
     const activeViewer = this._overview.getActiveViewer();
