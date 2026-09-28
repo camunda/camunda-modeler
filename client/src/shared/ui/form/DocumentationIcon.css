@@ -1,0 +1,13 @@
+:local(.DocumentationIcon) {
+  display: inline-flex;
+  color: var(--info-action-default);
+
+  &:hover {
+    color: var(--info-action-hover);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}

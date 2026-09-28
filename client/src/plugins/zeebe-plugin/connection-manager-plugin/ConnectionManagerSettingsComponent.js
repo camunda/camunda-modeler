@@ -12,7 +12,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { getIn, useFormikContext } from 'formik';
 
-import { Loading } from '@carbon/react';
+import { Button } from '@camunda/design-system';
+import { Loader2 } from '@camunda/design-system/icons';
 
 import { Notice, OptionsMenu } from '../../../shared/ui';
 
@@ -135,12 +136,12 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
     </SettingsList> : <p className="connections__empty">
       No connections configured. Add a connection to deploy and run processes.
     </p> }
-    <button
+    <Button
       ref={ addButton }
       type="button"
-      className="btn btn-secondary"
+      variant="secondary"
       onClick={ () => setEditing(-1) }
-    >Add connection</button>
+    >Add connection</Button>
     { editing !== null && <ConnectionDialog
       connection={ editing === -1 ? generateNewElement(connections.length) : connections[editing] }
       adding={ editing === -1 }
@@ -170,8 +171,8 @@ function ConnectionDialog({ connection, adding, connectionChecker, onSave, onClo
     validate={ validate }
     onSubmit={ values => onSave(values[DRAFT]) }
     onClose={ onClose }
+    notice={ <ConnectionCheck connectionChecker={ connectionChecker } /> }
   >
-    <ConnectionCheck connectionChecker={ connectionChecker } />
     <ConnectionNameField select={ adding } />
     {
       properties.map(property => <SettingsField
@@ -230,7 +231,7 @@ function ConnectionCheck({ connectionChecker }) {
     checker.updateConfig({ endpoint: connection });
   }, [ connectionChecker, connection ]);
 
-  return <Notice type={ getNoticeType(result) } icon={ result ? null : <Loading small withOverlay={ false } /> }>
+  return <Notice type={ getNoticeType(result) } icon={ result ? null : <Loader2 className="connection-check__spinner" aria-hidden="true" /> }>
     { getStatusText(result, connection) }
   </Notice>;
 }

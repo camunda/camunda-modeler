@@ -13,7 +13,8 @@ import * as sinon from 'sinon';
 
 import React from 'react';
 
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 import CredentialModal from '../CredentialModal';
 import { getInitialFieldValues } from '../credentialForm';
@@ -187,7 +188,7 @@ describe('<CredentialModal>', function() {
 
     // then
     expect(queryByLabelText('Loading credential')).not.to.exist;
-    expect(getByLabelText('Type').value).to.equal('custom');
+    expect(getByLabelText('Type').textContent).to.equal('Custom');
     expect(getByLabelText('Custom value').value).to.equal('loaded');
   });
 
@@ -342,12 +343,11 @@ describe('<CredentialModal>', function() {
     });
 
     // then
-    const input = getByLabelText('API token *');
+    const input = getByLabelText(/^API token/);
 
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
     expect(getByText('API token must not be empty.')).to.exist;
-    expect(input.classList.contains('is-invalid')).to.be.true;
-    expect(input.closest('.form-group').classList.contains('has-error')).to.be.true;
+    expect(input.closest('.credential-modal-field').hasAttribute('data-invalid')).to.be.true;
     expect(input.getAttribute('aria-invalid')).to.equal('true');
   });
 
@@ -366,16 +366,16 @@ describe('<CredentialModal>', function() {
     });
 
     // then
-    const input = getByLabelText('API key *');
+    const input = getByLabelText(/^API key/);
 
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
     expect(getByText('API key must not be empty.')).to.exist;
-    expect(input.closest('.form-group').classList.contains('has-error')).to.be.true;
+    expect(input.closest('.credential-modal-field').hasAttribute('data-invalid')).to.be.true;
     expect(input.getAttribute('aria-describedby')).to.equal('credential-field-apiKey-error');
   });
 
 
-  it('should allow clearing an optional dropdown', function() {
+  it('should allow clearing an optional dropdown', async function() {
 
     // given
     const configurationTemplate = template({
@@ -387,19 +387,22 @@ describe('<CredentialModal>', function() {
       value: 'custom',
       binding: { type: 'property', name: 'type' }
     });
-    const { getByLabelText } = renderModal({ configurationTemplate });
+    const onSubmit = sinon.stub().resolves();
+    const { getByLabelText, getByRole } = renderModal({ configurationTemplate, displayName: 'My cred', onSubmit });
 
     // when
-    fireEvent.change(getByLabelText('Type'), { target: { value: '' } });
+    await selectOption(getByLabelText('Type'), 'None');
+    fireEvent.click(getByRole('button', { name: 'Create and select' }));
 
     // then
-    expect(getByLabelText('Type').value).to.equal('');
+    expect(onSubmit).to.have.been.calledOnce;
+    expect(onSubmit.firstCall.args[0].values.type).to.equal('');
   });
 
 
-  it('should not allow clearing a non-optional dropdown', function() {
+  it('should not allow clearing a non-optional dropdown', async function() {
 
-    // when
+    // given
     const { getByLabelText } = renderModal({
       configurationTemplate: template({
         id: 'type',
@@ -411,8 +414,11 @@ describe('<CredentialModal>', function() {
       })
     });
 
+    // when
+    await userEvent.click(getByLabelText('Type'));
+
     // then
-    expect([ ...getByLabelText('Type').options ].map(option => option.value)).to.eql([ 'custom' ]);
+    expect(screen.getAllByRole('option').map(option => option.textContent)).to.eql([ 'Custom' ]);
   });
 
 
@@ -436,7 +442,7 @@ describe('<CredentialModal>', function() {
 
       // then
       expect(getByText(message)).to.exist;
-      expect(getByLabelText('API token').classList.contains('is-invalid')).to.be.true;
+      expect(getByLabelText('API token').getAttribute('aria-invalid')).to.equal('true');
       expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.true;
     });
   });
@@ -717,7 +723,7 @@ describe('<CredentialModal>', function() {
     const input = getByLabelText('API key');
 
     expect(getByText(/does not exist on the connected Camunda instance/)).to.exist;
-    expect(input.closest('.form-group').classList.contains('has-warning')).to.be.true;
+    expect(input.closest('.credential-modal-field').hasAttribute('data-warning')).to.be.true;
     expect(input.getAttribute('aria-invalid')).to.be.null;
     expect(input.getAttribute('aria-describedby')).to.equal('credential-field-apiKey-warning');
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
@@ -822,7 +828,7 @@ describe('<CredentialModal>', function() {
     const input = getByLabelText('API key');
 
     expect(getByText(/exposes sensitive information/)).to.exist;
-    expect(input.closest('.form-group').classList.contains('has-warning')).to.be.true;
+    expect(input.closest('.credential-modal-field').hasAttribute('data-warning')).to.be.true;
     expect(input.getAttribute('aria-invalid')).to.be.null;
     expect(input.getAttribute('aria-describedby')).to.equal('credential-field-apiKey-warning');
     expect(getByRole('button', { name: 'Create and select' }).disabled).to.be.false;
@@ -1123,6 +1129,11 @@ function conditionalTemplate(condition) {
 
 function renderModal(props = {}) {
   return render(<CredentialModal { ...modalProps(props) } />);
+}
+
+async function selectOption(trigger, label) {
+  await userEvent.click(trigger);
+  await userEvent.click(screen.getByRole('option', { name: label }));
 }
 
 function modalProps(props = {}) {

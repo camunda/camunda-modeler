@@ -126,7 +126,9 @@ class FormEditorPage {
    * @return {Promise<void>}
    */
   async dismissNotifications() {
-    const closes = this.page.locator('[role="status"] .close, [role="alert"] .close');
+    const closes = this.page
+      .getByRole('region', { name: /^Notifications/ })
+      .getByRole('button', { name: 'Dismiss' });
 
     for (let count = await closes.count(); count > 0; count--) {
       await closes.first().click().catch(() => {});

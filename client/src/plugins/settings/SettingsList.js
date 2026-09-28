@@ -13,7 +13,8 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { Form, Formik } from 'formik';
-import { ContainedList, ContainedListItem } from '@carbon/react';
+
+import { Button } from '@camunda/design-system';
 
 import { Modal } from '../../shared/ui';
 
@@ -25,9 +26,9 @@ import * as css from './SettingsList.css';
  * as a `SettingsListItem`.
  */
 export function SettingsList({ className, children }) {
-  return <ContainedList className={ classNames(css.SettingsList, className) }>
+  return <ul className={ classNames(css.SettingsList, className) }>
     { children }
-  </ContainedList>;
+  </ul>;
 }
 
 /**
@@ -41,18 +42,18 @@ export function SettingsList({ className, children }) {
  * @param {React.ReactNode} [props.actions]
  */
 export function SettingsListItem({ id, name, description, invalid, actions }) {
-  return <ContainedListItem
-    id={ id }
-    action={ actions && <span className="settings-list-item__actions">{ actions }</span> }
-  >
-    <span className="settings-list-item__name">{ name }</span>
-    { description && <span
-      className={ classNames('settings-list-item__description', { 'settings-list-item__description--error': invalid }) }
-      title={ description }
-    >
-      { description }
-    </span> }
-  </ContainedListItem>;
+  return <li id={ id } className="settings-list-item">
+    <div className="settings-list-item__content">
+      <span className="settings-list-item__name">{ name }</span>
+      { description && <span
+        className={ classNames('settings-list-item__description', { 'settings-list-item__description--error': invalid }) }
+        title={ description }
+      >
+        { description }
+      </span> }
+    </div>
+    { actions && <span className="settings-list-item__actions">{ actions }</span> }
+  </li>;
 }
 
 /**
@@ -68,6 +69,7 @@ export function SettingsListItem({ id, name, description, invalid, actions }) {
  * @param {(values: Object) => void} props.onSubmit
  * @param {() => void} props.onClose
  * @param {string} [props.className]
+ * @param {React.ReactNode} [props.notice] - a `Notice`, shown above the form fields
  * @param {React.ReactNode} props.children
  */
 export function SettingsListDialog(props) {
@@ -79,6 +81,7 @@ export function SettingsListDialog(props) {
     onSubmit,
     onClose,
     className,
+    notice,
     children
   } = props;
 
@@ -91,14 +94,15 @@ export function SettingsListDialog(props) {
     >
       { ({ isValid, dirty }) => <Form>
         <Modal.Title>{ title }</Modal.Title>
+        { notice }
         <Modal.Body>
           { children }
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" className="btn btn-secondary" onClick={ onClose }>Cancel</button>
-          <button type="submit" className="btn btn-primary" disabled={ !isValid || (!adding && !dirty) }>
+          <Button type="button" variant="secondary" onClick={ onClose }>Cancel</Button>
+          <Button type="submit" disabled={ !isValid || (!adding && !dirty) }>
             { adding ? 'Add' : 'Save' }
-          </button>
+          </Button>
         </Modal.Footer>
       </Form> }
     </Formik>

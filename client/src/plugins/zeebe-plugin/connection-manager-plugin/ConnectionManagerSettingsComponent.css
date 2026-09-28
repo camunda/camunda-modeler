@@ -1,21 +1,21 @@
 :local(.ConnectionManagerSettings) {
-  .connections__description {
-    margin: 0 0 12px 0;
-    color: var(--color-grey-225-10-35);
-  }
-
+  .connections__description,
   .connections__empty {
-    margin: 0 0 12px 0;
-    color: var(--color-grey-225-10-35);
+    color: var(--neutral-foreground-subtle);
   }
 }
 
 :local(.ConnectionDialog) {
+  .connection-check__spinner {
+    width: 16px;
+    height: 16px;
+    color: var(--neutral-foreground-subtle);
+    animation: connection-check-spin 1s linear infinite;
+  }
+}
 
-  /* keep radio labels on one line in the narrow dialog */
-  .form-check-inline {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: 24px;
+@keyframes connection-check-spin {
+  to {
+    transform: rotate(360deg);
   }
 }

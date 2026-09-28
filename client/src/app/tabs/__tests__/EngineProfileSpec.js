@@ -13,7 +13,8 @@ import * as sinon from 'sinon';
 
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 import {
   SlotFillRoot,
@@ -83,7 +84,7 @@ describe('<EngineProfile>', function() {
   });
 
 
-  it('should filter versions', function() {
+  it('should filter versions', async function() {
 
     // given
     const { getByRole } = renderEngineProfile({
@@ -97,9 +98,8 @@ describe('<EngineProfile>', function() {
     fireEvent.click(button);
 
     // then
-    const select = getByRole('combobox');
-    const options = select.querySelectorAll('option');
-    expect(options.length).to.equal(1);
+    await userEvent.click(getByRole('combobox'));
+    expect(screen.getAllByRole('option')).to.have.length(1);
   });
 
 
@@ -126,7 +126,7 @@ describe('<EngineProfile>', function() {
         const select = getByRole('combobox');
         expect(select).to.exist;
 
-        expectVersion(select, toSemverMinor(executionPlatformVersion));
+        expectVersion(select, toSemverMinor(executionPlatformVersion), executionPlatform);
       });
 
     });
@@ -138,7 +138,12 @@ describe('<EngineProfile>', function() {
 
     eachProfile((executionPlatform, executionPlatformVersion) => {
 
-      it(`should set engine profile (${executionPlatform} ${executionPlatformVersion})`, function() {
+      // the unset version is selected already, so selecting it again changes nothing
+      if (!executionPlatformVersion) {
+        return;
+      }
+
+      it(`should set engine profile (${executionPlatform} ${executionPlatformVersion})`, async function() {
 
         // given
         const onChangeSpy = spy();
@@ -155,7 +160,7 @@ describe('<EngineProfile>', function() {
         fireEvent.click(button);
 
         // when
-        selectVersion(getByRole('combobox'), executionPlatformVersion);
+        await selectVersion(getByRole('combobox'), executionPlatformVersion, executionPlatform);
 
         // then
         expect(onChangeSpy).to.have.been.calledOnce;
@@ -460,12 +465,11 @@ function expectPlatformHelp(getByRole) {
   expectHelpText(getByRole, utmTag('https://docs.camunda.org/manual/latest/'));
 }
 
-function selectVersion(select, version) {
-  if (select.value !== version) {
-    fireEvent.change(select, { target: { value: toSemverMinor(version) || '' } });
-  }
+async function selectVersion(select, version, platform) {
+  await userEvent.click(select);
+  await userEvent.click(screen.getByRole('option', { name: getAnnotatedVersion(toSemverMinor(version), platform) }));
 }
 
-function expectVersion(select, version) {
-  expect(select.value).to.equal(version || '');
+function expectVersion(select, version, platform) {
+  expect(select.textContent).to.equal(version ? getAnnotatedVersion(version, platform) : '<unset>');
 }

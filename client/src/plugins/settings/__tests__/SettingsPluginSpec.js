@@ -43,7 +43,7 @@ describe('SettingsPlugin', function() {
     expect(screen.getByRole('dialog')).to.exist;
     expect(screen.getByRole('heading', { name: /^Element template sources\s*Camunda 8 only/ })).to.exist;
     expect(screen.getByText('Fetch element templates from these sources, in addition to local templates.')).to.exist;
-    expect(screen.getByRole('switch', { name: 'Camunda connectors' }).checked).to.be.true;
+    expect(screen.getByRole('switch', { name: 'Camunda connectors' }).getAttribute('aria-checked')).to.equal('true');
     expect(screen.queryByRole('checkbox', { name: /Disable Camunda connector templates/ })).not.to.exist;
   });
 
@@ -78,7 +78,7 @@ describe('SettingsPlugin', function() {
 
     // when
     fireEvent.click(screen.getByRole('button', { name: 'Add source' }));
-    const dialog = screen.getAllByRole('dialog')[1];
+    const dialog = getDialogs()[1];
     fireEvent.change(within(dialog).getByRole('textbox', { name: 'Name' }), { target: { value: 'B' } });
     fireEvent.change(within(dialog).getByRole('textbox', { name: /^Index URL/ }), { target: { value: 'http://internal.example/b' } });
     await flushSave();
@@ -89,7 +89,7 @@ describe('SettingsPlugin', function() {
     await flushSave();
 
     // then
-    expect(screen.getAllByRole('dialog')).to.have.length(1);
+    expect(getDialogs()).to.have.length(1);
     expect(settings.get('app.customTemplateSources')).to.eql([
       { name: 'A', url: 'https://example.com/a', enabled: true },
       { name: 'B', url: 'http://internal.example/b', enabled: true }
@@ -99,7 +99,7 @@ describe('SettingsPlugin', function() {
     expect(settings.get('app.disableConnectorTemplates')).to.be.false;
 
     // when
-    fireEvent.click(screen.getByRole('button', { name: 'Options for A' }));
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Options for A' }), { key: 'Enter' });
     fireEvent.click(screen.getByRole('menuitem', { name: 'Remove' }));
     await flushSave();
     fireEvent.click(screen.getByRole('button', { name: 'Done' }));
@@ -111,7 +111,7 @@ describe('SettingsPlugin', function() {
     expect(settings.get('app.customTemplateSources')).to.eql(expected);
     expect(saved).to.have.been.calledTwice;
     expect(saved.lastCall.args[1]).to.eql({ 'app.customTemplateSources': expected });
-    expect(screen.getByRole('switch', { name: 'B' }).checked).to.be.true;
+    expect(screen.getByRole('switch', { name: 'B' }).getAttribute('aria-checked')).to.equal('true');
 
     // when
     fireEvent.click(screen.getByRole('button', { name: 'Restart now.' }));
@@ -126,13 +126,13 @@ describe('SettingsPlugin', function() {
     // given
     await renderSettings();
     fireEvent.click(screen.getByRole('button', { name: 'Add source' }));
-    expect(screen.getAllByRole('dialog')).to.have.length(2);
+    expect(getDialogs()).to.have.length(2);
 
     // when
     fireEvent.keyDown(document, { key: 'Escape' });
 
     // then
-    expect(screen.getAllByRole('dialog')).to.have.length(1);
+    expect(getDialogs()).to.have.length(1);
 
     // when
     fireEvent.keyDown(document, { key: 'Escape' });
@@ -167,7 +167,7 @@ describe('SettingsPlugin', function() {
       // given
       const { settings } = await renderSettings({ 'app.disableConnectorTemplates': disabled });
       const toggle = screen.getByRole('switch', { name: 'Camunda connectors' });
-      expect(toggle.checked).to.equal(!disabled);
+      expect(toggle.getAttribute('aria-checked')).to.equal(String(!disabled));
 
       // when
       fireEvent.click(toggle);
@@ -175,7 +175,7 @@ describe('SettingsPlugin', function() {
 
       // then
       expect(settings.get('app.disableConnectorTemplates')).to.equal(!disabled);
-      expect(toggle.checked).to.equal(disabled);
+      expect(toggle.getAttribute('aria-checked')).to.equal(String(disabled));
       expect(screen.getByText(/Restart the modeler to apply/)).to.exist;
     });
   });
@@ -195,7 +195,7 @@ describe('SettingsPlugin', function() {
 
       // then
       expect(toggle.disabled).to.be.true;
-      expect(toggle.checked).to.equal(!flag);
+      expect(toggle.getAttribute('aria-checked')).to.equal(String(!flag));
       expect(screen.getByText('disable-connector-templates', { selector: 'code' })).to.exist;
       expect(saved).not.to.have.been.called;
 
@@ -223,6 +223,14 @@ describe('SettingsPlugin', function() {
 // helpers //////////
 
 const noop = () => {};
+
+/**
+ * All open dialogs; an open dialog hides the dialog underneath from the
+ * accessibility tree.
+ */
+function getDialogs() {
+  return screen.getAllByRole('dialog', { hidden: true });
+}
 
 async function renderSettings(values = {}) {
   const saved = sinon.spy();

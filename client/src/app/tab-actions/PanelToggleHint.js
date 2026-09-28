@@ -14,7 +14,8 @@ import React, {
   useState
 } from 'react';
 
-import { Close } from '@carbon/icons-react';
+import { IconButton } from '@camunda/design-system';
+import { X } from '@camunda/design-system/icons';
 
 import { Overlay } from '../../shared/ui';
 
@@ -89,13 +90,14 @@ export function PanelToggleHint(props) {
       enableCloseTrap={ false }
       enableKeyboardTrap={ false }
     >
-      <button
+      <IconButton
         className={ css.PanelToggleHintClose }
+        variant="ghost"
+        size="xs"
+        label="Close"
+        icon={ X }
         onClick={ dismiss }
-        aria-label="Close"
-      >
-        <Close size={ 16 } />
-      </button>
+      />
       <Overlay.Title>
         { tabType === 'cloud-bpmn'
           ? 'Panel toggle buttons'

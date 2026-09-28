@@ -38,16 +38,16 @@
   --color-black-opacity-10: hsla(0, 0%, 0%, 10%);
   --color-black-opacity-30: hsla(0, 0%, 0%, 30%);
 
-  --color-status-bar-success: var(--color-green-158-83-37);
-  --color-status-bar-loading: var(--color-grey-225-10-35);
-  --color-status-bar-idle: var(--color-grey-225-10-35);
-  --color-status-bar-error: var(--color-red-360-100-45);
+  --color-status-bar-success: var(--success-foreground-subtle);
+  --color-status-bar-loading: var(--neutral-foreground-subtle);
+  --color-status-bar-idle: var(--neutral-foreground-subtle);
+  --color-status-bar-error: var(--danger-foreground-subtle);
 
-  --color-danger-fill-color: var(--color-red-360-100-45);
-  --color-danger-fill-hover-color: var(--color-red-360-100-40);
-  --color-danger-background-hover-color: var(--color-red-360-100-92);
+  --color-danger-fill-color: var(--danger-action-default);
+  --color-danger-fill-hover-color: var(--danger-action-hover);
+  --color-danger-background-hover-color: var(--danger-background-subtle);
 
-  --link-color: var(--color-blue-205-100-50);
+  --link-color: var(--info-action-default);
 
   --cds-background-brand: var(--color-blue-205-100-50);
   --cds-border-interactive: var(--color-blue-205-100-50);

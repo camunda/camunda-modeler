@@ -112,41 +112,38 @@ describe('<DeploymentConfigForm>', function() {
     it('should show lint error feedback', function() {
 
       // when
-      const { container } = createDeploymentConfigForm({
+      const { queryByText } = createDeploymentConfigForm({
         hasLintErrors: true
       });
 
       // then
-      expect(container.querySelector('.invalid-feedback')).to.exist;
-      expect(container.querySelector('.invalid-feedback').textContent).to.include('has errors');
+      expect(queryByText(/has errors/)).to.exist;
     });
 
 
     it('should not show lint error feedback if no lint errors', function() {
 
       // when
-      const { container } = createDeploymentConfigForm({
+      const { queryByText } = createDeploymentConfigForm({
         hasLintErrors: false
       });
 
       // then
-      expect(container.querySelector('.invalid-feedback')).to.be.null;
+      expect(queryByText(/has errors/)).to.be.null;
     });
 
 
     it('should not show lint error feedback if connection check failed', function() {
 
       // when
-      const { container } = createDeploymentConfigForm({
+      const { queryByText } = createDeploymentConfigForm({
         hasLintErrors: true,
         connectionCheckResult: { success: false, reason: 'CONTACT_POINT_UNAVAILABLE' }
       });
 
       // then
-      const feedback = container.querySelector('.invalid-feedback');
-      expect(feedback).to.exist;
-      expect(feedback.textContent).to.not.include('has errors');
-      expect(feedback.textContent).to.include('Could not establish connection');
+      expect(queryByText(/has errors/)).to.be.null;
+      expect(queryByText(/Could not establish connection/)).to.exist;
     });
 
 
@@ -155,13 +152,13 @@ describe('<DeploymentConfigForm>', function() {
       // given
       const handleOpenLintingPanelSpy = sinon.spy();
 
-      const { container } = createDeploymentConfigForm({
+      const { getByText } = createDeploymentConfigForm({
         hasLintErrors: true,
         handleOpenLintingPanel: handleOpenLintingPanelSpy
       });
 
       // when
-      fireEvent.click(container.querySelector('.invalid-feedback a'));
+      fireEvent.click(getByText('Show errors.'));
 
       // then
       expect(handleOpenLintingPanelSpy).to.have.been.calledOnce;
