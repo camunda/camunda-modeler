@@ -2,6 +2,10 @@
 @import "_colors.css";
 @import "_font.css";
 
+/* the theme adapters load after the library styles they theme, the app styles after both */
+@import "_libraries.css";
+@import "~@bpmn-io/c4-theme/assets/all.css";
+
 @import "_base.css";
 
 @import "_forms.css";
