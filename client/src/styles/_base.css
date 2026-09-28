@@ -18,9 +18,11 @@ body {
   outline-color: var(--focus-outline-color);
 }
 
+/* TODO(c4-migration): disabled because it covers the design system focus ring; remove once the chrome is migrated
 :focus-visible {
   outline: 2px solid var(--focus-outline-color);
 }
+*/
 
 .djs-container svg:focus {
   outline: none;

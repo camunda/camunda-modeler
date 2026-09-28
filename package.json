@@ -39,6 +39,7 @@
     "test:e2e:show-trace": "playwright show-report test/e2e/playwright-report",
     "test:e2e:update": "playwright test -c test/e2e/playwright.config.js --project=base --update-snapshots",
     "start": "run-s \"dev -- {@}\" --",
+    "start:c4-preview": "npm link ../bpmn-io-themes/packages/c4-theme ../camunda-rpa-frontend && npm start",
     "link-dependencies": "node tasks/link-dependencies.js"
   },
   "author": "Camunda <http://camunda.com>",
