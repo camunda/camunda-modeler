@@ -8,80 +8,68 @@
  * except in compliance with the MIT License.
  */
 
-import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 
 import classNames from 'classnames';
 
 import {
-  CloseTrap,
-  EscapeTrap,
-  FocusTrap,
-  KeyboardInteractionTrap
-} from '../trap';
+  Button,
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@camunda/design-system';
 
-import CloseIcon from '../../../../resources/icons/Close.svg';
+import { X } from '@camunda/design-system/icons';
+
+import { KeyboardInteractionTrap } from '../trap';
+
+import * as css from './Modal.css';
 
 
-export default class Modal extends PureComponent {
+/**
+ * Modal dialog, exposed to plugins via `global.components`; keep the props and
+ * subcomponents stable.
+ *
+ * @param {Object} props
+ * @param {React.ReactNode} [props.children]
+ * @param {string} [props.className]
+ * @param {Function} [props.onClose] - closable via Escape and the close button when set
+ * @param {boolean} [props.adaptive] - wide dialog for large content
+ */
+export default function Modal(props) {
+  const {
+    adaptive,
+    children,
+    className,
+    onClose
+  } = props;
 
-  constructor(props) {
-    super(props);
-
-    this.modalRef = React.createRef();
-
-    this.focusTrap = FocusTrap(() => {
-      return this.modalRef.current;
-    });
-
-    this.escapeTrap = EscapeTrap(() => {
-      this.close();
-    });
-
-    this.closeTrap = CloseTrap(document.activeElement);
-  }
-
-  close = () => {
-    if (this.props.onClose) {
-      return this.props.onClose();
+  const handleOpenChange = (open) => {
+    if (!open && onClose) {
+      onClose();
     }
   };
 
-  componentDidMount() {
-    this.focusTrap.mount();
-    this.escapeTrap.mount();
-    this.closeTrap.mount();
-  }
-
-  componentWillUnmount() {
-    this.focusTrap.unmount();
-    this.escapeTrap.unmount();
-    this.closeTrap.unmount();
-  }
-
-  render() {
-
-    const {
-      className,
-      children,
-      onClose,
-      adaptive
-    } = this.props;
-
-    return ReactDOM.createPortal(
-      <KeyboardInteractionTrap>
-        <div className="modal" tabIndex="-1" role="dialog">
-          <div className={ classNames('modal-dialog', { 'modal-adaptive': adaptive }, className) } ref={ this.modalRef } role="document">
-            <div className="modal-content">
-              { children }
-              { onClose && (<Close onClick={ this.close } />) }
-            </div>
-          </div>
-        </div>
-      </KeyboardInteractionTrap>,
-      document.body
-    );
-  }
+  return (
+    <Dialog open onOpenChange={ handleOpenChange }>
+      <DialogContent
+        className={ classNames(css.Modal, className) }
+        size={ adaptive ? 'lg' : 'md' }
+        showCloseButton={ !!onClose }
+        closeLabel="Close"
+        aria-describedby={ undefined }
+        onEscapeKeyDown={ event => !onClose && event.preventDefault() }
+        onInteractOutside={ event => event.preventDefault() }
+      >
+        <KeyboardInteractionTrap>
+          { children }
+        </KeyboardInteractionTrap>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 Modal.Body = Body;
@@ -101,11 +89,11 @@ function Title(props) {
   } = props;
 
   return (
-    <div className={ classNames('modal-header', className) } { ...rest }>
-      <h2 className="modal-title">
+    <DialogHeader className={ classNames('modal-header', className) } { ...rest }>
+      <DialogTitle className="modal-title">
         { children }
-      </h2>
-    </div>
+      </DialogTitle>
+    </DialogHeader>
   );
 }
 
@@ -115,9 +103,9 @@ function Close(props) {
   } = props;
 
   return (
-    <button className="close" onClick={ onClick } aria-label="Close">
-      <CloseIcon aria-hidden="true" />
-    </button>
+    <Button variant="ghost" size="icon-sm" className="close" onClick={ onClick } aria-label="Close">
+      <X aria-hidden="true" />
+    </Button>
   );
 }
 
@@ -129,9 +117,9 @@ function Body(props) {
   } = props;
 
   return (
-    <div className={ classNames('modal-body', className) } { ...rest }>
+    <DialogBody className={ classNames('modal-body', className) } { ...rest }>
       { children }
-    </div>
+    </DialogBody>
   );
 }
 
@@ -143,8 +131,8 @@ function Footer(props) {
   } = props;
 
   return (
-    <div className={ classNames('modal-footer', className) } { ...rest }>
-      { props.children }
-    </div>
+    <DialogFooter className={ classNames('modal-footer', className) } { ...rest }>
+      { children }
+    </DialogFooter>
   );
 }

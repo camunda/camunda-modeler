@@ -1003,10 +1003,10 @@ describe('<StartInstanceTool>', function() {
           const statusBarBtn = expectOverlayDropdown(wrapper);
 
           // then
-          fireEvent.click(statusBarBtn);
+          fireEvent.pointerDown(statusBarBtn);
 
           // assume
-          expect(wrapper.querySelector("button[title='Start process instance']")).to.be.null;
+          expect(screen.queryByTitle('Start process instance')).to.be.null;
         });
 
 
@@ -1024,11 +1024,14 @@ describe('<StartInstanceTool>', function() {
 
           expectOverlayDropdown(wrapper);
 
+          await new Promise(resolve => setTimeout(resolve));
+
           // when
-          document.body.dispatchEvent(new MouseEvent('mousedown'));
+          fireEvent.pointerDown(document.body);
+          fireEvent.click(document.body);
 
           // then
-          expect(wrapper.querySelector("button[title='Start process instance']")).to.be.null;
+          expect(screen.queryByTitle('Start process instance')).to.be.null;
         });
 
       });
@@ -1381,6 +1384,9 @@ function createSubscribe(activeTab) {
 
 function clickButton(wrapper, searchString) {
   const button = wrapper.querySelector(searchString);
+
+  // the dropdown menu trigger reacts to the pointer down, plain buttons to the click
+  fireEvent.pointerDown(button);
   fireEvent.click(button);
 
   return button;
@@ -1400,7 +1406,7 @@ function expectOverlayDropdown(wrapper) {
 async function expectStartInstanceOverlay(wrapper) {
 
   // open start instance overlay
-  clickButton(wrapper, "button[title='Start process instance']");
+  fireEvent.click(screen.getByTitle('Start process instance'));
 
   await new Promise(function(resolve) {
     setTimeout(resolve, 10);

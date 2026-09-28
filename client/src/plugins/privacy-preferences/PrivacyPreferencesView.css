@@ -1,33 +1,36 @@
 :local(.View) {
 
-  .form-submit {
-    text-align: right;
+  p {
+    margin: 0;
   }
 
-  .privacyTextField {
-    margin-bottom: 10px;
+  .privacy-preferences {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
-  .privacyMoreInfoField {
-    margin-top: 10px;
-    margin-bottom: 10px;
+  .privacy-preference {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    /* center on the 18px label line */
+    [data-slot="checkbox"] {
+      margin-top: 1px;
+    }
   }
 
-  .privacyPreferencesField {
-    display: grid;
-    grid-template-columns: 20px 90%;
-    grid-column-gap: 10px;
-    grid-row-gap: 30px;
-    padding: 20px;
+  .privacy-preference__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
-  .checkboxLabel {
-    font-weight: bold;
-  }
-
-  .checkboxExplanation {
-    margin-top: 5px;
-    color: var(--color-grey-225-10-35);;
+  .privacy-preference__description {
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+    color: var(--neutral-foreground-subtle);
   }
 
 }

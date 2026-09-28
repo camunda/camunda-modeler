@@ -1,121 +1,41 @@
-.modal {
-  --input-width: calc(100% - 40px);
-
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10000;
-
-  &:before {
-    content: '';
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    background: var(--color-grey-225-10-15);
-    opacity: .2;
-    z-index: 1001;
-  }
-}
-
-.modal-dialog {
-  position: fixed;
-  left: 0;
-  right: 0;
-
-  width: 638px;
-
-  margin: 10vh auto 6vh;
-  padding: 0;
-  z-index: 1001;
-
-  /* ensures round corners are properly cut */
-  overflow: hidden;
-  border: solid 1px var(--color-grey-225-10-75);
-  border-radius: 3px;
-  box-shadow: 0 1px 4px var(--color-black-opacity-30);
-
-  background-color: var(--color-white);
-  color: var(--color-grey-225-10-15);
-
-  &.modal-adaptive {
-    --height-breakpoint: 600px;
-    --width-breakpoint: 992px;
-    --margin-x: 10px;
-    --margin-y-min: 10px;
-    --margin-y-max: 40px;
-
-    margin-top: var(--margin-y-max);
-    margin-bottom: var(--margin-y-max);
-    height: calc(100% - var(--margin-y-max) * 2);
-    @media (max-height: 600px) {
-      margin-top: var(--margin-y-min);
-      margin-bottom: var(--margin-y-min);
-      height: calc(100% - var(--margin-y-min) * 2);
-    }
-
-    width: calc(var(--width-breakpoint) - var(--margin-x) * 2);
-    @media (max-width: 992px) {
-      margin-left: var(--margin-x);
-      margin-right: var(--margin-x);
-      width: calc(100% - var(--margin-x) * 2);
-    }
-  }
-}
-
-.modal-content,
-.modal-content > form {
-  display: flex;
-  flex: auto;
-  flex-direction: column;
-  max-height: 84vh;
-
-  .modal-adaptive & {
-    height: 100%;
-    max-height: 100%;
-  }
-}
+/*
+ * Legacy modal classes. `Modal` renders design system dialog parts; these rules
+ * keep content built from the plain class names (e.g. in plugins) in line with
+ * them. Deprecated, remove with the next major.
+ */
 
 .modal-header {
-  padding: 20px 60px 20px 20px;
-
-  background-color: var(--color-grey-225-10-95);
-  font-size: 16px;
-
-  border-bottom: solid 1px var(--color-grey-225-10-85);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .modal-title {
   margin: 0;
+  font-family: var(--font-heading, var(--font-sans));
+  font-size: var(--text-base);
+  line-height: 24px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground);
+}
 
-  font-size: 24px;
-  font-weight: 600;
+:where(.modal-body) {
+  --input-width: calc(100% - 40px);
 }
 
 .modal-body {
-  .modal-adaptive & {
-    height: 100%;
-  }
-
-  padding: 16px 20px 20px 20px;
-
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
   overflow-y: auto;
 
-  background-color: var(--color-white);
-
   legend {
+    margin-bottom: 24px;
+    font-family: inherit;
     font-size: 14px;
     font-weight: bold;
-    font-stretch: normal;
-    font-style: normal;
-    font-family: inherit;
-    line-height: normal;
-    letter-spacing: normal;
-    color: var(--color-grey-225-10-15);
-    margin-bottom: 23px;
+    color: var(--foreground);
   }
 
   fieldset {
@@ -148,35 +68,13 @@
 }
 
 .modal-footer {
-  padding: 15px 20px;
-
-  border-top: solid 1px var(--color-grey-225-10-85);
-
-  text-align: right;
-}
-
-.modal-dialog .close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-
-  width: 22px;
-  height: 22px;
-  padding: 0;
-
-  border: none;
-  border-radius: 3px;
-  background-color: transparent;
-
-  &:hover {
-    background-color: var(--color-grey-225-10-90);
-  }
-
-  &:focus {
-    background-color: var(--color-grey-225-10-75);
-  }
-
-  svg {
-    fill: var(--color-grey-225-10-35);
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 16px -24px -24px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 calc(var(--radius) + 4px) calc(var(--radius) + 4px);
+  background-color: var(--neutral-background-medium);
 }

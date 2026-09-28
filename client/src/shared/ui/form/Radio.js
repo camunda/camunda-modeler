@@ -12,12 +12,20 @@ import React from 'react';
 
 import classNames from 'classnames';
 
+import {
+  Label,
+  RadioGroup,
+  RadioGroupItem
+} from '@camunda/design-system';
+
 import FormFeedback from './FormFeedback';
 import DocumentationIcon from './DocumentationIcon';
 
 import {
   fieldError as defaultFieldError
 } from './Util';
+
+import * as css from './Field.css';
 
 export default function Radio(props) {
 
@@ -32,69 +40,68 @@ export default function Radio(props) {
     className,
     documentationUrl,
     description,
+    onChange = field.onChange,
     ...restProps
   } = props;
 
   const {
-    name: fieldName
+    name: fieldName,
+    onBlur
   } = field;
 
   const meta = form.getFieldMeta(fieldName);
 
   const error = (fieldError || defaultFieldError)(meta, fieldName);
 
-  const isChecked = (childValue) => meta.value === childValue;
+  const labelId = `${ fieldName }-label`;
+  const errorId = `${ fieldName }-error-msg`;
+
+  // radio values must be strings, so use the option index
+  const selectedIndex = values.findIndex(child => child.value === meta.value);
+
+  // emulate a native radio change for Formik and custom handlers
+  const handleValueChange = (index) => onChange({
+    target: { name: fieldName, type: 'radio', value: values[ index ].value }
+  });
 
   return (
-    <React.Fragment>
-      <div className={
-        classNames('form-group', 'form-inline', className)
-      }>
-        <div className={
-          classNames('custom-control','custom-radio')
-        }>
-          <label htmlFor={ fieldName }>
-            { label }
-            <DocumentationIcon url={ documentationUrl } />
-          </label>
-          <div className="form-check-inline">
-            {
-              values.map((child) => {
-                const id = `radio-element-${fieldName}-${toKebabCase(child.label)}`;
-                return (
-                  <React.Fragment key={ child.label }>
-                    <input
-                      { ...field }
-                      type="radio"
-                      name={ fieldName }
-                      value={ child.value }
-                      checked={ isChecked(child.value) }
-                      className={ classNames('custom-control-input', {
-                        'is-invalid': !!error
-                      }) }
-                      id={ id }
-                      tabIndex={ 0 }
-                      { ...restProps } />
-                    <label
-                      htmlFor={ id }
-                      className={ classNames('custom-control-option', {
-                        'is-invalid': !!error
-                      }) }
-                    >
-                      { child.label }
-                    </label>
-                  </React.Fragment>
-                );
-              })
-            }
-          </div>
-          <FormFeedback
-            error={ error }
-          />
-          <div className="custom-control-description">{ description }</div>
-        </div>
-      </div>
-    </React.Fragment>
+    <div className={ classNames('form-group', css.Field, className) }>
+      <Label id={ labelId }>
+        { label }
+        <DocumentationIcon url={ documentationUrl } />
+      </Label>
+      <RadioGroup
+        className="field__options"
+        name={ fieldName }
+        value={ selectedIndex === -1 ? '' : String(selectedIndex) }
+        onValueChange={ handleValueChange }
+        aria-labelledby={ labelId }
+        aria-invalid={ !!error }
+        aria-errormessage={ error ? errorId : undefined }
+        { ...restProps }
+      >
+        {
+          values.map((child, index) => {
+            const id = `radio-element-${fieldName}-${toKebabCase(child.label)}`;
+
+            return (
+              <div className="field__option" key={ child.label }>
+                <RadioGroupItem
+                  id={ id }
+                  value={ String(index) }
+                  onBlur={ () => onBlur && onBlur({ target: { name: fieldName } }) }
+                />
+                <Label htmlFor={ id }>
+                  { child.label }
+                </Label>
+              </div>
+            );
+          })
+        }
+      </RadioGroup>
+      <FormFeedback id={ errorId } error={ error } />
+      { description && <div className="field__description">{ description }</div> }
+    </div>
   );
 }
 

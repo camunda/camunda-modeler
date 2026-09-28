@@ -15,13 +15,18 @@ import React from 'react';
 
 import {
   render,
-  fireEvent
+  fireEvent,
+  waitFor
 } from '@testing-library/react';
 
 import { Overlay } from '..';
 
 
 describe('<Overlay>', function() {
+
+  afterEach(function() {
+    document.querySelectorAll('[data-testid="anchor"]').forEach(anchor => anchor.remove());
+  });
 
   it('should render', function() {
     const { overlay } = renderOverlay();
@@ -150,7 +155,7 @@ describe('<Overlay>', function() {
 
   describe('props#offset', function() {
 
-    it('should use provided offset { left }', function() {
+    it('should use provided offset { left }', async function() {
 
       // given
       const offset = {
@@ -158,14 +163,16 @@ describe('<Overlay>', function() {
       };
 
       // when
-      const { overlay, anchor } = renderOverlay({ offset });
+      const { overlay, anchor } = renderOverlay({ offset, maxWidth: 100 });
 
       // then
-      expect(boundingRect(overlay).left).to.be.closeTo(boundingRect(anchor).left + offset.left, 5);
+      await waitFor(() => {
+        expect(boundingRect(overlay).left).to.be.closeTo(boundingRect(anchor).left + offset.left, 5);
+      });
     });
 
 
-    it('should use provided offset { right }', function() {
+    it('should use provided offset { right }', async function() {
 
       // given
       const offset = {
@@ -173,13 +180,12 @@ describe('<Overlay>', function() {
       };
 
       // when
-      const { overlay, anchor } = renderOverlay({ offset, children: 'Content' });
+      const { overlay, anchor } = renderOverlay({ offset, maxWidth: 100, children: 'Content' });
 
       // then
-      const overlayRect = boundingRect(overlay);
-      const anchorRect = boundingRect(anchor);
-
-      expect(overlayRect.right).to.be.closeTo(anchorRect.right + offset.right, 5);
+      await waitFor(() => {
+        expect(boundingRect(overlay).right).to.be.closeTo(boundingRect(anchor).right - offset.right, 5);
+      });
     });
 
   });
@@ -194,13 +200,15 @@ describe('<Overlay>', function() {
     });
 
 
-    it('should call onClose for background click', function() {
+    it('should call onClose for background click', async function() {
 
       // given
       renderOverlay({ onClose: onCloseSpy });
 
+      await nextTick();
+
       // when
-      document.dispatchEvent(new MouseEvent('mousedown'));
+      clickOutside(document.body);
 
       // then
       expect(onCloseSpy).to.have.been.called;
@@ -210,7 +218,7 @@ describe('<Overlay>', function() {
     it('should NOT call onClose for click inside the overlay', function() {
 
       // given
-      const { getByRole } = renderOverlay({
+      const { overlay } = renderOverlay({
         onClose: onCloseSpy,
         children: <Overlay.Body>
           <button id="button" />
@@ -218,7 +226,7 @@ describe('<Overlay>', function() {
       });
 
       // when
-      const button = getByRole('button');
+      const button = overlay.querySelector('#button');
       fireEvent.click(button);
 
       // then
@@ -226,7 +234,7 @@ describe('<Overlay>', function() {
     });
 
 
-    it('should NOT call onClose for clicking the anchor', function() {
+    it('should NOT call onClose for clicking the anchor', async function() {
 
       // given
       const { anchor } = renderOverlay({
@@ -236,8 +244,10 @@ describe('<Overlay>', function() {
         </Overlay.Body>
       });
 
+      await nextTick();
+
       // when
-      anchor.dispatchEvent(new MouseEvent('mousedown'));
+      clickOutside(anchor);
 
       // then
       expect(onCloseSpy).to.not.be.called;
@@ -284,14 +294,16 @@ describe('<Overlay>', function() {
     });
 
 
-    it('should NOT close on background click when enableGlobalClickTrap=false', function() {
+    it('should NOT close on background click when enableGlobalClickTrap=false', async function() {
 
       // given
       const onCloseSpy = sinon.spy();
       renderOverlay({ onClose: onCloseSpy, enableGlobalClickTrap: false });
 
+      await nextTick();
+
       // when
-      document.dispatchEvent(new MouseEvent('mousedown'));
+      clickOutside(document.body);
 
       // then
       expect(onCloseSpy).to.not.have.been.called;
@@ -409,6 +421,9 @@ function renderOverlay({ children, ...props } = {}) {
 
   const anchor = document.createElement('button');
   anchor.setAttribute('data-testid', 'anchor');
+  anchor.style.cssText = 'position: fixed; top: 300px; left: 350px; width: 200px; height: 20px;';
+
+  document.body.appendChild(anchor);
 
   const rendered = render(<Overlay anchor={ anchor } { ...props }>{ children }</Overlay>);
 
@@ -423,6 +438,17 @@ function renderOverlay({ children, ...props } = {}) {
 
 function boundingRect(domNode) {
   return domNode.getBoundingClientRect();
+}
+
+// the popover listens for outside clicks from the next tick on
+function nextTick() {
+  return new Promise(resolve => setTimeout(resolve));
+}
+
+// the popover dismisses on the click that follows an outside pointerdown
+function clickOutside(target) {
+  fireEvent.pointerDown(target);
+  fireEvent.click(target);
 }
 
 function expectStyle(overlay, expectedStyle) {

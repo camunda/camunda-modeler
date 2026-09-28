@@ -28,18 +28,16 @@ describe('<TextInput>', function() {
   it('should show error', function() {
 
     // when
-    const { container } = createTextInput({
+    const { getByRole, getByText } = createTextInput({
       fieldMeta: {
         error: 'foo',
         touched: true
       }
     });
 
-    const formControl = container.querySelector('.form-control');
-
     // then
-    expect(formControl).to.exist;
-    expect(formControl.classList.contains('is-invalid')).to.be.true;
+    expect(getByRole('textbox').getAttribute('aria-invalid')).to.eql('true');
+    expect(getByText('foo')).to.exist;
   });
 
 

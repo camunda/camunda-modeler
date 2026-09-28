@@ -12,11 +12,12 @@ import React from 'react';
 
 import semver from 'semver';
 
+import { Button, DefinitionTooltip } from '@camunda/design-system';
+
 import {
   JSONInput,
   Section,
-  TextInput,
-  DefinitionTooltip
+  TextInput
 } from '../../../shared/ui';
 
 import {
@@ -169,30 +170,27 @@ export default function StartInstanceConfigForm(props) {
                     </div>
                   </fieldset>
                   <Section.Actions>
-                    <div className="form-group">
-                      <button
-                        type="submit"
-                        className="btn btn-primary"
-                        disabled={ props.isSubmitting }>
-                        { renderSubmit }
-                      </button>
-                      { connectionCheckResult?.success === false && (
-                        <FormFeedback
-                          error={ <>
-                            Could not establish connection: <br />
-                            { getMessageForReason(connectionCheckResult?.reason) } <br />
-                            <a href="#" onClick={ handleChangeConnections }>Change</a> or <a href="#" onClick={ handleManageConnections }>manage connections.</a>
-                          </> }
-                        />
-                      )}
-                      { connectionCheckResult?.success !== false && hasLintErrors && (
-                        <FormFeedback
-                          error={ <>
-                            Diagram has errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
-                          </> }
-                        />
-                      )}
-                    </div>
+                    <Button
+                      type="submit"
+                      disabled={ props.isSubmitting }>
+                      { renderSubmit }
+                    </Button>
+                    { connectionCheckResult?.success === false && (
+                      <FormFeedback
+                        error={ <>
+                          Could not establish connection: <br />
+                          { getMessageForReason(connectionCheckResult?.reason) } <br />
+                          <a href="#" onClick={ handleChangeConnections }>Change</a> or <a href="#" onClick={ handleManageConnections }>manage connections.</a>
+                        </> }
+                      />
+                    )}
+                    { connectionCheckResult?.success !== false && hasLintErrors && (
+                      <FormFeedback
+                        error={ <>
+                          Diagram has errors. <a href="#" onClick={ handleOpenLintingPanel }>Show errors.</a>
+                        </> }
+                      />
+                    )}
                   </Section.Actions>
                 </Section.Body>
               </Section>

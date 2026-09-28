@@ -120,7 +120,8 @@
     border: solid 1px var(--color-red-360-100-45) !important;
   }
 
-  label {
+  /* skip design system labels */
+  label:not([data-slot]) {
     display: block;
     margin-bottom: 6px;
     font-size: 12px;
@@ -540,17 +541,3 @@
   }
 }
 
-.documentation-icon {
-  margin-left: 8px;
-  margin-right: 8px;
-
-  svg {
-    color: var(--color-blue-205-100-50);
-    position: relative;
-    top: 2px;
-  }
-
-  &:hover svg {
-    color: var(--color-blue-205-100-45);
-  }
-}

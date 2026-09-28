@@ -1,17 +1,13 @@
 :local(.Notifications) {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden; /* required so that the notification does not overlap status bar */
 
-  z-index: 100000;
+  /* keep toasts above the status bar; the design system Toaster has no offset prop */
+  [data-sonner-toaster] {
+    --offset-bottom: 48px !important;
+  }
 
-  position: absolute;
-  bottom: 32px;
-  left: 0;
-  margin-left: auto;
-  margin-right: auto;
-
-  width: 410px; /* notification width + 40px on each side to maintain x position */
-  height: auto;
+  /* links passed as plain notification content */
+  [data-description] a[href] {
+    color: var(--link-color);
+    text-decoration: underline;
+  }
 }

@@ -1,38 +1,45 @@
 :local(.SettingsPlugin) {
   --input-width: 100%;
- 
-  .section__header{
-    font-size:  20px;
+
+  /* the legacy modal form rule scales the text up */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-size: inherit;
+  }
+
+  .section {
+    gap: 16px;
+  }
+
+  .section + .section {
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* the dialog already insets its content; sections add no inset of their own */
+  .section .section__header,
+  .section .section__body {
+    padding: 0;
+    margin: 0;
+  }
+
+  .section .section__body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
   .form-group {
-    margin: 12px auto;
-
-    .form-control {
-      float: none;
-    }
+    margin: 0;
   }
 
   .flag-warning {
-    font-size: 13px;
-    color: var(--color-grey-225-10-35);
-    margin: -10px 0 10px 0;
-  }
-
-  .restart-warning {
-    background: var(--color-yellow-47-86-91);
-    border-left: 3px solid var(--color-yellow-47-88-53);
-    font-size: 14px;
-    margin: auto 10px;
-    padding: 10px;
-  }
-
-  .btn-restart {
-    color: var(--color-blue-205-100-45);
-    font-size: 14px;
-    border: 0;
-    padding: 0;
-    background: none;
-    cursor: pointer;
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    color: var(--neutral-foreground-subtle);
+    /* sit 6px below its field, like field descriptions, inside the 16px body gap */
+    margin-top: calc(6px - 16px);
   }
 }

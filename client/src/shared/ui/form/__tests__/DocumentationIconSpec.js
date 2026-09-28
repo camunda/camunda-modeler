@@ -13,7 +13,7 @@ import * as sinon from 'sinon';
 
 import React from 'react';
 
-import { render } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
 import DocumentationIcon from '../DocumentationIcon';
 
@@ -42,15 +42,19 @@ describe('<DocumentationIcon>', function() {
   });
 
 
-  it('should render tooltip with correct label', function() {
+  it('should render tooltip with correct label', async function() {
 
-    // when
+    // given
     const { container } = createDocumentationIcon({ url: 'https://example.com' });
 
+    // when
+    act(() => {
+      container.querySelector('.documentation-icon').focus();
+    });
+
     // then
-    const tooltipContent = container.querySelector('.cds--popover-content');
-    expect(tooltipContent).to.exist;
-    expect(tooltipContent.textContent).to.equal('Open documentation');
+    const tooltip = await screen.findByRole('tooltip');
+    expect(tooltip.textContent).to.equal('Open documentation');
   });
 
 

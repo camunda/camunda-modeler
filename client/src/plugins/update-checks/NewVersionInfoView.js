@@ -10,6 +10,8 @@
 
 import React, { PureComponent } from 'react';
 
+import { Button, Heading } from '@camunda/design-system';
+
 import {
   Modal
 } from '../../shared/ui';
@@ -42,7 +44,7 @@ class NewVersionInfoView extends PureComponent {
         <div
           className="htmlSnippetItem"
           key={ version }>
-          <h4>{ version }</h4>
+          <Heading as="h4" variant="heading-xs">{ version }</Heading>
           <div dangerouslySetInnerHTML={ { __html: releaseNoteHTML } } />
         </div>
       );
@@ -79,7 +81,7 @@ class NewVersionInfoView extends PureComponent {
             { INFO_TEXT2 }
           </p>
           <div className="releaseNotesContainer">
-            <h4>{ RELEASE_NOTES_TITLE }</h4>
+            <Heading as="h4" variant="heading-xs">{ RELEASE_NOTES_TITLE }</Heading>
             <div className="htmlSnippet">
               { this.renderHtmlSnippets(releases) }
             </div>
@@ -91,14 +93,8 @@ class NewVersionInfoView extends PureComponent {
         </Modal.Body>
 
         <Modal.Footer>
-          <div className="formSubmit">
-            <button className="btn btn-secondary" onClick={ onClose }> { BUTTON_NEGATIVE } </button>
-            <button
-              className="btn btn-primary"
-              onClick={ onOpenDownloadUrl }
-              autoFocus
-            > { BUTTON_POSITIVE } </button>
-          </div>
+          <Button variant="secondary" onClick={ onClose }>{ BUTTON_NEGATIVE }</Button>
+          <Button onClick={ onOpenDownloadUrl } autoFocus>{ BUTTON_POSITIVE }</Button>
         </Modal.Footer>
 
       </Modal>
