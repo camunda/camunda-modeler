@@ -39,6 +39,16 @@ const { spy } = sinon;
 
 describe('<AppParent>', function() {
 
+  it('should render within the design system provider', function() {
+
+    // when
+    const { container } = createAppParent();
+
+    // then
+    expect(container.querySelector('[data-c4-scope]')).to.exist;
+  });
+
+
   describe('keyboard bindings', function() {
 
     function setup() {

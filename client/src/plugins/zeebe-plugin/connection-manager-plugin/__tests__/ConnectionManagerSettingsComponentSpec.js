@@ -158,7 +158,7 @@ describe('ConnectionManagerSettingsComponent', function() {
       expect(document.activeElement === name, 'name focused').to.be.true;
       expect(name.selectionStart).to.equal(0);
       expect(name.selectionEnd).to.equal(name.value.length);
-      expect(within(dialog).getByRole('radio', { name: 'Camunda 8 SaaS' }).checked).to.be.true;
+      expect(within(dialog).getByRole('radio', { name: 'Camunda 8 SaaS' }).getAttribute('aria-checked')).to.equal('true');
     });
 
 
@@ -403,7 +403,7 @@ describe('ConnectionManagerSettingsComponent', function() {
 
       // then
       expect(connectionChecker.current.updateConfig).to.have.been.calledOnceWith({ endpoint: SAAS_CONNECTION });
-      expect(getStatus().querySelector('.cds--loading'), 'spinner').to.exist;
+      expect(getStatus().querySelector('.connection-check__spinner'), 'spinner').to.exist;
       expect(getStatus().textContent).to.contain('Connecting to the Camunda 8 instance…');
 
       // when
@@ -626,6 +626,6 @@ function fill(label, value) {
 }
 
 function selectAction(label, action) {
-  fireEvent.click(screen.getByRole('button', { name: `Options for ${ label }` }));
+  fireEvent.keyDown(screen.getByRole('button', { name: `Options for ${ label }` }), { key: 'Enter' });
   fireEvent.click(screen.getByRole('menuitem', { name: action }));
 }

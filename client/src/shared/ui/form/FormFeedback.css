@@ -1,0 +1,5 @@
+:local(.FormFeedback) {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--danger-foreground-subtle);
+}

@@ -33,11 +33,11 @@ describe('<CreateNewAction>', function() {
     createTabAction();
 
     // when
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.pointerDown(screen.getByRole('button'));
 
     // then
-    expect(screen.getByRole('button', { name: 'foo' })).to.exist;
-    expect(screen.getByRole('button', { name: 'bar' })).to.exist;
+    expect(screen.getByRole('menuitem', { name: 'foo' })).to.exist;
+    expect(screen.getByRole('menuitem', { name: 'bar' })).to.exist;
   });
 
 
@@ -53,11 +53,11 @@ describe('<CreateNewAction>', function() {
     createTabAction({ newFileItems });
 
     // when
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.pointerDown(screen.getByRole('button'));
 
     // then
-    const sections = screen.getAllByRole('menu');
-    expect(sections).to.have.length(3);
+    const groups = screen.getAllByRole('group');
+    expect(groups).to.have.length(3);
   });
 
 

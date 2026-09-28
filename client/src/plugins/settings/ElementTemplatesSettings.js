@@ -11,7 +11,8 @@
 import React, { useMemo, useRef, useState } from 'react';
 
 import { Field, getIn, useFormikContext } from 'formik';
-import { Tag } from '@carbon/react';
+
+import { Badge, Button } from '@camunda/design-system';
 
 import { OptionsMenu, TextInput, ToggleSwitch } from '../../shared/ui';
 import DocumentationIcon from '../../shared/ui/form/DocumentationIcon';
@@ -36,7 +37,7 @@ const FLAGS_DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/
 
 /** Header for the (Camunda 8 only) remote element template sources section. */
 export function ElementTemplatesSettingsHeader() {
-  return <span>Element template sources <Tag size="sm" type="blue">Camunda 8 only</Tag></span>;
+  return <span>Element template sources <Badge variant="info">Camunda 8 only</Badge></span>;
 }
 
 /**
@@ -82,7 +83,7 @@ export function TemplateSources({ name }) {
   return <div className={ css.ElementTemplatesSettings }>
     <SettingsList>
       <SourceItem
-        name={ <>{ CONNECTOR_TEMPLATES_NAME }<DocumentationIcon url={ CONNECTOR_TEMPLATES_DOCUMENTATION_URL } /></> }
+        name={ <span className="source-name">{ CONNECTOR_TEMPLATES_NAME }<DocumentationIcon url={ CONNECTOR_TEMPLATES_DOCUMENTATION_URL } /></span> }
         label={ CONNECTOR_TEMPLATES_NAME }
         description="Camunda Marketplace"
         enabled={ connectorTemplatesEnabled }
@@ -107,12 +108,12 @@ export function TemplateSources({ name }) {
       { CONNECTOR_TEMPLATES_NAME } are overridden by <code>{ DISABLE_CONNECTOR_TEMPLATES_FLAG }</code> flag.&nbsp;
       <a href={ FLAGS_DOCUMENTATION_URL }>Learn more.</a>
     </div> }
-    <button
+    <Button
       ref={ addButton }
       type="button"
-      className="btn btn-secondary"
+      variant="secondary"
       onClick={ () => setEditing(-1) }
-    >Add source</button>
+    >Add source</Button>
     { editing !== null && <SourceDialog
       source={ sources[editing] }
       sources={ sources.filter((_, index) => index !== editing) }

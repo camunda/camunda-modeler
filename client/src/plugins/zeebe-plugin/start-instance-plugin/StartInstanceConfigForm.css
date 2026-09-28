@@ -1,0 +1,16 @@
+:local(.DefinitionTerm) {
+  border-bottom: 1px dotted currentColor;
+  cursor: help;
+}
+
+/* sentence-length text, unlike the short labels the design system tooltip is sized for */
+:local(.DefinitionTooltip) {
+  max-width: 320px;
+  padding: 8px 12px;
+  font-size: var(--text-sm);
+
+  /* the design system link color is meant for light surfaces; this is the C4 properties panel tooltip link */
+  a {
+    color: var(--color-sky-300);
+  }
+}

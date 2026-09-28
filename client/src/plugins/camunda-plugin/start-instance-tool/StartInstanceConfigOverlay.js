@@ -10,6 +10,8 @@
 
 import React from 'react';
 
+import { Button } from '@camunda/design-system';
+
 import * as css from './StartInstanceConfigOverlay.css';
 
 import {
@@ -111,12 +113,11 @@ export default class StartInstanceConfigOverlay extends React.PureComponent {
                   </fieldset>
 
                   <Section.Actions>
-                    <button
-                      className="btn btn-primary"
+                    <Button
                       type="submit"
                       disabled={ form.isSubmitting }>
                       Start
-                    </button>
+                    </Button>
                   </Section.Actions>
                 </Section.Body>
               </Section>

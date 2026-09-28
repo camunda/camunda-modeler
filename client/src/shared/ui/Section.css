@@ -7,8 +7,8 @@
   flex: inherit;
 
   .section__body {
-    padding: 12px 12px 0 12px;
-    margin-bottom: 12px;
+    padding: var(--overlay-spacing) var(--overlay-spacing) 0 var(--overlay-spacing);
+    margin-bottom: var(--overlay-spacing);
   }
 
   .section__body:not(:first-child) {
@@ -16,23 +16,26 @@
   }
 
   .section__header {
-    padding: 12px;
+    padding: var(--overlay-spacing);
     margin: 0;
-    font-size: inherit;
-    font-weight: 500;
-    color: var(--overlay-title-color);
+  }
+
+  .section__header:has(> svg) {
+    display: flex;
+    align-items: center;
+    gap: var(--overlay-actions-gap);
   }
 
   .section__body {
     .section__description {
-      color: var(--color-grey-225-10-35);
+      color: var(--neutral-foreground-subtle);
       margin: 0;
     }
 
     font-size: inherit;
 
     p, ul, ol {
-      margin: 0 0 15px 0;
+      margin: 0 0 16px 0;
     }
 
     p:last-child,
@@ -40,6 +43,12 @@
     ol:last-child {
       margin-bottom: 0;
     }
+  }
+
+  .section__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--overlay-actions-gap);
   }
 
   .section__actions .btn {

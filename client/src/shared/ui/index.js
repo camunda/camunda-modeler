@@ -8,14 +8,10 @@
  * except in compliance with the MIT License.
  */
 
-export { default as Button } from './Button';
-export { default as DropdownButton } from './DropdownButton';
-export { Icon } from './icon';
 export { Modal } from './modal';
 export { default as OptionsMenu } from './OptionsMenu';
 export { default as Notice } from './Notice';
 export { Overlay, OverlayDropdown } from './overlay';
 export { Section } from './Section';
-export { DefinitionTooltip } from './DefinitionTooltip';
 
 export * from './form';

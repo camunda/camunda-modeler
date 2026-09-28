@@ -16,7 +16,6 @@
     font-size: 14px;
   }
 
-  &.linting-tab-item--selected,
   &:not(.linting-tab-item--empty):hover {
     background-color: var(--linting-tab-item-background-color);
   }
@@ -85,10 +84,6 @@
         outline: 2px solid #0066cc;
         outline-offset: 2px;
       }
-    }
-
-    &.linting-tab-item__content--empty {
-      font-weight: bold;
     }
   }
 
