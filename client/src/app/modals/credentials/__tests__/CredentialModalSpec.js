@@ -296,6 +296,42 @@ describe('<CredentialModal>', function() {
   });
 
 
+  it('should not render hidden fields but submit their values', async function() {
+
+    // given
+    const onSubmit = sinon.spy();
+
+    const configurationTemplate = {
+      ...template(),
+      properties: [
+        { ...OPTIONAL_FIELD, id: 'visible', label: 'Visible' },
+        { ...OPTIONAL_FIELD, id: 'secretVersion', label: 'Version', type: 'Hidden', value: '1' }
+      ]
+    };
+
+    // when
+    const { queryByLabelText, getByRole } = renderModal({
+      configurationTemplate,
+      displayName: 'My cred',
+      onSubmit
+    });
+
+    // then
+    expect(queryByLabelText('Visible')).to.exist;
+    expect(queryByLabelText('Version')).not.to.exist;
+
+    // when
+    fireEvent.click(getByRole('button', { name: 'Create and select' }));
+
+    // then
+    await waitFor(() => {
+      expect(onSubmit).to.have.been.calledOnce;
+    });
+
+    expect(onSubmit.firstCall.args[0].values).to.include({ secretVersion: '1' });
+  });
+
+
   it('should disable submit when a required field is empty', function() {
 
     // when

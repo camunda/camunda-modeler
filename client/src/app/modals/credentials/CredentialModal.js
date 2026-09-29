@@ -131,7 +131,7 @@ class CredentialModal extends PureComponent {
     const { configurationTemplate } = this.props;
 
     return getFieldGroups(
-      this.getVisibleFields(),
+      this.getVisibleFields().filter(field => field.type !== 'Hidden'),
       configurationTemplate && configurationTemplate.groups
     );
   }
