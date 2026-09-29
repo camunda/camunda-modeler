@@ -369,7 +369,7 @@ describe('<CredentialManager>', function() {
     const zeebeApi = createZeebeApi();
     const { configurationInstances, eventBus } = renderManager({ elementRegistry, subscribe, zeebeApi });
 
-    connectionStatusListener({ success: true, response: { protocol: 'grpc' } });
+    connectionStatusListener({ connectionId: 'cluster', success: true, response: { protocol: 'grpc' } });
 
     await waitFor(() => {
       expect(unavailableCall(configurationInstances)).to.exist;
@@ -422,6 +422,22 @@ describe('<CredentialManager>', function() {
     // then
     await waitFor(() => {
       expect(searchClusterVariables).to.have.been.calledTwice;
+    });
+  });
+
+
+  it('should resolve the connection of its tab', async function() {
+
+    // given
+    const file = { name: 'diagram_1.bpmn' };
+    const deployment = createDeployment();
+
+    // when
+    renderManager({ deployment, file, tabId: 'tab1' });
+
+    // then
+    await waitFor(() => {
+      expect(deployment.getConnectionForTab).to.have.been.calledWith({ id: 'tab1', file });
     });
   });
 
@@ -484,7 +500,7 @@ describe('<CredentialManager>', function() {
     const { configurationInstances } = renderManager({ subscribe });
 
     // when
-    connectionStatusListener({ success: true, response: { protocol: 'grpc' } });
+    connectionStatusListener({ connectionId: 'cluster', success: true, response: { protocol: 'grpc' } });
 
     // then
     await waitFor(() => {
@@ -492,6 +508,79 @@ describe('<CredentialManager>', function() {
 
       expect(call.unavailableMessage).to.match(/REST connection/);
     });
+  });
+
+
+  it('should ignore the connection status of another connection', async function() {
+
+    // given
+    let connectionStatusListener;
+
+    const subscribe = sinon.stub().callsFake((event, listener) => {
+      if (event === 'connectionManager.connectionStatusChanged') {
+        connectionStatusListener = listener;
+      }
+
+      return { cancel: sinon.spy() };
+    });
+    const zeebeApi = createZeebeApi();
+    const { configurationInstances } = renderManager({ subscribe, zeebeApi });
+
+    await waitFor(() => {
+      expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
+    });
+
+    // when
+    connectionStatusListener({ connectionId: 'other', success: true, response: { protocol: 'grpc' } });
+
+    // then
+    await new Promise(resolve => setTimeout(resolve));
+
+    expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
+    expect(unavailableCall(configurationInstances)).not.to.exist;
+  });
+
+
+  it('should ignore a stored connection status after the connection changed', async function() {
+
+    // given
+    let connectionStatusListener;
+
+    const subscribe = sinon.stub().callsFake((event, listener) => {
+      if (event === 'connectionManager.connectionStatusChanged') {
+        connectionStatusListener = listener;
+      }
+
+      return { cancel: sinon.spy() };
+    });
+    const getConnectionForTab = sinon.stub().resolves({ id: 'cluster' });
+    const deployment = createDeployment({ getConnectionForTab });
+    const elements = [];
+    const elementRegistry = { getAll: () => elements };
+    const zeebeApi = createZeebeApi();
+    const { configurationInstances, eventBus } = renderManager({ deployment, elementRegistry, subscribe, zeebeApi });
+
+    connectionStatusListener({ connectionId: 'cluster', success: true, response: { protocol: 'grpc' } });
+
+    await waitFor(() => {
+      expect(unavailableCall(configurationInstances)).to.exist;
+    });
+
+    configurationInstances.setState.resetHistory();
+
+    getConnectionForTab.resolves({ id: 'other' });
+
+    elements.push({ id: 'Task_1' });
+
+    // when
+    eventBus.fire('elements.changed', { elements });
+
+    // then
+    await waitFor(() => {
+      expect(zeebeApi.searchClusterVariables).to.have.been.calledOnce;
+    });
+
+    expect(unavailableCall(configurationInstances)).not.to.exist;
   });
 
 
@@ -1080,6 +1169,7 @@ function renderManager(overrides = {}) {
       zeebeApi={ zeebeApi }
       deployment={ deployment }
       file={ overrides.file || {} }
+      tabId={ overrides.tabId }
       onError={ onError }
     />
   );

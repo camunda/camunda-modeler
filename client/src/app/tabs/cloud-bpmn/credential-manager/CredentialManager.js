@@ -163,9 +163,9 @@ export default class CredentialManager extends PureComponent {
    * @returns {Promise<Object|null>} the endpoint, or null when there is no usable connection
    */
   async getEndpoint() {
-    const { deployment, file } = this.props;
+    const { deployment, file, tabId } = this.props;
 
-    const endpoint = await deployment.getConnectionForTab({ file });
+    const endpoint = await deployment.getConnectionForTab({ id: tabId, file });
 
     if (!endpoint || endpoint.id === NO_CONNECTION_ID) {
       return null;
@@ -221,7 +221,10 @@ export default class CredentialManager extends PureComponent {
 
     const endpoint = await this.getEndpoint();
 
-    const unavailableState = getUnavailableState(endpoint, connectionStatus);
+    // the tab may have switched connections since this status was emitted
+    const endpointStatus = connectionStatus?.connectionId === endpoint?.id ? connectionStatus : undefined;
+
+    const unavailableState = getUnavailableState(endpoint, endpointStatus);
 
     if (unavailableState) {
       this.setConfigurationInstancesState(configurationInstances, unavailableState);
@@ -348,7 +351,13 @@ export default class CredentialManager extends PureComponent {
   }
 
   /** @param {Object} [connectionStatus] */
-  handleConnectionStatusChanged = (connectionStatus = {}) => {
+  handleConnectionStatusChanged = async (connectionStatus = {}) => {
+    const endpoint = await this.getEndpoint();
+
+    if (endpoint && connectionStatus.connectionId !== endpoint.id) {
+      return;
+    }
+
     this.updateConfigurationInstances(connectionStatus);
   };
 
