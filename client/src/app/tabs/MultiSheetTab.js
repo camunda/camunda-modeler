@@ -403,6 +403,7 @@ export class MultiSheetTab extends CachedComponent {
             ref={ this.editorRef }
             file={ tab.file }
             id={ `${id}-${activeSheet.provider.type}` }
+            tabId={ id }
             xml={ lastXML || xml }
             isNew={ isNew }
             layout={ layout }
