@@ -15,6 +15,10 @@ jobs:
     permissions:
       contents: read
       id-token: write # Vault OIDC/JWT auth
+    env:
+      # Secrets are not available to forked pull requests; steps that rely on
+      # them only run for same-repo contributions (push or internal PR).
+      INTERNAL_CONTRIBUTION: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
 
     steps:
     - name: Checkout
@@ -38,7 +42,7 @@ jobs:
       if: ${{ runner.OS == 'macOS' }}
       run: npm run all -- --arm64 --no-compress
     - name: Import Secrets
-      if: ${{ runner.OS == 'Linux' }}
+      if: ${{ runner.OS == 'Linux' && env.INTERNAL_CONTRIBUTION == 'true' }}
       id: secrets
       uses: hashicorp/vault-action@v4.0.0
       with:
@@ -50,11 +54,14 @@ jobs:
         exportEnv: false
         secrets: |
           secret/data/products/desktop-modeler/ci/CODECOV_TOKEN CODECOV_TOKEN;
+    # On forked pull requests the Codecov token is unavailable; coverage upload
+    # falls back to tokenless upload (supported for public repositories) and is
+    # not allowed to fail the build.
     - name: Upload coverage
       if: ${{ runner.OS == 'Linux' }}
       uses: codecov/codecov-action@v7
       with:
-        fail_ci_if_error: true
+        fail_ci_if_error: ${{ env.INTERNAL_CONTRIBUTION }}
       env:
         CODECOV_TOKEN: ${{ steps.secrets.outputs.CODECOV_TOKEN }}
 
