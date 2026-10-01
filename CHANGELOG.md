@@ -15,6 +15,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: recover connection once an initially unreachable cluster comes back up ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
 * `FIX`: correct spacing of connection error description in connection chooser ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
 * `FIX`: do not display hidden fields in credential modal ([#6224](https://github.com/camunda/camunda-modeler/issues/6224))
+* `FIX`: support keyboard shortcuts on non-Latin keyboard layouts ([#4080](https://github.com/camunda/camunda-modeler/issues/4080))
 * `DEPS`: update to `@bpmn-io/form-js@2.0.2`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.55.0`
 * `DEPS`: update to `@camunda/form-playground@0.27.0`
@@ -27,7 +28,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-moddle@10.3.1`
 * `DEPS`: update to `camunda-bpmn-js@5.35.0`
 * `DEPS`: update to `camunda-bpmn-moddle@8.0.1`
-* `DEPS`: update to `diagram-js@15.26.0`
+* `DEPS`: update to `diagram-js@15.28.0`
 * `DEPS`: update to `diagram-js-origin@1.4.1`
 * `DEPS`: update to `dmn-js-properties-panel@3.12.0`
 * `DEPS`: update to `dmn-moddle@12.2.1`
