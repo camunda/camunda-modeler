@@ -16,6 +16,10 @@ jobs:
   analyze:
     name: Analyze dependencies
     runs-on: ubuntu-latest
+    # Requires the FOSSA API key from Vault, which is not available to
+    # forked pull requests; skip the job there so external contributions
+    # still get a green check suite.
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     permissions:
       contents: read
       id-token: write # Vault OIDC/JWT auth
