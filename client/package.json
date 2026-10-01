@@ -48,7 +48,6 @@
     "camunda-bpmn-moddle": "^8.0.1",
     "camunda-dmn-js": "^3.8.3",
     "camunda-dmn-moddle": "^1.3.1",
-    "canvg": "^4.0.3",
     "classnames": "^2.5.1",
     "codemirror": "^6.0.1",
     "debug": "^4.4.3",
