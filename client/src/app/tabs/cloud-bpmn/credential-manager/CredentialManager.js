@@ -94,7 +94,8 @@ export default class CredentialManager extends PureComponent {
     this.updateConfigurationInstancesDebounced = debounce(() => this.updateConfigurationInstances());
     this._configurationUpdatePromise = null;
     this._configurationUpdatePending = false;
-    this._pendingConnectionStatus = undefined;
+    this._connectionStatus = undefined;
+    this._configurationTemplates = new Set();
   }
 
   componentDidMount() {
@@ -105,6 +106,7 @@ export default class CredentialManager extends PureComponent {
     eventBus.on('configuration.upgrade', this.handleConfigurationUpgrade);
     eventBus.on('import.done', this.updateConfigurationInstancesDebounced);
     eventBus.on('elementTemplates.changed', this.updateConfigurationInstancesDebounced);
+    eventBus.on('elements.changed', this.handleElementsChanged);
 
     this._connectionSubscription = this.context.subscribe(
       'connectionManager.connectionStatusChanged',
@@ -122,6 +124,7 @@ export default class CredentialManager extends PureComponent {
     eventBus.off('configuration.upgrade', this.handleConfigurationUpgrade);
     eventBus.off('import.done', this.updateConfigurationInstancesDebounced);
     eventBus.off('elementTemplates.changed', this.updateConfigurationInstancesDebounced);
+    eventBus.off('elements.changed', this.handleElementsChanged);
 
     this.updateConfigurationInstancesDebounced.cancel();
 
@@ -160,9 +163,9 @@ export default class CredentialManager extends PureComponent {
    * @returns {Promise<Object|null>} the endpoint, or null when there is no usable connection
    */
   async getEndpoint() {
-    const { deployment, file } = this.props;
+    const { deployment, file, tabId } = this.props;
 
-    const endpoint = await deployment.getConnectionForTab({ file });
+    const endpoint = await deployment.getConnectionForTab({ id: tabId, file });
 
     if (!endpoint || endpoint.id === NO_CONNECTION_ID) {
       return null;
@@ -175,10 +178,14 @@ export default class CredentialManager extends PureComponent {
    * Feed the credential chooser's `configurationInstances` registry from the
    * connected cluster, or mark it unavailable when there is no usable connection.
    *
-   * @param {Object} [connectionStatus] - latest status from the connection check
+   * @param {Object} [connectionStatus] - latest status from the connection check, defaults to the last known one
    */
   async updateConfigurationInstances(connectionStatus) {
-    this._pendingConnectionStatus = connectionStatus;
+
+    // status is only emitted on change, so keep the last one for other reloads
+    if (connectionStatus) {
+      this._connectionStatus = connectionStatus;
+    }
 
     if (this._configurationUpdatePromise) {
       this._configurationUpdatePending = true;
@@ -199,7 +206,7 @@ export default class CredentialManager extends PureComponent {
     do {
       this._configurationUpdatePending = false;
 
-      await this.updateConfigurationInstancesOnce(this._pendingConnectionStatus);
+      await this.updateConfigurationInstancesOnce(this._connectionStatus);
     } while (this._configurationUpdatePending);
   }
 
@@ -210,9 +217,14 @@ export default class CredentialManager extends PureComponent {
       return;
     }
 
+    this._configurationTemplates = this.getUsedConfigurationTemplates();
+
     const endpoint = await this.getEndpoint();
 
-    const unavailableState = getUnavailableState(endpoint, connectionStatus);
+    // the tab may have switched connections since this status was emitted
+    const endpointStatus = connectionStatus?.connectionId === endpoint?.id ? connectionStatus : undefined;
+
+    const unavailableState = getUnavailableState(endpoint, endpointStatus);
 
     if (unavailableState) {
       this.setConfigurationInstancesState(configurationInstances, unavailableState);
@@ -237,13 +249,7 @@ export default class CredentialManager extends PureComponent {
    * @param {Object} endpoint - the connected cluster endpoint
    */
   async loadConfigurationInstances(configurationInstances, endpoint) {
-    const elementRegistry = this.getService('elementRegistry', false);
-    const elementTemplates = this.getService('elementTemplates', false);
-
-    const filters = getConfigurationSearchFilters(
-      elementRegistry,
-      elementTemplates
-    );
+    const filters = getConfigurationSearchFilters(this._configurationTemplates);
 
     if (!filters.length) {
       this.setConfigurationInstancesState(configurationInstances, {
@@ -345,9 +351,37 @@ export default class CredentialManager extends PureComponent {
   }
 
   /** @param {Object} [connectionStatus] */
-  handleConnectionStatusChanged = (connectionStatus = {}) => {
+  handleConnectionStatusChanged = async (connectionStatus = {}) => {
+    const endpoint = await this.getEndpoint();
+
+    if (endpoint && connectionStatus.connectionId !== endpoint.id) {
+      return;
+    }
+
     this.updateConfigurationInstances(connectionStatus);
   };
+
+  handleElementsChanged = ({ elements }) => {
+    const configurationTemplates = getConfigurationTemplateIds(
+      elements,
+      this.getService('elementTemplates', false)
+    );
+
+    if (configurationTemplates.isSubsetOf(this._configurationTemplates)) {
+      return;
+    }
+
+    this.updateConfigurationInstancesDebounced();
+  };
+
+  getUsedConfigurationTemplates() {
+    const elementRegistry = this.getService('elementRegistry', false);
+
+    return getConfigurationTemplateIds(
+      elementRegistry ? elementRegistry.getAll() : [],
+      this.getService('elementTemplates', false)
+    );
+  }
 
   handleConfigurationCreate = (event) => {
     this.openModal('create', event);
@@ -727,21 +761,36 @@ async function getAllSearchResults(search) {
 }
 
 /**
- * Build one server-side credential filter per Configuration property used by
- * an applied element template.
+ * Build one server-side credential filter per configuration template.
  *
- * @param {Object|null} elementRegistry
- * @param {Object|null} elementTemplates
+ * @param {Set<string>} configurationTemplates
  * @returns {Object[]}
  */
-function getConfigurationSearchFilters(elementRegistry, elementTemplates) {
+function getConfigurationSearchFilters(configurationTemplates) {
+  return [ ...configurationTemplates ].map(configurationTemplate => ({
+    metadata: {
+      kind: { '$eq': 'CREDENTIAL' },
+      configurationTemplate: { '$eq': configurationTemplate }
+    }
+  }));
+}
+
+/**
+ * Collect the configuration template IDs used by Configuration properties of
+ * the element templates applied to the given elements.
+ *
+ * @param {Object[]} elements
+ * @param {Object|null} elementTemplates
+ * @returns {Set<string>}
+ */
+function getConfigurationTemplateIds(elements, elementTemplates) {
   const configurationTemplates = new Set();
 
-  if (!elementRegistry || !elementTemplates) {
-    return [];
+  if (!elementTemplates) {
+    return configurationTemplates;
   }
 
-  elementRegistry.getAll().forEach(element => {
+  elements.forEach(element => {
     const elementTemplate = elementTemplates.get(element);
 
     (elementTemplate && elementTemplate.properties || []).forEach(property => {
@@ -751,12 +800,7 @@ function getConfigurationSearchFilters(elementRegistry, elementTemplates) {
     });
   });
 
-  return [ ...configurationTemplates ].map(configurationTemplate => ({
-    metadata: {
-      kind: { '$eq': 'CREDENTIAL' },
-      configurationTemplate: { '$eq': configurationTemplate }
-    }
-  }));
+  return configurationTemplates;
 }
 
 /**

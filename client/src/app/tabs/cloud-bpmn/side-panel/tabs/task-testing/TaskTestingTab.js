@@ -60,10 +60,10 @@ export default function TaskTestingTab(props) {
     deployment,
     injector,
     file,
-    id,
     linting,
     onAction,
     startInstance,
+    tabId,
     zeebeApi
   } = props;
 
@@ -75,9 +75,9 @@ export default function TaskTestingTab(props) {
   const [ tasklistUrl, setTasklistUrl ] = useState(null);
 
   const tab = useMemo(() => ({
-    id: id?.includes('-') ? id.split('-')[0] : id,
+    id: tabId,
     file
-  }), [ id, file ]);
+  }), [ tabId, file ]);
 
   const taskTestingApi = useMemo(() => {
     return new TaskTestingApi(deployment, startInstance, zeebeApi, tab, onAction, emit);

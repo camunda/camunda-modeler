@@ -993,11 +993,11 @@ export class BpmnEditor extends CachedComponent {
       config,
       deployment,
       file,
-      id,
       layout,
       linting,
       onAction,
       startInstance,
+      tabId,
       zeebeApi
     } = this.props;
 
@@ -1064,7 +1064,7 @@ export class BpmnEditor extends CachedComponent {
                       config={ config }
                       deployment={ deployment }
                       file={ file }
-                      id={ id }
+                      tabId={ tabId }
                       injector={ injector }
                       layout={ layout }
                       linting={ linting }
@@ -1106,6 +1106,7 @@ export class BpmnEditor extends CachedComponent {
           zeebeApi={ zeebeApi }
           deployment={ deployment }
           file={ file }
+          tabId={ tabId }
           onError={ this.handleError }
         />
       </div>
