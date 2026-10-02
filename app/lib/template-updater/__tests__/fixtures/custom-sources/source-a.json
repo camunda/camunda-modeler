@@ -1,0 +1,14 @@
+{
+  "io.camunda.example.custom-source": [
+    {
+      "version": 1,
+      "ref": "http://127.0.0.1:8123/template-a-v1.json",
+      "engine": { "camunda": ">=8.6" }
+    },
+    {
+      "version": 2,
+      "ref": "http://127.0.0.1:8123/template-a-v2.json",
+      "engine": { "camunda": ">=8.8" }
+    }
+  ]
+}

@@ -13,6 +13,7 @@ const parents = require('parents');
 const path = require('path');
 
 const { isArray } = require('min-dash');
+const { escapePath } = require('fast-glob');
 
 const { globFiles, toPosixPath } = require('../../util/files');
 
@@ -25,8 +26,8 @@ const log = require('../../log')('app:config:element-templates');
 /**
  * Provides element templates for the `bpmn.elementTemplates` config key.
  *
- * Templates are collected from two independent sources and merged (not
- * prioritized - there is no "use B if A is missing" fallback):
+ * Templates are collected from two independent sources and merged. Only
+ * configured remote cache files are prioritized, by template ID and version:
  *
  * 1. file-based: JSON files globbed from `element-templates/**` under the
  *    application resources paths, plus `.camunda/element-templates`
@@ -38,10 +39,11 @@ const log = require('../../log')('app:config:element-templates');
  *    so it contributes nothing unless something populates that config key.
  */
 class ElementTemplatesProvider {
-  constructor(paths, ignoredPaths, defaultProvider) {
+  constructor(paths, ignoredPaths, defaultProvider, templateSourcePaths = []) {
     this._paths = paths;
     this._ignoredPaths = ignoredPaths;
     this._defaultProvider = defaultProvider;
+    this._templateSourcePaths = templateSourcePaths.map(toPosixPath);
 
     /**
      * Cache of parsed templates, grouped per scope (globbed directory). The
@@ -97,7 +99,7 @@ class ElementTemplatesProvider {
    * @returns {Array<Template>}
    */
   _getTemplates(paths) {
-    return paths.reduce((templates, path) => {
+    const records = paths.reduce((templates, path) => {
       let files;
 
       // do not throw if file not accessible or no such file
@@ -124,7 +126,7 @@ class ElementTemplatesProvider {
 
         return [
           ...templates,
-          ...entry.templates
+          { file, templates: entry.templates }
         ];
       }, templates);
 
@@ -137,6 +139,8 @@ class ElementTemplatesProvider {
 
       return scoped;
     }, []);
+
+    return prioritizeTemplates(records, this._templateSourcePaths);
   }
 
   /**
@@ -181,6 +185,53 @@ module.exports = ElementTemplatesProvider;
 
 
 // helpers //////////
+
+/**
+ * Resolve ID/version conflicts between remote sources in configured order.
+ * Preserve traversal order and leave local and same-source duplicates untouched.
+ *
+ * @param {{ file: string, templates: Template[] }[]} records
+ * @param {string[]} sourcePaths Ordered from lowest to highest priority.
+ *
+ * @returns {Template[]}
+ */
+function prioritizeTemplates(records, sourcePaths) {
+  const sources = new Map(records.map(({ file, templates }) => [ file, templates ]));
+  const winners = new Map();
+
+  for (const file of sourcePaths) {
+    for (const template of sources.get(file) || []) {
+      const key = getTemplateKey(template);
+
+      if (key !== null) {
+        winners.set(key, file);
+      }
+    }
+  }
+
+  const managedPaths = new Set(sourcePaths);
+
+  return records.flatMap(({ file, templates }) => {
+    if (!managedPaths.has(file)) {
+      return templates;
+    }
+
+    return templates.filter(template => {
+      const key = getTemplateKey(template);
+
+      return key === null || winners.get(key) === file;
+    });
+  });
+}
+
+function getTemplateKey(template) {
+  if (!template || typeof template.id !== 'string') {
+    return null;
+  }
+
+  // The validator treats missing and null versions alike, but not version 0.
+  return JSON.stringify([ template.id, template.version ?? null ]);
+}
 
 /**
  * Suffix all paths.
@@ -231,6 +282,6 @@ function globTemplates(path, ignoredPaths) {
   return globFiles('element-templates/**/*.json', {
     cwd: path,
     dot: true,
-    ignore: ignoredPaths.map(toPosixPath)
+    ignore: ignoredPaths.map(file => escapePath(toPosixPath(file)))
   });
 }
