@@ -14,7 +14,7 @@ import { OverlayDropdown } from '../../shared/ui';
 
 import { Fill } from '../../app/slot-fill';
 
-import PlusIcon from '../../../resources/icons/Plus.svg';
+import { Plus } from '@camunda/design-system/icons';
 
 const OVERLAY_OFFSET = { top: 0, right: 0 };
 const OVERLAY_MIN_WIDTH = '160px';
@@ -74,7 +74,7 @@ export class CreateNewAction extends PureComponent {
         shouldOpen={ open }
         onClose={ this.onClose }
       >
-        <PlusIcon />
+        <Plus aria-hidden="true" />
       </OverlayDropdown>
     );
   }

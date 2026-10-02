@@ -2,10 +2,20 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   padding-right: 8px;
 
   .btn--tab-action {
     align-self: center;
+    color: var(--tab-action-icon-color);
+
+    &:hover {
+      background-color: var(--tab-action-hover-background-color);
+    }
+
+    &[aria-pressed="true"] {
+      background-color: var(--tab-action-active-background-color);
+      color: var(--tab-action-active-icon-color);
+    }
   }
 }

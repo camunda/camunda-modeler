@@ -10,7 +10,9 @@
 
 import React from 'react';
 
-import TabCloseIcon from '../../../resources/icons/TabClose.svg';
+import { IconButton } from '@camunda/design-system';
+
+import { X } from '@camunda/design-system/icons';
 
 import * as css from './SidePanelTitleBar.css';
 
@@ -22,15 +24,7 @@ export default function SidePanelTitleBar({ title, onClose }) {
         <span>{ title }</span>
       </div>
       { onClose && (
-        <div className="side-panel-title-bar__actions">
-          <button
-            className="side-panel-title-bar__action"
-            title="Close panel"
-            onClick={ onClose }
-          >
-            <TabCloseIcon />
-          </button>
-        </div>
+        <IconButton variant="ghost" size="sm" label="Close panel" icon={ X } onClick={ onClose } />
       ) }
     </div>
   );

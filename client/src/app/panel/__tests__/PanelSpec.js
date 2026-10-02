@@ -54,9 +54,9 @@ describe('<Panel>', function() {
       });
 
       // then
-      expect(getByRole('button', { name: 'Foo' })).to.exist;
+      expect(getByRole('tab', { name: 'Foo' })).to.exist;
       expect(getByTestId('tab-content')).to.exist;
-      expect(getByRole('button', { name: 'Foo' }).classList.contains('panel__link--active')).to.be.true;
+      expect(getByRole('tab', { name: 'Foo' }).classList.contains('panel__link--active')).to.be.true;
     });
 
 
@@ -75,7 +75,7 @@ describe('<Panel>', function() {
       });
 
       // then
-      expect(getByRole('button', { name: 'Foo' })).to.exist;
+      expect(getByRole('tab', { name: 'Foo' })).to.exist;
       expect(getByTestId('tab-content')).to.exist;
     });
 
@@ -101,10 +101,10 @@ describe('<Panel>', function() {
       });
 
       // then
-      expect(getByRole('button', { name: 'Foo' })).to.exist;
+      expect(getByRole('tab', { name: 'Foo' })).to.exist;
       expect(queryByTestId('foo')).to.exist;
 
-      expect(getByRole('button', { name: 'Bar' })).to.exist;
+      expect(getByRole('tab', { name: 'Bar' })).to.exist;
       expect(queryByTestId('bar')).to.not.exist;
     });
 
@@ -131,7 +131,7 @@ describe('<Panel>', function() {
       });
 
       // then
-      const tabs = getAllByRole('button', { name: /foo|bar/i });
+      const tabs = getAllByRole('tab', { name: /foo|bar/i });
       expect(tabs[0].textContent).to.eql('Bar');
       expect(tabs[1].textContent).to.eql('Foo');
     });
@@ -220,7 +220,7 @@ describe('<Panel>', function() {
       });
 
       // when
-      await userEvent.click(getByRole('button', { name: 'Bar' }));
+      await userEvent.click(getByRole('tab', { name: 'Bar' }));
 
       // then
       expect(onLayoutChangedSpy).to.have.been.calledWith({
