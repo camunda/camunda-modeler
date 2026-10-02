@@ -6,7 +6,14 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.52.0
+
+* `FEAT`: mark Camunda 8.10 as the latest stable engine profile ([#6180](https://github.com/camunda/camunda-modeler/pull/6180))
+* `FEAT`: evaluate FEEL expressions against the connected cluster in the pop-out editor ([#6169](https://github.com/camunda/camunda-modeler/pull/6169))
+* `FEAT`: persist FEEL evaluation contexts per file across restarts ([#6170](https://github.com/camunda/camunda-modeler/pull/6170))
+* `FEAT`: list the secrets available on the connected cluster in credential secret fields ([#6192](https://github.com/camunda/camunda-modeler/pull/6192))
 * `FEAT`: drop support for 32-bit Windows distributables
+* `FEAT`: link to secret management documentation from credential secret field warnings ([#6196](https://github.com/camunda/camunda-modeler/issues/6196))
 * `FEAT`: rename cluster connection terminology to plain connection ([#6158](https://github.com/camunda/camunda-modeler/pull/6158))
 * `FEAT`: report unreachable or temporarily unavailable instance on connection check ([#6188](https://github.com/camunda/camunda-modeler/pull/6188))
 * `FIX`: do not report a connection error while the tab's connection is still being resolved
