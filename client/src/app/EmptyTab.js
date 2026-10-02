@@ -10,6 +10,16 @@
 
 import React, { PureComponent } from 'react';
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Heading,
+  Link,
+  Separator,
+  Text
+} from '@camunda/design-system';
+
 import CloudIcon from '../../resources/icons/Cloud.svg';
 import PlatformIcon from '../../resources/icons/Platform.svg';
 import AiIcon from '../../resources/icons/Ai.svg';
@@ -23,6 +33,29 @@ import {
 } from './primitives';
 
 import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM } from '../util/Flags';
+
+const ARTICLES = [
+  {
+    title: 'Introduction to Camunda 8',
+    label: 'Read blog post',
+    href: utmTag('https://camunda.com/blog/2022/04/camunda-platform-8-orchestrate-all-the-things')
+  },
+  {
+    title: 'Migrating from Camunda 7',
+    label: 'Camunda Docs',
+    href: utmTag('https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/')
+  },
+  {
+    title: 'About Modeler 5',
+    label: 'Open "What\'s new"',
+    event: 'versionInfo.open'
+  },
+  {
+    title: 'Model your first diagram',
+    label: 'Camunda Modeler Docs',
+    href: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/model-your-first-diagram/')
+  }
+];
 
 
 export default class EmptyTab extends PureComponent {
@@ -39,8 +72,15 @@ export default class EmptyTab extends PureComponent {
     } = this.props;
 
     return (
-      <button key={ key } className="btn btn-secondary" onClick={ () => onAction(entry.action, entry.options) }>
-        {entry.icon && <entry.icon />}
+      <button
+        key={ key }
+        type="button"
+        className="welcome-tile"
+        onClick={ () => onAction(entry.action, entry.options) }
+      >
+        <span className="welcome-tile__icon">
+          {entry.icon && <entry.icon aria-hidden="true" />}
+        </span>
         {entry.label}
       </button>
     );
@@ -64,91 +104,92 @@ export default class EmptyTab extends PureComponent {
     return tabs;
   }
 
-  renderCloudColumn = () => {
-
-    const createButtons = this.getCreateButtons('Camunda 8');
-
+  renderEngineCard({ id, title, icon: Icon, iconViewBox, docsUrl, group }) {
     return (
-      <div id="welcome-page-cloud" className="welcome-card relative" data-testid="welcome-page-cloud">
-        <div className="engine-info">
-          <div className="engine-info-heading">
-            <CloudIcon className="engine-icon cloud-icon" />
-            <h3>Camunda 8</h3>
+      <Card id={ id } className="welcome-card" data-testid={ id }>
+        <CardHeader className="welcome-card__header welcome-card__header--centered welcome-card__section">
+          <span className="welcome-card__title">
+            <Icon className="welcome-card__icon" viewBox={ iconViewBox } aria-hidden="true" />
+            <Heading as="h3" variant="heading-sm">{ title }</Heading>
+          </span>
+          <Link inline href={ docsUrl }>See documentation</Link>
+        </CardHeader>
+        <CardContent className="welcome-card__content welcome-card__section">
+          <Text as="p" variant="body-subtle">Create a new file</Text>
+          <div className="welcome-card__actions">
+            { this.getCreateButtons(group) }
           </div>
-          <a href={ utmTag('https://docs.camunda.io/') }>See documentation</a>
-        </div>
-
-        <p>Create a new file</p>
-
-        {createButtons}
-      </div>
+        </CardContent>
+      </Card>
     );
-  };
+  }
 
-  renderPlatformColumn = () => {
-
-    const createButtons = this.getCreateButtons('Camunda 7');
-
+  renderLearnMoreCard() {
     return (
-      <div id="welcome-page-platform" className="welcome-card" data-testid="welcome-page-platform">
-        <div className="engine-info">
-          <div className="engine-info-heading">
-            <PlatformIcon className="engine-icon platform-icon" />
-            <h3>Camunda 7</h3>
+      <Card id="welcome-page-learn-more" className="welcome-card">
+        <CardHeader className="welcome-card__header welcome-card__section">
+          <span className="welcome-card__title">
+            <Heading as="h3" variant="heading-sm">Learn more</Heading>
+          </span>
+          <div className="welcome-article welcome-article--featured">
+            <AiIcon aria-hidden="true" />
+            <Link inline href={ utmTag('https://docs.camunda.io/docs/guides/getting-started-agentic-orchestration') }>
+              Build your first AI agent
+            </Link>
           </div>
-          <a href={ utmTag('https://docs.camunda.org/') }>See documentation</a>
-        </div>
-
-        <p>Create a new file</p>
-
-        {createButtons}
-      </div>
+        </CardHeader>
+        <CardContent className="welcome-card__articles welcome-card__section">
+          <Separator />
+          {
+            ARTICLES.map(({ title, label, href, event }) => (
+              <div key={ title } className="welcome-article">
+                <Text as="p">{ title }</Text>
+                <Link
+                  inline
+                  href={ href || '#' }
+                  onClick={ event ? () => this.props.emit(event) : undefined }
+                >
+                  { label }
+                </Link>
+              </div>
+            ))
+          }
+        </CardContent>
+      </Card>
     );
-  };
-
-  renderLearnMoreColumn = () => {
-
-    return (
-      <div id="welcome-page-learn-more" className="welcome-card">
-        <div className="learn-more">
-          <h3>Learn more</h3>
-          <div className="article top">
-            <AiIcon />
-            <a href={ utmTag('https://docs.camunda.io/docs/guides/getting-started-agentic-orchestration') }>Build your first AI agent</a>
-          </div>
-          <div className="article relative">
-            <p>Introduction to Camunda 8</p>
-            <a href={ utmTag('https://camunda.com/blog/2022/04/camunda-platform-8-orchestrate-all-the-things') }>Read blog post</a>
-          </div>
-          <div className="article relative">
-            <p>Migrating from Camunda 7</p>
-            <a href={ utmTag('https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/') }>Camunda Docs</a>
-          </div>
-          <div className="article">
-            <p>About Modeler 5</p>
-            <a href="#" onClick={ () => this.props.emit('versionInfo.open') }>Open &quot;What&apos;s new&quot;</a>
-          </div>
-          <div className="article">
-            <p>Model your first diagram</p>
-            <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/model-your-first-diagram/') }>Camunda Modeler Docs</a>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  }
 
   render() {
 
     return (
       <Tab className={ css.EmptyTab }>
-        <h2 className="welcome-header">What do you want to create today?</h2>
-        <div className="welcome-cards">
-          {!Flags.get(DISABLE_ZEEBE) && <>{this.renderCloudColumn()}</>}
-          {!Flags.get(DISABLE_PLATFORM) && <>{this.renderPlatformColumn()}</>}
-          {this.renderLearnMoreColumn()}
+        <div className="welcome">
+          <Heading as="h2" variant="heading-md">What do you want to create today?</Heading>
+          <div className="welcome-cards">
+            {
+              !Flags.get(DISABLE_ZEEBE) && this.renderEngineCard({
+                id: 'welcome-page-cloud',
+                title: 'Camunda 8',
+                icon: CloudIcon,
+                iconViewBox: '9 10 62 45',
+                docsUrl: utmTag('https://docs.camunda.io/'),
+                group: 'Camunda 8'
+              })
+            }
+            {
+              !Flags.get(DISABLE_PLATFORM) && this.renderEngineCard({
+                id: 'welcome-page-platform',
+                title: 'Camunda 7',
+                icon: PlatformIcon,
+                iconViewBox: '19 11 41 41',
+                docsUrl: utmTag('https://docs.camunda.org/'),
+                group: 'Camunda 7'
+              })
+            }
+            { this.renderLearnMoreCard() }
+          </div>
         </div>
       </Tab>
     );
   }
 }
-
