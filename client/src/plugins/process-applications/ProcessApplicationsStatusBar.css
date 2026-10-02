@@ -1,21 +1,3 @@
-:local(.ProcessApplicationsButton) {
-  &.has-process-application {
-    background: hsl(205, 100%, 45%) !important;
-  
-    svg {
-      fill: white;
-    }
-
-    &:hover {
-      background: hsl(205, 100%, 40%) !important;
-  
-      svg {
-        fill: white;
-      }
-    }
-  }
-}
-  
 :local(.ProcessApplicationsOverlay) {
   .section__header {
     white-space: nowrap;

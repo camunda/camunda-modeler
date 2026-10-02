@@ -43,7 +43,7 @@
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--ring);
+      box-shadow: var(--focus-shadow);
     }
 
     &[data-state="closed"] {

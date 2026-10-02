@@ -14,17 +14,21 @@ import classnames from 'classnames';
 
 import { isNil } from 'min-dash';
 
+import { Button, Link, StatusIcon } from '@camunda/design-system';
+
+import { ExternalLink, XCircle } from '@camunda/design-system/icons';
+
 import { Fill } from '../../../slot-fill';
 
 import LintingStatusBarItem from './LintingStatusBarItem';
 
 import * as css from './LintingTab.css';
 
-import ErrorIcon from '../../../../../resources/icons/Error.svg';
-import LaunchIcon from '../../../../../resources/icons/Launch.svg';
-import SuccessIcon from '../../../../../resources/icons/Success.svg';
-import WarningIcon from '../../../../../resources/icons/Warning.svg';
-import InfoIcon from '../../../../../resources/icons/InformationCircle.svg';
+const STATUS_ICON_VARIANTS = {
+  error: 'danger',
+  warn: 'warning',
+  info: 'info'
+};
 
 export default function LintingTab(props) {
   const {
@@ -60,7 +64,7 @@ export default function LintingTab(props) {
         : (
           <div className={ classnames(css.LintingTabItem, 'linting-tab-item--empty') }>
             <div className="linting-tab-item__header">
-              <SuccessIcon width="16" height="16" />
+              <StatusIcon variant="success" />
               <span className="linting-tab-item__label">No problems found.</span>
             </div>
           </div>
@@ -102,7 +106,7 @@ function LintingTabItem(props) {
     return <div
       className={ classnames(css.LintingTabItem, 'linting-tab-item', 'linting-tab-item--rule-error') }>
       <div className="linting-tab-item__header">
-        <ErrorIcon width="16" height="16" />
+        <XCircle className="linting-tab-item__icon" aria-hidden="true" />
         <span className="linting-tab-item__label">Rule error</span>
       </div>
       <div className="linting-tab-item__content">
@@ -122,37 +126,38 @@ function LintingTabItem(props) {
       'linting-tab-item--info': category === 'info'
     }) }>
     <button className="linting-tab-item__header" onClick={ onClick }>
-      { category === 'error' ? <ErrorIcon width="16" height="16" /> : null }
-      { category === 'warn' ? <WarningIcon width="16" height="16" /> : null }
-      { category === 'info' ? <InfoIcon width="16" height="16" /> : null }
+      { STATUS_ICON_VARIANTS[ category ] && <StatusIcon variant={ STATUS_ICON_VARIANTS[ category ] } /> }
       <span className="linting-tab-item__label">{ reportName }</span>
     </button>
     <div className="linting-tab-item__content">
       { message }
       {
-        !isNil(documentationUrl) && <>
-          <a
+        !isNil(documentationUrl) && (
+          <Link
             className="linting-tab-item__link"
             href={ documentationUrl }
-            target="_blank" rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={ stopPropagation }
-            title="Go to documentation">
-            <LaunchIcon width="12" height="12" viewBox="0 0 12 12" />
-          </a>
-        </>
+            aria-label="Go to documentation"
+          >
+            <ExternalLink aria-hidden="true" />
+          </Link>
+        )
       }
       {
         report.action && (
-          <button
-            className="linting-tab-item__button"
+          <Button
+            variant="link"
+            size="xs"
             onClick={ (event) => {
               event.preventDefault();
               stopPropagation(event);
               onAction(report.action.handler, report.action.options);
             } }
-            title={ report.action.label }>
+          >
             { report.action.label }
-          </button>
+          </Button>
         )
       }
     </div>

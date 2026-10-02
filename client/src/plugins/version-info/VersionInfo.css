@@ -1,7 +1,6 @@
 :root {
-  --unread-marker-background-color: var(--color-blue-205-100-50);
-  --unread-marker-border-color: var(--color-blue-205-100-45);
-  --unread-marker-box-shadow: var(--color-grey-225-10-85);
+  --unread-marker-background-color: var(--info-action-default);
+  --unread-marker-border-color: var(--info-border-strong);
 }
 
 :local(.UnreadMarker) {

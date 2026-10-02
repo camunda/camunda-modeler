@@ -16,7 +16,7 @@ import {
   OverlayDropdown
 } from '../../shared/ui';
 
-import TabContext from '../../../resources/icons/TabContext.svg';
+import { Ellipsis } from '@camunda/design-system/icons';
 
 const OVERLAY_OFFSET = { top: 0, right: 0 };
 const OVERLAY_MIN_WIDTH = '160px';
@@ -134,7 +134,7 @@ export class TabContextAction extends React.PureComponent {
               buttonRef={ this._buttonRef }
               overlayConfig={ overlayConfig }
             >
-              <TabContext />
+              <Ellipsis aria-hidden="true" />
             </OverlayDropdown>
           ) : null
         }

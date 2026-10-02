@@ -90,7 +90,6 @@
     border: 1px solid var(--border);
     border-radius: calc(var(--radius) + 4px);
     background-color: var(--background);
-    font: inherit;
     color: var(--foreground);
     text-align: start;
     cursor: pointer;
@@ -103,7 +102,7 @@
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--ring);
+      box-shadow: var(--focus-shadow);
     }
 
     /* categorical colors per file type */
@@ -138,12 +137,6 @@
     svg {
       width: 20px;
       height: 20px;
-      fill: currentColor;
-    }
-
-    /* stroke icons (e.g. lucide) */
-    svg[fill="none"] {
-      fill: none;
     }
   }
 
