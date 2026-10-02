@@ -64,7 +64,7 @@ export default function CamundaProjectsStatusBar(props) {
     {
       isCamundaProjectAllowed(activeTab) && <Fill slot="status-bar__file" group="0_camunda-project">
         <button
-          className={ classnames('btn', css.CamundaProjectsButton, { 'has-camunda-project': !!camundaProject }) }
+          className={ classnames('btn', { 'btn--primary has-camunda-project': !!camundaProject }) }
           ref={ ref }
           onClick={ () => setIsOpen(!isOpen) }
           title={ camundaProject ? 'This file is part of a project' : 'New project...' }

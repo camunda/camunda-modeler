@@ -14,9 +14,18 @@ import classnames from 'classnames';
 
 import { isDefined } from 'min-dash';
 
-import { Slot } from '../slot-fill';
+import {
+  Badge,
+  IconButton,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from '@camunda/design-system';
 
-import CloseIcon from '../../../resources/icons/Close.svg';
+import { X } from '@camunda/design-system/icons';
+
+import { Slot } from '../slot-fill';
 
 import * as css from './Panel.css';
 
@@ -93,45 +102,65 @@ export default function Panel({ children, layout = {}, onLayoutChanged, onUpdate
   };
 
   return <TabContext.Provider value={ contextValue }>
-    <div className={ css.Panel }>
+    <Tabs
+      className={ css.Panel }
+      value={ activeTab.id }
+      onValueChange={ (id) => onLayoutChanged({
+        panel: {
+          ...panel,
+          tab: id
+        }
+      }) }
+    >
       <div className="panel__header">
-        <div className="panel__links">
+        <TabsList variant="line">
           {sortedTabs.map(tab => (
-            <button
+            <TabsTrigger
               key={ tab.id }
+              value={ tab.id }
               className={ classnames('panel__link', { 'panel__link--active': tab === activeTab }) }
-              onClick={ () => onLayoutChanged({
-                panel: {
-                  ...panel,
-                  tab: tab.id
-                }
-              }) }
             >
               {tab.link}
-            </button>
+            </TabsTrigger>
           ))}
-        </div>
+        </TabsList>
         <div className="panel__actions">
           {activeTab.actions}
-          <button key="close" className="panel__action" title="Close panel" onClick={ close }>
-            <CloseIcon />
-          </button>
+          <PanelAction title="Close panel" icon={ X } onClick={ close } />
         </div>
       </div>
-      <div tabIndex="0" className="panel__body" onFocus={ updateMenu }>
-        <div className="panel__inner">
-          {activeTab.body}
-        </div>
+      <div className="panel__body" onFocus={ updateMenu }>
+        {
+          isDefined(activeTab.id) && (
+            <TabsContent value={ activeTab.id } className="panel__inner">
+              {activeTab.body}
+            </TabsContent>
+          )
+        }
       </div>
       {
         children
       }
       <Slot name="bottom-panel" Component={ Tab } />
-    </div>
+    </Tabs>
   </TabContext.Provider>;
 }
 
 Panel.Tab = Tab;
+
+function PanelAction({ title, icon, onClick }) {
+  return (
+    <IconButton
+      variant="ghost"
+      size="sm"
+      className="panel__action"
+      label={ title }
+      icon={ icon }
+      tooltipSide="top"
+      onClick={ onClick }
+    />
+  );
+}
 
 function Tab(props) {
   const {
@@ -152,18 +181,19 @@ function Tab(props) {
       </span>
       {
         isDefined(number)
-          ? <span className="panel__link-number">{ number }</span>
+          ? <Badge variant="neutral" className="panel__link-number">{ number }</Badge>
           : null
       }
     </>;
 
-    const Actions = (actions || []).map(action => {
-      const Icon = action.icon;
-
-      return <button key={ action.title } className="panel__action" title={ action.title } onClick={ action.onClick }>
-        <Icon />
-      </button>;
-    });
+    const Actions = (actions || []).map(action => (
+      <PanelAction
+        key={ action.title }
+        title={ action.title }
+        icon={ action.icon }
+        onClick={ action.onClick }
+      />
+    ));
 
     return {
       id: id || label,
