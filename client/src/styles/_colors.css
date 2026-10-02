@@ -48,4 +48,16 @@
   --color-danger-background-hover-color: var(--danger-background-subtle);
 
   --link-color: var(--info-action-default);
+
+  /* like IDEs: a shell around white content, panels next to the content */
+  --app-shell-background-color: var(--neutral-background-medium);
+  --app-content-background-color: var(--neutral-background-subtle);
+  --app-panel-background-color: var(--background);
+
+  /* app bars: tab bar, panel headers, status bar */
+  --app-bar-background-color: var(--app-shell-background-color);
+  --app-bar-border-color: var(--border);
+  --app-bar-item-background-color: var(--app-content-background-color);
+  --app-bar-item-hover-background-color: var(--neutral-background-strong);
+  --app-bar-item-active-background-color: var(--neutral-background-strong);
 }

@@ -14,6 +14,8 @@ import classNames from 'classnames';
 
 import { groupBy, omit } from 'min-dash';
 
+import { X } from '@camunda/design-system/icons';
+
 import * as css from './Tabbed.css';
 
 import {
@@ -23,8 +25,6 @@ import {
 import { TabActions } from '../tab-actions';
 
 import { Slot } from '../slot-fill';
-
-import TabCloseIcon from '../../../resources/icons/TabClose.svg';
 
 const noop = () => {};
 
@@ -49,12 +49,13 @@ const MIDDLE_MOUSE_BUTTON = 1;
 const SMALL_TAB_WIDTH = 90;
 const SMALLER_TAB_WIDTH = 45;
 
+// DS palette steps closest to the former group colors
 const COLORS = [
-  'rgb(30, 136, 229)',
-  'rgb(251, 140, 0)',
-  'rgb(67, 160, 71)',
-  'rgb(229, 57, 53)',
-  'rgb(142, 36, 170)'
+  'var(--color-blue-500)',
+  'var(--color-orange-600)',
+  'var(--color-green-700)',
+  'var(--color-red-600)',
+  'var(--color-purple-500)'
 ];
 
 export default class TabLinks extends PureComponent {
@@ -292,7 +293,7 @@ function TabClose(props) {
         onClose && onClose(tab);
       } }
     >
-      <TabCloseIcon className="tab__icon-close" />
+      <X className="tab__icon-close" aria-hidden="true" />
     </button>
   );
 }

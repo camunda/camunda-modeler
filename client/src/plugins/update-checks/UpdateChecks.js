@@ -387,7 +387,7 @@ export default class UpdateChecks extends PureComponent {
         {
           updateAvailable && <Fill slot="status-bar__app" group="Z_update_checks">
             <button
-              className="btn btn--primary"
+              className="btn btn--attention"
               title="Toggle update info"
               onClick={ this.toggleUpdateAvailableOverlay }
               ref={ this.updateAvailableButtonRef }>Update</button>
