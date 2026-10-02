@@ -10,10 +10,11 @@
 
 import React from 'react';
 
-import { IconButton } from '@carbon/react';
-import { ValueVariableAlt } from '@carbon/icons-react';
+import { Variable } from '@camunda/design-system/icons';
 
 import { Fill } from '../../../slot-fill';
+
+import TabActionToggle from '../../../tab-actions/TabActionToggle';
 
 import { DEFAULT_LAYOUT } from './VariablesSidePanel';
 
@@ -38,15 +39,11 @@ export default function VariablesTabActionItem(props) {
   };
 
   return <Fill slot="tab-actions" priority={ 3 }>
-    <IconButton
-      className="btn--tab-action"
-      kind="ghost"
-      size="sm"
-      isSelected={ isActive }
+    <TabActionToggle
       label="Variables"
+      icon={ Variable }
+      pressed={ isActive }
       onClick={ onClick }
-    >
-      <ValueVariableAlt />
-    </IconButton>
+    />
   </Fill>;
 }

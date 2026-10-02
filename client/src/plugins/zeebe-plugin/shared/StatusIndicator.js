@@ -10,8 +10,8 @@
 
 import React from 'react';
 
-import { Loading } from '@carbon/react';
-import { CheckmarkFilled, ErrorFilled, PauseOutlineFilled, } from '@carbon/icons-react';
+import { StatusIcon } from '@camunda/design-system';
+import { CirclePause, CircleX, Loader2 } from '@camunda/design-system/icons';
 
 import * as css from './StatusIndicator.css';
 
@@ -26,19 +26,19 @@ export function StatusIndicator({ status, text, reserveIconSpace = true }) {
 
   switch (status) {
   case 'loading':
-    icon = <Loading small={ true } withOverlay={ false } className={ 'status-icon loading' } aria-label="Loading" />;
+    icon = <Loader2 className="status-icon status-icon--loading" role="img" aria-label="Loading" />;
     break;
   case 'success':
-    icon = <CheckmarkFilled className={ 'status-icon success' } aria-label="Success" />;
+    icon = <StatusIcon className="status-icon" variant="success" label="Success" />;
     break;
   case 'error':
-    icon = <ErrorFilled className={ 'status-icon error' } aria-label="Error" />;
+    icon = <StatusIcon className="status-icon" variant="danger" label="Error" />;
     break;
   case 'paused':
-    icon = <PauseOutlineFilled className={ 'status-icon paused' } aria-label="Paused" />;
+    icon = <CirclePause className="status-icon status-icon--muted" role="img" aria-label="Paused" />;
     break;
   case 'idle':
-    icon = <ErrorFilled className={ 'status-icon idle' } aria-label="Idle" />;
+    icon = <CircleX className="status-icon status-icon--muted" role="img" aria-label="Idle" />;
     break;
   default:
     icon = reserveIconSpace ? <span className={ 'status-icon placeholder' } /> : null;

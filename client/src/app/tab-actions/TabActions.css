@@ -6,17 +6,6 @@
   padding-right: 8px;
 
   .btn--tab-action {
-    min-width: unset;
     align-self: center;
-    border: none;
-
-    &:focus {
-      box-shadow: none;
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--focus-outline-color);
-      outline-offset: -2px;
-    }
   }
 }

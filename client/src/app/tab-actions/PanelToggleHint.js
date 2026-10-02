@@ -14,7 +14,7 @@ import React, {
   useState
 } from 'react';
 
-import { Close } from '@carbon/icons-react';
+import { X } from '@camunda/design-system/icons';
 
 import { Overlay } from '../../shared/ui';
 
@@ -94,7 +94,7 @@ export function PanelToggleHint(props) {
         onClick={ dismiss }
         aria-label="Close"
       >
-        <Close size={ 16 } />
+        <X size={ 16 } aria-hidden="true" />
       </button>
       <Overlay.Title>
         { tabType === 'cloud-bpmn'
