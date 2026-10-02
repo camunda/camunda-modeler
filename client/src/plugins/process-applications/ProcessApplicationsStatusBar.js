@@ -64,7 +64,7 @@ export default function ProcessApplicationsStatusBar(props) {
     {
       isProcessApplicationAllowed(activeTab) && <Fill slot="status-bar__file" group="0_process-application">
         <button
-          className={ classnames('btn', css.ProcessApplicationsButton, { 'has-process-application': !!processApplication }) }
+          className={ classnames('btn', { 'btn--primary has-process-application': !!processApplication }) }
           ref={ ref }
           onClick={ () => setIsOpen(!isOpen) }
           title={ processApplication ? 'This file is part of a process application' : 'New process application...' }

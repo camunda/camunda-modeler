@@ -39,6 +39,7 @@ export default function TabActionToggle(props) {
       <TooltipTrigger asChild>
         <Toggle
           className="btn--tab-action"
+          variant="outline"
           size="sm"
           pressed={ pressed }
           aria-label={ label }

@@ -48,4 +48,11 @@
   --color-danger-background-hover-color: var(--danger-background-subtle);
 
   --link-color: var(--info-action-default);
+
+  /* app bars: tab bar, panel headers, status bar */
+  --app-bar-background-color: var(--neutral-background-subtle);
+  --app-bar-border-color: var(--border);
+  --app-bar-item-background-color: var(--background);
+  --app-bar-item-hover-background-color: var(--neutral-background-medium);
+  --app-bar-item-active-background-color: var(--neutral-background-strong);
 }

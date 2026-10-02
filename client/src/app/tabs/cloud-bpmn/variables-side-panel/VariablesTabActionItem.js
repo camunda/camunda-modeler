@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { Variable } from '@camunda/design-system/icons';
+import { Braces } from '@camunda/design-system/icons';
 
 import { Fill } from '../../../slot-fill';
 
@@ -41,7 +41,7 @@ export default function VariablesTabActionItem(props) {
   return <Fill slot="tab-actions" priority={ 3 }>
     <TabActionToggle
       label="Variables"
-      icon={ Variable }
+      icon={ Braces }
       pressed={ isActive }
       onClick={ onClick }
     />
