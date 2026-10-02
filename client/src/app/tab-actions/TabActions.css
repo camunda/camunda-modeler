@@ -2,10 +2,21 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   padding-right: 8px;
 
   .btn--tab-action {
     align-self: center;
+    border: 1px solid var(--app-bar-border-color);
+    background-color: var(--app-bar-item-background-color);
+
+    &:hover {
+      background-color: var(--app-bar-item-hover-background-color);
+    }
+
+    &[data-state="on"] {
+      background-color: var(--app-bar-item-active-background-color);
+      color: var(--neutral-foreground-strong);
+    }
   }
 }

@@ -1,23 +1,18 @@
 :root {
-  --log-font-family: var(--font-family-monospace);
-  --log-font-size: var(--font-size-default);
-  --log-color: var(--color-grey-225-10-15);
-  --log-border-color: var(--color-grey-225-10-75);
-  --log-background-color: var(--color-white);
-  --log-resizer-border-color: var(--color-grey-225-10-75);
-  --log-button-background-color: var(--color-grey-225-10-95);
-  --log-button-border-color: var(--color-grey-225-10-75);
-  --log-button-hover-background-color: var(--color-grey-225-10-97);
+  --log-font-family: var(--font-mono);
+  --log-font-size: var(--text-xs);
+  --log-color: var(--foreground);
 }
 
 :local(.LogTab) {
   position: relative;
   font-size: var(--log-font-size);
   font-family: var(--log-font-family);
+  line-height: 20px;
   color: var(--log-color);
 
   white-space: pre-wrap;
-  padding: 5px;
+  padding: 8px 12px;
   resize: none;
   outline: none;
 
@@ -28,5 +23,13 @@
     * {
       user-select: text;
     }
+  }
+
+  .action {
+    color: var(--link-color);
+  }
+
+  .category {
+    color: var(--neutral-foreground-subtle);
   }
 }

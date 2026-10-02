@@ -77,8 +77,8 @@ describe('<LogTab>', function() {
     // then
     expect(container.querySelectorAll('.panel__action')).to.have.length(3);
 
-    expect(container.querySelector('.panel__action[title="Copy output"]')).to.exist;
-    expect(container.querySelector('.panel__action[title="Clear output"]')).to.exist;
+    expect(container.querySelector('.panel__action[aria-label="Copy output"]')).to.exist;
+    expect(container.querySelector('.panel__action[aria-label="Clear output"]')).to.exist;
   });
 
 });

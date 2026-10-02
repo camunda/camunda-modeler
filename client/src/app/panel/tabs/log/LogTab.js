@@ -10,12 +10,11 @@
 
 import React, { PureComponent } from 'react';
 
+import { Copy, Trash2 } from '@camunda/design-system/icons';
+
 import { Fill } from '../../../slot-fill';
 
 import * as css from './LogTab.css';
-
-import CopyIcon from '../../../../../resources/icons/Copy.svg';
-import DeleteIcon from '../../../../../resources/icons/Delete.svg';
 
 export const KEYCODE_ESCAPE = 27;
 
@@ -124,12 +123,12 @@ export default class LogTab extends PureComponent {
             [
               {
                 onClick: this.handleCopy,
-                icon: CopyIcon,
+                icon: Copy,
                 title: 'Copy output'
               },
               {
                 onClick: onClear,
-                icon: DeleteIcon,
+                icon: Trash2,
                 title: 'Clear output'
               }
             ]
