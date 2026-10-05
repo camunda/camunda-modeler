@@ -11,11 +11,11 @@
 
   /* @camunda/improved-canvas restets */
   .djs-container.bio-improved-canvas {
-    background-color: var(--color-white);
+    background-color: var(--background);
   }
 
   .bio-improved-canvas defs pattern circle {
-    fill: #ccc !important;
+    fill: var(--neutral-border-strong) !important;
   }
 
   .dmn-decision-table-container {
@@ -35,28 +35,9 @@
   }
 
   &>.top {
+    display: flex;
+    gap: 8px;
     padding: 10px;
-
-    .button {
-      background: var(--color-white);
-      padding: 8px;
-      border: solid 1px var(--color-grey-225-10-75);
-      border-radius: 2px;
-      font-size: 14px;
-      color: var(--color-grey-225-10-15);
-      font-weight: bold;
-      font-family: inherit;
-      margin-right: 10px;
-
-      &:last-child {
-        margin-right: 0;
-      }
-
-      &:hover {
-        background-color: var(--color-grey-225-10-97);
-      }
-    }
-
   }
 
   &>.bottom {

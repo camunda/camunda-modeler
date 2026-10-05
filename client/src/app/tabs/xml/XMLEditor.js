@@ -18,8 +18,6 @@ import {
 
 import CodeMirror from './CodeMirror';
 
-import * as css from './XMLEditor.css';
-
 import { getXMLEditMenu } from './getXMLEditMenu';
 
 import getXMLWindowMenu from './getXMLWindowMenu';
@@ -175,7 +173,7 @@ export class XMLEditor extends CachedComponent {
 
   render() {
     return (
-      <div className={ css.XMLEditor }>
+      <div className="code-editor">
         <div className="content" ref={ this.ref }></div>
       </div>
     );

@@ -119,7 +119,7 @@ export class VersionInfo extends PureComponent {
             title="Toggle version info"
             onClick={ toggle }
             ref={ buttonRef }
-          >{ version } {unread && <UnreadMarker />}</button>
+          >{ version }{ unread && <UnreadMarker /> }</button>
         </Fill>
         {
           open && <VersionInfoOverlay
@@ -131,14 +131,6 @@ export class VersionInfo extends PureComponent {
   }
 }
 
-function UnreadMarker(props) {
-  return (<span className={ css.UnreadMarker }>
-    <svg
-      aria-label="unread" role="img" xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 100 100"
-    >
-      <circle cx="50" cy="50" r="50" />
-    </svg>
-  </span>
-  );
+function UnreadMarker() {
+  return <span className={ css.UnreadMarker } role="img" aria-label="unread" />;
 }

@@ -27,7 +27,7 @@
       &.file-active button {
         cursor: default;
         text-decoration: none;
-        color: var(--color-blue-205-100-50);
+        color: var(--link-color);
         cursor: default;
 
         span.file-name {
@@ -38,7 +38,7 @@
       &.file-error button {
         cursor: default;
         text-decoration: none;
-        color: var(--color-red-360-100-45);
+        color: var(--danger-foreground-subtle);
         cursor: default;
 
         span.file-name {

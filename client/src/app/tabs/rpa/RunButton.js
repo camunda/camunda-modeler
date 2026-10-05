@@ -69,12 +69,10 @@ export default function RunButton(props) {
         onClose={ onClose }
         anchor={ buttonRef.current }
       >
-        <div style={ { padding: '12px' } }>
-          <RunDialog
-            editor={ editor }
-            onSubmit={ onClose }
-          />
-        </div>
+        <RunDialog
+          editor={ editor }
+          onSubmit={ onClose }
+        />
       </Overlay>
     }
   </>;
