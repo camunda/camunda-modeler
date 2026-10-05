@@ -1,0 +1,168 @@
+/* XML and JSON tabs (CodeMirror) */
+:root {
+  --code-editor-button-color: var(--foreground);
+  --code-editor-button-border-color: var(--input);
+  --code-editor-button-background-color: var(--neutral-background-subtle);
+  --code-editor-font-size: var(--font-size-default);
+  --code-editor-font-size-small: var(--text-sm);
+}
+
+.code-editor {
+  display: flex;
+  flex: 1;
+
+  flex-direction: row;
+  overflow: auto;
+
+  .content {
+    flex: 1;
+    position: relative;
+  }
+
+  .cm-editor {
+    height: 100%;
+    width: 100%;
+    font-size: var(--code-editor-font-size);
+    font-family: var(--font-family-monospace);
+
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    .cm-scroller {
+      overflow-y: auto !important;
+    }
+
+    .cm-content {
+      width: 100%;
+      padding-right: 16px;
+    }
+
+    /* CodeMirror renders its own search panel; controls mirror DS Button (secondary, sm), Input and Checkbox */
+    .cm-button {
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid var(--code-editor-button-border-color);
+      border-radius: var(--radius);
+      background-image: none;
+      background-color: var(--code-editor-button-background-color);
+      color: var(--code-editor-button-color);
+      font-family: var(--font-family);
+      font-size: var(--code-editor-font-size-small);
+      font-weight: var(--font-weight-medium);
+      text-transform: capitalize;
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--neutral-background-medium);
+      }
+
+      &:active {
+        background-color: var(--neutral-background-strong);
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--ring);
+      }
+    }
+
+    .cm-textfield {
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--input);
+      border-radius: var(--radius);
+      background-color: var(--input-background);
+      color: var(--foreground);
+      font-family: var(--font-family-monospace);
+      font-size: var(--code-editor-font-size-small);
+
+      &::placeholder {
+        color: var(--neutral-foreground-subtle);
+        font-family: var(--font-family);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: var(--ring);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 20%, transparent);
+      }
+    }
+
+    .cm-panel.cm-search {
+      padding: 4px 40px 4px 8px;
+      background-color: var(--neutral-background-subtle);
+      border-color: var(--border);
+
+      input,
+      button,
+      label {
+        margin: 4px 8px 4px 0;
+        vertical-align: middle;
+      }
+
+      label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--foreground);
+        font-family: var(--font-family);
+        font-size: var(--code-editor-font-size-small);
+        text-transform: capitalize;
+      }
+
+      input[type=checkbox] {
+        appearance: none;
+        position: relative;
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        border: 1px solid var(--input);
+        border-radius: 4px;
+        background-color: var(--input-background);
+        cursor: pointer;
+
+        &:checked {
+          border-color: var(--accent-action-default);
+          background-color: var(--accent-action-default);
+        }
+
+        &:checked::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-color: var(--accent-action-foreground);
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 12px no-repeat;
+        }
+
+        &:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px var(--ring);
+        }
+      }
+
+      button[name=close] {
+        top: 8px;
+        right: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin: 0;
+        padding: 0;
+        border-radius: var(--radius);
+        color: var(--neutral-foreground-subtle);
+        font-size: var(--text-xl);
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--neutral-background-medium);
+          color: var(--foreground);
+        }
+      }
+    }
+  }
+}

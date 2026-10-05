@@ -35,6 +35,7 @@ import {
 
 import OverviewContainer from './OverviewContainer';
 
+import { Button } from '@camunda/design-system';
 import { Settings } from '@camunda/design-system/icons';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
@@ -951,8 +952,8 @@ export class DmnEditor extends CachedComponent {
         {
           !isDrd && (
             <div className="top">
-              <button id="button-edit-drd" className="button" onClick={ this.handleEditDrdClick }>Edit DRD</button>
-              <button id="button-toggle-overview" className="button" onClick={ this.toggleOverview }>{ overviewOpen ? 'Close' : 'Open' } overview</button>
+              <Button id="button-edit-drd" variant="secondary" size="sm" onClick={ this.handleEditDrdClick }>Edit DRD</Button>
+              <Button id="button-toggle-overview" variant="secondary" size="sm" onClick={ this.toggleOverview }>{ overviewOpen ? 'Close' : 'Open' } overview</Button>
             </div>
           )
         }

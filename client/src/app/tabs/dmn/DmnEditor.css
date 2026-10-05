@@ -5,26 +5,12 @@
 
   flex-direction: column;
 
-  .dmn-drd-container {
-    --drd-font-family-monospace: var(--font-family-monospace);
-  }
+  background-color: var(--app-content-background-color);
 
-  /* @camunda/improved-canvas restets */
-  .djs-container.bio-improved-canvas {
-    background-color: var(--color-white);
-  }
-
-  .bio-improved-canvas defs pattern circle {
-    fill: #ccc !important;
-  }
-
-  .dmn-decision-table-container {
-    --decision-table-font-family: var(--font-family);
-  }
-
-  .dmn-literal-expression-container {
-    --literal-expression-font-family: var(--font-family);
-    --literal-expression-font-family-monospace: var(--font-family-monospace);
+  /* @camunda/improved-canvas paints its own grey canvas */
+  .djs-container.bio-improved-canvas,
+  .dmn-drd-container.bio-improved-canvas {
+    background-color: var(--app-content-background-color);
   }
 
   :not(.top) + .bottom {
@@ -35,28 +21,9 @@
   }
 
   &>.top {
+    display: flex;
+    gap: 8px;
     padding: 10px;
-
-    .button {
-      background: var(--color-white);
-      padding: 8px;
-      border: solid 1px var(--color-grey-225-10-75);
-      border-radius: 2px;
-      font-size: 14px;
-      color: var(--color-grey-225-10-15);
-      font-weight: bold;
-      font-family: inherit;
-      margin-right: 10px;
-
-      &:last-child {
-        margin-right: 0;
-      }
-
-      &:hover {
-        background-color: var(--color-grey-225-10-97);
-      }
-    }
-
   }
 
   &>.bottom {
