@@ -2,9 +2,9 @@
   margin: 0 10px 10px 10px;
   position: relative;
 
-  background-color: var(--color-grey-225-10-97);
-  border: solid 1px var(--color-grey-225-10-75);
-  border-radius: 3px;
+  background-color: var(--neutral-background-subtle);
+  border: solid 1px var(--border);
+  border-radius: var(--radius);
 
   &:not(.open) {
     width: 0;
@@ -25,21 +25,9 @@
 
   .toggle {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 8px;
+    right: 8px;
     z-index: 11;
-    opacity: 0.5;
-
-    &:before {
-      content: '\E80A';
-      font-family: 'app';
-      font-size: 14px;
-    }
-
-    &:hover {
-      opacity: 1;
-      color: var(--color-blue-205-100-45);
-    }
   }
 
   .overview-container {
@@ -63,12 +51,12 @@
         &.can-open:hover {
           .djs-visual {
             rect, path {
-              stroke: var(--color-blue-205-100-50) !important;
-              fill: var(--color-blue-205-100-95) !important;
+              stroke: var(--accent-border-strong) !important;
+              fill: var(--accent-background-subtle) !important;
             }
 
             text {
-              fill: var(--color-blue-205-100-50) !important;
+              fill: var(--accent-foreground-strong) !important;
             }
           }
         }
@@ -77,7 +65,7 @@
       .djs-overlay {
         pointer-events: none;
         .drill-down-overlay {
-          color: var(--color-grey-225-10-15);
+          color: var(--foreground);
           background: transparent;
         }
       }

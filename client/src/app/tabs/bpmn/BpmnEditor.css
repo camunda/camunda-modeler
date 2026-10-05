@@ -23,60 +23,10 @@
 
   /* @camunda/improved-canvas restets */
   .djs-container.bio-improved-canvas {
-    background-color: var(--color-white);
+    background-color: var(--background);
   }
 
   .bio-improved-canvas defs pattern circle {
-    fill: #ccc !important;
+    fill: var(--neutral-border-strong) !important;
   }
-
-  .djs-minimap {
-
-    .toggle {
-      color: var(--color-grey-225-10-35);
-    }
-
-    .toggle:hover {
-      color: var(--color-blue-205-100-45);
-    }
-
-    &:not(.open) .toggle:before {
-      content: '\f278';
-      font-family: 'app';
-      font-size: 20px;
-    }
-
-    &.open {
-      .toggle {
-        padding: 3px 5px;
-        margin-right: 4px;
-
-        line-height: 24px;
-        text-align: right;
-
-        opacity: 0.5;
-      }
-
-      .toggle:before {
-        content: '\e80a';
-        font-family: 'app';
-        font-size: 14px;
-      }
-
-      .toggle:hover {
-        opacity: 1;
-      }
-
-      .viewport-dom {
-        border-color: var(--color-blue-205-100-50);
-      }
-    }
-  }
-}
-
-:local(.Color) {
-  border: solid 1px var(--color-grey-225-10-15);
-  margin: 4px;
-  width: 64px;
-  height: 16px;
 }
