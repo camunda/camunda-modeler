@@ -18,8 +18,6 @@ import {
 
 import CodeMirror from './CodeMirror';
 
-import * as css from './JSONEditor.css';
-
 import {
   getEditMenu,
   getWindowMenu
@@ -175,7 +173,7 @@ export class JSONEditor extends CachedComponent {
 
   render() {
     return (
-      <div className={ css.JSONEditor }>
+      <div className="code-editor">
         <div className="content" ref={ this.ref }></div>
       </div>
     );

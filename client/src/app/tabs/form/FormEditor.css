@@ -18,14 +18,9 @@
     flex-direction: row;
   
     .fjs-container {
-      --font-family: inherit;
       display: flex;
       flex: 1;
       flex-direction: column;
-    }
-
-    .bio-properties-panel {
-      --font-family: inherit;
     }
 
     .cm-editor {
@@ -40,11 +35,6 @@
   
     .fjs-editor-container .fjs-properties-panel {
       left: 1px;
-
-      .bio-properties-panel {
-        --font-family: var(--font-family);
-        --font-family-monospace: var(--font-family-monospace);
-      }
     }
 
     .fjs-powered-by {
