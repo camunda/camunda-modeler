@@ -96,11 +96,6 @@
     }
   }
 
-  /* spacing comes from the container gap, not the global `.btn + .btn` margin */
-  .btn + .btn {
-    margin-left: 0;
-  }
-
   .btn--primary {
     background-color: var(--status-bar-primary-background-color);
     color: var(--primary-action-foreground);

@@ -10,8 +10,6 @@
 
 import React from 'react';
 
-import classNames from 'classnames';
-
 import {
   Checkbox,
   Label
@@ -58,7 +56,7 @@ export default function CheckBox(props) {
   });
 
   return (
-    <div className={ classNames('form-group', css.Field) }>
+    <div className={ css.Field }>
       <div className="field__option">
         <Checkbox
           id={ name }

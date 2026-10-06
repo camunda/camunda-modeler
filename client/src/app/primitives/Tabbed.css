@@ -65,11 +65,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-width: unset;
       width: 28px;
       height: 28px;
       padding: 0;
-      margin-left: 0;
       border: none;
       border-radius: var(--radius);
       color: var(--tab-action-icon-color);

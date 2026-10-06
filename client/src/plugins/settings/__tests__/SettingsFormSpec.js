@@ -54,7 +54,7 @@ describe('SettingsForm', function() {
       const { container } = createSettingsForm({ schema });
 
       // then
-      const field = container.querySelector('.form-group input[type="text"]');
+      const field = container.querySelector('input[type="text"]');
       expect(field).to.exist;
     });
 
@@ -75,7 +75,7 @@ describe('SettingsForm', function() {
       const { container } = createSettingsForm({ schema });
 
       // then
-      const field = container.querySelector('.form-group input[type="password"]');
+      const field = container.querySelector('input[type="password"]');
       expect(field).to.exist;
     });
 
@@ -406,14 +406,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let textField = container.querySelector('.form-group [id="test.text"]');
+      let textField = container.querySelector('[id="test.text"]');
       expect(textField).to.not.exist;
 
       // when
-      fireEvent.click(container.querySelector('.form-group [id="test.checkbox"]'));
+      fireEvent.click(container.querySelector('[id="test.checkbox"]'));
 
       // then
-      textField = container.querySelector('.form-group [id="test.text"]');
+      textField = container.querySelector('[id="test.text"]');
       expect(textField).to.exist;
     });
 
@@ -454,14 +454,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let textField = container.querySelector('.form-group [id="test.text"]');
+      let textField = container.querySelector('[id="test.text"]');
       expect(textField).to.not.exist;
 
       // when
-      fireEvent.click(container.querySelector('.form-group [id="otherSection.checkbox"]'));
+      fireEvent.click(container.querySelector('[id="otherSection.checkbox"]'));
 
       // then
-      textField = container.querySelector('.form-group [id="test.text"]');
+      textField = container.querySelector('[id="test.text"]');
       expect(textField).to.exist;
     });
 
@@ -493,14 +493,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let conditionalText = container.querySelector('.form-group [id="test.conditionalText"]');
+      let conditionalText = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalText).to.not.exist;
 
       // when
-      fireEvent.change(container.querySelector('.form-group [id="test.text"]'), { target: { value: 'show' } });
+      fireEvent.change(container.querySelector('[id="test.text"]'), { target: { value: 'show' } });
 
       // then
-      conditionalText = container.querySelector('.form-group [id="test.conditionalText"]');
+      conditionalText = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalText).to.exist;
     });
 
@@ -540,14 +540,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
+      let conditionalTextField = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalTextField).to.not.exist;
 
       // when
-      await selectOption(container.querySelector('.form-group [id="test.select"]'), 'Staging');
+      await selectOption(container.querySelector('[id="test.select"]'), 'Staging');
 
       // then
-      conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
+      conditionalTextField = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalTextField).to.exist;
     });
 
@@ -594,14 +594,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
+      let conditionalTextField = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalTextField).to.not.exist;
 
       // when
-      fireEvent.click(container.querySelector('.form-group [id="test.checkbox"]'));
+      fireEvent.click(container.querySelector('[id="test.checkbox"]'));
 
       // then
-      conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
+      conditionalTextField = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalTextField).to.exist;
     });
 
@@ -683,7 +683,7 @@ describe('SettingsForm', function() {
 
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
-        const field = container.querySelector('.form-group input[id="test.requiredText"]');
+        const field = container.querySelector('input[id="test.requiredText"]');
         fireEvent.change(field, { target: { value: '' } });
         fireEvent.blur(field);
 
@@ -723,7 +723,7 @@ describe('SettingsForm', function() {
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
         // when
-        const field = container.querySelector('.form-group input[id="test.requiredText"]');
+        const field = container.querySelector('input[id="test.requiredText"]');
         fireEvent.change(field, { target: { value: '' } });
         fireEvent.blur(field);
 
@@ -754,7 +754,7 @@ describe('SettingsForm', function() {
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
         // when
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
         fireEvent.change(field, { target: { value: 'invalid-email' } });
         fireEvent.blur(field);
 
@@ -786,7 +786,7 @@ describe('SettingsForm', function() {
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
         // when
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
         fireEvent.change(field, { target: { value: 'invalid-email' } });
         fireEvent.blur(field);
 
@@ -844,7 +844,7 @@ describe('SettingsForm', function() {
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
         // assert validation triggered
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
         fireEvent.change(field, { target: { value: 'invalid' } });
         fireEvent.blur(field);
 
@@ -882,7 +882,7 @@ describe('SettingsForm', function() {
 
         const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
 
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
 
         // when
         fireEvent.change(field, { target: { value: 'test@example.com' } });
@@ -914,7 +914,7 @@ describe('SettingsForm', function() {
 
         const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
 
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
 
         // when
         fireEvent.change(field, { target: { value: 'invalid-email' } });
@@ -953,7 +953,7 @@ describe('SettingsForm', function() {
 
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
-        const field = container.querySelector('.form-group input[id="test.urlField"]');
+        const field = container.querySelector('input[id="test.urlField"]');
 
         // when
         fireEvent.change(field, { target: { value: '' } });
@@ -1020,7 +1020,7 @@ describe('SettingsForm', function() {
       const { container } = createSettingsForm({ schema });
 
       // when
-      const field = container.querySelector('.form-group input[id="test.normalText"]');
+      const field = container.querySelector('input[id="test.normalText"]');
       fireEvent.change(field, { target: { value: '' } });
       fireEvent.blur(field);
 
