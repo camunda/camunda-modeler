@@ -16,6 +16,9 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: make minimap toggle keyboard accessible ([bpmn-io/diagram-js-minimap#121](https://github.com/bpmn-io/diagram-js-minimap/pull/121))
 * `FEAT`: use first choice as default value of non-optional `Dropdown` template property without `value` ([#6242](https://github.com/camunda/camunda-modeler/issues/6242), [bpmn-io/bpmn-js-element-templates#307](https://github.com/bpmn-io/bpmn-js-element-templates/pull/307))
 * `FEAT`: source colors and corner radii from `@bpmn-io/theme` tokens in canvas, element templates and minimap ([bpmn-io/bpmn-js#2497](https://github.com/bpmn-io/bpmn-js/pull/2497), [bpmn-io/bpmn-js-element-templates#301](https://github.com/bpmn-io/bpmn-js-element-templates/pull/301), [bpmn-io/diagram-js-minimap#120](https://github.com/bpmn-io/diagram-js-minimap/pull/120))
+* `FEAT`: migrate the UI to the Camunda design system; CSS classes and variables of the previous UI were removed during the rework, plug-in markup that relied on them may render unstyled ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
+* `FEAT`: render the plug-in components (`Modal`, `Overlay`, `Section`, `TextInput`, `ToggleSwitch`) with the design system; their API is unchanged ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
+* `FEAT`: remove Carbon for plug-ins: `vendor.carbonReact`, `vendor.carbonIconsReact` and the global Carbon styles are no longer available, plug-ins that import them fail to load; use `camunda-modeler-plugin-helpers/components` or the [Camunda Design System](https://github.com/camunda/design-system) instead ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
 * `FIX`: correct linting to exempt AI agent gateway tools (`io.camunda.agenticai.gateway.type`) from `agent-tool-documentation` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6240](https://github.com/camunda/camunda-modeler/issues/6240))
 * `FIX`: require documentation for intermediate event tools in `agent-tool-documentation` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6241](https://github.com/camunda/camunda-modeler/issues/6241))
 * `FIX`: require a `toolCallResult` for intermediate event tools in `agent-tool-output-key` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6241](https://github.com/camunda/camunda-modeler/issues/6241))
@@ -38,8 +41,12 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/linting@4.2.1`
 * `FIX`: deduplicate element template updates triggered concurrently ([#6262](https://github.com/camunda/camunda-modeler/pull/6262))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
+* `DEPS`: add `@bpmn-io/c4-theme@0.3.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.58.0`
+* `DEPS`: update to `@camunda/design-system@0.63.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.12.0`
 * `DEPS`: update to `@camunda/linting-autofix@0.3.0`
+* `DEPS`: update to `@camunda/task-testing@7.0.0`
 * `DEPS`: update to `bpmn-js@18.31.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.40.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.65.2`
@@ -48,6 +55,11 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `diagram-js@15.28.1`
 * `DEPS`: update to `diagram-js-direct-editing@3.6.0`
 * `DEPS`: update to `diagram-js-minimap@5.6.0`
+
+### BPMN
+
+* `FEAT`: reorganize the task testing panel around a run card, with extra tabs as collapsible sections inside it ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
+* `FIX`: wait for the element instance before reporting a terminated task test ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
 
 ## 5.52.0
 
