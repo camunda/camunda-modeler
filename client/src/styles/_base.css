@@ -5,7 +5,7 @@
 body {
   font-family: var(--font-family);
   font-size: var(--font-size-default);
-  background-color: var(--color-white);
+  background-color: var(--background);
   overflow: hidden;
 }
 
