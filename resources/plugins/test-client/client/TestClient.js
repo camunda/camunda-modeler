@@ -12,7 +12,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 
 import Fill from 'camunda-modeler-plugin-helpers/components/Fill';
 
-import CarbonModal from './CarbonModal';
+import TestModal from './TestModal';
 
 const PLUGIN_NAME = 'test-client';
 
@@ -218,7 +218,7 @@ export default function TestClient(props) {
       </Fill>
       }
 
-      {showModal && <CarbonModal onClose={ () => setShowModal(false) } />}
+      {showModal && <TestModal onClose={ () => setShowModal(false) } />}
     </Fragment>
   );
 }

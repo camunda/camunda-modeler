@@ -656,6 +656,10 @@ export class Plugins extends Mock {
   getAppPlugins() {
     return [];
   }
+
+  getErrors() {
+    return [];
+  }
 }
 
 export class SystemClipboard extends Mock {
