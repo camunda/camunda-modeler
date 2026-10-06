@@ -306,6 +306,10 @@ export default class AppParent extends PureComponent {
 
     await this.getApp().openFiles(files, activeFile);
 
+    // plug-ins load before the app mounts; log their errors only now, as an
+    // earlier entry is hidden when the restored workspace layout closes the log
+    this.getPlugins().getErrors().forEach(message => this.logToClient(getClientEntry('error', message)));
+
     if (typeof onStarted === 'function') {
       onStarted();
     }
