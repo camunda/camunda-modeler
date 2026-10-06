@@ -1,5 +1,3 @@
-@import '@carbon/styles/css/styles.css';
-
 :local(.RPAEditor) {
   display: flex;
   flex: 1;
@@ -135,20 +133,6 @@
   height: 16px;
 }
 
-/* Overwrite Overlay styles that would indent the editor */
-.crpa-Runner-Selection .cds--accordion {
-  padding-left: 0px;
-}
-
-/* overwrite colors to the modelers theme */
-.crpa-worker-status {
-  .status-icon {
-    &.success {
-      fill: var(--color-status-bar-success);
-    }
-
-    &.error {
-      fill: var(--color-status-bar-error);
-    }
-  }
+:local(.ConfigurationOverlay) {
+  padding: 16px;
 }

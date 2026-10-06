@@ -35,7 +35,7 @@ import {
 
 import OverviewContainer from '../dmn/OverviewContainer';
 
-import { Settings } from '@carbon/icons-react';
+import { Settings } from '@camunda/design-system/icons';
 
 import SidePanel, { DEFAULT_LAYOUT as SIDE_PANEL_DEFAULT_LAYOUT } from '../../side-panel/SidePanel';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';

@@ -16,6 +16,8 @@ import classNames from 'classnames';
 
 import { ConfigurationDialog, WorkerStatus } from '@camunda/rpa-integration';
 
+import * as css from './RPAEditor.css';
+
 export default function StatusButton(props) {
 
   const editor = props.editor || {};
@@ -60,7 +62,7 @@ export default function StatusButton(props) {
         onClose={ onClose }
         anchor={ buttonRef.current }
       >
-        <div style={ { padding: '12px' } }>
+        <div className={ css.ConfigurationOverlay }>
           <ConfigurationDialog
             editor={ editor }
           />
