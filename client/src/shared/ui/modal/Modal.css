@@ -1,6 +1,6 @@
 :local(.Modal) {
 
-  .modal-body {
+  [data-slot="dialog-body"] {
     /* contain absolutely positioned content (e.g. `sr-only`), so it can't overflow the dialog */
     position: relative;
 
