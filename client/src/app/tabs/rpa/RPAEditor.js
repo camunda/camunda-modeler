@@ -24,7 +24,7 @@ import {
 } from 'min-dash';
 
 import { RPAEditor as RPACodeEditor, DebugInfo } from '@camunda/rpa-integration';
-import { Settings } from '@carbon/icons-react';
+import { Settings } from '@camunda/design-system/icons';
 
 import SidePanel from '../../side-panel/SidePanel';
 import PropertiesTab from '../../side-panel/tabs/PropertiesTab';

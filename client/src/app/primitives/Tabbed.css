@@ -137,6 +137,12 @@
         height: 16px;
         width: 16px;
       }
+
+      /* stroke icons (e.g. lucide) */
+      svg[fill="none"] {
+        fill: none;
+        color: var(--tab-icon-color);
+      }
     }
 
     .tab__name {

@@ -22,11 +22,6 @@
   min-width: var(--overlay-min-width);
   overflow-y: auto;
 
-  h1, h2, h3, h4 {
-    font-weight: 500;
-    font-size: inherit;
-  }
-
   a[href] {
     color: var(--overlay-link-color);
   }
@@ -81,6 +76,14 @@
 
   ol, ul {
     padding-inline-start: 16px;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  ul {
+    list-style: disc;
   }
 
   ol {

@@ -12,8 +12,9 @@ import React from 'react';
 
 import { Fill } from '../slot-fill';
 
-import { IconButton } from '@carbon/react';
-import { Settings } from '@carbon/icons-react';
+import { Settings } from '@camunda/design-system/icons';
+
+import TabActionToggle from '../tab-actions/TabActionToggle';
 
 import { DEFAULT_LAYOUT } from '../side-panel/SidePanel';
 
@@ -40,15 +41,11 @@ export default function PropertiesPanelTabActionItem(props) {
   };
 
   return <Fill slot="tab-actions" priority={ 2 }>
-    <IconButton
-      className="btn--tab-action"
-      kind="ghost"
-      size="sm"
-      isSelected={ isActive }
+    <TabActionToggle
       label="Properties"
+      icon={ Settings }
+      pressed={ isActive }
       onClick={ onClick }
-    >
-      <Settings />
-    </IconButton>
+    />
   </Fill>;
 }
