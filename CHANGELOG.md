@@ -6,6 +6,10 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: migrate the UI to the Camunda design system; CSS classes and variables of the previous UI were removed during the rework, plug-in markup that relied on them may render unstyled ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
+* `FEAT`: render the plug-in components (`Modal`, `Overlay`, `Section`, `TextInput`, `ToggleSwitch`) with the design system; their API is unchanged ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
+* `FEAT`: remove Carbon for plug-ins: `vendor.carbonReact`, `vendor.carbonIconsReact` and the global Carbon styles are no longer available, plug-ins that import them fail to load; use `camunda-modeler-plugin-helpers/components` or the [Camunda Design System](https://github.com/camunda/design-system) instead ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
+
 ## 5.52.0
 
 * `FEAT`: mark Camunda 8.10 as the latest stable engine profile ([#6180](https://github.com/camunda/camunda-modeler/pull/6180))
