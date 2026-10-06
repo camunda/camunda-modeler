@@ -1,17 +1,20 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "../node_modules/camunda-modeler-plugin-helpers/helper.js":
+/***/ "../node_modules/camunda-modeler-plugin-helpers/helper.js"
 /*!****************************************************************!*\
   !*** ../node_modules/camunda-modeler-plugin-helpers/helper.js ***!
   \****************************************************************/
-/***/ ((module) => {
+(module) {
 
 function returnOrThrow(getter, minimalModelerVersion) {
   let result;
   try {
     result = getter();
-  } catch (error) {}
+  } catch {
+
+    // the Modeler does not provide the export
+  }
 
   if (!result) {
     throw new Error(`Not compatible with Camunda Modeler < ${minimalModelerVersion}`);
@@ -25,13 +28,13 @@ module.exports = {
 };
 
 
-/***/ }),
+/***/ },
 
-/***/ "../node_modules/camunda-modeler-plugin-helpers/index.js":
+/***/ "../node_modules/camunda-modeler-plugin-helpers/index.js"
 /*!***************************************************************!*\
   !*** ../node_modules/camunda-modeler-plugin-helpers/index.js ***!
   \***************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -324,7 +327,7 @@ function registerPlatformDmnJSModdleExtension(descriptor) {
 function registerDmnJSPlugin(module, components) {
 
   if (!Array.isArray(components)) {
-    components = [ components ]
+    components = [ components ];
   }
 
   components.forEach(c => registerClientPlugin(module, `dmn.modeler.${c}.additionalModules`));
@@ -352,7 +355,7 @@ function registerDmnJSPlugin(module, components) {
 function registerCloudDmnJSPlugin(module, components) {
 
   if (!Array.isArray(components)) {
-    components = [ components ]
+    components = [ components ];
   }
 
   components.forEach(c => registerClientPlugin(module, `dmn.cloud.modeler.${c}.additionalModules`));
@@ -380,7 +383,7 @@ function registerCloudDmnJSPlugin(module, components) {
 function registerPlatformDmnJSPlugin(module, components) {
 
   if (!Array.isArray(components)) {
-    components = [ components ]
+    components = [ components ];
   }
 
   components.forEach(c => registerClientPlugin(module, `dmn.platform.modeler.${c}.additionalModules`));
@@ -408,13 +411,13 @@ function getPluginsDirectory() {
   return window.getPluginsDirectory();
 }
 
-/***/ }),
+/***/ },
 
-/***/ "../node_modules/camunda-modeler-plugin-helpers/vendor/react.js":
+/***/ "../node_modules/camunda-modeler-plugin-helpers/vendor/react.js"
 /*!**********************************************************************!*\
   !*** ../node_modules/camunda-modeler-plugin-helpers/vendor/react.js ***!
   \**********************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+(module, __unused_webpack_exports, __webpack_require__) {
 
 const { returnOrThrow } = __webpack_require__(/*! ../helper.js */ "../node_modules/camunda-modeler-plugin-helpers/helper.js");
 
@@ -426,13 +429,13 @@ const { returnOrThrow } = __webpack_require__(/*! ../helper.js */ "../node_modul
 module.exports = returnOrThrow(() => window.react, '3.4');
 
 
-/***/ }),
+/***/ },
 
-/***/ "./client/TestEditorEvents.js":
+/***/ "./client/TestEditorEvents.js"
 /*!************************************!*\
   !*** ./client/TestEditorEvents.js ***!
   \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -552,13 +555,13 @@ function addDmnModule(extensionModule) {
   };
 }
 
-/***/ }),
+/***/ },
 
-/***/ "./client/bpmn-modeler-extension/TestEditorEventsLogger.js":
+/***/ "./client/bpmn-modeler-extension/TestEditorEventsLogger.js"
 /*!*****************************************************************!*\
   !*** ./client/bpmn-modeler-extension/TestEditorEventsLogger.js ***!
   \*****************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -582,13 +585,13 @@ function EditorEventsLogger(eventBus) {
 }
 EditorEventsLogger.$inject = ['eventBus'];
 
-/***/ }),
+/***/ },
 
-/***/ "./client/bpmn-modeler-extension/index.js":
+/***/ "./client/bpmn-modeler-extension/index.js"
 /*!************************************************!*\
   !*** ./client/bpmn-modeler-extension/index.js ***!
   \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -612,13 +615,13 @@ __webpack_require__.r(__webpack_exports__);
   testEditorEventsLogger: ['type', _TestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__["default"]]
 });
 
-/***/ }),
+/***/ },
 
-/***/ "./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js":
+/***/ "./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js"
 /*!*******************************************************************!*\
   !*** ./client/dmn-modeler-extension/DmnTestEditorEventsLogger.js ***!
   \*******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -648,13 +651,13 @@ function EditorEventsLogger(eventBus) {
 }
 EditorEventsLogger.$inject = ['eventBus'];
 
-/***/ }),
+/***/ },
 
-/***/ "./client/dmn-modeler-extension/index.js":
+/***/ "./client/dmn-modeler-extension/index.js"
 /*!***********************************************!*\
   !*** ./client/dmn-modeler-extension/index.js ***!
   \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -678,7 +681,7 @@ __webpack_require__.r(__webpack_exports__);
   testEditorEventsLogger: ['type', _DmnTestEditorEventsLogger__WEBPACK_IMPORTED_MODULE_0__["default"]]
 });
 
-/***/ })
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -700,6 +703,12 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
