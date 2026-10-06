@@ -81,8 +81,27 @@ describe('ConnectionManagerSettingsComponent', function() {
       const { container } = createComponent({ initialValues: connections });
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
+
+      // then
+      await waitFor(() => {
+        expect(container.querySelector('input[name*="name"]')).to.exist;
+      });
+    });
+
+
+    it('should expand connection when clicking its name', async function() {
+
+      // given
+      const connections = [
+        { id: 'conn-1', name: 'Test Connection', targetType: 'camundaCloud' }
+      ];
+
+      const { getByRole, container } = createComponent({ initialValues: connections });
+
+      // when
+      fireEvent.click(getByRole('button', { name: 'Test Connection' }));
 
       // then
       await waitFor(() => {
@@ -104,7 +123,7 @@ describe('ConnectionManagerSettingsComponent', function() {
 
       const { container } = createComponent({ initialValues: connections });
 
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       await waitFor(() => {
@@ -276,7 +295,7 @@ describe('ConnectionManagerSettingsComponent', function() {
       const { container } = createComponent({ initialValues: connections });
 
       // Expand the connection
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       await waitFor(() => {
@@ -308,7 +327,7 @@ describe('ConnectionManagerSettingsComponent', function() {
       const { container } = createComponent({ initialValues: connections });
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // then
@@ -336,7 +355,7 @@ describe('ConnectionManagerSettingsComponent', function() {
       const { container } = createComponent({ initialValues: connections });
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // then
@@ -362,7 +381,7 @@ describe('ConnectionManagerSettingsComponent', function() {
       const { container } = createComponent({ initialValues: connections });
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // then
@@ -383,7 +402,7 @@ describe('ConnectionManagerSettingsComponent', function() {
       const { container } = createComponent({ initialValues: connections });
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // then
@@ -476,7 +495,7 @@ describe('ConnectionManagerSettingsComponent', function() {
       });
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // then
@@ -508,7 +527,7 @@ describe('ConnectionManagerSettingsComponent', function() {
       });
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // then - should show loading indicator
@@ -537,7 +556,7 @@ describe('ConnectionManagerSettingsComponent', function() {
         connectionChecker
       });
 
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // when
@@ -571,7 +590,7 @@ describe('ConnectionManagerSettingsComponent', function() {
         connectionChecker
       });
 
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // when - trigger failure
@@ -608,7 +627,7 @@ describe('ConnectionManagerSettingsComponent', function() {
         connectionChecker
       });
 
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // when - trigger failure
@@ -664,7 +683,7 @@ describe('ConnectionManagerSettingsComponent', function() {
         connectionChecker
       });
 
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // when - trigger failure
@@ -701,7 +720,7 @@ describe('ConnectionManagerSettingsComponent', function() {
         connectionChecker
       });
 
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
+      const expandButton = container.querySelector('.connection-row__toggle[aria-expanded="false"]');
       fireEvent.click(expandButton);
 
       // when
@@ -717,23 +736,7 @@ describe('ConnectionManagerSettingsComponent', function() {
   });
 
 
-  describe('table structure', function() {
-
-    it('should render as a table', function() {
-
-      // given
-      const connections = [
-        { id: 'conn-1', name: 'Test Connection' }
-      ];
-
-      // when
-      const { container } = createComponent({ initialValues: connections });
-
-      // then
-      expect(container.querySelector('table')).to.exist;
-      expect(container.querySelector('tbody')).to.exist;
-    });
-
+  describe('list structure', function() {
 
     it('should render correct number of rows', function() {
 
@@ -748,12 +751,12 @@ describe('ConnectionManagerSettingsComponent', function() {
       const { container } = createComponent({ initialValues: connections });
 
       // then
-      const rows = container.querySelectorAll('tbody tr[data-parent-row]');
+      const rows = container.querySelectorAll('.connection-row');
       expect(rows.length).to.equal(3);
     });
 
 
-    it('should have action cell with remove button', function() {
+    it('should have remove button in row header', function() {
 
       // given
       const connections = [
@@ -764,9 +767,9 @@ describe('ConnectionManagerSettingsComponent', function() {
       const { container } = createComponent({ initialValues: connections });
 
       // then
-      const actionCell = container.querySelector('td.action-cell');
-      expect(actionCell).to.exist;
-      expect(actionCell.querySelector('button.remove')).to.exist;
+      const header = container.querySelector('.connection-row__header');
+      expect(header).to.exist;
+      expect(header.querySelector('button.remove')).to.exist;
     });
 
   });
@@ -779,7 +782,7 @@ describe('ConnectionManagerSettingsComponent', function() {
     const { container } = createComponent();
 
     // then
-    const description = container.querySelector('.custom-control-description');
+    const description = container.querySelector('.connection-manager-settings__description');
     expect(description).to.exist;
     expect(description.textContent).to.equal('Deploy and run your processes on Camunda 8, including Camunda 8 Run.');
   });

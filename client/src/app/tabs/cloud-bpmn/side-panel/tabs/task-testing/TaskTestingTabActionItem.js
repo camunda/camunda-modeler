@@ -12,7 +12,7 @@ import React from 'react';
 
 import { Fill } from '../../../../../slot-fill';
 
-import { IconButton } from '@carbon/react';
+import TabActionToggle from '../../../../../tab-actions/TabActionToggle';
 
 import TaskTestingIcon from '../../../../../../../resources/icons/TaskTesting.svg';
 
@@ -41,15 +41,11 @@ export default function TaskTestingTabActionItem(props) {
   };
 
   return <Fill slot="tab-actions" priority={ 1 }>
-    <IconButton
-      className="btn--tab-action"
-      kind="ghost"
-      size="sm"
-      isSelected={ isActive }
+    <TabActionToggle
       label="Test"
+      icon={ TaskTestingIcon }
+      pressed={ isActive }
       onClick={ onClick }
-    >
-      <TaskTestingIcon />
-    </IconButton>
+    />
   </Fill>;
 }

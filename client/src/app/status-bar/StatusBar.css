@@ -67,7 +67,7 @@
     font-size: inherit;
     font-family: inherit;
 
-    svg {
+    svg:not([data-slot="status-icon"]) {
       color: var(--status-bar-icon-font-color);
     }
 
@@ -85,7 +85,7 @@
       color: var(--status-bar-active-font-color);
       background-color: var(--status-bar-active-background-color);
 
-      svg {
+      svg:not([data-slot="status-icon"]) {
         color: var(--status-bar-active-icon-font-color);
       }
     }

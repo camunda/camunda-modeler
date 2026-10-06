@@ -8,7 +8,6 @@
  * except in compliance with the MIT License.
  */
 
-import './styles/_carbon.css';
 import '@camunda/design-system/styles.css';
 import './styles/style.css';
 import '@bpmn-io/c4-theme/assets/all.css';
