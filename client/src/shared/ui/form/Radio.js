@@ -65,7 +65,7 @@ export default function Radio(props) {
   });
 
   return (
-    <div className={ classNames('form-group', css.Field, className) }>
+    <div className={ classNames(css.Field, className) }>
       <Label id={ labelId }>
         { label }
         <DocumentationIcon url={ documentationUrl } />

@@ -160,7 +160,7 @@ describe('<Modal>', function() {
     it('should render', function() {
       render(<Modal><Modal.Title /></Modal>);
 
-      expect(document.querySelector('.modal-header')).to.exist;
+      expect(document.querySelector('[data-slot="dialog-header"]')).to.exist;
     });
 
 
@@ -172,7 +172,7 @@ describe('<Modal>', function() {
       // when
       render(<Modal><Modal.Title className="foo" onClick={ onClickSpy } /></Modal>);
 
-      const header = document.querySelector('.modal-header');
+      const header = document.querySelector('[data-slot="dialog-header"]');
       fireEvent.click(header);
 
       // then
@@ -188,7 +188,7 @@ describe('<Modal>', function() {
     it('should render', function() {
       const { container } = render(<Modal.Body />);
 
-      expect(container.querySelector('.modal-body')).to.exist;
+      expect(container.querySelector('[data-slot="dialog-body"]')).to.exist;
     });
 
 
@@ -200,7 +200,7 @@ describe('<Modal>', function() {
       // when
       const { container } = render(<Modal.Body className="foo" onClick={ onClickSpy } />);
 
-      const body = container.querySelector('.modal-body');
+      const body = container.querySelector('[data-slot="dialog-body"]');
       fireEvent.click(body);
 
       // then
@@ -216,7 +216,7 @@ describe('<Modal>', function() {
     it('should render', function() {
       const { container } = render(<Modal.Footer />);
 
-      expect(container.querySelector('.modal-footer')).to.exist;
+      expect(container.querySelector('[data-slot="dialog-footer"]')).to.exist;
     });
 
 
@@ -228,7 +228,7 @@ describe('<Modal>', function() {
       // when
       const { container } = render(<Modal.Footer className="foo" onClick={ onClickSpy } />);
 
-      const footer = container.querySelector('.modal-footer');
+      const footer = container.querySelector('[data-slot="dialog-footer"]');
       fireEvent.click(footer);
 
       // then

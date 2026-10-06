@@ -10,8 +10,6 @@
 
 import React from 'react';
 
-import classNames from 'classnames';
-
 import {
   Input,
   Label,
@@ -63,7 +61,7 @@ export default function TextInput(props) {
 
   // own messages, as the input re-mounts (and loses focus) when its `invalidText` toggles
   return (
-    <div className={ classNames('form-group', css.Field) }>
+    <div className={ css.Field }>
       { (label || documentationUrl) && (
         <Label htmlFor={ fieldName }>
           { label }

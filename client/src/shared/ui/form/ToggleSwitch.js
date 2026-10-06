@@ -10,8 +10,6 @@
 
 import React from 'react';
 
-import classNames from 'classnames';
-
 import {
   Label,
   Switch
@@ -47,7 +45,7 @@ export default function ToggleSwitch(props) {
   });
 
   return (
-    <div className={ classNames('form-group', css.Field) } data-entry-id={ id }>
+    <div className={ css.Field } data-entry-id={ id }>
       <div className="field__option">
         <Switch
           id={ field.name }

@@ -10,8 +10,6 @@
 
 import React from 'react';
 
-import classNames from 'classnames';
-
 import {
   Label,
   Select as DSSelect,
@@ -67,7 +65,7 @@ export default function Select(props) {
   });
 
   return (
-    <div className={ classNames('form-group', css.Field) }>
+    <div className={ css.Field }>
       <Label htmlFor={ fieldName }>
         { label }
         <DocumentationIcon url={ documentationUrl } />

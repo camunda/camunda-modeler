@@ -22,8 +22,6 @@ import { EditorState, Compartment } from '@codemirror/state';
 
 import { json } from '@codemirror/lang-json';
 
-import classNames from 'classnames';
-
 import {
   undo,
   redo,
@@ -87,7 +85,7 @@ export default function JSONInput(props) {
   };
 
   return (
-    <div className={ classNames('form-group', css.Field) }>
+    <div className={ css.Field }>
       <Label htmlFor={ fieldName }>
         { label }
         <DocumentationIcon url={ documentationUrl } />
