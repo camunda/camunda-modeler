@@ -51,15 +51,6 @@
     gap: var(--overlay-actions-gap);
   }
 
-  .section__actions .btn {
-    margin-top: 8px;
-    margin-bottom: 5px;
-  }
-
-  .section__actions .btn:focus {
-    outline-offset: 5px;
-  }
-
   & + :local(.Section) {
     border-top: 1px solid var(--overlay-border-color);
   }

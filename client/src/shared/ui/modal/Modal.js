@@ -98,8 +98,8 @@ function Title(props) {
   } = props;
 
   return (
-    <DialogHeader className={ classNames('modal-header', className) } { ...rest }>
-      <DialogTitle className="modal-title">
+    <DialogHeader className={ className } { ...rest }>
+      <DialogTitle>
         { children }
       </DialogTitle>
     </DialogHeader>
@@ -112,7 +112,7 @@ function Close(props) {
   } = props;
 
   return (
-    <Button variant="ghost" size="icon-sm" className="close" onClick={ onClick } aria-label="Close">
+    <Button variant="ghost" size="icon-sm" onClick={ onClick } aria-label="Close">
       <X aria-hidden="true" />
     </Button>
   );
@@ -126,7 +126,7 @@ function Body(props) {
   } = props;
 
   return (
-    <DialogBody className={ classNames('modal-body', className) } { ...rest }>
+    <DialogBody className={ className } { ...rest }>
       { children }
     </DialogBody>
   );
@@ -140,7 +140,7 @@ function Footer(props) {
   } = props;
 
   return (
-    <DialogFooter className={ classNames('modal-footer', className) } { ...rest }>
+    <DialogFooter className={ className } { ...rest }>
       { children }
     </DialogFooter>
   );
