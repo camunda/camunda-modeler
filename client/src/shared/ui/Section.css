@@ -18,21 +18,18 @@
   .section__header {
     padding: 12px;
     margin: 0;
-    font-size: inherit;
-    font-weight: 500;
-    color: var(--overlay-title-color);
   }
 
   .section__body {
     .section__description {
-      color: var(--color-grey-225-10-35);
+      color: var(--neutral-foreground-subtle);
       margin: 0;
     }
 
     font-size: inherit;
 
     p, ul, ol {
-      margin: 0 0 15px 0;
+      margin: 0 0 16px 0;
     }
 
     p:last-child,
@@ -42,13 +39,10 @@
     }
   }
 
-  .section__actions .btn {
-    margin-top: 8px;
-    margin-bottom: 5px;
-  }
-
-  .section__actions .btn:focus {
-    outline-offset: 5px;
+  .section__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   & + :local(.Section) {

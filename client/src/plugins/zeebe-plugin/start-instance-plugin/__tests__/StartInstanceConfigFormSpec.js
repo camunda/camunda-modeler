@@ -217,7 +217,7 @@ describe('<StartInstanceConfigForm>', function() {
 
         // then
         const businessIdInput = container.querySelector('input[name="businessId"]');
-        const description = businessIdInput.closest('.form-group').querySelector('.custom-control-description');
+        const description = getDescription(businessIdInput);
         expect(description.textContent).to.include('Requires Camunda 8.9.0 or later');
       });
 
@@ -234,7 +234,7 @@ describe('<StartInstanceConfigForm>', function() {
 
         // then
         const businessIdInput = container.querySelector('input[name="businessId"]');
-        const description = businessIdInput.closest('.form-group').querySelector('.custom-control-description');
+        const description = getDescription(businessIdInput);
         expect(description).to.be.null;
       });
 
@@ -258,7 +258,7 @@ describe('<StartInstanceConfigForm>', function() {
 
         // then
         const businessIdInput = container.querySelector('input[name="businessId"]');
-        const description = businessIdInput.closest('.form-group').querySelector('.custom-control-description');
+        const description = getDescription(businessIdInput);
         expect(description.textContent).to.include('Requires Camunda 8.9.0 or later');
       });
 
@@ -284,7 +284,7 @@ describe('<StartInstanceConfigForm>', function() {
 
         // then
         const businessIdInput = container.querySelector('input[name="businessId"]');
-        const description = businessIdInput.closest('.form-group').querySelector('.custom-control-description');
+        const description = getDescription(businessIdInput);
         expect(description).to.be.null;
       });
 
@@ -471,7 +471,7 @@ describe('<StartInstanceConfigForm>', function() {
       });
 
       // then
-      expect(container.querySelector('.invalid-feedback').textContent).to.eql('Error');
+      expect(getErrorMessage(container).textContent).to.eql('Error');
     });
 
 
@@ -494,7 +494,7 @@ describe('<StartInstanceConfigForm>', function() {
       });
 
       // then
-      expect(container.querySelector('.invalid-feedback').textContent).to.eql('Error');
+      expect(getErrorMessage(container).textContent).to.eql('Error');
     });
 
 
@@ -524,7 +524,7 @@ describe('<StartInstanceConfigForm>', function() {
       });
 
       // then
-      expect(container.querySelector('.invalid-feedback')).to.be.null;
+      expect(getErrorMessage(container)).to.be.null;
     });
 
 
@@ -557,7 +557,7 @@ describe('<StartInstanceConfigForm>', function() {
       });
 
 
-      expect(container.querySelector('.invalid-feedback')).to.be.null;
+      expect(getErrorMessage(container)).to.be.null;
     });
 
   });
@@ -568,46 +568,38 @@ describe('<StartInstanceConfigForm>', function() {
     it('should show lint error feedback', function() {
 
       // when
-      const { container } = createStartInstanceConfigForm({
+      const { queryByText } = createStartInstanceConfigForm({
         hasLintErrors: true
       });
 
       // then
-      const feedbacks = container.querySelectorAll('.invalid-feedback');
-      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('has errors'));
-      expect(lintFeedback).to.exist;
+      expect(queryByText(/has errors/)).to.exist;
     });
 
 
     it('should not show lint error feedback if no lint errors', function() {
 
       // when
-      const { container } = createStartInstanceConfigForm({
+      const { queryByText } = createStartInstanceConfigForm({
         hasLintErrors: false
       });
 
       // then
-      const feedbacks = container.querySelectorAll('.invalid-feedback');
-      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('has errors'));
-      expect(lintFeedback).to.not.exist;
+      expect(queryByText(/has errors/)).to.not.exist;
     });
 
 
     it('should not show lint error feedback if connection check failed', function() {
 
       // when
-      const { container } = createStartInstanceConfigForm({
+      const { queryByText } = createStartInstanceConfigForm({
         hasLintErrors: true,
         connectionCheckResult: { success: false, reason: 'CONTACT_POINT_UNAVAILABLE' }
       });
 
       // then
-      const feedbacks = container.querySelectorAll('.invalid-feedback');
-      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('has errors'));
-      expect(lintFeedback).to.not.exist;
-
-      const connectionFeedback = Array.from(feedbacks).find(el => el.textContent.includes('Could not establish connection'));
-      expect(connectionFeedback).to.exist;
+      expect(queryByText(/has errors/)).to.not.exist;
+      expect(queryByText(/Could not establish connection/)).to.exist;
     });
 
 
@@ -616,15 +608,13 @@ describe('<StartInstanceConfigForm>', function() {
       // given
       const handleOpenLintingPanelSpy = sinon.spy();
 
-      const { container } = createStartInstanceConfigForm({
+      const { getByText } = createStartInstanceConfigForm({
         hasLintErrors: true,
         handleOpenLintingPanel: handleOpenLintingPanelSpy
       });
 
       // when
-      const feedbacks = container.querySelectorAll('.invalid-feedback');
-      const lintFeedback = Array.from(feedbacks).find(el => el.textContent.includes('has errors'));
-      fireEvent.click(lintFeedback.querySelector('a'));
+      fireEvent.click(getByText('Show errors.'));
 
       // then
       expect(handleOpenLintingPanelSpy).to.have.been.calledOnce;
@@ -714,4 +704,16 @@ function rerenderStartInstanceConfigForm(rerender, props = {}) {
     validateForm={ validateForm }
     VariablesComponent={ VariablesComponent }
     variablesComponentProps={ variablesComponentProps } />);
+}
+
+function getErrorMessage(container) {
+  const field = container.querySelector('[aria-invalid="true"]');
+
+  return field && document.getElementById(field.getAttribute('aria-errormessage'));
+}
+
+function getDescription(input) {
+  const id = input.getAttribute('aria-describedby');
+
+  return id && document.getElementById(id);
 }

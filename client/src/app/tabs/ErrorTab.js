@@ -10,6 +10,10 @@
 
 import React, { PureComponent } from 'react';
 
+import { EmptyState, Link } from '@camunda/design-system';
+
+import { TriangleAlert } from '@camunda/design-system/icons';
+
 import * as css from './ErrorTab.css';
 
 import {
@@ -29,17 +33,16 @@ export default class ErrorTab extends PureComponent {
     return (
       <TabContainer className="content tab">
         <div className={ css.ErrorTab }>
-          <h1>
-            Ooops, this should not have happened.
-          </h1>
-          <p>
-            This tab crashed due to an unexpected error.
-          </p>
-          <p>
-            <a href="https://github.com/camunda/camunda-modeler/issues/new?template=BUG_REPORT.yml">
-              Report bug
-            </a>
-          </p>
+          <EmptyState
+            icon={ <TriangleAlert aria-hidden="true" /> }
+            heading="Ooops, this should not have happened."
+            description="This tab crashed due to an unexpected error."
+            action={
+              <Link href="https://github.com/camunda/camunda-modeler/issues/new?template=BUG_REPORT.yml">
+                Report bug
+              </Link>
+            }
+          />
         </div>
       </TabContainer>
     );

@@ -2,21 +2,21 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   padding-right: 8px;
 
   .btn--tab-action {
-    min-width: unset;
     align-self: center;
-    border: none;
+    border: 1px solid var(--app-bar-border-color);
+    background-color: var(--app-bar-item-background-color);
 
-    &:focus {
-      box-shadow: none;
+    &:hover {
+      background-color: var(--app-bar-item-hover-background-color);
     }
 
-    &:focus-visible {
-      outline: 2px solid var(--focus-outline-color);
-      outline-offset: -2px;
+    &[data-state="on"] {
+      background-color: var(--app-bar-item-active-background-color);
+      color: var(--neutral-foreground-strong);
     }
   }
 }

@@ -1,110 +1,66 @@
-:root {
-  --linting-tab-item-background-color: var(--color-grey-225-10-95);
-  --linting-tab-item-border-color: var(--color-grey-225-10-95);
-
-  --linting-tab-item-padding: 6px 8px;
-}
-
 :local(.LintingTabItem) {
   display: flex;
   align-items: stretch;
-  border-bottom: solid 1px var(--linting-tab-item-border-color);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-sm);
   cursor: default;
 
   * {
     user-select: text;
-    font-size: 14px;
   }
 
-  &.linting-tab-item--selected,
   &:not(.linting-tab-item--empty):hover {
-    background-color: var(--linting-tab-item-background-color);
+    background-color: var(--neutral-background-subtle);
   }
 
   .linting-tab-item__header {
     display: flex;
     align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
     width: 200px;
-    border: none;
-    padding: var(--linting-tab-item-padding);
-    background-color: var(--linting-tab-item-error-background-color);
-    border-right: solid 1px var(--linting-tab-item-border-color);
+    padding: 6px 12px;
+    border-right: 1px solid var(--border);
 
-    svg {
-      margin-top: 1px;
+    &:focus-visible {
+      outline: none;
+      box-shadow: inset var(--focus-shadow);
     }
 
     .linting-tab-item__label {
-      display: inline-block;
-      max-width: 150px;
       overflow: hidden;
-      margin-left: 10px;
       white-space: nowrap;
       text-overflow: ellipsis;
-      font-weight: bold;
+      font-weight: var(--font-weight-semibold);
     }
+  }
+
+  .linting-tab-item__icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--neutral-foreground-subtle);
   }
 
   .linting-tab-item__content {
-    width: calc(100% - 200px);
-    padding: var(--linting-tab-item-padding);
-
-    .linting-tab-item__link {
-      margin-left: 8px;
-      margin-right: 8px;
-
-      svg {
-        color: var(--color-blue-205-100-50);
-        position: relative;
-        top: 2px;
-      }
-
-      &:hover svg {
-        color: var(--color-blue-205-100-45);
-      }
-    }
-
-    .linting-tab-item__button {
-      margin-left: 4px;
-      margin-right: 4px;
-
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      text-decoration: underline;
-      font: inherit;
-
-      color: var(--color-blue-205-100-50);
-
-      &:hover {
-        color: var(--color-blue-205-100-45);
-      }
-
-      &:focus {
-        outline: 2px solid #0066cc;
-        outline-offset: 2px;
-      }
-    }
-
-    &.linting-tab-item__content--empty {
-      font-weight: bold;
-    }
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 6px 12px;
   }
 
   &.linting-tab-item--empty {
-    border-bottom: none !important;
+    border-bottom: none;
 
     .linting-tab-item__header {
+      width: auto;
       border-right: none;
 
       .linting-tab-item__label {
-        font-weight: normal;
+        font-weight: var(--font-weight-normal);
       }
     }
-  }
-
-  &.linting-tab-item--rule-error svg path {
-    fill: var(--color-grey-225-10-35);
   }
 }

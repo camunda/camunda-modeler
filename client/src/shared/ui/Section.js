@@ -14,6 +14,8 @@ import React from 'react';
 
 import classNames from 'classnames';
 
+import { Heading } from '@camunda/design-system';
+
 import * as css from './Section.css';
 
 export function Section(props) {
@@ -67,11 +69,11 @@ Section.Header = function Header(props) {
   const { className } = props;
 
   return (
-    <h3 className={ classNames('section__header', {
+    <Heading as="h3" variant="heading-xs" className={ classNames('section__header', {
       [ className ]: className
     }) }>
       { props.children }
-    </h3>
+    </Heading>
   );
 };
 

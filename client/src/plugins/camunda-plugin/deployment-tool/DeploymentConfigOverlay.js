@@ -14,6 +14,8 @@ import {
   omit
 } from 'min-dash';
 
+import { Button } from '@camunda/design-system';
+
 import * as css from './DeploymentConfigOverlay.css';
 import AUTH_TYPES from '../shared/AuthTypes';
 
@@ -454,9 +456,8 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                     </fieldset>
 
                     <Section.Actions>
-                      <button
+                      <Button
                         type="submit"
-                        className="btn btn-primary"
                         disabled={ form.isSubmitting }
                         onClick={ () => {
                           this.hasTriedSubmit = true;
@@ -465,7 +466,7 @@ export default class DeploymentConfigOverlay extends React.PureComponent {
                         {
                           primaryAction || 'Deploy'
                         }
-                      </button>
+                      </Button>
 
                     </Section.Actions>
                   </Section.Body>

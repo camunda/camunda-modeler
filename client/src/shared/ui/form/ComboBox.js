@@ -12,6 +12,8 @@ import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'reac
 
 import classNames from 'classnames';
 
+import { Input } from '@camunda/design-system';
+
 import './ComboBox.css';
 
 
@@ -116,10 +118,9 @@ export default function ComboBox(props) {
   return (
     <div className={ classNames('form-combobox', className) } ref={ rootRef }>
       <div className="form-combobox-control">
-        <input
+        <Input
           { ...restProps }
           id={ id }
-          className="form-control"
           type="text"
           role="combobox"
           value={ value }

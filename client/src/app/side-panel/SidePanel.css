@@ -3,7 +3,7 @@
   flex: none;
 
   &.open {
-    border-left: solid 1px var(--color-grey-225-10-75);
+    border-left: 1px solid var(--app-bar-border-color);
   }
 
   /* The ResizableContainer wraps children in an absolutely
@@ -14,46 +14,9 @@
   }
 
   .side-panel__tabs-bar {
-    background-color: var(--color-grey-225-10-95);
-    border-bottom: solid 1px var(--color-grey-225-10-75);
-    display: flex;
-    flex-direction: row;
     flex: none;
-  }
-
-  .side-panel__tab {
-    font-family: var(--font-family);
-    font-size: 13px;
-    color: var(--color-grey-225-10-35);
-    background: none;
-    border: none;
-    outline: none;
-    padding: 6px 12px;
-    border-bottom: solid 2px transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-
-    .side-panel__tab-icon {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-    }
-
-    &:hover {
-      color: var(--color-grey-225-10-15);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--focus-outline-color);
-      outline-offset: -2px;
-    }
-
-    &.side-panel__tab--active {
-      color: var(--color-grey-225-10-15);
-      border-bottom: solid 2px var(--color-grey-225-10-35);
-    }
+    border-bottom: 1px solid var(--app-bar-border-color);
+    background-color: var(--app-bar-background-color);
   }
 
   .side-panel__body {
@@ -82,7 +45,7 @@
   .bio-properties-panel {
     --font-family: inherit;
     --font-family-monospace: inherit;
-    background: var(--color-white);
+    background: var(--background);
   }
 
   /* This makes the text inside of a tooltip selectable */

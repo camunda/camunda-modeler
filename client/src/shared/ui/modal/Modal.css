@@ -1,0 +1,11 @@
+:local(.Modal) {
+
+  [data-slot="dialog-body"] {
+    /* contain absolutely positioned content (e.g. `sr-only`), so it can't overflow the dialog */
+    position: relative;
+
+    /* reach the dialog edges, so the scrollbar sits at the side of the modal */
+    margin-inline: -24px;
+    padding-inline: 24px;
+  }
+}

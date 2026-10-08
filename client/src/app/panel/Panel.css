@@ -1,69 +1,25 @@
 :root {
-  --panel-text-color: var(--color-grey-225-10-15);
+  --panel-text-color: var(--foreground);
 }
 
 :local(.Panel) {
-  display: flex;
-  flex-direction: column;
   height: 100%;
   color: var(--panel-text-color);
 
   .panel__header {
-    background-color: var(--color-grey-225-10-95);
-    border-bottom: solid 1px var(--color-grey-225-10-75);
-    border-top: solid 1px var(--color-grey-225-10-75);
     display: flex;
-    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
+    gap: 8px;
+    padding-inline: 8px;
+    border-block: 1px solid var(--app-bar-border-color);
+    background-color: var(--app-bar-background-color);
+  }
 
-    .panel__link,
-    .panel__action {
-      font-family: var(--font-family);
-      font-size: 14px;
-      color: var(--color-grey-225-10-35);
-      background: none;
-      border: none;
-      outline: none;
-      padding: 4px 8px;
-
-      &:focus {
-        outline: 2px solid var(--focus-outline-color);
-        outline-offset: -2px;
-      }
-    }
-
-    .panel__link {
-      border-bottom: solid 2px transparent;
-
-      &.panel__link--active {
-        border-bottom: solid 2px var(--color-grey-225-10-35);
-      }
-
-      .panel__link-number {
-        background-color: var(--color-grey-225-10-35);
-        border-radius: 11px;
-        color: var(--color-white);
-        display: inline-block;
-        margin-left: 6px;
-        padding: 1px 7px;
-      }
-    }
-
-    .panel__action {
-      width: 28px;
-      height: 28px;
-      padding: 7px;
-      border-radius: 50%;
-
-      &:hover {
-        background-color: var(--color-grey-225-10-85);
-      }
-
-      svg {
-        width: 14px;
-        height: 14px;
-      }
-    }
+  .panel__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
   .panel__body {
@@ -74,17 +30,12 @@
 
     .panel__inner {
       position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+      inset: 0;
       overflow-y: auto;
-      margin: 1px;
-    }
 
-    &:focus-visible {
-      outline: none;
-      box-shadow: inset var(--focus-shadow);
+      &:focus-visible {
+        box-shadow: inset var(--focus-shadow);
+      }
     }
   }
 }

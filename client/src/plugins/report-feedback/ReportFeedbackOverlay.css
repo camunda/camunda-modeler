@@ -1,5 +1,19 @@
 :local(.ReportFeedbackOverlay) {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .system-info-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
   .feedback__message {
-    color: var(--color-red-360-100-45);
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    color: var(--danger-foreground-subtle);
   }
 }

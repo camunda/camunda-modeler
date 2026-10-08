@@ -10,14 +10,24 @@
 
 import React from 'react';
 
-import classNames from 'classnames';
+import {
+  Label,
+  Select as DSSelect,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue
+} from '@camunda/design-system';
 
-import FormFeedback from './FormFeedback';
 import DocumentationIcon from './DocumentationIcon';
+import FormFeedback from './FormFeedback';
 
 import {
   fieldError as defaultFieldError
 } from './Util';
+
+import * as css from './Field.css';
 
 export default function Select(props) {
 
@@ -29,6 +39,9 @@ export default function Select(props) {
     description,
     documentationUrl,
     placeholder,
+    options,
+    value = field.value,
+    onChange = field.onChange,
     ...restProps
   } = props;
 
@@ -40,39 +53,51 @@ export default function Select(props) {
 
   const error = (fieldError || defaultFieldError)(meta, fieldName);
 
+  const errorId = `${ fieldName }-error-msg`;
+  const descriptionId = `${ fieldName }-description`;
+
+  // select values must be non-empty strings, so use the option index
+  const selectedIndex = options.findIndex(option => !option.separator && option.value === value);
+
+  // emulate a native select change for Formik and custom handlers
+  const handleValueChange = (index) => onChange({
+    target: { name: fieldName, value: options[ index ].value }
+  });
+
   return (
-    <React.Fragment>
-      <div className="form-group">
-        <div className="custom-control custom-select">
-          <label className="custom-control-label" htmlFor={ fieldName }>
-            { label }
-            <DocumentationIcon url={ documentationUrl } />
-          </label>
-          <select
-            { ...field }
-            disabled={ form?.isSubmitting }
-            className={ classNames('form-control', {
-              'is-invalid': !!error
-            }) }
-            id={ fieldName }
-            { ...restProps }
-          >
-            { placeholder && <>
-              <option hidden>{ placeholder }</option>
-              <option disabled>{ placeholder }</option>
-            </>}
-            {
-              props.options.map(({ separator, value, label }, idx) =>
-                separator ? <hr key={ idx } /> : <option key={ value } value={ value }>{label}</option>
-              )
-            }
-          </select>
-          <FormFeedback
-            error={ error }
-          />
-          {description && <div className="custom-control-description">{ description }</div>}
-        </div>
-      </div>
-    </React.Fragment>
+    <div className={ css.Field }>
+      <Label htmlFor={ fieldName }>
+        { label }
+        <DocumentationIcon url={ documentationUrl } />
+      </Label>
+      <DSSelect
+        name={ fieldName }
+        value={ selectedIndex === -1 ? '' : String(selectedIndex) }
+        onValueChange={ handleValueChange }
+        disabled={ form?.isSubmitting }
+      >
+        <SelectTrigger
+          id={ fieldName }
+          onBlur={ field.onBlur }
+          aria-invalid={ !!error }
+          aria-errormessage={ error ? errorId : undefined }
+          aria-describedby={ description ? descriptionId : undefined }
+          { ...restProps }
+        >
+          <SelectValue placeholder={ placeholder } />
+        </SelectTrigger>
+        <SelectContent>
+          {
+            options.map(({ separator, label }, index) =>
+              separator
+                ? <SelectSeparator key={ index } />
+                : <SelectItem key={ index } value={ String(index) }>{ label }</SelectItem>
+            )
+          }
+        </SelectContent>
+      </DSSelect>
+      <FormFeedback id={ errorId } error={ error } />
+      { description && <div id={ descriptionId } className="field__description">{ description }</div> }
+    </div>
   );
 }

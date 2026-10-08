@@ -12,11 +12,11 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import { Fill } from '../../../slot-fill';
+import { StatusIcon } from '@camunda/design-system';
 
-import ErrorIcon from '../../../../../resources/icons/Error.svg';
-import WarningIcon from '../../../../../resources/icons/Warning.svg';
-import InfoIcon from '../../../../../resources/icons/InformationCircle.svg';
+import { Info, TriangleAlert, XCircle } from '@camunda/design-system/icons';
+
+import { Fill } from '../../../slot-fill';
 
 import * as css from './LintingStatusBarItem.css';
 
@@ -36,21 +36,19 @@ export default function LintingStatusBarItem(props) {
 
   return <Fill slot="status-bar__file" group="9_linting">
     <button
-      className={ classNames(
-        css.LintingStatusBarItem,
-        'btn',
-        { 'btn--active': panel.open && panel.tab === 'linting',
-          'has-errors': errors > 0,
-          'has-warnings': warnings > 0,
-          'has-infos': infos > 0
-        }
-      ) }
+      className={ classNames(css.LintingStatusBarItem, 'btn', { 'btn--active': panel.open && panel.tab === 'linting' }) }
       onClick={ onToggle }
       title="Toggle problems view"
     >
-      <span className="errors"><ErrorIcon width="16" height="16" />{ errors }</span>
-      <span className="warnings"><WarningIcon width="16" height="16" />{ warnings }</span>
-      { infos > 0 ? <span className="infos"><InfoIcon width="16" height="16" />{ infos }</span> : null }
+      <span className="errors"><CountIcon count={ errors } variant="danger" icon={ XCircle } />{ errors }</span>
+      <span className="warnings"><CountIcon count={ warnings } variant="warning" icon={ TriangleAlert } />{ warnings }</span>
+      { infos > 0 ? <span className="infos"><CountIcon count={ infos } variant="info" icon={ Info } />{ infos }</span> : null }
     </button>
   </Fill>;
+}
+
+function CountIcon({ count, variant, icon: Icon }) {
+  return count > 0
+    ? <StatusIcon variant={ variant } />
+    : <Icon aria-hidden="true" />;
 }

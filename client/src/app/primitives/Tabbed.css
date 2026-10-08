@@ -1,25 +1,24 @@
 :root {
   --tab-max-width: 220px;
-  --tab-bar-background-color: var(--color-grey-225-10-85);
-  --tab-bar-border-color: var(--color-grey-225-10-75);
-  --tabs-container-background-color: var(--color-grey-225-10-85);
-  --tab-font-color: var(--color-grey-225-10-15);
-  --tab-font-size: var(--font-size-default);
-  --tab-icon-color: var(--color-grey-225-10-35);
-  --tab-border-right-color: var(--color-grey-225-10-75);
+  --tab-bar-background-color: var(--app-bar-background-color);
+  --tab-bar-border-color: var(--app-bar-border-color);
+  --tabs-container-background-color: var(--app-bar-background-color);
+  --tab-font-color: var(--neutral-foreground-subtle);
+  --tab-font-size: var(--text-sm);
+  --tab-icon-color: var(--neutral-foreground-subtle);
+  --tab-border-right-color: var(--app-bar-border-color);
   --tab-close-background-color: transparent;
-  --tab-close-hover-background-color: var(--color-grey-225-10-70);
-  --tab-close-icon-fill-color: var(--color-grey-225-10-15);
-  --tab-dirty-icon-fill-color: var(--color-grey-225-10-75);
-  --tab-line-active-background-color: var(--color-grey-225-10-15);
-  --tab-line-hover-background-color: var(--color-grey-225-10-55);
-  --tab-dirty-marker-background-color: var(--color-blue-205-100-50);
-  --tab-dirty-marker-border-color: var(--color-blue-205-100-45);
-  --tab-active-background-color: var(--color-grey-225-10-75);
-  --tab-action-icon-color: var(--color-grey-225-10-35);
-  --tab-action-hover-background-color: var(--color-grey-225-10-80);
-  --tab-action-active-background-color: var(--color-grey-225-10-75);
-  --tab-action-active-icon-color: var(--color-grey-225-10-35);
+  --tab-close-hover-background-color: var(--app-bar-item-active-background-color);
+  --tab-close-icon-fill-color: var(--neutral-foreground-strong);
+  --tab-dirty-marker-background-color: var(--color-sky-500);
+  --tab-dirty-marker-border-color: var(--color-sky-600);
+  --tab-hover-background-color: var(--app-bar-item-hover-background-color);
+  --tab-active-background-color: var(--app-bar-item-background-color);
+  --tab-active-font-color: var(--foreground);
+  --tab-action-icon-color: var(--neutral-foreground-subtle);
+  --tab-action-hover-background-color: var(--app-bar-item-hover-background-color);
+  --tab-action-active-background-color: var(--app-bar-item-active-background-color);
+  --tab-action-active-icon-color: var(--neutral-foreground-strong);
 }
 
 :local(.TabContainer) {
@@ -42,7 +41,7 @@
   z-index: 100;
 
   flex: none;
-  height: 32px;
+  height: 36px;
   background: var(--tab-bar-background-color);
   border-bottom: 1px solid var(--tab-bar-border-color);
 
@@ -59,39 +58,37 @@
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    padding-left: 2px;
-    padding-right: 2px;
-    margin-left: 2px;
-    gap: 2px;
+    gap: 4px;
+    padding-inline: 4px;
 
     .btn--tab-action {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-width: unset;
-      height: 22px;
-      padding: 0 6px;
+      width: 28px;
+      height: 28px;
+      padding: 0;
       border: none;
-      border-radius: 4px;
-      background-color: inherit;
-      margin-left: 0;
+      border-radius: var(--radius);
+      color: var(--tab-action-icon-color);
 
       svg {
         width: 16px;
         height: 16px;
-        fill: var(--tab-action-icon-color);
       }
 
       &:hover {
         background-color: var(--tab-action-hover-background-color);
       }
 
+      &:focus-visible {
+        outline: none;
+        box-shadow: var(--focus-shadow);
+      }
+
       &.btn--active {
         background-color: var(--tab-action-active-background-color);
-
-        svg {
-          fill: var(--tab-action-active-icon-color);
-        }
+        color: var(--tab-action-active-icon-color);
       }
     }
   }
@@ -107,8 +104,8 @@
     user-select: none;
 
     &:focus-visible {
-      outline: 2px solid var(--focus-outline-color);
-      outline-offset: -2px;
+      outline: none;
+      box-shadow: inset var(--focus-shadow);
     }
 
     .tab__content {
@@ -131,9 +128,9 @@
       align-items: center;
       align-self: center;
       margin: 0 6px;
+      color: var(--tab-icon-color);
 
       svg {
-        fill: var(--tab-icon-color);
         height: 16px;
         width: 16px;
       }
@@ -141,7 +138,6 @@
 
     .tab__name {
       pointer-events: all;
-      line-height: 26px;
       font-size: var(--tab-font-size);
       white-space: nowrap;
       overflow: hidden;
@@ -154,7 +150,7 @@
       z-index: 5;
       content: '';
       position: absolute;
-      top: 7px;
+      top: 9px;
       left: 16px;
       width: 6px;
       height: 6px;
@@ -162,7 +158,7 @@
       background-color: var(--tab-dirty-marker-background-color);
       border: 1px solid var(--tab-dirty-marker-border-color);
       box-sizing: content-box;
-      box-shadow: 0 0 0 2px var(--tab-bar-background-color);
+      box-shadow: 0 0 0 2px var(--tab-dirty-marker-ring-color, var(--tab-bar-background-color));
     }
 
     .tab__close {
@@ -170,20 +166,29 @@
       pointer-events: all;
       right: 6px;
       z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 0;
-      line-height: 26px;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       border: none;
-      border-radius: 50%;
+      border-radius: var(--radius);
       background-color: var(--tab-close-background-color);
+      color: var(--tab-close-icon-fill-color);
 
       .tab__icon-close {
-        fill: var(--tab-close-icon-fill-color);
+        width: 14px;
+        height: 14px;
       }
 
       &:hover {
         background-color: var(--tab-close-hover-background-color);
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: var(--focus-shadow);
       }
     }
 
@@ -233,13 +238,17 @@
       }
     }
 
-    &.tab--active,
     &:not(.tab--active):hover {
-      background-color: var(--tab-active-background-color);
+      --tab-dirty-marker-ring-color: var(--tab-hover-background-color);
 
-      .tab__dirty-marker {
-        box-shadow: 0 0 0 2px var(--tab-active-background-color);
-      }
+      background-color: var(--tab-hover-background-color);
+    }
+
+    &.tab--active {
+      --tab-dirty-marker-ring-color: var(--tab-active-background-color);
+
+      color: var(--tab-active-font-color);
+      background-color: var(--tab-active-background-color);
     }
 
     &.tab--group:after {

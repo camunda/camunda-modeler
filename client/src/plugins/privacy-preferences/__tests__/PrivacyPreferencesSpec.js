@@ -66,9 +66,9 @@ describe('<PrivacyPreferences>', function() {
     // then
     await waitFor(() => {
       const modal = getByRole('dialog');
-      expect(modal.querySelector('#ENABLE_CRASH_REPORTS').checked).to.be.true;
-      expect(modal.querySelector('#ENABLE_USAGE_STATISTICS').checked).to.be.true;
-      expect(modal.querySelector('#ENABLE_UPDATE_CHECKS').checked).to.be.true;
+      expect(modal.querySelector('#ENABLE_CRASH_REPORTS').getAttribute('aria-checked')).to.equal('true');
+      expect(modal.querySelector('#ENABLE_USAGE_STATISTICS').getAttribute('aria-checked')).to.equal('true');
+      expect(modal.querySelector('#ENABLE_UPDATE_CHECKS').getAttribute('aria-checked')).to.equal('true');
     });
   });
 

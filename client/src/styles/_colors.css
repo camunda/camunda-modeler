@@ -1,66 +1,10 @@
 :root {
-  --color-grey-225-10-15: hsl(225, 10%, 15%); /* text */
-  --color-grey-225-10-35: hsl(225, 10%, 35%); /* icons */
-  --color-grey-225-10-55: hsl(225, 10%, 55%);
-  --color-grey-225-10-70: hsl(225, 10%, 70%);
-  --color-grey-225-10-75: hsl(225, 10%, 75%); /* lines */
-  --color-grey-225-10-80: hsl(225, 10%, 80%); /* hover on grey bg */
-  --color-grey-225-10-85: hsl(225, 10%, 85%); /* app window */
-  --color-grey-225-10-90: hsl(225, 10%, 90%); /* button hover */
-  --color-grey-225-10-95: hsl(225, 10%, 95%); /* backgrounds, hover */
-  --color-grey-225-10-97: hsl(225, 10%, 97%); /* form element backgrounds */
+  --link-color: var(--info-action-default);
 
-  --color-blue-205-100-40: hsl(205, 100%, 40%); /* outline */
-  --color-blue-205-100-45: hsl(205, 100%, 45%); /* primary hover */
-  --color-blue-205-100-50: hsl(205, 100%, 50%); /* primary */
-  --color-blue-205-100-95: hsl(205, 100%, 95%);
-
-  --color-green-150-86-44: hsl(150, 86%, 44%); /* success */
-  --color-green-158-83-37: hsl(158, 83%, 37%); /* success status bar */
-
-  --color-red-360-100-40: hsl(360, 100%, 40%); /* error hover */
-  --color-red-360-100-45: hsl(360, 100%, 45%); /* error */
-  --color-red-360-100-92: hsl(360, 100%, 92%); /* hover */
-  --color-red-360-100-97: hsl(360, 100%, 97%); /* backgrounds */
-
-  --color-yellow-47-88-53: hsl(47, 88%, 53%); /* warning */
-  --color-yellow-47-86-91: hsl(47, 86%, 91%); /* backgrounds */
-
-  --color-amber-39-100-30: hsl(39, 100%, 30%); /* warning text */
-  --color-amber-35-84-62: hsl(35, 84%, 62%); /* warning borders */
-  --color-amber-38-100-96: hsl(38, 100%, 96%); /* warning backgrounds */
-
-  --color-orange-20-98-52: hsl(20, 98%, 52%); /* new badges */
-
-  --color-white: hsl(0, 0%, 100%);
-  --color-white-opacity-80: hsla(0, 0%, 100%, 80%);
-  --color-black: hsl(0, 0%, 0%);
-  --color-black-opacity-10: hsla(0, 0%, 0%, 10%);
-  --color-black-opacity-30: hsla(0, 0%, 0%, 30%);
-
-  --color-status-bar-success: var(--color-green-158-83-37);
-  --color-status-bar-loading: var(--color-grey-225-10-35);
-  --color-status-bar-idle: var(--color-grey-225-10-35);
-  --color-status-bar-error: var(--color-red-360-100-45);
-
-  --color-danger-fill-color: var(--color-red-360-100-45);
-  --color-danger-fill-hover-color: var(--color-red-360-100-40);
-  --color-danger-background-hover-color: var(--color-red-360-100-92);
-
-  --link-color: var(--color-blue-205-100-50);
-
-  --cds-background-brand: var(--color-blue-205-100-50);
-  --cds-border-interactive: var(--color-blue-205-100-50);
-  --cds-chat-avatar-user: var(--color-blue-205-100-50);
-  --cds-chat-button: var(--color-blue-205-100-50);
-  --cds-chat-button-text-hover: var(--color-blue-205-100-45);
-  --cds-focus: var(--color-blue-205-100-50);
-  --cds-icon-interactive: var(--color-blue-205-100-50);
-  --cds-interactive: var(--color-blue-205-100-50);
-  --cds-link-primary: var(--color-blue-205-100-50);
-  --cds-link-primary-hover: var(--color-blue-205-100-45);
-  --cds-link-secondary: var(--color-blue-205-100-45);
-  --cds-support-info: var(--color-blue-205-100-45);
-  --cds-button-primary: var(--color-blue-205-100-50);
-  --cds-button-tertiary: var(--color-blue-205-100-50);
+  /* app bars: tab bar, panel headers, status bar */
+  --app-bar-background-color: var(--neutral-background-subtle);
+  --app-bar-border-color: var(--border);
+  --app-bar-item-background-color: var(--background);
+  --app-bar-item-hover-background-color: var(--neutral-background-medium);
+  --app-bar-item-active-background-color: var(--neutral-background-strong);
 }

@@ -10,8 +10,15 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-import { Button, DataTable, Table, TableBody, TableCell, TableExpandedRow, TableExpandRow } from '@carbon/react';
-import { ErrorFilled, TrashCan } from '@carbon/icons-react';
+import {
+  Button,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+  EmptyState,
+  IconButton
+} from '@camunda/design-system';
+import { ChevronRight, Trash2 } from '@camunda/design-system/icons';
 
 import { FieldArray, getIn, useFormikContext } from 'formik';
 
@@ -183,82 +190,71 @@ export function ConnectionManagerSettingsComponent({ name: fieldName, targetElem
       }
 
       return <div className={ css.ConnectionManagerSettings } data-testid="connection-manager-settings" id={ fieldName }>
-        <div className="custom-control">
-          <div className="custom-control-description">Deploy and run your processes on Camunda 8, including <a href="https://docs.camunda.io/docs/self-managed/quickstart/developer-quickstart/c8run/">Camunda 8 Run</a>.</div>
-        </div>
+        <p className="connection-manager-settings__description">Deploy and run your processes on Camunda 8, including <a href="https://docs.camunda.io/docs/self-managed/quickstart/developer-quickstart/c8run/">Camunda 8 Run</a>.</p>
         {(!fieldValue || fieldValue.length === 0) && (
-          <div className="empty-placeholder">
-            <ErrorFilled size={ 20 } />
-            <div className="placeholder-content">
-              <h1>No connections configured</h1>
-              <p>Add a connection to deploy and run processes</p>
-            </div>
-          </div>
+          <EmptyState
+            className="empty-placeholder"
+            size="sm"
+            headingLevel={ 4 }
+            heading="No connections configured"
+            description="Add a connection to deploy and run processes"
+          />
         )}
-        <DataTable rows={ fieldValue } headers={ [] }>
-          {({
-            rows,
-            getRowProps,
-            getExpandedRowProps,
-            getTableProps,
-          }) => (
-            <Table { ...getTableProps() }>
-              <TableBody className="expandable-table-body">
-                {rows?.map((row, index) => (
-                  <React.Fragment key={ `${fieldName}[${index}]` }>
-                    <TableExpandRow { ...getRowProps({ row }) }
-                      ref={ row.id === targetRowId ? expandedRowRef : null }
-                      isExpanded={ isExpanded(row) }
-                      onExpand={ () => handleExpand(row) }
-                    >
-                      <TableCell key={ `${fieldName}[${index}].name` }>
-                        { isExpanded(row) ?
-                          <SettingsField name={ `${fieldName}[${index}].name` } type="text" hint="Name" default="New connection" /> :
-                          <span id={ `${fieldName}[${index}].name` }>{ fieldValue[index]?.name || 'Unnamed connection'}</span>
-                        }
-                      </TableCell>
-
-                      <TableCell className="action-cell">
-                        <Button
-                          className="remove"
-                          hasIconOnly
-                          iconDescription="Remove connection"
-                          tooltipPosition="left"
-                          kind="ghost"
-                          renderIcon={ TrashCan }
-                          onClick={ () => remove(index) }
-                        />
-                      </TableCell>
-                    </TableExpandRow>
-
-                    {isExpanded(row) && (
-                      <TableExpandedRow
-                        { ...getExpandedRowProps({ row }) }
-                        colSpan={ 3 } // +1 for expand column, +1 for name, +1 for action column
-                      >
-                        <div>
-                          <StatusIndicator
-                            status={ getStatus(connectionCheckResult) }
-                            text={ getText(connectionCheckResult) }
-                          />
-                          {
-                            properties.map((property) =>
-                              <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
-                            )
-                          }
-                        </div>
-                      </TableExpandedRow>
-                    )}
-                  </React.Fragment>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </DataTable>
+        <div className="connection-list">
+          {fieldValue.map((row, index) => (
+            <Collapsible
+              key={ `${fieldName}[${index}]` }
+              className="connection-row"
+              open={ isExpanded(row) }
+              onOpenChange={ () => handleExpand(row) }
+              ref={ row.id === targetRowId ? expandedRowRef : null }
+            >
+              <div className="connection-row__header">
+                <CollapsibleTrigger asChild>
+                  <button
+                    type="button"
+                    className="connection-row__toggle"
+                    aria-label={ isExpanded(row) ? 'Collapse connection' : undefined }
+                  >
+                    <ChevronRight className="connection-row__chevron" aria-hidden="true" />
+                    { !isExpanded(row) &&
+                      <span className="connection-row__label" id={ `${fieldName}[${index}].name` }>{ row.name || 'Unnamed connection' }</span>
+                    }
+                  </button>
+                </CollapsibleTrigger>
+                { isExpanded(row) &&
+                  <div className="connection-row__name">
+                    <SettingsField name={ `${fieldName}[${index}].name` } type="text" hint="Name" default="New connection" />
+                  </div>
+                }
+                <IconButton
+                  className="remove"
+                  variant="ghost"
+                  size="sm"
+                  label="Remove connection"
+                  tooltipSide="left"
+                  icon={ Trash2 }
+                  onClick={ () => remove(index) }
+                />
+              </div>
+              <CollapsibleContent className="connection-row__content">
+                <StatusIndicator
+                  status={ getStatus(connectionCheckResult) }
+                  text={ getText(connectionCheckResult) }
+                />
+                {
+                  properties.map((property) =>
+                    <SettingsField key={ `${fieldName}[${index}].${property.key}` } name={ `${fieldName}[${index}].${property.key}` } { ...property } />
+                  )
+                }
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
+        </div>
         <div className="action-bar">
-          <button type="button" className="btn btn-primary" onClick={ handleAddConnection }>
+          <Button type="button" onClick={ handleAddConnection }>
             Add connection
-          </button>
+          </Button>
         </div>
       </div>;
     } }

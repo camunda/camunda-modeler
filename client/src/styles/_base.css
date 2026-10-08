@@ -5,21 +5,22 @@
 body {
   font-family: var(--font-family);
   font-size: var(--font-size-default);
-  background-color: var(--color-white);
+  background-color: var(--background);
   overflow: hidden;
 }
 
+/* keep app z-indexes below design system overlays, which portal to <body> */
+#root {
+  isolation: isolate;
+}
+
 :root {
-  --focus-outline-color: var(--color-blue-205-100-40);
+  --focus-outline-color: var(--ring);
   --focus-shadow: 0 0 0 2px var(--focus-outline-color);
 }
 
 :focus {
   outline-color: var(--focus-outline-color);
-}
-
-:focus-visible {
-  outline: 2px solid var(--focus-outline-color);
 }
 
 .djs-container svg:focus {

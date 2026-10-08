@@ -18,6 +18,8 @@ import { Formik } from 'formik';
 
 import debug from 'debug';
 
+import { Alert, Button, Link } from '@camunda/design-system';
+
 import Flags from '../../util/Flags';
 
 import { Modal } from '../../shared/ui';
@@ -145,15 +147,19 @@ export default function SettingsPlugin(props) {
 
   return (
     <Modal adaptive={ true } onClose={ handleClose }>
-      <div className="modal-header">
-        <h2 className="modal-title">Settings</h2>
-      </div>
-      <div className={ `${css.SettingsPlugin} modal-body` }>
+      <Modal.Title>Settings</Modal.Title>
+      <Modal.Body className={ css.SettingsPlugin }>
 
         {showRestartWarning &&
-          <div className="restart-warning">Restart the modeler to apply the changes.&nbsp;
-            <button className="btn-restart" onClick={ handleRestart }>Restart now.</button>
-          </div>
+          <Alert
+            variant="warning"
+            description={ <>
+              Restart the modeler to apply the changes.{ ' ' }
+              <Link asChild>
+                <button type="button" onClick={ handleRestart }>Restart now</button>
+              </Link>
+            </> }
+          />
         }
 
         <Formik
@@ -167,16 +173,16 @@ export default function SettingsPlugin(props) {
           />
         </Formik>
 
-      </div>
-      <div className="modal-footer">
-        <button
-          className="btn btn-secondary"
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          variant="secondary"
           type="button"
           onClick={ handleClose }
         >
           Done
-        </button>
-      </div>
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 }

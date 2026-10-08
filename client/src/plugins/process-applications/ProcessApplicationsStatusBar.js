@@ -14,6 +14,8 @@ import classnames from 'classnames';
 
 import { omit } from 'min-dash';
 
+import { Button } from '@camunda/design-system';
+
 import { Fill } from '../../app/slot-fill';
 
 import { Overlay, Section } from '../../shared/ui';
@@ -62,7 +64,7 @@ export default function ProcessApplicationsStatusBar(props) {
     {
       isProcessApplicationAllowed(activeTab) && <Fill slot="status-bar__file" group="0_process-application">
         <button
-          className={ classnames('btn', css.ProcessApplicationsButton, { 'has-process-application': !!processApplication }) }
+          className={ classnames('btn', { 'btn--primary has-process-application': !!processApplication }) }
           ref={ ref }
           onClick={ () => setIsOpen(!isOpen) }
           title={ processApplication ? 'This file is part of a process application' : 'New process application...' }
@@ -86,11 +88,9 @@ export default function ProcessApplicationsStatusBar(props) {
                     <li>Deploy and test resources (BPMN, DMN, forms) as a single unit</li>
                     <li>Benefit from cross-file editor intelligence and improved discovery</li>
                   </ul>
-                  <p>
-                    <button type="button" className="btn btn-primary create-process-application-btn" onClick={ onClickCreateProcessApplication }>
-                      Create a new process application
-                    </button>
-                  </p>
+                  <Button type="button" className="create-process-application-btn" onClick={ onClickCreateProcessApplication }>
+                    Create a new process application
+                  </Button>
                 </Section.Body>
               </Section>
             </>

@@ -10,7 +10,18 @@
 
 import React from 'react';
 
+import {
+  Label,
+  Switch
+} from '@camunda/design-system';
 
+import * as css from './Field.css';
+
+
+/**
+ * Switch for Formik, exposed to plugins via `global.components`; keep the
+ * props stable.
+ */
 export default function ToggleSwitch(props) {
   const {
     id,
@@ -21,35 +32,36 @@ export default function ToggleSwitch(props) {
     form,
     disabled,
     value,
+    type,
+    onChange = field.onChange,
     ...restProps
   } = props;
 
   const entryLabel = label || switcherLabel;
 
+  // emulate a native checkbox change for Formik and custom handlers
+  const handleCheckedChange = (checked) => onChange({
+    target: { name: field.name, type: 'checkbox', checked }
+  });
+
   return (
-    <div className="form-group">
-      <div className="custom-control-toggle" data-entry-id={ id }>
-        <div className="toggle-switch">
-          <div className="field-wrapper">
-            <label>
-              <div className="toggle-switch__switcher">
-                <input
-                  type="checkbox"
-                  { ...field }
-                  { ...restProps }
-                  checked={ field.value === true }
-                  disabled={ disabled }
-                />
-                <span className="toggle-switch__slider" />
-              </div>
-              <span className="toggle-switch__label">
-                { entryLabel }
-              </span>
-            </label>
-          </div>
-        </div>
-        { description && <div className="description">{ description }</div> }
+    <div className={ css.Field } data-entry-id={ id }>
+      <div className="field__option">
+        <Switch
+          id={ field.name }
+          name={ field.name }
+          size="sm"
+          checked={ field.value === true }
+          disabled={ disabled }
+          onCheckedChange={ handleCheckedChange }
+          onBlur={ field.onBlur }
+          { ...restProps }
+        />
+        <Label htmlFor={ field.name }>
+          { entryLabel }
+        </Label>
       </div>
+      { description && <div className="field__description">{ description }</div> }
     </div>
   );
 }

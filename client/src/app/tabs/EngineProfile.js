@@ -21,7 +21,8 @@ import Flags, {
 
 import {
   Overlay,
-  Section
+  Section,
+  Select
 } from '../../shared/ui';
 
 import { utmTag } from '../../util/utmTag';
@@ -151,6 +152,17 @@ function EditableVersionSection(props) {
 
   const versionRecognized = isKnownVersion(engineProfileVersions, engineProfile.executionPlatformVersion);
 
+  const options = [
+    ...(versionRecognized ? [] : [ {
+      value: currentMinorVersion || '',
+      label: currentMinorVersion ? `${currentMinorVersion} (unsupported)` : '<unset>'
+    } ]),
+    ...minorVersions.map(version => ({
+      value: version,
+      label: getAnnotatedVersion(version, executionPlatform)
+    }))
+  ];
+
   return (
     <Section>
       <Section.Header>
@@ -158,35 +170,16 @@ function EditableVersionSection(props) {
       </Section.Header>
       <Section.Body>
         <form className="fields">
-          <div className="form-group">
-            <label htmlFor={ name }>Version</label>
-
-            <select
-              className="form-control"
-              onChange={ handleVersionChanged }
-              value={ currentMinorVersion || '' }
-              id={ name }
-              name={ name }>
-              {
-                versionRecognized
-                  ? null
-                  : <option value={ currentMinorVersion || '' }>{ currentMinorVersion ? `${currentMinorVersion} (unsupported)` : '<unset>' }</option>
-              }
-              {
-                minorVersions.map(version => {
-                  return (
-                    <option key={ version } value={ version }>
-                      { getAnnotatedVersion(version, executionPlatform) }
-                    </option>
-                  );
-                })
-              }
-            </select>
-          </div>
+          <Select
+            field={ { name, onChange: handleVersionChanged } }
+            label="Version"
+            options={ options }
+            value={ currentMinorVersion || '' }
+          />
 
           {(versionRecognized || !currentMinorVersion) ?
-            <PlatformHint className="form-group form-description" executionPlatform={ executionPlatform } displayLabel={ engineLabel } /> :
-            <UnknownVersionHint className="form-group form-description" executionPlatform={ executionPlatform } executionPlatformVersion={ engineProfile.executionPlatformVersion } displayLabel={ engineLabel } />
+            <PlatformHint className="form-description" executionPlatform={ executionPlatform } displayLabel={ engineLabel } /> :
+            <UnknownVersionHint className="form-description" executionPlatform={ executionPlatform } executionPlatformVersion={ engineProfile.executionPlatformVersion } displayLabel={ engineLabel } />
           }
         </form>
       </Section.Body>
@@ -211,7 +204,7 @@ function ReadonlyVersionSection(props) {
       <Section.Body>
         <form>
           <PlatformHint
-            className="form-control form-description"
+            className="form-description"
             executionPlatform={ engineProfile.executionPlatform }
             displayLabel={ engineLabel } />
         </form>

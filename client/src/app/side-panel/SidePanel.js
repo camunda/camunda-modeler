@@ -12,6 +12,8 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import classNames from 'classnames';
 
+import { Tabs, TabsList, TabsTrigger } from '@camunda/design-system';
+
 import ResizableContainer from '../resizable-container/ResizableContainer';
 
 import { MIN_CANVAS_WIDTH } from './SidePanelGroup';
@@ -175,21 +177,22 @@ export default function SidePanel(props) {
         { headers }
 
         { showTabs && (
-          <div className="side-panel__tabs-bar">
-            { tabs.map(({ id: tabId, label, icon: Icon }) => (
-              <button
-                key={ tabId }
-                className={ classNames('side-panel__tab', {
-                  'side-panel__tab--active': activeTabId === tabId
-                }) }
-                onClick={ () => onTabClick(tabId) }
-                title={ label }
-              >
-                { Icon && <Icon className="side-panel__tab-icon" /> }
-                <span>{ label }</span>
-              </button>
-            )) }
-          </div>
+          <Tabs className="side-panel__tabs-bar" value={ activeTabId } onValueChange={ onTabClick }>
+            <TabsList variant="line">
+              { tabs.map(({ id: tabId, label, icon: Icon }) => (
+                <TabsTrigger
+                  key={ tabId }
+                  value={ tabId }
+                  className={ classNames('side-panel__tab', {
+                    'side-panel__tab--active': activeTabId === tabId
+                  }) }
+                >
+                  { Icon && <Icon className="side-panel__tab-icon" aria-hidden="true" /> }
+                  <span>{ label }</span>
+                </TabsTrigger>
+              )) }
+            </TabsList>
+          </Tabs>
         ) }
 
         <div className="side-panel__body">

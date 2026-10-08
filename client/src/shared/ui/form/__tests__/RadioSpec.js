@@ -29,7 +29,7 @@ describe('<Radio>', function() {
   it('should check option', function() {
 
     // when
-    const { container } = createRadio({
+    const { getAllByRole } = createRadio({
       field:{
         onChange:() => {},
       },
@@ -44,11 +44,11 @@ describe('<Radio>', function() {
       ]
     });
 
-    const checkedInput = container.querySelectorAll('.custom-control-input');
+    const radios = getAllByRole('radio');
 
     // then
-    expect(checkedInput).to.have.length(1);
-    expect(checkedInput[0].checked).to.be.true;
+    expect(radios).to.have.length(1);
+    expect(radios[0].getAttribute('aria-checked')).to.eql('true');
   });
 
 
@@ -56,7 +56,7 @@ describe('<Radio>', function() {
 
     // given
     const onChange = sinon.spy();
-    const { container } = createRadio({
+    const { getByRole } = createRadio({
       field: {
         onChange
       },
@@ -67,7 +67,7 @@ describe('<Radio>', function() {
         }
       ]
     });
-    const input = container.querySelector('.custom-control-input');
+    const input = getByRole('radio');
 
     // when
     await userEvent.click(input);
@@ -80,16 +80,21 @@ describe('<Radio>', function() {
   it('should show error', function() {
 
     // when
-    const { container } = createRadio({
+    const { getByRole, getByText } = createRadio({
+      field: {
+        name: 'foo'
+      },
       fieldMeta: {
-        error: 'foo',
+        error: 'foo error',
         touched: true
       },
     });
 
     // then
-    const invalidFeedback = container.querySelector('.form-group>.custom-control>.invalid-feedback');
-    expect(invalidFeedback).to.exist;
+    const group = getByRole('radiogroup');
+
+    expect(group.getAttribute('aria-invalid')).to.eql('true');
+    expect(document.getElementById(group.getAttribute('aria-errormessage'))).to.equal(getByText('foo error'));
   });
 
 

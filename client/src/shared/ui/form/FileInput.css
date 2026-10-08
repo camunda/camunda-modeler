@@ -1,0 +1,64 @@
+:local(.FileInput) {
+
+  /* sits on the section header, which is the positioned ancestor */
+  .file-input__add {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+
+  .file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 96px;
+
+    /* room for the focus ring, which the scroll container would clip */
+    margin: -4px;
+    padding: 4px;
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  .file-list-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 28px;
+    padding-left: 4px;
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+
+    &:hover {
+      background-color: var(--neutral-background-subtle);
+    }
+
+    > svg {
+      flex: none;
+      width: 16px;
+      height: 16px;
+      color: var(--neutral-foreground-subtle);
+    }
+
+    &.is-invalid,
+    &.is-invalid > svg {
+      color: var(--danger-foreground-subtle);
+    }
+  }
+
+  .file-list-item-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .remove {
+    opacity: 0;
+  }
+
+  .file-list-item:is(:hover, :focus-within) .remove {
+    opacity: 1;
+  }
+}
