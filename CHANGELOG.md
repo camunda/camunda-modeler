@@ -13,6 +13,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: remove Carbon for plug-ins: `vendor.carbonReact`, `vendor.carbonIconsReact` and the global Carbon styles are no longer available, plug-ins that import them fail to load; use `camunda-modeler-plugin-helpers/components` or the [Camunda Design System](https://github.com/camunda/design-system) instead ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
 * `DEPS`: add `@bpmn-io/c4-theme@0.3.0`
+* `DEPS`: update to `@bpmn-io/variable-outline@4.0.0`
 * `DEPS`: update to `@camunda/design-system@0.63.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.12.0`
 * `DEPS`: update to `@camunda/task-testing@7.0.0`
