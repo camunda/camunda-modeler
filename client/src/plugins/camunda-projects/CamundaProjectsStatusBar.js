@@ -22,6 +22,7 @@ import { utmTag } from '../../util/utmTag';
 
 import CamundaProjectIcon from '../../../resources/icons/file-types/CamundaProject.svg';
 import ErrorIcon from '../../../resources/icons/Error.svg';
+import HelpIcon from '../../../resources/icons/Help.svg';
 
 import * as css from './CamundaProjectsStatusBar.css';
 
@@ -98,6 +99,13 @@ export default function CamundaProjectsStatusBar(props) {
               <Section>
                 <Section.Header>
                   Project
+                  <a
+                    className="documentation-link"
+                    href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/projects/') }
+                    title="Learn more about projects"
+                  >
+                    <HelpIcon width="16" height="16" />
+                  </a>
                 </Section.Header>
                 <Section.Body>
                   <ul className="files camunda-project-file" role="menu">

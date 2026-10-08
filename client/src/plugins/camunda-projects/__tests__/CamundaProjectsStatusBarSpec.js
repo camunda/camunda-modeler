@@ -199,6 +199,21 @@ describe('<CamundaProjectsStatusBar>', function() {
     });
 
 
+    it('should link to project documentation', function() {
+
+      // when
+      createCamundaProjectsStatusBar();
+
+      fireEvent.click(screen.getByRole('button'));
+
+      // then
+      const link = screen.getByRole('link', { name: 'Learn more about projects' });
+
+      expect(link).to.exist;
+      expect(link.href).to.match(/^https:\/\/docs\.camunda\.io\/docs\/components\/modeler\/desktop-modeler\/projects\//);
+    });
+
+
     it('should reveal Camunda project file in file explorer on click', function() {
 
       // given
