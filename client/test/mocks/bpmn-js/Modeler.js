@@ -85,6 +85,8 @@ class Linting {
   setErrors() {}
 
   showError() {}
+
+  applyAction() {}
 }
 
 class Selection {
