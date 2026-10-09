@@ -8,12 +8,4 @@
  * except in compliance with the MIT License.
  */
 
-module.exports = {
-  id: 'processApplication',
-  extensions: [ '.process-application' ],
-  process: async (item) => {
-    return {
-      type: 'processApplication'
-    };
-  }
-};
+export { default } from './CamundaProjectsPlugin';

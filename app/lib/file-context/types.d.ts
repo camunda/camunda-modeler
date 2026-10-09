@@ -30,5 +30,6 @@ export type IndexItem = {
 
 export type Processor = {
   extensions: string[],
+  fileNames?: string[],
   process: (item: IndexItem) => Promise<Metadata>
 };
