@@ -66,7 +66,7 @@ export default class TemplateUpdater extends PureComponent {
 
         displayNotification({
           type: 'warning',
-          title: 'Camunda Connector templates updated with errors',
+          title: 'Element templates updated with errors',
           content: <button
             onClick={ () => triggerAction('open-log') }>
             See the log for further details
@@ -79,7 +79,7 @@ export default class TemplateUpdater extends PureComponent {
       if (hasNew) {
         displayNotification({
           type: 'success',
-          title: 'Camunda Connector templates updated',
+          title: 'Element templates updated',
           content: <a href={ DOCUMENTATION_URL }>Learn more</a>
         });
       }

@@ -13,6 +13,7 @@ const parents = require('parents');
 const path = require('path');
 
 const { isArray } = require('min-dash');
+const { escapePath } = require('fast-glob');
 
 const { globFiles, toPosixPath } = require('../../util/files');
 
@@ -231,6 +232,6 @@ function globTemplates(path, ignoredPaths) {
   return globFiles('element-templates/**/*.json', {
     cwd: path,
     dot: true,
-    ignore: ignoredPaths.map(toPosixPath)
+    ignore: ignoredPaths.map(file => escapePath(toPosixPath(file)))
   });
 }

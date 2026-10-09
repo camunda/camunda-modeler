@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { find, map } from 'min-dash';
 
@@ -16,6 +16,8 @@ import { ENGINES, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 
 import { getAnnotatedVersion, toSemverMinor } from '../../app/tabs/EngineProfile';
 import { utmTag } from '../../util/utmTag';
+
+import { ElementTemplatesSettingsHeader, OOTBTemplatesToggle, CustomTemplateSources } from './ElementTemplatesSettings';
 
 /**
  * Registers built-in application settings.
@@ -34,6 +36,9 @@ export const schema = {
   sections: {
     general: {
       title: 'Global settings'
+    },
+    elementTemplates: {
+      title: <ElementTemplatesSettingsHeader />
     },
     versions: {
       title: 'Default Camunda versions',
@@ -60,13 +65,21 @@ export const schema = {
       section: 'general'
     },
     'app.disableConnectorTemplates': {
-      type: 'boolean',
+      type: 'custom',
+      component: OOTBTemplatesToggle,
       default: false,
       flag: 'disable-connector-templates',
-      label: 'Disable connector templates',
+      label: 'OOTB connector templates',
       documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/#automatic-connector-template-fetching'),
       restartRequired: true,
-      section: 'general'
+      section: 'elementTemplates'
+    },
+    'app.customTemplateSources': {
+      type: 'custom',
+      component: CustomTemplateSources,
+      default: [],
+      restartRequired: true,
+      section: 'elementTemplates'
     },
 
     // TODO(@jarekdanielak): Enable this setting when getEditMenu issue is resolved.
