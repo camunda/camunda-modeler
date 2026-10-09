@@ -41,7 +41,6 @@ describe('template-updater - sources', function() {
     // then
     expect(result).to.eql({
       endpoints: [ OOTB_CONNECTORS_ENDPOINT ],
-      templateSourcePaths: [ getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName) ],
       ignoredPaths: []
     });
     expect(fs.readdirSync(userPath)).to.eql([]);
@@ -62,7 +61,6 @@ describe('template-updater - sources', function() {
     expect(result.endpoints.every(({ executionPlatform }) => executionPlatform === 'Camunda Cloud')).to.be.true;
     expect(result.endpoints[1].fileName).to.match(/^\.custom-element-templates-[0-9a-f]{64}\.json$/);
     expect(result.endpoints[2].fileName).not.to.equal(result.endpoints[1].fileName);
-    expect(result.templateSourcePaths).to.eql(result.endpoints.map(({ fileName }) => getTemplatesPath(userPath, fileName)));
   });
 
 
@@ -143,7 +141,9 @@ describe('template-updater - sources', function() {
     const directory = getTemplatesPath(userPath, '');
     fs.mkdirSync(directory, { recursive: true });
 
-    for (const file of original.templateSourcePaths) {
+    const cachePaths = original.endpoints.map(({ fileName }) => getTemplatesPath(userPath, fileName));
+
+    for (const file of cachePaths) {
       fs.writeFileSync(file, '[{"id":"cached"}]');
     }
 
@@ -157,11 +157,11 @@ describe('template-updater - sources', function() {
     const readded = configure([ 'https://example.com/a', 'https://example.com/b#fragment' ]);
 
     // then
-    expect(removed.ignoredPaths).to.eql([ original.templateSourcePaths[2] ]);
-    expect(cleared.ignoredPaths).to.have.members(original.templateSourcePaths.slice(1));
+    expect(removed.ignoredPaths).to.eql([ cachePaths[2] ]);
+    expect(cleared.ignoredPaths).to.have.members(cachePaths.slice(1));
     expect(readded).to.eql(original);
     expect(fs.readdirSync(directory)).to.eql(before);
-    original.templateSourcePaths.forEach(file => expect(fs.readFileSync(file, 'utf8')).to.equal('[{"id":"cached"}]'));
+    cachePaths.forEach(file => expect(fs.readFileSync(file, 'utf8')).to.equal('[{"id":"cached"}]'));
   });
 
 
@@ -169,7 +169,7 @@ describe('template-updater - sources', function() {
 
     // given
     const original = configure([ 'https://example.com/old' ]);
-    const oldPath = original.templateSourcePaths[1];
+    const oldPath = getTemplatesPath(userPath, original.endpoints[1].fileName);
     fs.mkdirSync(path.dirname(oldPath), { recursive: true });
     fs.writeFileSync(oldPath, '[]');
 
@@ -178,7 +178,7 @@ describe('template-updater - sources', function() {
 
     // then
     expect(result.ignoredPaths).to.eql([ oldPath ]);
-    expect(result.templateSourcePaths).not.to.include(oldPath);
+    expect(result.endpoints.map(({ fileName }) => fileName)).not.to.include(original.endpoints[1].fileName);
     expect(fs.readFileSync(oldPath, 'utf8')).to.equal('[]');
   });
 

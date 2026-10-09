@@ -68,7 +68,7 @@ export function CustomTemplateSources({ name }) {
   return <div className={ css.ElementTemplatesSettings } id={ name } ref={ container }>
     <p>Custom template sources</p>
     <p className="custom-control-description">
-      Add HTTP(S) element-template index URLs without credentials. Later sources override matching template IDs and versions from earlier sources and OOTB. Restart to apply changes.
+      Add HTTP(S) element-template index URLs without credentials. Templates from all sources are merged; duplicate template IDs and versions are reported when a diagram is opened. Restart to apply changes.
     </p>
     { value !== undefined && !Array.isArray(value) && <p role="alert">
       Invalid source list. Add a source to replace it.

@@ -28,7 +28,7 @@ const CUSTOM_CACHE_PATTERN = /^\.custom-element-templates-[0-9a-f]{64}\.json$/;
  * @param {Object} [options.settings] Persisted, flat application settings.
  * @param {Object} [options.flags] Application flags.
  *
- * @returns {{ endpoints: import('./types').Endpoint[], templateSourcePaths: string[], ignoredPaths: string[] }}
+ * @returns {{ endpoints: import('./types').Endpoint[], ignoredPaths: string[] }}
  */
 function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
   const endpoints = [];
@@ -78,7 +78,6 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
     });
   }
 
-  const templateSourcePaths = endpoints.map(({ fileName }) => getTemplatesPath(userPath, fileName));
   const activeFiles = new Set(endpoints.map(({ fileName }) => fileName));
   const templatesDirectory = getTemplatesPath(userPath, '');
 
@@ -94,7 +93,7 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
     }
   }
 
-  return { endpoints, templateSourcePaths, ignoredPaths };
+  return { endpoints, ignoredPaths };
 }
 
 module.exports.getTemplateSourceConfig = getTemplateSourceConfig;

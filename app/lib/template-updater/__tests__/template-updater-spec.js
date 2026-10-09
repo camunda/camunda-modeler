@@ -19,6 +19,7 @@ const { isString } = require('min-dash');
 
 const { TemplateUpdater, OOTB_CONNECTORS_ENDPOINT } = require('../template-updater');
 const { getTemplateSourceConfig } = require('../sources');
+const { getTemplatesPath } = require('../util');
 const Config = require('../../config');
 
 const userPath = path.resolve(__dirname, 'tmp');
@@ -246,10 +247,10 @@ describe('template-updater - TemplateUpdater', function() {
     });
 
 
-    it('should fetch isolated caches and resolve remote conflicts through Config', async function() {
+    it('should fetch isolated caches and expose all of them through Config', async function() {
 
       // given
-      const { updater, config, templateSourcePaths } = configureSources();
+      const { updater, config, cachePaths } = configureSources();
       mockSourceA();
       mockSourceB();
 
@@ -258,14 +259,16 @@ describe('template-updater - TemplateUpdater', function() {
       const templates = config.get('bpmn.elementTemplates');
 
       // then
+      // collisions between sources are not resolved here; the client-side
+      // template validator reports them
       expect(result).to.eql({ hasNew: true, warnings: [] });
-      expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
-      expect(readCache(templateSourcePaths[0]).map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
-      expect(readCache(templateSourcePaths[1]).map(({ name }) => name)).to.eql([ templateB2.name ]);
+      expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name, templateB2.name ]);
+      expect(readCache(cachePaths[0]).map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
+      expect(readCache(cachePaths[1]).map(({ name }) => name)).to.eql([ templateB2.name ]);
     });
 
 
-    it('should discover a first-fetched override through the already-used Config', async function() {
+    it('should discover newly fetched templates through the already-used Config', async function() {
 
       // given
       const { updater, config, endpoints } = configureSources();
@@ -285,7 +288,7 @@ describe('template-updater - TemplateUpdater', function() {
 
       // then
       expect(done).to.have.been.calledWith(true, []);
-      expect(current.map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
+      expect(current.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name, templateB2.name ]);
       expect(earlier.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
     });
 
@@ -293,11 +296,11 @@ describe('template-updater - TemplateUpdater', function() {
     it('should retain but stop loading a removed cache and reuse it when re-added', async function() {
 
       // given
-      const { updater, templateSourcePaths } = configureSources();
+      const { updater, cachePaths } = configureSources();
       mockSourceA();
       mockSourceB();
       await updater.update('Camunda Cloud', '8.8');
-      const cachedB = fs.readFileSync(templateSourcePaths[1], 'utf8');
+      const cachedB = fs.readFileSync(cachePaths[1], 'utf8');
 
       // when
       const removed = configureSources([ 'source-a.json' ]);
@@ -308,8 +311,8 @@ describe('template-updater - TemplateUpdater', function() {
       // then
       expect(removed.endpoints).to.have.length(1);
       expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
-      expect(fs.readFileSync(templateSourcePaths[1], 'utf8')).to.equal(cachedB);
-      expect(readded.config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
+      expect(fs.readFileSync(cachePaths[1], 'utf8')).to.equal(cachedB);
+      expect(readded.config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name, templateB2.name ]);
       expect(cleared.config.get('bpmn.elementTemplates')).to.eql([]);
     });
 
@@ -338,10 +341,10 @@ describe('template-updater - TemplateUpdater', function() {
       it(`should continue after a timeout (${ stage })`, async function() {
 
         // given
-        const { updater, config, endpoints, templateSourcePaths } = configureSources();
+        const { updater, config, endpoints, cachePaths } = configureSources();
         mockSourceA();
         await new TemplateUpdater(userPath, [ endpoints[0] ]).update('Camunda Cloud', '8.8');
-        const cached = fs.readFileSync(templateSourcePaths[0], 'utf8');
+        const cached = fs.readFileSync(cachePaths[0], 'utf8');
         const done = sinon.spy();
         updater.on('update:done', done);
         mockSourceB();
@@ -394,8 +397,8 @@ describe('template-updater - TemplateUpdater', function() {
             `Failed to update templates from ${ origin }/source-a.json: Timed out after 30000 ms`
           ]);
           expect(done).to.have.been.calledOnceWith(true, result.warnings);
-          expect(fs.readFileSync(templateSourcePaths[0], 'utf8')).to.equal(cached);
-          expect(config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
+          expect(fs.readFileSync(cachePaths[0], 'utf8')).to.equal(cached);
+          expect(config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name, templateB2.name ]);
           expect(clock.countTimers()).to.equal(0);
         } finally {
           fetchStub.restore();
@@ -408,12 +411,12 @@ describe('template-updater - TemplateUpdater', function() {
     it('should preserve a failed later source cache and unchanged-reference caching', async function() {
 
       // given
-      const { updater, config, templateSourcePaths } = configureSources();
+      const { updater, config, cachePaths } = configureSources();
       mockSourceA();
       mockSourceB();
       await updater.update('Camunda Cloud', '8.8');
       config.get('bpmn.elementTemplates');
-      const before = templateSourcePaths.map(file => fs.readFileSync(file, 'utf8'));
+      const before = cachePaths.map(file => fs.readFileSync(file, 'utf8'));
       pool.intercept({ path: '/source-a.json' }).reply(200, sourceA);
       pool.intercept({ path: '/source-b.json' }).reply(503, 'Unavailable');
       log.length = 0;
@@ -425,8 +428,8 @@ describe('template-updater - TemplateUpdater', function() {
       expect(result.hasNew).to.be.false;
       expect(result.warnings).to.have.length(1);
       expect(log).to.have.length(2);
-      expect(config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateB2.name ]);
-      expect(templateSourcePaths.map(file => fs.readFileSync(file, 'utf8'))).to.eql(before);
+      expect(config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name, templateB2.name ]);
+      expect(cachePaths.map(file => fs.readFileSync(file, 'utf8'))).to.eql(before);
     });
 
 
@@ -473,6 +476,7 @@ describe('template-updater - TemplateUpdater', function() {
 
       return {
         ...sourceConfig,
+        cachePaths: sourceConfig.endpoints.map(({ fileName }) => getTemplatesPath(userPath, fileName)),
         updater: new TemplateUpdater(userPath, sourceConfig.endpoints),
         config: new Config({ userPath, resourcesPaths: [ path.join(userPath, 'resources') ], ...sourceConfig })
       };

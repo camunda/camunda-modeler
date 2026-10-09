@@ -472,7 +472,7 @@ describe('Config', function() {
   });
 
 
-  describe('remote template precedence', function() {
+  describe('remote template sources', function() {
 
     let userPath, resourcesPath, ootbPath, sourceAPath, sourceBPath;
 
@@ -490,8 +490,6 @@ describe('Config', function() {
       const directory = path.join(resourcesPath, 'element-templates');
       fs.mkdirSync(directory, { recursive: true });
       ootbPath = path.join(directory, '.camunda-connector-templates.json');
-
-      // Deliberately reverse filename order relative to source priority.
       sourceAPath = path.join(directory, '.z-source.json');
       sourceBPath = path.join(directory, '.a-source.json');
       writeTemplates(ootbPath, ootb);
@@ -505,51 +503,22 @@ describe('Config', function() {
     });
 
 
-    it('should prioritize configured sources by ID and version, not filename order', function() {
+    it('should merge all remote caches without de-duplication', function() {
 
       // given
-      const unranked = createConfig({ templateSourcePaths: [] }).get('bpmn.elementTemplates');
       const config = createConfig();
 
       // when
       const templates = config.get('bpmn.elementTemplates');
 
       // then
-      expect(templates).to.have.deep.members([ ootb[0], ootb[2], sourceB[0] ]);
-      expect(templates).to.eql(unranked.filter(template => template.version !== 2 || template.name === 'B v2'));
+      // collisions between sources are surfaced by the client-side template
+      // validator, not resolved here
+      expect(templates).to.have.deep.members([ ...ootb, ...sourceA, ...sourceB ]);
     });
 
 
-    it('should change the winner when configured order changes without rewriting files', function() {
-
-      // given
-      const before = fs.readFileSync(sourceAPath, 'utf8');
-      const config = createConfig({ templateSourcePaths: [ ootbPath, sourceBPath, sourceAPath ] });
-
-      // when
-      const templates = config.get('bpmn.elementTemplates');
-
-      // then
-      expect(templates).to.have.deep.members([ ootb[0], ootb[2], sourceA[0] ]);
-      expect(fs.readFileSync(sourceAPath, 'utf8')).to.equal(before);
-    });
-
-
-    it('should retain same-source duplicates but remove identical earlier definitions', function() {
-
-      // given
-      writeTemplates(sourceBPath, [ sourceA[0], sourceA[0] ]);
-      const config = createConfig();
-
-      // when
-      const templates = config.get('bpmn.elementTemplates');
-
-      // then
-      expect(templates).to.have.deep.members([ ootb[0], ootb[2], sourceA[0], sourceA[0] ]);
-    });
-
-
-    it('should preserve manually installed, project and config conflicts', function() {
+    it('should preserve manually installed, project and config templates', function() {
 
       // given
       const manual = { ...sourceA[0], name: 'Manual' };
@@ -566,59 +535,9 @@ describe('Config', function() {
       const templates = config.get('bpmn.elementTemplates', { path: path.join(userPath, 'project', 'diagram.bpmn') });
 
       // then
-      expect(templates).to.have.deep.members([ local, manual, legacy, ootb[0], ootb[2], sourceB[0] ]);
+      expect(templates).to.have.deep.members([ local, manual, legacy, ...ootb, ...sourceA, ...sourceB ]);
       expect(templates[0]).to.eql(local);
       expect(templates[templates.length - 1]).to.eql(legacy);
-    });
-
-
-    it('should pass invalid winners onward without restoring earlier definitions', function() {
-
-      // given
-      const invalid = { id: 'foo', version: 2 };
-      writeTemplates(sourceBPath, [ invalid, null, { name: 'Missing ID' } ]);
-      const config = createConfig();
-
-      // when
-      const templates = config.get('bpmn.elementTemplates');
-
-      // then
-      expect(templates).to.have.deep.members([ ootb[0], ootb[2], invalid, null, { name: 'Missing ID' } ]);
-    });
-
-
-    it('should distinguish version zero and match null with an absent version', function() {
-
-      // given
-      writeTemplates(sourceAPath, [ { id: 'other', version: 0 }, { id: 'other', name: 'A' } ]);
-      writeTemplates(sourceBPath, [ { id: 'other', version: null, name: 'B' } ]);
-      const config = createConfig();
-
-      // when
-      const templates = config.get('bpmn.elementTemplates');
-
-      // then
-      expect(templates.filter(({ id }) => id === 'other')).to.have.deep.members([
-        { id: 'other', version: 0 }, { id: 'other', version: null, name: 'B' }
-      ]);
-    });
-
-
-    it('should not confuse IDs and versions containing separators', function() {
-
-      // given
-      const a = { id: 'foo:1', version: 2 };
-      const b = { id: 'foo', version: '1:2' };
-      writeTemplates(sourceAPath, [ a ]);
-      writeTemplates(sourceBPath, [ b ]);
-      const config = createConfig();
-
-      // when
-      const templates = config.get('bpmn.elementTemplates');
-
-      // then
-      expect(templates).to.deep.include(a);
-      expect(templates).to.deep.include(b);
     });
 
 
@@ -626,7 +545,6 @@ describe('Config', function() {
 
       // given
       const config = createConfig({
-        templateSourcePaths: [ ootbPath, sourceAPath ],
         ignoredPaths: [ sourceBPath ]
       });
 
@@ -634,12 +552,12 @@ describe('Config', function() {
       const templates = config.get('bpmn.elementTemplates');
 
       // then
-      expect(templates).to.have.deep.members([ ootb[0], ootb[2], sourceA[0] ]);
+      expect(templates).to.have.deep.members([ ...ootb, ...sourceA ]);
       expect(fs.existsSync(sourceBPath)).to.be.true;
     });
 
 
-    it('should use earlier cached definitions when a later cache is absent', function() {
+    it('should load remaining caches when one cache is absent', function() {
 
       // given
       fs.unlinkSync(sourceBPath);
@@ -649,7 +567,7 @@ describe('Config', function() {
       const templates = config.get('bpmn.elementTemplates');
 
       // then
-      expect(templates).to.have.deep.members([ ootb[0], ootb[2], sourceA[0] ]);
+      expect(templates).to.have.deep.members([ ...ootb, ...sourceA ]);
     });
 
 
@@ -683,7 +601,6 @@ describe('Config', function() {
       return new Config({
         userPath,
         resourcesPaths: [ resourcesPath ],
-        templateSourcePaths: [ ootbPath, sourceAPath, sourceBPath ],
         ...options
       });
     }

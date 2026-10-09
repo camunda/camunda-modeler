@@ -841,14 +841,13 @@ function bootstrap() {
 
   // (3) config
   const settings = new Config({ userPath }).get('settings');
-  const { endpoints, ignoredPaths, templateSourcePaths } = getTemplateSourceConfig({ userPath, settings, flags });
+  const { endpoints, ignoredPaths } = getTemplateSourceConfig({ userPath, settings, flags });
 
   const config = new Config({
     appPath,
     resourcesPaths,
     userPath,
-    ignoredPaths,
-    templateSourcePaths
+    ignoredPaths
   });
 
   // error tracking can start as soon as config and flags are initialized.
