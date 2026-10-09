@@ -286,6 +286,35 @@ describe('<LintingTab>', function() {
   });
 
 
+  it('should apply lint action on action link click', function() {
+
+    // given
+    const onActionSpy = spy();
+
+    const report = {
+      category: 'error',
+      id: 'Process_1',
+      message: 'Process must be executable.',
+      rule: 'camunda-compat/executable-process',
+      action: {
+        label: 'Make executable',
+        execute() {}
+      }
+    };
+
+    const { getByRole } = renderLintingTab({
+      onAction: onActionSpy,
+      linting: [ report ]
+    });
+
+    // when
+    fireEvent.click(getByRole('button', { name: 'Make executable' }));
+
+    // then
+    expect(onActionSpy).to.have.been.calledOnceWith('applyLintAction', report);
+  });
+
+
   it('should show lint error on click', function() {
 
     // given
