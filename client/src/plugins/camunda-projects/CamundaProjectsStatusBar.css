@@ -21,6 +21,19 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .documentation-link {
+      display: inline-flex;
+      color: var(--color-grey-225-10-55);
+
+      &:hover {
+        color: var(--color-grey-225-10-35);
+      }
+    }
   }
 
   .section__body {
