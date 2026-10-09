@@ -72,6 +72,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: display a uniform message for credentials when no connection is configured or established ([#6212](https://github.com/camunda/camunda-modeler/pull/6212))
 * `FIX`: display a message pointing to the gRPC connection when credentials are unavailable ([#6217](https://github.com/camunda/camunda-modeler/issues/6217))
 
+### DMN
+
+* `FIX`: keep the DRG overview diagram in sync when it is reopened after changing while closed ([#4549](https://github.com/camunda/camunda-modeler/issues/4549))
+
 ### Forms
 
 * `FEAT`: add translations support for viewer and editor ([bpmn-io/form-js#1055](https://github.com/bpmn-io/form-js/issues/1055), [bpmn-io/form-js#1169](https://github.com/bpmn-io/form-js/issues/1169))
