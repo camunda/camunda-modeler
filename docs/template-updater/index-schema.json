@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://camunda.org/schema/element-templates/index.json",
+  "title": "Element-template index",
+  "description": "Index mapping element-template identifiers to their available versions, each pointing to a template document.",
+  "type": "object",
+  "propertyNames": {
+    "minLength": 1
+  },
+  "additionalProperties": {
+    "type": "array",
+    "items": {
+      "$ref": "#/$defs/templateMetadata"
+    }
+  },
+  "$defs": {
+    "templateMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "ref",
+        "engine"
+      ],
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ref": {
+          "type": "string",
+          "format": "uri"
+        },
+        "engine": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {
+            "camunda": {
+              "type": "string",
+              "description": "A semver range for the compatible Camunda execution-platform versions."
+            }
+          }
+        }
+      }
+    }
+  }
+}
