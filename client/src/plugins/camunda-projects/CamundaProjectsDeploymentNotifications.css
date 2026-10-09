@@ -1,4 +1,4 @@
-:local(.ProcessApplicationsDeploymentNotification) {
+:local(.CamundaProjectsDeploymentNotification) {
   div:not(:last-child) {
     margin-bottom: 10px;
   }

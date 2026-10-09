@@ -45,8 +45,8 @@ const { TemplateUpdater, OOTB_CONNECTORS_ENDPOINT } = require('./template-update
 const FileContext = require('./file-context/file-context');
 const { toFileUrl } = require('./file-context/util');
 const {
-  findProcessApplicationFile,
-  isProcessApplicationFile
+  findCamundaProjectFile,
+  isCamundaProjectFile
 } = require('./file-context/processors/util');
 
 const {
@@ -246,10 +246,10 @@ renderer.on('file-context:file-opened', function(filePath, options, done) {
 
   fileContext.fileOpened(fileUrl, options);
 
-  const processApplicationFile = findProcessApplicationFile(filePath);
+  const camundaProjectFile = findCamundaProjectFile(filePath);
 
-  if (processApplicationFile) {
-    fileContext.addRoot(path.dirname(processApplicationFile));
+  if (camundaProjectFile) {
+    fileContext.addRoot(path.dirname(camundaProjectFile));
   }
 
   done(null);
@@ -264,11 +264,11 @@ renderer.on('file-context:file-updated', function(filePath, options, done) {
 renderer.on('file-context:file-closed', function(filePath, done) {
   const fileUrl = toFileUrl(filePath);
 
-  const processApplicationFile = fileContext._indexer.getItems().find((item) => {
-    return path.dirname(filePath).startsWith(path.dirname(item.file.path)) && isProcessApplicationFile(item.file.path);
+  const camundaProjectFile = fileContext._indexer.getItems().find((item) => {
+    return path.dirname(filePath).startsWith(path.dirname(item.file.path)) && isCamundaProjectFile(item.file.path);
   });
 
-  if (!processApplicationFile) {
+  if (!camundaProjectFile) {
     fileContext.fileClosed(fileUrl);
   }
 
