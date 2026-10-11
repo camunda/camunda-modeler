@@ -560,6 +560,31 @@ describe('<MultiSheetTab>', function() {
     });
 
 
+    it('should pass report action getter with lint-tab action', async function() {
+
+      // given
+      const onAction = sinon.spy();
+
+      const getReportAction = sinon.spy();
+
+      const {
+        instance
+      } = renderTab({
+        onAction
+      });
+
+      // when
+      await instance.onAction('lint-tab', { contents: 'FOO', getReportAction });
+
+      // then
+      expect(onAction).to.have.been.calledWith('lint-tab', {
+        contents: 'FOO',
+        getReportAction,
+        tab: instance.props.tab
+      });
+    });
+
+
     it('should inject tab into element-templates-changed action', async function() {
 
       // given

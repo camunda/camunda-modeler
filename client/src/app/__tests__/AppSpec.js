@@ -4656,17 +4656,16 @@ describe('<App>', function() {
       const getReportAction = sinon.spy(report => report.id === 'Field_1' ? action : null);
 
       // when
-      await app.triggerAction('lint-tab', {
-        tab: currentTab,
-        contents: 'linting-errors',
-        getReportAction
-      });
+      await app.lintTab(currentTab, 'linting-errors', getReportAction);
 
       // then
-      const lintingState = app.getLintingState(currentTab);
+      await waitFor(() => {
+        const lintingState = app.getLintingState(currentTab);
 
-      expect(lintingState).to.have.length(1);
-      expect(lintingState[ 0 ].action).to.equal(action);
+        expect(lintingState).to.have.length(1);
+        expect(lintingState[ 0 ].action).to.equal(action);
+      });
+
       expect(getReportAction).to.have.been.calledOnce;
     });
 
@@ -4685,17 +4684,15 @@ describe('<App>', function() {
       const currentTab = openedTabs[ 0 ];
 
       // when
-      await app.triggerAction('lint-tab', {
-        tab: currentTab,
-        contents: 'linting-errors',
-        getReportAction: () => null
-      });
+      await app.lintTab(currentTab, 'linting-errors', () => null);
 
       // then
-      const lintingState = app.getLintingState(currentTab);
+      await waitFor(() => {
+        const lintingState = app.getLintingState(currentTab);
 
-      expect(lintingState).to.have.length(1);
-      expect(lintingState[ 0 ].action).not.to.exist;
+        expect(lintingState).to.have.length(1);
+        expect(lintingState[ 0 ].action).not.to.exist;
+      });
     });
 
 
