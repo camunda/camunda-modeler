@@ -352,10 +352,11 @@ export class MultiSheetTab extends CachedComponent {
     }
 
     if (action === 'lint-tab') {
-      const { contents } = options;
+      const { contents, getReportAction } = options;
 
       return onAction('lint-tab', {
         contents,
+        getReportAction,
         tab
       });
     }

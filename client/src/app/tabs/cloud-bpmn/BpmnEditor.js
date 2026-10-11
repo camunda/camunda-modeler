@@ -14,6 +14,8 @@ import debug from 'debug';
 
 import { isFunction } from 'min-dash';
 
+import { resolveFix } from '@camunda/linting-autofix';
+
 import {
   Loader
 } from '../../primitives';
@@ -666,8 +668,32 @@ export class BpmnEditor extends CachedComponent {
 
     const { onAction } = this.props;
 
-    onAction('lint-tab', { contents });
+    onAction('lint-tab', { contents, getReportAction: this.getReportAction });
   };
+
+  /**
+   * Offer a Fix on a report only while the model still supports it, so the
+   * Problems panel never shows a button that would do nothing.
+   *
+   * @param {Object} report
+   *
+   * @returns {Object|null}
+   */
+  getReportAction = (report) => {
+    const fix = this.resolveReportFix(report);
+
+    return fix && {
+      label: fix.label,
+      handler: 'applyLintFix',
+      options: report
+    };
+  };
+
+  resolveReportFix(report) {
+    const { modeler } = this.getCached();
+
+    return resolveFix(report, modeler.get('elementRegistry').get(report.id));
+  }
 
   isLintingActive = () => {
     return this.getModeler().get('linting').isActive();
@@ -887,6 +913,23 @@ export class BpmnEditor extends CachedComponent {
       context = {
         value: 'fit-viewport'
       };
+    }
+
+    if (action === 'applyLintFix') {
+      const fix = this.resolveReportFix(context);
+
+      if (fix) {
+        const commands = fix.apply();
+
+        // one undo step, however many writes the fix needs
+        if (commands.length === 1) {
+          modeler.get('commandStack').execute(commands[0].cmd, commands[0].context);
+        } else {
+          modeler.get('commandStack').execute('properties-panel.multi-command-executor', commands);
+        }
+      }
+
+      return;
     }
 
     if (action === 'showLintError') {

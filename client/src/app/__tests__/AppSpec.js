@@ -4638,6 +4638,67 @@ describe('<App>', function() {
     });
 
 
+    it('should attach report action', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const openedTabs = await app.openFiles([
+        createFile('1.form', {
+          contents: 'linting-errors'
+        })
+      ]);
+
+      const currentTab = openedTabs[ 0 ];
+
+      const action = { label: 'Fix', handler: 'applyLintFix' };
+
+      const getReportAction = sinon.spy(report => report.id === 'Field_1' ? action : null);
+
+      // when
+      await app.triggerAction('lint-tab', {
+        tab: currentTab,
+        contents: 'linting-errors',
+        getReportAction
+      });
+
+      // then
+      const lintingState = app.getLintingState(currentTab);
+
+      expect(lintingState).to.have.length(1);
+      expect(lintingState[ 0 ].action).to.equal(action);
+      expect(getReportAction).to.have.been.calledOnce;
+    });
+
+
+    it('should keep report without action', async function() {
+
+      // given
+      const { app } = createApp();
+
+      const openedTabs = await app.openFiles([
+        createFile('1.form', {
+          contents: 'linting-errors'
+        })
+      ]);
+
+      const currentTab = openedTabs[ 0 ];
+
+      // when
+      await app.triggerAction('lint-tab', {
+        tab: currentTab,
+        contents: 'linting-errors',
+        getReportAction: () => null
+      });
+
+      // then
+      const lintingState = app.getLintingState(currentTab);
+
+      expect(lintingState).to.have.length(1);
+      expect(lintingState[ 0 ].action).not.to.exist;
+    });
+
+
     it('should lint tab after save', async function() {
 
       // given

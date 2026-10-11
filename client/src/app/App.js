@@ -1157,7 +1157,7 @@ export class App extends PureComponent {
     });
   };
 
-  lintTab = async (tab, contents) => {
+  lintTab = async (tab, contents, getReportAction) => {
     const linter = await this.getTabLinter(tab);
 
     let results = [];
@@ -1172,6 +1172,15 @@ export class App extends PureComponent {
       results = await linter.lint(contents);
 
       log('linted tab', { tabId: tab.id });
+
+      // editors can attach an action, such as a fix, to a report
+      if (getReportAction) {
+        results = results.map(report => {
+          const action = getReportAction(report);
+
+          return action ? { ...report, action } : report;
+        });
+      }
     }
 
     this.setLintingState(tab, results);
@@ -2284,10 +2293,11 @@ export class App extends PureComponent {
       if (action === 'lint-tab') {
         const {
           tab,
-          contents
+          contents,
+          getReportAction
         } = options;
 
-        return this.lintTab(tab, contents);
+        return this.lintTab(tab, contents, getReportAction);
       }
 
       if (action === 'element-templates-changed') {
