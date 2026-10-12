@@ -92,15 +92,28 @@ async function fetchNpmRepoUrl(name) {
     const res = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name).replace(/%40/g, '@')}/latest`);
 
     if (!res.ok) {
-      return { ok: true, url: null };
+      return { ok: true, url: null, directory: null };
     }
 
     const doc = await res.json();
+    const repository = doc.repository || {};
 
-    return { ok: true, url: doc.repository && doc.repository.url };
+    return {
+      ok: true,
+      url: repository.url,
+      directory: normalizeDirectory(repository.directory)
+    };
   } catch (error) {
-    return { ok: false, url: null };
+    return { ok: false, url: null, directory: null };
   }
+}
+
+function normalizeDirectory(directory) {
+  if (typeof directory !== 'string') return null;
+
+  const normalized = directory.replace(/^\.?\/+|\/+$/g, '');
+
+  return normalized || null;
 }
 
 function parseGithubRepo(repositoryUrl) {
@@ -360,15 +373,23 @@ async function checkPackage({ name, version, direct }) {
 
   const withTag = { ...base, owner, repo, latestVersion: latest.version, latestTag: latest.tag };
 
-  // A `<name>@<version>` tag means this package is independently versioned
-  // within a monorepo - scope the pending-commit check to its own
-  // directory, or a sibling package's changes would count as pending here.
-  // If that directory can't be found, fail closed (report unresolved)
-  // rather than silently falling back to an unscoped, false-positive-prone
-  // check - the exact bug this guard exists to prevent.
-  let packageDir = null;
+  // In a monorepo, a sibling package's changes aren't pending for this
+  // package - scope the pending-commit check to its own directory. This
+  // applies to lockstep monorepos (plain `vX.Y.Z` tags, e.g. bpmn-io/form-js,
+  // where a `feat(i18n)` commit touching only packages/form-js-i18n would
+  // otherwise flag viewer, editor, ...) as much as to independently
+  // versioned ones. npm's `repository.directory` is authoritative.
+  //
+  // Otherwise, a `<name>@<version>` tag also means monorepo - look the
+  // directory up. If that fails, fail closed (report unresolved) rather
+  // than silently falling back to an unscoped, false-positive-prone check -
+  // the exact bug this guard exists to prevent.
+  //
+  // Trade-off: root-level commits (shared build config, root deps) are not
+  // attributed to any package in a scoped check.
+  let packageDir = npmLookup.directory;
 
-  if (latest.tag.startsWith(`${name}@`)) {
+  if (!packageDir && latest.tag.startsWith(`${name}@`)) {
     packageDir = await findPackageDirectory(owner, repo, branch, name);
 
     if (!packageDir) {
