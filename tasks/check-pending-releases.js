@@ -71,16 +71,39 @@ async function ghApi(endpoint) {
   return JSON.parse(stdout);
 }
 
+function isRateLimitError(error) {
+  return /rate limit|HTTP 429/i.test(`${error.stderr || ''}${error.message || ''}`);
+}
+
+/**
+ * Like `ghApi`, but maps failures (404, inaccessible, ...) to `null`.
+ *
+ * A rate limit is NOT such a failure: swallowing it would make every
+ * remaining lookup look like "repo inaccessible" / "compare failed" and
+ * produce a misleading report. It aborts the run instead.
+ */
 async function ghApiSafe(endpoint) {
   try {
     return await ghApi(endpoint);
   } catch (error) {
+    if (isRateLimitError(error)) {
+      const rateLimitError = new Error(
+        'GitHub API rate limit exceeded - wait for it to reset (see `gh api rate_limit`) ' +
+        'and re-run, optionally with a lower --concurrency'
+      );
+
+      rateLimitError.rateLimited = true;
+
+      throw rateLimitError;
+    }
+
     return null;
   }
 }
 
 /**
- * Looks up a package's repository URL on npm. Returns `{ ok: true, url }`
+ * Looks up a package's repository URL (and, for monorepo packages, its
+ * `repository.directory`) on npm. Returns `{ ok: true, url, directory }`
  * on a completed lookup (`url` is null if there's no repo field, or the
  * package/version wasn't found) and `{ ok: false }` if the lookup itself
  * failed (network/DNS error) - distinct from "no repo declared", so a
@@ -428,22 +451,32 @@ async function checkPackage({ name, version, direct }) {
  * unexpected error (a transient network failure, a bug) on one package
  * must not abort the whole run and lose the report for every other
  * package already checked or in flight.
+ *
+ * The exception is a rate limit: every further lookup would fail the same
+ * way, so it stops the pool and rejects the whole run.
  */
 async function runPool(items, limit, worker, onResult) {
   const results = new Array(items.length);
   let nextIndex = 0;
   let completed = 0;
+  let aborted = false;
 
   const workerCount = Math.max(1, Math.min(limit, items.length));
 
   async function runNext() {
-    while (nextIndex < items.length) {
+    while (!aborted && nextIndex < items.length) {
       const current = nextIndex++;
       let result;
 
       try {
         result = await worker(items[current]);
       } catch (error) {
+        if (error.rateLimited) {
+          aborted = true;
+
+          throw error;
+        }
+
         result = { ...items[current], status: 'check-failed', error: error.message };
       }
 
