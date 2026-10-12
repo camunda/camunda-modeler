@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: support custom element template sources ([#5100](https://github.com/camunda/camunda-modeler/issues/5100), [#6181](https://github.com/camunda/camunda-modeler/pull/6181))
+
 ## 5.52.0
 
 * `FEAT`: mark Camunda 8.10 as the latest stable engine profile ([#6180](https://github.com/camunda/camunda-modeler/pull/6180))
