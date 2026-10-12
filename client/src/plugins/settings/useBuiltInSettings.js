@@ -17,7 +17,7 @@ import { ENGINES, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 import { getAnnotatedVersion, toSemverMinor } from '../../app/tabs/EngineProfile';
 import { utmTag } from '../../util/utmTag';
 
-import { ElementTemplatesSettingsHeader, OOTBTemplatesToggle, CustomTemplateSources } from './ElementTemplatesSettings';
+import { ElementTemplatesSettingsHeader, CustomTemplateSources } from './ElementTemplatesSettings';
 
 /**
  * Registers built-in application settings.
@@ -65,11 +65,10 @@ export const schema = {
       section: 'general'
     },
     'app.disableConnectorTemplates': {
-      type: 'custom',
-      component: OOTBTemplatesToggle,
+      type: 'boolean',
       default: false,
       flag: 'disable-connector-templates',
-      label: 'OOTB connector templates',
+      label: 'Disable OOTB connector templates',
       documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/#automatic-connector-template-fetching'),
       restartRequired: true,
       section: 'elementTemplates'

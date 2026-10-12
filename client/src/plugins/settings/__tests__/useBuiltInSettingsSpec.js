@@ -10,7 +10,7 @@
 
 import { expect } from 'chai';
 import { schema } from '../useBuiltInSettings';
-import { CustomTemplateSources, OOTBTemplatesToggle } from '../ElementTemplatesSettings';
+import { CustomTemplateSources } from '../ElementTemplatesSettings';
 
 
 describe('useBuiltInSettings', function() {
@@ -20,11 +20,10 @@ describe('useBuiltInSettings', function() {
     // then
     expect(schema.sections.elementTemplates).to.exist;
     expect(schema.properties['app.disableConnectorTemplates']).to.include({
-      type: 'custom',
-      component: OOTBTemplatesToggle,
+      type: 'boolean',
       default: false,
       flag: 'disable-connector-templates',
-      label: 'OOTB connector templates',
+      label: 'Disable OOTB connector templates',
       restartRequired: true,
       section: 'elementTemplates'
     });

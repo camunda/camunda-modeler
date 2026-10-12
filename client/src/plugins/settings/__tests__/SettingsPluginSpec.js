@@ -42,7 +42,7 @@ describe('SettingsPlugin', function() {
     // then
     expect(screen.getByRole('dialog')).to.exist;
     expect(screen.getByText('Camunda 8 only')).to.exist;
-    expect(screen.queryByLabelText('Disable connector templates')).not.to.exist;
+    expect(screen.getByRole('checkbox', { name: /^Disable OOTB connector templates/ })).to.exist;
   });
 
 
@@ -121,20 +121,20 @@ describe('SettingsPlugin', function() {
 
 
   [ false, true ].forEach(disabled => {
-    it(`should invert the OOTB setting (disabled=${ disabled })`, async function() {
+    it(`should toggle the OOTB setting (disabled=${ disabled })`, async function() {
 
       // given
       const { settings } = await renderSettings({ 'app.disableConnectorTemplates': disabled });
-      const toggle = screen.getByRole('checkbox', { name: 'OOTB connector templates' });
-      expect(toggle.checked).to.equal(!disabled);
+      const checkbox = screen.getByRole('checkbox', { name: /^Disable OOTB connector templates/ });
+      expect(checkbox.checked).to.equal(disabled);
 
       // when
-      fireEvent.click(toggle);
+      fireEvent.click(checkbox);
       await flushSave();
 
       // then
       expect(settings.get('app.disableConnectorTemplates')).to.equal(!disabled);
-      expect(toggle.checked).to.equal(disabled);
+      expect(checkbox.checked).to.equal(!disabled);
       expect(screen.getByRole('button', { name: 'Add source' }).disabled).to.be.false;
       expect(screen.getByText(/Restart the modeler to apply/)).to.exist;
     });
@@ -142,17 +142,17 @@ describe('SettingsPlugin', function() {
 
 
   [ true, false ].forEach(flag => {
-    it(`should lock only the OOTB toggle when flagged (${ flag })`, async function() {
+    it(`should lock only the OOTB checkbox when flagged (${ flag })`, async function() {
 
       // given
       Flags.init({ 'disable-connector-templates': flag });
       const { settings, saved } = await renderSettings({ 'app.disableConnectorTemplates': !flag });
       await flushSave();
-      const toggle = screen.getByRole('checkbox', { name: 'OOTB connector templates' });
+      const checkbox = screen.getByRole('checkbox', { name: /^Disable OOTB connector templates/ });
 
       // then
-      expect(toggle.disabled).to.be.true;
-      expect(toggle.checked).to.equal(!flag);
+      expect(checkbox.disabled).to.be.true;
+      expect(checkbox.checked).to.equal(flag);
       expect(screen.getByText('disable-connector-templates', { selector: 'code' })).to.exist;
       expect(saved).not.to.have.been.called;
 

@@ -13,9 +13,7 @@ import React, { useEffect, useRef } from 'react';
 import { Field, FieldArray, getIn, useFormikContext } from 'formik';
 import { Tag } from '@carbon/react';
 
-import { TextInput, ToggleSwitch } from '../../shared/ui';
-import Flags from '../../util/Flags';
-import { utmTag } from '../../util/utmTag';
+import { TextInput } from '../../shared/ui';
 
 import * as css from './ElementTemplatesSettings.css';
 
@@ -23,31 +21,6 @@ import * as css from './ElementTemplatesSettings.css';
 /** Header for the Camunda 8 element-template settings section. */
 export function ElementTemplatesSettingsHeader() {
   return <span>Element templates <Tag size="sm" type="blue">Camunda 8 only</Tag></span>;
-}
-
-/** Positive OOTB toggle backed by the existing negative setting and flag. */
-export function OOTBTemplatesToggle({ name, label, flag, documentationUrl }) {
-  const disabledByFlag = Flags.get(flag) !== undefined;
-
-  return <div id={ name }>
-    <Field name={ name }>
-      { ({ field, form }) => <ToggleSwitch
-        field={ {
-          ...field,
-          value: !field.value,
-          onChange: event => form.setFieldValue(name, !event.target.checked)
-        } }
-        form={ form }
-        label={ label }
-        disabled={ disabledByFlag }
-        description={ <span>Fetch connector templates from Camunda Marketplace. <a href={ documentationUrl }>Learn more.</a></span> }
-      /> }
-    </Field>
-    { disabledByFlag && <div className="flag-warning">
-      This option is overridden by <code>{ flag }</code> flag.&nbsp;
-      <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/flags/') }>Learn more.</a>
-    </div> }
-  </div>;
 }
 
 /** HTTP(S) index URLs; changes use the normal Settings restart lifecycle. */
