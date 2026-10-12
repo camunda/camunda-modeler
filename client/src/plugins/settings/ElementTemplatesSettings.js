@@ -50,7 +50,7 @@ export function OOTBTemplatesToggle({ name, label, flag, documentationUrl }) {
   </div>;
 }
 
-/** Ordered HTTP(S) index URLs; changes use the normal Settings restart lifecycle. */
+/** HTTP(S) index URLs; changes use the normal Settings restart lifecycle. */
 export function CustomTemplateSources({ name }) {
   const { values, setFieldValue } = useFormikContext();
   const value = getIn(values, name);
