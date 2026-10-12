@@ -12,7 +12,7 @@ import React from 'react';
 
 import classnames from 'classnames';
 
-import { isNil } from 'min-dash';
+import { isFunction, isNil } from 'min-dash';
 
 import { Fill } from '../../../slot-fill';
 
@@ -148,7 +148,14 @@ function LintingTabItem(props) {
             onClick={ (event) => {
               event.preventDefault();
               stopPropagation(event);
-              onAction(report.action.handler, report.action.options);
+
+              const { action } = report;
+
+              if (isFunction(action.execute)) {
+                onAction('applyLintAction', report);
+              } else {
+                onAction(action.handler, action.options);
+              }
             } }
             title={ report.action.label }>
             { report.action.label }

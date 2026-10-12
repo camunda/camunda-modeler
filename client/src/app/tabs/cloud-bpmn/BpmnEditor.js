@@ -895,6 +895,10 @@ export class BpmnEditor extends CachedComponent {
       return;
     }
 
+    if (action === 'applyLintAction') {
+      return this.getModeler().get('linting').applyAction(context);
+    }
+
     if (action === 'set-engine-profile') {
       const currentProfile = this.engineProfile.get();
 

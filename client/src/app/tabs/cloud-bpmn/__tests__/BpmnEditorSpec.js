@@ -1199,6 +1199,30 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       expect(showErrorSpy).to.have.been.calledWithMatch(lintError);
     });
 
+
+    it('should trigger applyLintAction', async function() {
+
+      // given
+      const report = {
+        id: 'foo',
+        message: 'Foo',
+        action: {
+          label: 'Make executable',
+          execute() {}
+        }
+      };
+
+      const { instance } = await renderEditor(diagramXML);
+
+      const applyActionSpy = spy(instance.getModeler().get('linting'), 'applyAction');
+
+      // when
+      instance.triggerAction('applyLintAction', report);
+
+      // then
+      expect(applyActionSpy).to.have.been.calledOnceWith(report);
+    });
+
   });
 
 
