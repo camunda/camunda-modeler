@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 
 import { forEach, debounce, map, reduce } from 'min-dash';
 
-import { omitBy } from 'lodash';
+import { isEqual, omitBy } from 'lodash';
 
 import { Formik } from 'formik';
 
@@ -111,7 +111,7 @@ export default function SettingsPlugin(props) {
   const handleSave = (data) => {
     const formikValues = flattenFormikValues(data);
 
-    const changedValues = omitBy(formikValues, (value, key) => values[key] === value);
+    const changedValues = omitBy(formikValues, (value, key) => isEqual(values[key], value));
 
     if (!Object.keys(changedValues).length) {
       return;
