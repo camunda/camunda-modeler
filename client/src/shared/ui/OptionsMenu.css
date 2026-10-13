@@ -1,0 +1,10 @@
+:local(.OptionsMenu) {
+  position: relative;
+  display: inline-flex;
+
+  /* the label is the button's accessible name (via aria-labelledby, which
+     also picks up hidden elements); do not show it as a tooltip */
+  .cds--popover {
+    display: none;
+  }
+}
