@@ -109,6 +109,70 @@ describe('<Modal>', function() {
   });
 
 
+  describe('nested modals', function() {
+
+    it('should close only the topmost modal on Escape', function() {
+
+      // given
+      const outerClose = sinon.spy();
+      const innerClose = sinon.spy();
+
+      const { rerender } = render(<Modal onClose={ outerClose } />);
+
+      rerender(<>
+        <Modal onClose={ outerClose } />
+        <Modal onClose={ innerClose } />
+      </>);
+
+      // when
+      fireEvent.keyDown(document, { key: 'Escape' });
+
+      // then
+      expect(innerClose).to.have.been.calledOnce;
+      expect(outerClose).not.to.have.been.called;
+
+      // when
+      rerender(<Modal onClose={ outerClose } />);
+      fireEvent.keyDown(document, { key: 'Escape' });
+
+      // then
+      expect(outerClose).to.have.been.calledOnce;
+    });
+
+
+    it('should keep focus in the topmost modal', function() {
+
+      // given
+      const { rerender, getByTestId } = render(<Modal>
+        <input data-testid="outer" />
+      </Modal>);
+
+      rerender(<>
+        <Modal>
+          <input data-testid="outer" />
+        </Modal>
+        <Modal>
+          <input data-testid="inner-1" />
+          <input data-testid="inner-2" />
+        </Modal>
+      </>);
+
+      const inner1 = getByTestId('inner-1');
+      const inner2 = getByTestId('inner-2');
+
+      inner1.focus();
+
+      // when
+      fireEvent.keyDown(document, { key: 'Tab' });
+      inner2.focus();
+
+      // then
+      expect(document.activeElement).to.equal(inner2);
+    });
+
+  });
+
+
   describe('focus handling', function() {
 
     it('should correctly handle autofocus', function() {
