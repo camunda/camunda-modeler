@@ -60,6 +60,27 @@ describe('<ToggleSwitch>', function() {
     expect(input.checked).to.be.false;
   });
 
+
+
+  it('should render label', function() {
+
+    // given
+    const { container } = render(<ToggleSwitch field={ DEFAULT_FIELD } switcherLabel="Foo" />);
+
+    // then
+    expect(container.querySelector('.toggle-switch__label').textContent).to.equal('Foo');
+  });
+
+
+  it('should not render empty label', function() {
+
+    // given
+    const { container } = createToggleSwitch();
+
+    // then
+    expect(container.querySelector('.toggle-switch__label')).not.to.exist;
+  });
+
 });
 
 

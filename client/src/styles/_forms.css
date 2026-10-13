@@ -533,6 +533,11 @@
     box-shadow: none ;
   }
 
+  .toggle-switch .toggle-switch__switcher input[type='checkbox']:focus-visible + .toggle-switch__slider {
+    outline: 2px solid var(--color-blue-205-100-50);
+    outline-offset: 2px;
+  }
+
   .toggle-switch .toggle-switch__switcher input[type='checkbox']:checked + .toggle-switch__slider:before {
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);

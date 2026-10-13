@@ -42,9 +42,9 @@ export default function ToggleSwitch(props) {
                 />
                 <span className="toggle-switch__slider" />
               </div>
-              <span className="toggle-switch__label">
+              { entryLabel && <span className="toggle-switch__label">
                 { entryLabel }
-              </span>
+              </span> }
             </label>
           </div>
         </div>
