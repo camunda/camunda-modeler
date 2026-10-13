@@ -50,7 +50,7 @@ describe('template-updater - sources', function() {
   it('should configure independent sources in order after OOTB', function() {
 
     // when
-    const result = configure([ 'http://internal.example/index', 'https://example.com/index?group=1' ]);
+    const result = configure([ { url: 'http://internal.example/index' }, { url: 'https://example.com/index?group=1' } ]);
 
     // then
     expect(result.endpoints.map(({ url }) => url)).to.eql([
@@ -69,8 +69,8 @@ describe('template-updater - sources', function() {
     // when
     const result = configure([
       ' HTTPS://EXAMPLE.COM:443/a/../index?group=1#first ',
-      'https://example.com/index?group=1#second',
-      'https://example.com/index?group=2'
+      { url: 'https://example.com/index?group=1#second' },
+      { url: 'https://example.com/index?group=2' }
     ]);
 
     // then
@@ -78,12 +78,53 @@ describe('template-updater - sources', function() {
       'https://example.com/index?group=1',
       'https://example.com/index?group=2'
     ]);
-    expect(result.endpoints[1].fileName).to.equal(configure([ 'https://example.com/index?group=1' ]).endpoints[1].fileName);
+    expect(result.endpoints[1].fileName).to.equal(configure([ { url: 'https://example.com/index?group=1' } ]).endpoints[1].fileName);
     expect(result.endpoints[2].fileName).not.to.equal(result.endpoints[1].fileName);
   });
 
 
-  [ null, {}, 42, 'https://example.com/index' ].forEach(value => {
+  it('should configure named sources and skip disabled ones', function() {
+
+    // given
+    const disabled = { name: 'Disabled', url: 'https://example.com/disabled', enabled: false };
+
+    // when
+    const result = configure([
+      { name: 'Enabled', url: 'https://example.com/enabled', enabled: true },
+      { url: 'https://example.com/implicitly-enabled' },
+      disabled,
+      { name: 'Duplicate of disabled', url: 'https://example.com/disabled' }
+    ]);
+
+    // then
+    expect(result.endpoints.slice(1).map(({ url }) => url)).to.eql([
+      'https://example.com/enabled',
+      'https://example.com/implicitly-enabled',
+      'https://example.com/disabled'
+    ]);
+  });
+
+
+  it('should ignore the cache of a disabled source', function() {
+
+    // given
+    const source = { name: 'Source', url: 'https://example.com/index', enabled: true };
+    const { endpoints } = configure([ source ]);
+    const cachePath = getTemplatesPath(userPath, endpoints[1].fileName);
+    fs.mkdirSync(path.dirname(cachePath), { recursive: true });
+    fs.writeFileSync(cachePath, '[]');
+
+    // when
+    const result = configure([ { ...source, enabled: false } ]);
+
+    // then
+    expect(result.endpoints).to.eql([ OOTB_CONNECTORS_ENDPOINT ]);
+    expect(result.ignoredPaths).to.eql([ cachePath ]);
+    expect(fs.existsSync(cachePath)).to.be.true;
+  });
+
+
+  [ null, {}, 42, 'https://example.com/index', { url: 'https://example.com/index' } ].forEach(value => {
     it(`should ignore a non-array setting (${ JSON.stringify(value) })`, function() {
 
       // when
@@ -99,10 +140,11 @@ describe('template-updater - sources', function() {
 
     // when
     const result = configure([
-      null, {}, 42, '', '  ', '/index', 'not a URL',
-      'file:///tmp/index.json', 'ftp://example.com/index',
-      'https://user@example.com/index', 'http://user:secret@example.com/index',
-      'http://:secret@example.com/index', 'https://valid.example/index'
+      null, {}, 42, { url: '' }, { url: '  ' }, { url: '/index' }, { url: 'not a URL' }, { name: 'No URL' }, { url: 42 },
+      'https://plain.example/index',
+      { url: 'file:///tmp/index.json' }, { url: 'ftp://example.com/index' },
+      { url: 'https://user@example.com/index' }, { url: 'http://user:secret@example.com/index' },
+      { url: 'http://:secret@example.com/index' }, { url: 'https://valid.example/index' }
     ]);
 
     // then
@@ -120,7 +162,7 @@ describe('template-updater - sources', function() {
       // given
       const settings = {
         'app.disableConnectorTemplates': setting,
-        'app.customTemplateSources': [ 'https://example.com/index' ]
+        'app.customTemplateSources': [ { url: 'https://example.com/index' } ]
       };
       const flags = { get: () => flag };
 
@@ -137,7 +179,7 @@ describe('template-updater - sources', function() {
   it('should ignore removed caches without deleting them or matching user files', function() {
 
     // given
-    const original = configure([ 'https://example.com/a', 'https://example.com/b' ]);
+    const original = configure([ { url: 'https://example.com/a' }, { url: 'https://example.com/b' } ]);
     const directory = getTemplatesPath(userPath, '');
     fs.mkdirSync(directory, { recursive: true });
 
@@ -152,9 +194,9 @@ describe('template-updater - sources', function() {
     const before = fs.readdirSync(directory);
 
     // when
-    const removed = configure([ 'https://example.com/a' ]);
+    const removed = configure([ { url: 'https://example.com/a' } ]);
     const cleared = configure([]);
-    const readded = configure([ 'https://example.com/a', 'https://example.com/b#fragment' ]);
+    const readded = configure([ { url: 'https://example.com/a' }, { url: 'https://example.com/b#fragment' } ]);
 
     // then
     expect(removed.ignoredPaths).to.eql([ cachePaths[2] ]);
@@ -168,13 +210,13 @@ describe('template-updater - sources', function() {
   it('should treat an edited URL as a new source and retain its old cache', function() {
 
     // given
-    const original = configure([ 'https://example.com/old' ]);
+    const original = configure([ { url: 'https://example.com/old' } ]);
     const oldPath = getTemplatesPath(userPath, original.endpoints[1].fileName);
     fs.mkdirSync(path.dirname(oldPath), { recursive: true });
     fs.writeFileSync(oldPath, '[]');
 
     // when
-    const result = configure([ 'https://example.com/new' ]);
+    const result = configure([ { url: 'https://example.com/new' } ]);
 
     // then
     expect(result.ignoredPaths).to.eql([ oldPath ]);
@@ -189,7 +231,7 @@ describe('template-updater - sources', function() {
     sinon.stub(fs, 'readdirSync').throws(Object.assign(new Error('access denied'), { code: 'EACCES' }));
 
     // when
-    const result = configure([ 'https://example.com/index' ]);
+    const result = configure([ { url: 'https://example.com/index' } ]);
 
     // then
     expect(result.endpoints).to.have.length(2);

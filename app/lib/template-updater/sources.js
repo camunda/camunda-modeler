@@ -21,7 +21,8 @@ const CUSTOM_CACHE_PATTERN = /^\.custom-element-templates-[0-9a-f]{64}\.json$/;
 
 /**
  * Configure fetching and discovery of remote element templates for this session.
- * Removed-source caches are ignored, not deleted, so re-adding a URL can reuse them.
+ * Custom sources are `{ name, url, enabled }` entries.
+ * Removed or disabled source caches are ignored, not deleted, so re-adding a URL can reuse them.
  *
  * @param {Object} options
  * @param {string} options.userPath
@@ -51,10 +52,14 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
   }
 
   for (const [ index, source ] of (Array.isArray(sources) ? sources : []).entries()) {
+    if (source?.enabled === false) {
+      continue;
+    }
+
     let url;
 
     try {
-      url = normalizeSourceUrl(source);
+      url = normalizeSourceUrl(source?.url);
     } catch (error) {
 
       // Do not echo invalid input: it may contain credentials.
