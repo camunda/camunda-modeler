@@ -13,9 +13,11 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: remove Carbon for plug-ins: `vendor.carbonReact`, `vendor.carbonIconsReact` and the global Carbon styles are no longer available, plug-ins that import them fail to load; use `camunda-modeler-plugin-helpers/components` or the [Camunda Design System](https://github.com/camunda/design-system) instead ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
 * `DEPS`: add `@bpmn-io/c4-theme@0.3.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.56.1`
 * `DEPS`: update to `@bpmn-io/variable-outline@4.0.0`
 * `DEPS`: update to `@camunda/design-system@0.63.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.12.0`
+* `DEPS`: update to `@camunda/rpa-integration@2.0.0`
 * `DEPS`: update to `@camunda/task-testing@7.0.0`
 * `DEPS`: update to `bpmn-js@18.30.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.37.0`
@@ -25,6 +27,10 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: reorganize the task testing panel around a run card, with extra tabs as collapsible sections inside it ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
 * `FIX`: wait for the element instance before reporting a terminated task test ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
+* `FIX`: mark checkbox entries with errors in the properties panel ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
+* `FIX`: show the most severe element template lint error, not the first one ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
+* `FIX`: show linting errors over local validation errors in element template entries, like in all other entries ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
+* `FIX`: convert empty optional FEEL number fields to FEEL on `=` key press ([bpmn-io/properties-panel#559](https://github.com/bpmn-io/properties-panel/pull/559))
 
 ## 5.52.0
 
