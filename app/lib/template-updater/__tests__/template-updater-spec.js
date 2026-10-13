@@ -470,7 +470,7 @@ describe('template-updater - TemplateUpdater', function() {
         userPath,
         settings: {
           'app.disableConnectorTemplates': true,
-          'app.customTemplateSources': sources.map(source => `${ origin }/${ source }`)
+          'app.customTemplateSources': sources.map(source => ({ url: `${ origin }/${ source }` }))
         }
       });
 
