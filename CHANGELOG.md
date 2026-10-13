@@ -7,6 +7,7 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: support custom element template sources ([#5100](https://github.com/camunda/camunda-modeler/issues/5100), [#6181](https://github.com/camunda/camunda-modeler/pull/6181))
+* `FEAT`: manage Camunda 8 connections as a list, edit and check them in a dialog ([#6256](https://github.com/camunda/camunda-modeler/pull/6256))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
 
 ## 5.52.0
