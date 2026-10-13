@@ -63,25 +63,31 @@ export function SettingsForm({ schema, onChange, targetElement }) {
         // Render each section
         forEach(value.sections, (section, sectionId) => {
           const sectionProperties = propertiesBySection[sectionId] || {};
-          result.push(
-            <SettingsSection
-              key={ `${key}-${sectionId}` }
-              title={ section.title }
-              description={ section.description }
-              documentationUrl={ section.documentationUrl }
-              properties={ sectionProperties }
-              targetElement={ targetElement }
-            />
-          );
+          result.push({
+            order: section.order ?? value.order,
+            element: (
+              <SettingsSection
+                key={ `${key}-${sectionId}` }
+                title={ section.title }
+                description={ section.description }
+                documentationUrl={ section.documentationUrl }
+                properties={ sectionProperties }
+                targetElement={ targetElement }
+              />
+            )
+          });
         });
       } else {
 
         // Otherwise render as a single section
-        result.push(<SettingsSection id={ key } key={ key } { ...value } targetElement={ targetElement } />);
+        result.push({
+          order: value.order,
+          element: <SettingsSection id={ key } key={ key } { ...value } targetElement={ targetElement } />
+        });
       }
     });
 
-    return result;
+    return sortBy(result, ({ order }) => order ?? 9999).map(({ element }) => element);
   }, [ orderedSchema ]);
 
   return (<Form>

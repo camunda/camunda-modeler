@@ -414,6 +414,61 @@ describe('SettingsForm', function() {
       expect(getByLabelText('Version')).to.exist;
     });
 
+    it('should order sections across groups', function() {
+
+      // given
+      const schema = {
+        app: {
+          id: 'app',
+          order: 0,
+          sections: {
+            general: {
+              title: 'General Settings'
+            },
+            templates: {
+              title: 'Template Settings',
+              order: 2
+            }
+          },
+          properties: {
+            'app.enableFeature': {
+              type: 'boolean',
+              label: 'Enable Feature',
+              section: 'general'
+            },
+            'app.templates': {
+              type: 'boolean',
+              label: 'Templates',
+              section: 'templates'
+            }
+          }
+        },
+        connections: {
+          id: 'connections',
+          title: 'Connection Settings',
+          order: 1,
+          properties: {
+            'connections.enabled': {
+              type: 'boolean',
+              label: 'Enabled'
+            }
+          }
+        }
+      };
+
+      // when
+      const { container } = createSettingsForm({ schema });
+
+      // then
+      const titles = Array.from(container.querySelectorAll('h3')).map(el => el.textContent);
+
+      expect(titles).to.eql([
+        'General Settings',
+        'Connection Settings',
+        'Template Settings'
+      ]);
+    });
+
   });
 
 

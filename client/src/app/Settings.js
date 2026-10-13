@@ -22,8 +22,22 @@ import { Flags } from '../util';
  * @property {string} id - unique identifier for the settings group
  * @property {string} title - title of the section on the settings page
  * @property {number} [order] - index of the section on the settings page
+ * @property {Record<string, SettingsSection>} [sections] - sub-sections of the group,
+ * properties are assigned to a section via their `section` key
  * @property {Record<string, SettingsProperty>} properties - property key must be prefixed with
  * the group `id` e.g `bpmn.enabled`
+ */
+
+/**
+ * Metadata for a sub-section of a settings group.
+ *
+ * @typedef {Object} SettingsSection
+ *
+ * @property {string|import('react').ReactNode} title - title of the section
+ * @property {string} [description] - description of the section
+ * @property {string} [documentationUrl] - link to an external documentation
+ * @property {number} [order] - index of the section on the settings page,
+ * defaults to the group's `order`
  */
 
 /**
