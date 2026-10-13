@@ -193,6 +193,29 @@ describe('<Modal>', function() {
   });
 
 
+  it('should not submit an enclosing form', function() {
+
+    // given
+    const outerSubmit = sinon.spy();
+    const innerSubmit = sinon.spy(event => event.preventDefault());
+
+    const { getByRole } = render(<form onSubmit={ outerSubmit }>
+      <Modal>
+        <form onSubmit={ innerSubmit }>
+          <button type="submit">Submit</button>
+        </form>
+      </Modal>
+    </form>);
+
+    // when
+    fireEvent.submit(getByRole('button', { name: 'Submit' }).closest('form'));
+
+    // then
+    expect(innerSubmit).to.have.been.calledOnce;
+    expect(outerSubmit).not.to.have.been.called;
+  });
+
+
   describe('<Modal.Title>', function() {
 
     it('should render', function() {
