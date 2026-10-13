@@ -35,8 +35,12 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
   const endpoints = [];
   const ignoredPaths = [];
 
-  const disabled =
-    flags?.get('disable-connector-templates', false) || settings?.['app.disableConnectorTemplates'];
+  // a flag, if set, overrides the setting
+  const disabledFlag = flags?.get('disable-connector-templates');
+
+  const disabled = disabledFlag !== undefined
+    ? disabledFlag
+    : settings?.['app.disableConnectorTemplates'];
 
   if (disabled) {
     ignoredPaths.push(getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName));

@@ -154,8 +154,7 @@ describe('template-updater - sources', function() {
 
   [
     { setting: true, flag: undefined },
-    { setting: false, flag: true },
-    { setting: true, flag: false }
+    { setting: false, flag: true }
   ].forEach(({ setting, flag }) => {
     it(`should disable only OOTB (setting=${ setting }, flag=${ flag })`, function() {
 
@@ -173,6 +172,21 @@ describe('template-updater - sources', function() {
       expect(result.endpoints.map(({ url }) => url)).to.eql([ 'https://example.com/index' ]);
       expect(result.ignoredPaths).to.eql([ getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName) ]);
     });
+  });
+
+
+  it('should enable OOTB if flag overrides setting', function() {
+
+    // given
+    const settings = { 'app.disableConnectorTemplates': true };
+    const flags = { get: () => false };
+
+    // when
+    const result = getTemplateSourceConfig({ userPath, settings, flags });
+
+    // then
+    expect(result.endpoints).to.eql([ OOTB_CONNECTORS_ENDPOINT ]);
+    expect(result.ignoredPaths).to.be.empty;
   });
 
 
