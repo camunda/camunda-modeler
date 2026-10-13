@@ -11,7 +11,8 @@
 import { expect } from 'chai';
 import {
   getLatestStable,
-  ENGINES
+  ENGINES,
+  ENGINE_PROFILES
 } from '../Engines';
 
 
@@ -31,6 +32,15 @@ describe('util/Engines', function() {
     it('Platform', verifyLatestStable(ENGINES.PLATFORM, '7.24.0'));
 
     it('Cloud', verifyLatestStable(ENGINES.CLOUD, '8.10.0'));
+
+  });
+
+  describe('ENGINE_PROFILES', function() {
+
+    it('should include 8.11.0 for Camunda Cloud', function() {
+      const cloudProfile = ENGINE_PROFILES.find(p => p.executionPlatform === ENGINES.CLOUD);
+      expect(cloudProfile.executionPlatformVersions).to.include('8.11.0');
+    });
 
   });
 
