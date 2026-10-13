@@ -8,832 +8,624 @@
  * except in compliance with the MIT License.
  */
 
-import { expect } from 'chai';
-import * as sinon from 'sinon';
-
 import React from 'react';
 
-import {
-  render,
-  fireEvent,
-  waitFor
-} from '@testing-library/react';
+import { expect } from 'chai';
+import sinon from 'sinon';
 
 import { Formik } from 'formik';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+
+import { SettingsForm } from '../../../settings/SettingsForm';
 
 import { ConnectionManagerSettingsComponent } from '../ConnectionManagerSettingsComponent';
 import { C8RUN_DOWNLOAD_URL, C8RUN_TROUBLESHOOTING_URL } from '../constants';
 
+const NAME = 'connectionManagerPlugin.c8connections';
+
+const SAAS_CONNECTION = {
+  id: 'saas',
+  name: 'Production',
+  targetType: 'camundaCloud',
+  camundaCloudClusterUrl: 'https://bru-2.zeebe.camunda.io/abc',
+  camundaCloudClientId: 'client-id',
+  camundaCloudClientSecret: 'client-secret'
+};
+
+const SELF_MANAGED_CONNECTION = {
+  id: 'self-managed',
+  name: 'Development',
+  targetType: 'selfHosted',
+  contactPoint: 'http://localhost:26500',
+  authType: 'none'
+};
+
+const C8RUN_CONNECTION = {
+  id: 'c8run',
+  name: 'c8run (local)',
+  targetType: 'selfHosted',
+  contactPoint: 'http://localhost:8080/v2',
+  authType: 'none'
+};
+
+
 describe('ConnectionManagerSettingsComponent', function() {
 
-  it('should render', function() {
+  describe('list', function() {
 
-    // when
-    const { getByTestId } = createComponent();
-
-    // then
-    expect(getByTestId('connection-manager-settings')).to.exist;
-  });
-
-
-  it('should display empty placeholder when no connections', function() {
-
-    // when
-    const { container } = createComponent({ initialValues: [] });
-
-    // then
-    expect(container.querySelector('.empty-placeholder')).to.exist;
-    expect(container.querySelector('.empty-placeholder').textContent).to.contain('No connections configured');
-  });
-
-
-  describe('connections list', function() {
-
-    it('should display connection names', function() {
-
-      // given
-      const connections = [
-        { id: 'conn-1', name: 'Production Cluster' },
-        { id: 'conn-2', name: 'Development Cluster' }
-      ];
+    it('should list connections', function() {
 
       // when
-      const { container } = createComponent({ initialValues: connections });
+      renderConnections([
+        SAAS_CONNECTION,
+        SELF_MANAGED_CONNECTION,
+        { id: 'unnamed', targetType: 'selfHosted' }
+      ]);
 
       // then
-      expect(container.textContent).to.contain('Production Cluster');
-      expect(container.textContent).to.contain('Development Cluster');
+      expect(getItems()).to.eql([
+        [ 'Production', 'https://bru-2.zeebe.camunda.io/abc' ],
+        [ 'Development', 'http://localhost:26500' ],
+        [ 'Unnamed connection', 'Camunda 8 Self-Managed' ]
+      ]);
+      expect(screen.getAllByRole('button', { name: /^Options for / })).to.have.length(3);
+      expect(screen.getByText(/Deploy and run your processes on Camunda 8/)).to.exist;
     });
 
 
-    it('should expand connection on row click', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'camundaCloud',
-          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io'
-        }
-      ];
-
-      const { container } = createComponent({ initialValues: connections });
+    it('should link Camunda 8 Run documentation with UTM tags', function() {
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
+      renderConnections([]);
 
       // then
-      await waitFor(() => {
-        expect(container.querySelector('input[name*="name"]')).to.exist;
-      });
+      const url = new URL(screen.getByRole('link', { name: 'Camunda 8 Run' }).href);
+
+      expect(url.searchParams.get('utm_source')).to.eql('modeler');
+      expect(url.searchParams.get('utm_medium')).to.eql('referral');
     });
 
 
-    it('should collapse connection when clicking expanded row', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'camundaCloud'
-        }
-      ];
-
-      const { container } = createComponent({ initialValues: connections });
-
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      await waitFor(() => {
-        expect(container.querySelector('input[name*="name"]')).to.exist;
-      });
+    it('should not offer inline editing or removal', function() {
 
       // when
-      fireEvent.click(expandButton);
+      const { container } = renderConnections([ SAAS_CONNECTION ]);
 
       // then
-      await waitFor(() => {
-        expect(container.querySelector('input[name*="name"]')).to.not.exist;
-      });
+      expect(container.querySelector('table')).not.to.exist;
+      expect(screen.queryByRole('textbox')).not.to.exist;
+      expect(screen.queryByRole('button', { name: /Remove/ })).not.to.exist;
+    });
+
+
+    it('should display empty state', function() {
+
+      // when
+      renderConnections([]);
+
+      // then
+      expect(screen.getByText(/No connections configured/)).to.exist;
+      expect(screen.queryByRole('list')).not.to.exist;
+    });
+
+
+    it('should remove a connection', async function() {
+
+      // given
+      const { getValues } = renderConnections([ SAAS_CONNECTION, SELF_MANAGED_CONNECTION ]);
+
+      // when
+      selectAction('Production', 'Remove');
+
+      // then
+      await waitFor(() => expect(getValues()).to.eql([ SELF_MANAGED_CONNECTION ]));
+      expect(getItems()).to.eql([ [ 'Development', 'http://localhost:26500' ] ]);
+      expect(document.activeElement === screen.getByRole('button', { name: 'Add connection' }), 'focus moved').to.be.true;
+    });
+
+
+    it('should remove the last connection', async function() {
+
+      // given
+      const { getValues } = renderConnections([ SAAS_CONNECTION ]);
+
+      // when
+      selectAction('Production', 'Remove');
+
+      // then
+      await waitFor(() => expect(getValues()).to.eql([]));
+      expect(screen.getByText(/No connections configured/)).to.exist;
     });
 
   });
 
 
-  describe('add connection', function() {
+  describe('add dialog', function() {
 
-    it('should render add button', function() {
+    it('should open with defaults', function() {
 
       // when
-      const { getByText } = createComponent();
+      renderConnections([ SAAS_CONNECTION ]);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Add connection' }));
 
       // then
-      const addButton = getByText('Add connection');
-      expect(addButton).to.exist;
+      const dialog = getDialog();
+      const name = getInput('Name');
+
+      expect(within(dialog).getByRole('heading').textContent).to.equal('Add Camunda 8 connection');
+      expect(name.value).to.equal('New connection 2');
+      expect(document.activeElement === name, 'name focused').to.be.true;
+      expect(name.selectionStart).to.equal(0);
+      expect(name.selectionEnd).to.equal(name.value.length);
+      expect(within(dialog).getByRole('radio', { name: 'Camunda 8 SaaS' }).checked).to.be.true;
     });
 
 
-    it('should add new connection', async function() {
+    it('should add a connection', async function() {
 
       // given
-      const { container, getByText } = createComponent({ initialValues: [] });
+      const { getValues, onSubmit } = renderConnections([ SAAS_CONNECTION ]);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Add connection' }));
+
+      const dialog = getDialog();
+
+      await waitFor(() => expect(within(dialog).getByRole('button', { name: 'Add' }).disabled, 'invalid').to.be.true);
 
       // when
-      const addButton = getByText('Add connection');
+      fill('Name', 'Staging');
+      fireEvent.click(within(dialog).getByRole('radio', { name: 'Camunda 8 Self-Managed' }));
+      fill('Connection URL', 'http://staging:8080/v2');
+
+      await waitFor(() => expect(within(dialog).getByRole('button', { name: 'Add' }).disabled, 'valid').to.be.false);
+
+      fireEvent.submit(within(dialog).getByRole('button', { name: 'Add' }).closest('form'));
+
+      // then
+      await waitFor(() => expect(getValues()).to.have.length(2));
+
+      const [ , added ] = getValues();
+
+      expect(added).to.include({
+        name: 'Staging',
+        targetType: 'selfHosted',
+        contactPoint: 'http://staging:8080/v2',
+        authType: 'none'
+      });
+      expect(added.id).to.be.a('string').and.not.to.equal(SAAS_CONNECTION.id);
+      expect(screen.queryByRole('dialog')).not.to.exist;
+      expect(getItems()[1]).to.eql([ 'Staging', 'http://staging:8080/v2' ]);
+      expect(onSubmit).not.to.have.been.called;
+    });
+
+
+    it('should cancel', function() {
+
+      // given
+      const { getValues } = renderConnections([]);
+
+      const addButton = screen.getByRole('button', { name: 'Add connection' });
+
+      addButton.focus();
       fireEvent.click(addButton);
-
-      // then
-      await waitFor(() => {
-        expect(container.querySelector('.empty-placeholder')).to.not.exist;
-        expect(container.querySelector('input[name*="name"]')).to.exist;
-      });
-    });
-
-
-    it('should expand newly added connection', async function() {
-
-      // given
-      const { container, getByText } = createComponent({ initialValues: [] });
+      fill('Name', 'Staging');
 
       // when
-      const addButton = getByText('Add connection');
-      fireEvent.click(addButton);
+      fireEvent.click(within(getDialog()).getByRole('button', { name: 'Cancel' }));
 
       // then
-      await waitFor(() => {
-        const nameInput = container.querySelector('input[name*="name"]');
-        expect(nameInput).to.exist;
-      });
-    });
-
-
-    it('should add connection with default values', async function() {
-
-      // given
-      const onSubmit = sinon.spy();
-      const { container, getByText } = createComponent({ initialValues: [], onSubmit });
-
-      // when
-      const addButton = getByText('Add connection');
-      fireEvent.click(addButton);
-
-      await waitFor(() => {
-        expect(container.querySelector('input[name*="name"]')).to.exist;
-      });
-
-      // Submit form to check values
-      const form = container.querySelector('form');
-      fireEvent.submit(form);
-
-      // then
-      await waitFor(() => {
-        expect(onSubmit).to.have.been.calledOnce;
-        const values = onSubmit.firstCall.args[0];
-        expect(values.connections).to.have.lengthOf(1);
-        expect(values.connections[0]).to.have.property('id');
-        expect(values.connections[0]).to.have.property('name');
-      });
+      expect(screen.queryByRole('dialog')).not.to.exist;
+      expect(getValues()).to.eql([]);
+      expect(document.activeElement === addButton, 'focus restored').to.be.true;
     });
 
   });
 
 
-  describe('remove connection', function() {
+  describe('edit dialog', function() {
 
-    it('should render remove button for each connection', function() {
+    it('should edit a connection', async function() {
 
       // given
-      const connections = [
-        { id: 'conn-1', name: 'Connection 1' },
-        { id: 'conn-2', name: 'Connection 2' }
-      ];
+      const connection = { ...SAAS_CONNECTION, extra: 'kept' };
+
+      const { getValues, onSubmit } = renderConnections([ connection, SELF_MANAGED_CONNECTION ]);
 
       // when
-      const { container } = createComponent({ initialValues: connections });
+      selectAction('Production', 'Edit');
 
       // then
-      const removeButtons = container.querySelectorAll('button.remove');
-      expect(removeButtons.length).to.equal(2);
+      const dialog = getDialog();
+
+      expect(within(dialog).getByRole('heading').textContent).to.equal('Edit Production');
+      expect(getInput('Name').value).to.equal('Production');
+      expect(getInput('Connection URL').value).to.equal(SAAS_CONNECTION.camundaCloudClusterUrl);
+      await waitFor(() => expect(within(dialog).getByRole('button', { name: 'Save' }).disabled, 'unchanged').to.be.true);
+
+      // when
+      fill('Name', 'Production EU');
+
+      // then
+      // titled by the persisted name
+      expect(within(dialog).getByRole('heading').textContent).to.equal('Edit Production');
+
+      // when
+      fireEvent.submit(within(dialog).getByRole('button', { name: 'Save' }).closest('form'));
+
+      // then
+      await waitFor(() => expect(getValues()).to.eql([
+        { ...connection, name: 'Production EU' },
+        SELF_MANAGED_CONNECTION
+      ]));
+      expect(screen.queryByRole('dialog')).not.to.exist;
+      expect(onSubmit).not.to.have.been.called;
     });
 
 
-    it('should remove connection', async function() {
-
-      // given
-      const connections = [
-        { id: 'conn-1', name: 'Connection 1' },
-        { id: 'conn-2', name: 'Connection 2' }
-      ];
-
-      const { container } = createComponent({ initialValues: connections });
+    it('should title an unnamed connection', function() {
 
       // when
-      const removeButtons = container.querySelectorAll('button.remove');
-      fireEvent.click(removeButtons[0]);
+      renderConnections([ { ...SELF_MANAGED_CONNECTION, name: '' } ], {
+        targetElement: `${ NAME }[0].name`
+      });
 
       // then
-      await waitFor(() => {
-        expect(container.textContent).to.not.contain('Connection 1');
-        expect(container.textContent).to.contain('Connection 2');
-      });
+      expect(within(getDialog()).getByRole('heading').textContent).to.equal('Edit connection');
     });
 
 
-    it('should show empty placeholder when removing last connection', async function() {
+    it('should not save an invalid connection', async function() {
 
       // given
-      const connections = [
-        { id: 'conn-1', name: 'Only Connection' }
-      ];
+      renderConnections([ SELF_MANAGED_CONNECTION ]);
 
-      const { container } = createComponent({ initialValues: connections });
+      selectAction('Development', 'Edit');
 
       // when
-      const removeButton = container.querySelector('button.remove');
-      fireEvent.click(removeButton);
+      fill('Connection URL', 'localhost');
 
       // then
-      await waitFor(() => {
-        expect(container.querySelector('.empty-placeholder')).to.exist;
-      });
+      const dialog = getDialog();
+
+      await waitFor(() => expect(within(dialog).getByText('Connection URL must be a valid URL.')).to.exist);
+      expect(within(dialog).getByRole('button', { name: 'Save' }).disabled).to.be.true;
+    });
+
+
+    it('should show fields of the selected target', function() {
+
+      // given
+      renderConnections([ SELF_MANAGED_CONNECTION ]);
+
+      selectAction('Development', 'Edit');
+
+      // assume
+      expect(queryInput('Operate URL')).to.exist;
+      expect(queryInput('Client ID')).not.to.exist;
+
+      // when
+      fireEvent.click(within(getDialog()).getByRole('radio', { name: 'Camunda 8 SaaS' }));
+
+      // then
+      expect(queryInput('Operate URL')).not.to.exist;
+      expect(queryInput('Client ID')).to.exist;
+    });
+
+
+    it('should cancel', async function() {
+
+      // given
+      const { getValues } = renderConnections([ SAAS_CONNECTION ]);
+
+      selectAction('Production', 'Edit');
+      fill('Name', 'Changed');
+
+      // when
+      fireEvent.click(within(getDialog()).getByRole('button', { name: 'Cancel' }));
+
+      // then
+      expect(screen.queryByRole('dialog')).not.to.exist;
+      expect(getValues()).to.eql([ SAAS_CONNECTION ]);
+      expect(document.activeElement === screen.getByRole('button', { name: 'Options for Production' }), 'focus restored').to.be.true;
     });
 
   });
 
 
-  describe('edit connection', function() {
+  describe('target element', function() {
 
-    it('should allow editing connection name', async function() {
-
-      // given
-      const connections = [
-        { id: 'conn-1', name: 'Original Name', targetType: 'camundaCloud' }
-      ];
-
-      const { container } = createComponent({ initialValues: connections });
-
-      // Expand the connection
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      await waitFor(() => {
-        expect(container.querySelector('input[name*="name"]')).to.exist;
-      });
+    it('should open edit dialog of targeted connection', function() {
 
       // when
-      const nameInput = container.querySelector('input[name*="name"]');
-      fireEvent.change(nameInput, { target: { value: 'New Name' } });
+      renderConnections([ SAAS_CONNECTION, SELF_MANAGED_CONNECTION ], {
+        targetElement: `${ NAME }[1].name`
+      });
 
       // then
-      expect(nameInput.value).to.equal('New Name');
+      expect(within(getDialog()).getByRole('heading').textContent).to.equal('Edit Development');
+      expect(getInput('Name').value).to.equal('Development');
     });
 
 
-    it('should display connection fields when expanded', async function() {
+    it('should return focus to targeted connection on close', function() {
 
       // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'camundaCloud',
-          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io',
-          camundaCloudClientId: 'test-client-id'
-        }
-      ];
-
-      const { container } = createComponent({ initialValues: connections });
+      renderConnections([ SAAS_CONNECTION, SELF_MANAGED_CONNECTION ], {
+        targetElement: `${ NAME }[1].name`
+      });
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
+      fireEvent.click(within(getDialog()).getByRole('button', { name: 'Cancel' }));
 
       // then
-      await waitFor(() => {
-        expect(container.querySelector('input[name*="name"]')).to.exist;
-        expect(container.querySelector('input[name*="camundaCloudClusterUrl"]')).to.exist;
-        expect(container.querySelector('input[name*="camundaCloudClientId"]')).to.exist;
-      });
+      expect(screen.queryByRole('dialog')).not.to.exist;
+      expect(document.activeElement === screen.getByRole('button', { name: 'Options for Development' }), 'focus restored').to.be.true;
     });
 
 
-    it('should display logical tenant ID field for SaaS connections', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'camundaCloud',
-          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io',
-          camundaCloudClientId: 'test-client-id'
-        }
-      ];
-
-      const { container } = createComponent({ initialValues: connections });
+    it('should provide element to scroll to', function() {
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
+      renderConnections([ SAAS_CONNECTION, SELF_MANAGED_CONNECTION ], {
+        targetElement: `${ NAME }[1].name`
+      });
 
       // then
-      await waitFor(() => {
-        expect(container.querySelector('input[name*="tenantId"]')).to.exist;
-        expect(container.textContent).to.contain('Logical Tenant ID');
-      });
+      expect(document.getElementById(`${ NAME }[1].name`).textContent).to.equal('Development');
     });
 
 
-    it('should display logical tenant ID field for self-hosted connections', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'selfHosted',
-          contactPoint: 'http://localhost:26500'
-        }
-      ];
-
-      const { container } = createComponent({ initialValues: connections });
+    it('should ignore unknown target', function() {
 
       // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
+      renderConnections([ SAAS_CONNECTION ], { targetElement: `${ NAME }[3].name` });
+      renderConnections([ SAAS_CONNECTION ], { targetElement: 'other[0].name' });
 
       // then
-      await waitFor(() => {
-        expect(container.querySelector('input[name*="tenantId"]')).to.exist;
-        expect(container.textContent).to.contain('Logical Tenant ID');
-      });
-    });
-
-
-    it('should show target type radio buttons', async function() {
-
-      // given
-      const connections = [
-        { id: 'conn-1', name: 'Test', targetType: 'camundaCloud' }
-      ];
-
-      const { container } = createComponent({ initialValues: connections });
-
-      // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      // then
-      await waitFor(() => {
-        const radioButtons = container.querySelectorAll('input[type="radio"][name*="targetType"]');
-        expect(radioButtons.length).to.be.at.least(2);
-      });
+      expect(screen.queryByRole('dialog')).not.to.exist;
     });
 
   });
 
 
-  describe('expand row by id', function() {
+  describe('connection check', function() {
 
-    it('should expand row matching expandRowId prop', async function() {
+    it('should check edited connection', async function() {
 
       // given
-      const connections = [
-        { id: 'conn-1', name: 'Connection 1' },
-        { id: 'conn-2', name: 'Connection 2' },
-        { id: 'conn-3', name: 'Connection 3' }
-      ];
+      const connectionChecker = createConnectionChecker();
+
+      renderConnections([ SAAS_CONNECTION ], { connectionChecker });
 
       // when
-      const { container } = createComponent({
-        initialValues: connections,
-        expandRowId: 'conn-2'
-      });
+      selectAction('Production', 'Edit');
 
       // then
-      // The ref is set but expansion happens via user interaction
-      // We can verify the ref exists
-      await waitFor(() => {
-        expect(container.querySelector('input[name*="name"]')).to.not.exist;
-      });
+      expect(connectionChecker.current.updateConfig).to.have.been.calledOnceWith({ endpoint: SAAS_CONNECTION });
+      expect(getStatus().querySelector('.cds--loading'), 'spinner').to.exist;
+      expect(getStatus().textContent).to.contain('Connecting to the Camunda 8 instance…');
+
+      // when
+      fill('Connection URL', 'https://bru-3.zeebe.camunda.io/abc');
+
+      // then
+      await waitFor(() => expect(connectionChecker.current.updateConfig).to.have.been.calledWith({
+        endpoint: { ...SAAS_CONNECTION, camundaCloudClusterUrl: 'https://bru-3.zeebe.camunda.io/abc' }
+      }));
+    });
+
+
+    it('should check added connection', function() {
+
+      // given
+      const connectionChecker = createConnectionChecker();
+
+      renderConnections([], { connectionChecker });
+
+      // when
+      fireEvent.click(screen.getByRole('button', { name: 'Add connection' }));
+
+      // then
+      expect(connectionChecker.current.stopChecking).to.have.been.called;
+      expect(connectionChecker.current.updateConfig).not.to.have.been.called;
+      expect(within(getStatus()).getByLabelText('error')).to.exist;
+      expect(getStatus().textContent).to.equal('Connection configuration is invalid.');
+    });
+
+
+    it('should display success', async function() {
+
+      // given
+      const connectionChecker = createConnectionChecker();
+
+      renderConnections([ SAAS_CONNECTION ], { connectionChecker });
+
+      selectAction('Production', 'Edit');
+
+      // when
+      connectionChecker.emit({ success: true });
+
+      // then
+      await waitFor(() => expect(within(getStatus()).getByLabelText('success')).to.exist);
+      expect(getStatus().textContent).to.equal('Connected');
+    });
+
+
+    it('should display result above the fields', function() {
+
+      // given
+      renderConnections([ SAAS_CONNECTION ]);
+
+      // when
+      selectAction('Production', 'Edit');
+
+      // then
+      const elements = Array.from(getDialog().querySelectorAll('[role="status"], input'));
+
+      expect(elements.indexOf(getStatus()), 'status precedes fields').to.equal(0);
+    });
+
+
+    it('should display error', async function() {
+
+      // given
+      const connectionChecker = createConnectionChecker();
+
+      renderConnections([ SELF_MANAGED_CONNECTION ], { connectionChecker });
+
+      selectAction('Development', 'Edit');
+
+      // when
+      connectionChecker.emit({ success: false, reason: 'CONTACT_POINT_UNAVAILABLE' });
+
+      // then
+      await waitFor(() => expect(within(getStatus()).getByLabelText('error')).to.exist);
+      expect(getStatus().textContent).to.contain('Cannot connect to the Camunda 8 instance.');
+      expect(screen.queryByTestId('c8run-download-link')).not.to.exist;
+    });
+
+
+    it('should display Camunda 8 Run hints', async function() {
+
+      // given
+      const connectionChecker = createConnectionChecker();
+
+      renderConnections([ C8RUN_CONNECTION ], { connectionChecker });
+
+      selectAction('c8run (local)', 'Edit');
+
+      // when
+      connectionChecker.emit({ success: false, reason: 'CONTACT_POINT_UNAVAILABLE' });
+
+      // then
+      await waitFor(() => expect(within(getStatus()).getByLabelText('error')).to.exist);
+      expect(getStatus().textContent).to.contain('Cannot connect to your local Camunda 8 instance');
+      expect(screen.getByTestId('c8run-download-link').getAttribute('href')).to.equal(C8RUN_DOWNLOAD_URL);
+      expect(screen.getByTestId('c8run-troubleshoot-link').getAttribute('href')).to.equal(C8RUN_TROUBLESHOOTING_URL);
+    });
+
+
+    it('should not check without dialog', function() {
+
+      // given
+      const connectionChecker = createConnectionChecker();
+
+      // when
+      renderConnections([ SAAS_CONNECTION ], { connectionChecker });
+
+      // then
+      expect(connectionChecker.current.on).not.to.have.been.called;
+      expect(connectionChecker.current.updateConfig).not.to.have.been.called;
+    });
+
+
+    it('should stop checking on close', function() {
+
+      // given
+      const connectionChecker = createConnectionChecker();
+
+      renderConnections([ SAAS_CONNECTION ], { connectionChecker });
+
+      selectAction('Production', 'Edit');
+
+      connectionChecker.current.stopChecking.resetHistory();
+
+      // when
+      fireEvent.click(within(getDialog()).getByRole('button', { name: 'Cancel' }));
+
+      // then
+      expect(connectionChecker.current.off).to.have.been.calledWith('connectionCheck');
+      expect(connectionChecker.current.stopChecking).to.have.been.calledOnce;
     });
 
   });
-
-
-  it('should auto-expand connection', async function() {
-
-    // given
-    const connections = [
-      { id: 'conn-1', name: 'Connection 1', targetType: 'camundaCloud' },
-      { id: 'conn-2', name: 'Connection 2', targetType: 'camundaCloud' },
-      { id: 'conn-3', name: 'Connection 3', targetType: 'camundaCloud' }
-    ];
-
-    // when
-    const { container } = createComponent({
-      initialValues: connections,
-      targetElement: 'connections[1].name'
-    });
-
-    // then - verify the second connection (index 1) is expanded
-    await waitFor(() => {
-      const nameInput = container.querySelector('input[name="connections[1].name"]');
-      expect(nameInput).to.exist;
-      expect(nameInput.value).to.equal('Connection 2');
-    });
-
-    // verify other connections are not expanded
-    expect(container.querySelector('input[name="connections[0].name"]')).to.not.exist;
-    expect(container.querySelector('input[name="connections[2].name"]')).to.not.exist;
-  });
-
-
-  describe('connection checker integration', function() {
-
-    it('should start checking connection when row is expanded', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'camundaCloud',
-          camundaCloudClusterUrl: 'https://xxx-1.zeebe.camunda.io/xxx',
-          camundaCloudClientId: 'test-client-id',
-          camundaCloudClientSecret: 'test-secret'
-        }
-      ];
-
-      const connectionChecker = createMockConnectionChecker();
-
-      const { container } = createComponent({
-        initialValues: connections,
-        connectionChecker
-      });
-
-      // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      // then
-      await waitFor(() => {
-        expect(connectionChecker.current.updateConfig).to.have.been.called;
-      });
-    });
-
-
-    it('should display connection check status when checking', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'camundaCloud',
-          camundaCloudClusterUrl: 'https://test-cluster.bru-2.zeebe.camunda.io:443',
-          camundaCloudClientId: 'test-client-id',
-          camundaCloudClientSecret: 'test-client-secret'
-        }
-      ];
-
-      const connectionChecker = createMockConnectionChecker();
-
-      const { container, getByLabelText } = createComponent({
-        initialValues: connections,
-        connectionChecker
-      });
-
-      // when
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      // then - should show loading indicator
-      await waitFor(() => {
-        expect(getByLabelText('Loading')).to.exist;
-      });
-    });
-
-
-    it('should display success status when connection check succeeds', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'camundaCloud',
-          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io'
-        }
-      ];
-
-      const connectionChecker = createMockConnectionChecker();
-
-      const { container, getByLabelText } = createComponent({
-        initialValues: connections,
-        connectionChecker
-      });
-
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      // when
-      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
-      connectionCheckListener({ success: true, name: 'settings' });
-
-      // then
-      await waitFor(() => {
-        expect(getByLabelText('Success')).to.exist;
-        expect(container.textContent).to.contain('Connected');
-      });
-    });
-
-
-    it('should display error status when connection check fails', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'camundaCloud',
-          camundaCloudClusterUrl: 'https://test.zeebe.camunda.io'
-        }
-      ];
-
-      const connectionChecker = createMockConnectionChecker();
-
-      const { container, getByLabelText } = createComponent({
-        initialValues: connections,
-        connectionChecker
-      });
-
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      // when - trigger failure
-      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
-      connectionCheckListener({
-        success: false,
-        reason: 'CONTACT_POINT_UNAVAILABLE',
-        name: 'settings'
-      });
-
-      // then - check for error icon
-      await waitFor(() => {
-        expect(getByLabelText('Error')).to.exist;
-      });
-    });
-
-
-    it('should display Camunda 8 Run download and troubleshooting links when c8run connection fails', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'c8run (local)',
-          targetType: 'selfHosted',
-          contactPoint: 'http://localhost:8080/v2'
-        }
-      ];
-
-      const connectionChecker = createMockConnectionChecker();
-
-      const { container, getByTestId, getByLabelText } = createComponent({
-        initialValues: connections,
-        connectionChecker
-      });
-
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      // when - trigger failure
-      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
-      connectionCheckListener({
-        success: false,
-        reason: 'CONTACT_POINT_UNAVAILABLE',
-        name: 'settings'
-      });
-
-      // then
-      await waitFor(() => {
-
-        // Check status indicator shows error
-        expect(getByLabelText('Error')).to.exist;
-
-        // Verify full message text content
-        expect(container.textContent).to.contain('Cannot connect to your local Camunda 8 instance');
-        expect(container.textContent).to.contain('Download');
-        expect(container.textContent).to.contain('or start Camunda 8 Run to connect');
-        expect(container.textContent).to.contain('See troubleshooting information about C8 Run');
-        expect(container.textContent).to.contain('here');
-
-        // Assert download link with correct text and URL
-        const downloadLink = getByTestId('c8run-download-link');
-        expect(downloadLink.textContent).to.equal('Download');
-        expect(downloadLink.getAttribute('href')).to.equal(C8RUN_DOWNLOAD_URL);
-
-        // Assert troubleshooting link with correct text and URL
-        const troubleshootLink = getByTestId('c8run-troubleshoot-link');
-        expect(troubleshootLink.textContent).to.equal('here');
-        expect(troubleshootLink.getAttribute('href')).to.equal(C8RUN_TROUBLESHOOTING_URL);
-      });
-    });
-
-
-    it('should NOT display Camunda 8 Run link when non-c8run connection fails', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'My Custom Connection',
-          targetType: 'selfHosted',
-          contactPoint: 'http://localhost:26500'
-        }
-      ];
-
-      const connectionChecker = createMockConnectionChecker();
-
-      const { container, queryByTestId } = createComponent({
-        initialValues: connections,
-        connectionChecker
-      });
-
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      // when - trigger failure
-      const connectionCheckListener = connectionChecker.current.on.firstCall.args[1];
-      connectionCheckListener({
-        success: false,
-        reason: 'CONTACT_POINT_UNAVAILABLE',
-        name: 'settings'
-      });
-
-      // then
-      await waitFor(() => {
-        expect(container.querySelector('[aria-label="Error"]')).to.exist;
-      });
-      expect(queryByTestId('c8run-nudge-link')).to.not.exist;
-    });
-
-
-    it('should stop checking on unmount', async function() {
-
-      // given
-      const connections = [
-        {
-          id: 'conn-1',
-          name: 'Test Connection',
-          targetType: 'camundaCloud'
-        }
-      ];
-
-      const connectionChecker = createMockConnectionChecker();
-
-      const { container, unmount } = createComponent({
-        initialValues: connections,
-        connectionChecker
-      });
-
-      const expandButton = container.querySelector('button[aria-label="Expand current row"]');
-      fireEvent.click(expandButton);
-
-      // when
-      unmount();
-
-      // then
-      await waitFor(() => {
-        expect(connectionChecker.current.stopChecking).to.have.been.called;
-        expect(connectionChecker.current.off).to.have.been.called;
-      });
-    });
-
-  });
-
-
-  describe('table structure', function() {
-
-    it('should render as a table', function() {
-
-      // given
-      const connections = [
-        { id: 'conn-1', name: 'Test Connection' }
-      ];
-
-      // when
-      const { container } = createComponent({ initialValues: connections });
-
-      // then
-      expect(container.querySelector('table')).to.exist;
-      expect(container.querySelector('tbody')).to.exist;
-    });
-
-
-    it('should render correct number of rows', function() {
-
-      // given
-      const connections = [
-        { id: 'conn-1', name: 'Connection 1' },
-        { id: 'conn-2', name: 'Connection 2' },
-        { id: 'conn-3', name: 'Connection 3' }
-      ];
-
-      // when
-      const { container } = createComponent({ initialValues: connections });
-
-      // then
-      const rows = container.querySelectorAll('tbody tr[data-parent-row]');
-      expect(rows.length).to.equal(3);
-    });
-
-
-    it('should have action cell with remove button', function() {
-
-      // given
-      const connections = [
-        { id: 'conn-1', name: 'Test Connection' }
-      ];
-
-      // when
-      const { container } = createComponent({ initialValues: connections });
-
-      // then
-      const actionCell = container.querySelector('td.action-cell');
-      expect(actionCell).to.exist;
-      expect(actionCell.querySelector('button.remove')).to.exist;
-    });
-
-  });
-
-
-
-  it('should display description text', function() {
-
-    // when
-    const { container } = createComponent();
-
-    // then
-    const description = container.querySelector('.custom-control-description');
-    expect(description).to.exist;
-    expect(description.textContent).to.equal('Deploy and run your processes on Camunda 8, including Camunda 8 Run.');
-  });
-
 
 });
 
-// helpers ///////////////////
 
-function createMockConnectionChecker() {
-  const onSpy = sinon.spy();
-  const offSpy = sinon.spy();
-  const updateConfigSpy = sinon.spy();
-  const stopCheckingSpy = sinon.spy();
+// helpers //////////
+
+function createConnectionChecker() {
+  const listeners = [];
+
+  const current = {
+    on: sinon.spy((_, listener) => listeners.push(listener)),
+    off: sinon.spy(),
+    updateConfig: sinon.spy(),
+    stopChecking: sinon.spy()
+  };
 
   return {
-    current: {
-      on: onSpy,
-      off: offSpy,
-      updateConfig: updateConfigSpy,
-      stopChecking: stopCheckingSpy
-    }
+    current,
+    emit: (result) => listeners.forEach(listener => listener(result))
   };
 }
 
-function createComponent(options = {}) {
+function renderConnections(connections, options = {}) {
   const {
-    initialValues = [],
     targetElement = null,
-    connectionChecker = createMockConnectionChecker(),
-    onSubmit = () => {}
+    connectionChecker = createConnectionChecker()
   } = options;
 
-  const values = {
-    connections: initialValues
+  let current;
+
+  const onSubmit = sinon.spy();
+
+  const schema = {
+    connectionManagerPlugin: {
+      id: 'connectionManagerPlugin',
+      properties: {
+        [ NAME ]: {
+          type: 'custom',
+          component: (props) => ConnectionManagerSettingsComponent({ ...props, connectionChecker })
+        }
+      }
+    }
   };
 
-  return render(
-    <Formik
-      initialValues={ values }
-      onSubmit={ onSubmit }
-    >
-      {({ values }) => (
-        <form onSubmit={ (e) => {
-          e.preventDefault();
-          onSubmit(values);
-        } }>
-          <ConnectionManagerSettingsComponent
-            name="connections"
-            targetElement={ targetElement }
-            connectionChecker={ connectionChecker }
-          />
-        </form>
-      )}
-    </Formik>
-  );
+  const result = render(<Formik initialValues={ { connectionManagerPlugin: { c8connections: connections } } } onSubmit={ onSubmit }>
+    { ({ values }) => {
+      current = values.connectionManagerPlugin.c8connections;
+
+      return <SettingsForm schema={ schema } onChange={ () => {} } targetElement={ targetElement } />;
+    } }
+  </Formik>);
+
+  return { ...result, getValues: () => current, onSubmit };
+}
+
+function getItems() {
+  return screen.getAllByRole('listitem').map(item => [
+    item.querySelector('.settings-list-item__name').textContent,
+    item.querySelector('.settings-list-item__description')?.textContent
+  ]);
+}
+
+function getDialog() {
+  return screen.getByRole('dialog');
+}
+
+function getStatus() {
+  return within(getDialog()).getByRole('status');
+}
+
+function queryInput(label) {
+  return within(getDialog()).queryByLabelText(new RegExp(`^${ label }`));
+}
+
+function getInput(label) {
+  return within(getDialog()).getByLabelText(new RegExp(`^${ label }`));
+}
+
+function fill(label, value) {
+  const input = getInput(label);
+
+  fireEvent.change(input, { target: { value } });
+  fireEvent.blur(input);
+}
+
+function selectAction(label, action) {
+  fireEvent.click(screen.getByRole('button', { name: `Options for ${ label }` }));
+  fireEvent.click(screen.getByRole('menuitem', { name: action }));
 }

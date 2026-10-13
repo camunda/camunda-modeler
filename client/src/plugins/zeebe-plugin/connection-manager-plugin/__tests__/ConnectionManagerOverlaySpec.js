@@ -186,7 +186,7 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.equal('Cannot connect to Camunda 8.');
+      expect(errorMessage.textContent).to.equal('Cannot connect to the Camunda 8 instance.');
       expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
     });
 
@@ -207,7 +207,7 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.equal('Cannot connect to Camunda 8.');
+      expect(errorMessage.textContent).to.equal('Cannot connect to the Camunda 8 instance.');
       expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
     });
 
@@ -228,7 +228,7 @@ describe('ConnectionManagerOverlay', function() {
       // then
       const errorMessage = container.querySelector('.invalid-feedback');
       expect(errorMessage).to.exist;
-      expect(errorMessage.textContent).to.equal('Camunda 8 is temporarily unavailable. The instance may be paused or starting up.');
+      expect(errorMessage.textContent).to.equal('The Camunda 8 instance is temporarily unavailable. It may be paused or starting up.');
       expect(errorMessage.textContent).to.not.contain('Could not establish connection:');
     });
 

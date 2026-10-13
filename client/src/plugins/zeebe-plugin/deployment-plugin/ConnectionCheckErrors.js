@@ -34,9 +34,9 @@ export const CONNECTION_CHECK_ERROR_REASONS = {
 };
 
 export const CONNECTION_CHECK_ERROR_MESSAGES = {
-  [ CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE ]: 'Cannot connect to Camunda 8.',
-  [ CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE ]: 'Cannot connect to Camunda 8.',
-  [ CONNECTION_CHECK_ERROR_REASONS.CLUSTER_TEMPORARILY_UNAVAILABLE ]: 'Camunda 8 is temporarily unavailable. The instance may be paused or starting up.',
+  [ CONNECTION_CHECK_ERROR_REASONS.CONTACT_POINT_UNAVAILABLE ]: 'Cannot connect to the Camunda 8 instance.',
+  [ CONNECTION_CHECK_ERROR_REASONS.CLUSTER_UNAVAILABLE ]: 'Cannot connect to the Camunda 8 instance.',
+  [ CONNECTION_CHECK_ERROR_REASONS.CLUSTER_TEMPORARILY_UNAVAILABLE ]: 'The Camunda 8 instance is temporarily unavailable. It may be paused or starting up.',
   [ CONNECTION_CHECK_ERROR_REASONS.UNAUTHORIZED ]: 'Credentials rejected by server.',
   [ CONNECTION_CHECK_ERROR_REASONS.FORBIDDEN ]: 'This user is not permitted to deploy. Please use different credentials or get this user enabled to deploy.',
   [ CONNECTION_CHECK_ERROR_REASONS.OAUTH_URL ]: 'Cannot connect to OAuth token endpoint.',
