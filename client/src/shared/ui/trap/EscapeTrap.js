@@ -8,26 +8,36 @@
  * except in compliance with the MIT License.
  */
 
+import TrapStack from './TrapStack';
+
+const escapeTraps = TrapStack();
+
 export default function EscapeTrap(onEscape) {
 
+  const trap = {
+    mount,
+    unmount
+  };
+
   function handleKeyDown(event) {
-    if (isEscape(event)) {
+    if (isEscape(event) && escapeTraps.isTop(trap)) {
       onEscape(event);
     }
   }
 
   function mount() {
+    escapeTraps.push(trap);
+
     document.addEventListener('keydown', handleKeyDown);
   }
 
   function unmount() {
+    escapeTraps.remove(trap);
+
     document.removeEventListener('keydown', handleKeyDown);
   }
 
-  return {
-    mount,
-    unmount
-  };
+  return trap;
 
 }
 

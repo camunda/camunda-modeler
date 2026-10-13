@@ -8,6 +8,10 @@
  * except in compliance with the MIT License.
  */
 
+import TrapStack from './TrapStack';
+
+const focusTraps = TrapStack();
+
 const focusableElementsSelector = [
   'a[href]',
   'button:not([disabled])',
@@ -23,6 +27,11 @@ const focusableElementsSelector = [
 ].join();
 
 export default function FocusTrap(getElement) {
+
+  const trap = {
+    mount,
+    unmount
+  };
 
   let tabbing = false;
 
@@ -44,6 +53,11 @@ export default function FocusTrap(getElement) {
   }
 
   function handleBlur(event) {
+
+    // a trap mounted later (e.g. a nested dialog) owns the focus
+    if (!focusTraps.isTop(trap)) {
+      return;
+    }
 
     // do nothing if focus stays inside the modal
     if (getElement().contains(event.relatedTarget)) {
@@ -95,6 +109,8 @@ export default function FocusTrap(getElement) {
   }
 
   function mount() {
+    focusTraps.push(trap);
+
     focus();
 
     document.addEventListener('blur', handleBlur, true);
@@ -103,15 +119,14 @@ export default function FocusTrap(getElement) {
   }
 
   function unmount() {
+    focusTraps.remove(trap);
+
     document.removeEventListener('blur', handleBlur, true);
     document.removeEventListener('keydown', handleKeyDown);
     document.removeEventListener('keyup', handleKeyUp);
   }
 
-  return {
-    mount,
-    unmount
-  };
+  return trap;
 
 }
 
