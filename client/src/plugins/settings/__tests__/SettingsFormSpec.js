@@ -277,6 +277,45 @@ describe('SettingsForm', function() {
     });
 
 
+    it('should render section documentation link when provided', function() {
+
+      // given
+      const schema = {
+        app: {
+          id: 'app',
+          sections: {
+            general: {
+              title: 'General Settings',
+              documentationUrl: 'https://docs.camunda.io/general'
+            },
+            other: {
+              title: 'Other Settings'
+            }
+          },
+          properties: {
+            'app.enableFeature': {
+              type: 'boolean',
+              label: 'Enable Feature',
+              section: 'general'
+            },
+            'app.name': {
+              type: 'text',
+              label: 'Name',
+              section: 'other'
+            }
+          }
+        }
+      };
+
+      // when
+      const { getByRole } = createSettingsForm({ schema });
+
+      // then
+      expect(getByRole('heading', { name: /^General Settings/ }).querySelector('a').href).to.equal('https://docs.camunda.io/general');
+      expect(getByRole('heading', { name: /^Other Settings/ }).querySelector('a')).not.to.exist;
+    });
+
+
     it('should render single section when sections are not defined', function() {
 
       // given

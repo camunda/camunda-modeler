@@ -15,6 +15,7 @@ import { Field, Form, useFormikContext, getIn } from 'formik';
 import { map, forEach, sortBy, isString, isObject } from 'min-dash';
 
 import { Section, TextInput, CheckBox, Select, Radio } from '../../shared/ui';
+import DocumentationIcon from '../../shared/ui/form/DocumentationIcon';
 
 import Flags from '../../util/Flags';
 
@@ -67,6 +68,7 @@ export function SettingsForm({ schema, onChange, targetElement }) {
               key={ `${key}-${sectionId}` }
               title={ section.title }
               description={ section.description }
+              documentationUrl={ section.documentationUrl }
               properties={ sectionProperties }
               targetElement={ targetElement }
             />
@@ -89,11 +91,11 @@ export function SettingsForm({ schema, onChange, targetElement }) {
 
 function SettingsSection(props) {
 
-  const { title, description, id, properties } = props;
+  const { title, description, documentationUrl, id, properties } = props;
 
   return (
     <Section id={ id }>
-      <Section.Header>{ title }</Section.Header>
+      <Section.Header>{ title }<DocumentationIcon url={ documentationUrl } /></Section.Header>
       <Section.Body>
         { description && <p className="section__description">{ description }</p> }
         {
