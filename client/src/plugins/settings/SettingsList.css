@@ -1,0 +1,77 @@
+:local(.SettingsList) {
+  margin-bottom: 12px;
+
+  /* box the list: stacked items read as one unit (cf. Chrome settings) */
+  border: 1px solid var(--color-grey-225-10-75);
+
+  /* two-line items: name and description, with actions */
+  .cds--contained-list-item__content {
+    padding-inline-end: 64px;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+  }
+
+  /* make room for a toggle next to the menu */
+  .cds--contained-list-item:has(.form-group) .cds--contained-list-item__content {
+    padding-inline-end: 112px;
+  }
+
+  .cds--contained-list-item__action {
+    inset-block-end: 0;
+    align-items: center;
+  }
+
+  .settings-list-item__name,
+  .settings-list-item__description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .settings-list-item__description {
+    font-size: 12px;
+    color: var(--color-grey-225-10-35);
+  }
+
+  .settings-list-item__description--error {
+    color: var(--color-red-360-100-45);
+  }
+
+  /* align toggles and menus across items, even if one of them is missing */
+  .settings-list-item__actions {
+    display: grid;
+    grid-template-columns: auto 32px;
+    align-items: center;
+    gap: 16px;
+
+    /* keep the menu button off the box border */
+    margin-inline-end: 8px;
+
+    .form-group {
+      grid-column: 1;
+      margin: 0;
+    }
+
+    > :last-child:not(.form-group) {
+      grid-column: 2;
+    }
+  }
+}
+
+:local(.SettingsListDialog) {
+  --input-width: 100%;
+
+  width: 480px;
+
+  .form-group {
+    margin: 0 0 16px 0;
+
+    .form-control {
+      float: none;
+    }
+  }
+}
