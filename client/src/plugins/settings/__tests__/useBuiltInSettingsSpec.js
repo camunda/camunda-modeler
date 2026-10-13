@@ -10,7 +10,7 @@
 
 import { expect } from 'chai';
 import { schema } from '../useBuiltInSettings';
-import { CustomTemplateSources } from '../ElementTemplatesSettings';
+import { TemplateSources } from '../ElementTemplatesSettings';
 
 
 describe('useBuiltInSettings', function() {
@@ -23,13 +23,13 @@ describe('useBuiltInSettings', function() {
       type: 'boolean',
       default: false,
       flag: 'disable-connector-templates',
-      label: 'Disable OOTB connector templates',
+      hidden: true,
       restartRequired: true,
       section: 'elementTemplates'
     });
     expect(schema.properties['app.customTemplateSources']).to.deep.include({
       type: 'custom',
-      component: CustomTemplateSources,
+      component: TemplateSources,
       default: [],
       restartRequired: true,
       section: 'elementTemplates'

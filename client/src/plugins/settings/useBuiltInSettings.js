@@ -17,7 +17,12 @@ import { ENGINES, ENGINE_PROFILES, getLatestStable } from '../../util/Engines';
 import { getAnnotatedVersion, toSemverMinor } from '../../app/tabs/EngineProfile';
 import { utmTag } from '../../util/utmTag';
 
-import { ElementTemplatesSettingsHeader, CustomTemplateSources } from './ElementTemplatesSettings';
+import {
+  DISABLE_CONNECTOR_TEMPLATES,
+  DISABLE_CONNECTOR_TEMPLATES_FLAG,
+  ElementTemplatesSettingsHeader,
+  TemplateSources
+} from './ElementTemplatesSettings';
 
 /**
  * Registers built-in application settings.
@@ -38,7 +43,12 @@ export const schema = {
       title: 'Global settings'
     },
     elementTemplates: {
-      title: <ElementTemplatesSettingsHeader />
+      title: <ElementTemplatesSettingsHeader />,
+      description: 'Fetch element templates from these sources, in addition to local templates.',
+      documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/configuring-templates/'),
+
+      // after "Camunda 8 connections" (order 1)
+      order: 2
     },
     versions: {
       title: 'Default Camunda versions',
@@ -64,18 +74,20 @@ export const schema = {
       restartRequired: true,
       section: 'general'
     },
-    'app.disableConnectorTemplates': {
+
+    // managed by TemplateSources
+    [ DISABLE_CONNECTOR_TEMPLATES ]: {
       type: 'boolean',
       default: false,
-      flag: 'disable-connector-templates',
-      label: 'Disable OOTB connector templates',
-      documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/use-connectors/#automatic-connector-template-fetching'),
+      flag: DISABLE_CONNECTOR_TEMPLATES_FLAG,
+      label: 'Disable Camunda connector templates',
+      hidden: true,
       restartRequired: true,
       section: 'elementTemplates'
     },
     'app.customTemplateSources': {
       type: 'custom',
-      component: CustomTemplateSources,
+      component: TemplateSources,
       default: [],
       restartRequired: true,
       section: 'elementTemplates'

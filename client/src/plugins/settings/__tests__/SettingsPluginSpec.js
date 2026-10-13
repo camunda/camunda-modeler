@@ -12,7 +12,7 @@ import { expect } from 'chai';
 import React from 'react';
 import sinon from 'sinon';
 
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 
 import SettingsPlugin from '../SettingsPlugin';
 import Settings from '../../../app/Settings';
@@ -41,12 +41,14 @@ describe('SettingsPlugin', function() {
 
     // then
     expect(screen.getByRole('dialog')).to.exist;
-    expect(screen.getByText('Camunda 8 only')).to.exist;
-    expect(screen.getByRole('checkbox', { name: /^Disable OOTB connector templates/ })).to.exist;
+    expect(screen.getByRole('heading', { name: /^Element template sources\s*Camunda 8 only/ })).to.exist;
+    expect(screen.getByText('Fetch element templates from these sources, in addition to local templates.')).to.exist;
+    expect(screen.getByRole('switch', { name: 'Camunda connectors' }).checked).to.be.true;
+    expect(screen.queryByRole('checkbox', { name: /Disable Camunda connector templates/ })).not.to.exist;
   });
 
 
-  [ [], [ 'https://example.com/a', 'http://internal.example/b' ] ].forEach(sources => {
+  [ [], [ { name: 'A', url: 'https://example.com/a', enabled: true }, { url: 'http://internal.example/b' } ] ].forEach(sources => {
     it(`should not save or require restart for unchanged sources (${ sources.length })`, async function() {
 
       // given
@@ -61,40 +63,55 @@ describe('SettingsPlugin', function() {
       // then
       expect(saved).not.to.have.been.called;
       expect(screen.queryByText(/Restart the modeler to apply/)).not.to.exist;
-      expect(screen.queryAllByRole('textbox').map(input => input.value)).to.eql(sources);
+      expect(screen.getAllByRole('switch')).to.have.length(sources.length + 1);
     });
   });
 
 
-  it('should persist source edits and removals intact with a restart notice', async function() {
+  it('should persist added and removed sources with a restart notice', async function() {
 
     // given
-    const { settings, saved, reopen, restart } = await renderSettings({ 'app.customTemplateSources': [ 'https://example.com/a' ] });
+    const { settings, saved, reopen, restart } = await renderSettings({
+      'app.customTemplateSources': [ { name: 'A', url: 'https://example.com/a', enabled: true } ]
+    });
     await flushSave();
 
     // when
     fireEvent.click(screen.getByRole('button', { name: 'Add source' }));
-    fireEvent.change(screen.getByRole('textbox', { name: 'Source 2 URL' }), { target: { value: 'http://internal.example/b' } });
+    const dialog = screen.getAllByRole('dialog')[1];
+    fireEvent.change(within(dialog).getByRole('textbox', { name: 'Name' }), { target: { value: 'B' } });
+    fireEvent.change(within(dialog).getByRole('textbox', { name: /^Index URL/ }), { target: { value: 'http://internal.example/b' } });
+    await flushSave();
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Add' }));
+
+    // submit and save
+    await flushSave();
     await flushSave();
 
     // then
-    expect(settings.get('app.customTemplateSources')).to.eql([ 'https://example.com/a', 'http://internal.example/b' ]);
+    expect(screen.getAllByRole('dialog')).to.have.length(1);
+    expect(settings.get('app.customTemplateSources')).to.eql([
+      { name: 'A', url: 'https://example.com/a', enabled: true },
+      { name: 'B', url: 'http://internal.example/b', enabled: true }
+    ]);
     expect(saved).to.have.been.calledOnce;
     expect(screen.getByText(/Restart the modeler to apply/)).to.exist;
     expect(settings.get('app.disableConnectorTemplates')).to.be.false;
 
     // when
-    fireEvent.click(screen.getByRole('button', { name: 'Remove source 1' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Options for A' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Remove' }));
     await flushSave();
     fireEvent.click(screen.getByRole('button', { name: 'Done' }));
     act(reopen);
     await flushSave();
 
     // then
-    expect(settings.get('app.customTemplateSources')).to.eql([ 'http://internal.example/b' ]);
+    const expected = [ { name: 'B', url: 'http://internal.example/b', enabled: true } ];
+    expect(settings.get('app.customTemplateSources')).to.eql(expected);
     expect(saved).to.have.been.calledTwice;
-    expect(screen.getByRole('textbox', { name: 'Source 1 URL' }).value).to.equal('http://internal.example/b');
-    expect(saved.lastCall.args[1]).to.eql({ 'app.customTemplateSources': [ 'http://internal.example/b' ] });
+    expect(saved.lastCall.args[1]).to.eql({ 'app.customTemplateSources': expected });
+    expect(screen.getByRole('switch', { name: 'B' }).checked).to.be.true;
 
     // when
     fireEvent.click(screen.getByRole('button', { name: 'Restart now.' }));
@@ -104,65 +121,92 @@ describe('SettingsPlugin', function() {
   });
 
 
-  it('should preserve autosave of invalid URL drafts', async function() {
+  it('should close only the add dialog on Escape', async function() {
 
     // given
-    const { settings } = await renderSettings();
+    await renderSettings();
+    fireEvent.click(screen.getByRole('button', { name: 'Add source' }));
+    expect(screen.getAllByRole('dialog')).to.have.length(2);
 
     // when
-    fireEvent.click(screen.getByRole('button', { name: 'Add source' }));
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    // then
+    expect(screen.getAllByRole('dialog')).to.have.length(1);
+
+    // when
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    // then
+    expect(screen.queryByRole('dialog')).not.to.exist;
+  });
+
+
+  it('should toggle a custom source', async function() {
+
+    // given
+    const { settings } = await renderSettings({
+      'app.customTemplateSources': [ { name: 'A', url: 'https://example.com/a', enabled: true } ]
+    });
+
+    // when
+    fireEvent.click(screen.getByRole('switch', { name: 'A' }));
     await flushSave();
 
     // then
-    expect(settings.get('app.customTemplateSources')).to.eql([ '' ]);
-    expect(screen.getByText('Enter an HTTP(S) URL.')).to.exist;
+    expect(settings.get('app.customTemplateSources')).to.eql([
+      { name: 'A', url: 'https://example.com/a', enabled: false }
+    ]);
     expect(screen.getByText(/Restart the modeler to apply/)).to.exist;
   });
 
 
   [ false, true ].forEach(disabled => {
-    it(`should toggle the OOTB setting (disabled=${ disabled })`, async function() {
+    it(`should toggle Camunda connectors (disabled=${ disabled })`, async function() {
 
       // given
       const { settings } = await renderSettings({ 'app.disableConnectorTemplates': disabled });
-      const checkbox = screen.getByRole('checkbox', { name: /^Disable OOTB connector templates/ });
-      expect(checkbox.checked).to.equal(disabled);
+      const toggle = screen.getByRole('switch', { name: 'Camunda connectors' });
+      expect(toggle.checked).to.equal(!disabled);
 
       // when
-      fireEvent.click(checkbox);
+      fireEvent.click(toggle);
       await flushSave();
 
       // then
       expect(settings.get('app.disableConnectorTemplates')).to.equal(!disabled);
-      expect(checkbox.checked).to.equal(!disabled);
-      expect(screen.getByRole('button', { name: 'Add source' }).disabled).to.be.false;
+      expect(toggle.checked).to.equal(disabled);
       expect(screen.getByText(/Restart the modeler to apply/)).to.exist;
     });
   });
 
 
   [ true, false ].forEach(flag => {
-    it(`should lock only the OOTB checkbox when flagged (${ flag })`, async function() {
+    it(`should lock only Camunda connectors when flagged (${ flag })`, async function() {
 
       // given
       Flags.init({ 'disable-connector-templates': flag });
-      const { settings, saved } = await renderSettings({ 'app.disableConnectorTemplates': !flag });
+      const { settings, saved } = await renderSettings({
+        'app.disableConnectorTemplates': !flag,
+        'app.customTemplateSources': [ { name: 'A', url: 'https://example.com/a', enabled: true } ]
+      });
       await flushSave();
-      const checkbox = screen.getByRole('checkbox', { name: /^Disable OOTB connector templates/ });
+      const toggle = screen.getByRole('switch', { name: 'Camunda connectors' });
 
       // then
-      expect(checkbox.disabled).to.be.true;
-      expect(checkbox.checked).to.equal(flag);
+      expect(toggle.disabled).to.be.true;
+      expect(toggle.checked).to.equal(!flag);
       expect(screen.getByText('disable-connector-templates', { selector: 'code' })).to.exist;
       expect(saved).not.to.have.been.called;
 
       // when
-      fireEvent.click(screen.getByRole('button', { name: 'Add source' }));
-      fireEvent.change(screen.getByRole('textbox', { name: 'Source 1 URL' }), { target: { value: 'https://example.com/a' } });
+      fireEvent.click(screen.getByRole('switch', { name: 'A' }));
       await flushSave();
 
       // then
-      expect(settings.get('app.customTemplateSources')).to.eql([ 'https://example.com/a' ]);
+      expect(settings.get('app.customTemplateSources')).to.eql([
+        { name: 'A', url: 'https://example.com/a', enabled: false }
+      ]);
       expect(saved.lastCall.args[1]['app.disableConnectorTemplates']).to.equal(!flag);
     });
   });
