@@ -70,7 +70,7 @@ export default class Modal extends PureComponent {
 
     return ReactDOM.createPortal(
       <KeyboardInteractionTrap>
-        <div className="modal" tabIndex="-1" role="dialog">
+        <div className="modal" tabIndex="-1" role="dialog" onSubmit={ stopPropagation }>
           <div className={ classNames('modal-dialog', { 'modal-adaptive': adaptive }, className) } ref={ this.modalRef } role="document">
             <div className="modal-content">
               { children }
@@ -82,6 +82,14 @@ export default class Modal extends PureComponent {
       document.body
     );
   }
+}
+
+/**
+ * Keep form submits inside of the modal: React events bubble
+ * through portals, i.e. to forms that render the modal.
+ */
+function stopPropagation(event) {
+  event.stopPropagation();
 }
 
 Modal.Body = Body;
