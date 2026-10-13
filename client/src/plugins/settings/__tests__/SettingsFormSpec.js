@@ -316,6 +316,36 @@ describe('SettingsForm', function() {
     });
 
 
+    it('should not render hidden properties', function() {
+
+      // given
+      const schema = {
+        app: {
+          id: 'app',
+          title: 'Application',
+          properties: {
+            'app.visible': {
+              type: 'boolean',
+              label: 'Visible'
+            },
+            'app.hidden': {
+              type: 'boolean',
+              label: 'Hidden',
+              hidden: true
+            }
+          }
+        }
+      };
+
+      // when
+      const { queryByLabelText } = createSettingsForm({ schema });
+
+      // then
+      expect(queryByLabelText(/^Visible/)).to.exist;
+      expect(queryByLabelText(/^Hidden/)).not.to.exist;
+    });
+
+
     it('should render single section when sections are not defined', function() {
 
       // given
