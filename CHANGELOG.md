@@ -21,6 +21,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/task-testing@7.0.0`
 * `DEPS`: update to `bpmn-js@18.30.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.37.0`
+* `DEPS`: update to `camunda-bpmn-js@5.36.0`
 * `DEPS`: update to `diagram-js-minimap@5.5.0`
 
 ### BPMN
