@@ -115,7 +115,7 @@ function SettingsSection(props) {
 
 export function SettingsField(props) {
 
-  const { type, flag, condition, name } = props;
+  const { type, flag, condition, name, hidden } = props;
 
   const { values } = useFormikContext();
 
@@ -124,6 +124,10 @@ export function SettingsField(props) {
   }, [ flag ]);
 
   const FieldComponent = useMemo(() => {
+    if (hidden) {
+      return null;
+    }
+
     if (condition && !isConditionMet(name, values, condition)) {
       return null;
     }
@@ -149,7 +153,7 @@ export function SettingsField(props) {
     }
 
     return null;
-  }, [ condition, name, type, values ]);
+  }, [ condition, hidden, name, type, values ]);
 
   if (!FieldComponent) {
     return null;
