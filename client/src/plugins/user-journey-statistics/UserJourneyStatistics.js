@@ -16,9 +16,9 @@ import React, {
   PureComponent
 } from 'react';
 
-import Flags, { MIXPANEL_TOKEN, MIXPANEL_STAGE, DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
+import Flags, { DISABLE_REMOTE_INTERACTION } from '../../util/Flags';
 
-import MixpanelHandler from './MixpanelHandler';
+import TrackingHandler from './TrackingHandler';
 
 const log = debug('UserJourneyStatistics');
 
@@ -26,14 +26,10 @@ const PRIVACY_PREFERENCES_CONFIG_KEY = 'editor.privacyPreferences';
 const USAGE_STATISTICS_CONFIG_KEY = 'ENABLE_USAGE_STATISTICS';
 const EDITOR_ID_CONFIG_KEY = 'editor.id';
 
-// Mixpanel token and stage is set to our CI provider as an env variable, passed to client via WebPack DefinePlugin
-const DEFINED_MIXPANEL_TOKEN = process.env.MIXPANEL_TOKEN;
-const DEFINED_MIXPANEL_STAGE = process.env.MIXPANEL_STAGE;
-
 // In order to plug a new event handler:
 //
 // 1) Create a new event handler class under event-handlers
-// 2) This class should use 'track(eventName, payload)' prop method to send events to Mixpanel
+// 2) This class should use 'track(eventName, payload)' prop method to send events
 // 3) This class should be exported via index.js in order to be recognize by UsageStatistics plugin.
 //
 // See the example implementation of TabEventHandler.
@@ -43,13 +39,9 @@ export default class UserJourneyStatistics extends PureComponent {
   constructor(props) {
     super(props);
 
-    // flags are useful for development.
-    this.MIXPANEL_TOKEN = Flags.get(MIXPANEL_TOKEN) || DEFINED_MIXPANEL_TOKEN;
-    this.MIXPANEL_STAGE = Flags.get(MIXPANEL_STAGE) || DEFINED_MIXPANEL_STAGE;
-
     this._buttonRef = React.createRef(null);
 
-    this.mixpanel = MixpanelHandler.getInstance();
+    this.tracking = TrackingHandler.getInstance();
 
     this.state = {
       open: false
@@ -60,7 +52,7 @@ export default class UserJourneyStatistics extends PureComponent {
     eventHandlers.forEach((eventHandlerConstructor) => {
       this._eventHandlers.push(new eventHandlerConstructor({
         subscribe: props.subscribe,
-        track: this.mixpanel.track.bind(this.mixpanel),
+        track: this.tracking.track.bind(this.tracking),
         getGlobal: props._getGlobal,
         config: props.config
       }));
@@ -68,13 +60,13 @@ export default class UserJourneyStatistics extends PureComponent {
   }
 
   isEnabled = () => {
-    return MixpanelHandler.getInstance().isEnabled();
+    return TrackingHandler.getInstance().isEnabled();
   };
 
   enable = () => {
     log('Enabling');
 
-    this.mixpanel.enable(this.MIXPANEL_TOKEN, this._editorID, this.MIXPANEL_STAGE);
+    this.tracking.enable();
 
     this.emit('telemetry.enabled');
   };
@@ -86,7 +78,7 @@ export default class UserJourneyStatistics extends PureComponent {
   disable = () => {
     log('Disabling.');
 
-    this.mixpanel.disable();
+    this.tracking.disable();
 
     this.emit('telemetry.disabled');
   };
@@ -103,14 +95,6 @@ export default class UserJourneyStatistics extends PureComponent {
 
     // make sure we also set the editor although the plugin is not enabled
     await this.setEditorId();
-
-    if (!this.MIXPANEL_TOKEN) {
-      return log('Not enabled: Mixpanel project token not configured.');
-    }
-
-    if (!this.MIXPANEL_STAGE) {
-      return log('Not enabled: Mixpanel stage not configured.');
-    }
 
     if (Flags.get(DISABLE_REMOTE_INTERACTION)) {
       return log('Not enabled: Remote interaction disabled.');

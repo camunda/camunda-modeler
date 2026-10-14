@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
-import MixpanelHandler from '../../MixpanelHandler';
+import TrackingHandler from '../../TrackingHandler';
 
 import {
   LAYOUT_CHANGED_EVENT_NAME,
@@ -40,7 +40,7 @@ describe('<FormEditorEventHandler>', function() {
       subscribe
     });
 
-    MixpanelHandler.getInstance().enable('token', 'id', 'stage');
+    TrackingHandler.getInstance().enable();
   });
 
 

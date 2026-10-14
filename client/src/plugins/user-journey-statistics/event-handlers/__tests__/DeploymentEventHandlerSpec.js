@@ -22,7 +22,7 @@ import engineProfileCloudDMN from './fixtures/engine-cloud.dmn';
 import emptyDMN from './fixtures/empty.dmn';
 
 import emptyXML from './fixtures/empty.bpmn';
-import MixpanelHandler from '../../MixpanelHandler';
+import TrackingHandler from '../../TrackingHandler';
 
 const EXAMPLE_ERROR = 'something went wrong';
 
@@ -39,7 +39,7 @@ describe('<DeploymentEventHandler>', function() {
 
     new DeploymentEventHandler({ track, subscribe });
 
-    MixpanelHandler.getInstance().enable('token', 'id', 'stage');
+    TrackingHandler.getInstance().enable();
   });
 
 

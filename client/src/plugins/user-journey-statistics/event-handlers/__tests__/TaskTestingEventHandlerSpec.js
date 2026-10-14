@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
-import MixpanelHandler from '../../MixpanelHandler';
+import TrackingHandler from '../../TrackingHandler';
 
 import TaskTestingEventHandler from '../TaskTestingEventHandler';
 
@@ -30,7 +30,7 @@ describe('<TaskTestingEventHandler>', function() {
       subscribe
     });
 
-    MixpanelHandler.getInstance().enable('token', 'id', 'stage');
+    TrackingHandler.getInstance().enable();
   });
 
 

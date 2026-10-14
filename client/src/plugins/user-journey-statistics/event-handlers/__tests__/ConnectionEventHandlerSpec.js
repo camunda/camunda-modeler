@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
-import MixpanelHandler from '../../MixpanelHandler';
+import TrackingHandler from '../../TrackingHandler';
 import ConnectionEventHandler from '../ConnectionEventHandler';
 
 
@@ -30,7 +30,7 @@ describe('<ConnectionEventHandler>', function() {
       subscribe
     });
 
-    MixpanelHandler.getInstance().enable('token', 'id', 'stage');
+    TrackingHandler.getInstance().enable();
   });
 
 

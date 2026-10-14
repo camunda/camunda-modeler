@@ -15,11 +15,11 @@ import React from 'react';
 
 import { render } from '@testing-library/react';
 
-import Flags, { MIXPANEL_TOKEN, MIXPANEL_STAGE, DISABLE_REMOTE_INTERACTION } from '../../../util/Flags';
+import Flags, { DISABLE_REMOTE_INTERACTION } from '../../../util/Flags';
 
 import Metadata from '../../../util/Metadata';
 import UserJourneyStatistics from '../UserJourneyStatistics';
-import MixpanelHandler from '../MixpanelHandler';
+import TrackingHandler from '../TrackingHandler';
 
 describe('<UserJourneyStatistics>', function() {
 
@@ -30,7 +30,7 @@ describe('<UserJourneyStatistics>', function() {
   afterEach(function() {
     Flags.reset();
     Metadata.init({ version:'test-version' });
-    MixpanelHandler.getInstance().disable();
+    TrackingHandler.getInstance().disable();
   });
 
 
@@ -40,29 +40,10 @@ describe('<UserJourneyStatistics>', function() {
   });
 
 
-  it('should NOT enable if Mixpanel project token not configured', async function() {
-
-    // given
-    const instance = createJourneyStatistics();
-
-    const enableSpy = sinon.spy();
-
-    instance.enable = enableSpy;
-
-    // when
-    await instance.componentDidMount();
-
-    // then
-    expect(enableSpy).to.not.have.been.called;
-  });
-
-
   it('should NOT enable if remote interaction is disabled via flag', async function() {
 
     // given
     Flags.init({
-      [ MIXPANEL_TOKEN ]: 'test',
-      [ MIXPANEL_STAGE]: 'stage',
       [ DISABLE_REMOTE_INTERACTION ]: true
     });
 
@@ -83,11 +64,6 @@ describe('<UserJourneyStatistics>', function() {
   it('should NOT enable if usage statistics preference turned off', async function() {
 
     // given
-    Flags.init({
-      [ MIXPANEL_TOKEN ]: 'test',
-      [ MIXPANEL_STAGE]: 'stage'
-    });
-
     const instance = createJourneyStatistics({
       configValues: {
         'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: false }
@@ -109,11 +85,6 @@ describe('<UserJourneyStatistics>', function() {
   it('should NOT enable if editor id is missing', async function() {
 
     // given
-    Flags.init({
-      [ MIXPANEL_TOKEN ]: 'test',
-      [ MIXPANEL_STAGE]: 'stage'
-    });
-
     const instance = createJourneyStatistics({
       configValues: {
         'editor.id': null,
@@ -140,11 +111,6 @@ describe('<UserJourneyStatistics>', function() {
   it('should enable when mounted', async function() {
 
     // given
-    Flags.init({
-      [ MIXPANEL_TOKEN ]: 'test',
-      [ MIXPANEL_STAGE]: 'stage'
-    });
-
     const instance = createJourneyStatistics({
       configValues: {
         'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
@@ -163,14 +129,9 @@ describe('<UserJourneyStatistics>', function() {
   });
 
 
-  it('should enable Mixpanel', async function() {
+  it('should enable tracking', async function() {
 
     // given
-    Flags.init({
-      [ MIXPANEL_TOKEN ]: 'test',
-      [ MIXPANEL_STAGE]: 'stage'
-    });
-
     const instance = createJourneyStatistics({
       configValues: {
         'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
@@ -179,27 +140,22 @@ describe('<UserJourneyStatistics>', function() {
 
     const emitSpy = sinon.stub(instance, 'emit');
 
-    const mixpanel = instance.mixpanel;
+    const tracking = instance.tracking;
 
-    expect(mixpanel.isEnabled()).to.be.false;
+    expect(tracking.isEnabled()).to.be.false;
 
     // when
     await instance.componentDidMount();
 
     // then
-    expect(mixpanel.isEnabled()).to.be.true;
+    expect(tracking.isEnabled()).to.be.true;
     expect(emitSpy).to.have.been.calledWith('telemetry.enabled');
   });
 
 
-  it('should disable mixpanel', async function() {
+  it('should disable tracking', async function() {
 
     // given
-    Flags.init({
-      [ MIXPANEL_TOKEN ]: 'test',
-      [ MIXPANEL_STAGE]: 'stage'
-    });
-
     const instance = createJourneyStatistics({
       configValues: {
         'editor.privacyPreferences': { ENABLE_USAGE_STATISTICS: true }
@@ -208,7 +164,7 @@ describe('<UserJourneyStatistics>', function() {
 
     const emitSpy = sinon.stub(instance, 'emit');
 
-    const mixpanel = instance.mixpanel;
+    const tracking = instance.tracking;
 
     // when
     await instance.componentDidMount();
@@ -216,7 +172,7 @@ describe('<UserJourneyStatistics>', function() {
     instance.disable();
 
     // then
-    expect(mixpanel.isEnabled()).to.eql(false);
+    expect(tracking.isEnabled()).to.eql(false);
     expect(emitSpy).to.have.been.calledWith('telemetry.disabled');
   });
 
@@ -224,11 +180,6 @@ describe('<UserJourneyStatistics>', function() {
   it('should listen to privacy preference change event', async function() {
 
     // given
-    Flags.init({
-      [ MIXPANEL_TOKEN ]: 'test',
-      [ MIXPANEL_STAGE]: 'stage'
-    });
-
     const subscribeSpy = sinon.spy();
 
     const instance = createJourneyStatistics({
@@ -249,11 +200,6 @@ describe('<UserJourneyStatistics>', function() {
   it('should enable when usage statistics preference switched on', async function() {
 
     // given
-    Flags.init({
-      [ MIXPANEL_TOKEN ]: 'test',
-      [ MIXPANEL_STAGE]: 'stage'
-    });
-
     const subscribeSpy = sinon.spy();
 
     let usageStatisticsEnabled = false;
@@ -288,11 +234,6 @@ describe('<UserJourneyStatistics>', function() {
   it('should disable when usage statistics preference switched off', async function() {
 
     // given
-    Flags.init({
-      [ MIXPANEL_TOKEN ]: 'test',
-      [ MIXPANEL_STAGE]: 'stage'
-    });
-
     const subscribeSpy = sinon.spy();
 
     let usageStatisticsEnabled = true;

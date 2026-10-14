@@ -10,7 +10,7 @@
 
 import { isModelElement } from 'diagram-js/lib/model';
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
-import MixpanelHandler from '../MixpanelHandler';
+import TrackingHandler from '../TrackingHandler';
 
 export default class ModelingEventHandler {
   constructor(props) {
@@ -46,7 +46,7 @@ export default class ModelingEventHandler {
       this.bpmnJSTracking = modeler.get('bpmnJSTracking');
 
       // if telemetry is enabled already, enable bpmnJSTracking
-      if (MixpanelHandler.getInstance().isEnabled()) {
+      if (TrackingHandler.getInstance().isEnabled()) {
         this.bpmnJSTracking.enable();
       }
 

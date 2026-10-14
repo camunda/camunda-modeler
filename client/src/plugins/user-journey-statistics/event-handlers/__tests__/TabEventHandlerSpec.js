@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
-import MixpanelHandler from '../../MixpanelHandler';
+import TrackingHandler from '../../TrackingHandler';
 import TabEventHandler from '../TabEventHandler';
 
 import emptyXML from './fixtures/empty.bpmn';
@@ -50,7 +50,7 @@ describe('<TabEventHandler>', function() {
       subscribe
     });
 
-    MixpanelHandler.getInstance().enable('token', 'id', 'stage');
+    TrackingHandler.getInstance().enable();
   });
 
 
