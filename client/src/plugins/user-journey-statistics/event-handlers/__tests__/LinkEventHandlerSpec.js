@@ -12,7 +12,7 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 
 import MochaTestContainer from 'mocha-test-container-support';
-import MixpanelHandler from '../../MixpanelHandler';
+import TrackingHandler from '../../TrackingHandler';
 
 import LinkEventHandler from '../LinkEventHandler';
 
@@ -41,7 +41,7 @@ describe('<LinkEventHandler>', function() {
     container.appendChild(linkOutside);
     container.appendChild(versionInfoOverlay);
 
-    MixpanelHandler.getInstance().enable('token', 'id', 'stage');
+    TrackingHandler.getInstance().enable();
 
     track = sinon.spy();
     new LinkEventHandler({ track });

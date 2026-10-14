@@ -175,7 +175,6 @@ module.exports = function(karma) {
           './editor/FormEditor': 'test/mocks/form-js',
           '@camunda/linting': 'test/mocks/linting',
           '@camunda/linting/modeler': 'test/mocks/linting/modeler',
-          'mixpanel-browser': 'test/mocks/mixpanel-browser',
           '../../globals': 'test/mocks/globals'
         }
       },

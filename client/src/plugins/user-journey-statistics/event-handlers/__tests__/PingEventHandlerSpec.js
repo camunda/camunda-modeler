@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
-import MixpanelHandler from '../../MixpanelHandler';
+import TrackingHandler from '../../TrackingHandler';
 import PingEventHandler from '../PingEventHandler';
 
 import Flags from '../../../../util/Flags';
@@ -29,7 +29,7 @@ describe('<PingEventHandlerSpec>', function() {
 
     new PingEventHandler({ track, getGlobal, subscribe });
 
-    MixpanelHandler.getInstance().enable('token', 'id', 'stage');
+    TrackingHandler.getInstance().enable();
   });
 
   afterEach(sinon.restore);

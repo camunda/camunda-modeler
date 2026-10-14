@@ -11,7 +11,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
-import MixpanelHandler from '../../MixpanelHandler';
+import TrackingHandler from '../../TrackingHandler';
 
 import {
   VARIABLE_OUTLINE_OPENED_EVENT_NAME,
@@ -35,7 +35,7 @@ describe('<VariablesPanelEventHandler>', function() {
       subscribe
     });
 
-    MixpanelHandler.getInstance().enable('token', 'id', 'stage');
+    TrackingHandler.getInstance().enable();
 
     emitEvent = subscribe.getCall(0).args[1];
   });
