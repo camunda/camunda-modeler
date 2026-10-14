@@ -20,7 +20,7 @@ import debug from 'debug';
 
 import Flags from '../../util/Flags';
 
-import { Modal } from '../../shared/ui';
+import { Modal, Notice } from '../../shared/ui';
 
 import { SettingsForm } from './SettingsForm';
 
@@ -151,9 +151,10 @@ export default function SettingsPlugin(props) {
       <div className={ `${css.SettingsPlugin} modal-body` }>
 
         {showRestartWarning &&
-          <div className="restart-warning">Restart the modeler to apply the changes.&nbsp;
+          <Notice type="warning">
+            Restart the modeler to apply the changes.&nbsp;
             <button className="btn-restart" onClick={ handleRestart }>Restart now.</button>
-          </div>
+          </Notice>
         }
 
         <Formik
