@@ -62,7 +62,7 @@ export default function Modal(props) {
         closeLabel="Close"
         aria-describedby={ undefined }
         onEscapeKeyDown={ event => !onClose && event.preventDefault() }
-        onInteractOutside={ event => event.preventDefault() }
+        dismissOnOutsideClick={ false }
         onSubmit={ stopPropagation }
       >
         <KeyboardInteractionTrap>

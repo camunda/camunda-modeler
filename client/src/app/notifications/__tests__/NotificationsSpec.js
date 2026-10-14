@@ -127,6 +127,46 @@ describe('<Notifications>', function() {
   });
 
 
+  it('should close on dismiss', async function() {
+
+    // given
+    const close = sinon.spy();
+
+    const notification = createNotification({ title: 'dismiss', close });
+
+    const { findByRole } = render(<Notifications notifications={ [ notification ] } />);
+
+    // when
+    fireEvent.click(await findByRole('button', { name: 'Dismiss' }));
+
+    // then
+    await waitFor(() => expect(close).to.have.been.calledOnce);
+  });
+
+
+  it('should NOT close updated notification', async function() {
+
+    // given
+    const close = sinon.spy();
+
+    const notification = createNotification({ title: 'before update', close });
+
+    const { findByText, rerender } = render(<Notifications notifications={ [ notification ] } />);
+
+    await findByText('before update');
+
+    // when
+    rerender(<Notifications notifications={ [ { ...notification, title: 'after update' } ] } />);
+
+    // then
+    await findByText('after update');
+
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    expect(close).not.to.have.been.called;
+  });
+
+
   it('should NOT expire removed notification', async function() {
 
     // given

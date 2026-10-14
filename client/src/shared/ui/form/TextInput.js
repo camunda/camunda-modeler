@@ -59,7 +59,6 @@ export default function TextInput(props) {
 
   const Control = multiline ? Textarea : Input;
 
-  // own messages, as the input re-mounts (and loses focus) when its `invalidText` toggles
   return (
     <div className={ css.Field }>
       { (label || documentationUrl) && (
