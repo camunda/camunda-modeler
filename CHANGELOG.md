@@ -38,6 +38,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: convert empty optional FEEL number fields to FEEL on `=` key press ([bpmn-io/properties-panel#559](https://github.com/bpmn-io/properties-panel/pull/559))
 * `FIX`: mark checkbox entries with errors in properties panel ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: report the most severe templating lint error in properties panel, not the first one ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
+* `FIX`: cancel an active drag when a listener fails ([bpmn-io/diagram-js#961](https://github.com/bpmn-io/diagram-js/issues/961))
 * `DEPS`: update to `@camunda/linting@4.2.1`
 * `FIX`: deduplicate element template updates triggered concurrently ([#6262](https://github.com/camunda/camunda-modeler/pull/6262))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
@@ -54,9 +55,11 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-properties-panel@5.65.2`
 * `DEPS`: update to `camunda-bpmn-js@5.37.0`
 * `DEPS`: update to `camunda-bpmn-moddle@8.0.2`
+* `DEPS`: update to `camunda-dmn-js@3.9.0`
 * `DEPS`: update to `diagram-js@15.28.1`
 * `DEPS`: update to `diagram-js-direct-editing@3.6.0`
 * `DEPS`: update to `diagram-js-minimap@5.6.0`
+* `DEPS`: update to `dmn-js@17.12.3`
 
 ### BPMN
 
@@ -66,6 +69,12 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: show the most severe element template lint error, not the first one ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: show linting errors over local validation errors in element template entries, like in all other entries ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: convert empty optional FEEL number fields to FEEL on `=` key press ([bpmn-io/properties-panel#559](https://github.com/bpmn-io/properties-panel/pull/559))
+
+### DMN
+
+* `FIX`: persist the BKM result type on the function body, not on the variable ([bpmn-io/dmn-js#1027](https://github.com/bpmn-io/dmn-js/issues/1027))
+* `FIX`: update DRD requirement and association references on reconnect ([bpmn-io/dmn-js#1032](https://github.com/bpmn-io/dmn-js/issues/1032))
+* `FIX`: edit the boxed expression name like the other view names ([bpmn-io/dmn-js#1028](https://github.com/bpmn-io/dmn-js/pull/1028))
 
 ## 5.52.0
 
