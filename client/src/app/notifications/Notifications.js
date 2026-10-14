@@ -79,27 +79,32 @@ export default class Notifications extends PureComponent {
 
 // helpers //////////
 
-// the design system toast reports no expiry, so the notification expires
-// through its own timer and the toast stays until the notification is closed
 function show(notification) {
-  const { duration, close } = notification;
+  const shown = { notification, hidden: false };
 
-  return {
-    notification,
-    toastId: showToast(notification),
-    timeout: duration ? setTimeout(close, duration) : null
+  // a toast dismissed by `hide` must not close the notification that replaced it
+  const close = () => {
+    if (!shown.hidden) {
+      notification.close();
+    }
   };
+
+  shown.toastId = showToast(notification, close);
+
+  return shown;
 }
 
-function hide({ toastId, timeout }) {
-  clearTimeout(timeout);
+function hide(shown) {
+  shown.hidden = true;
 
-  toast.dismiss(toastId);
+  toast.dismiss(shown.toastId);
 }
 
-function showToast({ type, title, content, close }) {
+function showToast({ type, title, content, duration }, close) {
   const options = {
-    duration: Infinity
+    duration: duration || Infinity,
+    onAutoClose: close,
+    onDismiss: close
   };
 
   // a plain button becomes the toast action and closes the notification
