@@ -29,11 +29,17 @@
 function triggerAccelerator(electronApp, accelerator) {
   return electronApp.evaluate(({ Menu, BrowserWindow }, accelerator) => {
 
-    // accelerators are stored verbatim ('CommandOrControl + C', 'CmdOrCtrl+...')
+    // accelerators are stored verbatim ('CommandOrControl + C', 'CmdOrCtrl+...',
+    // or platform specific, e.g. 'Command+,' on macOS); resolve `CommandOrControl`
+    // as Electron does, so it matches either, but keep Command and Control apart
+    const mod = process.platform === 'darwin' ? 'command' : 'control';
+
     const normalize = (value) => (value || '')
       .toLowerCase()
       .replace(/\s+/g, '')
-      .replace(/commandorcontrol|cmdorctrl/g, 'mod');
+      .replace(/commandorcontrol|cmdorctrl/g, mod)
+      .replace(/\bcmd\b/g, 'command')
+      .replace(/\bctrl\b/g, 'control');
 
     const target = normalize(accelerator);
 
