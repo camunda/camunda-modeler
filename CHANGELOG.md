@@ -15,7 +15,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: add `@bpmn-io/c4-theme@0.3.0`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.56.1`
 * `DEPS`: update to `@bpmn-io/variable-outline@4.0.0`
-* `DEPS`: update to `@camunda/design-system@0.63.0`
+* `DEPS`: update to `@camunda/design-system@0.72.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.12.0`
 * `DEPS`: update to `@camunda/rpa-integration@2.0.0`
 * `DEPS`: update to `@camunda/task-testing@7.0.0`
