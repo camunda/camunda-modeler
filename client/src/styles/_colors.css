@@ -16,6 +16,7 @@
   --color-blue-205-100-95: hsl(205, 100%, 95%);
 
   --color-green-150-86-44: hsl(150, 86%, 44%); /* success */
+  --color-green-150-86-95: hsl(150, 86%, 95%); /* success backgrounds */
   --color-green-158-83-37: hsl(158, 83%, 37%); /* success status bar */
 
   --color-red-360-100-40: hsl(360, 100%, 40%); /* error hover */
