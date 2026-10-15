@@ -93,6 +93,7 @@ const {
   menu,
   openFileHandler,
   plugins,
+  templateUpdater,
   windowManager,
   zeebeAPI
 } = bootstrap();
@@ -107,10 +108,14 @@ app.plugins = plugins;
 Platform.create(platform, app, config);
 
 // only allow single instance if not disabled via `--no-single-instance` flag
+let singleInstance = flags.get('single-instance') !== false;
+
 if (flags.get('single-instance') === false) {
   log.info('single instance disabled via flag');
 } else {
   const gotLock = app.requestSingleInstanceLock();
+
+  singleInstance = gotLock;
 
   if (gotLock) {
 
@@ -134,6 +139,13 @@ if (flags.get('single-instance') === false) {
   } else {
     app.quit();
   }
+}
+
+// delete the caches of removed template sources, but only once this instance
+// owns the app: a second instance quitting must not delete the running
+// instance's caches mid-session
+if (singleInstance) {
+  templateUpdater.reapOrphanedCaches();
 }
 
 // preload script
@@ -960,6 +972,7 @@ function bootstrap() {
     menu,
     openFileHandler,
     plugins,
+    templateUpdater,
     windowManager,
     zeebeAPI
   };

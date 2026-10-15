@@ -111,6 +111,43 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
   }
 
   /**
+   * Remove the caches of removed sources.
+   *
+   * The updater owns the cache lifecycle: it writes caches on update, and
+   * deletes the ones whose source is gone.
+   */
+  reapOrphanedCaches() {
+    const templatesDirectory = getTemplatesPath(this._userPath, '');
+
+    const knownFiles = new Set(this._sources.map(({ fileName }) => fileName));
+
+    let cacheFiles;
+
+    try {
+      cacheFiles = fs.readdirSync(templatesDirectory);
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        log.warn('Could not list template caches', error);
+      }
+
+      return;
+    }
+
+    for (const fileName of cacheFiles) {
+      if (!CUSTOM_CACHE_PATTERN.test(fileName) || knownFiles.has(fileName)) {
+        continue;
+      }
+
+      try {
+        fs.unlinkSync(getTemplatesPath(this._userPath, fileName));
+        log.info(`Removed cache of removed template source: ${ fileName }`);
+      } catch (error) {
+        log.warn(`Could not remove template cache ${ fileName }`, error);
+      }
+    }
+  }
+
+  /**
    * Update templates for a specific execution platform and version.
    *
    * @param {string} executionPlatform

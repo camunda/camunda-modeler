@@ -293,7 +293,7 @@ describe('template-updater - TemplateUpdater', function() {
     });
 
 
-    it('should stop loading a removed source and keep its cache', async function() {
+    it('should stop loading a removed source even if its cache cannot be deleted', async function() {
 
       // given
       const { updater, cachePaths } = configureSources();
@@ -302,21 +302,18 @@ describe('template-updater - TemplateUpdater', function() {
       await updater.update('Camunda Cloud', '8.8');
       expect(fs.existsSync(cachePaths[1])).to.be.true;
 
-      // when the source is removed, its cache is ignored but kept
+      // when the source is removed, its cache is reaped
       const removed = configureSources([ 'source-a.json' ]);
+      removed.updater.reapOrphanedCaches();
       const templates = removed.config.get('bpmn.elementTemplates');
 
-      // then source B is gone from the sources, its cache is untouched
+      // then source B is gone from the sources, its cache is deleted
       expect(removed.sources.map(({ url }) => url)).to.eql([
         'https://marketplace.cloud.camunda.io/api/v1/ootb-connectors',
         `${ origin }/source-a.json`
       ]);
       expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
-      expect(fs.existsSync(cachePaths[1])).to.be.true;
-      expect(removed.updater.getIgnoredCachePaths()).to.have.members([
-        cachePaths[1],
-        getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName)
-      ]);
+      expect(fs.existsSync(cachePaths[1])).to.be.false;
     });
 
 
@@ -328,8 +325,9 @@ describe('template-updater - TemplateUpdater', function() {
       mockSourceB();
       await updater.update('Camunda Cloud', '8.8');
 
-      // when the source is disabled
+      // when the source is disabled and orphaned caches are reaped (as at startup)
       const disabled = configureSources([ 'source-a.json', { name: 'source-b.json', enabled: false } ]);
+      disabled.updater.reapOrphanedCaches();
       const templates = disabled.config.get('bpmn.elementTemplates');
 
       // then the cache is kept (re-enabling is instant) but not loaded
@@ -339,6 +337,27 @@ describe('template-updater - TemplateUpdater', function() {
         cachePaths[1],
         getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName)
       ]);
+    });
+
+
+    it('should not load a removed source whose cache could not be deleted', async function() {
+
+      // given
+      const { updater, cachePaths } = configureSources();
+      mockSourceA();
+      mockSourceB();
+      await updater.update('Camunda Cloud', '8.8');
+
+      // when the source is removed but its cache cannot be deleted
+      const removed = configureSources([ 'source-a.json' ]);
+      sinon.stub(fs, 'unlinkSync').throws(Object.assign(new Error('denied'), { code: 'EACCES' }));
+      removed.updater.reapOrphanedCaches();
+      const templates = removed.config.get('bpmn.elementTemplates');
+
+      // then the leftover cache is still excluded from loading
+      expect(fs.existsSync(cachePaths[1])).to.be.true;
+      expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
+      expect(removed.updater.getIgnoredCachePaths()).to.include(cachePaths[1]);
     });
 
 
