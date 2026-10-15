@@ -1,0 +1,56 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "Notify customer",
+  "id": "io.camunda.examples.registry.NotifyCustomer",
+  "description": "Notifies a customer via e-mail, with an optional CC.",
+  "appliesTo": [
+    "bpmn:ServiceTask"
+  ],
+  "version": 2,
+  "engines": {
+    "camunda": ">=8.9"
+  },
+  "properties": [
+    {
+      "type": "Hidden",
+      "value": "notify-customer",
+      "binding": {
+        "type": "zeebe:taskDefinition:type"
+      }
+    },
+    {
+      "label": "Customer e-mail",
+      "description": "The e-mail address to notify.",
+      "type": "String",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "customerEmail"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "label": "Message",
+      "description": "The notification text.",
+      "type": "Text",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "message"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "label": "CC",
+      "description": "Optional CC recipients.",
+      "type": "String",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "cc"
+      }
+    }
+  ]
+}
