@@ -103,6 +103,26 @@ describe('<EngineProfile>', function() {
   });
 
 
+  it('should list latest Camunda version', function() {
+
+    // given
+    const { getByRole } = renderEngineProfile({
+      engineProfile: { ...cloudBpmnEngineProfile, executionPlatformVersion: '8.10.0' },
+      onChange: () => {}
+    });
+
+    const button = getByRole('button');
+    fireEvent.click(button);
+
+    // when
+    const select = getByRole('combobox');
+    const option = select.querySelector('option');
+
+    // then
+    expect(option.textContent).to.equal('8.11 (alpha)');
+  });
+
+
   describe('show selected engine profile', function() {
 
     eachProfile((executionPlatform, executionPlatformVersion) => {
