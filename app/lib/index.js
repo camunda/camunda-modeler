@@ -39,7 +39,7 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
-const { getTemplateSourceConfig } = require('./template-updater/sources');
+const { resolveTemplateSources } = require('./template-updater/sources');
 const { TemplateUpdater } = require('./template-updater/template-updater');
 
 const FileContext = require('./file-context/file-context');
@@ -839,15 +839,18 @@ function bootstrap() {
     overrides: flagOverrides
   });
 
-  // (3) config
+  // (3) template sources and updater, owning the template caches
   const settings = new Config({ userPath }).get('settings');
-  const { endpoints, ignoredPaths } = getTemplateSourceConfig({ userPath, settings, flags });
+  const { sources } = resolveTemplateSources({ settings, flags });
 
+  const templateUpdater = new TemplateUpdater(userPath, sources);
+
+  // (4) config
   const config = new Config({
     appPath,
     resourcesPaths,
     userPath,
-    ignoredPaths
+    ignoredPaths: templateUpdater.getIgnoredCachePaths()
   });
 
   // error tracking can start as soon as config and flags are initialized.
@@ -900,9 +903,6 @@ function bootstrap() {
 
   // (9) zeebe API
   const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
-
-  // (10) template updater
-  const templateUpdater = new TemplateUpdater(userPath, endpoints);
 
   templateUpdater.on('update:done', (hasNew, warnings) => {
     renderer.send('client:templates-update-done', hasNew, warnings);

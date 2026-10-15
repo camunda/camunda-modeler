@@ -15,11 +15,15 @@
 
 const { EventEmitter } = require('node:events');
 
+const fs = require('node:fs');
+
 const Queue = require('../util/queue');
 
-const { updateTemplates } = require('./util');
+const { updateTemplates, getTemplatesPath } = require('./util');
 
 const log = require('../log')('app:template-updater');
+
+const CUSTOM_CACHE_PATTERN = /^\.custom-element-templates-[0-9a-f]{64}\.json$/;
 
 /** @type {Endpoint} */
 const OOTB_CONNECTORS_ENDPOINT = {
@@ -31,11 +35,16 @@ const OOTB_CONNECTORS_ENDPOINT = {
 module.exports.OOTB_CONNECTORS_ENDPOINT = OOTB_CONNECTORS_ENDPOINT;
 
 module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
-  constructor(userPath, endpoints) {
+
+  /**
+   * @param {string} userPath
+   * @param {import('./sources').TemplateSource[]} sources
+   */
+  constructor(userPath, sources) {
     super();
 
     this._userPath = userPath;
-    this._endpoints = endpoints;
+    this._sources = sources;
 
     /**
      * @type {Queue<TemplateUpdateResult>}
@@ -65,6 +74,43 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
   }
 
   /**
+   * The cache files to exclude when loading templates from disk: caches of
+   * disabled sources (kept on disk, so re-enabling a source is instant) and
+   * caches whose source is no longer configured.
+   *
+   * @returns {string[]}
+   */
+  getIgnoredCachePaths() {
+    const templatesDirectory = getTemplatesPath(this._userPath, '');
+
+    const knownFiles = new Set(this._sources.map(({ fileName }) => fileName));
+
+    const ignoredPaths = this._sources
+      .filter(({ enabled }) => !enabled)
+      .map(({ fileName }) => getTemplatesPath(this._userPath, fileName));
+
+    let cacheFiles;
+
+    try {
+      cacheFiles = fs.readdirSync(templatesDirectory);
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        log.warn('Could not list template caches', error);
+      }
+
+      return ignoredPaths;
+    }
+
+    for (const fileName of cacheFiles) {
+      if (CUSTOM_CACHE_PATTERN.test(fileName) && !knownFiles.has(fileName)) {
+        ignoredPaths.push(getTemplatesPath(this._userPath, fileName));
+      }
+    }
+
+    return ignoredPaths;
+  }
+
+  /**
    * Update templates for a specific execution platform and version.
    *
    * @param {string} executionPlatform
@@ -73,8 +119,8 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
    * @returns {Promise<TemplateUpdateResult>}
    */
   async update(executionPlatform, executionPlatformVersion) {
-    const endpoints = this._endpoints.filter(endpoint => {
-      return endpoint.executionPlatform === executionPlatform;
+    const endpoints = this._sources.filter(source => {
+      return source.enabled && source.executionPlatform === executionPlatform;
     });
 
     const promises = endpoints.map(endpoint => this._queue.add(

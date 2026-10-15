@@ -18,7 +18,7 @@ const { Agent, MockAgent, setGlobalDispatcher } = require('undici');
 const { isString } = require('min-dash');
 
 const { TemplateUpdater, OOTB_CONNECTORS_ENDPOINT } = require('../template-updater');
-const { getTemplateSourceConfig } = require('../sources');
+const { resolveTemplateSources } = require('../sources');
 const { getTemplatesPath } = require('../util');
 const Config = require('../../config');
 
@@ -63,7 +63,7 @@ describe('template-updater - TemplateUpdater', function() {
   let templateUpdater;
 
   beforeEach(function() {
-    templateUpdater = new TemplateUpdater(userPath, [ OOTB_CONNECTORS_ENDPOINT ]);
+    templateUpdater = new TemplateUpdater(userPath, [ { ...OOTB_CONNECTORS_ENDPOINT, enabled: true } ]);
   });
 
 
@@ -271,10 +271,10 @@ describe('template-updater - TemplateUpdater', function() {
     it('should discover newly fetched templates through the already-used Config', async function() {
 
       // given
-      const { updater, config, endpoints } = configureSources();
+      const { updater, config, sources } = configureSources();
       expect(config.get('bpmn.elementTemplates')).to.eql([]);
       mockSourceA();
-      await new TemplateUpdater(userPath, [ endpoints[0] ]).update('Camunda Cloud', '8.8');
+      await new TemplateUpdater(userPath, [ sources[1] ]).update('Camunda Cloud', '8.8');
       const earlier = config.get('bpmn.elementTemplates');
       expect(earlier.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
       pool.intercept({ path: '/source-a.json' }).reply(200, sourceA);
@@ -293,27 +293,52 @@ describe('template-updater - TemplateUpdater', function() {
     });
 
 
-    it('should retain but stop loading a removed cache and reuse it when re-added', async function() {
+    it('should stop loading a removed source and keep its cache', async function() {
 
       // given
       const { updater, cachePaths } = configureSources();
       mockSourceA();
       mockSourceB();
       await updater.update('Camunda Cloud', '8.8');
-      const cachedB = fs.readFileSync(cachePaths[1], 'utf8');
+      expect(fs.existsSync(cachePaths[1])).to.be.true;
 
-      // when
+      // when the source is removed, its cache is ignored but kept
       const removed = configureSources([ 'source-a.json' ]);
       const templates = removed.config.get('bpmn.elementTemplates');
-      const readded = configureSources();
-      const cleared = configureSources([]);
 
-      // then
-      expect(removed.endpoints).to.have.length(1);
+      // then source B is gone from the sources, its cache is untouched
+      expect(removed.sources.map(({ url }) => url)).to.eql([
+        'https://marketplace.cloud.camunda.io/api/v1/ootb-connectors',
+        `${ origin }/source-a.json`
+      ]);
       expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
-      expect(fs.readFileSync(cachePaths[1], 'utf8')).to.equal(cachedB);
-      expect(readded.config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name, templateB2.name ]);
-      expect(cleared.config.get('bpmn.elementTemplates')).to.eql([]);
+      expect(fs.existsSync(cachePaths[1])).to.be.true;
+      expect(removed.updater.getIgnoredCachePaths()).to.have.members([
+        cachePaths[1],
+        getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName)
+      ]);
+    });
+
+
+    it('should keep the cache of a disabled source without loading it', async function() {
+
+      // given
+      const { updater, cachePaths } = configureSources();
+      mockSourceA();
+      mockSourceB();
+      await updater.update('Camunda Cloud', '8.8');
+
+      // when the source is disabled
+      const disabled = configureSources([ 'source-a.json', { name: 'source-b.json', enabled: false } ]);
+      const templates = disabled.config.get('bpmn.elementTemplates');
+
+      // then the cache is kept (re-enabling is instant) but not loaded
+      expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
+      expect(fs.existsSync(cachePaths[1])).to.be.true;
+      expect(disabled.updater.getIgnoredCachePaths()).to.have.members([
+        cachePaths[1],
+        getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName)
+      ]);
     });
 
 
@@ -341,9 +366,9 @@ describe('template-updater - TemplateUpdater', function() {
       it(`should continue after a timeout (${ stage })`, async function() {
 
         // given
-        const { updater, config, endpoints, cachePaths } = configureSources();
+        const { updater, config, sources, cachePaths } = configureSources();
         mockSourceA();
-        await new TemplateUpdater(userPath, [ endpoints[0] ]).update('Camunda Cloud', '8.8');
+        await new TemplateUpdater(userPath, [ sources[1] ]).update('Camunda Cloud', '8.8');
         const cached = fs.readFileSync(cachePaths[0], 'utf8');
         const done = sinon.spy();
         updater.on('update:done', done);
@@ -466,19 +491,28 @@ describe('template-updater - TemplateUpdater', function() {
 
 
     function configureSources(sources = [ 'source-a.json', 'source-b.json' ]) {
-      const sourceConfig = getTemplateSourceConfig({
-        userPath,
+      const { sources: resolvedSources } = resolveTemplateSources({
         settings: {
           'app.disableConnectorTemplates': true,
-          'app.customTemplateSources': sources.map(source => ({ url: `${ origin }/${ source }` }))
+          'app.customTemplateSources': sources.map(source => {
+            const { enabled = true, name = source } = typeof source === 'string' ? {} : source;
+
+            return { url: `${ origin }/${ name }`, enabled };
+          })
         }
       });
 
+      const updater = new TemplateUpdater(userPath, resolvedSources);
+
       return {
-        ...sourceConfig,
-        cachePaths: sourceConfig.endpoints.map(({ fileName }) => getTemplatesPath(userPath, fileName)),
-        updater: new TemplateUpdater(userPath, sourceConfig.endpoints),
-        config: new Config({ userPath, resourcesPaths: [ path.join(userPath, 'resources') ], ...sourceConfig })
+        sources: resolvedSources,
+        cachePaths: resolvedSources.filter(({ url }) => url.startsWith(origin)).map(({ fileName }) => getTemplatesPath(userPath, fileName)),
+        updater,
+        config: new Config({
+          userPath,
+          resourcesPaths: [ path.join(userPath, 'resources') ],
+          ignoredPaths: updater.getIgnoredCachePaths()
+        })
       };
     }
 

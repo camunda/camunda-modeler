@@ -8,57 +8,62 @@
  * except in compliance with the MIT License.
  */
 
-const fs = require('fs');
-const path = require('path');
 const { createHash } = require('crypto');
 
 const { OOTB_CONNECTORS_ENDPOINT } = require('./template-updater');
-const { getTemplatesPath } = require('./util');
 
 const log = require('../log')('app:template-sources');
 
-const CUSTOM_CACHE_PATTERN = /^\.custom-element-templates-[0-9a-f]{64}\.json$/;
+/**
+ * A template source resolved from settings and flags.
+ *
+ * @typedef {Object} TemplateSource
+ * @property {string} executionPlatform
+ * @property {string} url
+ * @property {string} fileName Name of the source's cache file.
+ * @property {boolean} enabled Disabled sources keep their cache, so
+ *   re-enabling them is instant; they are not fetched.
+ */
 
 /**
- * Configure fetching and discovery of remote element templates for this session.
+ * Resolve the template sources for this session from settings and flags.
+ *
+ * Pure: derives policy (which sources exist, are they enabled, which cache
+ * file backs them) without touching the file system. The `TemplateUpdater`
+ * fetches enabled sources and owns their caches, including the removal of
+ * caches whose source was removed.
+ *
  * Custom sources are `{ name, url, enabled }` entries.
- * Removed or disabled source caches are ignored, not deleted, so re-adding a URL can reuse them.
  *
  * @param {Object} options
- * @param {string} options.userPath
  * @param {Object} [options.settings] Persisted, flat application settings.
  * @param {Object} [options.flags] Application flags.
  *
- * @returns {{ endpoints: import('./types').Endpoint[], ignoredPaths: string[] }}
+ * @returns {{ sources: TemplateSource[] }}
  */
-function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
-  const endpoints = [];
-  const ignoredPaths = [];
+function resolveTemplateSources({ settings = {}, flags }) {
+  const sources = [];
 
   // a flag, if set, overrides the setting
   const disabledFlag = flags?.get('disable-connector-templates');
 
-  const disabled = disabledFlag !== undefined
+  const connectorsDisabled = disabledFlag !== undefined
     ? disabledFlag
     : settings?.['app.disableConnectorTemplates'];
 
-  if (disabled) {
-    ignoredPaths.push(getTemplatesPath(userPath, OOTB_CONNECTORS_ENDPOINT.fileName));
-  } else {
-    endpoints.push(OOTB_CONNECTORS_ENDPOINT);
-  }
+  sources.push({
+    ...OOTB_CONNECTORS_ENDPOINT,
+    enabled: !connectorsDisabled
+  });
 
-  const sources = settings?.['app.customTemplateSources'];
+  const customSources = settings?.['app.customTemplateSources'];
   const seen = new Set();
 
-  if (sources !== undefined && !Array.isArray(sources)) {
+  if (customSources !== undefined && !Array.isArray(customSources)) {
     log.warn('Ignoring invalid custom template sources: expected an array');
   }
 
-  for (const [ index, source ] of (Array.isArray(sources) ? sources : []).entries()) {
-    if (source?.enabled === false) {
-      continue;
-    }
+  for (const [ index, source ] of (Array.isArray(customSources) ? customSources : []).entries()) {
 
     let url;
 
@@ -80,32 +85,18 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
 
     const hash = createHash('sha256').update(url).digest('hex');
 
-    endpoints.push({
+    sources.push({
       executionPlatform: 'Camunda Cloud',
       fileName: `.custom-element-templates-${hash}.json`,
       url,
+      enabled: source?.enabled !== false
     });
   }
 
-  const activeFiles = new Set(endpoints.map(({ fileName }) => fileName));
-  const templatesDirectory = getTemplatesPath(userPath, '');
-
-  try {
-    for (const fileName of fs.readdirSync(templatesDirectory)) {
-      if (CUSTOM_CACHE_PATTERN.test(fileName) && !activeFiles.has(fileName)) {
-        ignoredPaths.push(path.join(templatesDirectory, fileName));
-      }
-    }
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      log.warn('Could not list custom template caches', error);
-    }
-  }
-
-  return { endpoints, ignoredPaths };
+  return { sources };
 }
 
-module.exports.getTemplateSourceConfig = getTemplateSourceConfig;
+module.exports.resolveTemplateSources = resolveTemplateSources;
 
 // helpers //////////
 
