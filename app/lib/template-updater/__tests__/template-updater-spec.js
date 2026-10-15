@@ -92,9 +92,7 @@ describe('template-updater - TemplateUpdater', function() {
 
         marketPlaceMockReplyData[template.id].push(templateMetadata);
 
-        for (const template of mockTemplates) {
-          fooMockPool.intercept({ path: `/ootb-connectors?id=${template.id}&version=${template.version}` }).reply(200, template);
-        }
+        fooMockPool.intercept({ path: `/ootb-connectors?id=${template.id}&version=${template.version}` }).reply(200, template).persist();
       }
 
       marketPlaceMockPool.intercept({ path: '/api/v1/ootb-connectors' }).reply(200, marketPlaceMockReplyData);
@@ -201,6 +199,45 @@ describe('template-updater - TemplateUpdater', function() {
 
       // expect that we fetch the template again
       expect(log.find(entry => entry.path === '/ootb-connectors?id=foo&version=1')).to.exist;
+    });
+
+
+    it('should coalesce concurrent updates for the same platform and version', async function() {
+
+      // when three updates race (e.g. restored tabs reporting the same engine profile)
+      const results = await Promise.all([
+        templateUpdater.update('Camunda Cloud', '8.8'),
+        templateUpdater.update('Camunda Cloud', '8.8'),
+        templateUpdater.update('Camunda Cloud', '8.8')
+      ]);
+
+      // then the index is fetched once, and all callers get the result
+      expect(log.filter(entry => entry.path === '/api/v1/ootb-connectors')).to.have.length(1);
+
+      for (const result of results) {
+        expect(result.hasNew).to.be.true;
+        expect(result.warnings).to.be.empty;
+      }
+    });
+
+
+    it('should not coalesce updates for different versions', async function() {
+
+      // given
+      marketPlaceMockPool.intercept({ path: '/api/v1/ootb-connectors' }).reply(200, {});
+
+      // when
+      const results = await Promise.all([
+        templateUpdater.update('Camunda Cloud', '8.8'),
+        templateUpdater.update('Camunda Cloud', '8.7')
+      ]);
+
+      // then
+      expect(log.filter(entry => entry.path === '/api/v1/ootb-connectors')).to.have.length(2);
+
+      for (const result of results) {
+        expect(result.warnings).to.be.empty;
+      }
     });
 
 
