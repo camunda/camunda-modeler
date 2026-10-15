@@ -37,7 +37,7 @@
     "@codemirror/view": "^6.34.1",
     "@ibm/plex": "^6.4.1",
     "@lezer/highlight": "^1.2.3",
-    "@sentry/electron": "^7.15.0",
+    "@sentry/electron": "^8.0.0",
     "@uiw/codemirror-theme-vscode": "^4.23.12",
     "bpmn-js": "^18.29.1",
     "bpmn-js-element-templates": "^2.36.4",
