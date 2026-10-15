@@ -25,6 +25,22 @@
     align-items: center;
   }
 
+  &.info {
+    background-color: var(--color-blue-205-100-95);
+  }
+
+  &.success {
+    background-color: var(--color-green-150-86-95);
+  }
+
+  &.warning {
+    background-color: var(--color-yellow-47-86-91);
+  }
+
+  &.error {
+    background-color: var(--color-red-360-100-97);
+  }
+
   &.info .icon {
     color: var(--color-blue-205-100-45);
   }
