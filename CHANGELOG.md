@@ -8,6 +8,12 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: support custom element template sources ([#5100](https://github.com/camunda/camunda-modeler/issues/5100), [#6181](https://github.com/camunda/camunda-modeler/pull/6181))
 * `FEAT`: manage Camunda 8 connections as a list, edit and check them in a dialog ([#6256](https://github.com/camunda/camunda-modeler/pull/6256))
+* `FIX`: correct linting to exempt AI agent gateway tools (`io.camunda.agenticai.gateway.type`) from `agent-tool-documentation` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6240](https://github.com/camunda/camunda-modeler/issues/6240))
+* `FIX`: require documentation for intermediate event tools in `agent-tool-documentation` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6241](https://github.com/camunda/camunda-modeler/issues/6241))
+* `FIX`: require a `toolCallResult` for intermediate event tools in `agent-tool-output-key` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6241](https://github.com/camunda/camunda-modeler/issues/6241))
+* `FIX`: do not require a `toolCallResult` in `agent-tool-output-key` when the tool flow throws an error or escalation ([camunda/bpmnlint-plugin-camunda-compat#277](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/277), [#6239](https://github.com/camunda/camunda-modeler/issues/6239))
+* `FIX`: clarify unsupported condition message in properties panel ([#186](https://github.com/camunda/linting/pull/186), [#5820](https://github.com/camunda/camunda-modeler/issues/5820))
+* `DEPS`: update to `@camunda/linting@4.2.1`
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
 
 ## 5.52.0
