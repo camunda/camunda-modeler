@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "@camunda8/sdk": "^8.7.28",
-    "@sentry/electron": "^7.15.0",
+    "@sentry/electron": "^8.0.0",
     "bpmn-moddle": "^10.3.1",
     "chokidar": "^5.0.0",
     "dmn-moddle": "^12.2.1",
