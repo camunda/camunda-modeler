@@ -47,6 +47,15 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
      */
     this._results = [];
 
+    /**
+     * Updates in flight, keyed by platform and version. Identical updates
+     * requested while one is running join it instead of fetching twice,
+     * e.g. when multiple restored tabs report the same engine profile.
+     *
+     * @type {Map<string, Promise<TemplateUpdateResult>>}
+     */
+    this._inflight = new Map();
+
     this._queue.onCompleted(result => {
       log.info('Templates update queue completed', result);
 
@@ -73,17 +82,31 @@ module.exports.TemplateUpdater = class TemplateUpdater extends EventEmitter {
    * @returns {Promise<TemplateUpdateResult>}
    */
   async update(executionPlatform, executionPlatformVersion) {
+    const key = `${ executionPlatform }@${ executionPlatformVersion }`;
+
+    const inflight = this._inflight.get(key);
+
+    if (inflight) {
+      log.info(`Update for ${ key } already in progress, joining it`);
+
+      return inflight;
+    }
+
     const endpoints = this._endpoints.filter(endpoint => {
       return endpoint.executionPlatform === executionPlatform;
     });
 
-    const promises = endpoints.map(endpoint => this._queue.add(
+    const update = Promise.all(endpoints.map(endpoint => this._queue.add(
       () => updateTemplates(endpoint, executionPlatformVersion, this._userPath)
-    ));
+    ))).then(combineResults);
 
-    const results = await Promise.all(promises);
+    this._inflight.set(key, update);
 
-    return combineResults(results);
+    try {
+      return await update;
+    } finally {
+      this._inflight.delete(key);
+    }
   }
 };
 

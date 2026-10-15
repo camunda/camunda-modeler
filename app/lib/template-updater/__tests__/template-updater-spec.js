@@ -204,6 +204,38 @@ describe('template-updater - TemplateUpdater', function() {
     });
 
 
+    it('should coalesce concurrent updates for the same platform and version', async function() {
+
+      // when three updates race (e.g. restored tabs reporting the same engine profile)
+      const results = await Promise.all([
+        templateUpdater.update('Camunda Cloud', '8.8'),
+        templateUpdater.update('Camunda Cloud', '8.8'),
+        templateUpdater.update('Camunda Cloud', '8.8')
+      ]);
+
+      // then the index is fetched once, and all callers get the result
+      expect(log.filter(entry => entry.path === '/api/v1/ootb-connectors')).to.have.length(1);
+
+      for (const result of results) {
+        expect(result.hasNew).to.be.true;
+        expect(result.warnings).to.be.empty;
+      }
+    });
+
+
+    it('should not coalesce updates for different versions', async function() {
+
+      // when
+      await Promise.all([
+        templateUpdater.update('Camunda Cloud', '8.8'),
+        templateUpdater.update('Camunda Cloud', '8.7')
+      ]);
+
+      // then
+      expect(log.filter(entry => entry.path === '/api/v1/ootb-connectors')).to.have.length(2);
+    });
+
+
     it('should update templates (existing broken)', async function() {
 
       // given

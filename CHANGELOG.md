@@ -14,6 +14,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: require a `toolCallResult` for intermediate event tools in `agent-tool-output-key` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6241](https://github.com/camunda/camunda-modeler/issues/6241))
 * `FIX`: do not require a `toolCallResult` in `agent-tool-output-key` when the tool flow throws an error or escalation ([camunda/bpmnlint-plugin-camunda-compat#277](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/277), [#6239](https://github.com/camunda/camunda-modeler/issues/6239))
 * `FIX`: clarify unsupported condition message in properties panel ([#186](https://github.com/camunda/linting/pull/186), [#5820](https://github.com/camunda/camunda-modeler/issues/5820))
+* `FIX`: deduplicate element template updates triggered concurrently ([#6262](https://github.com/camunda/camunda-modeler/pull/6262))
 * `DEPS`: update to `@camunda/linting@4.2.1`
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
 
