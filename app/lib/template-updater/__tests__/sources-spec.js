@@ -36,7 +36,8 @@ describe('template-updater - sources', function() {
   it('should default to OOTB without creating a cache directory', function() {
 
     // when
-    const result = getTemplateSourceConfig({ userPath });
+    const { cleanupTemplateSourcesCache, ...result } = getTemplateSourceConfig({ userPath });
+    cleanupTemplateSourcesCache();
 
     // then
     expect(result).to.eql({
@@ -116,6 +117,7 @@ describe('template-updater - sources', function() {
 
     // when
     const result = configure([ { ...source, enabled: false } ]);
+    result.cleanupTemplateSourcesCache();
 
     // then
     expect(result.endpoints).to.eql([ OOTB_CONNECTORS_ENDPOINT ]);
@@ -190,7 +192,7 @@ describe('template-updater - sources', function() {
   });
 
 
-  it('should ignore removed caches without deleting them or matching user files', function() {
+  it('should delete removed caches without matching user files or the OOTB cache', function() {
 
     // given
     const original = configure([ { url: 'https://example.com/a' }, { url: 'https://example.com/b' } ]);
@@ -205,23 +207,37 @@ describe('template-updater - sources', function() {
 
     const userFiles = [ 'manual.json', '.custom-element-templates-mine.json', original.endpoints[2].fileName + '.backup.json' ];
     userFiles.forEach(file => fs.writeFileSync(path.join(directory, file), '[]'));
-    const before = fs.readdirSync(directory);
 
     // when
     const removed = configure([ { url: 'https://example.com/a' } ]);
-    const cleared = configure([]);
-    const readded = configure([ { url: 'https://example.com/a' }, { url: 'https://example.com/b#fragment' } ]);
 
     // then
     expect(removed.ignoredPaths).to.eql([ cachePaths[2] ]);
-    expect(cleared.ignoredPaths).to.have.members(cachePaths.slice(1));
-    expect(readded).to.eql(original);
-    expect(fs.readdirSync(directory)).to.eql(before);
-    cachePaths.forEach(file => expect(fs.readFileSync(file, 'utf8')).to.equal('[{"id":"cached"}]'));
+    expect(fs.existsSync(cachePaths[2])).to.be.true;
+
+    // when
+    removed.cleanupTemplateSourcesCache();
+
+    // then
+    expect(fs.existsSync(cachePaths[2])).to.be.false;
+    expect(fs.readFileSync(cachePaths[1], 'utf8')).to.equal('[{"id":"cached"}]');
+
+    // when
+    const cleared = configure([]);
+    cleared.cleanupTemplateSourcesCache();
+    const readded = configure([ { url: 'https://example.com/a' }, { url: 'https://example.com/b#fragment' } ]);
+
+    // then
+    expect(cleared.ignoredPaths).to.eql([ cachePaths[1] ]);
+    expect(readded.endpoints).to.eql(original.endpoints);
+    expect(readded.ignoredPaths).to.be.empty;
+    expect(fs.readdirSync(directory)).to.have.members([ original.endpoints[0].fileName, ...userFiles ]);
+    expect(fs.readFileSync(cachePaths[0], 'utf8')).to.equal('[{"id":"cached"}]');
+    userFiles.forEach(file => expect(fs.readFileSync(path.join(directory, file), 'utf8')).to.equal('[]'));
   });
 
 
-  it('should treat an edited URL as a new source and retain its old cache', function() {
+  it('should treat an edited URL as a new source and delete its old cache', function() {
 
     // given
     const original = configure([ { url: 'https://example.com/old' } ]);
@@ -231,11 +247,33 @@ describe('template-updater - sources', function() {
 
     // when
     const result = configure([ { url: 'https://example.com/new' } ]);
+    result.cleanupTemplateSourcesCache();
 
     // then
     expect(result.ignoredPaths).to.eql([ oldPath ]);
     expect(result.endpoints.map(({ fileName }) => fileName)).not.to.include(original.endpoints[1].fileName);
-    expect(fs.readFileSync(oldPath, 'utf8')).to.equal('[]');
+    expect(fs.existsSync(oldPath)).to.be.false;
+  });
+
+
+  it('should ignore a removed cache if deletion fails and continue deleting others', function() {
+
+    // given
+    const { endpoints } = configure([ { url: 'https://example.com/a' }, { url: 'https://example.com/b' } ]);
+    const cachePaths = endpoints.slice(1).map(({ fileName }) => getTemplatesPath(userPath, fileName));
+    fs.mkdirSync(path.dirname(cachePaths[0]), { recursive: true });
+    cachePaths.forEach(file => fs.writeFileSync(file, '[]'));
+    sinon.stub(fs, 'unlinkSync').callThrough()
+      .withArgs(cachePaths[0]).throws(Object.assign(new Error('access denied'), { code: 'EACCES' }));
+
+    // when
+    const result = configure([]);
+    result.cleanupTemplateSourcesCache();
+
+    // then
+    expect(result.ignoredPaths).to.have.members(cachePaths);
+    expect(fs.existsSync(cachePaths[0])).to.be.true;
+    expect(fs.existsSync(cachePaths[1])).to.be.false;
   });
 
 
@@ -246,6 +284,7 @@ describe('template-updater - sources', function() {
 
     // when
     const result = configure([ { url: 'https://example.com/index' } ]);
+    result.cleanupTemplateSourcesCache();
 
     // then
     expect(result.endpoints).to.have.length(2);

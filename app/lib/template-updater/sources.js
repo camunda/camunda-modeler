@@ -22,18 +22,21 @@ const CUSTOM_CACHE_PATTERN = /^\.custom-element-templates-[0-9a-f]{64}\.json$/;
 /**
  * Configure fetching and discovery of remote element templates for this session.
  * Custom sources are `{ name, url, enabled }` entries.
- * Removed or disabled source caches are ignored, not deleted, so re-adding a URL can reuse them.
+ * Disabled and removed source caches are ignored. Call
+ * `cleanupTemplateSourcesCache` during application startup to delete
+ * removed caches, after acquiring the application instance lock.
  *
  * @param {Object} options
  * @param {string} options.userPath
  * @param {Object} [options.settings] Persisted, flat application settings.
  * @param {Object} [options.flags] Application flags.
  *
- * @returns {{ endpoints: import('./types').Endpoint[], ignoredPaths: string[] }}
+ * @returns {{ endpoints: import('./types').Endpoint[], ignoredPaths: string[], cleanupTemplateSourcesCache: () => void }}
  */
 function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
   const endpoints = [];
   const ignoredPaths = [];
+  const orphanedPaths = [];
 
   // a flag, if set, overrides the setting
   const disabledFlag = flags?.get('disable-connector-templates');
@@ -50,16 +53,13 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
 
   const sources = settings?.['app.customTemplateSources'];
   const seen = new Set();
+  const configuredFiles = new Set();
 
   if (sources !== undefined && !Array.isArray(sources)) {
     log.warn('Ignoring invalid custom template sources: expected an array');
   }
 
   for (const [ index, source ] of (Array.isArray(sources) ? sources : []).entries()) {
-    if (source?.enabled === false) {
-      continue;
-    }
-
     let url;
 
     try {
@@ -71,6 +71,15 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
       continue;
     }
 
+    const hash = createHash('sha256').update(url).digest('hex');
+    const fileName = `.custom-element-templates-${hash}.json`;
+
+    configuredFiles.add(fileName);
+
+    if (source?.enabled === false) {
+      continue;
+    }
+
     if (seen.has(url)) {
       log.warn(`Ignoring duplicate custom template source ${index + 1}`);
       continue;
@@ -78,11 +87,9 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
 
     seen.add(url);
 
-    const hash = createHash('sha256').update(url).digest('hex');
-
     endpoints.push({
       executionPlatform: 'Camunda Cloud',
-      fileName: `.custom-element-templates-${hash}.json`,
+      fileName,
       url,
     });
   }
@@ -93,7 +100,13 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
   try {
     for (const fileName of fs.readdirSync(templatesDirectory)) {
       if (CUSTOM_CACHE_PATTERN.test(fileName) && !activeFiles.has(fileName)) {
-        ignoredPaths.push(path.join(templatesDirectory, fileName));
+        const cachePath = path.join(templatesDirectory, fileName);
+
+        if (!configuredFiles.has(fileName)) {
+          orphanedPaths.push(cachePath);
+        }
+
+        ignoredPaths.push(cachePath);
       }
     }
   } catch (error) {
@@ -102,7 +115,19 @@ function getTemplateSourceConfig({ userPath, settings = {}, flags }) {
     }
   }
 
-  return { endpoints, ignoredPaths };
+  return {
+    endpoints,
+    ignoredPaths,
+    cleanupTemplateSourcesCache() {
+      for (const cachePath of orphanedPaths) {
+        try {
+          fs.unlinkSync(cachePath);
+        } catch (error) {
+          log.warn('Could not delete custom template cache', error);
+        }
+      }
+    }
+  };
 }
 
 module.exports.getTemplateSourceConfig = getTemplateSourceConfig;
