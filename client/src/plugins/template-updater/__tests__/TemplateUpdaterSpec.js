@@ -107,6 +107,10 @@ describe('<TemplateUpdater>', function() {
     // then
     await waitFor(() => {
       expect(displayNotificationSpy).to.have.been.calledWithMatch({ type: 'success', title: 'Element templates updated' });
+      const documentationUrl = new URL(displayNotificationSpy.firstCall.args[0].content.props.href);
+
+      expect(documentationUrl.pathname).to.equal('/docs/components/modeler/desktop-modeler/element-templates/configuring-templates/');
+      expect(documentationUrl.hash).to.equal('#remote-template-sources');
       expect(triggerActionSpy).to.have.been.calledWith('elementTemplates.reload');
     });
   });

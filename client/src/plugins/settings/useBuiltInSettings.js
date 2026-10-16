@@ -45,7 +45,7 @@ export const schema = {
     elementTemplates: {
       title: <ElementTemplatesSettingsHeader />,
       description: 'Fetch element templates from these sources, in addition to local templates.',
-      documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/configuring-templates/'),
+      documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/configuring-templates/#remote-template-sources'),
 
       // after "Camunda 8 connections" (order 1)
       order: 2
