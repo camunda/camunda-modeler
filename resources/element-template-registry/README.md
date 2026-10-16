@@ -3,6 +3,10 @@
 A small, local element template registry, e.g. to try out custom element
 template sources (cf. _Settings > Element template sources_).
 
+For the index format and publishing requirements, see
+[Host an element template source](https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/hosting-template-sources/).
+This server is a local development example, not a production registry.
+
 ## Usage
 
 ```sh
