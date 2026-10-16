@@ -93,6 +93,7 @@ const {
   menu,
   openFileHandler,
   plugins,
+  cleanupTemplateSourcesCache,
   windowManager,
   zeebeAPI
 } = bootstrap();
@@ -727,6 +728,8 @@ app.on('ready', function() {
 
   bootstrapLog.info('received ready');
 
+  cleanupTemplateSourcesCache();
+
   menu.registerMenuProvider('plugins', {
     plugins: plugins.getAll()
   });
@@ -841,7 +844,7 @@ function bootstrap() {
 
   // (3) config
   const settings = new Config({ userPath }).get('settings');
-  const { endpoints, ignoredPaths } = getTemplateSourceConfig({ userPath, settings, flags });
+  const { endpoints, ignoredPaths, cleanupTemplateSourcesCache } = getTemplateSourceConfig({ userPath, settings, flags });
 
   const config = new Config({
     appPath,
@@ -960,6 +963,7 @@ function bootstrap() {
     menu,
     openFileHandler,
     plugins,
+    cleanupTemplateSourcesCache,
     windowManager,
     zeebeAPI
   };
