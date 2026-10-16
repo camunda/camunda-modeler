@@ -3,7 +3,7 @@
   flex: none;
 
   &.open {
-    border-left: solid 1px var(--color-grey-225-10-75);
+    border-left: solid 1px var(--app-bar-border-color);
   }
 
   &:not(.open) .resizer {

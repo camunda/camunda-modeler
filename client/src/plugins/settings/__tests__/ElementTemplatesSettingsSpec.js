@@ -200,7 +200,8 @@ describe('TemplateSources', function() {
       await waitFor(() => expect(within(dialog).getByRole('button', { name: 'Add' }).disabled).to.be.true);
 
       // when
-      addSource(' Team ', ' HTTPS://EXAMPLE.COM:443/team#fragment ');
+      fillSource(' Team ', ' HTTPS://EXAMPLE.COM:443/team#fragment ');
+      fireEvent.submit(within(dialog).getByRole('button', { name: 'Add' }).closest('form'));
 
       // then
       await waitFor(() => expect(getValues().customTemplateSources).to.eql([
@@ -276,7 +277,7 @@ describe('TemplateSources', function() {
       // then
       expect(screen.queryByRole('dialog')).not.to.exist;
       expect(getValues().customTemplateSources).to.eql([]);
-      expect(document.activeElement === addButton, 'focus restored').to.be.true;
+      await waitFor(() => expect(document.activeElement === addButton, 'focus restored').to.be.true);
     });
 
   });
@@ -382,7 +383,7 @@ describe('TemplateSources', function() {
     });
 
 
-    it('should restore focus to the options menu on cancel', function() {
+    it('should restore focus to the options menu on cancel', async function() {
 
       // given
       renderSources({ customTemplateSources: [ { name: 'A', url: 'https://example.com/a' } ] });
@@ -394,7 +395,7 @@ describe('TemplateSources', function() {
 
       // then
       expect(screen.queryByRole('dialog')).not.to.exist;
-      expect(document.activeElement === screen.getByRole('button', { name: 'Options for A' }), 'focus restored').to.be.true;
+      await waitFor(() => expect(document.activeElement === screen.getByRole('button', { name: 'Options for A' }), 'focus restored').to.be.true);
     });
 
   });
@@ -430,7 +431,7 @@ function getDialog() {
 
 function getSwitches() {
   return Object.fromEntries(
-    screen.getAllByRole('switch').map(input => [ input.getAttribute('aria-label'), input.checked ])
+    screen.getAllByRole('switch').map(input => [ input.getAttribute('aria-label'), input.getAttribute('aria-checked') === 'true' ])
   );
 }
 
@@ -447,7 +448,7 @@ function fillSource(name, url) {
 }
 
 function selectAction(label, action) {
-  fireEvent.click(screen.getByRole('button', { name: `Options for ${ label }` }));
+  fireEvent.keyDown(screen.getByRole('button', { name: `Options for ${ label }` }), { key: 'Enter' });
   fireEvent.click(screen.getByRole('menuitem', { name: action }));
 }
 

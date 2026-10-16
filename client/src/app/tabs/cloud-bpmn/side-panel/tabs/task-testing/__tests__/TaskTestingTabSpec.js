@@ -366,7 +366,6 @@ describe('<TaskTestingTab>', function() {
 
       // when
       await selectElement(modeler, 'Task_1');
-      screen.getByRole('tab', { name: 'Result' }).click();
 
       // then
       await waitFor(() => {
@@ -405,7 +404,6 @@ describe('<TaskTestingTab>', function() {
 
       // when
       await selectElement(modeler, 'Task_1');
-      screen.getByRole('tab', { name: 'Result' }).click();
 
       // then
       expect(screen.queryByText('Open in Operate')).to.not.exist;

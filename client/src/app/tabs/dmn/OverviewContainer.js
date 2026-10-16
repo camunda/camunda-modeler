@@ -14,6 +14,9 @@ import classNames from 'classnames';
 
 import { isFunction } from 'min-dash';
 
+import { IconButton } from '@camunda/design-system';
+import { X } from '@camunda/design-system/icons';
+
 import dragger from '../../../util/dom/dragger';
 
 import * as css from './OverviewContainer.css';
@@ -152,10 +155,14 @@ class OverviewContainerWrapped extends PureComponent {
         }
         {
           open &&
-            <div
+            <IconButton
               className="toggle"
+              variant="ghost"
+              size="sm"
+              label="Close overview"
+              icon={ X }
               onClick={ this.handleToggle }
-            ></div>
+            />
         }
         <div className="overview-container" ref={ forwardedRef }></div>
       </div>

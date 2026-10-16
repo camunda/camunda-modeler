@@ -8,16 +8,18 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 
-import { map } from 'min-dash';
-
-import { Overlay, Section } from '..';
-
-import * as css from './OverlayDropdown.css';
-
-const LIST_ITEM_SELECTOR = 'li[role="menuitem"]';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@camunda/design-system';
 
 /**
  * @typedef {{ text: String, onClick: Function, icon?: React.Component }} Item
@@ -29,15 +31,16 @@ const LIST_ITEM_SELECTOR = 'li[role="menuitem"]';
 
 
 /**
- * Dropdown displayed as an overlay.
+ * Button that opens a dropdown menu.
  * @param {Object} props
  * @param {Node} props.buttonRef
  * @param {React.ReactChildren} props.children
  * @param {String} [props.className]
  * @param {Array<Item> | Array<ItemGroup>} props.items
  * @param {Function} [props.onClose]
- * @param {Object} [props.overlayConfig]
- * @param {Boolean} [props.overlayState]
+ * @param {Object} [props.overlayConfig] - `minWidth` and `maxWidth` of the menu
+ * @param {Boolean} [props.overlayState] - when set, the button calls `onClose` instead of opening the menu
+ * @param {Boolean} [props.shouldOpen]
  */
 export function OverlayDropdown(props) {
   const {
@@ -47,146 +50,68 @@ export function OverlayDropdown(props) {
     items,
     onClose,
     shouldOpen,
-    overlayConfig,
+    overlayConfig = {},
     overlayState,
     ...restProps
   } = props;
 
   const [ open, setOpen ] = useState(false);
 
-  React.useEffect(() => {
-    setOpen(shouldOpen);
+  useEffect(() => {
+    setOpen(!!shouldOpen);
   }, [ shouldOpen ]);
 
-  const toggle = () => {
-    if (!overlayState) {
-      setOpen(open => !open);
-    } else {
+  const handleOpenChange = (open) => {
+    if (open && overlayState) {
+      return onClose();
+    }
+
+    setOpen(open);
+
+    if (!open && onClose) {
       onClose();
     }
   };
 
-  const close = () => {
-    setOpen(false);
-    onClose && onClose();
-  };
-
-  const onSelect = item => {
-    item.onClick();
-    close();
-  };
+  const groups = isGrouped(items) ? items : [ { key: 'items', items } ];
 
   return (
-    <React.Fragment>
-      <button
-        { ...restProps }
-        onClick={ toggle }
-        className={ classNames(className, 'btn', { 'btn--active': open }) }
-        ref={ buttonRef }
-        type="button"
+    <DropdownMenu open={ open } onOpenChange={ handleOpenChange }>
+      <DropdownMenuTrigger asChild>
+        <button
+          { ...restProps }
+          className={ classNames(className, 'btn', { 'btn--active': open }) }
+          ref={ buttonRef }
+          type="button"
+        >
+          { children }
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        loop
+        style={ { minWidth: overlayConfig.minWidth, maxWidth: overlayConfig.maxWidth } }
       >
-        { children }
-      </button>
-      { open && (
-        <Overlay
-          { ...overlayConfig }
-          className={ css.OverlayDropdown }
-          onClose={ close }
-          anchor={ buttonRef.current }>
-          {
-            isGrouped(items) ? (
-              map(items, (group) =>
-                <OptionGroup
-                  key={ group.key }
-                  label={ group.label }
-                  items={ group.items }
-                  labelSuffix={ group.labelSuffix }
-                  maxHeight={ group.maxHeight }
-                  onSelect={ onSelect } />
-              )
-            ) : (
-              <Section>
-                <Options items={ items } onSelect={ onSelect } />
-              </Section>
-            )
-          }
-        </Overlay>
-      ) }
-    </React.Fragment>
-  );
-}
-
-function OptionGroup(props) {
-  const {
-    items,
-    label,
-    labelSuffix,
-    maxHeight,
-    onSelect
-  } = props;
-
-  return (
-    <Section maxHeight={ maxHeight }>
-      { label ?
-        (
-          <Section.Header>
-            { label }{ labelSuffix }
-          </Section.Header>
-        ) : null
-      }
-      <Options items={ items } onSelect={ onSelect }></Options>
-    </Section>
-  );
-}
-
-function Options(props) {
-  const { items, onSelect } = props;
-
-  return (
-    <Section.Body>
-      <ul role="menu">
         {
-          items.map((item, index) =>
-            <Option
-              key={ index }
-              icon={ item.icon }
-              text={ item.text }
-              onClick={ () => onSelect(item) } />
-          )
+          groups.map((group, index) => (
+            <DropdownMenuGroup key={ group.key }>
+              { index > 0 && <DropdownMenuSeparator /> }
+              { group.label && <DropdownMenuLabel>{ group.label }{ group.labelSuffix }</DropdownMenuLabel> }
+              <div style={ group.maxHeight ? { maxHeight: group.maxHeight, overflowY: 'auto' } : undefined }>
+                {
+                  group.items.map(({ text, icon: Icon, onClick }, index) => (
+                    <DropdownMenuItem key={ index } title={ text } onSelect={ onClick }>
+                      { Icon && <Icon aria-hidden="true" /> }
+                      { text }
+                    </DropdownMenuItem>
+                  ))
+                }
+              </div>
+            </DropdownMenuGroup>
+          ))
         }
-      </ul>
-    </Section.Body>
-  );
-}
-
-function Option(props) {
-  const {
-    onClick,
-    text,
-    icon: IconComponent
-  } = props;
-
-  const handleKeydown = (event) => {
-    const {
-      key,
-      keyCode,
-      currentTarget
-    } = event;
-
-    if (key === 'ArrowDown' || keyCode == 40) {
-      focusNext(currentTarget);
-    } else if (key === 'ArrowUp' || keyCode == 38) {
-      focusPrevious(currentTarget);
-    }
-  };
-
-  return (
-    <li role="menuitem" onKeyDown={ handleKeydown }>
-      <button type="button" title={ text } onClick={ onClick }>
-        { IconComponent && <IconComponent /> }
-        { text }
-      </button>
-    </li>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -197,64 +122,3 @@ function isGrouped(items) {
   return items.length && items[0].key;
 }
 
-/**
- *
- * @param {Node} focusElement
- */
-function focusNext(focusElement) {
-  const { nextSibling } = focusElement;
-
-  // (1) focus immediate neighbor
-  if (nextSibling) {
-    return nextSibling.querySelector('button').focus();
-  }
-
-  // (2) try to find neighbor in other section
-  const currenSection = focusElement.closest('section');
-  const { nextElementSibling: nextSection } = currenSection;
-
-  if (nextSection) {
-    return nextSection.querySelector(`${LIST_ITEM_SELECTOR} button`).focus();
-  }
-
-  // (3) when on end of sections, try first one
-  const parentContainer = focusElement.closest('[role="dialog"]');
-
-  const lastSection = parentContainer.querySelector('section:last-child');
-  const firstSection = parentContainer.querySelector('section:first-child');
-
-  if (currenSection === lastSection) {
-    return firstSection.querySelector(`${LIST_ITEM_SELECTOR} button`).focus();
-  }
-}
-
-/**
- *
- * @param {Node} focusElement
- */
-function focusPrevious(focusElement) {
-  const { previousSibling } = focusElement;
-
-  // (1) focus immediate neighbor
-  if (previousSibling) {
-    return previousSibling.querySelector('button').focus();
-  }
-
-  // (2) try to find neighbor in other section
-  const currenSection = focusElement.closest('section');
-  const { previousElementSibling: previousSection } = currenSection;
-
-  if (previousSection) {
-    return previousSection.querySelector(`${LIST_ITEM_SELECTOR}:last-child button`).focus();
-  }
-
-  // (3) when on start of sections, try last one
-  const parentContainer = focusElement.closest('[role="dialog"]');
-
-  const lastSection = parentContainer.querySelector('section:last-child');
-  const firstSection = parentContainer.querySelector('section:first-child');
-
-  if (currenSection === firstSection) {
-    return lastSection.querySelector(`${LIST_ITEM_SELECTOR}:last-child button`).focus();
-  }
-}

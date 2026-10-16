@@ -28,16 +28,21 @@ describe('<Select>', function() {
   it('should show error', function() {
 
     // when
-    const { container } = createSelect({
+    const { getByRole, getByText } = createSelect({
+      field: {
+        name: 'foo'
+      },
       fieldMeta: {
-        error: 'foo',
+        error: 'foo error',
         touched: true
       },
     });
 
     // then
-    const invalidFeedback = container.querySelector('.form-group>.custom-control>.invalid-feedback');
-    expect(invalidFeedback).to.exist;
+    const select = getByRole('combobox');
+
+    expect(select.getAttribute('aria-invalid')).to.eql('true');
+    expect(document.getElementById(select.getAttribute('aria-errormessage'))).to.equal(getByText('foo error'));
   });
 
 

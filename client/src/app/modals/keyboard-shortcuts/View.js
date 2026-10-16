@@ -11,6 +11,16 @@
 import React, { PureComponent } from 'react';
 
 import {
+  Button,
+  Heading,
+  InlineCode,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow
+} from '@camunda/design-system';
+
+import {
   Modal
 } from '../../../shared/ui';
 
@@ -36,28 +46,26 @@ class View extends PureComponent {
           {
             (shortcuts || []).map(group => {
               return <section key={ group.id } className="shortcut-group">
-                <h3>{ group.title }</h3>
-                <table>
-                  <tbody className="keyboard-shortcuts">
+                <Heading as="h3" variant="heading-xs">{ group.title }</Heading>
+                <Table size="sm">
+                  <TableBody className="keyboard-shortcuts">
                     {
                       group.shortcuts.map(s => {
-                        return <tr key={ s.id }>
-                          <td>{ s.label }</td>
-                          <td className="binding"><code>{ s.binding }</code></td>
-                        </tr>;
+                        return <TableRow key={ s.id }>
+                          <TableCell>{ s.label }</TableCell>
+                          <TableCell className="binding"><InlineCode>{ s.binding }</InlineCode></TableCell>
+                        </TableRow>;
                       })
                     }
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </section>;
             })
           }
         </Modal.Body>
 
         <Modal.Footer>
-          <div className="buttonDiv">
-            <button className="btn btn-primary" onClick={ onClose }>Close</button>
-          </div>
+          <Button variant="secondary" onClick={ onClose }>Close</Button>
         </Modal.Footer>
       </Modal>
     );

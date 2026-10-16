@@ -3,18 +3,13 @@
   align-items: flex-start;
   gap: 8px;
 
-  /* stick to the top of the scrolling modal body, so the notice stays in
-     view; break out of the body padding to span the full width */
-  position: sticky;
-  top: -16px;
-  z-index: 1;
-  margin: -16px -20px 16px;
-  padding: 12px 20px;
+  /* span the full dialog width, between the title and the scrolling body */
+  margin-inline: -24px;
+  padding: 12px 24px;
 
-  border-bottom: solid 1px var(--color-grey-225-10-85);
-  background-color: var(--color-white);
+  border-block: 1px solid var(--border);
 
-  font-size: 14px;
+  font-size: var(--text-sm);
   line-height: 20px;
 
   .icon {
@@ -23,22 +18,6 @@
     flex-shrink: 0;
     height: 20px;
     align-items: center;
-  }
-
-  &.info .icon {
-    color: var(--color-blue-205-100-45);
-  }
-
-  &.success .icon {
-    color: var(--color-status-bar-success);
-  }
-
-  &.warning .icon {
-    color: var(--color-yellow-47-88-53);
-  }
-
-  &.error .icon {
-    color: var(--color-red-360-100-45);
   }
 
   .content {

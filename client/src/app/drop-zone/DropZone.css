@@ -5,32 +5,25 @@
 
 :local(.DropOverlay) {
   position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  inset: 0;
 
-  padding: 120px 50px;
+  padding: 64px 48px;
 
-  background: var(--color-white-opacity-80);
+  background: color-mix(in srgb, var(--background) 80%, transparent);
 
   pointer-events: none;
 
   z-index: 1000;
 
   .box {
-    text-align: center;
-    border: dashed 4px var(--color-grey-225-10-75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 100%;
-    vertical-align: middle;
-
-    > div {
-      font-size: 26px;
-      color: var(--color-grey-225-10-55);
-      margin: auto;
-
-      top: 20%;
-      position: relative;
-    }
+    border: 2px dashed var(--accent-border-strong);
+    border-radius: calc(var(--radius) + 8px);
+    background-color: var(--accent-background-subtle);
+    font-size: var(--text-xl);
+    color: var(--accent-foreground-strong);
   }
 }

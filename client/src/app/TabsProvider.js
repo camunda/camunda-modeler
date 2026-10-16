@@ -18,7 +18,7 @@ import {
 
 import replaceIds from '@bpmn-io/replace-ids';
 
-import { Bot } from '@carbon/icons-react';
+import { Bot } from '@camunda/design-system/icons';
 
 import { Linter as BpmnLinter } from '@camunda/linting';
 import { FormLinter } from '@camunda/form-linting/lib/FormLinter';

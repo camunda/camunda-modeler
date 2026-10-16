@@ -2,21 +2,20 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   padding-right: 8px;
 
   .btn--tab-action {
-    min-width: unset;
     align-self: center;
-    border: none;
+    color: var(--tab-action-icon-color);
 
-    &:focus {
-      box-shadow: none;
+    &:hover {
+      background-color: var(--tab-action-hover-background-color);
     }
 
-    &:focus-visible {
-      outline: 2px solid var(--focus-outline-color);
-      outline-offset: -2px;
+    &[aria-pressed="true"] {
+      background-color: var(--tab-action-active-background-color);
+      color: var(--tab-action-active-icon-color);
     }
   }
 }

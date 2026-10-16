@@ -60,11 +60,9 @@ export default function StatusButton(props) {
         onClose={ onClose }
         anchor={ buttonRef.current }
       >
-        <div style={ { padding: '12px' } }>
-          <ConfigurationDialog
-            editor={ editor }
-          />
-        </div>
+        <ConfigurationDialog
+          editor={ editor }
+        />
       </Overlay>
     }
   </>;

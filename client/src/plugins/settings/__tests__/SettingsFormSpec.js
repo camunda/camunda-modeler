@@ -16,8 +16,10 @@ import React from 'react';
 import {
   render,
   fireEvent,
+  screen,
   waitFor
 } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 import { Formik } from 'formik';
 import { SettingsForm, validateProperties } from '../SettingsForm';
@@ -52,7 +54,7 @@ describe('SettingsForm', function() {
       const { container } = createSettingsForm({ schema });
 
       // then
-      const field = container.querySelector('.form-group input[type="text"]');
+      const field = container.querySelector('input[type="text"]');
       expect(field).to.exist;
     });
 
@@ -73,7 +75,7 @@ describe('SettingsForm', function() {
       const { container } = createSettingsForm({ schema });
 
       // then
-      const field = container.querySelector('.form-group input[type="password"]');
+      const field = container.querySelector('input[type="password"]');
       expect(field).to.exist;
     });
 
@@ -91,11 +93,10 @@ describe('SettingsForm', function() {
       } ];
 
       // when
-      const { container } = createSettingsForm({ schema });
+      const { getByRole } = createSettingsForm({ schema });
 
       // then
-      const field = container.querySelector('.form-group input[type="checkbox"]');
-      expect(field).to.exist;
+      expect(getByRole('checkbox', { name: 'Checkbox' })).to.exist;
     });
 
 
@@ -116,11 +117,10 @@ describe('SettingsForm', function() {
       } ];
 
       // when
-      const { container } = createSettingsForm({ schema });
+      const { getByRole } = createSettingsForm({ schema });
 
       // then
-      const field = container.querySelector('.form-group select');
-      expect(field).to.exist;
+      expect(getByRole('combobox', { name: 'Select' })).to.exist;
     });
 
 
@@ -141,11 +141,10 @@ describe('SettingsForm', function() {
       } ];
 
       // when
-      const { container } = createSettingsForm({ schema });
+      const { getByRole } = createSettingsForm({ schema });
 
       // then
-      const field = container.querySelector('.form-group input[type="radio"]');
-      expect(field).to.exist;
+      expect(getByRole('radiogroup', { name: 'Radio' })).to.exist;
     });
   });
 
@@ -184,7 +183,7 @@ describe('SettingsForm', function() {
       } ];
 
       // when
-      const { getByLabelText } = createSettingsForm({
+      const { getByLabelText, getByRole } = createSettingsForm({
         schema,
         initialValues: {
           'test': {
@@ -199,9 +198,9 @@ describe('SettingsForm', function() {
       // then
       await waitFor(() => {
         expect(getByLabelText('Text Input').value).to.equal('Hello World');
-        expect(getByLabelText('Checkbox').checked).to.be.true;
-        expect(getByLabelText('Select').value).to.equal('two');
-        expect(getByLabelText('Two').checked).to.be.true;
+        expect(getByRole('checkbox', { name: 'Checkbox' }).getAttribute('aria-checked')).to.equal('true');
+        expect(getByRole('combobox', { name: 'Select' }).textContent).to.equal('Two');
+        expect(getByRole('radio', { name: 'Two' }).getAttribute('aria-checked')).to.equal('true');
       });
     });
   });
@@ -531,14 +530,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let textField = container.querySelector('.form-group [id="test.text"]');
+      let textField = container.querySelector('[id="test.text"]');
       expect(textField).to.not.exist;
 
       // when
-      fireEvent.click(container.querySelector('.form-group [id="test.checkbox"]'));
+      fireEvent.click(container.querySelector('[id="test.checkbox"]'));
 
       // then
-      textField = container.querySelector('.form-group [id="test.text"]');
+      textField = container.querySelector('[id="test.text"]');
       expect(textField).to.exist;
     });
 
@@ -579,14 +578,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let textField = container.querySelector('.form-group [id="test.text"]');
+      let textField = container.querySelector('[id="test.text"]');
       expect(textField).to.not.exist;
 
       // when
-      fireEvent.click(container.querySelector('.form-group [id="otherSection.checkbox"]'));
+      fireEvent.click(container.querySelector('[id="otherSection.checkbox"]'));
 
       // then
-      textField = container.querySelector('.form-group [id="test.text"]');
+      textField = container.querySelector('[id="test.text"]');
       expect(textField).to.exist;
     });
 
@@ -618,19 +617,19 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let conditionalText = container.querySelector('.form-group [id="test.conditionalText"]');
+      let conditionalText = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalText).to.not.exist;
 
       // when
-      fireEvent.change(container.querySelector('.form-group [id="test.text"]'), { target: { value: 'show' } });
+      fireEvent.change(container.querySelector('[id="test.text"]'), { target: { value: 'show' } });
 
       // then
-      conditionalText = container.querySelector('.form-group [id="test.conditionalText"]');
+      conditionalText = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalText).to.exist;
     });
 
 
-    it('should show field if condition "oneOf" is met', function() {
+    it('should show field if condition "oneOf" is met', async function() {
 
       // given
       const schema = [ {
@@ -665,14 +664,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
+      let conditionalTextField = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalTextField).to.not.exist;
 
       // when
-      fireEvent.change(container.querySelector('.form-group [id="test.select"]'), { target: { value: 'staging' } });
+      await selectOption(container.querySelector('[id="test.select"]'), 'Staging');
 
       // then
-      conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
+      conditionalTextField = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalTextField).to.exist;
     });
 
@@ -719,14 +718,14 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      let conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
+      let conditionalTextField = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalTextField).to.not.exist;
 
       // when
-      fireEvent.click(container.querySelector('.form-group [id="test.checkbox"]'));
+      fireEvent.click(container.querySelector('[id="test.checkbox"]'));
 
       // then
-      conditionalTextField = container.querySelector('.form-group [id="test.conditionalText"]');
+      conditionalTextField = container.querySelector('[id="test.conditionalText"]');
       expect(conditionalTextField).to.exist;
     });
 
@@ -772,7 +771,7 @@ describe('SettingsForm', function() {
       });
 
       // assume
-      expect(getByLabelText('Checkbox').checked).to.be.true;
+      expect(getByLabelText('Checkbox').getAttribute('aria-checked')).to.equal('true');
       expect(queryByLabelText('Conditional Text Input')).to.exist;
 
       // when
@@ -808,12 +807,12 @@ describe('SettingsForm', function() {
 
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
-        const field = container.querySelector('.form-group input[id="test.requiredText"]');
+        const field = container.querySelector('input[id="test.requiredText"]');
         fireEvent.change(field, { target: { value: '' } });
         fireEvent.blur(field);
 
         await waitFor(() => {
-          const errorMessage = container.querySelector('.invalid-feedback');
+          const errorMessage = getErrorMessage(container);
           expect(errorMessage).to.exist;
           expect(errorMessage.textContent).to.equal('Required Text must not be empty');
         });
@@ -848,7 +847,7 @@ describe('SettingsForm', function() {
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
         // when
-        const field = container.querySelector('.form-group input[id="test.requiredText"]');
+        const field = container.querySelector('input[id="test.requiredText"]');
         fireEvent.change(field, { target: { value: '' } });
         fireEvent.blur(field);
 
@@ -879,7 +878,7 @@ describe('SettingsForm', function() {
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
         // when
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
         fireEvent.change(field, { target: { value: 'invalid-email' } });
         fireEvent.blur(field);
 
@@ -911,7 +910,7 @@ describe('SettingsForm', function() {
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
         // when
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
         fireEvent.change(field, { target: { value: 'invalid-email' } });
         fireEvent.blur(field);
 
@@ -969,12 +968,12 @@ describe('SettingsForm', function() {
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
         // assert validation triggered
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
         fireEvent.change(field, { target: { value: 'invalid' } });
         fireEvent.blur(field);
 
         await waitFor(() => {
-          const errorMessage = container.querySelector('.invalid-feedback');
+          const errorMessage = getErrorMessage(container);
           expect(errorMessage).to.exist;
         });
 
@@ -1007,7 +1006,7 @@ describe('SettingsForm', function() {
 
         const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
 
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
 
         // when
         fireEvent.change(field, { target: { value: 'test@example.com' } });
@@ -1039,7 +1038,7 @@ describe('SettingsForm', function() {
 
         const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
 
-        const field = container.querySelector('.form-group input[id="test.emailField"]');
+        const field = container.querySelector('input[id="test.emailField"]');
 
         // when
         fireEvent.change(field, { target: { value: 'invalid-email' } });
@@ -1078,7 +1077,7 @@ describe('SettingsForm', function() {
 
         const { container } = createSettingsForm({ schema, initialValues: { test: {} } });
 
-        const field = container.querySelector('.form-group input[id="test.urlField"]');
+        const field = container.querySelector('input[id="test.urlField"]');
 
         // when
         fireEvent.change(field, { target: { value: '' } });
@@ -1145,7 +1144,7 @@ describe('SettingsForm', function() {
       const { container } = createSettingsForm({ schema });
 
       // when
-      const field = container.querySelector('.form-group input[id="test.normalText"]');
+      const field = container.querySelector('input[id="test.normalText"]');
       fireEvent.change(field, { target: { value: '' } });
       fireEvent.blur(field);
 
@@ -1369,16 +1368,27 @@ function createSettingsForm({ schema, initialValues, onChange = () => {} } = {})
 
 async function expectNoError(container) {
   await waitFor(() => {
-    const errorMessage = container.querySelector('.invalid-feedback');
+    const errorMessage = getErrorMessage(container);
     expect(errorMessage).to.not.exist;
   });
 }
 
 async function expectError(container, message) {
   await waitFor(() => {
-    const errorMessage = container.querySelector('.invalid-feedback');
+    const errorMessage = getErrorMessage(container);
     expect(errorMessage).to.exist;
 
     message && expect(errorMessage.textContent).to.equal(message);
   });
+}
+
+function getErrorMessage(container) {
+  const field = container.querySelector('[aria-invalid="true"]');
+
+  return field && document.getElementById(field.getAttribute('aria-errormessage'));
+}
+
+async function selectOption(trigger, label) {
+  await userEvent.click(trigger);
+  await userEvent.click(screen.getByRole('option', { name: label }));
 }

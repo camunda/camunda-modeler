@@ -39,6 +39,16 @@ const { spy } = sinon;
 
 describe('<AppParent>', function() {
 
+  it('should render within the design system provider', function() {
+
+    // when
+    const { container } = createAppParent();
+
+    // then
+    expect(container.querySelector('[data-c4-scope]')).to.exist;
+  });
+
+
   describe('keyboard bindings', function() {
 
     function setup() {
@@ -1232,6 +1242,45 @@ describe('<AppParent>', function() {
       const app = instance.getApp();
 
       expect(app.state.logEntries).to.have.length(0);
+    });
+
+
+    it('should log plugin errors', function(done) {
+
+      // given
+      const backend = new Backend({
+        sendReady: async () => backend.receive('client:started')
+      });
+
+      const plugins = new Plugins({
+        getErrors: () => [ 'Plug-in <foo> uses `vendor.carbonReact`.' ]
+      });
+
+      // when
+      const { instance } = createAppParent({
+        globals: {
+          backend,
+          plugins
+        },
+        onStarted: async () => {
+          try {
+            const app = instance.getApp();
+
+            // then
+            await waitFor(() => {
+              expect(app.state.logEntries).to.eql([
+                { category: 'error', message: 'Plug-in <foo> uses `vendor.carbonReact`.' }
+              ]);
+
+              expect(app.state.layout.panel).to.include({ open: true, tab: 'log' });
+            });
+
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      });
     });
 
   });

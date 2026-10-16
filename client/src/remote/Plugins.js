@@ -32,9 +32,6 @@ import { Fill } from '../app/slot-fill';
 
 import React, * as ReactExports from 'react';
 
-import * as CarbonReactExports from '@carbon/react';
-import * as CarbonIconsReactExports from '@carbon/icons-react';
-
 import * as PropertiesPanel from '@bpmn-io/properties-panel';
 import * as Preact from '@bpmn-io/properties-panel/preact';
 import PreactCompat, * as PreactCompatExports from '@bpmn-io/properties-panel/preact/compat';
@@ -50,6 +47,7 @@ export default class Plugins {
 
   constructor(appPlugins) {
     this.appPlugins = appPlugins;
+    this.errors = [];
   }
 
   /**
@@ -126,9 +124,34 @@ export default class Plugins {
       dmn: DmnJsPropertiesPanel
     };
 
-    // Carbon React exports for the client plugins
-    vendor.carbonReact = CarbonReactExports;
-    vendor.carbonIconsReact = CarbonIconsReactExports;
+    // plugin helpers report a missing export as an outdated Modeler, so name the real cause
+    [ 'carbonReact', 'carbonIconsReact' ].forEach(name => {
+      Object.defineProperty(vendor, name, {
+        get: () => {
+          const plugin = document.currentScript?.dataset.name || 'unknown';
+
+          const message =
+            `Plug-in <${ plugin }> uses \`vendor.${ name }\`. ` +
+            'Carbon is no longer available to plug-ins, use `camunda-modeler-plugin-helpers/components` ' +
+            'or the Camunda Design System (https://github.com/camunda/design-system) instead.';
+
+          console.error(`[plugins] ${ message }`);
+
+          this.errors.push(message);
+
+          return undefined;
+        }
+      });
+    });
+  }
+
+  /**
+   * Get errors reported while plug-ins were loaded.
+   *
+   * @returns {string[]}
+   */
+  getErrors() {
+    return this.errors;
   }
 
   /**

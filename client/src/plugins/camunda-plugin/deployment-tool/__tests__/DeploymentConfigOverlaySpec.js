@@ -98,7 +98,7 @@ describe('<DeploymentConfigOverlay>', function() {
       // then
       await waitFor(() => {
         const overlay = getByRole('dialog');
-        expect(overlay.querySelectorAll('.invalid-feedback')).to.have.length(2);
+        expect(overlay.querySelectorAll('[aria-invalid="true"]')).to.have.length(2);
       });
     });
 
@@ -148,7 +148,7 @@ describe('<DeploymentConfigOverlay>', function() {
       // then
       await waitFor(() => {
         const overlay = getByRole('dialog');
-        expect(overlay.querySelectorAll('.invalid-feedback')).to.have.length(1);
+        expect(overlay.querySelectorAll('[aria-invalid="true"]')).to.have.length(1);
       });
     });
 
@@ -191,7 +191,7 @@ describe('<DeploymentConfigOverlay>', function() {
       // then
       await waitFor(() => {
         const overlay = getByRole('dialog');
-        expect(overlay.querySelectorAll('.invalid-feedback')).to.have.length(0);
+        expect(overlay.querySelectorAll('[aria-invalid="true"]')).to.have.length(0);
       });
     });
 

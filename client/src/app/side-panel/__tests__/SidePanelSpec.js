@@ -97,6 +97,37 @@ describe('<SidePanel>', function() {
   });
 
 
+  it('should label tab panels by their tabs, keeping inactive ones mounted', function() {
+
+    // when
+    const { getByRole, getByText } = createSidePanel({
+      tabs: [
+        { id: 'foo', label: 'Foo', children: <div>Foo content</div> },
+        { id: 'bar', label: 'Bar', children: <div>Bar content</div> }
+      ]
+    });
+
+    // then
+    expect(getByRole('tabpanel', { name: 'Foo' }).textContent).to.equal('Foo content');
+    expect(getByText('Bar content')).to.exist;
+  });
+
+
+  it('should not make tab panels a tab stop', function() {
+
+    // when
+    const { getByRole } = createSidePanel({
+      tabs: [
+        { id: 'foo', label: 'Foo', children: <div>Foo content</div> },
+        { id: 'bar', label: 'Bar', children: <div>Bar content</div> }
+      ]
+    });
+
+    // then
+    expect(getByRole('tabpanel', { name: 'Foo' }).tabIndex).to.equal(-1);
+  });
+
+
   it('should set first tab active by default', function() {
 
     // when
@@ -111,7 +142,7 @@ describe('<SidePanel>', function() {
     const activeTab = container.querySelector('.side-panel__tab--active');
 
     expect(activeTab).to.exist;
-    expect(activeTab.title).to.equal('Foo');
+    expect(activeTab.textContent).to.equal('Foo');
   });
 
 
@@ -132,7 +163,7 @@ describe('<SidePanel>', function() {
     const activeTab = container.querySelector('.side-panel__tab--active');
 
     expect(activeTab).to.exist;
-    expect(activeTab.title).to.equal('Bar');
+    expect(activeTab.textContent).to.equal('Bar');
   });
 
 
@@ -155,7 +186,7 @@ describe('<SidePanel>', function() {
     const tabs = container.querySelectorAll('.side-panel__tab');
 
     // when
-    fireEvent.click(tabs[1]);
+    fireEvent.mouseDown(tabs[1]);
 
     // then
     expect(onLayoutChanged).to.have.been.calledOnce;

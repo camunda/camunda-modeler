@@ -54,12 +54,12 @@ describe('<TabContextAction>', function() {
     createTabAction();
 
     // when
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.pointerDown(screen.getByRole('button'));
 
     // then
-    expect(screen.getByRole('button', { name: DEFAULT_TABS[0].name })).to.exist;
-    expect(screen.getByRole('button', { name: DEFAULT_TABS[1].name })).to.exist;
-    expect(screen.getByRole('button', { name: DEFAULT_TABS[2].name })).to.exist;
+    expect(screen.getByRole('menuitem', { name: DEFAULT_TABS[0].name })).to.exist;
+    expect(screen.getByRole('menuitem', { name: DEFAULT_TABS[1].name })).to.exist;
+    expect(screen.getByRole('menuitem', { name: DEFAULT_TABS[2].name })).to.exist;
   });
 
 
@@ -69,10 +69,10 @@ describe('<TabContextAction>', function() {
     createTabAction();
 
     // when
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.pointerDown(screen.getByRole('button'));
 
     // then
-    const menu = screen.getByRole('dialog');
+    const menu = screen.getByRole('menu');
     const items = within(menu).getAllByRole('menuitem');
 
     expect(items.map(i => i.textContent)).to.eql([
@@ -105,14 +105,14 @@ describe('<TabContextAction>', function() {
       ]
     });
 
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.pointerDown(screen.getByRole('button'));
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'bar' })).to.exist;
+      expect(screen.getByRole('menuitem', { name: 'bar' })).to.exist;
     });
 
-    const menu = screen.getByRole('dialog');
-    const items = within(menu).getAllByRole('button');
+    const menu = screen.getByRole('menu');
+    const items = within(menu).getAllByRole('menuitem');
 
     // then
     expect(items.map(i => i.textContent)).to.eql([
@@ -136,7 +136,7 @@ describe('<TabContextAction>', function() {
       createTabAction();
 
       // when
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.pointerDown(screen.getByRole('button'));
 
       // then - first 4 items are actions
       expect(screen.getByRole('menuitem', { name: 'Save all files' })).to.exist;
@@ -161,7 +161,7 @@ describe('<TabContextAction>', function() {
       });
 
       // when
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.pointerDown(screen.getByRole('button'));
 
       // then
       expect(screen.getByRole('menuitem', { name: 'Save all files' })).to.exist;
@@ -189,10 +189,10 @@ describe('<TabContextAction>', function() {
 
         createTabAction({ triggerAction: actionSpy });
 
-        fireEvent.click(screen.getByRole('button'));
+        fireEvent.pointerDown(screen.getByRole('button'));
 
         // when
-        fireEvent.click(screen.getByRole('button', { name: label }));
+        fireEvent.click(screen.getByRole('menuitem', { name: label }));
 
         // then
         expect(actionSpy).to.have.been.calledWith(action);
@@ -207,10 +207,10 @@ describe('<TabContextAction>', function() {
 
       createTabAction({ onSelect: selectSpy });
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.pointerDown(screen.getByRole('button'));
 
       // when
-      fireEvent.click(screen.getByRole('button', { name: DEFAULT_TABS[0].name }));
+      fireEvent.click(screen.getByRole('menuitem', { name: DEFAULT_TABS[0].name }));
 
       // then
       expect(selectSpy).to.have.been.calledWith(DEFAULT_TABS[0]);

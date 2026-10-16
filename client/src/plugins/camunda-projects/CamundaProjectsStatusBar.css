@@ -1,21 +1,10 @@
+/* the project's tab group color, so the button and its tabs read as one */
 :local(.CamundaProjectsButton) {
-  &.has-camunda-project {
-    background: hsl(205, 100%, 45%) !important;
-  
-    svg {
-      fill: white;
-    }
-
-    &:hover {
-      background: hsl(205, 100%, 40%) !important;
-  
-      svg {
-        fill: white;
-      }
-    }
-  }
+  --status-bar-primary-background-color: var(--camunda-project-color);
+  --status-bar-primary-hover-background-color: color-mix(in oklab, var(--camunda-project-color) 88%, var(--foreground));
+  --status-bar-primary-active-background-color: color-mix(in oklab, var(--camunda-project-color) 80%, var(--foreground));
 }
-  
+
 :local(.CamundaProjectsOverlay) {
   .section__header {
     white-space: nowrap;
@@ -38,6 +27,7 @@
   }
 
   ul.files {
+    list-style: none;
     border: none;
     margin: 0 -12px 5px 0;
     padding: 0 12px 0 0;
@@ -63,7 +53,7 @@
       &.file-active button {
         cursor: default;
         text-decoration: none;
-        color: var(--color-blue-205-100-50);
+        color: var(--link-color);
         cursor: default;
 
         span.file-name {
@@ -74,7 +64,7 @@
       &.file-error button {
         cursor: default;
         text-decoration: none;
-        color: var(--color-red-360-100-45);
+        color: var(--danger-foreground-subtle);
         cursor: default;
 
         span.file-name {

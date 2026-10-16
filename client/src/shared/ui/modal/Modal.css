@@ -1,0 +1,8 @@
+:local(.Modal) {
+
+  [data-slot="dialog-body"] {
+    /* reach the dialog edges, so the scrollbar sits at the side of the modal */
+    margin-inline: -24px;
+    padding-inline: 24px;
+  }
+}

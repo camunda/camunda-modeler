@@ -10,11 +10,15 @@
 
 import React, { useRef } from 'react';
 
-import classNames from 'classnames';
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@camunda/design-system';
 
-import { OverflowMenu, OverflowMenuItem } from '@carbon/react';
-
-import * as css from './OptionsMenu.css';
+import { EllipsisVertical } from '@camunda/design-system/icons';
 
 /**
  * @typedef { {
@@ -38,39 +42,47 @@ import * as css from './OptionsMenu.css';
  */
 export default function OptionsMenu({ label, items, className }) {
   const trigger = useRef(null);
-  const selected = useRef(null);
+  const selected = useRef(false);
 
-  const onClose = () => {
-    const item = selected.current;
-
-    selected.current = null;
-
-    if (item) {
-      trigger.current?.focus();
-      item.onSelect();
-    }
+  const select = (item) => {
+    selected.current = true;
+    trigger.current?.focus();
+    item.onSelect();
   };
 
-  // render the menu next to the button, e.g. inside of a modal
-  return <span className={ classNames(css.OptionsMenu, className) } data-floating-menu-container>
-    <OverflowMenu
-      ref={ trigger }
-      size="sm"
-      flipped
-      align="left"
-      iconDescription={ label }
-      aria-label={ label }
-      onClose={ onClose }
-    >
-      { items.map(item => <OverflowMenuItem
-        key={ item.label }
+  // keep the focus where the selected item moved it, e.g. into a modal
+  const onCloseAutoFocus = (event) => {
+    if (selected.current) {
+      event.preventDefault();
+    }
+
+    selected.current = false;
+  };
+
+  // not modal: an item may open a modal while the menu closes
+  return <DropdownMenu modal={ false }>
+    <DropdownMenuTrigger asChild>
+      <Button
+        ref={ trigger }
 
         // do not submit an enclosing form
         type="button"
-        itemText={ item.label }
-        isDelete={ item.danger }
-        onClick={ () => selected.current = item }
-      />) }
-    </OverflowMenu>
-  </span>;
+        variant="ghost"
+        size="icon-sm"
+        className={ className }
+        aria-label={ label }
+      >
+        <EllipsisVertical aria-hidden="true" />
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end" onCloseAutoFocus={ onCloseAutoFocus }>
+      { items.map(item => <DropdownMenuItem
+        key={ item.label }
+        variant={ item.danger ? 'destructive' : 'default' }
+        onSelect={ () => select(item) }
+      >
+        { item.label }
+      </DropdownMenuItem>) }
+    </DropdownMenuContent>
+  </DropdownMenu>;
 }

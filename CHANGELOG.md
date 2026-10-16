@@ -8,7 +8,40 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: support custom element template sources ([#5100](https://github.com/camunda/camunda-modeler/issues/5100), [#6181](https://github.com/camunda/camunda-modeler/pull/6181))
 * `FEAT`: manage Camunda 8 connections as a list, edit and check them in a dialog ([#6256](https://github.com/camunda/camunda-modeler/pull/6256))
+* `FEAT`: migrate the UI to the Camunda design system; CSS classes and variables of the previous UI were removed during the rework, plug-in markup that relied on them may render unstyled ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
+* `FEAT`: render the plug-in components (`Modal`, `Overlay`, `Section`, `TextInput`, `ToggleSwitch`) with the design system; their API is unchanged ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
+* `FEAT`: remove Carbon for plug-ins: `vendor.carbonReact`, `vendor.carbonIconsReact` and the global Carbon styles are no longer available, plug-ins that import them fail to load; use `camunda-modeler-plugin-helpers/components` or the [Camunda Design System](https://github.com/camunda/design-system) instead ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
+* `FIX`: cancel an active drag when a listener fails ([bpmn-io/diagram-js#961](https://github.com/bpmn-io/diagram-js/issues/961))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
+* `DEPS`: add `@bpmn-io/c4-theme@0.3.0`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.56.1`
+* `DEPS`: update to `@bpmn-io/variable-outline@4.0.0`
+* `DEPS`: update to `@camunda/design-system@0.72.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.12.0`
+* `DEPS`: update to `@camunda/rpa-integration@2.0.0`
+* `DEPS`: update to `@camunda/task-testing@7.0.0`
+* `DEPS`: update to `bpmn-js@18.30.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.37.0`
+* `DEPS`: update to `camunda-bpmn-js@5.36.0`
+* `DEPS`: update to `camunda-dmn-js@3.9.0`
+* `DEPS`: update to `diagram-js@15.28.1`
+* `DEPS`: update to `diagram-js-minimap@5.5.0`
+* `DEPS`: update to `dmn-js@17.12.3`
+
+### BPMN
+
+* `FEAT`: reorganize the task testing panel around a run card, with extra tabs as collapsible sections inside it ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
+* `FIX`: wait for the element instance before reporting a terminated task test ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
+* `FIX`: mark checkbox entries with errors in the properties panel ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
+* `FIX`: show the most severe element template lint error, not the first one ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
+* `FIX`: show linting errors over local validation errors in element template entries, like in all other entries ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
+* `FIX`: convert empty optional FEEL number fields to FEEL on `=` key press ([bpmn-io/properties-panel#559](https://github.com/bpmn-io/properties-panel/pull/559))
+
+### DMN
+
+* `FIX`: persist the BKM result type on the function body, not on the variable ([bpmn-io/dmn-js#1027](https://github.com/bpmn-io/dmn-js/issues/1027))
+* `FIX`: update DRD requirement and association references on reconnect ([bpmn-io/dmn-js#1032](https://github.com/bpmn-io/dmn-js/issues/1032))
+* `FIX`: edit the boxed expression name like the other view names ([bpmn-io/dmn-js#1028](https://github.com/bpmn-io/dmn-js/pull/1028))
 
 ## 5.52.0
 

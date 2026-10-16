@@ -24,6 +24,8 @@ import {
   mapStackTrace
 } from 'sourcemapped-stacktrace';
 
+import { C4Provider } from '@camunda/design-system';
+
 import App from './App';
 
 import Flags, { DISABLE_PLUGINS, RELAUNCH } from '../util/Flags';
@@ -306,6 +308,10 @@ export default class AppParent extends PureComponent {
 
     await this.getApp().openFiles(files, activeFile);
 
+    // plug-ins load before the app mounts; log their errors only now, as an
+    // earlier entry is hidden when the restored workspace layout closes the log
+    this.getPlugins().getErrors().forEach(message => this.logToClient(getClientEntry('error', message)));
+
     if (typeof onStarted === 'function') {
       onStarted();
     }
@@ -414,17 +420,19 @@ export default class AppParent extends PureComponent {
     } = this.props;
 
     return (
-      <App
-        ref={ this.appRef }
-        tabsProvider={ tabsProvider }
-        globals={ globals }
-        onMenuUpdate={ this.handleMenuUpdate }
-        onContextMenu={ this.handleContextMenu }
-        onWorkspaceChanged={ this.handleWorkspaceChanged }
-        onReady={ this.handleReady }
-        onError={ this.handleError }
-        onWarning={ this.handleWarning }
-      />
+      <C4Provider>
+        <App
+          ref={ this.appRef }
+          tabsProvider={ tabsProvider }
+          globals={ globals }
+          onMenuUpdate={ this.handleMenuUpdate }
+          onContextMenu={ this.handleContextMenu }
+          onWorkspaceChanged={ this.handleWorkspaceChanged }
+          onReady={ this.handleReady }
+          onError={ this.handleError }
+          onWarning={ this.handleWarning }
+        />
+      </C4Provider>
     );
   }
 

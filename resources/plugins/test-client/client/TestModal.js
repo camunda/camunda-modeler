@@ -10,17 +10,17 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
-
-import './Icon.css';
+import Modal from 'camunda-modeler-plugin-helpers/components/Modal';
 
 
-export default function Icon(props) {
+export default function TestModal({ onClose }) {
 
-  const {
-    className,
-    name
-  } = props;
-
-  return <span className={ classnames(`app-icon-${name}`, className) }></span>;
+  return (
+    <Modal onClose={ onClose }>
+      <Modal.Title>Test plug-in modal</Modal.Title>
+      <Modal.Body>
+        <p style={ { color: 'var(--neutral-foreground-subtle)' } }>Contributed by the test-client plug-in.</p>
+      </Modal.Body>
+    </Modal>
+  );
 }

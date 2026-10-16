@@ -1,26 +1,6 @@
-@import '~@camunda/form-playground/dist/assets/form-js.css';
-@import '~@camunda/form-playground/dist/assets/form-js-editor-base.css';
-@import '~@camunda/form-playground/dist/assets/draggle.css';
-@import '~@camunda/form-playground/dist/assets/camunda-form-playground.css';
-@import '~camunda-bpmn-js/dist/assets/diagram-js.css';
-@import '~camunda-bpmn-js/dist/assets/bpmn-js.css';
-@import '~camunda-bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
-@import '~camunda-bpmn-js/dist/assets/diagram-js-minimap.css';
-@import '~camunda-bpmn-js/dist/assets/properties-panel.css';
-@import '~camunda-bpmn-js/dist/assets/element-templates.css';
-@import '~camunda-bpmn-js/dist/assets/element-template-chooser.css';
-@import '~camunda-bpmn-js/dist/assets/color-picker.css';
-@import '~camunda-bpmn-js/dist/assets/popup-menu.css';
-@import '~camunda-dmn-js/dist/assets/dmn-font/css/dmn-embedded.css';
-@import '~camunda-dmn-js/dist/assets/dmn-js-decision-table-controls.css';
-@import '~camunda-dmn-js/dist/assets/dmn-js-decision-table.css';
-@import '~camunda-dmn-js/dist/assets/dmn-js-drd.css';
-@import '~camunda-dmn-js/dist/assets/dmn-js-literal-expression.css';
-@import '~camunda-dmn-js/dist/assets/dmn-js-boxed-expression-controls.css';
-@import '~camunda-dmn-js/dist/assets/dmn-js-boxed-expression.css';
-@import '~camunda-dmn-js/dist/assets/dmn-js-shared.css';
-@import '~@camunda/linting/assets/linting.css';
-@import '~@camunda/linting-autofix/assets/linting-autofix.css';
+:root {
+  --canvas-grid-dot-color: var(--neutral-border-strong);
+}
 
 /* render popup menu on top of all elements */
 .djs-popup-backdrop {
@@ -33,4 +13,62 @@
 
 .djs-search-highlight {
   font-weight: bold;
+}
+
+/* diagram-js-grid sets its dot fill inline, improved-canvas with `!important` */
+.djs-container pattern[id^="djs-grid-pattern"] circle {
+  fill: var(--canvas-grid-dot-color) !important;
+}
+
+/* white like the canvas it floats on */
+.djs-minimap {
+  --minimap-background-color: color-mix(in srgb, var(--neutral-background-subtle) 90%, transparent);
+  --minimap-overlay-background-color: color-mix(in srgb, var(--neutral-background-subtle) 20%, transparent);
+}
+
+/* the minimap renders its own toggle, so its icons (lucide `Map` and `X`) come in as masks */
+.djs-minimap .toggle {
+  cursor: pointer;
+}
+
+.djs-minimap .toggle:before {
+  content: '';
+  display: block;
+  background-color: var(--neutral-foreground-subtle);
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+
+.djs-minimap .toggle:hover:before {
+  background-color: var(--foreground);
+}
+
+.djs-minimap:not(.open) .toggle {
+  padding: 8px;
+}
+
+.djs-minimap:not(.open) .toggle:before {
+  width: 20px;
+  height: 20px;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z'/%3E%3Cpath d='M15 5.764v15'/%3E%3Cpath d='M9 3.236v15'/%3E%3C/svg%3E");
+}
+
+.djs-minimap.open .toggle {
+  padding: 8px;
+}
+
+.djs-minimap.open .toggle:before {
+  width: 16px;
+  height: 16px;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
+}
+
+/* TODO: remove once @camunda/form-playground uses the @bpmn-io/theme tokens; until then its
+   own grey palette overrides the properties panel colors the theme sets in BPMN */
+.cfp-root {
+  --properties-background-color: var(--app-panel-background-color);
+  --properties-group-background-color: var(--neutral-background-subtle);
+  --properties-input-background-color: var(--input-background);
+  --properties-arrow-hover-background-color: var(--neutral-background-strong);
 }

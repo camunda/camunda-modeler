@@ -35,10 +35,10 @@ describe('<ToggleSwitch>', function() {
         }
     });
 
-    const input = screen.getByRole('checkbox');
+    const input = screen.getByRole('switch');
 
     // then
-    expect(input.checked).to.be.true;
+    expect(input.getAttribute('aria-checked')).to.eql('true');
   });
 
 
@@ -54,10 +54,10 @@ describe('<ToggleSwitch>', function() {
         }
     });
 
-    const input = screen.getByRole('checkbox');
+    const input = screen.getByRole('switch');
 
     // then
-    expect(input.checked).to.be.false;
+    expect(input.getAttribute('aria-checked')).to.eql('false');
   });
 
 
@@ -68,7 +68,7 @@ describe('<ToggleSwitch>', function() {
     const { container } = render(<ToggleSwitch field={ DEFAULT_FIELD } switcherLabel="Foo" />);
 
     // then
-    expect(container.querySelector('.toggle-switch__label').textContent).to.equal('Foo');
+    expect(container.querySelector('label').textContent).to.equal('Foo');
   });
 
 
@@ -78,7 +78,7 @@ describe('<ToggleSwitch>', function() {
     const { container } = createToggleSwitch();
 
     // then
-    expect(container.querySelector('.toggle-switch__label')).not.to.exist;
+    expect(container.querySelector('label')).not.to.exist;
   });
 
 });

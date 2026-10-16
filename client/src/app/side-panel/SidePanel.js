@@ -12,6 +12,8 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import classNames from 'classnames';
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@camunda/design-system';
+
 import ResizableContainer from '../resizable-container/ResizableContainer';
 
 import { MIN_CANVAS_WIDTH } from './SidePanelGroup';
@@ -161,6 +163,20 @@ export default function SidePanel(props) {
     });
   }, [ onLayoutChanged, sidePanel, tab, open ]);
 
+  const panels = tabs.map(({ id: tabId, content }) => {
+    const className = classNames('side-panel__content', {
+      'side-panel__content--active': activeTabId === tabId
+    });
+
+    // keep inactive panels mounted, so their editors keep their state;
+    // no tab stop of their own, focus goes to the fields inside
+    return showTabs
+      ? <TabsContent key={ tabId } value={ tabId } forceMount tabIndex={ -1 } className={ className }>{ content }</TabsContent>
+      : <div key={ tabId } className={ className }>{ content }</div>;
+  });
+
+  const body = <div className="side-panel__body">{ panels }</div>;
+
   return (
     <div ref={ containerRef } style={ { display: 'contents' } }>
       <ResizableContainer
@@ -174,36 +190,27 @@ export default function SidePanel(props) {
       >
         { headers }
 
-        { showTabs && (
-          <div className="side-panel__tabs-bar">
-            { tabs.map(({ id: tabId, label, icon: Icon }) => (
-              <button
-                key={ tabId }
-                className={ classNames('side-panel__tab', {
-                  'side-panel__tab--active': activeTabId === tabId
-                }) }
-                onClick={ () => onTabClick(tabId) }
-                title={ label }
-              >
-                { Icon && <Icon className="side-panel__tab-icon" /> }
-                <span>{ label }</span>
-              </button>
-            )) }
-          </div>
-        ) }
-
-        <div className="side-panel__body">
-          { tabs.map(({ id: tabId, content }) => (
-            <div
-              key={ tabId }
-              className={ classNames('side-panel__content', {
-                'side-panel__content--active': activeTabId === tabId
-              }) }
-            >
-              { content }
+        { showTabs ? (
+          <Tabs className="side-panel__tabs" value={ activeTabId } onValueChange={ onTabClick }>
+            <div className="side-panel__tabs-bar">
+              <TabsList variant="line">
+                { tabs.map(({ id: tabId, label, icon: Icon }) => (
+                  <TabsTrigger
+                    key={ tabId }
+                    value={ tabId }
+                    className={ classNames('side-panel__tab', {
+                      'side-panel__tab--active': activeTabId === tabId
+                    }) }
+                  >
+                    { Icon && <Icon className="side-panel__tab-icon" aria-hidden="true" /> }
+                    <span>{ label }</span>
+                  </TabsTrigger>
+                )) }
+              </TabsList>
             </div>
-          )) }
-        </div>
+            { body }
+          </Tabs>
+        ) : body }
       </ResizableContainer>
     </div>
   );
