@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import CamundaProjects from './CamundaProjects';
 import CamundaProjectsStatusBar from './CamundaProjectsStatusBar';
@@ -16,6 +16,7 @@ import CamundaProjectsDeploymentPlugin from './CamundaProjectsDeploymentPlugin';
 import CamundaProjectsStartInstancePlugin from './CamundaProjectsStartInstancePlugin';
 import { ResourcesProviderModule } from './ResourcesProvider';
 
+import { getTabGroupColors } from '../../app/primitives/TabLinks';
 import { utmTag } from '../../util/utmTag';
 import { useConnectionStatus } from '../../app/hooks/useConnectionStatus';
 
@@ -178,8 +179,8 @@ export default function CamundaProjectsPlugin(props) {
     }
   }, [ activeTab, camundaProjectItems, triggerAction, _getFromApp ]);
 
-  useEffect(() => {
-    const tabGroups = tabs.reduce((tabGroups, tab) => {
+  const tabGroups = useMemo(() => {
+    return tabs.reduce((tabGroups, tab) => {
       if (!tab.file) {
         return {
           ...tabGroups,
@@ -210,14 +211,19 @@ export default function CamundaProjectsPlugin(props) {
         [ tab.id ]: camundaProjectItemForItem.file.path
       };
     }, {});
+  }, [ items, tabs ]);
 
+  useEffect(() => {
     triggerAction('set-tab-groups', tabGroups);
-  }, [ items, tabs, triggerAction ]);
+  }, [ tabGroups, triggerAction ]);
+
+  const camundaProjectColor = camundaProject && getTabGroupColors(tabs, tabGroups)[ camundaProject.file.path ];
 
   return <>
     <CamundaProjectsStatusBar
       activeTab={ activeTab }
       camundaProject={ camundaProject }
+      camundaProjectColor={ camundaProjectColor }
       camundaProjectItems={ camundaProjectItems }
       onOpen={ (path) => triggerAction('open-diagram', { path }) }
       onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }

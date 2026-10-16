@@ -58,6 +58,24 @@ const COLORS = [
   'var(--color-purple-500)'
 ];
 
+/**
+ * @param {Object[]} tabs
+ * @param {Object} tabGroups map of tab ID to group name
+ *
+ * @return {Object} map of group name to color
+ */
+export function getTabGroupColors(tabs, tabGroups) {
+  const tabsByGroup = omit(groupBy(tabs, tab => tabGroups[ tab.id ]), '_');
+
+  const colors = {};
+
+  Object.keys(tabsByGroup).forEach((key, index) => {
+    colors[ key ] = COLORS[ index % COLORS.length ];
+  });
+
+  return colors;
+}
+
 export default class TabLinks extends PureComponent {
   constructor(props) {
     super(props);
@@ -112,13 +130,7 @@ export default class TabLinks extends PureComponent {
       isDirty = () => false
     } = this.props;
 
-    const tabsByGroup = omit(groupBy(tabs, tab => tabGroups[ tab.id ]), '_');
-
-    const colors = {};
-
-    Object.keys(tabsByGroup).forEach((key, index) => {
-      colors[ key ] = COLORS[ index % COLORS.length ];
-    });
+    const colors = getTabGroupColors(tabs, tabGroups);
 
     return (
       <div
