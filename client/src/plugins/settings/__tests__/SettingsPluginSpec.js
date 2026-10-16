@@ -48,6 +48,21 @@ describe('SettingsPlugin', function() {
   });
 
 
+  it('should link source configuration documentation', async function() {
+
+    // given
+    await renderSettings();
+
+    // then
+    expect(screen.getAllByRole('link').some(link => {
+      const url = new URL(link.href);
+
+      return url.pathname.endsWith('/element-templates/configuring-templates/') &&
+        url.hash === '#remote-template-sources';
+    })).to.be.true;
+  });
+
+
   [ [], [ { name: 'A', url: 'https://example.com/a', enabled: true }, { url: 'http://internal.example/b' } ] ].forEach(sources => {
     it(`should not save or require restart for unchanged sources (${ sources.length })`, async function() {
 
