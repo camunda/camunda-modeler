@@ -38,6 +38,7 @@ export default function CamundaProjectsStatusBar(props) {
     onRevealInFileExplorer,
     onCreateCamundaProject,
     camundaProject,
+    camundaProjectColor,
     camundaProjectItems,
     tabsProvider
   } = props;
@@ -64,7 +65,12 @@ export default function CamundaProjectsStatusBar(props) {
     {
       isCamundaProjectAllowed(activeTab) && <Fill slot="status-bar__file" group="0_camunda-project">
         <button
-          className={ classnames('btn', { 'btn--primary has-camunda-project': !!camundaProject }) }
+          className={ classnames('btn', {
+            'btn--active': isOpen,
+            'btn--primary has-camunda-project': !!camundaProject,
+            [ css.CamundaProjectsButton ]: !!camundaProject && !!camundaProjectColor
+          }) }
+          style={ camundaProject && camundaProjectColor ? { '--camunda-project-color': camundaProjectColor } : undefined }
           ref={ ref }
           onClick={ () => setIsOpen(!isOpen) }
           title={ camundaProject ? 'This file is part of a project' : 'New project...' }
