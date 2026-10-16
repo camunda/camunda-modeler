@@ -204,6 +204,38 @@ describe('template-updater - TemplateUpdater', function() {
     });
 
 
+    it('should coalesce concurrent updates for the same platform and version', async function() {
+
+      // when three updates race (e.g. restored tabs reporting the same engine profile)
+      const results = await Promise.all([
+        templateUpdater.update('Camunda Cloud', '8.8'),
+        templateUpdater.update('Camunda Cloud', '8.8'),
+        templateUpdater.update('Camunda Cloud', '8.8')
+      ]);
+
+      // then the index is fetched once, and all callers get the result
+      expect(log.filter(entry => entry.path === '/api/v1/ootb-connectors')).to.have.length(1);
+
+      for (const result of results) {
+        expect(result.hasNew).to.be.true;
+        expect(result.warnings).to.be.empty;
+      }
+    });
+
+
+    it('should not coalesce updates for different versions', async function() {
+
+      // when
+      await Promise.all([
+        templateUpdater.update('Camunda Cloud', '8.8'),
+        templateUpdater.update('Camunda Cloud', '8.7')
+      ]);
+
+      // then
+      expect(log.filter(entry => entry.path === '/api/v1/ootb-connectors')).to.have.length(2);
+    });
+
+
     it('should update templates (existing broken)', async function() {
 
       // given
@@ -293,26 +325,28 @@ describe('template-updater - TemplateUpdater', function() {
     });
 
 
-    it('should retain but stop loading a removed cache and reuse it when re-added', async function() {
+    it('should delete a removed cache and start fresh when re-added', async function() {
 
       // given
       const { updater, cachePaths } = configureSources();
       mockSourceA();
       mockSourceB();
       await updater.update('Camunda Cloud', '8.8');
-      const cachedB = fs.readFileSync(cachePaths[1], 'utf8');
 
       // when
       const removed = configureSources([ 'source-a.json' ]);
+      removed.cleanupTemplateSourcesCache();
       const templates = removed.config.get('bpmn.elementTemplates');
       const readded = configureSources();
+      const readdedTemplates = readded.config.get('bpmn.elementTemplates');
       const cleared = configureSources([]);
+      cleared.cleanupTemplateSourcesCache();
 
       // then
       expect(removed.endpoints).to.have.length(1);
       expect(templates.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
-      expect(fs.readFileSync(cachePaths[1], 'utf8')).to.equal(cachedB);
-      expect(readded.config.get('bpmn.elementTemplates').map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name, templateB2.name ]);
+      expect(cachePaths.every(file => !fs.existsSync(file))).to.be.true;
+      expect(readdedTemplates.map(({ name }) => name)).to.have.members([ templateA1.name, templateA2.name ]);
       expect(cleared.config.get('bpmn.elementTemplates')).to.eql([]);
     });
 
