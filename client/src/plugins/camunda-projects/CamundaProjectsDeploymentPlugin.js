@@ -60,7 +60,7 @@ export default function CamundaProjectsDeploymentPlugin(props) {
     setOverlayOpen(true);
   };
 
-  const resourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
+  const itemResourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
     const { file, metadata } = item;
 
     const { path } = file;
@@ -72,6 +72,13 @@ export default function CamundaProjectsDeploymentPlugin(props) {
       type
     };
   });
+
+  const resourceConfigs = [
+    ...itemResourceConfigs,
+    ...getDeclaredResourceConfigs(camundaProject).filter((resourceConfig) => {
+      return !itemResourceConfigs.some(({ path }) => path === resourceConfig.path);
+    })
+  ];
 
   useEffect(() => {
     const getResourceConfigs = (previousResourceConfigs) => {
@@ -88,7 +95,7 @@ export default function CamundaProjectsDeploymentPlugin(props) {
     deployment.registerResourcesProvider(getResourceConfigs);
 
     return () => deployment.unregisterResourcesProvider(getResourceConfigs);
-  }, [ camundaProjectItems ]);
+  }, [ camundaProject, camundaProjectItems ]);
 
   if (!camundaProject) {
     return null;
@@ -149,4 +156,57 @@ export function canDeployItem(item) {
     'form',
     'rpa'
   ].includes(type);
+}
+
+/**
+ * Get the resources a Camunda project declares in the `resources` property of
+ * its `camunda.json`, for files deployed with the project that the Modeler
+ * does not open, such as scripts. Paths are relative to `camunda.json`; paths
+ * that are absolute or leave the project directory are ignored.
+ *
+ * @example
+ *
+ * {
+ *   "resources": [ "scripts/sum.js" ]
+ * }
+ *
+ * @param {Object|null} camundaProject
+ *
+ * @returns {Array<{ path: string, type: 'resource' }>}
+ */
+export function getDeclaredResourceConfigs(camundaProject) {
+  const resources = camundaProject && camundaProject.resources;
+
+  if (!Array.isArray(resources)) {
+    return [];
+  }
+
+  const { dirname, path } = camundaProject.file;
+
+  const projectDirectory = dirname || path.replace(/[\\/][^\\/]*$/, '');
+
+  const separator = projectDirectory.includes('\\') ? '\\' : '/';
+
+  return resources
+    .filter(isProjectRelativePath)
+    .map((resource) => {
+      const segments = resource.split(/[\\/]/).filter(segment => segment && segment !== '.');
+
+      return {
+        path: [ projectDirectory, ...segments ].join(separator),
+        type: 'resource'
+      };
+    });
+}
+
+function isProjectRelativePath(resource) {
+  if (typeof resource !== 'string' || !resource.trim()) {
+    return false;
+  }
+
+  if (/^([\\/]|[a-zA-Z]:)/.test(resource)) {
+    return false;
+  }
+
+  return !resource.split(/[\\/]/).includes('..');
 }

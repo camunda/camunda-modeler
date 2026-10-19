@@ -1074,7 +1074,7 @@ class ZeebeAPI {
   /**
    * Get resources based on the provided configs
    *
-   * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }>} resourceConfigs
+   * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' | 'resource' }>} resourceConfigs
    *
    * @returns {Array<ZeebeResource>}
    */
@@ -1082,9 +1082,7 @@ class ZeebeAPI {
     return resourceConfigs.map(resourceConfig => {
       const { contents } = this._fs.readFile(resourceConfig.path, { encoding: false });
 
-      const extension = `.${ resourceConfig.type }`;
-
-      const name = `${ path.basename(resourceConfig.path, path.extname(resourceConfig.path)) }${ extension }`;
+      const name = getResourceName(resourceConfig);
 
       const resource = {
         name
@@ -1110,7 +1108,7 @@ class ZeebeAPI {
   /**
    * Get resources based on the provided configs
    *
-   * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }>} resourceConfigs
+   * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' | 'resource' }>} resourceConfigs
    *
    * @returns {Array<CamundaResource>}
    */
@@ -1119,9 +1117,7 @@ class ZeebeAPI {
     return resourceConfigs.map(resourceConfig => {
       const { contents } = this._fs.readFile(resourceConfig.path, { encoding: false });
 
-      const extension = `.${ resourceConfig.type }`;
-
-      const name = `${ path.basename(resourceConfig.path, path.extname(resourceConfig.path)) }${ extension }`;
+      const name = getResourceName(resourceConfig);
 
       return {
         content: contents,
@@ -1135,6 +1131,23 @@ module.exports = ZeebeAPI;
 
 
 // helpers //////////
+
+/**
+ * Get the name a resource is deployed with. The engine derives the resource
+ * type from its extension: known types get theirs, any other resource keeps
+ * its file name, which is also its resource ID.
+ *
+ * @param {{ path: string, type?: string }} resourceConfig
+ *
+ * @returns {string}
+ */
+function getResourceName(resourceConfig) {
+  if (resourceConfig.type === RESOURCE_TYPES.RESOURCE) {
+    return path.basename(resourceConfig.path);
+  }
+
+  return `${ path.basename(resourceConfig.path, path.extname(resourceConfig.path)) }.${ resourceConfig.type }`;
+}
 
 /**
  * @param {string} message

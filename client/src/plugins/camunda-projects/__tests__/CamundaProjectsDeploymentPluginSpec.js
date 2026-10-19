@@ -15,7 +15,10 @@ import React from 'react';
 
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
-import CamundaProjectsDeploymentPlugin, { canDeployItem } from '../CamundaProjectsDeploymentPlugin';
+import CamundaProjectsDeploymentPlugin, {
+  canDeployItem,
+  getDeclaredResourceConfigs
+} from '../CamundaProjectsDeploymentPlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 import { DEFAULT_ENDPOINT } from '../../../app/zeebe/Deployment';
@@ -170,6 +173,117 @@ describe('CamundaProjectsDeploymentPlugin', function() {
 
       expect(overlay).not.to.exist;
     });
+  });
+
+
+  it('should render number of deployed files (declared resources)', async function() {
+
+    // given
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const { container } = createCamundaProjectsDeploymentPlugin({
+      camundaProject: {
+        ...DEFAULT_CAMUNDA_PROJECT,
+        resources: [ 'scripts/sum.js', 'transform.py' ]
+      },
+      triggerAction
+    });
+
+    // when
+    fireEvent.click(container.querySelector('.btn'));
+
+    await waitFor(() => {
+      const overlay = document.querySelector('[role="dialog"]');
+
+      expect(overlay).to.exist;
+    });
+
+    // then
+    const description = document.querySelector('[role="dialog"] .form-description');
+
+    expect(description.textContent).to.include('6 files will be deployed');
+  });
+
+
+  describe('#getDeclaredResourceConfigs', function() {
+
+    it('should resolve resources relative to the project file', function() {
+
+      // given
+      const camundaProject = {
+        file: {
+          path: '/project/camunda.json',
+          dirname: '/project'
+        },
+        resources: [ 'scripts/sum.js', './transform.py' ]
+      };
+
+      // when
+      const resourceConfigs = getDeclaredResourceConfigs(camundaProject);
+
+      // then
+      expect(resourceConfigs).to.eql([
+        { path: '/project/scripts/sum.js', type: 'resource' },
+        { path: '/project/transform.py', type: 'resource' }
+      ]);
+    });
+
+
+    it('should use the separator of the project directory', function() {
+
+      // given
+      const camundaProject = {
+        file: {
+          path: 'C:\\project\\camunda.json',
+          dirname: 'C:\\project'
+        },
+        resources: [ 'scripts/sum.js' ]
+      };
+
+      // when
+      const resourceConfigs = getDeclaredResourceConfigs(camundaProject);
+
+      // then
+      expect(resourceConfigs).to.eql([
+        { path: 'C:\\project\\scripts\\sum.js', type: 'resource' }
+      ]);
+    });
+
+
+    it('should ignore resources outside the project', function() {
+
+      // given
+      const camundaProject = {
+        file: {
+          path: '/project/camunda.json',
+          dirname: '/project'
+        },
+        resources: [ '../other/sum.js', '/etc/passwd', 'C:\\sum.js', '', 42 ]
+      };
+
+      // when
+      const resourceConfigs = getDeclaredResourceConfigs(camundaProject);
+
+      // then
+      expect(resourceConfigs).to.be.empty;
+    });
+
+
+    it('should return nothing without resources', function() {
+
+      // then
+      expect(getDeclaredResourceConfigs(null)).to.be.empty;
+      expect(getDeclaredResourceConfigs(DEFAULT_CAMUNDA_PROJECT)).to.be.empty;
+      expect(getDeclaredResourceConfigs({
+        ...DEFAULT_CAMUNDA_PROJECT,
+        resources: 'sum.js'
+      })).to.be.empty;
+    });
+
   });
 
 

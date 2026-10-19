@@ -1006,6 +1006,38 @@ describe('ZeebeAPI (REST)', function() {
 
     describe('resource names', function() {
 
+      it('should keep the file name of a generic resource', async function() {
+
+        // given
+        const deployResourcesSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'scripts/sum.js',
+              type: 'resource'
+            }
+          ]
+        });
+
+        const { args } = deployResourcesSpy.getCall(0);
+
+        // then
+        expect(args[0][0].name).to.eql('sum.js');
+      });
+
+
       it('should use file path as resource name', async function() {
 
         // given
