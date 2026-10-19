@@ -52,6 +52,9 @@ export const LINTING_ERRORS_DESCRIPTION = 'Task testing requires a diagram witho
 
 export const DEFAULT_CONFIGURE_DESCRIPTION = 'Configure connection.';
 
+export const CONFIGURE_CONNECTION_LABEL = 'Configure connection';
+export const SHOW_PROBLEMS_LABEL = 'Show problems';
+
 const DOCUMENTATION_URL = utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/task-testing/');
 
 export default function TaskTestingTab(props) {
@@ -181,7 +184,10 @@ export default function TaskTestingTab(props) {
   const hasLintErrors = linting && linting.some(({ category }) => category === 'error');
 
   const canConnect = canConnectToCluster(connectionCheckResult);
-  const hasError = !canConnect || hasLintErrors;
+
+  // no result yet means the check is still running, not that it failed
+  const hasConnectionError = !!connectionCheckResult && !canConnect;
+  const hasError = hasConnectionError || hasLintErrors;
 
   const handleTestTask = useCallback(() => {
     if (!canConnect) {
@@ -197,17 +203,18 @@ export default function TaskTestingTab(props) {
     return true;
   }, [ canConnect, hasLintErrors, handleConfigureConnection, handleOpenLintingPanel ]);
 
-  const errorBannerTitle = getConnectionBannerTitle(connectionCheckResult, hasLintErrors);
-  const configureTooltip = getConfigureConnectionBannerDescription(connectionCheckResult, hasLintErrors);
+  const errorTitle = getErrorTitle(connectionCheckResult, hasLintErrors);
+  const errorDescription = getErrorDescription(connectionCheckResult, hasLintErrors);
+  const errorActionLabel = !hasConnectionError && hasLintErrors ? SHOW_PROBLEMS_LABEL : CONFIGURE_CONNECTION_LABEL;
 
   const handleConfigure = useCallback(() => {
-    if (canConnect && hasLintErrors) {
+    if (!hasConnectionError && hasLintErrors) {
       handleOpenLintingPanel();
       return;
     }
 
     handleConfigureConnection();
-  }, [ canConnect, hasLintErrors, handleConfigureConnection, handleOpenLintingPanel ]);
+  }, [ hasConnectionError, hasLintErrors, handleConfigureConnection, handleOpenLintingPanel ]);
 
   return <div className={ css.TaskTestingTab }>
     <TaskTesting
@@ -220,8 +227,10 @@ export default function TaskTestingTab(props) {
       onTaskExecutionStarted={ handleTaskExecutionStarted }
       onTaskExecutionFinished={ handleTaskExecutionFinished }
       onTestTask={ handleTestTask }
-      errorBannerTitle={ errorBannerTitle }
-      configureTooltip={ configureTooltip }
+      errorBannerTitle={ errorTitle }
+      errorBannerDescription={ errorDescription }
+      configureTooltip={ errorDescription }
+      errorBannerActionLabel={ errorActionLabel }
       onConfigure={ handleConfigure }
       api={ api }
       documentationUrl={ DOCUMENTATION_URL }
@@ -229,8 +238,10 @@ export default function TaskTestingTab(props) {
   </div>;
 }
 
-function getConnectionBannerTitle(connectionCheckResult, hasLintingErrors) {
-  if (!connectionCheckResult || !connectionCheckResult.success) {
+function getErrorTitle(connectionCheckResult, hasLintingErrors) {
+  if (!connectionCheckResult) {
+    return hasLintingErrors ? LINTING_ERRORS_TITLE : null;
+  } else if (!connectionCheckResult.success) {
     return CANNOT_CONNECT_TITLE;
   } else if (!isProtocolSupported(connectionCheckResult)) {
     return UNSUPPORTED_PROTOCOL_TITLE;
@@ -242,8 +253,10 @@ function getConnectionBannerTitle(connectionCheckResult, hasLintingErrors) {
   return null;
 }
 
-function getConfigureConnectionBannerDescription(connectionCheckResult, hasLintingErrors) {
-  if (!connectionCheckResult || !connectionCheckResult.success) {
+function getErrorDescription(connectionCheckResult, hasLintingErrors) {
+  if (!connectionCheckResult) {
+    return hasLintingErrors ? LINTING_ERRORS_DESCRIPTION : DEFAULT_CONFIGURE_DESCRIPTION;
+  } else if (!connectionCheckResult.success) {
     return CANNOT_CONNECT_DESCRIPTION;
   } else if (!isProtocolSupported(connectionCheckResult)) {
     return UNSUPPORTED_PROTOCOL_DESCRIPTION;
