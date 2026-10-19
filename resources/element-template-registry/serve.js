@@ -34,7 +34,15 @@ const port = Number(process.argv[2]) || 8081;
 const server = http.createServer((req, res) => {
   console.log(`${ req.method } ${ req.url }`);
 
-  const { pathname } = new URL(req.url, 'http://localhost');
+  let pathname;
+
+  try {
+    ({ pathname } = new URL(req.url, 'http://localhost'));
+  } catch {
+    res.writeHead(400).end('Bad request');
+
+    return;
+  }
 
   if (pathname === '/' || pathname === '/index.json') {
     return sendJson(res, createIndex());
