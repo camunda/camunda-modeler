@@ -21,7 +21,9 @@ import { render, waitFor, screen } from '@testing-library/react';
 import TaskTestingTab, {
   CANNOT_CONNECT_TITLE,
   DEFAULT_CONFIGURE_DESCRIPTION,
+  LINTING_ERRORS_DESCRIPTION,
   LINTING_ERRORS_TITLE,
+  SHOW_PROBLEMS_LABEL,
   UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE,
   UNSUPPORTED_PROTOCOL_TITLE
 } from '../TaskTestingTab';
@@ -264,6 +266,54 @@ describe('<TaskTestingTab>', function() {
     });
 
 
+    it('should describe linting errors (linting errors)', async function() {
+
+      // given
+      renderTab(modeler, {
+        connectionCheckResult: {
+          success: true,
+          response: {
+            protocol: 'rest',
+            gatewayVersion: '8.8.0'
+          }
+        },
+        linting: [
+          { category: 'error' }
+        ]
+      });
+
+      // when
+      await selectElement(modeler, 'Task_1');
+
+      // then
+      await waitFor(() => {
+        expect(screen.getByText(LINTING_ERRORS_DESCRIPTION)).to.exist;
+        expect(screen.getByText(SHOW_PROBLEMS_LABEL)).to.exist;
+      });
+    });
+
+
+    it('should show linting error while the connection check is pending', async function() {
+
+      // given
+      renderTab(modeler, {
+        connectionCheckPending: true,
+        linting: [
+          { category: 'error' }
+        ]
+      });
+
+      // when
+      await selectElement(modeler, 'Task_1');
+
+      // then
+      await waitFor(() => {
+        expect(screen.getByText(LINTING_ERRORS_TITLE)).to.exist;
+        expect(screen.queryByText(CANNOT_CONNECT_TITLE)).not.to.exist;
+      });
+    });
+
+
     it('should start execution and open linting panel on click (linting errors)', async function() {
 
       // given
@@ -406,7 +456,9 @@ describe('<TaskTestingTab>', function() {
       await selectElement(modeler, 'Task_1');
 
       // then
-      expect(screen.queryByText('Open in Operate')).to.not.exist;
+      await waitFor(() => {
+        expect(screen.queryByText('Open in Operate')).to.not.exist;
+      });
     });
   });
 
@@ -464,7 +516,7 @@ function renderTab(modeler, options = {}) {
   };
 
   const mockSubscribe = (event, listener) => {
-    if (event === 'connectionManager.connectionStatusChanged' && connectionCheckResult) {
+    if (event === 'connectionManager.connectionStatusChanged' && connectionCheckResult && !options.connectionCheckPending) {
       setTimeout(() => listener(connectionCheckResult), 0);
     }
     return {

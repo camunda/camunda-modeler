@@ -67,6 +67,8 @@ ___Note:__ Yet to be released changes appear here._
 
 * `FEAT`: reorganize the task testing panel around a run card, with extra tabs as collapsible sections inside it ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
 * `FIX`: wait for the element instance before reporting a terminated task test ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
+* `FIX`: show the actual task testing error and its action, e.g. _Show problems_ for a diagram with errors ([#6281](https://github.com/camunda/camunda-modeler/pull/6281), [camunda/task-testing#106](https://github.com/camunda/task-testing/pull/106))
+* `FIX`: do not show a connection error in task testing before the connection check finishes ([#6281](https://github.com/camunda/camunda-modeler/pull/6281))
 * `FIX`: mark checkbox entries with errors in the properties panel ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: show the most severe element template lint error, not the first one ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: show linting errors over local validation errors in element template entries, like in all other entries ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
