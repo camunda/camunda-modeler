@@ -38,8 +38,9 @@ export default class CamundaProjects {
             return;
           }
 
-          // re-read the project file, whose contents may have changed
-          this.open(camundaProjectItem);
+          this._camundaProjectItems = this._items.filter(item => this.isCamundaProjectItem(item));
+
+          events.emit('changed');
         } else {
 
           // project file may have been renamed (e.g. `.process-application`
@@ -84,8 +85,8 @@ export default class CamundaProjects {
       const { contents } = file;
 
       this._camundaProject = {
-        file,
-        ...JSON.parse(contents.length ? contents : '{}')
+        ...JSON.parse(contents.length ? contents : '{}'),
+        file
       };
 
       this._camundaProjectItems = this._items.filter(item => this.isCamundaProjectItem(item));

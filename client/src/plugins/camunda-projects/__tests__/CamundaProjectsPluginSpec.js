@@ -203,7 +203,9 @@ describe('<CamundaProjectsPlugin>', function() {
 
                 return { cancel() {} };
               },
-              send() {}
+              async send(event, { filePaths } = {}) {
+                return { files: filePaths, resources: [] };
+              }
             };
           } else if (name === 'deployment') {
             return deployment;
@@ -270,7 +272,9 @@ function createCamundaProjectsPlugin(props = {}) {
           on() {
             return { cancel() {} };
           },
-          send() {}
+          async send(event, { filePaths } = {}) {
+            return { files: filePaths, resources: [] };
+          }
         };
       } else if (name === 'deployment') {
         return new Deployment({

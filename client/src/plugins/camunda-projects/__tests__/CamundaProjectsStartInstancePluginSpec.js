@@ -228,10 +228,19 @@ function createCamundaProjectsStartInstancePlugin(props = {}) {
     triggerAction = () => {}
   } = props;
 
+  const backend = {
+    async send(event, { filePaths }) {
+      return {
+        files: filePaths,
+        resources: []
+      };
+    }
+  };
+
   return render(<SlotFillRoot>
     <Slot name="status-bar__file" />
     <CamundaProjectsStartInstancePlugin
-      _getGlobal={ _getGlobal }
+      _getGlobal={ (name) => name === 'backend' ? backend : _getGlobal(name) }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
       emit={ emit }

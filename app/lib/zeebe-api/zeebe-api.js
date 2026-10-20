@@ -144,6 +144,17 @@ class ZeebeAPI {
       parameters: sanitizeConfigWithEndpoint(config)
     });
 
+    const duplicateResourceName = getDuplicateResourceName(resourceConfigs);
+
+    if (duplicateResourceName) {
+      return {
+        success: false,
+        response: {
+          message: `More than one file would be deployed as <${ duplicateResourceName }>`
+        }
+      };
+    }
+
     try {
       const {
         zeebeGrpcClient,
@@ -1147,6 +1158,26 @@ function getResourceName(resourceConfig) {
   }
 
   return `${ path.basename(resourceConfig.path, path.extname(resourceConfig.path)) }.${ resourceConfig.type }`;
+}
+
+/**
+ * Get the name a generic resource shares with another resource of the same
+ * deployment, e.g. `scripts/sum.js` and `lib/sum.js`, both deployed as `sum.js`.
+ *
+ * @param {Array<{ path: string, type?: string }>} resourceConfigs
+ *
+ * @returns {string|undefined}
+ */
+function getDuplicateResourceName(resourceConfigs) {
+  const names = resourceConfigs.map(getResourceName);
+
+  const isResource = index => resourceConfigs[ index ].type === RESOURCE_TYPES.RESOURCE;
+
+  return names.find((name, index) => {
+    return names.some((otherName, otherIndex) => {
+      return otherIndex !== index && otherName === name && (isResource(index) || isResource(otherIndex));
+    });
+  });
 }
 
 /**

@@ -37,6 +37,10 @@ export default function CamundaProjectsDeploymentPlugin(props) {
 
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
+  const [ resourceConfigs, setResourceConfigs ] = useState([]);
+
+  const backend = _getGlobal('backend');
+
   const deployment = _getGlobal('deployment');
 
   const anchorRef = useRef();
@@ -57,34 +61,34 @@ export default function CamundaProjectsDeploymentPlugin(props) {
       return;
     }
 
+    // files of the resources directory are not watched, list them on opening
+    try {
+      setResourceConfigs(await getProjectResourceConfigs(backend, camundaProject, camundaProjectItems));
+    } catch (error) {
+      log({
+        category: 'deploy-error',
+        message: `Failed to get resources to deploy: ${ error.message }`
+      });
+
+      return;
+    }
+
     setOverlayOpen(true);
   };
 
-  const itemResourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
-    const { file, metadata } = item;
-
-    const { path } = file;
-
-    const { type } = metadata;
-
-    return {
-      path,
-      type
-    };
-  });
-
-  const resourceConfigs = [
-    ...itemResourceConfigs,
-    ...getDeclaredResourceConfigs(camundaProject).filter((resourceConfig) => {
-      return !itemResourceConfigs.some(({ path }) => path === resourceConfig.path);
-    })
-  ];
-
   useEffect(() => {
-    const getResourceConfigs = (previousResourceConfigs) => {
+    if (!camundaProject) {
+      return;
+    }
+
+    // list project files on every deployment, as files of the resources
+    // directory may have changed since
+    const getResourceConfigs = async (previousResourceConfigs) => {
+      const projectResourceConfigs = await getProjectResourceConfigs(backend, camundaProject, camundaProjectItems);
+
       return [
         ...previousResourceConfigs,
-        ...resourceConfigs.filter((resourceConfig) => {
+        ...projectResourceConfigs.filter((resourceConfig) => {
           return !previousResourceConfigs.some((prevConfig) => {
             return prevConfig.path === resourceConfig.path;
           });
@@ -159,54 +163,46 @@ export function canDeployItem(item) {
 }
 
 /**
- * Get the resources a Camunda project declares in the `resources` property of
- * its `camunda.json`, for files deployed with the project that the Modeler
- * does not open, such as scripts. Paths are relative to `camunda.json`; paths
- * that are absolute or leave the project directory are ignored.
+ * Get the files a Camunda project deploys: its diagrams, decisions, forms and
+ * RPA scripts, and every file of its `resources` directory, such as scripts,
+ * minus the files excluded by its `.c8ignore`.
  *
- * @example
+ * @param {Object} backend
+ * @param {Object} camundaProject
+ * @param {Array<Object>} camundaProjectItems
  *
- * {
- *   "resources": [ "scripts/sum.js" ]
- * }
- *
- * @param {Object|null} camundaProject
- *
- * @returns {Array<{ path: string, type: 'resource' }>}
+ * @returns {Promise<Array<{ path: string, type: string }>>}
  */
-export function getDeclaredResourceConfigs(camundaProject) {
-  const resources = camundaProject && camundaProject.resources;
+export async function getProjectResourceConfigs(backend, camundaProject, camundaProjectItems) {
+  const itemResourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
+    const { file, metadata } = item;
 
-  if (!Array.isArray(resources)) {
-    return [];
-  }
+    const { path } = file;
 
-  const { dirname, path } = camundaProject.file;
+    const { type } = metadata;
 
-  const projectDirectory = dirname || path.replace(/[\\/][^\\/]*$/, '');
+    return {
+      path,
+      type
+    };
+  });
 
-  const separator = projectDirectory.includes('\\') ? '\\' : '/';
+  const itemPaths = itemResourceConfigs.map(({ path }) => path);
 
-  return resources
-    .filter(isProjectRelativePath)
-    .map((resource) => {
-      const segments = resource.split(/[\\/]/).filter(segment => segment && segment !== '.');
+  const { files, resources } = await backend.send('camunda-project:get-deployment-files', {
+    projectFilePath: camundaProject.file.path,
+    filePaths: itemPaths
+  });
 
+  return [
+    ...itemResourceConfigs.filter(({ path }) => files.includes(path)),
+
+    // a diagram may be both a project item and a resource
+    ...resources.filter(path => !itemPaths.includes(path)).map((path) => {
       return {
-        path: [ projectDirectory, ...segments ].join(separator),
+        path,
         type: 'resource'
       };
-    });
-}
-
-function isProjectRelativePath(resource) {
-  if (typeof resource !== 'string' || !resource.trim()) {
-    return false;
-  }
-
-  if (/^([\\/]|[a-zA-Z]:)/.test(resource)) {
-    return false;
-  }
-
-  return !resource.split(/[\\/]/).includes('..');
+    })
+  ];
 }

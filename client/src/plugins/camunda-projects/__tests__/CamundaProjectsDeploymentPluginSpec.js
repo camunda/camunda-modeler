@@ -17,7 +17,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 
 import CamundaProjectsDeploymentPlugin, {
   canDeployItem,
-  getDeclaredResourceConfigs
+  getProjectResourceConfigs
 } from '../CamundaProjectsDeploymentPlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
@@ -176,7 +176,7 @@ describe('CamundaProjectsDeploymentPlugin', function() {
   });
 
 
-  it('should render number of deployed files (declared resources)', async function() {
+  it('should render number of deployed files (resources)', async function() {
 
     // given
     const triggerAction = sinon.spy(function(action) {
@@ -186,10 +186,10 @@ describe('CamundaProjectsDeploymentPlugin', function() {
     });
 
     const { container } = createCamundaProjectsDeploymentPlugin({
-      camundaProject: {
-        ...DEFAULT_CAMUNDA_PROJECT,
-        resources: [ 'scripts/sum.js', 'transform.py' ]
-      },
+      backend: createBackend({
+        resources: [ 'resources/sum.js', 'resources/transform.py' ]
+      }),
+      camundaProject: DEFAULT_CAMUNDA_PROJECT,
       triggerAction
     });
 
@@ -209,79 +209,83 @@ describe('CamundaProjectsDeploymentPlugin', function() {
   });
 
 
-  describe('#getDeclaredResourceConfigs', function() {
+  describe('#getProjectResourceConfigs', function() {
 
-    it('should resolve resources relative to the project file', function() {
+    it('should get files to deploy from backend', async function() {
 
       // given
-      const camundaProject = {
-        file: {
-          path: '/project/camunda.json',
-          dirname: '/project'
-        },
-        resources: [ 'scripts/sum.js', './transform.py' ]
-      };
+      const backend = createBackend();
 
       // when
-      const resourceConfigs = getDeclaredResourceConfigs(camundaProject);
+      await getProjectResourceConfigs(backend, DEFAULT_CAMUNDA_PROJECT, DEFAULT_ITEMS);
+
+      // then
+      expect(backend.send).to.have.been.calledOnceWith('camunda-project:get-deployment-files', {
+        projectFilePath: 'camunda.json',
+        filePaths: [ 'diagram.bpmn', 'decision.dmn', 'user.form', 'script.rpa' ]
+      });
+    });
+
+
+    it('should add resources', async function() {
+
+      // given
+      const backend = createBackend({
+        resources: [ 'resources/sum.js' ]
+      });
+
+      // when
+      const resourceConfigs = await getProjectResourceConfigs(backend, DEFAULT_CAMUNDA_PROJECT, DEFAULT_ITEMS);
 
       // then
       expect(resourceConfigs).to.eql([
-        { path: '/project/scripts/sum.js', type: 'resource' },
-        { path: '/project/transform.py', type: 'resource' }
+        { path: 'diagram.bpmn', type: 'bpmn' },
+        { path: 'decision.dmn', type: 'dmn' },
+        { path: 'user.form', type: 'form' },
+        { path: 'script.rpa', type: 'rpa' },
+        { path: 'resources/sum.js', type: 'resource' }
       ]);
     });
 
 
-    it('should use the separator of the project directory', function() {
+    it('should not add ignored files', async function() {
 
       // given
-      const camundaProject = {
-        file: {
-          path: 'C:\\project\\camunda.json',
-          dirname: 'C:\\project'
-        },
-        resources: [ 'scripts/sum.js' ]
-      };
+      const backend = createBackend({
+        files: [ 'diagram.bpmn' ]
+      });
 
       // when
-      const resourceConfigs = getDeclaredResourceConfigs(camundaProject);
+      const resourceConfigs = await getProjectResourceConfigs(backend, DEFAULT_CAMUNDA_PROJECT, DEFAULT_ITEMS);
 
       // then
       expect(resourceConfigs).to.eql([
-        { path: 'C:\\project\\scripts\\sum.js', type: 'resource' }
+        { path: 'diagram.bpmn', type: 'bpmn' }
       ]);
     });
 
 
-    it('should ignore resources outside the project', function() {
+    it('should add a file that is both a project item and a resource once', async function() {
 
       // given
-      const camundaProject = {
-        file: {
-          path: '/project/camunda.json',
-          dirname: '/project'
-        },
-        resources: [ '../other/sum.js', '/etc/passwd', 'C:\\sum.js', '', 42 ]
-      };
+      const items = [
+        {
+          file: { path: 'resources/diagram.bpmn' },
+          metadata: { type: 'bpmn' }
+        }
+      ];
+
+      const backend = createBackend({
+        resources: [ 'resources/diagram.bpmn' ]
+      });
 
       // when
-      const resourceConfigs = getDeclaredResourceConfigs(camundaProject);
+      const resourceConfigs = await getProjectResourceConfigs(backend, DEFAULT_CAMUNDA_PROJECT, items);
 
       // then
-      expect(resourceConfigs).to.be.empty;
-    });
-
-
-    it('should return nothing without resources', function() {
-
-      // then
-      expect(getDeclaredResourceConfigs(null)).to.be.empty;
-      expect(getDeclaredResourceConfigs(DEFAULT_CAMUNDA_PROJECT)).to.be.empty;
-      expect(getDeclaredResourceConfigs({
-        ...DEFAULT_CAMUNDA_PROJECT,
-        resources: 'sum.js'
-      })).to.be.empty;
+      expect(resourceConfigs).to.eql([
+        { path: 'resources/diagram.bpmn', type: 'bpmn' }
+      ]);
     });
 
   });
@@ -400,6 +404,55 @@ describe('CamundaProjectsDeploymentPlugin', function() {
     });
   });
 
+
+  it('should add resources through resources provider', async function() {
+
+    // given
+    const registerResourcesProvider = sinon.spy();
+
+    const getGlobal = (name) => {
+      if (name === 'deployment') {
+        return new Deployment({
+          async getConnectionForTab(file) {
+            return DEFAULT_ENDPOINT;
+          },
+          registerResourcesProvider,
+          unregisterResourcesProvider() {}
+        });
+      } else if (name === 'zeebeAPI') {
+        return new ZeebeAPI();
+      }
+    };
+
+    createCamundaProjectsDeploymentPlugin({
+      _getGlobal: getGlobal,
+      backend: createBackend({
+        resources: [ 'resources/sum.js' ]
+      }),
+      camundaProject: DEFAULT_CAMUNDA_PROJECT
+    });
+
+    await waitFor(() => {
+      expect(registerResourcesProvider).to.have.been.calledOnce;
+    });
+
+    const provider = registerResourcesProvider.getCall(0).args[0];
+
+    // when
+    const resourceConfigs = await provider([
+      { path: 'diagram.bpmn', type: 'bpmn' }
+    ]);
+
+    // then
+    expect(resourceConfigs).to.eql([
+      { path: 'diagram.bpmn', type: 'bpmn' },
+      { path: 'decision.dmn', type: 'dmn' },
+      { path: 'user.form', type: 'form' },
+      { path: 'script.rpa', type: 'rpa' },
+      { path: 'resources/sum.js', type: 'resource' }
+    ]);
+  });
+
 });
 
 const DEFAULT_CAMUNDA_PROJECT = {
@@ -467,6 +520,7 @@ function createCamundaProjectsDeploymentPlugin(props = {}) {
       }
     },
     activeTab = DEFAULT_ACTIVE_TAB,
+    backend = createBackend(),
     displayNotification = () => {},
     emit = () => {},
     log = () => {},
@@ -478,7 +532,7 @@ function createCamundaProjectsDeploymentPlugin(props = {}) {
   return render(<SlotFillRoot>
     <Slot name="status-bar__file" />
     <CamundaProjectsDeploymentPlugin
-      _getGlobal={ _getGlobal }
+      _getGlobal={ (name) => name === 'backend' ? backend : _getGlobal(name) }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
       emit={ emit }
@@ -487,4 +541,19 @@ function createCamundaProjectsDeploymentPlugin(props = {}) {
       camundaProjectItems={ camundaProjectItems }
       triggerAction={ triggerAction } />
   </SlotFillRoot>);
+}
+
+/**
+ * @param {{ files?: string[], resources?: string[] }} [deploymentFiles] - files
+ * returned by the backend, all project files by default
+ */
+function createBackend(deploymentFiles = {}) {
+  return {
+    send: sinon.spy(async (event, { filePaths }) => {
+      return {
+        files: deploymentFiles.files || filePaths,
+        resources: deploymentFiles.resources || []
+      };
+    })
+  };
 }

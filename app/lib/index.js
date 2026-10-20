@@ -39,6 +39,7 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
+const { getDeploymentFiles } = require('./camunda-project');
 const { getTemplateSourceConfig } = require('./template-updater/sources');
 const { TemplateUpdater } = require('./template-updater/template-updater');
 
@@ -274,6 +275,23 @@ renderer.on('file-context:file-closed', function(filePath, done) {
   }
 
   done(null);
+});
+
+// camunda project //////////
+
+renderer.on('camunda-project:get-deployment-files', async function(options, done) {
+  const {
+    projectFilePath,
+    filePaths
+  } = options;
+
+  try {
+    const deploymentFiles = await getDeploymentFiles(projectFilePath, filePaths);
+
+    done(null, deploymentFiles);
+  } catch (err) {
+    done(err);
+  }
 });
 
 // filesystem //////////

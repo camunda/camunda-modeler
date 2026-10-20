@@ -21,6 +21,7 @@ import StartInstanceIcon from 'icons/Play.svg';
 
 import StartInstancePluginOverlay from '../zeebe-plugin/start-instance-plugin/StartInstancePluginOverlay';
 
+import { getProjectResourceConfigs } from './CamundaProjectsDeploymentPlugin';
 import { getSuccessNotification } from './CamundaProjectsStartInstanceNotifications';
 
 export default function CamundaProjectsStartInstancePlugin(props) {
@@ -39,6 +40,9 @@ export default function CamundaProjectsStartInstancePlugin(props) {
 
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
+  const [ resourceConfigs, setResourceConfigs ] = useState([]);
+
+  const backend = _getGlobal('backend');
   const deployment = _getGlobal('deployment');
   const startInstance = _getGlobal('startInstance');
 
@@ -60,25 +64,23 @@ export default function CamundaProjectsStartInstancePlugin(props) {
       return;
     }
 
+    try {
+      setResourceConfigs(await getProjectResourceConfigs(backend, camundaProject, camundaProjectItems));
+    } catch (error) {
+      log({
+        category: 'deploy-error',
+        message: `Failed to get resources to deploy: ${ error.message }`
+      });
+
+      return;
+    }
+
     setOverlayOpen(true);
   };
 
   if (!camundaProject) {
     return null;
   }
-
-  const resourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
-    const { file, metadata } = item;
-
-    const { path } = file;
-
-    const { type } = metadata;
-
-    return {
-      path,
-      type
-    };
-  });
 
   return <>
     { canDeployTab(activeTab) && canStartInstanceTab(activeTab) && (
@@ -106,7 +108,7 @@ export default function CamundaProjectsStartInstancePlugin(props) {
         log={ log }
         onClose={ () => setOverlayOpen(false) }
         displayNotification={ displayNotification }
-        renderDeploymentDescription={ `${ camundaProjectItems.length } files will be deployed` }
+        renderDeploymentDescription={ `${ resourceConfigs.length } ${ resourceConfigs.length === 1 ? 'file' : 'files' } will be deployed` }
         renderDeploymentHeader={ <>
           <CamundaProjectIcon width="16" height="16" />Configure deployment
         </> }
@@ -123,22 +125,6 @@ export default function CamundaProjectsStartInstancePlugin(props) {
 
 function canDeployTab(tab) {
   return tab && [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form', 'rpa' ].includes(tab.type);
-}
-
-function canDeployItem(item) {
-  const { metadata } = item;
-
-  if (!metadata) {
-    return false;
-  }
-
-  const { type } = metadata;
-
-  return [
-    'bpmn',
-    'dmn',
-    'form'
-  ].includes(type);
 }
 
 function canStartInstanceTab(tab) {

@@ -26,6 +26,7 @@ const allowedEvents = [
   'app:restart',
   'app:quit-aborted',
   'app:quit-allowed',
+  'camunda-project:get-deployment-files',
   'client:error',
   'client:ready',
   'client:templates-update',

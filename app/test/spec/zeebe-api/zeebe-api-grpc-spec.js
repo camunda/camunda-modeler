@@ -870,6 +870,43 @@ describe('ZeebeAPI (gRPC)', function() {
       });
 
 
+      it('should not deploy generic resources with the same file name', async function() {
+
+        // given
+        const deployResourcesSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResources: deployResourcesSpy
+          }
+        });
+
+        // when
+        const result = await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'scripts/sum.js',
+              type: 'resource'
+            },
+            {
+              path: 'lib/sum.js',
+              type: 'resource'
+            }
+          ]
+        });
+
+        // then
+        expect(result.success).to.be.false;
+        expect(result.response.message).to.include('sum.js');
+
+        expect(deployResourcesSpy).not.to.have.been.called;
+      });
+
+
       it('should use file path as resource name', async function() {
 
         // given

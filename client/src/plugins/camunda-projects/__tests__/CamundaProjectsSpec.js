@@ -140,38 +140,6 @@ describe('CamundaProjects', function() {
     });
 
 
-    it('should re-read Camunda project on <items-changed> (contents changed)', function() {
-
-      // given
-      camundaProjects.emit('activeTab-changed', DEFAULT_ACTIVE_TAB);
-      camundaProjects.emit('items-changed', DEFAULT_ITEMS_CAMUNDA_PROJECT);
-
-      expect(camundaProjects.getOpen().resources).not.to.exist;
-
-      const changedSpy = spy();
-
-      camundaProjects.on('changed', changedSpy);
-
-      // when
-      camundaProjects.emit('items-changed', [
-        {
-          ...DEFAULT_ITEMS_CAMUNDA_PROJECT[0],
-          file: {
-            ...DEFAULT_ITEMS_CAMUNDA_PROJECT[0].file,
-            contents: '{ "resources": [ "sum.js" ] }'
-          }
-        },
-        ...DEFAULT_ITEMS
-      ]);
-
-      // then
-      expect(camundaProjects.getOpen().resources).to.eql([ 'sum.js' ]);
-      expect(camundaProjects.getItems()).to.have.length(2);
-
-      expect(changedSpy).to.have.been.calledOnce;
-    });
-
-
     it('should close Camunda project on <items-changed>', function() {
 
       // given

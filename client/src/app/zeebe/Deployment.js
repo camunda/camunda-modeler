@@ -109,9 +109,18 @@ export default class Deployment extends EventEmitter {
     resourceConfigs = Array.isArray(resourceConfigs) ? resourceConfigs : [ resourceConfigs ];
 
     // allow to add or remove resource configs through resources providers
-    resourceConfigs = this._resourcesProviders.reduce((configs, getResourceConfigs) => {
-      return getResourceConfigs(configs);
-    }, resourceConfigs);
+    try {
+      for (const getResourceConfigs of this._resourcesProviders) {
+        resourceConfigs = await getResourceConfigs(resourceConfigs);
+      }
+    } catch (error) {
+      return {
+        success: false,
+        response: {
+          message: `Failed to get resources to deploy: ${ error.message }`
+        }
+      };
+    }
 
     log('Final resource configs:', resourceConfigs);
 
@@ -309,12 +318,12 @@ export default class Deployment extends EventEmitter {
    * A resources provider is a function that receives an array of ResourceConfig objects
    * and returns a (possibly modified) array of ResourceConfig objects.
    *
-   * Signature: (configs: ResourceConfig[]) => ResourceConfig[]
+   * Signature: (configs: ResourceConfig[]) => ResourceConfig[] | Promise<ResourceConfig[]>
    *
    * Providers are applied in the order they are registered during deploy().
-   * The return value of each provider must be an array.
+   * The return value of each provider must be an array, or a promise of one.
    *
-   * @param {(configs: ResourceConfig[]) => ResourceConfig[]} provider
+   * @param {(configs: ResourceConfig[]) => ResourceConfig[] | Promise<ResourceConfig[]>} provider
    */
   registerResourcesProvider(provider) {
     this._resourcesProviders.push(provider);
@@ -323,7 +332,7 @@ export default class Deployment extends EventEmitter {
   /**
    * Unregister a previously registered resources provider.
    *
-   * @param {(configs: ResourceConfig[]) => ResourceConfig[]} provider
+   * @param {(configs: ResourceConfig[]) => ResourceConfig[] | Promise<ResourceConfig[]>} provider
    */
   unregisterResourcesProvider(provider) {
     this._resourcesProviders = this._resourcesProviders.filter(p => p !== provider);

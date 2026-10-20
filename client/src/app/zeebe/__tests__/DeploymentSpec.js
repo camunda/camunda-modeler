@@ -294,6 +294,84 @@ describe('Deployment', function() {
     });
 
 
+    it('should add resources through async resources provider', async function() {
+
+      // given
+      const resourceConfig = createMockResourceConfigs().pop(),
+            config = createMockConfig(),
+            deploymentResult = createMockDeploymentResult();
+
+      const { endpoint } = config;
+
+      const zeebeAPI = new MockZeebeAPI({
+        deploy: sinon.stub().resolves(deploymentResult),
+        getGatewayVersion: sinon.stub().resolves({
+          success: true,
+          response: {
+            gatewayVersion: 'foo'
+          }
+        })
+      });
+
+      const deployment = createDeployment({
+        zeebeAPI
+      });
+
+      const additionalResourceConfig = {
+        path: '/baz/resources/sum.js',
+        type: 'resource'
+      };
+
+      deployment.registerResourcesProvider(async (previousResourceConfigs) => {
+        return [
+          ...previousResourceConfigs,
+          additionalResourceConfig
+        ];
+      });
+
+      // when
+      await deployment.deploy(resourceConfig, config);
+
+      // then
+      expect(zeebeAPI.deploy).to.have.been.calledOnceWith({
+        endpoint,
+        resourceConfigs: [
+          resourceConfig,
+          additionalResourceConfig
+        ]
+      });
+    });
+
+
+    it('should not deploy if resources provider fails', async function() {
+
+      // given
+      const resourceConfig = createMockResourceConfigs().pop(),
+            config = createMockConfig();
+
+      const zeebeAPI = new MockZeebeAPI({
+        deploy: sinon.spy()
+      });
+
+      const deployment = createDeployment({
+        zeebeAPI
+      });
+
+      deployment.registerResourcesProvider(async () => {
+        throw new Error('EACCES: permission denied');
+      });
+
+      // when
+      const result = await deployment.deploy(resourceConfig, config);
+
+      // then
+      expect(result.success).to.be.false;
+      expect(result.response.message).to.include('EACCES');
+
+      expect(zeebeAPI.deploy).not.to.have.been.called;
+    });
+
+
     it('should unregister additional resources provider', async function() {
 
       // given
