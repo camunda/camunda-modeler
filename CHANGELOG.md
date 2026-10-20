@@ -46,6 +46,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@bpmn-io/properties-panel@3.58.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@4.0.1`
 * `DEPS`: update to `@camunda/design-system@0.72.0`
+* `DEPS`: update to `@camunda/form-playground@0.28.0`
 * `DEPS`: update to `@camunda/improved-canvas@1.12.0`
 * `DEPS`: update to `@camunda/linting-autofix@0.3.0`
 * `DEPS`: update to `@camunda/rpa-integration@2.0.0`
