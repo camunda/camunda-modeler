@@ -8,7 +8,7 @@
     "test": "echo \"no tests\" && exit 0"
   },
   "devDependencies": {
-    "bpmnlint": "^11.0.0",
+    "bpmnlint": "^12.0.0",
     "bpmnlint-loader": "^0.1.6",
     "bpmnlint-plugin-custom": "file:bpmnlint-plugin-custom",
     "camunda-modeler-plugin-helpers": "^6.0.0",
