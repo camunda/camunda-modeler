@@ -15,11 +15,12 @@ const { copyFixture } = require('../harness/files');
 
 const Modeler = require('../pages/Modeler');
 
+const DIAGNOSTIC_ACTION = '.bio-properties-panel-diagnostic-action';
+
 /**
- * Covers the integration of `@camunda/linting-autofix` — that the module is
- * registered, its stylesheet is loaded, and its entries render through and
- * modify the diagram via the properties panel. The affordances themselves are
- * covered by the library.
+ * Covers the integration of `@camunda/linting-autofix` — that its diagnostics
+ * render through the properties panel and modify the diagram. The affordances
+ * themselves are covered by the library.
  */
 test.describe('agent config autofix', function() {
 
@@ -43,16 +44,9 @@ test.describe('agent config autofix', function() {
     await propertiesPanel.openListItem('ToolTask_1-input-0');
 
     const sourceEntry = propertiesPanel.entry('ToolTask_1-input-0-source');
-    const fixEntry = propertiesPanel.entry('ToolTask_1-input-0-source-fix');
+    const fixButton = sourceEntry.locator(DIAGNOSTIC_ACTION);
 
     await expect(sourceEntry).toContainText('fromAi(url)');
-
-    // the entry is checked for attachment rather than visibility: it is
-    // deliberately zero height, with the button lifted out of flow
-    await expect(fixEntry).toBeAttached();
-
-    const fixButton = fixEntry.locator('[data-test="agent-config-autofill-button"]');
-
     await expect(fixButton).toBeVisible();
 
     // when
@@ -62,7 +56,7 @@ test.describe('agent config autofix', function() {
 
     // then
     await expect(sourceEntry).toContainText('fromAi(toolCall.url)');
-    await expect(fixEntry).toHaveCount(0);
+    await expect(fixButton).toHaveCount(0);
   });
 
 
@@ -86,10 +80,10 @@ test.describe('agent config autofix', function() {
     await propertiesPanel.openListItem('ToolTask_1-input-0');
 
     const sourceEntry = propertiesPanel.entry('ToolTask_1-input-0-source');
-    const fixEntry = propertiesPanel.entry('ToolTask_1-input-0-source-fix');
+    const fixButton = sourceEntry.locator(DIAGNOSTIC_ACTION);
 
     await app.step('accept the correction', async () => {
-      await fixEntry.locator('[data-test="agent-config-autofill-button"]').click();
+      await fixButton.click();
     });
 
     await expect(sourceEntry).toContainText('fromAi(toolCall.url)');
@@ -101,7 +95,7 @@ test.describe('agent config autofix', function() {
 
     // then
     await expect(sourceEntry).toContainText('fromAi(url)');
-    await expect(fixEntry).toBeAttached();
+    await expect(fixButton).toBeVisible();
   });
 
 });
