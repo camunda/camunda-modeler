@@ -9,14 +9,45 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: support custom element template sources ([#5100](https://github.com/camunda/camunda-modeler/issues/5100), [#6181](https://github.com/camunda/camunda-modeler/pull/6181))
 * `FEAT`: manage Camunda 8 connections as a list, edit and check them in a dialog ([#6256](https://github.com/camunda/camunda-modeler/pull/6256))
 * `FEAT`: support Camunda 8.11 as an alpha engine profile ([#6250](https://github.com/camunda/camunda-modeler/issues/6250))
+* `FEAT`: show AI agent autofix and autofill actions as properties panel diagnostics ([camunda/linting-autofix#28](https://github.com/camunda/linting-autofix/issues/28), [bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
+* `FEAT`: display an icon on informational diagnostics in properties panel ([bpmn-io/properties-panel#557](https://github.com/bpmn-io/properties-panel/pull/557))
+* `FEAT`: display unavailable cluster note of the configuration chooser as an informational notice ([#6214](https://github.com/camunda/camunda-modeler/issues/6214), [bpmn-io/bpmn-js-element-templates#309](https://github.com/bpmn-io/bpmn-js-element-templates/pull/309))
+* `FEAT`: support letter shortcuts on non-Latin keyboard layouts ([bpmn-io/diagram-js#1112](https://github.com/bpmn-io/diagram-js/pull/1112), [bpmn-io/bpmn-js#1888](https://github.com/bpmn-io/bpmn-js/issues/1888), [bpmn-io/bpmn-js#2108](https://github.com/bpmn-io/bpmn-js/issues/2108))
+* `FEAT`: make minimap toggle keyboard accessible ([bpmn-io/diagram-js-minimap#121](https://github.com/bpmn-io/diagram-js-minimap/pull/121))
+* `FEAT`: use first choice as default value of non-optional `Dropdown` template property without `value` ([#6242](https://github.com/camunda/camunda-modeler/issues/6242), [bpmn-io/bpmn-js-element-templates#307](https://github.com/bpmn-io/bpmn-js-element-templates/pull/307))
+* `FEAT`: source colors and corner radii from `@bpmn-io/theme` tokens in canvas, element templates and minimap ([bpmn-io/bpmn-js#2497](https://github.com/bpmn-io/bpmn-js/pull/2497), [bpmn-io/bpmn-js-element-templates#301](https://github.com/bpmn-io/bpmn-js-element-templates/pull/301), [bpmn-io/diagram-js-minimap#120](https://github.com/bpmn-io/diagram-js-minimap/pull/120))
 * `FIX`: correct linting to exempt AI agent gateway tools (`io.camunda.agenticai.gateway.type`) from `agent-tool-documentation` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6240](https://github.com/camunda/camunda-modeler/issues/6240))
 * `FIX`: require documentation for intermediate event tools in `agent-tool-documentation` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6241](https://github.com/camunda/camunda-modeler/issues/6241))
 * `FIX`: require a `toolCallResult` for intermediate event tools in `agent-tool-output-key` ([camunda/bpmnlint-plugin-camunda-compat#276](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/276), [#6241](https://github.com/camunda/camunda-modeler/issues/6241))
 * `FIX`: do not require a `toolCallResult` in `agent-tool-output-key` when the tool flow throws an error or escalation ([camunda/bpmnlint-plugin-camunda-compat#277](https://github.com/camunda/bpmnlint-plugin-camunda-compat/pull/277), [#6239](https://github.com/camunda/camunda-modeler/issues/6239))
 * `FIX`: clarify unsupported condition message in properties panel ([#186](https://github.com/camunda/linting/pull/186), [#5820](https://github.com/camunda/camunda-modeler/issues/5820))
+* `FIX`: show all AI agent autofix actions of an element at once instead of one per group ([camunda/linting-autofix#28](https://github.com/camunda/linting-autofix/issues/28))
+* `FIX`: keep size of resized external labels on import ([#6082](https://github.com/camunda/camunda-modeler/issues/6082), [bpmn-io/bpmn-js#2503](https://github.com/bpmn-io/bpmn-js/pull/2503))
+* `FIX`: snap external labels to nested elements ([bpmn-io/bpmn-js#2504](https://github.com/bpmn-io/bpmn-js/pull/2504))
+* `FIX`: remove `BPMNLabel` with external label ([bpmn-io/bpmn-js#2499](https://github.com/bpmn-io/bpmn-js/pull/2499), [bpmn-io/bpmn-js#1893](https://github.com/bpmn-io/bpmn-js/issues/1893))
+* `FIX`: cancel canvas move on diagram destroy ([bpmn-io/diagram-js#1110](https://github.com/bpmn-io/diagram-js/pull/1110), [bpmn-io/diagram-js#1109](https://github.com/bpmn-io/diagram-js/issues/1109))
+* `FIX`: cancel active drag on listener error ([bpmn-io/diagram-js#961](https://github.com/bpmn-io/diagram-js/issues/961))
+* `FIX`: display documentation link in the popup menu bottom when keyboard is used ([bpmn-io/diagram-js#1103](https://github.com/bpmn-io/diagram-js/issues/1103))
+* `FIX`: prevent overflowing and looping of text when layouting it ([bpmn-io/diagram-js#1106](https://github.com/bpmn-io/diagram-js/pull/1106), [bpmn-io/diagram-js#1105](https://github.com/bpmn-io/diagram-js/pull/1105))
+* `FIX`: only show template section in properties panel if there is a template to apply or change ([#6175](https://github.com/camunda/camunda-modeler/issues/6175), [bpmn-io/bpmn-js-element-templates#302](https://github.com/bpmn-io/bpmn-js-element-templates/pull/302))
+* `FIX`: do not sentence-case element template configuration name ([bpmn-io/bpmn-js-element-templates#303](https://github.com/bpmn-io/bpmn-js-element-templates/pull/303))
+* `FIX`: correct failed import holding implicit root ([bpmn-io/bpmn-js-properties-panel#1256](https://github.com/bpmn-io/bpmn-js-properties-panel/issues/1256))
+* `FIX`: convert empty optional FEEL number fields to FEEL on `=` key press ([bpmn-io/properties-panel#559](https://github.com/bpmn-io/properties-panel/pull/559))
+* `FIX`: mark checkbox entries with errors in properties panel ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
+* `FIX`: report the most severe templating lint error in properties panel, not the first one ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `DEPS`: update to `@camunda/linting@4.2.1`
 * `FIX`: deduplicate element template updates triggered concurrently ([#6262](https://github.com/camunda/camunda-modeler/pull/6262))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
+* `DEPS`: update to `@bpmn-io/properties-panel@3.58.0`
+* `DEPS`: update to `@camunda/linting-autofix@0.3.0`
+* `DEPS`: update to `bpmn-js@18.31.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.40.0`
+* `DEPS`: update to `bpmn-js-properties-panel@5.65.2`
+* `DEPS`: update to `camunda-bpmn-js@5.37.0`
+* `DEPS`: update to `camunda-bpmn-moddle@8.0.2`
+* `DEPS`: update to `diagram-js@15.28.1`
+* `DEPS`: update to `diagram-js-direct-editing@3.6.0`
+* `DEPS`: update to `diagram-js-minimap@5.6.0`
 
 ## 5.52.0
 
