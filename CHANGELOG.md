@@ -51,7 +51,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/improved-canvas@1.12.0`
 * `DEPS`: update to `@camunda/linting-autofix@0.3.0`
 * `DEPS`: update to `@camunda/rpa-integration@2.0.0`
-* `DEPS`: update to `@camunda/task-testing@7.0.0`
+* `DEPS`: update to `@camunda/task-testing@7.0.1`
 * `DEPS`: update to `bpmn-js@18.31.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.40.0`
 * `DEPS`: update to `bpmn-js-properties-panel@5.65.2`

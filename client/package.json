@@ -26,7 +26,7 @@
     "@camunda/linting": "^4.2.1",
     "@camunda/linting-autofix": "^0.3.0",
     "@camunda/rpa-integration": "^2.0.0",
-    "@camunda/task-testing": "^7.0.0",
+    "@camunda/task-testing": "^7.0.1",
     "@codemirror/commands": "^6.6.2",
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/lang-xml": "^6.1.0",
