@@ -123,7 +123,7 @@ module.exports = function(karma) {
             oneOf: [
               {
                 test: /[/\\][A-Z][^/\\]+\.svg$/,
-                use: 'react-svg-loader'
+                use: '@svgr/webpack'
               },
               {
                 test: /\.(bpmn|dmn|xml|png|svg|form|rpa)$/,
