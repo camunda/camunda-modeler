@@ -81,7 +81,7 @@ module.exports = {
         oneOf: [
           {
             test: /[/\\][A-Z][^/\\]+\.svg$/,
-            use: 'react-svg-loader'
+            use: '@svgr/webpack'
           },
           {
             test: /\.(bpmn|dmn|form|rpa)$/,
