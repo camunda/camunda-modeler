@@ -69,7 +69,6 @@
     "electron": "^44.0.0",
     "electron-builder": "^26.16.1",
     "electron-extension-installer": "^2.0.1",
-    "electron-publisher-s3": "^20.17.2",
     "electron-reloader": "^1.2.0",
     "eslint": "^9.39.5",
     "eslint-plugin-bpmn-io": "^2.3.1",
