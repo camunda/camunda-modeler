@@ -59,12 +59,14 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `bpmn-js-properties-panel@5.65.3`
 * `DEPS`: update to `camunda-bpmn-js@5.38.0`
 * `DEPS`: update to `camunda-bpmn-moddle@8.0.2`
-* `DEPS`: update to `camunda-dmn-js@3.9.0`
+* `DEPS`: update to `camunda-dmn-js@4.0.0`
 * `DEPS`: update to `diagram-js@15.28.1`
 * `DEPS`: update to `diagram-js-direct-editing@3.6.0`
 * `DEPS`: update to `diagram-js-minimap@5.6.0`
 * `DEPS`: update to `diagram-js-origin@1.4.2`
-* `DEPS`: update to `dmn-js@17.12.3`
+* `DEPS`: update to `dmn-js@18.0.0`
+* `DEPS`: update to `dmn-js-properties-panel@3.13.0`
+* `DEPS`: update to `dmn-js-shared@18.0.0`
 
 ### BPMN
 
