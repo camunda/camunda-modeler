@@ -54,6 +54,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/linting-autofix@0.3.0`
 * `DEPS`: update to `@camunda/rpa-integration@2.0.0`
 * `DEPS`: update to `@camunda/task-testing@7.0.1`
+* `DEPS`: update to `@camunda8/sdk@8.8.18`
 * `DEPS`: update to `@codemirror/commands@6.11.1`
 * `DEPS`: update to `@codemirror/language@6.13.1`
 * `DEPS`: update to `@codemirror/search@6.7.2`
@@ -75,6 +76,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `dmn-js@18.0.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.13.0`
 * `DEPS`: update to `dmn-js-shared@18.0.0`
+* `DEPS`: update to `p-limit@7.3.3`
 * `DEPS`: update to `react@19.3.1`
 * `DEPS`: update to `react-dom@19.3.1`
 * `DEPS`: update to `ua-parser-js@1.0.41`
