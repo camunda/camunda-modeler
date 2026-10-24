@@ -28,7 +28,7 @@
     "prerelease": "run-s update-license-book",
     "update-license-book": "node tasks/license-book.js -o THIRD_PARTY_NOTICES -c",
     "send-license-book-summary": "node tasks/send-license-book-summary.js -s",
-    "release": "bio-release --force-release --no-build",
+    "release": "bio-release --force-release --no-build --no-release-draft",
     "release:rc": "npm run release -- --preid rc",
     "test": "run-s *:test",
     "test:e2e": "playwright test -c test/e2e/playwright.config.js --project=base",
@@ -57,7 +57,7 @@
     "url": "https://github.com/camunda/camunda-modeler"
   },
   "devDependencies": {
-    "@bpmn-io/release": "^0.5.1",
+    "@bpmn-io/release": "^0.7.0",
     "@playwright/test": "^1.62.1",
     "chai": "^6.3.0",
     "chai-subset": "^1.6.0",
