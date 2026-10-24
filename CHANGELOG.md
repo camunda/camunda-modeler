@@ -39,33 +39,54 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: mark checkbox entries with errors in properties panel ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: report the most severe templating lint error in properties panel, not the first one ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: cancel an active drag when a listener fails ([bpmn-io/diagram-js#961](https://github.com/bpmn-io/diagram-js/issues/961))
-* `DEPS`: update to `@camunda/linting@4.2.1`
 * `FIX`: deduplicate element template updates triggered concurrently ([#6262](https://github.com/camunda/camunda-modeler/pull/6262))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
 * `DEPS`: add `@bpmn-io/c4-theme@0.3.1`
+* `DEPS`: update to `@bpmn-io/form-js@2.1.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.58.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@4.0.1`
-* `DEPS`: update to `@camunda/design-system@0.72.0`
+* `DEPS`: update to `@camunda/design-system@0.76.0`
 * `DEPS`: update to `@camunda/feel-playground@1.0.3`
 * `DEPS`: update to `@camunda/form-playground@0.28.0`
-* `DEPS`: update to `@camunda/improved-canvas@1.12.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.12.2`
+* `DEPS`: update to `@camunda/linting@4.3.0`
 * `DEPS`: update to `@camunda/linting-autofix@0.3.0`
 * `DEPS`: update to `@camunda/rpa-integration@2.0.0`
 * `DEPS`: update to `@camunda/task-testing@7.0.1`
+* `DEPS`: update to `@camunda8/sdk@8.8.18`
+* `DEPS`: update to `@codemirror/commands@6.11.1`
+* `DEPS`: update to `@codemirror/language@6.13.1`
+* `DEPS`: update to `@codemirror/search@6.7.2`
+* `DEPS`: update to `@codemirror/state@6.7.6`
+* `DEPS`: update to `@codemirror/view@6.43.14`
+* `DEPS`: update to `@lezer/highlight@1.2.5`
+* `DEPS`: update to `@sentry/electron@8.2.0`
+* `DEPS`: update to `@uiw/codemirror-theme-vscode@4.25.12`
 * `DEPS`: update to `bpmn-js@18.31.1`
-* `DEPS`: update to `bpmn-js-element-templates@2.40.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.65.2`
-* `DEPS`: update to `camunda-bpmn-js@5.37.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.40.1`
+* `DEPS`: update to `bpmn-js-properties-panel@5.65.3`
+* `DEPS`: update to `camunda-bpmn-js@5.38.0`
 * `DEPS`: update to `camunda-bpmn-moddle@8.0.2`
-* `DEPS`: update to `camunda-dmn-js@3.9.0`
+* `DEPS`: update to `camunda-dmn-js@4.0.0`
 * `DEPS`: update to `diagram-js@15.28.1`
 * `DEPS`: update to `diagram-js-direct-editing@3.6.0`
 * `DEPS`: update to `diagram-js-minimap@5.6.0`
-* `DEPS`: update to `dmn-js@17.12.3`
+* `DEPS`: update to `diagram-js-origin@1.4.2`
+* `DEPS`: update to `dmn-js@18.0.0`
+* `DEPS`: update to `dmn-js-properties-panel@3.13.0`
+* `DEPS`: update to `dmn-js-shared@18.0.0`
+* `DEPS`: update to `electron@44.7.2`
+* `DEPS`: update to `p-limit@7.3.3`
+* `DEPS`: update to `react@19.3.1`
+* `DEPS`: update to `react-dom@19.3.1`
+* `DEPS`: update to `ua-parser-js@1.0.41`
 
 ### BPMN
 
 * `FEAT`: reorganize the task testing panel around a run card, with extra tabs as collapsible sections inside it ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
+* `FEAT`: show all element types in the create/append menu categories ([#6279](https://github.com/camunda/camunda-modeler/issues/6279), [camunda/camunda-bpmn-js#504](https://github.com/camunda/camunda-bpmn-js/pull/504))
+* `FEAT`: list less common task and gateway options last in the create/append menu ([#6279](https://github.com/camunda/camunda-modeler/issues/6279), [bpmn-io/bpmn-js-create-append-anything#93](https://github.com/bpmn-io/bpmn-js-create-append-anything/pull/93))
+* `FEAT`: warn about timer start events with a date in the past from Camunda 8.6 ([camunda/linting#188](https://github.com/camunda/linting/issues/188), [camunda/bpmnlint-plugin-camunda-compat#279](https://github.com/camunda/bpmnlint-plugin-camunda-compat/issues/279))
 * `FIX`: wait for the element instance before reporting a terminated task test ([camunda/task-testing#104](https://github.com/camunda/task-testing/pull/104))
 * `FIX`: show the actual task testing error and its action, e.g. _Show problems_ for a diagram with errors ([#6281](https://github.com/camunda/camunda-modeler/pull/6281), [camunda/task-testing#106](https://github.com/camunda/task-testing/pull/106))
 * `FIX`: do not show a connection error in task testing before the connection check finishes ([#6281](https://github.com/camunda/camunda-modeler/pull/6281))
@@ -73,12 +94,32 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: show the most severe element template lint error, not the first one ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: show linting errors over local validation errors in element template entries, like in all other entries ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: convert empty optional FEEL number fields to FEEL on `=` key press ([bpmn-io/properties-panel#559](https://github.com/bpmn-io/properties-panel/pull/559))
+* `FIX`: keep correlation key of message start event in event sub-process when its label moves ([#6276](https://github.com/camunda/camunda-modeler/issues/6276), [bpmn-io/bpmn-js-element-templates#310](https://github.com/bpmn-io/bpmn-js-element-templates/pull/310))
+* `FIX`: validate correlation key constraints of message start event in event sub-process ([#6276](https://github.com/camunda/camunda-modeler/issues/6276), [bpmn-io/bpmn-js-element-templates#310](https://github.com/bpmn-io/bpmn-js-element-templates/pull/310))
+* `FIX`: do not report property names after an index access as consumed variables ([bpmn-io/variable-resolver#130](https://github.com/bpmn-io/variable-resolver/pull/130))
+* `FIX`: link to stable Camunda docs in job priority tooltip ([bpmn-io/bpmn-js-properties-panel#1258](https://github.com/bpmn-io/bpmn-js-properties-panel/pull/1258))
+* `FIX`: keep the new context pad entries to link a form, process or decision when an element template does not fix the linked resource ([camunda/improved-canvas#104](https://github.com/camunda/improved-canvas/pull/104))
+* `FIX`: add small delay before opening the append pad of the new context pad ([camunda/improved-canvas#105](https://github.com/camunda/improved-canvas/pull/105))
 
 ### DMN
 
+* `FEAT`: support decision services; they can be opened and edited but not created from the palette ([bpmn-io/dmn-js#957](https://github.com/bpmn-io/dmn-js/issues/957))
+* `FEAT`: show an icon for decision services in the properties panel header ([bpmn-io/dmn-js-properties-panel@3.13.0](https://github.com/bpmn-io/dmn-js-properties-panel/releases/tag/v3.13.0))
+* `FEAT`: show named item definitions of the diagram as custom data types in type dropdowns ([bpmn-io/dmn-js#1018](https://github.com/bpmn-io/dmn-js/issues/1018), [bpmn-io/dmn-js#1029](https://github.com/bpmn-io/dmn-js/pull/1029), [bpmn-io/dmn-js#1048](https://github.com/bpmn-io/dmn-js/pull/1048))
+* `FEAT`: group data types in type dropdowns ([bpmn-io/dmn-js#1039](https://github.com/bpmn-io/dmn-js/pull/1039), [bpmn-io/dmn-js-properties-panel#151](https://github.com/bpmn-io/dmn-js-properties-panel/pull/151))
+* `FEAT`: add tooltip with title and shortcut on DRD palette entries ([bpmn-io/diagram-js#1082](https://github.com/bpmn-io/diagram-js/pull/1082))
+* `FEAT`: source colors and corner radii from `@bpmn-io/theme` tokens in the DRD, decision tables and expressions; the `--color-*` palette variables are removed, override the `--bio-*` tokens instead ([bpmn-io/dmn-js#1028](https://github.com/bpmn-io/dmn-js/pull/1028), [bpmn-io/diagram-js#1102](https://github.com/bpmn-io/diagram-js/pull/1102))
+* `FEAT`: register the DRD and decision table viewers as `viewer` in their injector and provide data types as objects (`name`, `label`, `group`); DMN plug-ins that inject `drd` or `decisionTable`, or read or provide data types as strings, must be adjusted ([bpmn-io/dmn-js#1039](https://github.com/bpmn-io/dmn-js/pull/1039), [bpmn-io/dmn-js#1048](https://github.com/bpmn-io/dmn-js/pull/1048))
+* `FIX`: use the FEEL data type names `date and time`, `years and months duration` and `days and time duration` for newly picked types in Camunda 8 diagrams; existing diagrams are not migrated ([bpmn-io/dmn-js#1013](https://github.com/bpmn-io/dmn-js/issues/1013), [bpmn-io/dmn-js#1039](https://github.com/bpmn-io/dmn-js/pull/1039))
+* `FIX`: show example values as placeholders in the simple date, time and duration editors of decision tables ([bpmn-io/dmn-js#1039](https://github.com/bpmn-io/dmn-js/pull/1039))
+* `FIX`: clear the variable type of boxed expression elements instead of persisting an empty one ([bpmn-io/dmn-js#1039](https://github.com/bpmn-io/dmn-js/pull/1039))
 * `FIX`: persist the BKM result type on the function body, not on the variable ([bpmn-io/dmn-js#1027](https://github.com/bpmn-io/dmn-js/issues/1027))
 * `FIX`: update DRD requirement and association references on reconnect ([bpmn-io/dmn-js#1032](https://github.com/bpmn-io/dmn-js/issues/1032))
 * `FIX`: edit the boxed expression name like the other view names ([bpmn-io/dmn-js#1028](https://github.com/bpmn-io/dmn-js/pull/1028))
+
+### Forms
+
+* `FIX`: add missing translation labels ([bpmn-io/form-js#1569](https://github.com/bpmn-io/form-js/issues/1569))
 
 ## 5.52.0
 
