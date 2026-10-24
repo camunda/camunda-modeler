@@ -53,6 +53,14 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/linting-autofix@0.3.0`
 * `DEPS`: update to `@camunda/rpa-integration@2.0.0`
 * `DEPS`: update to `@camunda/task-testing@7.0.1`
+* `DEPS`: update to `@codemirror/commands@6.11.1`
+* `DEPS`: update to `@codemirror/language@6.13.1`
+* `DEPS`: update to `@codemirror/search@6.7.2`
+* `DEPS`: update to `@codemirror/state@6.7.6`
+* `DEPS`: update to `@codemirror/view@6.43.14`
+* `DEPS`: update to `@lezer/highlight@1.2.5`
+* `DEPS`: update to `@sentry/electron@8.2.0`
+* `DEPS`: update to `@uiw/codemirror-theme-vscode@4.25.12`
 * `DEPS`: update to `bpmn-js@18.31.1`
 * `DEPS`: update to `bpmn-js-element-templates@2.40.1`
 * `DEPS`: update to `bpmn-js-properties-panel@5.65.3`
@@ -66,6 +74,9 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `dmn-js@18.0.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.13.0`
 * `DEPS`: update to `dmn-js-shared@18.0.0`
+* `DEPS`: update to `react@19.3.1`
+* `DEPS`: update to `react-dom@19.3.1`
+* `DEPS`: update to `ua-parser-js@1.0.41`
 
 ### BPMN
 
