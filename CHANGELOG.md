@@ -76,6 +76,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `dmn-js@18.0.0`
 * `DEPS`: update to `dmn-js-properties-panel@3.13.0`
 * `DEPS`: update to `dmn-js-shared@18.0.0`
+* `DEPS`: update to `electron@44.7.2`
 * `DEPS`: update to `p-limit@7.3.3`
 * `DEPS`: update to `react@19.3.1`
 * `DEPS`: update to `react-dom@19.3.1`
