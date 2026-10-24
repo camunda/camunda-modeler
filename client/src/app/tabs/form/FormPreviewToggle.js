@@ -14,8 +14,7 @@ import classnames from 'classnames';
 
 import { Fill } from '../../slot-fill';
 
-import DesignIcon from '../../../../resources/icons/Design.svg';
-import ValidateIcon from '../../../../resources/icons/Validate.svg';
+import { Eye, PencilRuler } from '@camunda/design-system/icons';
 
 import { FORM_PREVIEW_TRIGGER } from './FormEditor';
 
@@ -49,14 +48,14 @@ export function FormPreviewToggle(props) {
         title="Open design mode"
         onClick={ handleCollapse }
       >
-        <DesignIcon /> Design
+        <PencilRuler /> Design
       </button>
       <button
         className={ classnames('btn', { 'btn--active': previewOpen }) }
         title="Open validation mode"
         onClick={ handleOpen }
       >
-        <ValidateIcon /> Validate
+        <Eye /> Validate
       </button>
     </div>
   </Fill>;

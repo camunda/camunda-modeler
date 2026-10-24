@@ -29,7 +29,7 @@ import {
 
 import { Fill } from '../../../app/slot-fill';
 
-import DeployIcon from 'icons/Deploy.svg';
+import { Rocket } from '@camunda/design-system/icons';
 
 import { ENGINES } from '../../../util/Engines';
 import { determineCockpitUrl } from '../shared/webAppUrls';
@@ -578,7 +578,7 @@ export default class DeploymentTool extends PureComponent {
           className={ classNames('btn', { 'btn--active': isDeployOpen() }) }
           ref={ this._anchorRef }
         >
-          <DeployIcon className="icon" />
+          <Rocket className="icon" />
         </button>
       </Fill> }
 

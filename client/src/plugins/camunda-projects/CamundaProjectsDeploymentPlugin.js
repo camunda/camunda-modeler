@@ -14,8 +14,7 @@ import classNames from 'classnames';
 
 import { Fill } from '../../app/slot-fill';
 
-import DeployIcon from 'icons/Deploy.svg';
-import CamundaProjectIcon from 'icons/file-types/CamundaProject.svg';
+import { ProjectIcon, Rocket } from '@camunda/design-system/icons';
 
 import DeploymentPluginOverlay from '../zeebe-plugin/deployment-plugin/DeploymentPluginOverlay';
 
@@ -103,7 +102,7 @@ export default function CamundaProjectsDeploymentPlugin(props) {
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
-          <DeployIcon className="icon" />
+          <Rocket className="icon" />
         </button>
       </Fill>
     ) }
@@ -121,7 +120,7 @@ export default function CamundaProjectsDeploymentPlugin(props) {
         displayNotification={ displayNotification }
         renderDescription={ `${ resourceConfigs.length } ${ resourceConfigs.length === 1 ? 'file' : 'files' } will be deployed` }
         renderHeader={ <>
-          <CamundaProjectIcon width="16" height="16" />Deploy project
+          <ProjectIcon width="16" height="16" />Deploy project
         </> }
         renderSubmit="Deploy project"
         triggerAction={ triggerAction }

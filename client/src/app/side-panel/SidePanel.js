@@ -56,7 +56,7 @@ export const DEFAULT_LAYOUT = {
  *   <SidePanel.Tab id="properties" label="Properties" icon={Settings}>
  *     <PropertiesTab propertiesPanelRef={propertiesPanelRef} />
  *   </SidePanel.Tab>
- *   <SidePanel.Tab id="test" label="Test" icon={TaskTestingIcon}>
+ *   <SidePanel.Tab id="test" label="Test" icon={SquarePlay}>
  *     <TestTab config={config} ... />
  *   </SidePanel.Tab>
  * </SidePanel>

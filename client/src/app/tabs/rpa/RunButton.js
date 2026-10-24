@@ -15,7 +15,7 @@ import { Fill } from '../../slot-fill';
 import classNames from 'classnames';
 
 import { RunDialog } from '@camunda/rpa-integration';
-import TestIcon from './resources/TestIcon.svg';
+import { TestTubeDiagonal } from '@camunda/design-system/icons';
 
 export default function RunButton(props) {
   const {
@@ -60,7 +60,7 @@ export default function RunButton(props) {
           title="Test RPA script"
           className={ classNames('btn', { 'btn--active': isOpen }) }
         >
-          <TestIcon />
+          <TestTubeDiagonal className="icon" />
         </button>
       </Fill>
     }

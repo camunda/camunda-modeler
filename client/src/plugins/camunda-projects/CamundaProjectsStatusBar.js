@@ -22,8 +22,7 @@ import { Overlay, Section } from '../../shared/ui';
 
 import { utmTag } from '../../util/utmTag';
 
-import CamundaProjectIcon from '../../../resources/icons/file-types/CamundaProject.svg';
-import ErrorIcon from '../../../resources/icons/Error.svg';
+import { CircleX, ProjectIcon } from '@camunda/design-system/icons';
 
 import * as css from './CamundaProjectsStatusBar.css';
 
@@ -75,7 +74,7 @@ export default function CamundaProjectsStatusBar(props) {
           onClick={ () => setIsOpen(!isOpen) }
           title={ camundaProject ? 'This file is part of a project' : 'New project...' }
         >
-          <CamundaProjectIcon width="16" height="16" />
+          <ProjectIcon width="16" height="16" />
         </button>
       </Fill>
     }
@@ -109,7 +108,7 @@ export default function CamundaProjectsStatusBar(props) {
                   <ul className="files camunda-project-file" role="menu">
                     <li role="menuitem" className="file" key={ camundaProject.file.path } title={ camundaProject.file.path }>
                       <button type="button" onClick={ () => onRevealInFileExplorer(camundaProject.file.path) }>
-                        <CamundaProjectIcon className="file-icon" width="16" height="16" /><span className="file-name">{ camundaProject.file.name }</span>
+                        <ProjectIcon className="file-icon" width="16" height="16" /><span className="file-name">{ camundaProject.file.name }</span>
                       </button>
                     </li>
                   </ul>
@@ -130,7 +129,7 @@ export default function CamundaProjectsStatusBar(props) {
                         let Icon;
 
                         if (error) {
-                          Icon = ErrorIcon;
+                          Icon = CircleX;
                         } else {
                           const provider = tabsProvider.getProviderForFile(file);
 

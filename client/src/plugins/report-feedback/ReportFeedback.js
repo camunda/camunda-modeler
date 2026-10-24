@@ -13,7 +13,7 @@ import React, {
   PureComponent
 } from 'react';
 
-import FeedbackIcon from 'icons/Feedback.svg';
+import { MessageSquareWarning } from '@camunda/design-system/icons';
 
 import classNames from 'classnames';
 
@@ -105,7 +105,7 @@ export class ReportFeedback extends PureComponent {
             onClick={ toggle }
             ref={ buttonRef }
           >
-            <FeedbackIcon className="icon" />
+            <MessageSquareWarning className="icon" />
           </button>
         </Fill>
         {

@@ -19,8 +19,7 @@ import StartInstanceConfigValidator from './StartInstanceConfigValidator';
 
 import StartInstancePluginOverlay from './StartInstancePluginOverlay';
 
-import BPMNIcon from 'icons/file-types/BPMN.svg';
-import StartInstanceIcon from 'icons/Play.svg';
+import { BpmnDiagramIcon, Play } from '@camunda/design-system/icons';
 
 export default function StartInstancePlugin(props) {
   const {
@@ -84,7 +83,7 @@ export default function StartInstancePlugin(props) {
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
-          <StartInstanceIcon className="icon" />
+          <Play className="icon" />
         </button>
       </Fill>
     ) }
@@ -98,9 +97,9 @@ export default function StartInstancePlugin(props) {
         displayNotification={ displayNotification }
         log={ log }
         onClose={ () => setOverlayOpen(false) }
-        renderDeploymentHeader={ <><BPMNIcon width="16" height="16" />Configure deployment</> }
+        renderDeploymentHeader={ <><BpmnDiagramIcon width="16" height="16" />Configure deployment</> }
         renderDeploymentSubmit="Go to start instance"
-        renderStartInstanceHeader={ <><BPMNIcon width="16" height="16" />Start BPMN process instance</> }
+        renderStartInstanceHeader={ <><BpmnDiagramIcon width="16" height="16" />Start BPMN process instance</> }
         renderStartInstanceSubmit="Start BPMN process instance"
         startInstance={ _getGlobal('startInstance') }
         startInstanceConfigValidator={ StartInstanceConfigValidator }

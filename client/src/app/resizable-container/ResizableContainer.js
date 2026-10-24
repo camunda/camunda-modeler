@@ -12,8 +12,7 @@ import React, { useCallback, useRef } from 'react';
 
 import classNames from 'classnames';
 
-import HandleBarX from '../../../resources/icons/HandleBarX.svg';
-import HandleBarY from '../../../resources/icons/HandleBarY.svg';
+import { HandleBarX, HandleBarY } from './HandleBar';
 
 import * as css from './ResizableContainer.css';
 
