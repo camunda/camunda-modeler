@@ -10,7 +10,7 @@
 
 import React, { PureComponent } from 'react';
 
-import PlayIcon from 'icons/Play.svg';
+import { Play } from '@camunda/design-system/icons';
 
 import CamundaAPI, { DeploymentError, StartInstanceError } from '../shared/CamundaAPI';
 import { ConnectionError } from '../shared/RestAPI';
@@ -542,7 +542,7 @@ export default class StartInstanceTool extends PureComponent {
           overlayState={ this.state.activeButton }
           onClose={ this.toggleOverlay.bind(this) }
         >
-          <PlayIcon className="icon" />
+          <Play className="icon" />
         </OverlayDropdown>
       </Fill>
       }

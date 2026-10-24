@@ -16,11 +16,15 @@ import { getIn } from 'formik';
 import classNames from 'classnames';
 
 import { IconButton } from '@camunda/design-system';
-import { CircleAlert, File, Plus, Trash2 } from '@camunda/design-system/icons';
-
-import BPMNIcon from '../../../../resources/icons/file-types/BPMN.svg';
-import DMNIcon from '../../../../resources/icons/file-types/DMN.svg';
-import FormIcon from '../../../../resources/icons/file-types/Form.svg';
+import {
+  BpmnDiagramIcon,
+  CircleAlert,
+  DecisionIcon,
+  File,
+  FormIcon,
+  Plus,
+  Trash2
+} from '@camunda/design-system/icons';
 
 import * as css from './FileInput.css';
 
@@ -174,9 +178,9 @@ function getIconFromFileType(name, error) {
 
   switch (extension) {
   case 'bpmn':
-    return <BPMNIcon />;
+    return <BpmnDiagramIcon />;
   case 'dmn':
-    return <DMNIcon />;
+    return <DecisionIcon />;
   case 'form':
     return <FormIcon />;
   default:

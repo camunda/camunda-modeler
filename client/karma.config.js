@@ -28,7 +28,6 @@ var { DefinePlugin } = require('webpack');
 var MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 var absoluteBasePath = path.resolve(__dirname);
-var resourcePath = path.resolve(__dirname + '/resources');
 
 // configures browsers to run test against
 // any of [ 'ChromeHeadless', 'Chrome', 'Firefox', 'IE', 'PhantomJS' ]
@@ -120,16 +119,8 @@ module.exports = function(karma) {
             }
           },
           {
-            oneOf: [
-              {
-                test: /[/\\][A-Z][^/\\]+\.svg$/,
-                use: 'react-svg-loader'
-              },
-              {
-                test: /\.(bpmn|dmn|xml|png|svg|form|rpa)$/,
-                type: 'asset/source'
-              }
-            ]
+            test: /\.(bpmn|dmn|xml|png|svg|form|rpa)$/,
+            type: 'asset/source'
           }
         ]
       },
@@ -159,8 +150,7 @@ module.exports = function(karma) {
         ],
         modules: [
           'node_modules',
-          absoluteBasePath,
-          resourcePath
+          absoluteBasePath
         ],
         alias: {
           'react': path.dirname(require.resolve('react/package.json')),

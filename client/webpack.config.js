@@ -37,8 +37,6 @@ const { LicenseWebpackPlugin } = require('license-webpack-plugin');
 
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
-const resourcePath = path.resolve(__dirname + '/resources');
-
 const copyPattern = {
   from: './public'
 };
@@ -59,10 +57,6 @@ module.exports = {
   },
   resolve: {
     mainFields: DEV ? [ 'browser', 'dev:module', 'module', 'main' ] : [ 'browser', 'module', 'main' ],
-    modules: [
-      'node_modules',
-      resourcePath
-    ],
     alias: {
       'react': path.dirname(require.resolve('react/package.json')),
       'react-dom': path.dirname(require.resolve('react-dom/package.json'))
@@ -79,10 +73,6 @@ module.exports = {
       // apply loaders, falling back to file-loader, if non matches
       {
         oneOf: [
-          {
-            test: /[/\\][A-Z][^/\\]+\.svg$/,
-            use: 'react-svg-loader'
-          },
           {
             test: /\.(bpmn|dmn|form|rpa)$/,
             type: 'asset/source'

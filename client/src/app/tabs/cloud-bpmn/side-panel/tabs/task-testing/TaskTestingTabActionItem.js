@@ -14,7 +14,7 @@ import { Fill } from '../../../../../slot-fill';
 
 import TabActionToggle from '../../../../../tab-actions/TabActionToggle';
 
-import TaskTestingIcon from '../../../../../../../resources/icons/TaskTesting.svg';
+import { SquarePlay } from '@camunda/design-system/icons';
 
 import { DEFAULT_LAYOUT } from '../../../../../side-panel/SidePanel';
 
@@ -43,7 +43,7 @@ export default function TaskTestingTabActionItem(props) {
   return <Fill slot="tab-actions" priority={ 1 }>
     <TabActionToggle
       label="Test"
-      icon={ TaskTestingIcon }
+      icon={ SquarePlay }
       pressed={ isActive }
       onClick={ onClick }
     />

@@ -16,8 +16,7 @@ import { Fill } from '../../app/slot-fill';
 
 import StartInstanceConfigValidator from '../zeebe-plugin/start-instance-plugin/StartInstanceConfigValidator';
 
-import CamundaProjectIcon from 'icons/file-types/CamundaProject.svg';
-import StartInstanceIcon from 'icons/Play.svg';
+import { Play, ProjectIcon } from '@camunda/design-system/icons';
 
 import StartInstancePluginOverlay from '../zeebe-plugin/start-instance-plugin/StartInstancePluginOverlay';
 
@@ -89,7 +88,7 @@ export default function CamundaProjectsStartInstancePlugin(props) {
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
-          <StartInstanceIcon className="icon" />
+          <Play className="icon" />
         </button>
       </Fill>
     ) }
@@ -108,10 +107,10 @@ export default function CamundaProjectsStartInstancePlugin(props) {
         displayNotification={ displayNotification }
         renderDeploymentDescription={ `${ camundaProjectItems.length } files will be deployed` }
         renderDeploymentHeader={ <>
-          <CamundaProjectIcon width="16" height="16" />Configure deployment
+          <ProjectIcon width="16" height="16" />Configure deployment
         </> }
         renderDeploymentSubmit="Go to start instance"
-        renderStartInstanceHeader={ <><CamundaProjectIcon width="16" height="16" />Start BPMN process instance</> }
+        renderStartInstanceHeader={ <><ProjectIcon width="16" height="16" />Start BPMN process instance</> }
         renderStartInstanceSubmit="Start BPMN process instance"
         startInstance={ startInstance }
         startInstanceConfigValidator={ StartInstanceConfigValidator }
