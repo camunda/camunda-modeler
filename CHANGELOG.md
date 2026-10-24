@@ -40,28 +40,30 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: mark checkbox entries with errors in properties panel ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: report the most severe templating lint error in properties panel, not the first one ([bpmn-io/properties-panel#554](https://github.com/bpmn-io/properties-panel/pull/554))
 * `FIX`: cancel an active drag when a listener fails ([bpmn-io/diagram-js#961](https://github.com/bpmn-io/diagram-js/issues/961))
-* `DEPS`: update to `@camunda/linting@4.2.1`
 * `FIX`: deduplicate element template updates triggered concurrently ([#6262](https://github.com/camunda/camunda-modeler/pull/6262))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
 * `DEPS`: add `@bpmn-io/c4-theme@0.3.1`
+* `DEPS`: update to `@bpmn-io/form-js@2.1.1`
 * `DEPS`: update to `@bpmn-io/properties-panel@3.58.0`
 * `DEPS`: update to `@bpmn-io/variable-outline@4.0.1`
 * `DEPS`: update to `@camunda/design-system@0.72.0`
 * `DEPS`: update to `@camunda/feel-playground@1.0.3`
 * `DEPS`: update to `@camunda/form-playground@0.28.0`
-* `DEPS`: update to `@camunda/improved-canvas@1.12.0`
+* `DEPS`: update to `@camunda/improved-canvas@1.12.2`
+* `DEPS`: update to `@camunda/linting@4.3.0`
 * `DEPS`: update to `@camunda/linting-autofix@0.3.0`
 * `DEPS`: update to `@camunda/rpa-integration@2.0.0`
 * `DEPS`: update to `@camunda/task-testing@7.0.1`
 * `DEPS`: update to `bpmn-js@18.31.1`
-* `DEPS`: update to `bpmn-js-element-templates@2.40.0`
-* `DEPS`: update to `bpmn-js-properties-panel@5.65.2`
-* `DEPS`: update to `camunda-bpmn-js@5.37.0`
+* `DEPS`: update to `bpmn-js-element-templates@2.40.1`
+* `DEPS`: update to `bpmn-js-properties-panel@5.65.3`
+* `DEPS`: update to `camunda-bpmn-js@5.38.0`
 * `DEPS`: update to `camunda-bpmn-moddle@8.0.2`
 * `DEPS`: update to `camunda-dmn-js@3.9.0`
 * `DEPS`: update to `diagram-js@15.28.1`
 * `DEPS`: update to `diagram-js-direct-editing@3.6.0`
 * `DEPS`: update to `diagram-js-minimap@5.6.0`
+* `DEPS`: update to `diagram-js-origin@1.4.2`
 * `DEPS`: update to `dmn-js@17.12.3`
 
 ### BPMN
