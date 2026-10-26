@@ -422,6 +422,52 @@ describe('<CredentialModal>', function() {
   });
 
 
+  it('should select the first option of a non-optional dropdown without value', async function() {
+
+    // given
+    const onSubmit = sinon.spy();
+    const { getByRole } = renderModal({
+      displayName: 'My cred',
+      configurationTemplate: template({
+        id: 'type',
+        label: 'Type',
+        type: 'Dropdown',
+        choices: [ { name: 'Low', value: 'low' }, { name: 'High', value: 'high' } ],
+        binding: { type: 'property', name: 'type' }
+      }),
+      onSubmit
+    });
+
+    // when
+    fireEvent.click(getByRole('button', { name: 'Create and select' }));
+
+    // then
+    await waitFor(() => {
+      expect(onSubmit).to.have.been.calledOnce;
+      expect(onSubmit.firstCall.args[0].values.type).to.equal('low');
+    });
+  });
+
+
+  it('should not preselect an optional dropdown without value', function() {
+
+    // when
+    const { getByLabelText } = renderModal({
+      configurationTemplate: template({
+        id: 'type',
+        label: 'Type',
+        type: 'Dropdown',
+        choices: [ { name: 'Low', value: 'low' }, { name: 'High', value: 'high' } ],
+        optional: true,
+        binding: { type: 'property', name: 'type' }
+      })
+    });
+
+    // then
+    expect(getByLabelText('Type').textContent).to.equal('None');
+  });
+
+
   [
     [ { minLength: 4 }, 'abc', 'API token must be at least 4 characters.' ],
     [ { maxLength: 2 }, 'abc', 'API token cannot exceed 2 characters.' ],
