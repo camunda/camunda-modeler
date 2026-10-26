@@ -136,5 +136,10 @@ function getInitialFieldValue(property) {
     return String(property.value);
   }
 
+  // a non-optional dropdown falls back to its first choice, like <select>
+  if (property.type === 'Dropdown' && !property.optional && property.choices?.length) {
+    return String(property.choices[ 0 ].value);
+  }
+
   return property.secret ? SECRET_REFERENCE_PREFIX : '';
 }
