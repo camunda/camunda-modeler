@@ -14,7 +14,7 @@ import classnames from 'classnames';
 
 import { isNil } from 'min-dash';
 
-import { Button, Link, StatusIcon } from '@camunda/design-system';
+import { Link, StatusIcon } from '@camunda/design-system';
 
 import { ExternalLink, XCircle } from '@camunda/design-system/icons';
 
@@ -147,17 +147,18 @@ function LintingTabItem(props) {
       }
       {
         report.action && (
-          <Button
-            variant="link"
-            size="xs"
-            onClick={ (event) => {
-              event.preventDefault();
-              stopPropagation(event);
-              onAction(report.action.handler, report.action.options);
-            } }
-          >
-            { report.action.label }
-          </Button>
+          <Link asChild>
+            <button
+              type="button"
+              onClick={ (event) => {
+                event.preventDefault();
+                stopPropagation(event);
+                onAction(report.action.handler, report.action.options);
+              } }
+            >
+              { report.action.label }
+            </button>
+          </Link>
         )
       }
     </div>
