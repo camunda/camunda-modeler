@@ -39,7 +39,7 @@ import PropertiesPanelTabActionItem from '../../resizable-container/PropertiesPa
 import TaskTestingTabActionItem from './side-panel/tabs/task-testing/TaskTestingTabActionItem';
 
 import TaskTestingTab from './side-panel/tabs/task-testing/TaskTestingTab';
-import TaskTestingIcon from '../../../../resources/icons/TaskTesting.svg';
+import { SquarePlay } from '@camunda/design-system/icons';
 
 import VariablesSidePanel, { DEFAULT_LAYOUT as VARIABLES_PANEL_DEFAULT_LAYOUT } from './variables-side-panel/VariablesSidePanel';
 import VariablesTabActionItem from './variables-side-panel/VariablesTabActionItem';
@@ -1059,7 +1059,7 @@ export class BpmnEditor extends CachedComponent {
                   <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
                     <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
                   </SidePanel.Tab>
-                  <SidePanel.Tab id="test" label="Test" icon={ TaskTestingIcon }>
+                  <SidePanel.Tab id="test" label="Test" icon={ SquarePlay }>
                     <TaskTestingTab
                       config={ config }
                       deployment={ deployment }

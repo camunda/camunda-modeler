@@ -20,9 +20,7 @@ import {
   Text
 } from '@camunda/design-system';
 
-import CloudIcon from '../../resources/icons/Cloud.svg';
-import PlatformIcon from '../../resources/icons/Platform.svg';
-import AiIcon from '../../resources/icons/Ai.svg';
+import { AiIcon, CloudCog, Settings } from '@camunda/design-system/icons';
 
 import { utmTag } from '../util/utmTag';
 
@@ -104,12 +102,12 @@ export default class EmptyTab extends PureComponent {
     return tabs;
   }
 
-  renderEngineCard({ id, title, icon: Icon, iconViewBox, docsUrl, group }) {
+  renderEngineCard({ id, title, icon: Icon, docsUrl, group }) {
     return (
       <Card id={ id } className="welcome-card" data-testid={ id }>
         <CardHeader className="welcome-card__header welcome-card__header--centered welcome-card__section">
           <span className="welcome-card__title">
-            <Icon className="welcome-card__icon" viewBox={ iconViewBox } aria-hidden="true" />
+            <Icon className="welcome-card__icon" aria-hidden="true" />
             <Heading as="h3" variant="heading-sm">{ title }</Heading>
           </span>
           <Link inline href={ docsUrl }>See documentation</Link>
@@ -170,8 +168,7 @@ export default class EmptyTab extends PureComponent {
               !Flags.get(DISABLE_ZEEBE) && this.renderEngineCard({
                 id: 'welcome-page-cloud',
                 title: 'Camunda 8',
-                icon: CloudIcon,
-                iconViewBox: '9 10 62 45',
+                icon: CloudCog,
                 docsUrl: utmTag('https://docs.camunda.io/'),
                 group: 'Camunda 8'
               })
@@ -180,8 +177,7 @@ export default class EmptyTab extends PureComponent {
               !Flags.get(DISABLE_PLATFORM) && this.renderEngineCard({
                 id: 'welcome-page-platform',
                 title: 'Camunda 7',
-                icon: PlatformIcon,
-                iconViewBox: '19 11 41 41',
+                icon: Settings,
                 docsUrl: utmTag('https://docs.camunda.org/'),
                 group: 'Camunda 7'
               })

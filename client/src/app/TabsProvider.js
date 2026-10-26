@@ -61,9 +61,7 @@ import Flags, {
   DISABLE_RPA
 } from '../util/Flags';
 
-import BPMNIcon from '../../resources/icons/file-types/BPMN.svg';
-import DMNIcon from '../../resources/icons/file-types/DMN.svg';
-import FormIcon from '../../resources/icons/file-types/Form.svg';
+import { BpmnDiagramIcon, DecisionIcon, FormIcon } from '@camunda/design-system/icons';
 
 import { getDefaultVersion } from './tabs/EngineProfile';
 
@@ -199,7 +197,7 @@ export default class TabsProvider {
           return import('./tabs/cloud-bpmn');
         },
         getIcon() {
-          return BPMNIcon;
+          return BpmnDiagramIcon;
         },
         getInitialContents(options) {
           return cloudBpmnDiagram;
@@ -247,7 +245,7 @@ export default class TabsProvider {
           return import('./tabs/bpmn');
         },
         getIcon() {
-          return BPMNIcon;
+          return BpmnDiagramIcon;
         },
         getInitialContents(options) {
           return bpmnDiagram;
@@ -314,7 +312,7 @@ export default class TabsProvider {
           return import('./tabs/cloud-dmn');
         },
         getIcon() {
-          return DMNIcon;
+          return DecisionIcon;
         },
         getInitialContents() {
           return cloudDmnDiagram;
@@ -352,7 +350,7 @@ export default class TabsProvider {
           return import('./tabs/dmn');
         },
         getIcon() {
-          return DMNIcon;
+          return DecisionIcon;
         },
         getInitialContents() {
           return dmnDiagram;

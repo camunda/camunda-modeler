@@ -16,7 +16,7 @@ import { Fill } from '../../../app/slot-fill';
 
 import DeploymentPluginOverlay from './DeploymentPluginOverlay';
 
-import DeployIcon from 'icons/Deploy.svg';
+import { Rocket } from '@camunda/design-system/icons';
 
 export default function DeploymentPlugin(props) {
   const {
@@ -86,7 +86,7 @@ export default function DeploymentPlugin(props) {
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
           ref={ anchorRef }
         >
-          <DeployIcon className="icon" />
+          <Rocket className="icon" />
         </button>
       </Fill>
     ) }
