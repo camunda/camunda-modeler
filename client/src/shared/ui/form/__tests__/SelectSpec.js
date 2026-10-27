@@ -13,7 +13,7 @@ import * as sinon from 'sinon';
 
 import React from 'react';
 
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 
 import { Select } from '..';
 
@@ -67,6 +67,34 @@ describe('<Select>', function() {
 
     // then
     expect(fieldError).to.have.been.calledOnceWithExactly(fieldMeta, field.name);
+  });
+
+
+  it('should ignore a value that matches no option', function() {
+
+    // given
+    const onChange = sinon.spy();
+
+    const { container } = render(
+      <form>
+        <Select
+          field={ { name: 'foo' } }
+          form={ { getFieldMeta: () => ({}) } }
+          options={ [ { value: 'bar', label: 'Bar' } ] }
+          value="bar"
+          onChange={ onChange }
+        />
+      </form>
+    );
+
+    // when
+    // Radix fires this on its hidden native select when the value changes before
+    // its native options exist, e.g. while the settings dialog loads its values.
+    // The empty value matches no option and must not reach `onChange`.
+    fireEvent.change(container.querySelector('select'), { target: { value: '' } });
+
+    // then
+    expect(onChange).not.to.have.been.called;
   });
 });
 
