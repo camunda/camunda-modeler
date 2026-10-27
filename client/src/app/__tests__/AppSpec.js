@@ -2351,16 +2351,17 @@ describe('<App>', function() {
 
     describe('should catch', function() {
 
-      const errorHandler = window.onerror;
+      let errorHandler;
 
       before(function() {
+        errorHandler = window.onerror;
 
         // disable mocha implicit error handling
         window.onerror = () => {};
       });
 
       after(function() {
-        window.onError = errorHandler;
+        window.onerror = errorHandler;
       });
 
 
