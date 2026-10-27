@@ -60,9 +60,18 @@ export default function Select(props) {
   const selectedIndex = options.findIndex(option => !option.separator && option.value === value);
 
   // emulate a native select change for Formik and custom handlers
-  const handleValueChange = (index) => onChange({
-    target: { name: fieldName, value: options[ index ].value }
-  });
+  const handleValueChange = (index) => {
+    const option = options[ index ];
+
+    // Radix reports an empty value while its native options are not registered yet
+    if (!option) {
+      return;
+    }
+
+    onChange({
+      target: { name: fieldName, value: option.value }
+    });
+  };
 
   return (
     <div className={ css.Field }>
