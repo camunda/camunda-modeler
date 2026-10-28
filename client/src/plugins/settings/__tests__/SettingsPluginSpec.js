@@ -227,6 +227,49 @@ describe('SettingsPlugin', function() {
   });
 
 
+  describe('scroll to entry', function() {
+
+    let scrollIntoView;
+
+    beforeEach(function() {
+      scrollIntoView = sinon.stub(HTMLElement.prototype, 'scrollIntoView');
+    });
+
+    afterEach(function() {
+      scrollIntoView.restore();
+    });
+
+
+    it('should scroll to entry when opened for the first time', async function() {
+
+      // when
+      await renderSettings({}, { scrollToEntry: 'app.newContextPad' });
+
+      // then
+      const checkbox = screen.getByRole('checkbox', { name: /Enable new context pad/ });
+
+      expect(scrollIntoView).to.have.been.calledOnce;
+      expect(scrollIntoView.firstCall.thisValue).to.equal(checkbox);
+      expect(document.activeElement).to.equal(checkbox);
+    });
+
+
+    it('should not scroll again when a setting changes', async function() {
+
+      // given
+      await renderSettings({}, { scrollToEntry: 'app.newContextPad' });
+
+      // when
+      fireEvent.click(screen.getByRole('checkbox', { name: /Enable new context pad/ }));
+      await flushSave();
+
+      // then
+      expect(scrollIntoView).to.have.been.calledOnce;
+    });
+
+  });
+
+
   async function flushSave() {
     await act(async () => {
       await clock.tickAsync(250);
@@ -247,7 +290,7 @@ function getDialogs() {
   return screen.getAllByRole('dialog', { hidden: true });
 }
 
-async function renderSettings(values = {}) {
+async function renderSettings(values = {}, openOptions = {}) {
   const saved = sinon.spy();
   const settings = new Settings({ config: { get: () => values, set: saved } });
 
@@ -268,7 +311,7 @@ async function renderSettings(values = {}) {
     _getGlobal={ () => settings }
   />);
 
-  const reopen = () => open({});
+  const reopen = () => open(openOptions);
   act(reopen);
 
   return { settings, saved, reopen, restart };

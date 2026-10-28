@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { forEach, debounce, map, reduce } from 'min-dash';
 
@@ -58,28 +58,41 @@ export default function SettingsPlugin(props) {
   const [ values, setValues ] = useState({});
   const [ targetElement, setTargetElement ] = useState(null);
 
+  // entry to scroll to, once it is rendered
+  const pendingScrollTarget = useRef(null);
+
   useBuiltInSettings(settings);
 
   useEffect(() => {
     const subscription = subscribe('app.settings-open', (options) => {
-      if (options?.scrollToEntry) {
-        setTargetElement(options.scrollToEntry);
-        requestAnimationFrame(() => {
-          const element = document.getElementById(options.scrollToEntry);
+      const scrollToEntry = options?.scrollToEntry || null;
 
-          if (element) {
-            element.scrollIntoView({ behavior: 'auto', block: 'start' });
-            element.focus();
-          }
-        });
-      } else {
-        setTargetElement(null);
-      }
+      pendingScrollTarget.current = scrollToEntry;
+      setTargetElement(scrollToEntry);
       setOpen(true);
     });
 
     return () => subscription.cancel();
   }, [ subscribe ]);
+
+  // entries render only after the schema and values are loaded,
+  // which happens after the modal opened for the first time
+  useEffect(() => {
+    if (!open || !pendingScrollTarget.current) {
+      return;
+    }
+
+    const element = document.getElementById(pendingScrollTarget.current);
+
+    if (!element) {
+      return;
+    }
+
+    pendingScrollTarget.current = null;
+
+    element.scrollIntoView({ behavior: 'auto', block: 'start' });
+    element.focus();
+  }, [ open, values ]);
 
   useEffect(() => {
     if (!open) return;
