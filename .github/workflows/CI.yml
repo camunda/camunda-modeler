@@ -90,8 +90,6 @@ jobs:
         cache: 'npm'
     - name: Install dependencies
       run: npm ci
-    - name: Project setup
-      uses: bpmn-io/actions/setup@latest
     - name: Build
       run: npm run build -- --${{ matrix.platform }} --arm64 --no-compress
 
