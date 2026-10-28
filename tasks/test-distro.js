@@ -49,7 +49,7 @@ if (argv.ia32) {
   throw new Error('Windows ia32 builds are no longer supported');
 }
 
-const archs = [ 'x64' ];
+const archs = [ 'x64', 'arm64' ];
 
 // only verify architectures that got built, if narrowed via --x64 / --arm64
 const requestedArchs = [ 'x64', 'arm64' ].filter(a => argv[a]);

@@ -26,6 +26,7 @@ jobs:
         - os: windows-2022
           files:
           - 'dist/camunda-modeler-nightly-win-x64.zip'
+          - 'dist/camunda-modeler-nightly-win-arm64.zip'
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read

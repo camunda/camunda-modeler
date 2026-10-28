@@ -66,9 +66,17 @@ jobs:
         CODECOV_TOKEN: ${{ steps.secrets.outputs.CODECOV_TOKEN }}
 
 
-  build-linux-arm64:
-    name: Build (ubuntu-arm64)
-    runs-on: ubuntu-24.04-arm
+  build-arm64:
+    name: Build (${{ matrix.platform }}-arm64)
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - os: ubuntu-24.04-arm
+          platform: linux
+        - os: windows-11-arm
+          platform: win
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: read
 
@@ -85,7 +93,7 @@ jobs:
     - name: Project setup
       uses: bpmn-io/actions/setup@latest
     - name: Build
-      run: npm run build -- --linux --arm64 --no-compress
+      run: npm run build -- --${{ matrix.platform }} --arm64 --no-compress
 
 
   e2e-tests:
