@@ -8,47 +8,12 @@ jobs:
   merge_main_to_develop:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pull-requests: write
 
     steps:
-    - name: Checkout develop
-      uses: actions/checkout@v7
+    - name: Open sync pull request
+      uses: bpmn-io/actions/sync-branches@latest
       with:
-        ref: develop
-        fetch-depth: 0
-    - name: Merge main to develop and push
-      run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
-        git merge -m 'chore: merge main to develop' --no-edit origin/main
-        git push
-
-  post_failure:
-    name: Notify failure
-    needs: merge_main_to_develop
-    if: failure()
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write # Vault OIDC/JWT auth
-    steps:
-    - name: Import Secrets
-      id: secrets
-      uses: hashicorp/vault-action@v4.0.0
-      with:
-        url: ${{ secrets.VAULT_ADDR }}
-        method: jwt
-        role: ${{ secrets.VAULT_JWT_ROLE }}
-        path: ${{ secrets.VAULT_JWT_PATH }}
-        jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
-        exportEnv: false
-        secrets: |
-          secret/data/products/desktop-modeler/ci/slack_integration SLACK_CHANNEL_ID;
-          secret/data/products/desktop-modeler/ci/slack_integration SLACK_BOT_TOKEN;
-    - name: Notify on Slack if merge fails
-      uses: slackapi/slack-github-action@v4
-      with:
-        method: chat.postMessage
-        token: ${{ steps.secrets.outputs.SLACK_BOT_TOKEN }}
-        payload: |
-          channel: ${{ steps.secrets.outputs.SLACK_CHANNEL_ID }}
-          text: "Automatic merge of <https://github.com/${{ github.repository }}/tree/${{ github.ref }}|${{ github.ref }}> to <https://github.com/${{ github.repository }}/tree/develop|${{ github.repository }}#develop> failed."
+        source: main
+        target: develop
