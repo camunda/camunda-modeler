@@ -17,7 +17,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 
 import StartInstancePlugin from '../StartInstancePlugin';
 
-import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
+import { Fill, Slot, SlotFillRoot } from '../../../../app/slot-fill';
 import { DEFAULT_ENDPOINT } from '../../../../app/zeebe/Deployment';
 
 import { Deployment, StartInstance, ZeebeAPI } from '../../../../app/__tests__/mocks';
@@ -217,6 +217,40 @@ describe('StartInstancePlugin', function() {
     expect(emit).to.have.been.calledWith('deployment.done', sinon.match.object);
   });
 
+
+  it('should hand over open overlay when status bar item is replaced', async function() {
+
+    // given
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
+    });
+
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const { container, rerender } = createStartInstancePlugin({ subscribe, triggerAction });
+
+    fireEvent.click(container.querySelector('.btn'));
+
+    await waitFor(() => {
+      expect(document.querySelector('[role="dialog"]')).to.exist;
+    });
+
+    // when
+    rerender({ subscribe, triggerAction, replaced: true });
+
+    // then
+    expect(document.querySelector('[role="dialog"]')).not.to.exist;
+    expect(triggerAction).to.have.been.calledWith('open-start-instance');
+  });
+
 });
 
 const DEFAULT_ACTIVE_TAB = {
@@ -237,6 +271,15 @@ const DEFAULT_GET_FROM_APP = (key) => {
 };
 
 function createStartInstancePlugin(props = {}) {
+  const rendered = render(renderStartInstancePlugin(props));
+
+  return {
+    ...rendered,
+    rerender: (newProps) => rendered.rerender(renderStartInstancePlugin(newProps))
+  };
+}
+
+function renderStartInstancePlugin(props) {
   const {
     _getFromApp = DEFAULT_GET_FROM_APP,
     _getGlobal = (name) => {
@@ -263,10 +306,11 @@ function createStartInstancePlugin(props = {}) {
     log = () => {},
     subscribe = () => {},
     triggerAction = () => {},
-    emit = () => {}
+    emit = () => {},
+    replaced = false
   } = props;
 
-  return render(<SlotFillRoot>
+  return <SlotFillRoot>
     <Slot name="status-bar__file" />
     <StartInstancePlugin
       _getFromApp={ _getFromApp }
@@ -276,5 +320,10 @@ function createStartInstancePlugin(props = {}) {
       subscribe={ subscribe }
       triggerAction={ triggerAction }
       emit={ emit } />
-  </SlotFillRoot>);
+    { replaced && (
+      <Fill name="replacement" replaces="start-instance" slot="status-bar__file">
+        <button title="Replacement" />
+      </Fill>
+    ) }
+  </SlotFillRoot>;
 }

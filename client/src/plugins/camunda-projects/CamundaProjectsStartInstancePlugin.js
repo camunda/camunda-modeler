@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import classNames from 'classnames';
 
@@ -33,6 +33,7 @@ export default function CamundaProjectsStartInstancePlugin(props) {
     log,
     camundaProject,
     camundaProjectItems,
+    subscribe,
     triggerAction,
     connectionCheckResult
   } = props;
@@ -44,12 +45,26 @@ export default function CamundaProjectsStartInstancePlugin(props) {
 
   const anchorRef = useRef();
 
+  // the overlay is anchored to the status bar button, so it closes with it
+  const setAnchor = useCallback((anchor) => {
+    anchorRef.current = anchor;
+
+    if (!anchor) {
+      setOverlayOpen(false);
+    }
+  }, []);
+
   const onClick = async () => {
     if (overlayOpen) {
       setOverlayOpen(false);
 
       return;
     }
+
+    openOverlay();
+  };
+
+  const openOverlay = async () => {
 
     // TODO: save all tabs of project
     // currently this is not possible because to save a tab we need to select it first
@@ -62,6 +77,19 @@ export default function CamundaProjectsStartInstancePlugin(props) {
 
     setOverlayOpen(true);
   };
+
+  const canOpen = camundaProject && canDeployTab(activeTab) && canStartInstanceTab(activeTab);
+
+  // e.g. handed over by the file start instance once the saved file turns out to be in a project
+  useEffect(() => {
+    if (!canOpen) {
+      return;
+    }
+
+    const subscription = subscribe('app.open-start-instance', openOverlay);
+
+    return () => subscription.cancel();
+  }, [ subscribe, canOpen, activeTab ]);
 
   if (!camundaProject) {
     return null;
@@ -87,7 +115,7 @@ export default function CamundaProjectsStartInstancePlugin(props) {
           onClick={ onClick }
           title="Open project start instance"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
-          ref={ anchorRef }
+          ref={ setAnchor }
         >
           <StartInstanceIcon className="icon" />
         </button>
