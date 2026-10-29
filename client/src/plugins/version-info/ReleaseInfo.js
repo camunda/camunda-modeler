@@ -47,20 +47,20 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>FEEL expression playground</h4>
-          The FEEL popup editor includes now a playground which allows to evaluate an expression against the connected Camunda instance.
+          <h4>Revamped Modeler UI</h4>
+          The Modeler now uses the Camunda design system. Plug-ins using Carbon need to switch to the plug-in helper components instead.
         </li>
         <li>
-          <h4>Credential secrets from your cluster</h4>
-          Secret fields now list the secrets available on the connected cluster and warn about missing or plain-text values. Cluster connections are now called connections, and Cluster URL is now Connection URL.
+          <h4>Camunda 8 connections as a list</h4>
+          Camunda 8 connections are now displayed in a list. Use the new dialog-based UI to add and modify them.
         </li>
         <li>
-          <h4>Change an applied element template</h4>
-          Applied element templates can now be changed from the Applied dropdown, without unlinking first.
+          <h4>Custom element template sources</h4>
+          In addition to the Camunda Marketplace endpoint, you can now add custom registries to automatically download and update element templates.
         </li>
         <li>
-          <h4>Bug fixes and more</h4>
-          As always, this release incorporates bug fixes and additional minor improvements.
+          <h4>Clearer create and append menu</h4>
+          The menu now shows all element types in each category, with less common task and gateway options listed last.
         </li>
       </ul>
     </div>
