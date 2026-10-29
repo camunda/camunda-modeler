@@ -19,6 +19,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: cancel active drag on listener error ([bpmn-io/diagram-js#961](https://github.com/bpmn-io/diagram-js/issues/961))
 * `FIX`: display documentation link in the popup menu bottom when keyboard is used ([bpmn-io/diagram-js#1103](https://github.com/bpmn-io/diagram-js/issues/1103))
 * `FIX`: prevent overflowing and looping of text when layouting it ([bpmn-io/diagram-js#1106](https://github.com/bpmn-io/diagram-js/pull/1106), [bpmn-io/diagram-js#1105](https://github.com/bpmn-io/diagram-js/pull/1105))
+* `FIX`: open the project deployment and start instance overlays after saving a file into a project ([#6301](https://github.com/camunda/camunda-modeler/issues/6301))
 * `DEPS`: remove Mixpanel ([#6259](https://github.com/camunda/camunda-modeler/issues/6259))
 * `DEPS`: add `@bpmn-io/c4-theme@0.3.2`
 * `DEPS`: update to `@bpmn-io/form-js@2.1.1`

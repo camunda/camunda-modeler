@@ -2506,6 +2506,10 @@ export class App extends PureComponent {
         return this.emitWithTab('app.open-deployment', activeTab);
       }
 
+      if (action === 'open-start-instance') {
+        return this.emitWithTab('app.open-start-instance', activeTab);
+      }
+
       if (action === 'open-connection-selector') {
         return this.emitWithTab('app.open-connection-selector', activeTab);
       }

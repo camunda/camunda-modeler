@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import classNames from 'classnames';
 
@@ -33,7 +33,25 @@ export default function DeploymentPlugin(props) {
   const [ activeTab, setActiveTab ] = useState(null);
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
+  const overlayOpenRef = useRef(overlayOpen);
+
+  overlayOpenRef.current = overlayOpen;
+
   const anchorRef = useRef();
+
+  // the overlay is anchored to the status bar button, so it can only open while that is shown
+  const canOpenOverlay = () => !!anchorRef.current;
+
+  // a fill replacing the button (e.g. project deployment) takes over the open overlay
+  const setAnchor = useCallback((anchor) => {
+    anchorRef.current = anchor;
+
+    if (!anchor && overlayOpenRef.current) {
+      setOverlayOpen(false);
+
+      triggerAction('open-deployment');
+    }
+  }, [ triggerAction ]);
 
   const onClick = async () => {
     if (overlayOpen) {
@@ -63,6 +81,10 @@ export default function DeploymentPlugin(props) {
     });
 
     subscribe('app.open-deployment', ({ tab }) => {
+      if (!canOpenOverlay()) {
+        return;
+      }
+
       openOverlay(tab);
     });
   }, [ subscribe ]);
@@ -84,13 +106,13 @@ export default function DeploymentPlugin(props) {
           onClick={ onClick }
           title="Open file deployment"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
-          ref={ anchorRef }
+          ref={ setAnchor }
         >
           <DeployIcon className="icon" />
         </button>
       </Fill>
     ) }
-    { overlayOpen && anchorRef.current && (
+    { overlayOpen && canOpenOverlay() && (
       <DeploymentPluginOverlay
         _getFromApp={ _getFromApp }
         activeTab={ activeTab }

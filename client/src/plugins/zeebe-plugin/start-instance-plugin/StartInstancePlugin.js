@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import classNames from 'classnames';
 
@@ -37,9 +37,24 @@ export default function StartInstancePlugin(props) {
   const [ activeTab, setActiveTab ] = useState(null);
   const [ overlayOpen, setOverlayOpen ] = useState(false);
 
+  const overlayOpenRef = useRef(overlayOpen);
+
+  overlayOpenRef.current = overlayOpen;
+
   const connectionChecker = useRef(new ConnectionChecker(_getGlobal('zeebeAPI')));
 
   const anchorRef = useRef();
+
+  // a fill replacing the button (e.g. project start instance) takes over the open overlay
+  const setAnchor = useCallback((anchor) => {
+    anchorRef.current = anchor;
+
+    if (!anchor && overlayOpenRef.current) {
+      setOverlayOpen(false);
+
+      triggerAction('open-start-instance');
+    }
+  }, [ triggerAction ]);
 
   const onClick = async () => {
     if (overlayOpen) {
@@ -82,7 +97,7 @@ export default function StartInstancePlugin(props) {
           onClick={ onClick }
           title="Open start instance"
           className={ classNames('btn', { 'btn--active': overlayOpen }) }
-          ref={ anchorRef }
+          ref={ setAnchor }
         >
           <StartInstanceIcon className="icon" />
         </button>

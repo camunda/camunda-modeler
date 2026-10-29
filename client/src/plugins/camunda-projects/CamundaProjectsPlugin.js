@@ -239,6 +239,7 @@ export default function CamundaProjectsPlugin(props) {
       log={ log }
       camundaProject={ camundaProject }
       camundaProjectItems={ camundaProjectItems }
+      subscribe={ subscribe }
       triggerAction={ triggerAction }
       connectionCheckResult={ connectionCheckResult } />
     <CamundaProjectsStartInstancePlugin
@@ -250,6 +251,7 @@ export default function CamundaProjectsPlugin(props) {
       log={ log }
       camundaProject={ camundaProject }
       camundaProjectItems={ camundaProjectItems }
+      subscribe={ subscribe }
       triggerAction={ triggerAction }
       connectionCheckResult={ connectionCheckResult } />
   </>;
