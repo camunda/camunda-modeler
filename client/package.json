@@ -39,7 +39,7 @@
     "@sentry/electron": "^8.2.0",
     "@uiw/codemirror-theme-vscode": "^4.25.12",
     "bpmn-js": "^18.31.1",
-    "bpmn-js-element-templates": "^2.40.1",
+    "bpmn-js-element-templates": "^2.40.2",
     "bpmn-js-properties-panel": "^5.65.3",
     "bpmn-js-tracking": "^0.6.0",
     "bpmn-moddle": "^10.3.1",
