@@ -102,7 +102,7 @@ export function getErrorNotification(triggerAction) {
   const content = (
     <button
       onClick={ () => triggerAction('open-log') }>
-      See the log for further details
+      View log
     </button>
   );
 
