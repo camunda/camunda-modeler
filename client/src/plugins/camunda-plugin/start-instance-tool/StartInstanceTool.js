@@ -436,7 +436,7 @@ export default class StartInstanceTool extends PureComponent {
 
     const content = <button
       onClick={ () => triggerAction('open-log') }>
-      See the log for further details
+      View log
     </button>;
 
     displayNotification({
@@ -480,7 +480,7 @@ export default class StartInstanceTool extends PureComponent {
 
     const content = <button
       onClick={ ()=> log(logMessage) }>
-      See the log for further details
+      View log
     </button>;
 
     displayNotification({
