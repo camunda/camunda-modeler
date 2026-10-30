@@ -23,14 +23,14 @@ const {
   ENDPOINT_TYPES
 } = require('../../../lib/zeebe-api/constants');
 
-const { setupPlatformStub } = require('./helper');
+const { setupSystemCertificatesStub } = require('./helper');
 
 
 describe('ZeebeAPI (gRPC)', function() {
 
 
-  // TODO(barmac): remove when system keychain certificates are tested
-  setupPlatformStub();
+  // TODO(barmac): remove when system certificates are tested
+  setupSystemCertificatesStub();
 
 
   describe('#checkConnection', function() {
