@@ -35,6 +35,8 @@ export default function useBuiltInSettings(settings) {
   }, []);
 }
 
+export const SETTINGS_KEY_PREFER_CAMUNDA_7 = 'app.preferCamunda7';
+
 export const schema = {
   id: 'app',
   order: 0,
@@ -72,6 +74,13 @@ export const schema = {
       label: 'Disable plugins',
       documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/plugins/#disabling-plugins'),
       restartRequired: true,
+      section: 'general'
+    },
+    [ SETTINGS_KEY_PREFER_CAMUNDA_7 ]: {
+      type: 'boolean',
+      default: false,
+      flag: 'prefer-camunda-7',
+      label: 'Prefer Camunda 7 on the start page',
       section: 'general'
     },
 

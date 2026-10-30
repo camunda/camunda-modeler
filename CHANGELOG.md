@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: rework the start page: create Camunda 8 or Camunda 7 files, get started with running Camunda locally through `c8ctl`, and open an AI agent blueprint ([#6238](https://github.com/camunda/camunda-modeler/issues/6238))
+
 ## 5.53.0
 
 * `FEAT`: migrate the UI to the Camunda design system; CSS classes and variables of the previous UI were removed during the rework, plug-in markup that relied on them may render unstyled ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))

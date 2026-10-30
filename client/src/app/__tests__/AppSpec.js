@@ -572,6 +572,48 @@ describe('<App>', function() {
   });
 
 
+  describe('#openUnsavedFiles', function() {
+
+    it('should open files as unsaved tabs', async function() {
+
+      // given
+      const { app } = createApp();
+
+      // when
+      const openedTabs = await app.triggerAction('open-unsaved-files', {
+        files: [
+          { name: 'main.bpmn', contents: 'foo' },
+          { name: 'form.form', contents: 'bar' }
+        ]
+      });
+
+      // then
+      expect(openedTabs.map(tab => tab.name)).to.eql([ 'main.bpmn', 'form.form' ]);
+      expect(openedTabs.every(tab => app.isUnsaved(tab))).to.be.true;
+    });
+
+
+    it('should keep the order and show the first file', async function() {
+
+      // given
+      const { app } = createApp();
+
+      // when
+      const openedTabs = await app.triggerAction('open-unsaved-files', {
+        files: [
+          { name: 'main.bpmn', contents: 'foo' },
+          { name: 'form.form', contents: 'bar' }
+        ]
+      });
+
+      // then
+      expect(app.state.tabs.map(tab => tab.name)).to.eql([ 'main.bpmn', 'form.form' ]);
+      expect(app.state.activeTab).to.equal(openedTabs[0]);
+    });
+
+  });
+
+
   describe('#openFiles', function() {
 
     it('should create tabs', async function() {

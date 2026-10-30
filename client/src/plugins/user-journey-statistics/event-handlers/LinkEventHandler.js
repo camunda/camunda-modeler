@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-const TRACKED_LINK_PARENT_IDS = [ 'version-info-overlay', 'welcome-page-cloud', 'welcome-page-platform', 'welcome-page-learn-more' ];
+const TRACKED_LINK_PARENT_IDS = [ 'version-info-overlay', 'welcome-page-cloud', 'welcome-page-platform', 'welcome-page-local', 'welcome-page-local-setup', 'welcome-page-promo', 'welcome-page-learn-more' ];
 
 export default class LinkEventHandler {
   constructor(props) {

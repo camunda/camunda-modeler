@@ -266,6 +266,33 @@ export class App extends PureComponent {
   };
 
   /**
+   * Open files that do not exist on disk as new, unsaved tabs, in the given order.
+   * Shows the first file.
+   *
+   * @param {Array<{ name: string, contents: string }>} files
+   *
+   * @return {Promise<Array<Object>>} opened tabs
+   */
+  openUnsavedFiles = async (files = []) => {
+    const {
+      tabsProvider
+    } = this.props;
+
+    const tabs = files
+      .map(({ name, contents }) => tabsProvider.createTabForFile({ name, contents, path: null }))
+      .filter(Boolean);
+
+    // each tab is inserted right after the active tab, so add them in reverse
+    tabs.slice().reverse().forEach(tab => this.addTab(tab));
+
+    if (tabs.length) {
+      await this.showTab(tabs[0]);
+    }
+
+    return tabs;
+  };
+
+  /**
    * Add a tab to the tab list.
    */
   addTab(tab, properties = {}) {
@@ -2334,6 +2361,10 @@ export class App extends PureComponent {
         return this.createDiagram(options.type);
       }
 
+      if (action === 'open-unsaved-files') {
+        return this.openUnsavedFiles(options.files);
+      }
+
       if (action === 'reopen-file') {
         return this.openFiles([ options.file ]);
       }
@@ -2667,7 +2698,8 @@ export class App extends PureComponent {
       tabGroups,
       activeTab,
       layout,
-      logEntries
+      logEntries,
+      recentTabs
     } = this.state;
 
     const isDirty = (tab) => {
@@ -2736,6 +2768,7 @@ export class App extends PureComponent {
                         deployment={ this.getGlobal('deployment') }
                         startInstance={ this.getGlobal('startInstance') }
                         zeebeApi={ this.getGlobal('zeebeAPI') }
+                        recentTabs={ this.isEmptyTab(activeTab) ? recentTabs : undefined }
                       />
                     }
                   </TabContainer>
