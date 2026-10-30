@@ -35,12 +35,6 @@ const config = {
           return true;
         }
 
-        // WONTFIX(barmac): ignore C++ modules for now
-        // they are added to the license book through optional-dependencies.js
-        if (/^vscode-windows-ca-certs/.test(resource)) {
-          return true;
-        }
-
         return false;
       }
     }),
