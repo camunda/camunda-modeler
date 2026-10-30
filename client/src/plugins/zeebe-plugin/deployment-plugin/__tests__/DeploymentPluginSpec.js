@@ -17,7 +17,7 @@ import { fireEvent, render, waitFor } from '@testing-library/react';
 
 import DeploymentPlugin from '../DeploymentPlugin';
 
-import { Slot, SlotFillRoot } from '../../../../app/slot-fill';
+import { Fill, Slot, SlotFillRoot } from '../../../../app/slot-fill';
 import { DEFAULT_ENDPOINT } from '../../../../app/zeebe/Deployment';
 
 import { Deployment, ZeebeAPI } from '../../../../app/__tests__/mocks';
@@ -178,6 +178,69 @@ describe('DeploymentPlugin', function() {
     expect(emit).to.have.been.calledWith('deployment.done', sinon.match.object);
   });
 
+
+  it('should hand over open overlay when status bar item is replaced', async function() {
+
+    // given
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
+    });
+
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const { getByTitle, queryByRole, rerender } = createDeploymentPlugin({ subscribe, triggerAction });
+
+    fireEvent.click(getByTitle('Open file deployment'));
+
+    await waitFor(() => {
+      expect(queryByRole('dialog')).to.exist;
+    });
+
+    // when
+    rerender({ subscribe, triggerAction, replaced: true });
+
+    // then
+    expect(queryByRole('dialog')).not.to.exist;
+    expect(triggerAction).to.have.been.calledWith('open-deployment');
+  });
+
+
+  it('should ignore <app.open-deployment> when status bar item is replaced', function() {
+
+    // given
+    let openDeployment;
+
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.activeTabChanged') {
+        callback({
+          activeTab: DEFAULT_ACTIVE_TAB
+        });
+      }
+
+      if (event === 'app.open-deployment') {
+        openDeployment = callback;
+      }
+    });
+
+    const triggerAction = sinon.spy();
+
+    createDeploymentPlugin({ subscribe, triggerAction, replaced: true });
+
+    // when
+    openDeployment({ tab: DEFAULT_ACTIVE_TAB });
+
+    // then
+    expect(triggerAction).not.to.have.been.calledWith('save-tab');
+  });
+
 });
 
 const DEFAULT_ACTIVE_TAB = {
@@ -198,6 +261,15 @@ const DEFAULT_GET_FROM_APP = (key) => {
 };
 
 function createDeploymentPlugin(props = {}) {
+  const rendered = render(renderDeploymentPlugin(props));
+
+  return {
+    ...rendered,
+    rerender: (newProps) => rendered.rerender(renderDeploymentPlugin(newProps))
+  };
+}
+
+function renderDeploymentPlugin(props) {
   const {
     _getFromApp = DEFAULT_GET_FROM_APP,
     _getGlobal = (name) => {
@@ -218,10 +290,11 @@ function createDeploymentPlugin(props = {}) {
     log = () => {},
     subscribe = () => {},
     triggerAction = () => {},
-    emit = () => {}
+    emit = () => {},
+    replaced = false
   } = props;
 
-  return render(<SlotFillRoot>
+  return <SlotFillRoot>
     <Slot name="status-bar__file" />
     <DeploymentPlugin
       _getFromApp={ _getFromApp }
@@ -231,5 +304,10 @@ function createDeploymentPlugin(props = {}) {
       subscribe={ subscribe }
       triggerAction={ triggerAction }
       emit={ emit } />
-  </SlotFillRoot>);
+    { replaced && (
+      <Fill name="replacement" replaces="deployment" slot="status-bar__file">
+        <button title="Replacement" />
+      </Fill>
+    ) }
+  </SlotFillRoot>;
 }

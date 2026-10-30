@@ -286,6 +286,76 @@ describe('CamundaProjectsDeploymentPlugin', function() {
     });
   });
 
+
+  it('should render overlay on <app.open-deployment>', async function() {
+
+    // given
+    let openDeployment;
+
+    const subscribe = sinon.spy(function(event, callback) {
+      if (event === 'app.open-deployment') {
+        openDeployment = callback;
+      }
+
+      return { cancel() {} };
+    });
+
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    createCamundaProjectsDeploymentPlugin({
+      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+      subscribe,
+      triggerAction
+    });
+
+    // when
+    openDeployment({ tab: DEFAULT_ACTIVE_TAB });
+
+    // then
+    await waitFor(() => {
+      expect(document.querySelector('[role="dialog"]')).to.exist;
+    });
+  });
+
+
+  it('should close overlay when status bar item is removed', async function() {
+
+    // given
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const { container, rerender } = createCamundaProjectsDeploymentPlugin({
+      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+      triggerAction
+    });
+
+    fireEvent.click(container.querySelector('.btn'));
+
+    await waitFor(() => {
+      expect(document.querySelector('[role="dialog"]')).to.exist;
+    });
+
+    // when
+    rerender({
+      activeTab: { type: 'bpmn' },
+      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+      triggerAction
+    });
+
+    // then
+    await waitFor(() => {
+      expect(document.querySelector('[role="dialog"]')).not.to.exist;
+    });
+  });
+
+
 });
 
 const DEFAULT_CAMUNDA_PROJECT = {
@@ -338,6 +408,15 @@ const DEFAULT_ITEMS = [
 ];
 
 function createCamundaProjectsDeploymentPlugin(props = {}) {
+  const rendered = render(renderCamundaProjectsDeploymentPlugin(props));
+
+  return {
+    ...rendered,
+    rerender: (newProps) => rendered.rerender(renderCamundaProjectsDeploymentPlugin(newProps))
+  };
+}
+
+function renderCamundaProjectsDeploymentPlugin(props) {
   const {
     _getGlobal = (name) => {
       if (name === 'deployment') {
@@ -358,10 +437,11 @@ function createCamundaProjectsDeploymentPlugin(props = {}) {
     log = () => {},
     camundaProject = null,
     camundaProjectItems = DEFAULT_ITEMS,
+    subscribe = () => ({ cancel() {} }),
     triggerAction = () => {}
   } = props;
 
-  return render(<SlotFillRoot>
+  return <SlotFillRoot>
     <Slot name="status-bar__file" />
     <CamundaProjectsDeploymentPlugin
       _getGlobal={ _getGlobal }
@@ -371,6 +451,7 @@ function createCamundaProjectsDeploymentPlugin(props = {}) {
       log={ log }
       camundaProject={ camundaProject }
       camundaProjectItems={ camundaProjectItems }
+      subscribe={ subscribe }
       triggerAction={ triggerAction } />
-  </SlotFillRoot>);
+  </SlotFillRoot>;
 }
