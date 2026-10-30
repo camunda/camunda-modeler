@@ -169,7 +169,10 @@ export class App extends PureComponent {
           cancel: () => this.off(event, listener)
         };
       },
-      emit: (event, payload) => this.emitEvent(event, payload)
+      emit: (event, payload) => this.emitEvent(event, payload),
+      getConnectionStatus: (tabId) => {
+        return this._connectionStatus?.tab?.id === tabId ? this._connectionStatus : undefined;
+      }
     };
 
     // TODO(nikku): make state
@@ -1239,11 +1242,13 @@ export class App extends PureComponent {
     delete this.linterCache[ tab.id ];
   };
 
-  _handleConnectionCheckStarted = () => {
+  _handleConnectionCheckStarted = (connectionStatus) => {
+    this._connectionStatus = connectionStatus;
     this.setState({ connectionCheckResult: null });
   };
 
   _handleConnectionStatusChanged = ({ tab, ...connectionCheckResult }) => {
+    this._connectionStatus = { tab, ...connectionCheckResult };
 
     // The connection feeds the additional lint sources, not the content
     // linter, so updating state is enough - the warning is recomposed on read.

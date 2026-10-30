@@ -11,6 +11,8 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 
+import EventEmitter from 'events';
+
 import { act, waitFor, fireEvent, getByRole } from '@testing-library/react';
 
 import { find } from 'min-dash';
@@ -3105,6 +3107,154 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
 
   describe('FEEL expression evaluation', function() {
+
+    [
+      {
+        name: 'successful connection',
+        result: { success: true, response: { gatewayVersion: '8.9.0', protocol: 'rest' } },
+        title: undefined
+      },
+      {
+        name: 'failed connection',
+        result: { success: false, reason: 'UNAUTHORIZED' },
+        title: 'Credentials rejected'
+      }
+    ].forEach(({ name, result, title }) => {
+      it(`should restore a ${ name } received while the diagram is unmounted`, async function() {
+
+        // given
+        const cache = new Cache();
+        const eventBus = new EventEmitter();
+        const tabId = 'tab';
+        let currentStatus;
+        const eventsContext = {
+          subscribe: (event, listener) => {
+            eventBus.on(event, listener);
+            return { cancel: () => eventBus.off(event, listener) };
+          },
+          getConnectionStatus: sinon.spy(() => currentStatus)
+        };
+        const options = { cache, eventBus, eventsContext, tabId };
+        const { instance, unmount } = await renderEditor(diagramXML, options);
+        const { feelPlayground } = instance.getCached();
+
+        currentStatus = { connection: { id: 'cluster' } };
+        act(() => eventBus.emit('connectionManager.connectionCheckStarted', currentStatus));
+        expect(feelPlayground.getConfig().evaluationUnavailable.title).to.equal('Checking connection');
+        unmount();
+
+        currentStatus = { ...currentStatus, ...result };
+        eventBus.emit('connectionManager.connectionStatusChanged', currentStatus);
+        expect(feelPlayground.getConfig().evaluationUnavailable.title).to.equal('Checking connection');
+
+        // when
+        const remounted = await renderEditor(diagramXML, { ...options, waitForImport: false });
+
+        // then
+        expect(remounted.instance.getCached().feelPlayground).to.equal(feelPlayground);
+        expect(eventsContext.getConnectionStatus).to.have.been.calledWithExactly(tabId);
+        expect(feelPlayground.getConfig().evaluationUnavailable?.title).to.equal(title);
+        expect(typeof feelPlayground.getConfig().onEvaluate).to.equal(title ? 'undefined' : 'function');
+      });
+    });
+
+
+    it('should clear a cached evaluator when no connection snapshot exists for the remounted tab', async function() {
+
+      // given
+      const cache = new Cache();
+      const { instance, emit, unmount } = await renderEditor(diagramXML, { cache });
+      const { feelPlayground } = instance.getCached();
+      act(() => emit('connectionManager.connectionStatusChanged', {
+        connection: { id: 'old-cluster' },
+        success: true,
+        response: { gatewayVersion: '8.9.0' }
+      }));
+      unmount();
+
+      // when
+      await renderEditor(diagramXML, {
+        cache,
+        waitForImport: false,
+        tabId: 'other-tab',
+        eventsContext: {
+          subscribe: () => ({ cancel: () => {} }),
+          getConnectionStatus: () => undefined
+        }
+      });
+
+      // then
+      expect(feelPlayground.getConfig().onEvaluate).not.to.exist;
+      expect(feelPlayground.getConfig().evaluationUnavailable.title).to.equal('Loading connection');
+    });
+
+
+    it('should disable stale evaluation as soon as a new connection check starts', async function() {
+
+      // given
+      const { instance, emit } = await renderEditor(diagramXML);
+      const { feelPlayground } = instance.getCached();
+      act(() => emit('connectionManager.connectionStatusChanged', {
+        connection: { id: 'old-cluster' },
+        response: { gatewayVersion: '8.9.0' },
+        success: true
+      }));
+
+      // when
+      act(() => emit('connectionManager.connectionCheckStarted', {
+        connection: { id: 'new-cluster' }
+      }));
+
+      // then
+      expect(feelPlayground.getConfig()).to.eql({
+        evaluationUnavailable: {
+          title: 'Checking connection',
+          message: 'Waiting for the Camunda connection check to finish.',
+          action: undefined
+        },
+        onEvaluate: undefined
+      });
+    });
+
+
+    it('should open the connection selector without closing the playground', async function() {
+
+      // given
+      const onAction = sinon.spy();
+      const { instance, emit } = await renderEditor(diagramXML, { onAction });
+      const { feelPlayground } = instance.getCached();
+      const closeSpy = sinon.spy(instance.getModeler().get('feelPopup'), 'close');
+      act(() => emit('connectionManager.connectionStatusChanged', {
+        connection: { id: 'cluster' },
+        success: false,
+        reason: 'UNAUTHORIZED'
+      }));
+
+      // when
+      feelPlayground.getConfig().evaluationUnavailable.action.onClick();
+
+      // then
+      expect(closeSpy).not.to.have.been.called;
+      expect(onAction).to.have.been.calledWithExactly('open-connection-selector');
+    });
+
+
+    it('should stop listening for connection checks when unmounted', async function() {
+
+      // given
+      const { instance, emit, unmount } = await renderEditor(diagramXML);
+      const { feelPlayground } = instance.getCached();
+      const setConfigSpy = sinon.spy(feelPlayground, 'setConfig');
+      unmount();
+
+      // when
+      emit('connectionManager.connectionCheckStarted', { connection: { id: 'cluster' } });
+      emit('connectionManager.connectionStatusChanged', { success: false, reason: 'NO_CONFIG' });
+
+      // then
+      expect(setConfigSpy).not.to.have.been.called;
+    });
+
 
     it('should update playground configuration when the connection changes', async function() {
 

@@ -31,6 +31,127 @@ import FeelPlaygroundEditor from '../FeelPlaygroundEditor';
 
 describe('<FeelPlaygroundEditor>', function() {
 
+  it('should offer a connection action and remove it when connected', async function() {
+
+    // given
+    const feelPlayground = new FeelPlayground();
+    const onConfigureConnection = sinon.spy();
+    feelPlayground.setConfig({
+      evaluationUnavailable: {
+        title: 'Credentials rejected',
+        message: 'Check the connection credentials.',
+        action: { label: 'Manage connection', onClick: onConfigureConnection }
+      }
+    });
+
+    render(
+      <FeelPlaygroundEditor
+        contextKey="Task_1#expression"
+        feelPlayground={ feelPlayground }
+        onInput={ () => {} }
+        value="1 + 1"
+        variables={ [] }
+      />
+    );
+
+    // when
+    const button = await screen.findByRole('button', { name: 'Manage connection' });
+    fireEvent.click(button);
+
+    // then
+    expect(onConfigureConnection).to.have.been.calledOnce;
+    expect(screen.getByRole('heading', { name: 'Credentials rejected' })).to.exist;
+    expect(screen.getByText('Check the connection credentials.')).to.exist;
+
+    // when
+    act(() => feelPlayground.setConfig({
+      onEvaluate: async () => ({ result: 2, warnings: [] })
+    }));
+
+    // then
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'Manage connection' })).not.to.exist;
+    });
+  });
+
+  it('should update the action when the connection message changes', async function() {
+
+    // given
+    const feelPlayground = new FeelPlayground();
+    const onConfigureConnection = sinon.spy();
+    feelPlayground.setConfig({
+      evaluationUnavailable: {
+        title: 'Credentials rejected',
+        message: 'Check the connection credentials.',
+        action: { label: 'Manage connection', onClick: onConfigureConnection }
+      }
+    });
+
+    const { unmount } = render(
+      <FeelPlaygroundEditor
+        contextKey="Task_1#expression"
+        feelPlayground={ feelPlayground }
+        onInput={ () => {} }
+        value="1 + 1"
+        variables={ [] }
+      />
+    );
+    await screen.findByRole('button', { name: 'Manage connection' });
+
+    // when
+    act(() => feelPlayground.setConfig({
+      evaluationUnavailable: {
+        title: 'No connection selected',
+        message: 'Select a Camunda connection to evaluate expressions.',
+        action: { label: 'Select connection', onClick: onConfigureConnection }
+      }
+    }));
+
+    // then
+    await waitFor(() => {
+      const buttons = screen.getAllByRole('button', { name: 'Select connection' });
+      expect(buttons).to.have.length(1);
+      expect(screen.getByRole('heading', { name: 'No connection selected' })).to.exist;
+      expect(screen.getByText('Select a Camunda connection to evaluate expressions.')).to.exist;
+    });
+    expect(screen.queryByRole('button', { name: 'Manage connection' })).not.to.exist;
+
+    // when
+    unmount();
+
+    // then
+    expect(screen.queryByRole('button', { name: 'Select connection' })).not.to.exist;
+  });
+
+
+  it('should not show a connection action in an idle result', async function() {
+
+    // given
+    const feelPlayground = new FeelPlayground();
+    feelPlayground.setConfig({
+      evaluationUnavailable: {
+        title: 'No connection selected',
+        message: 'Select a Camunda connection to evaluate expressions.',
+        action: { label: 'Select connection', onClick: sinon.spy() }
+      }
+    });
+
+    // when
+    render(
+      <FeelPlaygroundEditor
+        contextKey="Task_1#expression"
+        feelPlayground={ feelPlayground }
+        onInput={ () => {} }
+        value=""
+        variables={ [] }
+      />
+    );
+
+    // then
+    await screen.findByText('Write an expression to see the result');
+    expect(screen.queryByRole('button', { name: 'Select connection' })).not.to.exist;
+  });
+
 
   it('should update configuration while open', async function() {
 

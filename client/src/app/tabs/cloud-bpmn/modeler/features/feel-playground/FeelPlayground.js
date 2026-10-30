@@ -50,7 +50,7 @@ export default class FeelPlayground {
   }
 
   /**
-  * @return {{ onEvaluate?: Function, evaluationUnavailable?: string }}
+  * @return {{ onEvaluate?: Function, evaluationUnavailable?: import('@camunda/feel-playground').EvaluationUnavailable }}
    */
   getConfig() {
     return this._config;
