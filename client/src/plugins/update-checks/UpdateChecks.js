@@ -140,7 +140,7 @@ export default class UpdateChecks extends PureComponent {
 
       const content = <button
         onClick={ () => triggerAction('open-log') }>
-        See the log for further details
+        View log
       </button>;
 
       return displayNotification({

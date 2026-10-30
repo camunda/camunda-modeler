@@ -69,7 +69,7 @@ export default class TemplateUpdater extends PureComponent {
           title: 'Element templates updated with errors',
           content: <button
             onClick={ () => triggerAction('open-log') }>
-            See the log for further details
+            View log
           </button>
         });
 
