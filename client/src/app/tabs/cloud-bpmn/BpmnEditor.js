@@ -177,6 +177,10 @@ export class BpmnEditor extends CachedComponent {
 
     this.listen('on');
 
+    if (this.context.getConnectionStatus) {
+      this.handleConnectionStatusChanged(this.context.getConnectionStatus(this.props.tabId));
+    }
+
     modeler.attachTo(this.ref.current);
 
     const minimap = modeler.get('minimap');
@@ -298,6 +302,10 @@ export class BpmnEditor extends CachedComponent {
     modeler[fn]('propertiesPanel.layoutChanged', this.handlePropertiesPanelLayoutChange);
 
     if (fn === 'on') {
+      this._connectionCheckSubscription = this.context.subscribe(
+        'connectionManager.connectionCheckStarted',
+        this.handleConnectionStatusChanged
+      );
       this._connectionStatusSubscription = this.context.subscribe(
         'connectionManager.connectionStatusChanged',
         this.handleConnectionStatusChanged
@@ -305,6 +313,8 @@ export class BpmnEditor extends CachedComponent {
 
       modeler[ fn ]('commandStack.changed', LOW_PRIORITY, this.linting.schedule);
     } else {
+      this._connectionCheckSubscription?.cancel();
+      this._connectionCheckSubscription = null;
       this._connectionStatusSubscription?.cancel();
       this._connectionStatusSubscription = null;
 
@@ -369,8 +379,12 @@ export class BpmnEditor extends CachedComponent {
 
   handleConnectionStatusChanged = (connectionStatus) => {
     this.getCached().feelPlayground.setConfig(
-      getFeelPlaygroundConfig(connectionStatus, this.props.zeebeApi)
+      getFeelPlaygroundConfig(connectionStatus, this.props.zeebeApi, this.handleConfigureFeelConnection)
     );
+  };
+
+  handleConfigureFeelConnection = () => {
+    this.props.onAction('open-connection-selector');
   };
 
   async loadTemplates() {
@@ -1155,6 +1169,7 @@ export class BpmnEditor extends CachedComponent {
     }
 
     const feelPlayground = new FeelPlayground(props.config);
+    feelPlayground.setConfig(getFeelPlaygroundConfig());
 
     const modeler = new BpmnModeler({
       ...options,

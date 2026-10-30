@@ -22,20 +22,24 @@ describe('FeelPlaygroundConfig', function() {
 
   describe('#getFeelPlaygroundConfig', function() {
 
-    it('should disable evaluation without a connection', function() {
+    it('should wait while the connection is being resolved', function() {
 
       // when
       const config = getFeelPlaygroundConfig(null);
 
       // then
       expect(config).to.eql({
-        evaluationUnavailable: 'No Camunda connection.',
+        evaluationUnavailable: {
+          title: 'Loading connection',
+          message: 'Resolving the Camunda connection for this file.',
+          action: undefined
+        },
         onEvaluate: undefined
       });
     });
 
 
-    it('should disable evaluation for an offline connection', function() {
+    it('should disable evaluation for a failed connection check', function() {
 
       // when
       const config = getFeelPlaygroundConfig({
@@ -44,9 +48,10 @@ describe('FeelPlaygroundConfig', function() {
       });
 
       // then
-      expect(config).to.eql({
-        evaluationUnavailable: 'No Camunda connection.',
-        onEvaluate: undefined
+      expect(config.onEvaluate).not.to.exist;
+      expect(config.evaluationUnavailable).to.include({
+        title: 'Connection check failed',
+        message: 'Check the connection settings and cluster status.'
       });
     });
 
@@ -61,9 +66,10 @@ describe('FeelPlaygroundConfig', function() {
       });
 
       // then
-      expect(config).to.eql({
-        evaluationUnavailable: 'FEEL expression evaluation requires Camunda 8.9 or newer. You are connected to Camunda 8.8.0.',
-        onEvaluate: undefined
+      expect(config.onEvaluate).not.to.exist;
+      expect(config.evaluationUnavailable).to.include({
+        title: 'Camunda 8.9 or newer required',
+        message: 'Connected to Camunda 8.8.0. Select a newer cluster to evaluate expressions.'
       });
     });
 
@@ -81,9 +87,10 @@ describe('FeelPlaygroundConfig', function() {
       });
 
       // then
-      expect(config).to.eql({
-        evaluationUnavailable: 'FEEL expression evaluation requires a REST connection to a Camunda 8 cluster. The current connection uses gRPC.',
-        onEvaluate: undefined
+      expect(config.onEvaluate).not.to.exist;
+      expect(config.evaluationUnavailable).to.include({
+        title: 'REST connection required',
+        message: 'This connection uses gRPC. Select a REST connection to Camunda 8.9 or newer.'
       });
     });
 
@@ -97,9 +104,10 @@ describe('FeelPlaygroundConfig', function() {
       });
 
       // then
-      expect(config).to.eql({
-        evaluationUnavailable: 'FEEL expression evaluation requires Camunda 8.9 or newer.',
-        onEvaluate: undefined
+      expect(config.onEvaluate).not.to.exist;
+      expect(config.evaluationUnavailable).to.include({
+        title: 'Camunda version unavailable',
+        message: 'Check the connection; evaluation requires Camunda 8.9 or newer.'
       });
     });
 
@@ -116,6 +124,102 @@ describe('FeelPlaygroundConfig', function() {
       // then
       expect(config).to.include({ evaluationUnavailable: undefined });
       expect(config.onEvaluate).to.be.a('function');
+    });
+
+
+    it('should wait while a selected connection is being checked', function() {
+
+      // when
+      const config = getFeelPlaygroundConfig({ connection: { id: 'cluster' } });
+
+      // then
+      expect(config).to.eql({
+        evaluationUnavailable: {
+          title: 'Checking connection',
+          message: 'Waiting for the Camunda connection check to finish.',
+          action: undefined
+        },
+        onEvaluate: undefined
+      });
+    });
+
+
+    [
+      [ 'offline mode', { connection: { id: 'NO_CONNECTION' } }, 'Offline mode' ],
+      [ 'no configuration', { reason: 'NO_CONFIG', success: false }, 'No connection selected' ],
+      [ 'missing connection ID', { success: true, response: { gatewayVersion: '8.9.0' } }, 'No connection selected' ]
+    ].forEach(([ name, status, title ]) => {
+      it(`should explain ${ name } and offer connection selection`, function() {
+
+        // given
+        const onConfigureConnection = sinon.spy();
+
+        // when
+        const config = getFeelPlaygroundConfig(status, {}, onConfigureConnection);
+
+        // then
+        expect(config).to.eql({
+          evaluationUnavailable: {
+            title,
+            message: 'Select a Camunda connection to evaluate expressions.',
+            action: { label: 'Select connection', onClick: onConfigureConnection }
+          },
+          onEvaluate: undefined,
+        });
+      });
+    });
+
+
+    [
+      [ 'CONTACT_POINT_UNAVAILABLE', 'Cannot reach Camunda', 'Check the cluster URL and your network connection.' ],
+      [ 'CLUSTER_UNAVAILABLE', 'Cannot reach Camunda', 'Check the cluster URL and your network connection.' ],
+      [ 'CLUSTER_TEMPORARILY_UNAVAILABLE', 'Camunda is temporarily unavailable', 'The cluster may be paused or starting up. Wait for it to become available, or select another connection.' ],
+      [ 'UNAUTHORIZED', 'Credentials rejected', 'Check the connection credentials.' ],
+      [ 'FORBIDDEN', 'Access denied', 'Ask your administrator to grant access, or use different credentials.' ],
+      [ 'OAUTH_URL', 'Cannot reach the OAuth endpoint', 'Check the OAuth URL and your network connection.' ],
+      [ 'INVALID_CLIENT_ID', 'Invalid client ID', 'Check the client ID in your connection settings.' ],
+      [ 'INVALID_CREDENTIALS', 'Invalid client secret', 'Check the client ID and secret in your connection settings.' ],
+      [ 'INVALID_CONFIGURATION', 'Invalid connection configuration', 'Review the required fields in your connection settings.' ],
+      [ 'UNSUPPORTED_ENGINE', 'Unsupported Camunda version', 'Select a REST connection to Camunda 8.9 or newer.' ],
+      [ 'UNKNOWN', 'Connection check failed', 'Check the connection settings and cluster status.' ],
+      [ 'NEW_REASON', 'Connection check failed', 'Check the connection settings and cluster status.' ]
+    ].forEach(([ reason, title, message ]) => {
+      it(`should explain ${ reason } and offer connection configuration`, function() {
+
+        // given
+        const onConfigureConnection = sinon.spy();
+
+        // when
+        const config = getFeelPlaygroundConfig({
+          connection: { id: 'cluster' },
+          success: false,
+          reason
+        }, {}, onConfigureConnection);
+
+        // then
+        expect(config.onEvaluate).not.to.exist;
+        expect(config.evaluationUnavailable).to.include({ title, message });
+        expect(config.evaluationUnavailable.action.onClick).to.equal(onConfigureConnection);
+        expect(config.evaluationUnavailable.action.label).to.be.a('string');
+      });
+    });
+
+
+    it('should suggest starting an unreachable local Camunda 8 Run', function() {
+
+      // when
+      const config = getFeelPlaygroundConfig({
+        connection: { id: 'local', name: 'c8run (local)', contactPoint: 'http://localhost:8080/v2' },
+        success: false,
+        reason: 'CONTACT_POINT_UNAVAILABLE'
+      });
+
+      // then
+      expect(config.onEvaluate).not.to.exist;
+      expect(config.evaluationUnavailable).to.include({
+        title: 'Cannot reach local Camunda 8 Run',
+        message: 'Start Camunda 8 Run, then check the connection.'
+      });
     });
   });
 

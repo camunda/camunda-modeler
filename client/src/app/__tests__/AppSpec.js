@@ -63,6 +63,44 @@ describe('<App>', function() {
 
   });
 
+  describe('connection status snapshot', function() {
+
+    it('should expose the latest connection result synchronously for its tab only', function() {
+
+      // given
+      const { app } = createApp();
+      const tab = { id: 'diagram' };
+      const pending = { tab, connection: { id: 'cluster' } };
+
+      // when
+      app.emit('connectionManager.connectionCheckStarted', pending);
+
+      // then
+      expect(app.eventsContext.getConnectionStatus(tab.id)).to.eql(pending);
+      expect(app.eventsContext.getConnectionStatus('other-tab')).not.to.exist;
+
+      // when
+      const completed = {
+        ...pending,
+        success: true,
+        response: { gatewayVersion: '8.9.0', protocol: 'rest' }
+      };
+      app.emit('connectionManager.connectionStatusChanged', completed);
+
+      // then
+      expect(app.eventsContext.getConnectionStatus(tab.id)).to.eql(completed);
+      expect(app.eventsContext.getConnectionStatus('other-tab')).not.to.exist;
+
+      // when
+      const next = { tab: { id: 'other-tab' }, connection: { id: 'another-cluster' } };
+      app.emit('connectionManager.connectionCheckStarted', next);
+
+      // then
+      expect(app.eventsContext.getConnectionStatus(tab.id)).not.to.exist;
+      expect(app.eventsContext.getConnectionStatus('other-tab')).to.eql(next);
+    });
+  });
+
 
   describe('shared buttons', function() {
 
