@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 import { Field, Form, useFormikContext, getIn } from 'formik';
 
@@ -27,6 +27,8 @@ import { utmTag } from '../../util/utmTag';
 export function SettingsForm({ schema, onChange, targetElement }) {
 
   const { values: formikValues, validateForm } = useFormikContext();
+
+  const handledTargetElement = useRef(null);
 
   useEffect(() => {
     onChange(formikValues);
@@ -89,6 +91,25 @@ export function SettingsForm({ schema, onChange, targetElement }) {
 
     return sortBy(result, ({ order }) => order ?? 9999).map(({ element }) => element);
   }, [ orderedSchema ]);
+
+  // scroll to the target element, once it is rendered; on the first open
+  // the schema and the values, e.g. of saved connections, load after mount
+  useEffect(() => {
+    if (!targetElement || targetElement === handledTargetElement.current) {
+      return;
+    }
+
+    const element = document.getElementById(targetElement);
+
+    if (!element) {
+      return;
+    }
+
+    handledTargetElement.current = targetElement;
+
+    element.scrollIntoView({ behavior: 'auto', block: 'start' });
+    element.focus();
+  }, [ targetElement, formikValues, sections ]);
 
   return (<Form>
     { sections }

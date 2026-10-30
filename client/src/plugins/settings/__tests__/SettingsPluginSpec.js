@@ -14,6 +14,8 @@ import sinon from 'sinon';
 
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 
+import { getIn, useFormikContext } from 'formik';
+
 import SettingsPlugin from '../SettingsPlugin';
 import Settings from '../../../app/Settings';
 import Flags from '../../../util/Flags';
@@ -254,6 +256,37 @@ describe('SettingsPlugin', function() {
     });
 
 
+    it('should scroll to entry rendered from form values when opened for the first time', async function() {
+
+      // when
+      await renderSettings(
+        { 'saved.items': [ { name: 'Saved item' } ] },
+        { scrollToEntry: 'saved.items[0]' },
+        SAVED_ITEMS
+      );
+
+      // then
+      const entry = screen.getByText('Saved item');
+
+      expect(scrollIntoView).to.have.been.calledOnce;
+      expect(scrollIntoView.firstCall.thisValue).to.equal(entry);
+    });
+
+
+    it('should scroll to entry every time settings open', async function() {
+
+      // given
+      const { reopen } = await renderSettings({}, { scrollToEntry: 'app.newContextPad' });
+
+      // when
+      fireEvent.click(screen.getByRole('button', { name: 'Done' }));
+      act(reopen);
+
+      // then
+      expect(scrollIntoView).to.have.been.calledTwice;
+    });
+
+
     it('should not scroll again when a setting changes', async function() {
 
       // given
@@ -290,9 +323,29 @@ function getDialogs() {
   return screen.getAllByRole('dialog', { hidden: true });
 }
 
-async function renderSettings(values = {}, openOptions = {}) {
+function SavedItems({ name }) {
+  const { values } = useFormikContext();
+
+  return <ul>
+    { (getIn(values, name) || []).map((item, index) =>
+      <li key={ index } id={ `${ name }[${ index }]` }>{ item.name }</li>
+    ) }
+  </ul>;
+}
+
+const SAVED_ITEMS = {
+  id: 'saved',
+  title: 'Saved items',
+  properties: {
+    'saved.items': { type: 'custom', component: SavedItems }
+  }
+};
+
+async function renderSettings(values = {}, openOptions = {}, group = null) {
   const saved = sinon.spy();
   const settings = new Settings({ config: { get: () => values, set: saved } });
+
+  group && settings.register(group);
 
   // Let the real Settings provider finish loading before the modal is opened.
   await Promise.resolve();
