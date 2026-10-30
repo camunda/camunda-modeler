@@ -66,7 +66,7 @@
     "del": "^9.0.0",
     "del-cli": "^8.0.0",
     "diff2html": "^3.4.48",
-    "electron": "^44.9.1",
+    "electron": "^45.0.0",
     "electron-builder": "^26.17.0",
     "electron-extension-installer": "^2.0.3",
     "electron-reloader": "^1.2.0",
