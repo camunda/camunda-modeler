@@ -49,7 +49,10 @@ if (argv.ia32) {
   throw new Error('Windows ia32 builds are no longer supported');
 }
 
-const archs = [ 'x64' ];
+const archs = [ 'x64', 'arm64' ];
+
+// only verify architectures that got built, if narrowed via --x64 / --arm64
+const requestedArchs = [ 'x64', 'arm64' ].filter(a => argv[a]);
 
 const platforms = [
   win && 'win',
@@ -75,7 +78,7 @@ const expectedFiles = {
   linux: [
     {
       name: 'camunda-modeler-${version}-linux-${arch}.tar.gz',
-      archs: [ 'x64' ],
+      archs: [ 'x64', 'arm64' ],
       contents: [
         'camunda-modeler-${version}-linux-${arch}/camunda-modeler',
         'camunda-modeler-${version}-linux-${arch}/support/xdg_register.sh',
@@ -153,7 +156,7 @@ function expandExpected(platform, version) {
 
     return [
       ...expectedFiles,
-      ...(archs.map(function(arch) {
+      ...(archs.filter(isRequestedArch).map(function(arch) {
         const replaceVariables = createReplacer(version, arch);
 
         return {
@@ -167,6 +170,10 @@ function expandExpected(platform, version) {
 }
 
 // helpers ///////////
+
+function isRequestedArch(arch) {
+  return !requestedArchs.length || requestedArchs.includes(arch);
+}
 
 // extract unix permission bits from zip external file attributes
 // eslint-disable-next-line no-bitwise
