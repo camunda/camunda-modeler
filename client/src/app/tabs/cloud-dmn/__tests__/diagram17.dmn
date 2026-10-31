@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions dmnVersion="1.7" xmlns="https://www.omg.org/spec/DMN/" xmlns:dmndi="https://www.omg.org/spec/DMN/DMNDI/" xmlns:dc="https://www.omg.org/spec/SCE/DC/" id="Definitions_1" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_1" name="Greeting">
+    <literalExpression id="LiteralExpression_1">
+      <text>"Hello " + name</text>
+    </literalExpression>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1">
+      <dmndi:DMNShape id="DMNShape_1" dmnElementRef="Decision_1">
+        <dc:Bounds height="80" width="180" x="150" y="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

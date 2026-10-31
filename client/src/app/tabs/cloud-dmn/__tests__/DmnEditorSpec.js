@@ -42,6 +42,8 @@ import diagramXML from './diagram.dmn';
 
 import diagram11XML from './diagram11.dmn';
 
+import diagram17XML from './diagram17.dmn';
+
 import engineProfileXML from '../../__tests__/EngineProfile.cloud.dmn';
 import noEngineProfileXML from '../../__tests__/EngineProfile.vanilla.dmn';
 import unknownEngineProfileXML from '../../__tests__/EngineProfile.unknown.dmn';
@@ -2414,6 +2416,86 @@ describe('<DmnEditor>', function() {
       await renderEditor(diagram11XML, {
         id: 'editor',
         cache,
+        onAction: onActionSpy,
+        onContentUpdated: onContentUpdatedSpy,
+        waitForImport: false // import will not be triggered
+      });
+
+      // then
+      await waitFor(() => {
+        expect(onActionSpy).to.have.been.calledTwice;
+        expect(onActionSpy.firstCall.args[ 0 ]).to.eql('show-dialog');
+        expect(onActionSpy.secondCall.args[ 0 ]).to.eql('close-tab');
+
+        expect(onContentUpdatedSpy).not.to.have.been.called;
+      });
+    });
+
+
+    it('should migrate DMN 1.7 to DMN 1.3', async function() {
+
+      // given
+      const onActionSpy = spy((action) => {
+        if (action === 'show-dialog') {
+          return { button: 'yes' };
+        }
+      });
+
+      const onContentUpdatedSpy = sinon.spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new DmnModeler()
+        },
+        __destroy: () => {}
+      });
+
+      // when
+      await renderEditor(diagram17XML, {
+        id: 'editor',
+        cache,
+        onAction: onActionSpy,
+        onContentUpdated: onContentUpdatedSpy
+      });
+
+      // then
+      expect(onActionSpy).to.have.been.calledOnce;
+      expect(onActionSpy.firstCall.args[ 0 ]).to.eql('show-dialog');
+      expect(onActionSpy.firstCall.args[ 1 ].title).to.eql('DMN 1.7 Diagram Detected');
+
+      expect(onContentUpdatedSpy).to.have.been.calledOnceWith(
+        sinon.match('https://www.omg.org/spec/DMN/20191111/MODEL/')
+      );
+    });
+
+
+    it('should ask to migrate DMN 1.7 even if asking is disabled', async function() {
+
+      // given
+      const onActionSpy = spy((action) => {
+        if (action === 'show-dialog') {
+          return { button: 'cancel' };
+        }
+      });
+
+      const onContentUpdatedSpy = sinon.spy();
+
+      const cache = new Cache();
+
+      cache.add('editor', {
+        cached: {
+          modeler: new DmnModeler()
+        },
+        __destroy: () => {}
+      });
+
+      // when
+      await renderEditor(diagram17XML, {
+        id: 'editor',
+        cache,
+        getConfig: () => false,
         onAction: onActionSpy,
         onContentUpdated: onContentUpdatedSpy,
         waitForImport: false // import will not be triggered
