@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_no_di" name="Decision without DI" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_no_di" name="Decision without DI">
+    <decisionTable id="DecisionTable_no_di">
+      <output id="Output_no_di" name="Result" typeRef="string" />
+    </decisionTable>
+  </decision>
+</definitions>

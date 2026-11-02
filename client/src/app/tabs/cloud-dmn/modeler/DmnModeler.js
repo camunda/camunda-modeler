@@ -23,6 +23,8 @@ import Flags, {
 
 import openDrgElementModule from '../../dmn/modeler/features/overview/open-drg-element';
 import overviewRendererModule from '../../dmn/modeler/features/overview/overview-renderer';
+import modelingModule from 'dmn-js-drd/lib/features/modeling';
+import generateDiModule from 'dmn-js-drd/lib/features/generate-di';
 
 import executionPlatformModule from '@camunda/execution-platform';
 import modelerModdle from 'modeler-moddle/resources/dmn-modeler.json';
@@ -175,7 +177,9 @@ export default class CamundaDmnModeler extends DmnModeler {
       drd: {
         additionalModules: [
           openDrgElementModule,
-          overviewRendererModule
+          overviewRendererModule,
+          modelingModule,
+          generateDiModule
         ],
         openDrgElement: {
           layout

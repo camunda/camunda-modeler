@@ -16,6 +16,7 @@ import TestContainer from 'mocha-test-container-support';
 import DmnModeler from '../../../src/app/tabs/cloud-dmn/modeler/DmnModeler';
 import DrdViewer from '../../../src/app/tabs/dmn/modeler/DrdViewer';
 
+import diagramWithoutDiXML from './diagram-no-di.dmn';
 import diagramXML from './diagram.dmn';
 
 const DEFAULT_OPTIONS = {
@@ -272,6 +273,29 @@ describe('DmnModeler', function() {
 
       // then
       expect(modeler._overview.getDefinitions()).to.exist;
+      expect(overviewContainer.textContent).to.contain('Regional Weather');
+    });
+
+
+    // regression test for https://github.com/camunda/camunda-modeler/issues/3595
+    it('should display the decision in the overview when importing DMN without DI', async function() {
+
+      // given
+      const overviewImportDone = new Promise(resolve => {
+        modeler._overview.once('import.done', resolve);
+      });
+
+      // when
+      await modeler.importXML(diagramWithoutDiXML);
+      await overviewImportDone;
+      modeler.updateOverview(overviewContainer, true);
+
+      // then
+      expect(overviewContainer.textContent).to.contain('Decision without DI');
+
+      const { xml } = await modeler.saveXML();
+
+      expect(xml).not.to.contain('dmndi:DMNDI');
     });
 
 
