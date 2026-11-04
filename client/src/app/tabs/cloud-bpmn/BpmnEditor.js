@@ -89,6 +89,11 @@ import { getCloudTemplates } from '../../../util/elementTemplates';
 
 import CredentialManager from './credential-manager/CredentialManager';
 
+import DiffDemoToggle, { MODE_MODIFIED, MODE_ORIGINAL } from './diff-demo/DiffDemoToggle';
+import DiffDemoSummary from './diff-demo/DiffDemoSummary';
+import diffDemoModifiedXML from './diff-demo/diagram_1_changed.bpmn';
+import diffDemoChanges from './diff-demo/changes';
+
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
 export const DEFAULT_ENGINE_PROFILE = {
@@ -741,6 +746,36 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
+  // PROTOTYPE: swap XML to demo properties panel diffing; highlighting of
+  // changes must only be active in MODE_MODIFIED
+  handleDiffDemoModeChange = async (mode) => {
+    const { diffDemoMode = MODE_ORIGINAL } = this.state;
+
+    if (mode === diffDemoMode) {
+      return;
+    }
+
+    if (mode === MODE_MODIFIED) {
+      const { xml } = await this.getModeler().saveXML({ format: true });
+
+      this.diffDemoOriginalXML = xml;
+    }
+
+    this.setState({ diffDemoMode: mode });
+
+    const eventBus = this.getModeler().get('eventBus');
+
+    if (mode === MODE_MODIFIED) {
+      await this.importXML(diffDemoModifiedXML);
+
+      eventBus.fire('diffDemo.setChanges', { changes: diffDemoChanges });
+    } else {
+      eventBus.fire('diffDemo.setChanges', { changes: null });
+
+      await this.importXML(this.diffDemoOriginalXML);
+    }
+  };
+
   /**
    * @returns {BpmnModeler}
    */
@@ -1006,6 +1041,7 @@ export class BpmnEditor extends CachedComponent {
     const injector = modeler.get('injector');
 
     const {
+      diffDemoMode = MODE_ORIGINAL,
       importing
     } = this.state;
 
@@ -1019,7 +1055,12 @@ export class BpmnEditor extends CachedComponent {
             ref={ this.ref }
             onFocus={ this.handleChanged }
             onContextMenu={ this.handleContextMenu }
-          ></div>
+          >
+            <DiffDemoToggle
+              mode={ diffDemoMode }
+              onModeChange={ this.handleDiffDemoModeChange }
+            />
+          </div>
 
           <SidePanelGroup panelIds={ [ 'variablesSidePanel', 'sidePanel' ] } layout={ layout } onLayoutChanged={ this.handleLayoutChange }>
             <SidePanelConsumer panelId="variablesSidePanel">
@@ -1057,7 +1098,10 @@ export class BpmnEditor extends CachedComponent {
                     <div className="properties-panel-header-container" ref={ this.propertiesPanelHeaderRef } />
                   </SidePanel.Header>
                   <SidePanel.Tab id="properties" label="Properties" icon={ Settings }>
-                    <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
+                    <div className="diff-demo-properties">
+                      <DiffDemoSummary injector={ injector } />
+                      <PropertiesTab propertiesPanelRef={ this.propertiesPanelRef } />
+                    </div>
                   </SidePanel.Tab>
                   <SidePanel.Tab id="test" label="Test" icon={ TaskTestingIcon }>
                     <TaskTestingTab

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_FeelPlayground" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.53.0-rc.0-dev" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="Process_FeelPlayground" name="FEEL Playground scenarios" isExecutable="true">
+    <bpmn:documentation>Docs</bpmn:documentation>
+    <bpmn:serviceTask id="Task_PrepareOrder" name="Prepare order payload">
+      <bpmn:documentation>This service task prepares customer and order data for the payment step</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="prepare-order-payload" retries="5" />
+        <zeebe:ioMapping>
+          <zeebe:output source="={ name: &#34;Ada&#34;, tier: &#34;platinum&#34;, active: true }" target="customer" />
+          <zeebe:output source="={ total: 149.95, currency: &#34;EUR&#34;, items: 3 }" target="order" />
+          <zeebe:output source="=now()" target="preparedAt" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="priority" value="high" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Start_Prepare</bpmn:incoming>
+      <bpmn:outgoing>Flow_1a19fw5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1" name="Order received">
+      <bpmn:outgoing>Flow_Start_Prepare</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_Start_Prepare" sourceRef="StartEvent_1" targetRef="Task_PrepareOrder" />
+    <bpmn:endEvent id="Event_14d4llr">
+      <bpmn:incoming>Flow_1a19fw5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1a19fw5" sourceRef="Task_PrepareOrder" targetRef="Event_14d4llr" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_FeelPlayground">
+      <bpmndi:BPMNShape id="Task_PrepareOrder_di" bpmnElement="Task_PrepareOrder">
+        <dc:Bounds x="250" y="80" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="150" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="132" y="145" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14d4llr_di" bpmnElement="Event_14d4llr">
+        <dc:Bounds x="452" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_Prepare_di" bpmnElement="Flow_Start_Prepare">
+        <di:waypoint x="186" y="120" />
+        <di:waypoint x="250" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a19fw5_di" bpmnElement="Flow_1a19fw5">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="452" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,177 @@
+/* PROTOTYPE: properties panel change highlighting, see DiffDemoMarkers.js */
+
+[data-diff-demo-change] {
+  --diff-demo-color: #f1c21b;
+  --diff-demo-tag-background: #fcf4d6;
+  --diff-demo-tag-color: #8e6a00;
+}
+
+[data-diff-demo-change="added"] {
+  --diff-demo-color: #24a148;
+  --diff-demo-tag-background: #defbe6;
+  --diff-demo-tag-color: #0e6027;
+}
+
+[data-diff-demo-change="removed"] {
+  --diff-demo-color: #da1e28;
+  --diff-demo-tag-background: #fff1f1;
+  --diff-demo-tag-color: #a2191f;
+}
+
+/* thick colored left border, part of the field itself */
+[data-diff-demo-change]:not(.bio-properties-panel-collapsible-entry) .bio-properties-panel-input {
+  border-left: 4px solid var(--diff-demo-color);
+  padding-left: 3px;
+}
+
+/* list items have no single field, mark the item header instead */
+.bio-properties-panel-collapsible-entry[data-diff-demo-change] > .bio-properties-panel-collapsible-entry-header {
+  border-left: 4px solid var(--diff-demo-color);
+  border-radius: 4px;
+}
+
+[data-diff-demo-label] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.diff-demo-tag {
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: normal;
+  white-space: nowrap;
+  background: var(--diff-demo-tag-background);
+  color: var(--diff-demo-tag-color);
+}
+
+.diff-demo-restore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 24px;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid var(--color-grey-225-10-80, #c6c6c6);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.diff-demo-restore:hover {
+  background: rgba(0, 0, 0, .05);
+}
+
+/* inline diff, shown in place of the (hidden) field */
+[data-diff-demo-hidden] {
+  display: none !important;
+}
+
+.diff-demo-inline-view {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: var(--input-height);
+  white-space: pre-wrap;
+  word-break: break-word;
+  cursor: text;
+}
+
+.diff-demo-inline-view[hidden] {
+  display: none;
+}
+
+.diff-demo-inline-view--feel {
+  font-family: var(--font-family-monospace, monospace);
+}
+
+.diff-demo-ins {
+  text-decoration: none;
+  border-radius: 2px;
+  background: #defbe6;
+  color: #0e6027;
+}
+
+.diff-demo-del {
+  border-radius: 2px;
+  background: #fff1f1;
+  color: #a2191f;
+}
+
+.diff-demo-collapsed {
+  color: var(--description-color, #6f6f6f);
+}
+
+/* placeholder for removed list items */
+.diff-demo-ghost {
+  margin: 0 32px 6px 12px;
+}
+
+/* follow the list: hidden while a non-empty group is collapsed */
+.bio-properties-panel-group:has(> .bio-properties-panel-group-header:not(.empty):not(.open)) > .diff-demo-ghost {
+  display: none;
+}
+
+.diff-demo-ghost .bio-properties-panel-collapsible-entry-header {
+  cursor: default;
+}
+
+.diff-demo-ghost-label {
+  text-decoration: line-through;
+  color: var(--description-color, #6f6f6f);
+}
+
+/* demo only: changed elements on the canvas */
+.djs-element.diff-demo-changed .djs-visual > :first-child {
+  fill: #fcf4d6 !important;
+  stroke: #f1c21b !important;
+}
+
+/* color coded change counts in group headers */
+.bio-properties-panel-group-header-title:has(> .diff-demo-group-counts) {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.diff-demo-group-counts {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.diff-demo-count {
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 18px;
+  text-align: center;
+}
+
+.diff-demo-count--changed,
+.diff-demo-summary-chip--changed,
+.diff-demo-summary-tag--changed {
+  background: #fcf4d6;
+  color: #8e6a00;
+}
+
+.diff-demo-count--added,
+.diff-demo-summary-chip--added,
+.diff-demo-summary-tag--added {
+  background: #defbe6;
+  color: #0e6027;
+}
+
+.diff-demo-count--removed,
+.diff-demo-summary-chip--removed,
+.diff-demo-summary-tag--removed {
+  background: #fff1f1;
+  color: #a2191f;
+}
