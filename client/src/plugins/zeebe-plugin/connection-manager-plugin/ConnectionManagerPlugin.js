@@ -64,6 +64,7 @@ export default function ConnectionManagerPlugin(props) {
   const [ paused, setPaused ] = useState(false);
 
   const [ connections, setConnections ] = useState([]);
+  const [ c8ctlConnections, setC8ctlConnections ] = useState([]);
   const [ activeConnection, setActiveConnection ] = useState(null);
 
 
@@ -83,11 +84,20 @@ export default function ConnectionManagerPlugin(props) {
       settings,
       connectionChecker: settingsConnectionChecker,
     }).then(() => {
+      return loadC8ctlProfiles();
+    }).then(() => {
       unsubscribe = settings.subscribe(SETTINGS_KEY_CONNECTIONS, (connections) => {
         setConnections(connections.value);
       });
-      setConnections(deployment.getEndpoints());
+      setConnections(deployment.getEndpoints().filter(endpoint => endpoint.targetType !== 'c8ctl'));
     });
+
+    async function loadC8ctlProfiles() {
+      const result = await _getGlobal('backend').send('c8ctl:listProfiles');
+
+      deployment.setC8ctlProfiles(result.ok ? result.data : []);
+      setC8ctlConnections(deployment.getC8ctlEndpoints());
+    }
 
     return () => {
       unsubscribe && unsubscribe();
@@ -269,7 +279,9 @@ export default function ConnectionManagerPlugin(props) {
     }
     { overlayOpen && <Overlay className={ css.ConnectionManagerOverlay } onClose={ () => setOverlayOpen(false) } anchor={ statusBarButtonRef.current }>
       <ConnectionManagerOverlay
+        backend={ _getGlobal('backend') }
         connections={ connections }
+        c8ctlConnections={ c8ctlConnections }
         connectionCheckResult={ connectionCheckResult }
         renderHeader="Select Camunda 8 connection"
         activeConnection={ activeConnection }
@@ -285,7 +297,7 @@ export default function ConnectionManagerPlugin(props) {
         } }
         handleConnectionChange={ async (connection) => {
           await deployment.setConnectionIdForTab(activeTab, connection.id);
-          setActiveConnection(connection);
+          setActiveConnection(deployment.getEndpoint(connection.id) || connection);
         }
         }
       />

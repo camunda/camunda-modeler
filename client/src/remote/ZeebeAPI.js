@@ -32,10 +32,12 @@ export default class ZeebeAPI {
   }
 
   checkConnection(endpoint) {
+    const { c8ctlProfile } = endpoint;
+
     endpoint = getEndpointForTargetType(endpoint);
 
     return this._backend.send('zeebe:checkConnection', {
-      endpoint
+      endpoint: { ...endpoint, c8ctlProfile }
     });
   }
 
@@ -45,10 +47,12 @@ export default class ZeebeAPI {
       resourceConfigs
     } = options;
 
+    const { c8ctlProfile } = endpoint;
+
     endpoint = getEndpointForTargetType(endpoint);
 
     return this._backend.send('zeebe:deploy', {
-      endpoint,
+      endpoint: { ...endpoint, c8ctlProfile },
       resourceConfigs
     });
   }
@@ -64,10 +68,12 @@ export default class ZeebeAPI {
       businessId
     } = options;
 
+    const { c8ctlProfile } = endpoint;
+
     endpoint = getEndpointForTargetType(endpoint);
 
     return this._backend.send('zeebe:startInstance', {
-      endpoint,
+      endpoint: { ...endpoint, c8ctlProfile },
       processDefinitionKey,
       processId,
       variables,
@@ -78,10 +84,12 @@ export default class ZeebeAPI {
   }
 
   getGatewayVersion(endpoint) {
+    const { c8ctlProfile } = endpoint;
+
     endpoint = getEndpointForTargetType(endpoint);
 
     return this._backend.send('zeebe:getGatewayVersion', {
-      endpoint
+      endpoint: { ...endpoint, c8ctlProfile }
     });
   }
 

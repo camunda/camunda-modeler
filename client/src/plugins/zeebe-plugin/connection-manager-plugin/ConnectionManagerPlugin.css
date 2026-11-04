@@ -8,6 +8,27 @@
     font-weight: var(--font-weight-normal);
     color: var(--link-color);
   }
+
+  .local-cluster {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .local-cluster__status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .local-cluster__error {
+    color: var(--danger-foreground-subtle);
+  }
+
+  .local-cluster__hint {
+    color: var(--neutral-foreground-subtle);
+  }
 }
 
 :local(.ConnectionSelector) {

@@ -13,5 +13,11 @@ import { validateProperties } from '../../settings/SettingsForm';
 import { properties } from './ConnectionManagerSettingsProperties';
 
 export function validateConnection(connection) {
+
+  // c8ctl owns and validates its profiles
+  if (connection && connection.targetType === 'c8ctl') {
+    return {};
+  }
+
   return validateProperties(connection, properties);
 }

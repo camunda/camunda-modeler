@@ -39,6 +39,7 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
+const C8ctl = require('./c8ctl');
 const { getTemplateSourceConfig } = require('./template-updater/sources');
 const { TemplateUpdater } = require('./template-updater/template-updater');
 
@@ -95,7 +96,8 @@ const {
   plugins,
   cleanupTemplateSourcesCache,
   windowManager,
-  zeebeAPI
+  zeebeAPI,
+  c8ctl
 } = bootstrap();
 
 app.flags = flags;
@@ -306,9 +308,41 @@ renderer.on('file:write', function(filePath, file, options = {}, done) {
 
 // zeebe api //////////
 
+// c8ctl //////////
+
+renderer.on('c8ctl:listProfiles', async function(done) {
+  const result = await c8ctl.listProfiles();
+
+  done(null, result);
+});
+
+renderer.on('c8ctl:clusterStatus', async function(done) {
+  done(null, await c8ctl.clusterStatus());
+});
+
+renderer.on('c8ctl:clusterStart', async function(done) {
+  done(null, await c8ctl.clusterStart());
+});
+
+renderer.on('c8ctl:clusterStop', async function(done) {
+  done(null, await c8ctl.clusterStop());
+});
+
+/**
+ * Saved connections and c8ctl profiles carry a `c8ctlProfile`;
+ * unsaved drafts in the settings dialog do not.
+ */
+function getC8ctlProfile(options) {
+  return c8ctl.isInstalled() && options.endpoint && options.endpoint.c8ctlProfile;
+}
+
 renderer.on('zeebe:checkConnection', async function(options, done) {
   try {
-    const connectivity = await zeebeAPI.checkConnection(options);
+    const profile = getC8ctlProfile(options);
+
+    const connectivity = profile
+      ? await c8ctl.checkConnection(profile)
+      : await zeebeAPI.checkConnection(options);
 
     done(null, connectivity);
   } catch (err) {
@@ -318,7 +352,11 @@ renderer.on('zeebe:checkConnection', async function(options, done) {
 
 renderer.on('zeebe:deploy', async function(options, done) {
   try {
-    const deploymentResult = await zeebeAPI.deploy(options);
+    const profile = getC8ctlProfile(options);
+
+    const deploymentResult = profile
+      ? await c8ctl.deploy({ profile, resourceConfigs: options.resourceConfigs })
+      : await zeebeAPI.deploy(options);
 
     done(null, deploymentResult);
   } catch (err) {
@@ -328,7 +366,17 @@ renderer.on('zeebe:deploy', async function(options, done) {
 
 renderer.on('zeebe:startInstance', async function(options, done) {
   try {
-    const runResult = await zeebeAPI.startInstance(options);
+    const profile = getC8ctlProfile(options);
+
+    const hasInstructions = !!(options.startInstructions?.length || options.runtimeInstructions?.length);
+
+    // c8ctl cannot pass instructions (task testing), so Modeler connections keep the SDK for them;
+    // c8ctl profiles have no SDK endpoint (`type`) to fall back to
+    const useC8ctl = profile && (!hasInstructions || !options.endpoint.type);
+
+    const runResult = useC8ctl
+      ? await c8ctl.startInstance({ profile, ...options })
+      : await zeebeAPI.startInstance(options);
 
     done(null, runResult);
   } catch (err) {
@@ -338,7 +386,11 @@ renderer.on('zeebe:startInstance', async function(options, done) {
 
 renderer.on('zeebe:getGatewayVersion', async function(options, done) {
   try {
-    const gatewayVersionResponse = await zeebeAPI.getGatewayVersion(options);
+    const profile = getC8ctlProfile(options);
+
+    const gatewayVersionResponse = profile
+      ? await c8ctl.checkConnection(profile)
+      : await zeebeAPI.getGatewayVersion(options);
 
     done(null, gatewayVersionResponse);
   } catch (err) {
@@ -904,6 +956,13 @@ function bootstrap() {
   // (9) zeebe API
   const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
+  // (9a) c8ctl, bundled; C8CTL_BIN overrides it, e.g. to test another c8ctl version
+  const c8ctl = new C8ctl({
+    binPath: process.env.C8CTL_BIN || C8ctl.getBundledBinPath(),
+    modelerDataDir: userPath,
+    getModelerConnections: () => config.get('settings')['connectionManagerPlugin.c8connections']
+  });
+
   // (10) template updater
   const templateUpdater = new TemplateUpdater(userPath, endpoints);
 
@@ -965,7 +1024,8 @@ function bootstrap() {
     plugins,
     cleanupTemplateSourcesCache,
     windowManager,
-    zeebeAPI
+    zeebeAPI,
+    c8ctl
   };
 }
 

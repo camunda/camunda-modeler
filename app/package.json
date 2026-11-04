@@ -11,6 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@camunda8/cli": "^4.6.1",
     "@camunda8/sdk": "^8.8.18",
     "@sentry/electron": "^8.2.0",
     "bpmn-moddle": "^10.3.1",

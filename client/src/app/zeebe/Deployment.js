@@ -77,6 +77,34 @@ export default class Deployment extends EventEmitter {
     this._tabStorage = tabStorage;
 
     this._resourcesProviders = [];
+
+    this._c8ctlEndpoints = [];
+
+    this._c8ctlLoaded = new Promise(resolve => {
+      this._resolveC8ctlLoaded = resolve;
+    });
+  }
+
+  /**
+   * Set the profiles owned by c8ctl. They are read-only and never written to settings.
+   *
+   * @param {Array<{ Name: string, URL: string, Tenant: string }>} profiles
+   */
+  setC8ctlProfiles(profiles = []) {
+    this._c8ctlEndpoints = profiles.map(profile => ({
+      id: `c8ctl:${ profile.Name }`,
+      name: profile.Name,
+      targetType: 'c8ctl',
+      url: profile.URL,
+      tenantId: profile.Tenant,
+      c8ctlProfile: profile.Name
+    }));
+
+    this._resolveC8ctlLoaded();
+  }
+
+  getC8ctlEndpoints() {
+    return this._c8ctlEndpoints;
   }
 
   /**
@@ -191,6 +219,14 @@ export default class Deployment extends EventEmitter {
       return NO_CONNECTION;
     }
 
+    // c8ctl profiles load asynchronously; resolving too early would replace the stored id with the default
+    if (connectionId && connectionId.startsWith('c8ctl:')) {
+      await Promise.race([
+        this._c8ctlLoaded,
+        new Promise(resolve => setTimeout(resolve, 5000))
+      ]);
+    }
+
     let endpoint = this.getEndpoint(connectionId);
 
     if (!endpoint) {
@@ -258,12 +294,17 @@ export default class Deployment extends EventEmitter {
     const connections = this._settings.get(SETTINGS_KEY_CONNECTIONS);
 
     if (!connections || !Array.isArray(connections)) {
-      return [];
+      return this._c8ctlEndpoints;
     }
 
-    return connections
-      .filter(connection => connection && !!connection.id)
-      .map(sanitizeEndpoint);
+    // c8ctl resolves `modeler:<id>` from this Modeler's settings.json
+    return [
+      ...connections
+        .filter(connection => connection && !!connection.id)
+        .map(sanitizeEndpoint)
+        .map(endpoint => ({ ...endpoint, c8ctlProfile: `modeler:${ endpoint.id }` })),
+      ...this._c8ctlEndpoints
+    ];
   }
 
   /**
