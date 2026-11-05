@@ -45,6 +45,8 @@ import { ENGINES } from '../../../util/Engines';
 
 import { FormPreviewToggle } from './FormPreviewToggle';
 
+import configureEditor from './util/configure';
+
 const LOW_PRIORITY = 500;
 
 export const DEFAULT_ENGINE_PROFILE = {
@@ -658,7 +660,10 @@ export class FormEditor extends CachedComponent {
 
     const {
       layout = {},
-      emit
+      emit,
+      getPlugins = () => [],
+      onError,
+      xml
     } = props;
 
     const {
@@ -666,16 +671,38 @@ export class FormEditor extends CachedComponent {
       version
     } = Metadata;
 
+    // notify interested parties that editor will be configured
+    const handleMiddlewareExtensions = (middlewares) => {
+      emit('form.modeler.configure', {
+        middlewares
+      });
+    };
+
+    const {
+      options,
+      warnings
+    } = configureEditor(getPlugins, {
+      exporter: {
+        name,
+        version
+      }
+    }, handleMiddlewareExtensions, getPlatformKey(xml));
+
+    if (warnings.length && isFunction(onError)) {
+      onError(
+        'Problem(s) configuring Form editor: \n\t' +
+        warnings.map(error => error.message).join('\n\t') +
+        '\n'
+      );
+    }
+
     const form = new Form({
       schema: {
         components: [],
         type: 'default'
       },
       layout: getInitialFormLayout(layout),
-      exporter: {
-        name,
-        version
-      }
+      ...options
     });
 
     emit('form.modeler.created', form);
@@ -695,6 +722,24 @@ export class FormEditor extends CachedComponent {
 export default WithCache(WithCachedState(FormEditor));
 
 // helpers //////////
+
+/**
+ * Get the plug-in key of the execution platform the form targets,
+ * using the same rule as the tab providers to pick the platform.
+ *
+ * @param {string} xml
+ *
+ * @return {'cloud'|'platform'}
+ */
+function getPlatformKey(xml) {
+  try {
+    const { executionPlatform } = getEngineProfileFromForm(JSON.parse(xml), DEFAULT_ENGINE_PROFILE);
+
+    return executionPlatform === ENGINES.CLOUD ? 'cloud' : 'platform';
+  } catch (err) {
+    return 'platform';
+  }
+}
 
 function isCacheStateChanged(prevProps, props) {
   return prevProps.cachedState !== props.cachedState;
