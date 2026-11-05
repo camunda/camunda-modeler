@@ -42,7 +42,7 @@ export default function TaskTestingTabActionItem(props) {
 
   return <Fill slot="tab-actions" priority={ 1 }>
     <TabActionToggle
-      label="Test"
+      label="Validate"
       icon={ TaskTestingIcon }
       pressed={ isActive }
       onClick={ onClick }
