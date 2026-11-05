@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: allow plug-ins to extend the form editor via `form.modeler.configure`, `form.modeler.{editor,viewer}.additionalModules`, and the Camunda 7 and Camunda 8 specific `form.{platform,cloud}.modeler.{editor,viewer}.additionalModules`, e.g. to add custom form fields ([#5426](https://github.com/camunda/camunda-modeler/issues/5426))
+
 ## 5.53.0
 
 * `FEAT`: migrate the UI to the Camunda design system; CSS classes and variables of the previous UI were removed during the rework, plug-in markup that relied on them may render unstyled ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))

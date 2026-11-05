@@ -40,6 +40,7 @@ import engineProfileSchema from '../../__tests__/EngineProfile.platform.form';
 import noEngineProfile from '../../__tests__/EngineProfile.vanilla.form';
 import unknownEngineProfileSchema from '../../__tests__/EngineProfile.unknown.form';
 import missingPatchEngineProfile from '../../__tests__/EngineProfile.missing-patch.platform.form';
+import cloudEngineProfileSchema from '../../__tests__/EngineProfile.cloud.form';
 import patchEngineProfile from '../../__tests__/EngineProfile.patch.platform.form';
 
 import { SlotFillRoot } from '../../../slot-fill';
@@ -1050,6 +1051,136 @@ describe('<FormEditor>', function() {
   });
 
 
+  describe('plugins', function() {
+
+    it('should accept <editor> plugins', async function() {
+
+      // given
+      const additionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
+
+      // when
+      const { instance } = await renderEditor(schema, {
+        getPlugins(type) {
+          return type === 'form.modeler.editor.additionalModules' ? [ additionalModule ] : [];
+        }
+      });
+
+      // then
+      const { form } = instance.getCached();
+
+      expect(form.options.editorAdditionalModules).to.eql([ additionalModule ]);
+      expect(form.options.viewerAdditionalModules).not.to.exist;
+    });
+
+
+    it('should accept <viewer> plugins', async function() {
+
+      // given
+      const additionalModule = {
+        __init__: [ 'foo' ],
+        foo: [ 'type', noop ]
+      };
+
+      // when
+      const { instance } = await renderEditor(schema, {
+        getPlugins(type) {
+          return type === 'form.modeler.viewer.additionalModules' ? [ additionalModule ] : [];
+        }
+      });
+
+      // then
+      const { form } = instance.getCached();
+
+      expect(form.options.viewerAdditionalModules).to.eql([ additionalModule ]);
+      expect(form.options.editorAdditionalModules).not.to.exist;
+    });
+
+
+    it('should accept <cloud> plugins for Camunda 8 forms', async function() {
+
+      // given
+      const cloudModule = { __id: 'cloud' };
+      const platformModule = { __id: 'platform' };
+
+      // when
+      const { instance } = await renderEditor(cloudEngineProfileSchema, {
+        getPlugins: getPluginsOfType({
+          'form.cloud.modeler.editor.additionalModules': cloudModule,
+          'form.platform.modeler.editor.additionalModules': platformModule
+        })
+      });
+
+      // then
+      const { form } = instance.getCached();
+
+      expect(form.options.editorAdditionalModules).to.eql([ cloudModule ]);
+    });
+
+
+    it('should accept <platform> plugins for Camunda 7 forms', async function() {
+
+      // given
+      const cloudModule = { __id: 'cloud' };
+      const platformModule = { __id: 'platform' };
+
+      // when
+      const { instance } = await renderEditor(engineProfileSchema, {
+        getPlugins: getPluginsOfType({
+          'form.cloud.modeler.editor.additionalModules': cloudModule,
+          'form.platform.modeler.editor.additionalModules': platformModule
+        })
+      });
+
+      // then
+      const { form } = instance.getCached();
+
+      expect(form.options.editorAdditionalModules).to.eql([ platformModule ]);
+    });
+
+
+    it('should apply <form.modeler.configure> plugins', async function() {
+
+      // given
+      const configure = (options) => ({ ...options, editorProperties: { foo: 'bar' } });
+
+      // when
+      const { instance } = await renderEditor(schema, {
+        getPlugins(type) {
+          return type === 'form.modeler.configure' ? [ configure ] : [];
+        }
+      });
+
+      // then
+      const { form } = instance.getCached();
+
+      expect(form.options.editorProperties).to.eql({ foo: 'bar' });
+    });
+
+
+    it('should report configuration problems', async function() {
+
+      // given
+      const onError = sinon.spy();
+
+      // when
+      await renderEditor(schema, {
+        onError,
+        getPlugins(type) {
+          return type === 'form.modeler.configure' ? [ () => {} ] : [];
+        }
+      });
+
+      // then
+      expect(onError).to.have.been.calledOnce;
+      expect(onError.firstCall.args[0]).to.contain('form.modeler.configure does not return options');
+    });
+
+  });
+
+
   describe('extensions event emitting', function() {
 
     let recordActions, emittedEvents;
@@ -1060,6 +1191,21 @@ describe('<FormEditor>', function() {
       recordActions = (type, payload) => {
         emittedEvents.push({ type, payload });
       };
+    });
+
+
+    it('should notify when form configures', async function() {
+
+      // when
+      await renderEditor(engineProfileSchema, {
+        emit: recordActions
+      });
+
+      // then
+      const configureEvent = getEvent(emittedEvents, 'form.modeler.configure');
+
+      expect(configureEvent).to.exist;
+      expect(configureEvent.payload.middlewares).to.exist;
     });
 
 
@@ -1372,12 +1518,17 @@ describe('<FormEditor>', function() {
 
 function noop() {}
 
+function getPluginsOfType(pluginsByType) {
+  return (type) => type in pluginsByType ? [ pluginsByType[ type ] ] : [];
+}
+
 const TestEditor = WithCachedState(FormEditor);
 
 async function renderEditor(schema, options = {}) {
   const {
     cache = new Cache(),
     getConfig = noop,
+    getPlugins = () => [],
     id = 'editor',
     layout = {},
     onAction = noop,
@@ -1410,6 +1561,7 @@ async function renderEditor(schema, options = {}) {
           ref={ ref }
           cache={ cache }
           getConfig={ getConfig }
+          getPlugins={ getPlugins }
           id={ id }
           layout={ layout }
           onAction={ onAction }
