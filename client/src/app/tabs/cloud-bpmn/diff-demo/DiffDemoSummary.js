@@ -10,9 +10,9 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { ArrowDown, ArrowUp, ChevronDown, ChevronRight } from '@camunda/design-system/icons';
+import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronRight, Undo2 } from '@camunda/design-system/icons';
 
-import { GROUP_LABELS } from './changes';
+import { GROUP_LABELS } from './DiffDemoChanges';
 import { LABELS, TYPES } from './DiffDemoMarkers';
 
 import './DiffDemoSummary.css';
@@ -21,9 +21,9 @@ import './DiffDemoSummary.css';
  * PROTOTYPE: collapsible summary of the changes of the element shown in the
  * properties panel. Rendered on top of the properties panel.
  *
- * Clicking a change intentionally does nothing: focusing the field would
- * hide its inline diff. Up / down step through the changes and scroll them
- * into view.
+ * Clicking a change (or up / down) scrolls it into view without focusing
+ * the field, which would hide its inline diff. Changes can be approved or
+ * reverted from the list, too.
  *
  * @param {Object} props
  * @param {Object} props.injector
@@ -34,6 +34,8 @@ export default function DiffDemoSummary({ injector }) {
   const [ index, setIndex ] = useState(null);
 
   const eventBus = injector.get('eventBus');
+  const diffDemoChanges = injector.get('diffDemoChanges');
+  const diffDemoMarkers = injector.get('diffDemoMarkers');
 
   useEffect(() => {
     const onElementChanges = ({ changes }) => {
@@ -57,6 +59,10 @@ export default function DiffDemoSummary({ injector }) {
 
     eventBus.fire('diffDemo.reveal', { change: sorted[ newIndex ] });
   };
+
+  // recomputes changes, updating the list and all markers
+  const approve = (change) => diffDemoChanges.approve(change, diffDemoMarkers.getElement());
+  const revert = (change) => diffDemoChanges.restore(change, diffDemoMarkers.getElement());
 
   const step = (delta) => {
     const length = sorted.length;
@@ -111,7 +117,7 @@ export default function DiffDemoSummary({ injector }) {
         <ul className="diff-demo-summary-list">
           { sorted.map((change, changeIndex) => (
             <li
-              key={ change.entry || change.ghost }
+              key={ change.id }
               className={ `diff-demo-summary-item diff-demo-summary-item--${ change.type } ${ changeIndex === index ? 'is-current' : '' }` }
               role="button"
               tabIndex={ 0 }
@@ -124,14 +130,44 @@ export default function DiffDemoSummary({ injector }) {
               } }
             >
               <span className="diff-demo-summary-label">{ change.label }</span>
-              <span className="diff-demo-summary-group">{ GROUP_LABELS[ change.group ] || change.group }</span>
+              <span className="diff-demo-summary-group">{ change.groupLabel || GROUP_LABELS[ change.group ] || change.group || 'Not in panel' }</span>
               <span className={ `diff-demo-summary-tag diff-demo-summary-tag--${ change.type }` }>
                 { LABELS[ change.type ] }
+              </span>
+              <span className="diff-demo-actions diff-demo-summary-actions">
+                <SummaryAction title="Approve change" onClick={ () => approve(change) }>
+                  <Check size={ 16 } />
+                </SummaryAction>
+                { change.restorable && (
+                  <SummaryAction title="Revert change" onClick={ () => revert(change) }>
+                    <Undo2 size={ 16 } />
+                  </SummaryAction>
+                ) }
               </span>
             </li>
           )) }
         </ul>
       ) }
     </div>
+  );
+}
+
+function SummaryAction({ title, onClick, children }) {
+  return (
+    <button
+      type="button"
+      className={ `diff-demo-action diff-demo-action--${ title.startsWith('Approve') ? 'approve' : 'revert' }` }
+      title={ title }
+      aria-label={ title }
+      onClick={ event => {
+
+        // do not select the row
+        event.stopPropagation();
+        onClick();
+      } }
+      onKeyDown={ event => event.stopPropagation() }
+    >
+      { children }
+    </button>
   );
 }

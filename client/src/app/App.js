@@ -1767,6 +1767,12 @@ export class App extends PureComponent {
    */
   async saveTabAsFile(options, contents) {
 
+    // PROTOTYPE: never write diagrams to disk
+    throw new Error('Saving is disabled in this prototype');
+  }
+
+  async _saveTabAsFile(options, contents) {
+
     const {
       encoding,
       originalFile,
@@ -1871,6 +1877,17 @@ export class App extends PureComponent {
 
   async saveTab(tab, options) {
 
+    // PROTOTYPE: never save, keeps demo changes off the disk
+    this.displayNotification({
+      type: 'warning',
+      title: 'Saving is disabled in this prototype'
+    });
+
+    return false;
+  }
+
+  async _saveTab(tab, options) {
+
     await this.triggerAction('saveTab.start');
 
     options = options || {};
@@ -1923,7 +1940,9 @@ export class App extends PureComponent {
    * @returns {boolean} - whether the tab should be auto-saved
    */
   shouldAutoSave(tab) {
-    return tab && !this.isEmptyTab(tab) && this.isDirty(tab) && !this.isUnsaved(tab);
+
+    // PROTOTYPE: auto-save disabled, it would persist demo changes to disk
+    return false;
   }
 
   /**

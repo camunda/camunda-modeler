@@ -8,9 +8,11 @@
  * except in compliance with the MIT License.
  */
 
+import DiffDemoChanges from './DiffDemoChanges';
 import DiffDemoMarkers from './DiffDemoMarkers';
 
 export default {
-  __init__: [ 'diffDemoMarkers' ],
+  __init__: [ 'diffDemoChanges', 'diffDemoMarkers' ],
+  diffDemoChanges: [ 'type', DiffDemoChanges ],
   diffDemoMarkers: [ 'type', DiffDemoMarkers ]
 };

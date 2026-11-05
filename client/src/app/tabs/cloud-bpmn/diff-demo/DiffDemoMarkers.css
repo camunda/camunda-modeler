@@ -47,23 +47,39 @@
   color: var(--diff-demo-tag-color);
 }
 
-.diff-demo-restore {
+.diff-demo-actions {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+/* ghost (icon only) buttons */
+.diff-demo-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
+  width: 24px;
   height: 24px;
-  margin-left: auto;
   padding: 0;
-  border: 1px solid var(--color-grey-225-10-80, #c6c6c6);
-  border-radius: 6px;
+  border: 0;
+  border-radius: 4px;
   background: transparent;
-  color: inherit;
+  color: var(--description-color, #6f6f6f);
   cursor: pointer;
 }
 
-.diff-demo-restore:hover {
-  background: rgba(0, 0, 0, .05);
+.diff-demo-action:hover {
+  background: rgba(0, 0, 0, .06);
+  color: inherit;
+}
+
+.diff-demo-action--approve:hover {
+  color: #0e6027;
+}
+
+.diff-demo-action:focus-visible {
+  outline: 2px solid var(--color-focus, #0f62fe);
+  outline-offset: -2px;
 }
 
 /* inline diff, shown in place of the (hidden) field */

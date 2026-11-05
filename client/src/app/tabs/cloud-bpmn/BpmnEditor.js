@@ -89,10 +89,8 @@ import { getCloudTemplates } from '../../../util/elementTemplates';
 
 import CredentialManager from './credential-manager/CredentialManager';
 
-import DiffDemoToggle, { MODE_MODIFIED, MODE_ORIGINAL } from './diff-demo/DiffDemoToggle';
+import ImplementWithAiButton, { STATE_DONE, STATE_IDLE, STATE_WORKING } from './diff-demo/ImplementWithAiButton';
 import DiffDemoSummary from './diff-demo/DiffDemoSummary';
-import diffDemoModifiedXML from './diff-demo/diagram_1_changed.bpmn';
-import diffDemoChanges from './diff-demo/changes';
 
 const EXPORT_AS = [ 'png', 'jpeg', 'svg' ];
 
@@ -746,33 +744,19 @@ export class BpmnEditor extends CachedComponent {
     }
   }
 
-  // PROTOTYPE: swap XML to demo properties panel diffing; highlighting of
-  // changes must only be active in MODE_MODIFIED
-  handleDiffDemoModeChange = async (mode) => {
-    const { diffDemoMode = MODE_ORIGINAL } = this.state;
+  // PROTOTYPE: let "AI" change the task, showing the changes in the
+  // properties panel (diffed against the diagram before)
+  handleImplementWithAi = async () => {
+    this.setState({ implementWithAiState: STATE_WORKING });
 
-    if (mode === diffDemoMode) {
-      return;
-    }
+    try {
+      await this.getModeler().get('diffDemoChanges').implementWithAi();
 
-    if (mode === MODE_MODIFIED) {
-      const { xml } = await this.getModeler().saveXML({ format: true });
+      this.setState({ implementWithAiState: STATE_DONE });
+    } catch (error) {
+      this.setState({ implementWithAiState: STATE_IDLE });
 
-      this.diffDemoOriginalXML = xml;
-    }
-
-    this.setState({ diffDemoMode: mode });
-
-    const eventBus = this.getModeler().get('eventBus');
-
-    if (mode === MODE_MODIFIED) {
-      await this.importXML(diffDemoModifiedXML);
-
-      eventBus.fire('diffDemo.setChanges', { changes: diffDemoChanges });
-    } else {
-      eventBus.fire('diffDemo.setChanges', { changes: null });
-
-      await this.importXML(this.diffDemoOriginalXML);
+      this.handleError({ error });
     }
   };
 
@@ -1041,7 +1025,7 @@ export class BpmnEditor extends CachedComponent {
     const injector = modeler.get('injector');
 
     const {
-      diffDemoMode = MODE_ORIGINAL,
+      implementWithAiState = STATE_IDLE,
       importing
     } = this.state;
 
@@ -1056,9 +1040,9 @@ export class BpmnEditor extends CachedComponent {
             onFocus={ this.handleChanged }
             onContextMenu={ this.handleContextMenu }
           >
-            <DiffDemoToggle
-              mode={ diffDemoMode }
-              onModeChange={ this.handleDiffDemoModeChange }
+            <ImplementWithAiButton
+              state={ implementWithAiState }
+              onClick={ this.handleImplementWithAi }
             />
           </div>
 

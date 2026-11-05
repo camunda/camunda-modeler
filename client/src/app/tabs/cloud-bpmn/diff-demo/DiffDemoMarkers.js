@@ -13,7 +13,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 import { diffWordsWithSpace } from 'diff';
 
-import { History } from '@camunda/design-system/icons';
+import { Check, Undo2 } from '@camunda/design-system/icons';
 
 import './DiffDemoMarkers.css';
 
@@ -25,9 +25,8 @@ export const LABELS = {
   removed: 'Removed'
 };
 
-const RESTORABLE = [ 'changed', 'removed' ];
-
-const RESTORE_ICON = renderToStaticMarkup(React.createElement(History, { size: 16 }));
+const REVERT_ICON = renderToStaticMarkup(React.createElement(Undo2, { size: 16 }));
+const APPROVE_ICON = renderToStaticMarkup(React.createElement(Check, { size: 16 }));
 
 const CHANGE_ATTR = 'data-diff-demo-change';
 const OWNER_ATTR = 'data-diff-demo-owner';
@@ -137,14 +136,21 @@ DiffDemoMarkers.prototype._getContainer = function() {
 };
 
 /**
- * @return {Array<import('./changes').Change>}
+ * @return {Object|null} element shown in the properties panel
+ */
+DiffDemoMarkers.prototype.getElement = function() {
+  return this._element;
+};
+
+/**
+ * @return {Array<import('./DiffDemoChanges').Change>}
  */
 DiffDemoMarkers.prototype.getElementChanges = function() {
   return this._getElementChanges();
 };
 
 /**
- * @return {Array<import('./changes').Change>}
+ * @return {Array<import('./DiffDemoChanges').Change>}
  */
 DiffDemoMarkers.prototype._getElementChanges = function() {
   return (this._changes && this._element && this._changes[ this._element.id ]) || [];
@@ -250,6 +256,15 @@ DiffDemoMarkers.prototype._decorateEntries = function() {
     }
   }
 
+  if (resolveFromDom(container, this._getElementChanges())) {
+
+    // groups and labels refined, update the summary
+    this._eventBus.fire('diffDemo.elementChanges', {
+      element: this._element,
+      changes: this._getElementChanges()
+    });
+  }
+
   updateGroupCounts(container, this._getElementChanges());
 
   updateGhosts(container, this._getElementChanges().filter(change => change.ghost));
@@ -272,7 +287,7 @@ DiffDemoMarkers.prototype._decorateEntries = function() {
       continue;
     }
 
-    decorate(entryNode, change.type);
+    decorate(entryNode, change);
 
     if (change.type === 'changed' && typeof change.oldValue === 'string') {
       decorateInline(entryNode, change.oldValue, this._editing.has(entryId));
@@ -284,13 +299,19 @@ DiffDemoMarkers.prototype._decorateEntries = function() {
  * Switch an inline diff entry to edit mode when clicking its diff or label.
  */
 DiffDemoMarkers.prototype._handleClick = function(event) {
-  const restoreButton = event.target.closest('.diff-demo-restore');
+  const actionButton = event.target.closest('.diff-demo-action');
 
-  if (restoreButton) {
+  if (actionButton) {
     event.preventDefault();
     event.stopPropagation();
 
-    this._restore(restoreButton.getAttribute(OWNER_ATTR));
+    const ownerId = actionButton.getAttribute(OWNER_ATTR);
+
+    if (actionButton.dataset.action === 'approve') {
+      this._approve(ownerId);
+    } else {
+      this._restore(ownerId);
+    }
 
     return;
   }
@@ -328,33 +349,48 @@ DiffDemoMarkers.prototype._handleClick = function(event) {
 };
 
 /**
+ * @param {string} ownerId - entry ID or ghost key
+ */
+DiffDemoMarkers.prototype._findChange = function(ownerId) {
+  return this._getElementChanges().find(change => {
+    return change.entry === ownerId || (change.ghost && getGhostKey(change) === ownerId);
+  });
+};
+
+/**
+ * Keep a change and stop marking it.
+ *
+ * @param {string} ownerId - entry ID or ghost key
+ */
+DiffDemoMarkers.prototype._approve = function(ownerId) {
+  const change = this._findChange(ownerId);
+
+  if (!change) {
+    return;
+  }
+
+  this._editing.delete(ownerId);
+
+  // recomputes changes, updating all markers
+  this._injector.get('diffDemoChanges').approve(change, this._element);
+};
+
+/**
  * Revert a change and stop marking it.
  *
  * @param {string} ownerId - entry ID or ghost key
  */
 DiffDemoMarkers.prototype._restore = function(ownerId) {
-  const element = this._element;
+  const change = this._findChange(ownerId);
 
-  const changes = this._getElementChanges();
-
-  const change = changes.find(change => {
-    return change.entry === ownerId || (change.ghost && getGhostKey(change) === ownerId);
-  });
-
-  if (!change || !change.restore) {
+  if (!change || !change.restorable) {
     return;
   }
 
-  change.restore(this._injector, element);
-
   this._editing.delete(ownerId);
 
-  this._changes = {
-    ...this._changes,
-    [ element.id ]: changes.filter(c => c !== change)
-  };
-
-  this._update();
+  // recomputes changes, updating all markers
+  this._injector.get('diffDemoChanges').restore(change, this._element);
 };
 
 /**
@@ -403,7 +439,14 @@ function decorateInline(entryNode, oldValue, editing) {
     field.parentNode.appendChild(view);
   }
 
-  view.classList.toggle('diff-demo-inline-view--feel', isFeel(field));
+  const feel = isFeel(field);
+
+  view.classList.toggle('diff-demo-inline-view--feel', feel);
+
+  // FEEL editors do not show the leading `=`
+  if (feel) {
+    oldValue = oldValue.replace(/^=/, '');
+  }
 
   const newValue = getFieldValue(field);
 
@@ -499,7 +542,9 @@ function renderUnchanged(text, isFirst, isLast) {
   return fragment;
 }
 
-function decorate(entryNode, type) {
+function decorate(entryNode, change) {
+  const { type, restorable } = change;
+
   const entryId = entryNode.getAttribute('data-entry-id');
 
   const labelNode = getLabelNode(entryNode);
@@ -521,7 +566,7 @@ function decorate(entryNode, type) {
 
   labelNode.setAttribute(LABEL_ATTR, '');
 
-  appendTagAndRestore(labelNode, type, entryId);
+  appendTagAndActions(labelNode, type, entryId, restorable);
 
   if (type === 'removed') {
     const input = entryNode.querySelector('input, textarea, [contenteditable]');
@@ -559,7 +604,7 @@ function scrollToTarget(target, groupHeader) {
   scrollContainer.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
 }
 
-function appendTagAndRestore(labelNode, type, ownerId) {
+function appendTagAndActions(labelNode, type, ownerId, restorable) {
   const tag = document.createElement('span');
   tag.className = `diff-demo-tag diff-demo-tag--${ type }`;
   tag.setAttribute(OWNER_ATTR, ownerId);
@@ -567,16 +612,30 @@ function appendTagAndRestore(labelNode, type, ownerId) {
 
   labelNode.appendChild(tag);
 
-  if (RESTORABLE.includes(type)) {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'diff-demo-restore';
-    button.title = 'Restore original value';
-    button.setAttribute(OWNER_ATTR, ownerId);
-    button.innerHTML = RESTORE_ICON;
+  const actions = document.createElement('span');
+  actions.className = 'diff-demo-actions';
+  actions.setAttribute(OWNER_ATTR, ownerId);
 
-    labelNode.appendChild(button);
+  actions.appendChild(createAction('approve', 'Approve change', APPROVE_ICON, ownerId));
+
+  if (restorable) {
+    actions.appendChild(createAction('revert', 'Revert change', REVERT_ICON, ownerId));
   }
+
+  labelNode.appendChild(actions);
+}
+
+function createAction(action, title, icon, ownerId) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = `diff-demo-action diff-demo-action--${ action }`;
+  button.dataset.action = action;
+  button.title = title;
+  button.setAttribute('aria-label', title);
+  button.setAttribute(OWNER_ATTR, ownerId);
+  button.innerHTML = icon;
+
+  return button;
 }
 
 /**
@@ -604,11 +663,66 @@ function updateGhosts(container, ghosts) {
   }
 }
 
+/**
+ * Refine groups and labels of changes from the rendered properties panel,
+ * once per change.
+ *
+ * @return {boolean} whether anything was refined
+ */
+function resolveFromDom(container, changes) {
+  let refined = false;
+
+  for (const change of changes) {
+    if (change.resolvedFromDom) {
+      continue;
+    }
+
+    const entryNode = change.entry && container.querySelector(`[data-entry-id="${ CSS.escape(change.entry) }"]`);
+
+    const groupNode = entryNode
+      ? entryNode.closest('[data-group-id]')
+      : change.group && container.querySelector(`[data-group-id="group-${ CSS.escape(change.group) }"]`);
+
+    if (!groupNode) {
+      continue;
+    }
+
+    change.resolvedFromDom = true;
+    refined = true;
+
+    change.group = groupNode.getAttribute('data-group-id').replace(/^group-/, '');
+
+    const groupTitle = groupNode.querySelector(':scope > .bio-properties-panel-group-header > .bio-properties-panel-group-header-title');
+
+    change.groupLabel = getOwnText(groupTitle) || change.groupLabel;
+
+    // list items keep their computed label, e.g. `Output: preparedAt`
+    if (entryNode && !entryNode.classList.contains('bio-properties-panel-collapsible-entry')) {
+      const label = getOwnText(entryNode.querySelector('.bio-properties-panel-label'));
+
+      if (label) {
+        change.label = change.labelPrefix + label;
+      }
+    }
+  }
+
+  return refined;
+}
+
+/**
+ * Text of a label, ignoring injected decorations (appended after it).
+ */
+function getOwnText(node) {
+  const text = node && node.firstChild && node.firstChild.textContent;
+
+  return text ? text.trim() : null;
+}
+
 function getGhostKey({ group, ghost }) {
   return `${ group }:${ ghost }`;
 }
 
-function createGhost({ ghost, type }, key) {
+function createGhost({ ghost, type, restorable }, key) {
   const node = document.createElement('div');
   node.className = 'bio-properties-panel-collapsible-entry diff-demo-ghost';
   node.setAttribute(GHOST_ATTR, key);
@@ -627,7 +741,7 @@ function createGhost({ ghost, type }, key) {
 
   title.appendChild(label);
 
-  appendTagAndRestore(title, type, key);
+  appendTagAndActions(title, type, key, restorable);
 
   header.appendChild(title);
   node.appendChild(header);

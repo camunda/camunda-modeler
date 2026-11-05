@@ -130,5 +130,11 @@
 
 .diff-demo-summary-tag {
   margin-left: auto;
-  margin-right: 4px;
+}
+
+/* fixed width, so tags align with or without a revert action */
+.diff-demo-summary-actions {
+  flex: none;
+  width: 50px;
+  margin: 0 2px 0 0;
 }
