@@ -10,9 +10,14 @@
 
 const { EventEmitter } = require('node:events');
 
+const path = require('node:path');
+
 const {
+  toFilePath,
   toFileUrl
 } = require('./util');
+
+const { isCamundaProjectFile } = require('./processors/util');
 
 const Indexer = require('./indexer.js');
 const Processor = require('./processor.js');
@@ -33,6 +38,8 @@ const DEFAULT_OPTIONS = {
   watch: true,
   processors: DEFAULT_PROCESSORS
 };
+
+const PROJECT_REFRESH_DELAY = 300;
 
 /**
  * File context that indexes and processes files.
@@ -142,6 +149,8 @@ module.exports = class FileContext extends EventEmitter {
    * @return { Promise<undefined> }
    */
   close() {
+    clearTimeout(this._projectRefreshTimer);
+
     if (this._watcher) {
       return this._watcher.close();
     }
@@ -169,6 +178,46 @@ module.exports = class FileContext extends EventEmitter {
     }
 
     this.on('workqueue:empty', () => this._logger.info('workqueue:empty'));
+
+    this._changedPaths = new Set();
+
+    this.on('watcher:fs-change', (uri) => {
+      this._changedPaths.add(toFilePath(uri));
+
+      clearTimeout(this._projectRefreshTimer);
+
+      this._projectRefreshTimer = setTimeout(() => this._refreshProjects(), PROJECT_REFRESH_DELAY);
+    });
+  }
+
+  /**
+   * Re-resolve the resources of Camunda projects affected by file system
+   * changes, i.e. files added, removed or `.c8ignore` changed below them.
+   *
+   * @return { Promise<undefined> }
+   */
+  _refreshProjects() {
+    const changedPaths = Array.from(this._changedPaths);
+
+    this._changedPaths.clear();
+
+    const projectItems = this._indexer.getItems().filter(item => {
+      const { path: filePath } = item.file;
+
+      if (!isCamundaProjectFile(filePath)) {
+        return false;
+      }
+
+      const projectRoot = path.dirname(filePath);
+
+      return changedPaths.some(changedPath => {
+
+        // changes of the project file itself are handled by the indexer
+        return changedPath !== filePath && changedPath.startsWith(projectRoot + path.sep);
+      });
+    });
+
+    return Promise.all(projectItems.map(item => this._indexer.add(item.uri)));
   }
 
 };
