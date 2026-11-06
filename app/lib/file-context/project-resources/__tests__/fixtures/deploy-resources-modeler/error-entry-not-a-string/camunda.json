@@ -1,0 +1,6 @@
+{
+  "deployResources": [
+    "a.bpmn",
+    42
+  ]
+}

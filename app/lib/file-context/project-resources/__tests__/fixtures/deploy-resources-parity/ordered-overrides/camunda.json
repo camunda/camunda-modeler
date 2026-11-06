@@ -1,0 +1,13 @@
+{
+  "deployResources": [
+    "!a.bpmn",
+    "a.bpmn",
+    "b.bpmn",
+    "!b.bpmn",
+    "processes/**",
+    "!processes/legacy/**",
+    "processes/legacy/still-used.bpmn",
+    "processes/legacy/retired/**",
+    "!processes/legacy/retired/gone.bpmn"
+  ]
+}

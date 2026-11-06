@@ -1,0 +1,7 @@
+{
+  "deployResources": [
+    "resources/**",
+    "node_modules/pkg/**",
+    "target/classes/**"
+  ]
+}

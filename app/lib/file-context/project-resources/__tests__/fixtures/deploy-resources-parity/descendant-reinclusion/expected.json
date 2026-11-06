@@ -1,0 +1,10 @@
+{
+  "description": "Positive patterns select descendants directly (no parent-unignore ceremony), and a later positive pattern restores a file below an earlier excluded directory.",
+  "spec": "Descendant re-inclusion (departure from gitignore): positive patterns select descendants directly, without parent-unignore ceremony, and a later positive pattern restores a file below an earlier excluded directory. Discovery must not prune directories in a way that defeats this.",
+  "selected": [
+    "build/out/deep/deeper/result.dmn",
+    "src/a.bpmn",
+    "src/generated/kept/important.bpmn",
+    "src/sub/b.bpmn"
+  ]
+}

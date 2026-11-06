@@ -1,0 +1,13 @@
+{
+  "description": "[\"**/*\"] selects all non-hidden project files, including target/ and node_modules/ contents and the root camunda.json (all overridden by the matching wildcard), but no dot-prefixed file and nothing inside a dot-prefixed directory (.git/, .github/). Control files .c8ignore and .process-application are hidden. A nested camunda.json is an ordinary file.",
+  "spec": "[\"**/*\"] selects all non-hidden project files, including target/ contents; users wanting a narrower set name resource directories or add exclusions.",
+  "selected": [
+    "README.md",
+    "camunda.json",
+    "main.bpmn",
+    "node_modules/pkg/index.js",
+    "sub-project/camunda.json",
+    "sub/nested/deep.dmn",
+    "target/classes/generated.bpmn"
+  ]
+}

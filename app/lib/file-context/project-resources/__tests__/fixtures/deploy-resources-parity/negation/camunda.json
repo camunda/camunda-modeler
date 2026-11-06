@@ -1,0 +1,7 @@
+{
+  "deployResources": [
+    "**/*.bpmn",
+    "!**/drafts/**",
+    "!archive/"
+  ]
+}

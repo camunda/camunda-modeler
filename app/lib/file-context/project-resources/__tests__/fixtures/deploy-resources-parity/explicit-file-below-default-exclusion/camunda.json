@@ -1,0 +1,7 @@
+{
+  "deployResources": [
+    "main.bpmn",
+    "node_modules/@scope/pkg/resources/shared.bpmn",
+    "target/generated-resources/gen.form"
+  ]
+}

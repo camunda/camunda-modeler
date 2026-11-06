@@ -1,0 +1,5 @@
+main.bpmn
+child/camunda.json
+child/inner.bpmn
+excluded-child/camunda.json
+excluded-child/other.bpmn

@@ -1,0 +1,6 @@
+resources/visible.bpmn
+resources/.prompt.md
+resources/.env
+resources/.DS_Store
+resources/sub/.agent.md
+resources/sub/.other.md

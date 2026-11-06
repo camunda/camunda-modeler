@@ -1,0 +1,7 @@
+src/a.bpmn
+src/sub/b.bpmn
+src/generated/x.bpmn
+src/generated/kept/important.bpmn
+src/generated/kept/other.bpmn
+build/out/deep/deeper/result.dmn
+build/out/other.dmn

@@ -1,0 +1,3 @@
+a.bpmn
+nested/camunda.json
+nested/b.bpmn

@@ -1,0 +1,4 @@
+resources/a.bpmn
+node_modules/pkg/x.bpmn
+target/classes/t.bpmn
+target/other.bpmn

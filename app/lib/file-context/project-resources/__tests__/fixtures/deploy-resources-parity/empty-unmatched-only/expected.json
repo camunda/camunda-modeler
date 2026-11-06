@@ -1,0 +1,5 @@
+{
+  "description": "Only unmatched patterns: they are ignored, and the empty final selection is the error.",
+  "spec": "Empty final selection: error, no deployment.",
+  "error": "empty-selection"
+}

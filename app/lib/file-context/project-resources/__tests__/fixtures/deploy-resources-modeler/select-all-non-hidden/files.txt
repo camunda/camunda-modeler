@@ -1,0 +1,9 @@
+a.bpmn
+README.md
+.env
+resources/b.md
+resources/.prompt.md
+target/classes/t.bpmn
+node_modules/pkg/x.js
+.git/HEAD
+.github/workflow.yml

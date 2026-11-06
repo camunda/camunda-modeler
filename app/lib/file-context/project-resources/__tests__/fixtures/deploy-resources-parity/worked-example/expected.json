@@ -1,0 +1,12 @@
+{
+  "description": "The epic's worked example: selects resources/** and generated resources under target/classes/**, excludes drafts except keep.bpmn, includes the explicitly named hidden prompt; does not select resources/.env, node_modules/, .git/ or a project-root README.",
+  "spec": "For example: { \"deployResources\": [\"resources/**\", \"target/classes/**\", \"!target/classes/drafts/**\", \"target/classes/drafts/keep.bpmn\", \"resources/.prompt.md\"] }",
+  "selected": [
+    "resources/.prompt.md",
+    "resources/agent-task-prompt.md",
+    "resources/order-process.bpmn",
+    "target/classes/drafts/keep.bpmn",
+    "target/classes/generated-form.form",
+    "target/classes/generated.bpmn"
+  ]
+}

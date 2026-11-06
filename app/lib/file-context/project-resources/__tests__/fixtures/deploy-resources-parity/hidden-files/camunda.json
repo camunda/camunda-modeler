@@ -1,0 +1,7 @@
+{
+  "deployResources": [
+    "resources/**",
+    "resources/.prompt.md",
+    "**/.agent.md"
+  ]
+}

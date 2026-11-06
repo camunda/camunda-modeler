@@ -1,0 +1,5 @@
+{
+  "description": "Wildcards never select hidden files, so a project of only dotfiles selects nothing.",
+  "spec": "Empty final selection: error, no deployment.",
+  "error": "empty-selection"
+}

@@ -1,0 +1,14 @@
+README.md
+resources/order-process.bpmn
+resources/agent-task-prompt.md
+resources/.prompt.md
+resources/.env
+target/classes/generated.bpmn
+target/classes/generated-form.form
+target/classes/drafts/draft.bpmn
+target/classes/drafts/keep.bpmn
+target/build.log
+node_modules/some-pkg/index.js
+node_modules/some-pkg/vendored.bpmn
+.git/HEAD
+.git/config

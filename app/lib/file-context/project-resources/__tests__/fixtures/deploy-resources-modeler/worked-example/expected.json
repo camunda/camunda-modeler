@@ -1,0 +1,10 @@
+{
+  "selected": [
+    "resources/.prompt.md",
+    "resources/agent/task.md",
+    "resources/forms/order.form",
+    "resources/order.bpmn",
+    "target/classes/drafts/keep.bpmn",
+    "target/classes/generated.bpmn"
+  ]
+}

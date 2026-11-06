@@ -1,0 +1,6 @@
+main.bpmn
+notes.md
+node_modules/pkg/vendored.bpmn
+target/classes/generated.bpmn
+.git/info/process.bpmn
+.git/HEAD

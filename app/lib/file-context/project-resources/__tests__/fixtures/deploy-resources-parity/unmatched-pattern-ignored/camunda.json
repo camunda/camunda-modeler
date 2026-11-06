@@ -1,0 +1,8 @@
+{
+  "deployResources": [
+    "resources/**",
+    "does-not-exist/**",
+    "*.nothing",
+    "!also-missing.bpmn"
+  ]
+}

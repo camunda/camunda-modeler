@@ -1,0 +1,11 @@
+{
+  "description": "Without deployResources the existing default scan applies: c8ctl's default extensions (.bpmn, .dmn, .form), hidden files skipped (hidden directories still scanned), node_modules/, target/ and .git/ excluded, camunda.json never deployed.",
+  "spec": "When deployResources is absent, the existing scan rules apply, filtered by .c8ignore (default directory exclusions, ordered rules, excluded-parent restriction).",
+  "selected": [
+    ".config/extra.bpmn",
+    "main.bpmn",
+    "review.form",
+    "rules.dmn",
+    "sub/nested.bpmn"
+  ]
+}

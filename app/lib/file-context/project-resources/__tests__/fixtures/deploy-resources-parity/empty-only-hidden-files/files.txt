@@ -1,0 +1,3 @@
+.prompt.md
+prompts/.agent.md
+.config/notes.md

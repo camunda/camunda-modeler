@@ -1,0 +1,8 @@
+{
+  "deployResources": [
+    "*.form",
+    "processes/order-?.bpmn",
+    "decisions/[ab]*.dmn",
+    "prompts"
+  ]
+}

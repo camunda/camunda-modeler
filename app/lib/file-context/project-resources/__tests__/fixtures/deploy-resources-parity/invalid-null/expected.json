@@ -1,0 +1,5 @@
+{
+  "description": "null is a present but invalid value.",
+  "spec": "Invalid field type or entries, and invalid patterns: error, no deployment.",
+  "error": "invalid-config"
+}
