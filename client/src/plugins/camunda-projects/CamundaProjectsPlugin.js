@@ -43,6 +43,7 @@ export default function CamundaProjectsPlugin(props) {
   const [ items, setItems ] = useState([]);
   const [ camundaProject, setCamundaProject ] = useState(null);
   const [ camundaProjectItems, setCamundaProjectItems ] = useState([]);
+  const [ camundaProjectFiles, setCamundaProjectFiles ] = useState([]);
   const [ resourceConfigs, setResourceConfigs ] = useState([]);
   const [ resourcesError, setResourcesError ] = useState(null);
 
@@ -135,6 +136,7 @@ export default function CamundaProjectsPlugin(props) {
         setCamundaProjectItems([]);
       }
 
+      setCamundaProjectFiles(camundaProjects.getFiles());
       setResourceConfigs(camundaProjects.getResourceConfigs());
       setResourcesError(camundaProjects.getError());
     };
@@ -230,7 +232,7 @@ export default function CamundaProjectsPlugin(props) {
       activeTab={ activeTab }
       camundaProject={ camundaProject }
       camundaProjectColor={ camundaProjectColor }
-      camundaProjectItems={ camundaProjectItems }
+      camundaProjectItems={ camundaProjectFiles }
       resourcesError={ resourcesError }
       onOpen={ (path) => triggerAction('open-diagram', { path }) }
       onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }

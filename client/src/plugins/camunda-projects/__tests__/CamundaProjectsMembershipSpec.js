@@ -234,6 +234,52 @@ describe('CamundaProjects - project membership', function() {
     });
 
 
+    it('should keep project open with error on invalid camunda.json (no error listener)', function() {
+
+      // given
+      camundaProjects.emit('items-changed', createItems({
+        contents: '{',
+        resources: {
+          mode: 'c8ignore',
+          selected: [],
+          error: 'Invalid camunda.json: Expected property name'
+        }
+      }));
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.true;
+      expect(camundaProjects.getError()).to.match(/Invalid camunda.json/);
+      expect(camundaProjects.getResourceConfigs()).to.be.empty;
+    });
+
+
+    it('should replace previous selection on camunda.json becoming invalid (no error listener)', function() {
+
+      // given
+      camundaProjects.emit('items-changed', createItems());
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      expect(camundaProjects.getResourceConfigs()).not.to.be.empty;
+
+      // when
+      camundaProjects.emit('items-changed', createItems({
+        contents: '{',
+        resources: {
+          mode: 'c8ignore',
+          selected: [],
+          error: 'Invalid camunda.json: Expected property name'
+        }
+      }));
+
+      // then
+      expect(camundaProjects.getError()).to.match(/Invalid camunda.json/);
+      expect(camundaProjects.getResourceConfigs()).to.be.empty;
+    });
+
+
     it('should keep project open with error on invalid camunda.json', function() {
 
       // given
@@ -257,6 +303,29 @@ describe('CamundaProjects - project membership', function() {
       expect(camundaProjects.hasOpen()).to.be.true;
       expect(camundaProjects.getError()).to.match(/Invalid camunda.json/);
       expect(errorSpy).to.have.been.calledOnce;
+    });
+
+  });
+
+
+  describe('project files', function() {
+
+    it('should list all project resources, including files not indexed', function() {
+
+      // given
+      camundaProjects.emit('items-changed', createItems());
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      // then
+      const files = camundaProjects.getFiles();
+
+      expect(paths(files)).to.eql(CAMUNDA_PROJECT_RESOURCES.selected);
+
+      expect(files[0]).to.equal(PROCESS);
+      expect(files[2].file).to.include({ name: '.prompt.md', dirname: `${ PROJECT_PATH }/resources` });
+      expect(files[2].metadata).to.be.null;
     });
 
   });
@@ -454,6 +523,75 @@ describe('<CamundaProjectsPlugin> - project membership', function() {
       expect(container.querySelector('[title="Open project deployment"]')).not.to.exist;
       expect(container.querySelector('[title="Open project start instance"]')).not.to.exist;
     });
+  });
+
+
+  it('should list all project resources in status bar, including files not indexed', async function() {
+
+    // given
+    const deployment = new Deployment(null, null, new ZeebeAPI(), null);
+
+    const { container, emit, emitBackend, getByText, reset } = createCamundaProjectsPlugin({ deployment });
+
+    this.reset = reset;
+
+    act(() => emitBackend('file-context:changed', createItems()));
+    act(() => emit('app.activeTabChanged', { activeTab: { type: 'cloud-bpmn', file: PROCESS.file } }));
+
+    await waitFor(() => {
+      expect(container.querySelector('.has-camunda-project')).to.exist;
+    });
+
+    // when
+    act(() => container.querySelector('.has-camunda-project').click());
+
+    // then
+    await waitFor(() => {
+      expect(getByText('.prompt.md')).to.exist;
+    });
+
+    expect(getByText('generated.dmn')).to.exist;
+    expect(getByText('process.bpmn')).to.exist;
+    expect(getByText('form.form')).to.exist;
+  });
+
+
+  it('should report invalid camunda.json and prevent deployment (production plugin without error listener)', async function() {
+
+    // given
+    const deploySpy = sinon.stub().resolves({ success: true, response: {} });
+
+    const deployment = new Deployment(null, null, new ZeebeAPI({ deploy: deploySpy }), null);
+
+    const { container, emit, emitBackend, getByText, reset } = createCamundaProjectsPlugin({ deployment });
+
+    this.reset = reset;
+
+    act(() => emitBackend('file-context:changed', createItems()));
+    act(() => emit('app.activeTabChanged', { activeTab: { type: 'cloud-bpmn', file: PROCESS.file } }));
+
+    // when
+    act(() => emitBackend('file-context:changed', createItems({
+      contents: '{',
+      resources: {
+        mode: 'c8ignore',
+        selected: [],
+        error: 'Invalid camunda.json: Expected property name'
+      }
+    })));
+
+    // then
+    await waitFor(() => {
+      expect(() => collectResourceConfigs(deployment)).to.throw('Invalid camunda.json');
+    });
+
+    act(() => container.querySelector('.has-camunda-project').click());
+
+    await waitFor(() => {
+      expect(getByText('Invalid camunda.json: Expected property name')).to.exist;
+    });
+
+    expect(deploySpy).not.to.have.been.called;
   });
 
 

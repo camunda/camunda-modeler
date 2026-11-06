@@ -83,7 +83,11 @@ export default class CamundaProjects {
     } catch (err) {
       console.error(err);
 
-      this._events.emit('error', err);
+      // emitting `error` without listener throws, the error is reported
+      // through the project resources (`metadata.resources.error`) anyway
+      if (this._events.listenerCount('error')) {
+        this._events.emit('error', err);
+      }
     }
 
     this._camundaProjectItem = camundaProjectItem;
@@ -125,6 +129,26 @@ export default class CamundaProjects {
    */
   getItems() {
     return this._camundaProjectItems;
+  }
+
+  /**
+   * Get the files of the open project, i.e. all resources deployed with it.
+   * Files not indexed (e.g. Markdown prompts) come without metadata.
+   *
+   * @returns {Item[]}
+   */
+  getFiles() {
+    if (!this.hasOpen()) {
+      return [];
+    }
+
+    const resources = getResources(this._camundaProjectItem);
+
+    if (!resources) {
+      return this._camundaProjectItems;
+    }
+
+    return resources.selected.map(path => this.findItem(path) || createFileItem(path));
   }
 
   /**
@@ -345,4 +369,24 @@ function getResourceType(path, item) {
   }
 
   return 'resource';
+}
+
+/**
+ * @param {string} path
+ *
+ * @returns {Item}
+ */
+function createFileItem(path) {
+  const segments = path.split(/[\\/]/);
+
+  const name = segments.pop();
+
+  return {
+    file: {
+      name,
+      path,
+      dirname: path.slice(0, path.length - name.length - 1)
+    },
+    metadata: null
+  };
 }
