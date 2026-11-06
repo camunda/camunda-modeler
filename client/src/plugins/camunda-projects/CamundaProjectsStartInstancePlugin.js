@@ -22,6 +22,7 @@ import StartInstanceIcon from 'icons/Play.svg';
 import StartInstancePluginOverlay from '../zeebe-plugin/start-instance-plugin/StartInstancePluginOverlay';
 
 import { getSuccessNotification } from './CamundaProjectsStartInstanceNotifications';
+import { getDeploymentDescription } from './CamundaProjectsDeploymentPlugin';
 
 export default function CamundaProjectsStartInstancePlugin(props) {
   const {
@@ -32,7 +33,8 @@ export default function CamundaProjectsStartInstancePlugin(props) {
     emit,
     log,
     camundaProject,
-    camundaProjectItems,
+    resourceConfigs = [],
+    resourcesError = null,
     subscribe,
     triggerAction,
     connectionCheckResult
@@ -95,19 +97,6 @@ export default function CamundaProjectsStartInstancePlugin(props) {
     return null;
   }
 
-  const resourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
-    const { file, metadata } = item;
-
-    const { path } = file;
-
-    const { type } = metadata;
-
-    return {
-      path,
-      type
-    };
-  });
-
   return <>
     { canDeployTab(activeTab) && canStartInstanceTab(activeTab) && (
       <Fill name="camunda-project-start-instance" replaces="start-instance" slot="status-bar__file" group="8_deploy" priority={ 1 }>
@@ -134,7 +123,7 @@ export default function CamundaProjectsStartInstancePlugin(props) {
         log={ log }
         onClose={ () => setOverlayOpen(false) }
         displayNotification={ displayNotification }
-        renderDeploymentDescription={ `${ camundaProjectItems.length } files will be deployed` }
+        renderDeploymentDescription={ getDeploymentDescription(resourceConfigs, resourcesError) }
         renderDeploymentHeader={ <>
           <CamundaProjectIcon width="16" height="16" />Configure deployment
         </> }
@@ -151,22 +140,6 @@ export default function CamundaProjectsStartInstancePlugin(props) {
 
 function canDeployTab(tab) {
   return tab && [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form', 'rpa' ].includes(tab.type);
-}
-
-function canDeployItem(item) {
-  const { metadata } = item;
-
-  if (!metadata) {
-    return false;
-  }
-
-  const { type } = metadata;
-
-  return [
-    'bpmn',
-    'dmn',
-    'form'
-  ].includes(type);
 }
 
 function canStartInstanceTab(tab) {

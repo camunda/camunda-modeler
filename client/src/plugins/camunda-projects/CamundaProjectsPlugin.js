@@ -43,6 +43,8 @@ export default function CamundaProjectsPlugin(props) {
   const [ items, setItems ] = useState([]);
   const [ camundaProject, setCamundaProject ] = useState(null);
   const [ camundaProjectItems, setCamundaProjectItems ] = useState([]);
+  const [ resourceConfigs, setResourceConfigs ] = useState([]);
+  const [ resourcesError, setResourcesError ] = useState(null);
 
   // active tab mirrored synchronously from `app.activeTabChanged`.
   const activeTabRef = useRef(null);
@@ -132,6 +134,9 @@ export default function CamundaProjectsPlugin(props) {
         setCamundaProject(null);
         setCamundaProjectItems([]);
       }
+
+      setResourceConfigs(camundaProjects.getResourceConfigs());
+      setResourcesError(camundaProjects.getError());
     };
 
     camundaProjects.on('changed', handleCamundaProjectsChanged);
@@ -197,7 +202,8 @@ export default function CamundaProjectsPlugin(props) {
         };
       }
 
-      const camundaProjectItemForItem = camundaProjects.findCamundaProjectItemForItem(item);
+      // excluded files are no part of the project, they are used standalone
+      const camundaProjectItemForItem = camundaProjects.findCamundaProjectItemForResource(item);
 
       if (!camundaProjectItemForItem) {
         return {
@@ -225,6 +231,7 @@ export default function CamundaProjectsPlugin(props) {
       camundaProject={ camundaProject }
       camundaProjectColor={ camundaProjectColor }
       camundaProjectItems={ camundaProjectItems }
+      resourcesError={ resourcesError }
       onOpen={ (path) => triggerAction('open-diagram', { path }) }
       onRevealInFileExplorer={ (filePath) => triggerAction('reveal-in-file-explorer', { filePath }) }
       onCreateCamundaProject={ () => emit('create-camunda-project') }
@@ -232,6 +239,8 @@ export default function CamundaProjectsPlugin(props) {
     />
     <CamundaProjectsDeploymentPlugin
       _getFromApp={ _getFromApp }
+      resourceConfigs={ resourceConfigs }
+      resourcesError={ resourcesError }
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }
@@ -244,6 +253,8 @@ export default function CamundaProjectsPlugin(props) {
       connectionCheckResult={ connectionCheckResult } />
     <CamundaProjectsStartInstancePlugin
       _getFromApp={ _getFromApp }
+      resourceConfigs={ resourceConfigs }
+      resourcesError={ resourcesError }
       _getGlobal={ _getGlobal }
       activeTab={ activeTab }
       displayNotification={ displayNotification }

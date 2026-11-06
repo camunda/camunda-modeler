@@ -40,6 +40,7 @@ export default function CamundaProjectsStatusBar(props) {
     camundaProject,
     camundaProjectColor,
     camundaProjectItems,
+    resourcesError = null,
     tabsProvider
   } = props;
 
@@ -115,6 +116,13 @@ export default function CamundaProjectsStatusBar(props) {
                   </ul>
                 </Section.Body>
               </Section>
+              {
+                resourcesError && <Section>
+                  <Section.Body>
+                    <p className="camunda-project-error">{ resourcesError }</p>
+                  </Section.Body>
+                </Section>
+              }
               <Section>
                 <Section.Header>
                   Files

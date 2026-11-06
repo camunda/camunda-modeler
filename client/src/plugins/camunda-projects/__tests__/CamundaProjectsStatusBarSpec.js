@@ -199,6 +199,21 @@ describe('<CamundaProjectsStatusBar>', function() {
     });
 
 
+    it('should render project resources error ("actionable feedback for invalid configuration")', function() {
+
+      // when
+      createCamundaProjectsStatusBar({
+        camundaProjectItems: [],
+        resourcesError: 'Invalid camunda.json: `deployResources[0]` must not contain "..", got "../x".'
+      });
+
+      fireEvent.click(screen.getByRole('button'));
+
+      // then
+      expect(screen.getByText('Invalid camunda.json: `deployResources[0]` must not contain "..", got "../x".')).to.exist;
+    });
+
+
     it('should reveal Camunda project file in file explorer on click', function() {
 
       // given
