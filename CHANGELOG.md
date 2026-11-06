@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: rename the _Test_ side panel tab to _Validate_ ([#6207](https://github.com/camunda/camunda-modeler/issues/6207))
+
 ## 5.53.0
 
 * `FEAT`: migrate the UI to the Camunda design system; CSS classes and variables of the previous UI were removed during the rework, plug-in markup that relied on them may render unstyled ([#6237](https://github.com/camunda/camunda-modeler/pull/6237))
