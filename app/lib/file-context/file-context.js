@@ -13,6 +13,8 @@ const { EventEmitter } = require('node:events');
 const path = require('node:path');
 
 const {
+  getFileExtension,
+  getFileName,
   toFilePath,
   toFileUrl
 } = require('./util');
@@ -56,6 +58,7 @@ module.exports = class FileContext extends EventEmitter {
     const { processors } = options;
 
     this._logger = logger;
+    this._processors = processors;
 
     this._workqueue = new Workqueue(this);
     this._processor = new Processor(logger, processors);
@@ -181,12 +184,74 @@ module.exports = class FileContext extends EventEmitter {
 
     this._changedPaths = new Set();
 
+    // project resources indexed explicitly, as the watcher does not discover them
+    this._projectResourceUris = new Set();
+
+    this.on('indexer:updated', (item) => {
+      if (item.metadata && item.metadata.resources) {
+        this._indexProjectResources();
+      }
+    });
+
     this.on('watcher:fs-change', (uri) => {
       this._changedPaths.add(toFilePath(uri));
 
       clearTimeout(this._projectRefreshTimer);
 
       this._projectRefreshTimer = setTimeout(() => this._refreshProjects(), PROJECT_REFRESH_DELAY);
+    });
+  }
+
+  /**
+   * Index project resources the watcher does not discover, e.g. below
+   * `node_modules` or behind directory links, so that they take part in
+   * editor intelligence. Stop indexing those no longer selected.
+   */
+  _indexProjectResources() {
+    const items = this._indexer.getItems();
+
+    const selected = new Set(items.flatMap(item => {
+      const resources = item.metadata && item.metadata.resources;
+
+      return resources ? resources.selected : [];
+    }));
+
+    const watchedFiles = this._watcher ? this._watcher.getFiles() : [];
+
+    for (const uri of this._projectResourceUris) {
+      const filePath = toFilePath(uri);
+
+      if (!selected.has(filePath) && !watchedFiles.includes(filePath)) {
+        this._projectResourceUris.delete(uri);
+        this._indexer.remove(uri);
+      }
+    }
+
+    for (const filePath of selected) {
+      const uri = toFileUrl(filePath);
+
+      if (this._indexer.items.has(uri) || !this._isIndexable(filePath)) {
+        continue;
+      }
+
+      this._projectResourceUris.add(uri);
+      this._indexer.add(uri);
+    }
+  }
+
+  /**
+   * @param { string } filePath
+   *
+   * @return { boolean }
+   */
+  _isIndexable(filePath) {
+    if (isCamundaProjectFile(filePath)) {
+      return false;
+    }
+
+    return (this._processors || []).some(processor => {
+      return processor.extensions.includes(getFileExtension(filePath))
+        || (processor.fileNames || []).includes(getFileName(filePath));
     });
   }
 

@@ -508,6 +508,43 @@ describe('FileContext', function() {
       });
 
 
+      it('should index selected resources the watcher does not discover (node_modules, directory links)', async function() {
+
+        // given
+        const vendoredPath = path.join(projectPath, 'node_modules/pkg/vendored.bpmn');
+
+        const outsidePath = path.resolve(__dirname, './tmp/outside');
+
+        fs.mkdirSync(path.dirname(vendoredPath), { recursive: true });
+        writeFile(vendoredPath, fooXML);
+
+        fs.mkdirSync(outsidePath, { recursive: true });
+        writeFile(path.join(outsidePath, 'linked.bpmn'), barXML);
+        fs.symlinkSync(outsidePath, path.join(projectPath, 'linked'), process.platform === 'win32' ? 'junction' : 'dir');
+
+        const linkedPath = path.join(projectPath, 'linked/linked.bpmn');
+
+        const camundaJsonPath = path.join(projectPath, 'camunda.json');
+
+        // when
+        writeFile(camundaJsonPath, JSON.stringify({ deployResources: [ 'foo.bpmn', 'node_modules/pkg/**', 'linked/**' ] }));
+
+        // then
+        await waitFor(() => getItem(fileContext, toFileUrl(vendoredPath)) && getItem(fileContext, toFileUrl(linkedPath)));
+
+        expect(getItem(fileContext, toFileUrl(vendoredPath)).metadata.processes).to.have.length(1);
+
+        // when
+        writeFile(camundaJsonPath, JSON.stringify({ deployResources: [ 'foo.bpmn' ] }));
+
+        // then
+        await waitFor(() => !getItem(fileContext, toFileUrl(vendoredPath)) && !getItem(fileContext, toFileUrl(linkedPath)));
+
+        // watched files stay indexed
+        expect(getItem(fileContext, toFileUrl(path.join(projectPath, 'bar/bar.bpmn')))).to.exist;
+      });
+
+
       it('should refresh live on camunda.json change', async function() {
 
         // given
