@@ -1,0 +1,3 @@
+# drafts
+*.bpmn
+!keep.bpmn

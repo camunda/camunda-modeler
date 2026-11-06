@@ -1,0 +1,8 @@
+{
+  "description": "Selection starts empty: only files matched by a positive pattern are selected; the default extension scan does not apply (a .bpmn outside the patterns is not selected, a .md inside is).",
+  "spec": "Allowlist: when present, selection starts empty. Positive patterns include, ! patterns exclude; the last matching pattern wins per file. The default extension scan and .c8ignore do not apply.",
+  "selected": [
+    "prompts/agent-task.md",
+    "prompts/system.txt"
+  ]
+}

@@ -1,0 +1,5 @@
+old.bpmn
+drafts/
+!drafts/keep.bpmn
+*.dmn
+!decisions/keep.dmn

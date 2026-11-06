@@ -1,0 +1,6 @@
+{
+  "deployResources": [
+    ".config/**",
+    "resources/**"
+  ]
+}

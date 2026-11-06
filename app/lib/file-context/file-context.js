@@ -10,9 +10,16 @@
 
 const { EventEmitter } = require('node:events');
 
+const path = require('node:path');
+
 const {
+  getFileExtension,
+  getFileName,
+  toFilePath,
   toFileUrl
 } = require('./util');
+
+const { isCamundaProjectFile } = require('./processors/util');
 
 const Indexer = require('./indexer.js');
 const Processor = require('./processor.js');
@@ -34,6 +41,8 @@ const DEFAULT_OPTIONS = {
   processors: DEFAULT_PROCESSORS
 };
 
+const PROJECT_REFRESH_DELAY = 300;
+
 /**
  * File context that indexes and processes files.
  */
@@ -49,6 +58,7 @@ module.exports = class FileContext extends EventEmitter {
     const { processors } = options;
 
     this._logger = logger;
+    this._processors = processors;
 
     this._workqueue = new Workqueue(this);
     this._processor = new Processor(logger, processors);
@@ -142,6 +152,8 @@ module.exports = class FileContext extends EventEmitter {
    * @return { Promise<undefined> }
    */
   close() {
+    clearTimeout(this._projectRefreshTimer);
+
     if (this._watcher) {
       return this._watcher.close();
     }
@@ -169,6 +181,108 @@ module.exports = class FileContext extends EventEmitter {
     }
 
     this.on('workqueue:empty', () => this._logger.info('workqueue:empty'));
+
+    this._changedPaths = new Set();
+
+    // project resources indexed explicitly, as the watcher does not discover them
+    this._projectResourceUris = new Set();
+
+    this.on('indexer:updated', (item) => {
+      if (item.metadata && item.metadata.resources) {
+        this._indexProjectResources();
+      }
+    });
+
+    this.on('watcher:fs-change', (uri) => {
+      this._changedPaths.add(toFilePath(uri));
+
+      clearTimeout(this._projectRefreshTimer);
+
+      this._projectRefreshTimer = setTimeout(() => this._refreshProjects(), PROJECT_REFRESH_DELAY);
+    });
+  }
+
+  /**
+   * Index project resources the watcher does not discover, e.g. below
+   * `node_modules` or behind directory links, so that they take part in
+   * editor intelligence. Stop indexing those no longer selected.
+   */
+  _indexProjectResources() {
+    const items = this._indexer.getItems();
+
+    const selected = new Set(items.flatMap(item => {
+      const resources = item.metadata && item.metadata.resources;
+
+      return resources ? resources.selected : [];
+    }));
+
+    const watchedFiles = this._watcher ? this._watcher.getFiles() : [];
+
+    for (const uri of this._projectResourceUris) {
+      const filePath = toFilePath(uri);
+
+      if (!selected.has(filePath) && !watchedFiles.includes(filePath)) {
+        this._projectResourceUris.delete(uri);
+        this._indexer.remove(uri);
+      }
+    }
+
+    for (const filePath of selected) {
+      const uri = toFileUrl(filePath);
+
+      if (this._indexer.items.has(uri) || !this._isIndexable(filePath)) {
+        continue;
+      }
+
+      this._projectResourceUris.add(uri);
+      this._indexer.add(uri);
+    }
+  }
+
+  /**
+   * @param { string } filePath
+   *
+   * @return { boolean }
+   */
+  _isIndexable(filePath) {
+    if (isCamundaProjectFile(filePath)) {
+      return false;
+    }
+
+    return (this._processors || []).some(processor => {
+      return processor.extensions.includes(getFileExtension(filePath))
+        || (processor.fileNames || []).includes(getFileName(filePath));
+    });
+  }
+
+  /**
+   * Re-resolve the resources of Camunda projects affected by file system
+   * changes, i.e. files added, removed or `.c8ignore` changed below them.
+   *
+   * @return { Promise<undefined> }
+   */
+  _refreshProjects() {
+    const changedPaths = Array.from(this._changedPaths);
+
+    this._changedPaths.clear();
+
+    const projectItems = this._indexer.getItems().filter(item => {
+      const { path: filePath } = item.file;
+
+      if (!isCamundaProjectFile(filePath)) {
+        return false;
+      }
+
+      const projectRoot = path.dirname(filePath);
+
+      return changedPaths.some(changedPath => {
+
+        // changes of the project file itself are handled by the indexer
+        return changedPath !== filePath && changedPath.startsWith(projectRoot + path.sep);
+      });
+    });
+
+    return Promise.all(projectItems.map(item => this._indexer.add(item.uri)));
   }
 
 };

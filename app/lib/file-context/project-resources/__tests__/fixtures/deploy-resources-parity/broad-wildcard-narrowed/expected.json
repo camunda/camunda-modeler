@@ -1,0 +1,7 @@
+{
+  "description": "Narrowing a broad selection with exclusions after it: later ! patterns win over the earlier **/*.",
+  "spec": "Positive patterns include, ! patterns exclude; the last matching pattern wins per file.",
+  "selected": [
+    "main.bpmn"
+  ]
+}

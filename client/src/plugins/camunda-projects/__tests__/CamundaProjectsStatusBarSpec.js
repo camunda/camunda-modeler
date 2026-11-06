@@ -199,6 +199,51 @@ describe('<CamundaProjectsStatusBar>', function() {
     });
 
 
+    it('should render project resources error ("actionable feedback for invalid configuration")', function() {
+
+      // when
+      createCamundaProjectsStatusBar({
+        camundaProjectItems: [],
+        resourcesError: 'Invalid camunda.json: `deployResources[0]` must not contain "..", got "../x".'
+      });
+
+      fireEvent.click(screen.getByRole('button'));
+
+      // then
+      expect(screen.getByText('Invalid camunda.json: `deployResources[0]` must not contain "..", got "../x".')).to.exist;
+    });
+
+
+    it('should render project files not indexed, not to be opened', function() {
+
+      // given
+      const onOpenSpy = sinon.spy();
+
+      createCamundaProjectsStatusBar({
+        onOpen: onOpenSpy,
+        camundaProjectItems: [
+          {
+            file: {
+              name: '.prompt.md',
+              path: 'C://camunda-project/resources/.prompt.md',
+              dirname: 'C://camunda-project/resources'
+            },
+            metadata: null
+          }
+        ]
+      });
+
+      fireEvent.click(screen.getByRole('button'));
+
+      // when
+      fireEvent.click(screen.getByText('.prompt.md'));
+
+      // then
+      expect(screen.getByText('.prompt.md').closest('button').disabled).to.be.true;
+      expect(onOpenSpy).not.to.have.been.called;
+    });
+
+
     it('should reveal Camunda project file in file explorer on click', function() {
 
       // given

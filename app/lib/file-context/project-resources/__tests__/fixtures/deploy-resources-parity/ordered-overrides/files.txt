@@ -1,0 +1,7 @@
+a.bpmn
+b.bpmn
+processes/current.bpmn
+processes/legacy/old.bpmn
+processes/legacy/still-used.bpmn
+processes/legacy/retired/kept.bpmn
+processes/legacy/retired/gone.bpmn

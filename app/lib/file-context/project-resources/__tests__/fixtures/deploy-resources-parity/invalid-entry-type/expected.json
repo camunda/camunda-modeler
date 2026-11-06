@@ -1,0 +1,5 @@
+{
+  "description": "Every entry must be a string.",
+  "spec": "Invalid field type or entries, and invalid patterns: error, no deployment.",
+  "error": "invalid-config"
+}

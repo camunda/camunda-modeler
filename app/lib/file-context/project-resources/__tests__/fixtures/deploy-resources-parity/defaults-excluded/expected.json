@@ -1,0 +1,7 @@
+{
+  "description": "node_modules/, target/, .git/ and the project-root camunda.json stay excluded when no positive pattern matches them.",
+  "spec": "Defaults: node_modules/, target/, .git/, and the project-root camunda.json remain excluded unless a matching positive pattern overrides them.",
+  "selected": [
+    "src/main.bpmn"
+  ]
+}

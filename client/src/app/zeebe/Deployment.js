@@ -108,10 +108,22 @@ export default class Deployment extends EventEmitter {
 
     resourceConfigs = Array.isArray(resourceConfigs) ? resourceConfigs : [ resourceConfigs ];
 
-    // allow to add or remove resource configs through resources providers
-    resourceConfigs = this._resourcesProviders.reduce((configs, getResourceConfigs) => {
-      return getResourceConfigs(configs);
-    }, resourceConfigs);
+    // allow to add or remove resource configs through resources providers;
+    // a provider throws to prevent the deployment, e.g. on invalid configuration
+    try {
+      resourceConfigs = this._resourcesProviders.reduce((configs, getResourceConfigs) => {
+        return getResourceConfigs(configs);
+      }, resourceConfigs);
+    } catch (error) {
+      log('Resources provider failed:', error);
+
+      return {
+        success: false,
+        response: {
+          message: error.message
+        }
+      };
+    }
 
     log('Final resource configs:', resourceConfigs);
 

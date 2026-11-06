@@ -1,0 +1,9 @@
+{
+  "deployResources": [
+    "**/*",
+    "!node_modules/",
+    "!target/",
+    "!camunda.json",
+    "!*.md"
+  ]
+}

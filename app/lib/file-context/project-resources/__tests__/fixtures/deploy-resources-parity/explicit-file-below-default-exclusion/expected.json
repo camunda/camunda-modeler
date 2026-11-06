@@ -1,0 +1,9 @@
+{
+  "description": "An explicit pattern reaches a file deep inside a default-excluded directory: discovery must not prune node_modules/ or target/ when a later positive pattern can still select below them.",
+  "spec": "Discovery must not prune directories in a way that defeats this.",
+  "selected": [
+    "main.bpmn",
+    "node_modules/@scope/pkg/resources/shared.bpmn",
+    "target/generated-resources/gen.form"
+  ]
+}

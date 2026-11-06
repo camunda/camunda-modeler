@@ -1061,6 +1061,38 @@ describe('ZeebeAPI (gRPC)', function() {
         expect(args[0].name).to.eql('foo-form.form');
       });
 
+
+      it('should deploy other resource under its file name (deployResources)', async function() {
+
+        // given
+        const deployResourceSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          ZeebeGrpcApiClient: {
+            deployResource: deployResourceSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'resources/.prompt.md',
+              type: 'resource'
+            }
+          ]
+        });
+
+        const { args } = deployResourceSpy.getCall(0);
+
+        // then
+        expect(args[0].name).to.eql('.prompt.md');
+      });
+
     });
 
 

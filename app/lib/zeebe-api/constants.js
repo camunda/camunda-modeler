@@ -22,5 +22,8 @@ module.exports.ENDPOINT_TYPES = {
 module.exports.RESOURCE_TYPES = {
   BPMN: 'bpmn',
   DMN: 'dmn',
-  FORM: 'form'
+  FORM: 'form',
+
+  // any other project resource, deployed under its file name
+  RESOURCE: 'resource'
 };

@@ -1,0 +1,8 @@
+{
+  "description": "Without deployResources, .c8ignore filters the default scan with gitignore semantics, including the excluded-parent restriction (a negation cannot re-include a file below an excluded directory).",
+  "spec": "When deployResources is absent, the existing scan rules apply, filtered by .c8ignore (default directory exclusions, ordered rules, excluded-parent restriction).",
+  "selected": [
+    "decisions/keep.dmn",
+    "main.bpmn"
+  ]
+}

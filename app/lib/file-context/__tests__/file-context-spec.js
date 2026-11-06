@@ -415,6 +415,169 @@ describe('FileContext', function() {
       expect(getItem(fileContext, toFileUrl(filePath))).not.to.exist;
     });
 
+
+
+    describe('project resources', function() {
+
+      const projectPath = path.resolve(__dirname, './tmp/foo-process-application');
+
+      const projectFileUri = toFileUrl(path.join(projectPath, '.process-application'));
+
+      function getSelected() {
+        const item = getItem(fileContext, projectFileUri);
+
+        return item && item.metadata && item.metadata.resources.selected.map(
+          filePath => path.relative(projectPath, filePath).split(path.sep).join('/')
+        );
+      }
+
+      beforeEach(async function() {
+        await waitForEvent(() => {
+          fileContext.addRoot(projectPath);
+        }, 'watcher:ready');
+
+        await waitFor(() => getSelected());
+      });
+
+
+      it('should refresh live on file added (Desktop Modeler: "membership changes from file ... edits refresh the resource index")', async function() {
+
+        // assume
+        expect(getSelected()).to.eql([ 'bar/bar.bpmn', 'bar/baz/baz.dmn', 'bar/baz/baz.form', 'bar/baz/baz.rpa', 'foo.bpmn' ]);
+
+        // when
+        writeFile(path.join(projectPath, 'new.bpmn'), fooXML);
+
+        // then
+        await waitFor(() => getSelected().includes('new.bpmn'));
+      });
+
+
+      it('should refresh live on file removed', async function() {
+
+        // when
+        fs.unlinkSync(path.join(projectPath, 'foo.bpmn'));
+
+        // then
+        await waitFor(() => !getSelected().includes('foo.bpmn'));
+      });
+
+
+      it('should refresh live on file outside of default scan added (deployResources)', async function() {
+
+        // given
+        writeFile(path.join(projectPath, 'camunda.json'), JSON.stringify({ deployResources: [ '**/*.md' ] }));
+
+        writeFile(path.join(projectPath, 'a.md'), 'a');
+
+        const camundaJsonUri = toFileUrl(path.join(projectPath, 'camunda.json'));
+
+        const getDeployResourcesSelected = () => {
+          const item = getItem(fileContext, camundaJsonUri);
+
+          return item && item.metadata && item.metadata.resources.selected.map(filePath => path.basename(filePath));
+        };
+
+        await waitFor(() => (getDeployResourcesSelected() || []).includes('a.md'));
+
+        // when
+        writeFile(path.join(projectPath, 'bar/b.md'), 'b');
+
+        // then
+        await waitFor(() => getDeployResourcesSelected().includes('b.md'));
+      });
+
+
+      it('should refresh live on .c8ignore change (Desktop Modeler: "... or descriptor edits refresh ...")', async function() {
+
+        // when
+        writeFile(path.join(projectPath, '.c8ignore'), 'bar/\n');
+
+        // then
+        await waitFor(() => getSelected().length === 1);
+
+        expect(getSelected()).to.eql([ 'foo.bpmn' ]);
+
+        // when
+        writeFile(path.join(projectPath, '.c8ignore'), '*.bpmn\n');
+
+        // then
+        await waitFor(() => !getSelected().includes('foo.bpmn'));
+
+        expect(getSelected()).to.eql([ 'bar/baz/baz.dmn', 'bar/baz/baz.form', 'bar/baz/baz.rpa' ]);
+      });
+
+
+      it('should index selected resources the watcher does not discover (node_modules, directory links)', async function() {
+
+        // given
+        const vendoredPath = path.join(projectPath, 'node_modules/pkg/vendored.bpmn');
+
+        const outsidePath = path.resolve(__dirname, './tmp/outside');
+
+        fs.mkdirSync(path.dirname(vendoredPath), { recursive: true });
+        writeFile(vendoredPath, fooXML);
+
+        fs.mkdirSync(outsidePath, { recursive: true });
+        writeFile(path.join(outsidePath, 'linked.bpmn'), barXML);
+        fs.symlinkSync(outsidePath, path.join(projectPath, 'linked'), process.platform === 'win32' ? 'junction' : 'dir');
+
+        const linkedPath = path.join(projectPath, 'linked/linked.bpmn');
+
+        const camundaJsonPath = path.join(projectPath, 'camunda.json');
+
+        // when
+        writeFile(camundaJsonPath, JSON.stringify({ deployResources: [ 'foo.bpmn', 'node_modules/pkg/**', 'linked/**' ] }));
+
+        // then
+        await waitFor(() => getItem(fileContext, toFileUrl(vendoredPath)) && getItem(fileContext, toFileUrl(linkedPath)));
+
+        expect(getItem(fileContext, toFileUrl(vendoredPath)).metadata.processes).to.have.length(1);
+
+        // when
+        writeFile(camundaJsonPath, JSON.stringify({ deployResources: [ 'foo.bpmn' ] }));
+
+        // then
+        await waitFor(() => !getItem(fileContext, toFileUrl(vendoredPath)) && !getItem(fileContext, toFileUrl(linkedPath)));
+
+        // watched files stay indexed
+        expect(getItem(fileContext, toFileUrl(path.join(projectPath, 'bar/bar.bpmn')))).to.exist;
+      });
+
+
+      it('should refresh live on camunda.json change', async function() {
+
+        // given
+        const filePath = path.join(projectPath, 'camunda.json');
+
+        const uri = toFileUrl(filePath);
+
+        writeFile(filePath, JSON.stringify({ deployResources: [ 'foo.bpmn' ] }));
+
+        await waitFor(() => getItem(fileContext, uri)?.metadata?.resources.selected.length === 1);
+
+        // when
+        writeFile(filePath, JSON.stringify({ deployResources: [ 'bar/bar.*' ] }));
+
+        // then
+        await waitFor(() => getItem(fileContext, uri).metadata.resources.selected.length === 2);
+
+        expect(getItem(fileContext, uri).metadata.resources.selected).to.eql([
+          path.join(projectPath, 'bar/bar.bpmn'),
+          path.join(projectPath, 'bar/bar.txt')
+        ]);
+
+        // when
+        writeFile(filePath, JSON.stringify({ deployResources: 'invalid' }));
+
+        // then
+        await waitFor(() => getItem(fileContext, uri).metadata.resources.error);
+
+        expect(getItem(fileContext, uri).metadata.resources.error).to.match(/must be an array/);
+      });
+
+    });
+
   });
 
 
@@ -718,7 +881,45 @@ describe('FileContext', function() {
       expect(item).to.exist;
 
       expect(item.metadata).to.eql({
-        'type': 'camundaProject'
+        type: 'camundaProject',
+        resources: {
+          mode: 'c8ignore',
+          selected: [],
+          error: 'No deployable files found in the project.',
+          errorType: 'empty-selection'
+        }
+      });
+    });
+
+
+    it('Camunda project file with deployResources', async function() {
+
+      // given
+      const projectPath = path.resolve(__dirname, './tmp/foo-process-application');
+
+      const filePath = path.join(projectPath, 'camunda.json'),
+            uri = toFileUrl(filePath);
+
+      writeFile(filePath, JSON.stringify({ deployResources: [ 'bar/**', '!bar/baz/' ] }));
+
+      // when
+      await waitForEvent(() => {
+        fileContext.addFile(filePath);
+      });
+
+      // then
+      const item = getItem(fileContext, uri);
+
+      expect(item.metadata).to.eql({
+        type: 'camundaProject',
+        resources: {
+          mode: 'deployResources',
+          selected: [
+            path.join(projectPath, 'bar/bar.bpmn'),
+            path.join(projectPath, 'bar/bar.txt')
+          ],
+          error: null
+        }
       });
     });
 
@@ -738,8 +939,11 @@ describe('FileContext', function() {
       const item = getItem(fileContext, uri);
 
       expect(item).to.exist;
-      expect(item.metadata).to.eql({
-        'type': 'camundaProject'
+      expect(item.metadata).to.include({
+        type: 'camundaProject'
+      });
+      expect(item.metadata.resources).to.include({
+        mode: 'c8ignore'
       });
     });
 
@@ -845,7 +1049,7 @@ function copyFiles(fixturesPath, tmpPath) {
 }
 
 function deleteDirectory(tmpPath) {
-  fs.rmdirSync(tmpPath, { recursive: true });
+  fs.rmSync(tmpPath, { recursive: true, force: true });
 }
 
 function readFile(filePath) {

@@ -1,0 +1,5 @@
+{
+  "description": "Everything selected is deselected again.",
+  "spec": "Empty final selection: error, no deployment.",
+  "error": "empty-selection"
+}

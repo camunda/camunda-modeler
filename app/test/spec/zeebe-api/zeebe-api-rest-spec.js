@@ -1229,6 +1229,38 @@ describe('ZeebeAPI (REST)', function() {
         expect(args[0][0].name).to.eql('foo-form.form');
       });
 
+
+      it('should deploy other resource under its file name (deployResources)', async function() {
+
+        // given
+        const deployResourcesSpy = sinon.spy();
+
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            deployResources: deployResourcesSpy
+          }
+        });
+
+        // when
+        await zeebeAPI.deploy({
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: TEST_URL
+          },
+          resourceConfigs: [
+            {
+              path: 'resources/.prompt.md',
+              type: 'resource'
+            }
+          ]
+        });
+
+        const { args } = deployResourcesSpy.getCall(0);
+
+        // then
+        expect(args[0][0].name).to.eql('.prompt.md');
+      });
+
     });
 
 

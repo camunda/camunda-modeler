@@ -1,0 +1,7 @@
+{
+  "deployResources": {
+    "include": [
+      "resources/**"
+    ]
+  }
+}

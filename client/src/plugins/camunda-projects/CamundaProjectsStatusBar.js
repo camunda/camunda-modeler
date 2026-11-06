@@ -40,6 +40,7 @@ export default function CamundaProjectsStatusBar(props) {
     camundaProject,
     camundaProjectColor,
     camundaProjectItems,
+    resourcesError = null,
     tabsProvider
   } = props;
 
@@ -115,6 +116,13 @@ export default function CamundaProjectsStatusBar(props) {
                   </ul>
                 </Section.Body>
               </Section>
+              {
+                resourcesError && <Section>
+                  <Section.Body>
+                    <p className="camunda-project-error">{ resourcesError }</p>
+                  </Section.Body>
+                </Section>
+              }
               <Section>
                 <Section.Header>
                   Files
@@ -127,11 +135,14 @@ export default function CamundaProjectsStatusBar(props) {
 
                         const error = hasErrorMessage(item);
 
+                        // not indexed, e.g. a Markdown prompt, can not be opened
+                        const isIndexed = !!item.metadata;
+
                         let Icon;
 
                         if (error) {
                           Icon = ErrorIcon;
-                        } else {
+                        } else if (isIndexed) {
                           const provider = tabsProvider.getProviderForFile(file);
 
                           Icon = provider?.getIcon(file);
@@ -147,7 +158,7 @@ export default function CamundaProjectsStatusBar(props) {
                             'file-error': error
                           })
                         } key={ file.path } title={ title }>
-                          <button type="button" onClick={ () => onClickOpenPath(file.path) } disabled={ isActiveTab || error }>
+                          <button type="button" onClick={ () => onClickOpenPath(file.path) } disabled={ isActiveTab || error || !isIndexed }>
                             {Icon && <Icon className="file-icon" width="16" height="16" />}
                             <span className="file-name">{ file.name }</span>
                           </button>

@@ -1,0 +1,2 @@
+resources/a.bpmn
+resources/b.md

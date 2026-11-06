@@ -1,0 +1,7 @@
+{
+  "selected": [
+    "node_modules/pkg/x.bpmn",
+    "resources/a.bpmn",
+    "target/classes/t.bpmn"
+  ]
+}

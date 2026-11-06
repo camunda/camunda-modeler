@@ -1,0 +1,4 @@
+resources/a.bpmn
+resources/drafts/x.bpmn
+resources/drafts/keep.bpmn
+resources/drafts/deep/keep.form

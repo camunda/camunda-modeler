@@ -1,0 +1,3 @@
+resources/a.bpmn
+resources/.prompt.md
+resources/.env

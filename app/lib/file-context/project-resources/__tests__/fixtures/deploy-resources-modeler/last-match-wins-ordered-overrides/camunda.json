@@ -1,0 +1,8 @@
+{
+  "deployResources": [
+    "*.bpmn",
+    "!a.bpmn",
+    "a.bpmn",
+    "!b.bpmn"
+  ]
+}

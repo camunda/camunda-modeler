@@ -1,0 +1,6 @@
+resources/visible.bpmn
+resources/.generated/skip.bpmn
+resources/.generated/keep.bpmn
+.camunda/extra.bpmn
+.camunda/.secret
+.github/workflows/ci.yml

@@ -1,0 +1,9 @@
+{
+  "deployResources": [
+    "src/",
+    "!src/generated/",
+    "src/generated/kept/important.bpmn",
+    "!build/",
+    "build/out/deep/deeper/result.dmn"
+  ]
+}
