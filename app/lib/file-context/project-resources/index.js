@@ -84,7 +84,7 @@ module.exports.ERROR_EMPTY_SELECTION = ERROR_EMPTY_SELECTION;
  * @return { ResourceSelector }
  */
 function createResourceSelector(descriptor, c8ignore = null) {
-  if (descriptor && Object.prototype.hasOwnProperty.call(descriptor, 'deployResources')) {
+  if (hasDeployResources(descriptor)) {
     return createDeployResourcesSelector(descriptor.deployResources);
   }
 
@@ -304,7 +304,24 @@ function resolveProjectResources(projectFilePath, options = {}) {
     }
   }
 
-  const selector = createResourceSelector(descriptor, readFileOrNull(path.join(projectRoot, C8IGNORE_FILE)));
+  let c8ignore = null;
+
+  // `.c8ignore` applies without `deployResources` only; failing to read it
+  // fails the resolution, rather than deploying files meant to be excluded
+  if (!hasDeployResources(descriptor)) {
+    try {
+      c8ignore = readC8ignore(projectRoot);
+    } catch (error) {
+      return {
+        mode: MODE_C8IGNORE,
+        selected: [],
+        error: `Failed to read ${ C8IGNORE_FILE }: ${ error.message }`,
+        errorType: ERROR_INVALID_CONFIG
+      };
+    }
+  }
+
+  const selector = createResourceSelector(descriptor, c8ignore);
 
   if (selector.error) {
     return { mode: selector.mode, selected: [], error: selector.error, errorType: ERROR_INVALID_CONFIG };
@@ -430,5 +447,35 @@ function readFileOrNull(filePath) {
     return fs.readFileSync(filePath, 'utf8');
   } catch (error) {
     return null;
+  }
+}
+
+/**
+ * @param { Object | null } descriptor
+ *
+ * @return { boolean }
+ */
+function hasDeployResources(descriptor) {
+  return !!descriptor && Object.prototype.hasOwnProperty.call(descriptor, 'deployResources');
+}
+
+/**
+ * Read `.c8ignore` of a project, `null` if there is none.
+ *
+ * @param { string } projectRoot
+ *
+ * @return { string | null }
+ *
+ * @throws if `.c8ignore` exists but can not be read, e.g. it is a directory
+ */
+function readC8ignore(projectRoot) {
+  try {
+    return fs.readFileSync(path.join(projectRoot, C8IGNORE_FILE), 'utf8');
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return null;
+    }
+
+    throw error;
   }
 }

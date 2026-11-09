@@ -594,6 +594,55 @@ describe('project-resources', function() {
     });
 
 
+    it('should fail on unreadable .c8ignore (directory), not deploy files meant to be excluded', function() {
+
+      // given
+      fs.mkdirSync(path.join(projectPath, '.c8ignore'));
+
+      // when
+      const { error, errorType, selected } = resolve({}, [ 'a.bpmn', 'drafts/b.bpmn' ]);
+
+      // then
+      expect(errorType).to.eql('invalid-config');
+      expect(error).to.match(/Failed to read .c8ignore/);
+      expect(selected).to.be.empty;
+    });
+
+
+    it('should fail on unreadable .c8ignore (permissions)', function() {
+
+      // assume
+      if (process.platform === 'win32' || process.getuid?.() === 0) {
+        return this.skip();
+      }
+
+      // given
+      writeFile(path.join(projectPath, '.c8ignore'), 'drafts/\n');
+      fs.chmodSync(path.join(projectPath, '.c8ignore'), 0o000);
+
+      // when
+      const { error, errorType } = resolve({}, [ 'a.bpmn', 'drafts/b.bpmn' ]);
+
+      // then
+      expect(errorType).to.eql('invalid-config');
+      expect(error).to.match(/Failed to read .c8ignore/);
+    });
+
+
+    it('should not read .c8ignore with deployResources (unreadable .c8ignore)', function() {
+
+      // given
+      fs.mkdirSync(path.join(projectPath, '.c8ignore'));
+
+      // when
+      const { error, selected } = resolve({ deployResources: [ '*.bpmn' ] }, [ 'a.bpmn' ]);
+
+      // then
+      expect(error).not.to.exist;
+      expect(selected).to.eql([ 'a.bpmn' ]);
+    });
+
+
     it('should apply .c8ignore to legacy projects (.process-application)', function() {
 
       // when

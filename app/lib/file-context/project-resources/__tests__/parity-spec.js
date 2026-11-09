@@ -105,9 +105,12 @@ describe('project-resources - parity fixtures', function() {
             const { descriptor, c8ignore, files } = readCase(casePath);
 
             // assume
-            if (descriptor === undefined) {
-
-              // invalid JSON, covered by file system resolution
+            // invalid JSON or an unreadable `.c8ignore` (a directory) can not
+            // be expressed as a file list, covered by file system resolution
+            if (
+              descriptor === undefined ||
+              (!('deployResources' in descriptor) && files.some(file => file.startsWith('.c8ignore/')))
+            ) {
               return this.skip();
             }
 
