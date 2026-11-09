@@ -330,7 +330,20 @@ export default class CamundaProjects {
    * @returns {Item|undefined}
    */
   findItem(path) {
-    return this._items.find(item => item.file.path === path);
+
+    // index by path, projects may contain many files
+    if (this._itemsByPathFor !== this._items) {
+      this._itemsByPathFor = this._items;
+      this._itemsByPath = new Map();
+
+      for (const item of this._items) {
+        if (!this._itemsByPath.has(item.file.path)) {
+          this._itemsByPath.set(item.file.path, item);
+        }
+      }
+    }
+
+    return this._itemsByPath.get(path);
   }
 }
 
@@ -370,7 +383,31 @@ function getResources(camundaProjectItem) {
 function isProjectResource(camundaProjectItem, path) {
   const resources = getResources(camundaProjectItem);
 
-  return !!resources && resources.selected.includes(path);
+  return !!resources && getSelectedSet(resources).has(path);
+}
+
+/**
+ * Selected files as set, cached per resolution, as projects may select many files.
+ *
+ * @type {WeakMap<Object, Set<string>>}
+ */
+const selectedSets = new WeakMap();
+
+/**
+ * @param {{ selected: string[] }} resources
+ *
+ * @returns {Set<string>}
+ */
+function getSelectedSet(resources) {
+  let selected = selectedSets.get(resources);
+
+  if (!selected) {
+    selected = new Set(resources.selected);
+
+    selectedSets.set(resources, selected);
+  }
+
+  return selected;
 }
 
 /**
