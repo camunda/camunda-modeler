@@ -75,7 +75,7 @@ export default async function renderEditor(EditorComponent, xml, options = {}) {
 
   const eventBus = options.eventBus || new EventEmitter();
 
-  const eventsContext = {
+  const eventsContext = options.eventsContext || {
     subscribe: (event, listener) => {
       eventBus.on(event, listener);
 

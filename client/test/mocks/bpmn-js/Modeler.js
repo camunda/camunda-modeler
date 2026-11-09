@@ -168,7 +168,8 @@ export default class Modeler {
       linting: new Linting(options.linting),
       variableResolver: {},
       feelPopup: {
-        registerProvider() {}
+        registerProvider() {},
+        close() {}
       }
     };
   }

@@ -6,7 +6,9 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FIX`: explain FEEL playground connection issues and offer an action to configure the connection ([#6312](https://github.com/camunda/camunda-modeler/pull/6312))
 * `DEPS`: update to `electron@45.2.1`
+* `DEPS`: update to `@camunda/feel-playground@1.1.1`
 
 ## 5.53.0
 
