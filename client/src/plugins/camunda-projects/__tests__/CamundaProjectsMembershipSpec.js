@@ -368,6 +368,40 @@ describe('CamundaProjects - project membership', function() {
     });
 
 
+    it('should keep error while files below node_modules or behind directory links are (re-)indexed', function() {
+
+      // given
+      const errorResources = {
+        mode: 'deployResources',
+        selected: [],
+        error: 'Invalid camunda.json: `deployResources` must be an array of glob patterns.',
+        errorType: 'invalid-config'
+      };
+
+      const vendored = createItem(`${ PROJECT_PATH }/node_modules/pkg/vendored.bpmn`, { type: 'bpmn', processes: [] });
+      const linked = createItem(`${ PROJECT_PATH }/linked/linked.bpmn`, { type: 'bpmn', processes: [] });
+
+      camundaProjects.emit('items-changed', [ createCamundaProject({ resources: errorResources }), PROCESS ]);
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      // when
+      camundaProjects.emit('items-changed', [ createCamundaProject({ resources: errorResources }), PROCESS, vendored, linked ]);
+      camundaProjects.emit('activeTab-changed', { file: linked.file });
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.true;
+      expect(camundaProjects.getError()).to.eql(errorResources.error);
+      expect(camundaProjects.getResourceConfigs()).to.be.empty;
+      expect(camundaProjects.getItems()).to.be.empty;
+
+      // when
+      camundaProjects.emit('items-changed', [ createCamundaProject({ resources: errorResources }), PROCESS ]);
+
+      // then
+      expect(camundaProjects.getError()).to.eql(errorResources.error);
+    });
+
+
     it('should keep project open with error on unreadable camunda.json', function() {
 
       // given

@@ -255,6 +255,197 @@ describe('FileContext - reset and project removal', function() {
 });
 
 
+describe('FileContext - project error state', function() {
+
+  let tmpPath, fileContext, projectFilePath, vendoredPath, linkedPath, outsidePath;
+
+  beforeEach(async function() {
+    tmpPath = fs.mkdtempSync(path.join(os.tmpdir(), 'file-context-error-'));
+    outsidePath = fs.mkdtempSync(path.join(os.tmpdir(), 'file-context-error-outside-'));
+
+    fileContext = new FileContext(quietLogger(), { watch: false, processors: require('../processors') });
+
+    // diagrams the watcher does not discover, indexed explicitly
+    vendoredPath = path.join(tmpPath, 'node_modules/pkg/vendored.bpmn');
+    writeFile(vendoredPath, '');
+
+    writeFile(path.join(outsidePath, 'linked.bpmn'), '');
+    fs.symlinkSync(outsidePath, path.join(tmpPath, 'linked'), process.platform === 'win32' ? 'junction' : 'dir');
+    linkedPath = path.join(tmpPath, 'linked/linked.bpmn');
+
+    writeFile(path.join(tmpPath, 'main.bpmn'), '');
+
+    projectFilePath = path.join(tmpPath, 'camunda.json');
+
+    writeFile(projectFilePath, JSON.stringify({ deployResources: [ 'main.bpmn', 'node_modules/pkg/**', 'linked/**' ] }));
+
+    await fileContext.addFile(projectFilePath);
+
+    await waitFor(() => getItem(vendoredPath) && getItem(linkedPath));
+
+    // configuration becomes invalid
+    writeFile(projectFilePath, JSON.stringify({ deployResources: 42 }));
+
+    await fileContext.addFile(projectFilePath);
+  });
+
+  afterEach(async function() {
+    await fileContext.close();
+
+    fs.rmSync(tmpPath, { recursive: true, force: true });
+    fs.rmSync(outsidePath, { recursive: true, force: true });
+  });
+
+  function getItem(filePath) {
+    return fileContext._indexer.items.get(toFileUrl(filePath));
+  }
+
+  function expectError() {
+    const { resources } = getItem(projectFilePath).metadata;
+
+    expect(resources.errorType).to.eql('invalid-config');
+    expect(resources.error).to.match(/must be an array/);
+    expect(resources.selected).to.be.empty;
+  }
+
+
+  it('should keep error, dropping explicitly indexed resources', async function() {
+
+    // when
+    await settle();
+
+    // then
+    expectError();
+
+    expect(getItem(vendoredPath)).not.to.exist;
+    expect(getItem(linkedPath)).not.to.exist;
+  });
+
+
+  it('should keep error when re-indexing files below node_modules or behind directory links (e.g. opened)', async function() {
+
+    // when
+    await fileContext.fileOpened(toFileUrl(vendoredPath));
+    await fileContext.fileOpened(toFileUrl(linkedPath));
+
+    await settle();
+
+    // then
+    expectError();
+  });
+
+
+  it('should keep error on explicit indexing pass', async function() {
+
+    // when
+    await fileContext._indexProjectResources();
+
+    await settle();
+
+    // then
+    expectError();
+  });
+
+
+  it('should keep error on re-resolution', async function() {
+
+    // when
+    await fileContext.addFile(projectFilePath);
+
+    fileContext.emit('watcher:fs-change', toFileUrl(path.join(tmpPath, 'other.bpmn')));
+
+    await new Promise(resolve => setTimeout(resolve, 400));
+
+    // then
+    expectError();
+  });
+
+
+  it('should not let an outdated successful resolution override a newer error', async function() {
+
+    // given
+    writeFile(projectFilePath, JSON.stringify({ deployResources: [ 'main.bpmn', 'node_modules/pkg/**', 'linked/**' ] }));
+
+    const outdated = fileContext.addFile(projectFilePath);
+
+    // when
+    writeFile(projectFilePath, JSON.stringify({ deployResources: 42 }));
+
+    const latest = fileContext.addFile(projectFilePath);
+
+    await Promise.all([ outdated, latest ].map(promise => promise.catch(() => {})));
+
+    await settle();
+
+    // then
+    expectError();
+  });
+
+
+  it('should not let a delayed outdated success override a newer error (nor index its resources)', async function() {
+
+    // given
+    const pending = [];
+
+    const processor = {
+      id: 'camundaProject',
+      extensions: [],
+      fileNames: [ 'camunda.json' ],
+      process: () => new Promise(resolve => pending.push(resolve))
+    };
+
+    const otherContext = new FileContext(quietLogger(), { watch: false, processors: [ processor, ...require('../processors').filter(p => p.id !== 'camundaProject') ] });
+
+    try {
+      const outdated = otherContext.addFile(projectFilePath);
+      const latest = otherContext.addFile(projectFilePath);
+
+      await waitFor(() => pending.length === 2);
+
+      // when
+      // newer resolution fails, the outdated success arrives after it
+      pending[1]({
+        type: 'camundaProject',
+        resources: { mode: 'deployResources', selected: [], error: 'invalid', errorType: 'invalid-config' }
+      });
+      await latest;
+
+      pending[0]({
+        type: 'camundaProject',
+        resources: { mode: 'deployResources', selected: [ vendoredPath, linkedPath ], error: null }
+      });
+      await outdated;
+
+      await settle();
+
+      // then
+      const items = otherContext._indexer.items;
+
+      expect(items.get(toFileUrl(projectFilePath)).metadata.resources.errorType).to.eql('invalid-config');
+      expect(items.get(toFileUrl(vendoredPath))).not.to.exist;
+      expect(items.get(toFileUrl(linkedPath))).not.to.exist;
+    } finally {
+      await otherContext.close();
+    }
+  });
+
+
+  it('should replace error with newer successful resolution', async function() {
+
+    // when
+    writeFile(projectFilePath, JSON.stringify({ deployResources: [ 'main.bpmn', 'node_modules/pkg/**' ] }));
+
+    await fileContext.addFile(projectFilePath);
+
+    await waitFor(() => getItem(vendoredPath));
+
+    // then
+    expect(getItem(projectFilePath).metadata.resources.error).to.be.null;
+  });
+
+});
+
+
 function quietLogger() {
   return { info() {}, warn() {}, error() {} };
 }
