@@ -1,0 +1,7 @@
+{
+  "description": "A camunda.json starting with a UTF-16LE byte-order mark (as Windows editors and PowerShell write it) is decoded and its deployResources applied.",
+  "spec": "deployResources is an optional top-level array of glob strings in camunda.json.",
+  "selected": [
+    "resources/prompt.md"
+  ]
+}

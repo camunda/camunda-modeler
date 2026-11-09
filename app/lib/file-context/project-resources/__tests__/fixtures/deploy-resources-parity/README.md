@@ -69,6 +69,7 @@ or, for a case that must fail without deploying anything:
 | `gitignore-syntax`, `repeated-separator`, `dot-segment` | Syntax inherited from the `.c8ignore` engine. Repeated `/` separators and inner `.` segments are collapsed by the matcher, and directory discovery must agree with it. |
 | `unmatched-pattern-ignored`, `c8ignore-ignored-when-field-present`, `c8ignore-unreadable-when-field-present`, `nested-project-not-excluded` | Ignored inputs. With `deployResources`, `.c8ignore` is not read at all, so a directory named `.c8ignore` does no harm. |
 | `invalid-*`, `empty-*` | Validation errors. |
+| `bom-utf8`, `bom-utf16le` | `camunda.json` starts with a UTF-8 or UTF-16LE byte-order mark; tools must decode it (a `.gitattributes` keeps these bytes unconverted). |
 | `absent-field-*` | No `deployResources`. The default c8ctl scan applies: extensions `.bpmn`, `.dmn`, `.form`; hidden files skipped, hidden directories scanned; `node_modules/`, `target/`, `.git/` excluded; filtered by `.c8ignore` with gitignore semantics, including the excluded-parent rule. |
 
 ## Matching rules these fixtures encode

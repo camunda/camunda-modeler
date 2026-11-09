@@ -105,8 +105,9 @@ describe('project-resources - parity fixtures', function() {
             const { descriptor, c8ignore, files } = readCase(casePath);
 
             // assume
-            // invalid JSON or an unreadable `.c8ignore` (a directory) can not
-            // be expressed as a file list, covered by file system resolution
+            // invalid JSON, a descriptor with byte order mark (decoded when
+            // read from disk) or an unreadable `.c8ignore` (a directory) can
+            // not be expressed as a file list, covered by file system resolution
             if (
               descriptor === undefined ||
               (!('deployResources' in descriptor) && files.some(file => file.startsWith('.c8ignore/')))
@@ -173,8 +174,11 @@ function readCase(casePath) {
 function createProject(casePath, projectPath) {
   const { files, literalFiles } = readCase(casePath);
 
+  // copy literal files byte for byte, e.g. a `camunda.json` with byte order mark
   for (const file of literalFiles) {
-    writeFile(path.join(projectPath, ...file.split('/')), readFileOr(path.join(casePath, ...file.split('/')), '{}'));
+    const sourcePath = path.join(casePath, ...file.split('/'));
+
+    writeFile(path.join(projectPath, ...file.split('/')), fs.existsSync(sourcePath) ? fs.readFileSync(sourcePath) : '{}');
   }
 
   for (const file of files.filter(file => !literalFiles.includes(file))) {
