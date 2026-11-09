@@ -606,6 +606,117 @@ describe('CamundaProjects - project membership', function() {
   });
 
 
+  describe('active tab not indexed', function() {
+
+    const ERROR_RESOURCES = {
+      mode: 'deployResources',
+      selected: [],
+      error: 'Invalid camunda.json: `deployResources` must be an array of glob patterns.',
+      errorType: 'invalid-config'
+    };
+
+    let LINKED_FILE, PROMPT_FILE;
+
+    beforeEach(function() {
+      LINKED_FILE = { path: `${ PROJECT_PATH }/linked/linked.bpmn` };
+      PROMPT_FILE = { path: `${ PROJECT_PATH }/resources/.prompt.md` };
+    });
+
+
+    it('should keep project and error for unindexed tab in error state (e.g. behind directory link)', function() {
+
+      // given
+      camundaProjects.emit('items-changed', [ createCamundaProject({ resources: ERROR_RESOURCES }), PROCESS ]);
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: LINKED_FILE });
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.true;
+      expect(camundaProjects.getError()).to.eql(ERROR_RESOURCES.error);
+      expect(camundaProjects.getResourceConfigs()).to.be.empty;
+    });
+
+
+    it('should keep project and error when switching back and forth between unindexed tabs in error state', function() {
+
+      // given
+      camundaProjects.emit('items-changed', [ createCamundaProject({ resources: ERROR_RESOURCES }), PROCESS ]);
+
+      for (const file of [ PROMPT_FILE, PROCESS.file, LINKED_FILE, PROMPT_FILE ]) {
+
+        // when
+        camundaProjects.emit('activeTab-changed', { file });
+
+        // then
+        expect(camundaProjects.hasOpen(), file.path).to.be.true;
+        expect(camundaProjects.getError(), file.path).to.eql(ERROR_RESOURCES.error);
+      }
+    });
+
+
+    it('should keep project and error on items changed with unindexed active tab in error state', function() {
+
+      // given
+      camundaProjects.emit('items-changed', [ createCamundaProject({ resources: ERROR_RESOURCES }), PROCESS ]);
+      camundaProjects.emit('activeTab-changed', { file: LINKED_FILE });
+
+      // when
+      camundaProjects.emit('items-changed', [ createCamundaProject({ resources: ERROR_RESOURCES }) ]);
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.true;
+      expect(camundaProjects.getError()).to.eql(ERROR_RESOURCES.error);
+    });
+
+
+    it('should open project for selected tab not indexed yet (membership by selection, not index timing)', function() {
+
+      // given
+      const resources = {
+        mode: 'deployResources',
+        selected: [ PROCESS.file.path, LINKED_FILE.path ],
+        error: null
+      };
+
+      // tab activated before its file is indexed
+      camundaProjects.emit('items-changed', [ createCamundaProject({ resources }), PROCESS ]);
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: LINKED_FILE });
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.true;
+
+      // when
+      camundaProjects.emit('items-changed', [
+        createCamundaProject({ resources }),
+        PROCESS,
+        createItem(LINKED_FILE.path, { type: 'bpmn', processes: [] })
+      ]);
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.true;
+      expect(paths(camundaProjects.getResourceConfigs())).to.eql([ PROCESS.file.path, LINKED_FILE.path ]);
+    });
+
+
+    it('should not open project for deselected tab not indexed (standalone)', function() {
+
+      // given
+      camundaProjects.emit('items-changed', [ createCamundaProject(), PROCESS ]);
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: LINKED_FILE });
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.false;
+    });
+
+  });
+
+
   describe('"Nested projects are unsupported"', function() {
 
     it('"a nested camunda.json does not exclude that folder from the parent\'s selection"', function() {
@@ -867,6 +978,35 @@ describe('<CamundaProjectsPlugin> - project membership', function() {
     });
 
     expect(deploySpy).not.to.have.been.called;
+  });
+
+
+  it('should keep deployment guard when switching to an unindexed tab on invalid configuration', async function() {
+
+    // given
+    const deployment = new Deployment(null, null, new ZeebeAPI(), null);
+
+    const { emit, emitBackend, reset } = createCamundaProjectsPlugin({ deployment });
+
+    this.reset = reset;
+
+    act(() => emitBackend('file-context:changed', createItems({
+      resources: {
+        mode: 'deployResources',
+        selected: [],
+        error: 'Invalid camunda.json: `deployResources` must be an array of glob patterns.',
+        errorType: 'invalid-config'
+      }
+    })));
+    act(() => emit('app.activeTabChanged', { activeTab: { type: 'cloud-bpmn', file: PROCESS.file } }));
+
+    // when
+    act(() => emit('app.activeTabChanged', { activeTab: { type: 'cloud-bpmn', file: { path: `${ PROJECT_PATH }/linked/linked.bpmn` } } }));
+
+    // then
+    await waitFor(() => {
+      expect(() => collectResourceConfigs(deployment, [ { path: `${ PROJECT_PATH }/linked/linked.bpmn`, type: 'bpmn' } ])).to.throw('Invalid camunda.json');
+    });
   });
 
 

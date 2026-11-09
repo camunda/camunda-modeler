@@ -229,15 +229,21 @@ export default class CamundaProjects {
       return;
     }
 
-    const item = this._items.find(item => item.file.path === file.path);
+    const item = this.findItem(file.path);
 
-    if (!item) {
+    // the file may not be indexed (yet or anymore), e.g. below `node_modules`
+    const camundaProjectItem = this.findCamundaProjectItemForPath(file.path);
+
+    if (!camundaProjectItem) {
       return;
     }
 
-    const camundaProjectItem = this.findCamundaProjectItemForItem(item);
+    // without resolved resources, an unindexed file is no project file
+    if (!item && !getResources(camundaProjectItem)) {
+      return;
+    }
 
-    if (camundaProjectItem && this._isActiveTabInCamundaProject(camundaProjectItem)) {
+    if (this._isActiveTabInCamundaProject(camundaProjectItem)) {
       return camundaProjectItem;
     }
   }
@@ -301,10 +307,21 @@ export default class CamundaProjects {
    * @returns {Item|undefined}
    */
   findCamundaProjectItemForItem(item) {
+    return this.findCamundaProjectItemForPath(item.file.path);
+  }
+
+  /**
+   * Find project item for a file path, whether the file is indexed or not.
+   *
+   * @param {string} path
+   *
+   * @returns {Item|undefined}
+   */
+  findCamundaProjectItemForPath(path) {
     return this._items
       .filter(otherItem => {
         const { dirname } = otherItem.file;
-        const isInProject = item.file.path.startsWith(`${ dirname }/`) || item.file.path.startsWith(`${ dirname }\\`);
+        const isInProject = path.startsWith(`${ dirname }/`) || path.startsWith(`${ dirname }\\`);
 
         return otherItem.metadata?.type === 'camundaProject' && isInProject;
       })
