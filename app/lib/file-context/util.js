@@ -63,14 +63,26 @@ function getFileName(value) {
 
 module.exports.getFileName = getFileName;
 
+/**
+ * Get the extension of a file, lower case (`.BPMN` is a BPMN file, as in the
+ * client). A dot-prefixed name without further extension, e.g.
+ * `.process-application`, is its own extension; one with an extension,
+ * e.g. `.hidden.bpmn`, has that extension.
+ *
+ * @param { string } value
+ *
+ * @return { string }
+ */
 function getFileExtension(value) {
   const baseName = getFileName(value);
 
-  if (baseName.startsWith('.')) {
+  const extension = path.extname(baseName);
+
+  if (!extension && baseName.startsWith('.')) {
     return baseName;
   }
 
-  return path.extname(baseName);
+  return extension.toLowerCase();
 }
 
 module.exports.getFileExtension = getFileExtension;

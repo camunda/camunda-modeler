@@ -604,6 +604,38 @@ describe('FileContext', function() {
       });
 
 
+      it('should index selected diagrams with special file names (dot-prefixed, hidden directory, upper case extension, special characters)', async function() {
+
+        // given
+        const names = [
+          'bar/.hidden.bpmn',
+          '.camunda/main.bpmn',
+          'bar/UPPER.BPMN',
+          'bar/sp ace #1 %20 ü.bpmn',
+          ...(process.platform === 'win32' ? [] : [ 'bar/question?.bpmn' ])
+        ];
+
+        for (const name of names) {
+          fs.mkdirSync(path.dirname(path.join(projectPath, name)), { recursive: true });
+          writeFile(path.join(projectPath, name), fooXML);
+        }
+
+        const camundaJsonUri = toFileUrl(path.join(projectPath, 'camunda.json'));
+
+        // when
+        writeFile(path.join(projectPath, 'camunda.json'), JSON.stringify({ deployResources: names }));
+
+        // then
+        await waitFor(() => {
+          return names.every(name => getItem(fileContext, toFileUrl(path.join(projectPath, name)))?.metadata?.type === 'bpmn');
+        });
+
+        expect(getItem(fileContext, camundaJsonUri).metadata.resources.selected).to.have.members(
+          names.map(name => path.join(projectPath, name))
+        );
+      });
+
+
       it('should refresh live on camunda.json atomic save (write temporary file, rename)', async function() {
 
         // given

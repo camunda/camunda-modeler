@@ -386,10 +386,12 @@ function getResourceType(path, item) {
     return type;
   }
 
-  const [ , extension ] = /^[^.].*\.([^.]+)$/.exec(path.split(/[\\/]/).pop()) || [];
+  // dot-prefixed names (e.g. `.hidden.bpmn`) and upper case extensions
+  // (e.g. `.BPMN`) are recognized, as when indexing
+  const [ , extension = '' ] = /^.+\.([^.]+)$/.exec(path.split(/[\\/]/).pop()) || [];
 
-  if (DEPLOYABLE_TYPES.includes(extension)) {
-    return extension;
+  if (DEPLOYABLE_TYPES.includes(extension.toLowerCase())) {
+    return extension.toLowerCase();
   }
 
   return 'resource';

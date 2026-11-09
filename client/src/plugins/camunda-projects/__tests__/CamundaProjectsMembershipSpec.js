@@ -490,6 +490,56 @@ describe('CamundaProjects - project membership', function() {
   });
 
 
+  describe('special file names', function() {
+
+    it('should deploy and list selected diagrams with dot-prefixed names or upper case extensions', function() {
+
+      // given
+      const hidden = createItem(`${ PROJECT_PATH }/resources/.hidden.bpmn`, {
+        type: 'bpmn',
+        processes: [ { id: 'Hidden', name: 'Hidden' } ]
+      });
+
+      camundaProjects.emit('items-changed', [
+        createCamundaProject({
+          resources: {
+            mode: 'deployResources',
+            selected: [
+              PROCESS.file.path,
+              hidden.file.path,
+              `${ PROJECT_PATH }/resources/.not-indexed-yet.dmn`,
+              `${ PROJECT_PATH }/resources/UPPER.BPMN`,
+              `${ PROJECT_PATH }/resources/.prompt.md`
+            ],
+            error: null
+          }
+        }),
+        PROCESS,
+        hidden
+      ]);
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      // then
+      expect(camundaProjects.getResourceConfigs()).to.eql([
+        { path: PROCESS.file.path, type: 'bpmn' },
+        { path: hidden.file.path, type: 'bpmn' },
+        { path: `${ PROJECT_PATH }/resources/.not-indexed-yet.dmn`, type: 'dmn' },
+        { path: `${ PROJECT_PATH }/resources/UPPER.BPMN`, type: 'bpmn' },
+        { path: `${ PROJECT_PATH }/resources/.prompt.md`, type: 'resource' }
+      ]);
+
+      // indexed hidden diagram is listed with its metadata, i.e. enabled
+      expect(camundaProjects.getFiles()[1]).to.equal(hidden);
+
+      // and takes part in editor intelligence
+      expect(paths(camundaProjects.getItems())).to.include(hidden.file.path);
+    });
+
+  });
+
+
   describe('"Nested projects are unsupported"', function() {
 
     it('"a nested camunda.json does not exclude that folder from the parent\'s selection"', function() {
