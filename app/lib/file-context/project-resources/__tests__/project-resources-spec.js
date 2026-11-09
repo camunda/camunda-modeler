@@ -9,6 +9,7 @@
  */
 
 const fs = require('fs');
+const sinon = require('sinon');
 const os = require('os');
 const path = require('path');
 
@@ -37,7 +38,7 @@ describe('project-resources', function() {
     fs.rmSync(projectPath, { recursive: true, force: true });
   });
 
-  function resolve(descriptor, files, options = {}) {
+  async function resolve(descriptor, files, options = {}) {
     for (const file of files) {
       writeFile(path.join(projectPath, file), file);
     }
@@ -52,7 +53,7 @@ describe('project-resources', function() {
 
     writeFile(projectFilePath, typeof descriptor === 'string' ? descriptor : JSON.stringify(descriptor));
 
-    const resources = resolveProjectResources(projectFilePath);
+    const resources = await resolveProjectResources(projectFilePath);
 
     return {
       ...resources,
@@ -63,10 +64,10 @@ describe('project-resources', function() {
 
   describe('worked example', function() {
 
-    it('should select resources/** and target/classes/**, exclude drafts except keep.bpmn, include resources/.prompt.md, exclude resources/.env, node_modules/, .git/ and root README', function() {
+    it('should select resources/** and target/classes/**, exclude drafts except keep.bpmn, include resources/.prompt.md, exclude resources/.env, node_modules/, .git/ and root README', async function() {
 
       // when
-      const { error, mode, selected } = resolve({
+      const { error, mode, selected } = await resolve({
         deployResources: [
           'resources/**',
           'target/classes/**',
@@ -104,10 +105,10 @@ describe('project-resources', function() {
 
   describe('deployResources', function() {
 
-    it('"is an optional top-level array of glob strings in camunda.json" (absent => default scan)', function() {
+    it('"is an optional top-level array of glob strings in camunda.json" (absent => default scan)', async function() {
 
       // when
-      const { mode, selected } = resolve({}, [ 'a.bpmn', 'notes.md' ]);
+      const { mode, selected } = await resolve({}, [ 'a.bpmn', 'notes.md' ]);
 
       // then
       expect(mode).to.eql(MODE_C8IGNORE);
@@ -115,20 +116,20 @@ describe('project-resources', function() {
     });
 
 
-    it('"Allowlist: when present, selection starts empty"', function() {
+    it('"Allowlist: when present, selection starts empty"', async function() {
 
       // when
-      const { selected } = resolve({ deployResources: [ 'a.bpmn' ] }, [ 'a.bpmn', 'b.bpmn', 'c.dmn' ]);
+      const { selected } = await resolve({ deployResources: [ 'a.bpmn' ] }, [ 'a.bpmn', 'b.bpmn', 'c.dmn' ]);
 
       // then
       expect(selected).to.eql([ 'a.bpmn' ]);
     });
 
 
-    it('"Positive patterns include, ! patterns exclude; the last matching pattern wins per file"', function() {
+    it('"Positive patterns include, ! patterns exclude; the last matching pattern wins per file"', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ '*.bpmn', '!a.bpmn', '!b.bpmn', 'b.bpmn' ]
       }, [ 'a.bpmn', 'b.bpmn', 'c.bpmn' ]);
 
@@ -137,10 +138,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"The default extension scan ... do(es) not apply" (any file type selectable)', function() {
+    it('"The default extension scan ... do(es) not apply" (any file type selectable)', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ 'resources/**' ]
       }, [ 'resources/prompt.md', 'resources/script.js', 'resources/data.json', 'resources/noextension', 'a.bpmn' ]);
 
@@ -154,10 +155,10 @@ describe('project-resources', function() {
     });
 
 
-    it('".c8ignore do(es) not apply" when deployResources is present', function() {
+    it('".c8ignore do(es) not apply" when deployResources is present', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ 'resources/**' ]
       }, [ 'resources/a.bpmn' ], { c8ignore: 'resources/\n*.bpmn\n' });
 
@@ -166,10 +167,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"Defaults: node_modules/, target/, .git/, and the project-root camunda.json remain excluded"', function() {
+    it('"Defaults: node_modules/, target/, .git/, and the project-root camunda.json remain excluded"', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ 'resources/**', '!nothing' ]
       }, [ 'resources/a.bpmn', 'node_modules/a.bpmn', 'target/a.bpmn', '.git/a.bpmn' ]);
 
@@ -178,10 +179,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"... unless a matching positive pattern overrides them"', function() {
+    it('"... unless a matching positive pattern overrides them"', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ 'node_modules/pkg/**', 'target/classes/**', 'camunda.json' ]
       }, [ 'node_modules/pkg/a.bpmn', 'target/classes/b.bpmn', 'target/c.bpmn' ]);
 
@@ -190,10 +191,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"Other control files (.c8ignore, .process-application) are ... covered by the hidden-file rule"', function() {
+    it('"Other control files (.c8ignore, .process-application) are ... covered by the hidden-file rule"', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ '**/*' ]
       }, [ 'a.bpmn', '.process-application' ], { c8ignore: '' });
 
@@ -203,10 +204,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"Hidden files: wildcard patterns never select files whose name starts with ."', function() {
+    it('"Hidden files: wildcard patterns never select files whose name starts with ."', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ '**/*', 'resources/*', 'resources/**', '**/*.bpmn' ]
       }, [ 'resources/a.bpmn', 'resources/.env', 'resources/.draft.bpmn', '.env' ]);
 
@@ -215,10 +216,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"A pattern naming the dot-prefixed file explicitly (e.g. resources/.prompt.md) selects it"', function() {
+    it('"A pattern naming the dot-prefixed file explicitly (e.g. resources/.prompt.md) selects it"', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ 'resources/.prompt.md' ]
       }, [ 'resources/.prompt.md', 'resources/.env' ]);
 
@@ -227,10 +228,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"Hidden directories are traversed normally"', function() {
+    it('"Hidden directories are traversed normally"', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ '.config/**', '.github/workflows/build.bpmn' ]
       }, [ '.config/a.bpmn', '.github/workflows/build.bpmn', '.github/other.bpmn' ]);
 
@@ -239,10 +240,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"Descendant re-inclusion: positive patterns select descendants directly, without parent-unignore ceremony"', function() {
+    it('"Descendant re-inclusion: positive patterns select descendants directly, without parent-unignore ceremony"', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ 'a/b/c/d.bpmn' ]
       }, [ 'a/b/c/d.bpmn', 'a/b/e.bpmn' ]);
 
@@ -251,10 +252,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"a later positive pattern restores a file below an earlier excluded directory"', function() {
+    it('"a later positive pattern restores a file below an earlier excluded directory"', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ 'resources/**', '!resources/drafts/', 'resources/drafts/keep.bpmn' ]
       }, [ 'resources/a.bpmn', 'resources/drafts/b.bpmn', 'resources/drafts/keep.bpmn' ]);
 
@@ -263,10 +264,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"Discovery must not prune directories in a way that defeats this"', function() {
+    it('"Discovery must not prune directories in a way that defeats this"', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ '!deep/', '**/keep.bpmn' ]
       }, [ 'deep/er/still/keep.bpmn', 'deep/er/other.bpmn', 'node_modules/x/keep.bpmn' ]);
 
@@ -275,12 +276,12 @@ describe('project-resources', function() {
     });
 
 
-    it('"Containment: ... absolute paths ... are invalid"', function() {
+    it('"Containment: ... absolute paths ... are invalid"', async function() {
 
       for (const pattern of [ '/a.bpmn', '!/a.bpmn', 'C:/a.bpmn', 'c:\\a.bpmn', '\\\\server\\a.bpmn' ]) {
 
         // when
-        const { error, selected } = resolve({ deployResources: [ 'a.bpmn', pattern ] }, [ 'a.bpmn' ]);
+        const { error, selected } = await resolve({ deployResources: [ 'a.bpmn', pattern ] }, [ 'a.bpmn' ]);
 
         // then
         expect(error, pattern).to.match(/must be relative to the project root/);
@@ -289,12 +290,12 @@ describe('project-resources', function() {
     });
 
 
-    it('"Containment: ... `..` (is) invalid"', function() {
+    it('"Containment: ... `..` (is) invalid"', async function() {
 
       for (const pattern of [ '../a.bpmn', 'resources/../a.bpmn', '!../a.bpmn', 'resources/..' ]) {
 
         // when
-        const { error, selected } = resolve({ deployResources: [ 'a.bpmn', pattern ] }, [ 'a.bpmn' ]);
+        const { error, selected } = await resolve({ deployResources: [ 'a.bpmn', pattern ] }, [ 'a.bpmn' ]);
 
         // then
         expect(error, pattern).to.match(/must not contain "\.\."/);
@@ -303,7 +304,7 @@ describe('project-resources', function() {
     });
 
 
-    it('"Symlink handling and duplicate detection follow c8ctl\'s existing discovery (realpath-based)"', function() {
+    it('"Symlink handling and duplicate detection follow c8ctl\'s existing discovery (realpath-based)"', async function() {
 
       // given
       writeFile(path.join(projectPath, 'resources/a.bpmn'), 'a');
@@ -311,7 +312,7 @@ describe('project-resources', function() {
       symlink.call(this, path.join(projectPath, 'resources/a.bpmn'), path.join(projectPath, 'link.bpmn'), 'file');
 
       // when
-      const { selected } = resolve({ deployResources: [ '**/*.bpmn' ] }, []);
+      const { selected } = await resolve({ deployResources: [ '**/*.bpmn' ] }, []);
 
       // then
       // the file is selected once, by the first path discovered
@@ -319,7 +320,7 @@ describe('project-resources', function() {
     });
 
 
-    it('should evaluate each path of a directory reachable through a symbolic link and its real path', function() {
+    it('should evaluate each path of a directory reachable through a symbolic link and its real path', async function() {
 
       // given
       writeFile(path.join(projectPath, 'z-real/prompt.md'), 'prompt');
@@ -327,31 +328,31 @@ describe('project-resources', function() {
       symlink.call(this, path.join(projectPath, 'z-real'), path.join(projectPath, 'a-alias'), 'dir');
 
       // when
-      const { selected } = resolve({ deployResources: [ 'a-alias/prompt.md', 'z-real/keep.bpmn' ] }, []);
+      const { selected } = await resolve({ deployResources: [ 'a-alias/prompt.md', 'z-real/keep.bpmn' ] }, []);
 
       // then
       expect(selected).to.eql([ 'a-alias/prompt.md', 'z-real/keep.bpmn' ]);
     });
 
 
-    it('should select a file reachable through several paths by the first path in sorted order', function() {
+    it('should select a file reachable through several paths by the first path in sorted order', async function() {
 
       // given
       writeFile(path.join(projectPath, 'a/x.bpmn'), 'x');
       symlink.call(this, path.join(projectPath, 'a/x.bpmn'), path.join(projectPath, 'b.bpmn'), 'file');
 
       // when
-      const { selected } = resolve({ deployResources: [ '**/*.bpmn' ] }, []);
+      const { selected } = await resolve({ deployResources: [ '**/*.bpmn' ] }, []);
 
       // then
       expect(selected).to.eql([ 'a/x.bpmn' ]);
     });
 
 
-    it('should validate patterns with trailing whitespace trimmed', function() {
+    it('should validate patterns with trailing whitespace trimmed', async function() {
 
       // when
-      const { error, errorType } = resolve({ deployResources: [ 'resources/**', 'resources/.. ' ] }, [ 'resources/a.bpmn' ]);
+      const { error, errorType } = await resolve({ deployResources: [ 'resources/**', 'resources/.. ' ] }, [ 'resources/a.bpmn' ]);
 
       // then
       expect(errorType).to.eql('invalid-config');
@@ -359,10 +360,10 @@ describe('project-resources', function() {
     });
 
 
-    it('should select through repeated separators and "." segments', function() {
+    it('should select through repeated separators and "." segments', async function() {
 
       // when
-      const { selected } = resolve({
+      const { selected } = await resolve({
         deployResources: [ 'resources//sub/*.bpmn', 'other/./sub/*.form' ]
       }, [ 'resources/sub/a.bpmn', 'other/sub/b.form', 'resources/c.bpmn' ]);
 
@@ -371,7 +372,7 @@ describe('project-resources', function() {
     });
 
 
-    it('should follow symbolic links to directories', function() {
+    it('should follow symbolic links to directories', async function() {
 
       // given
       const outsidePath = fs.mkdtempSync(path.join(os.tmpdir(), 'project-resources-outside-'));
@@ -380,7 +381,7 @@ describe('project-resources', function() {
       symlink.call(this, outsidePath, path.join(projectPath, 'shared'), 'dir');
 
       // when
-      const { selected } = resolve({ deployResources: [ 'shared/**' ] }, []);
+      const { selected } = await resolve({ deployResources: [ 'shared/**' ] }, []);
 
       // then
       expect(selected).to.eql([ 'shared/shared.bpmn' ]);
@@ -389,27 +390,27 @@ describe('project-resources', function() {
     });
 
 
-    it('should not loop on symbolic link cycles', function() {
+    it('should not loop on symbolic link cycles', async function() {
 
       // given
       writeFile(path.join(projectPath, 'a/a.bpmn'), 'a');
       symlink.call(this, path.join(projectPath, 'a'), path.join(projectPath, 'a/self'), 'dir');
 
       // when
-      const { selected } = resolve({ deployResources: [ '**/*.bpmn' ] }, []);
+      const { selected } = await resolve({ deployResources: [ '**/*.bpmn' ] }, []);
 
       // then
       expect(selected).to.eql([ 'a/a.bpmn' ]);
     });
 
 
-    it('should ignore broken symbolic links', function() {
+    it('should ignore broken symbolic links', async function() {
 
       // given
       symlink.call(this, path.join(projectPath, 'missing.bpmn'), path.join(projectPath, 'broken.bpmn'), 'file');
 
       // when
-      const { selected } = resolve({ deployResources: [ '*.bpmn' ] }, [ 'a.bpmn' ]);
+      const { selected } = await resolve({ deployResources: [ '*.bpmn' ] }, [ 'a.bpmn' ]);
 
       // then
       expect(selected).to.eql([ 'a.bpmn' ]);
@@ -420,12 +421,12 @@ describe('project-resources', function() {
 
   describe('validation', function() {
 
-    it('"Invalid field type ...: error, no deployment"', function() {
+    it('"Invalid field type ...: error, no deployment"', async function() {
 
       for (const deployResources of [ 'resources/**', null, {}, 42, true ]) {
 
         // when
-        const { error, selected } = resolve({ deployResources }, [ 'a.bpmn' ]);
+        const { error, selected } = await resolve({ deployResources }, [ 'a.bpmn' ]);
 
         // then
         expect(error, JSON.stringify(deployResources)).to.match(/`deployResources` must be an array of glob patterns/);
@@ -434,12 +435,12 @@ describe('project-resources', function() {
     });
 
 
-    it('"Invalid ... entries ...: error, no deployment"', function() {
+    it('"Invalid ... entries ...: error, no deployment"', async function() {
 
       for (const entry of [ 42, null, {}, [], '', '   ', '!', '# comment' ]) {
 
         // when
-        const { error, selected } = resolve({ deployResources: [ 'a.bpmn', entry ] }, [ 'a.bpmn' ]);
+        const { error, selected } = await resolve({ deployResources: [ 'a.bpmn', entry ] }, [ 'a.bpmn' ]);
 
         // then
         expect(error, JSON.stringify(entry)).to.match(/`deployResources\[1\]`/);
@@ -448,10 +449,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"invalid patterns: error, no deployment"', function() {
+    it('"invalid patterns: error, no deployment"', async function() {
 
       // when
-      const { error, selected } = resolve({ deployResources: [ '../outside/**' ] }, [ 'a.bpmn' ]);
+      const { error, selected } = await resolve({ deployResources: [ '../outside/**' ] }, [ 'a.bpmn' ]);
 
       // then
       expect(error).to.match(/`deployResources\[0\]` must not contain "\.\."/);
@@ -459,10 +460,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"Empty final selection: error, no deployment"', function() {
+    it('"Empty final selection: error, no deployment"', async function() {
 
       // when
-      const { error, selected } = resolve({ deployResources: [ 'nothing/**' ] }, [ 'a.bpmn' ]);
+      const { error, selected } = await resolve({ deployResources: [ 'nothing/**' ] }, [ 'a.bpmn' ]);
 
       // then
       expect(error).to.match(/No deployable files found/);
@@ -470,10 +471,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"Empty final selection: error" (deployResources absent)', function() {
+    it('"Empty final selection: error" (deployResources absent)', async function() {
 
       // when
-      const { error, selected } = resolve({}, [ 'notes.md' ]);
+      const { error, selected } = await resolve({}, [ 'notes.md' ]);
 
       // then
       expect(error).to.match(/No deployable files found/);
@@ -481,10 +482,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"A pattern matching no files: silently ignored"', function() {
+    it('"A pattern matching no files: silently ignored"', async function() {
 
       // when
-      const { error, selected } = resolve({
+      const { error, selected } = await resolve({
         deployResources: [ 'a.bpmn', 'nothing/**', '!nothing.bpmn' ]
       }, [ 'a.bpmn' ]);
 
@@ -494,7 +495,7 @@ describe('project-resources', function() {
     });
 
 
-    it('should error on unreadable camunda.json (permissions), not fall back to the default scan', function() {
+    it('should error on unreadable camunda.json (permissions), not fall back to the default scan', async function() {
 
       // assume
       if (process.platform === 'win32' || process.getuid?.() === 0) {
@@ -511,7 +512,7 @@ describe('project-resources', function() {
       fs.chmodSync(projectFilePath, 0o000);
 
       // when
-      const { error, errorType, selected } = resolveProjectResources(projectFilePath);
+      const { error, errorType, selected } = await resolveProjectResources(projectFilePath);
 
       // then
       expect(errorType).to.eql('invalid-config');
@@ -520,7 +521,7 @@ describe('project-resources', function() {
     });
 
 
-    it('should error on camunda.json being a directory, not fall back to the default scan', function() {
+    it('should error on camunda.json being a directory, not fall back to the default scan', async function() {
 
       // given
       writeFile(path.join(projectPath, 'a.bpmn'), 'a');
@@ -530,7 +531,7 @@ describe('project-resources', function() {
       fs.mkdirSync(projectFilePath);
 
       // when
-      const { error, errorType, selected } = resolveProjectResources(projectFilePath);
+      const { error, errorType, selected } = await resolveProjectResources(projectFilePath);
 
       // then
       expect(errorType).to.eql('invalid-config');
@@ -539,13 +540,13 @@ describe('project-resources', function() {
     });
 
 
-    it('should error on camunda.json removed (e.g. during atomic save), not fall back to the default scan', function() {
+    it('should error on camunda.json removed (e.g. during atomic save), not fall back to the default scan', async function() {
 
       // given
       writeFile(path.join(projectPath, 'a.bpmn'), 'a');
 
       // when
-      const { error, errorType, selected } = resolveProjectResources(path.join(projectPath, 'camunda.json'));
+      const { error, errorType, selected } = await resolveProjectResources(path.join(projectPath, 'camunda.json'));
 
       // then
       expect(errorType).to.eql('invalid-config');
@@ -554,10 +555,10 @@ describe('project-resources', function() {
     });
 
 
-    it('should error on partially written camunda.json', function() {
+    it('should error on partially written camunda.json', async function() {
 
       // when
-      const { errorType, selected } = resolve('{ "deployResources": [ "a.bpmn"', [ 'a.bpmn', 'excluded.bpmn' ]);
+      const { errorType, selected } = await resolve('{ "deployResources": [ "a.bpmn"', [ 'a.bpmn', 'excluded.bpmn' ]);
 
       // then
       expect(errorType).to.eql('invalid-config');
@@ -565,7 +566,7 @@ describe('project-resources', function() {
     });
 
 
-    it('should read camunda.json with byte order mark (UTF-8, UTF-16LE), as c8ctl', function() {
+    it('should read camunda.json with byte order mark (UTF-8, UTF-16LE), as c8ctl', async function() {
 
       // given
       writeFile(path.join(projectPath, 'a.bpmn'), 'a');
@@ -582,7 +583,7 @@ describe('project-resources', function() {
         fs.writeFileSync(projectFilePath, buffer);
 
         // when
-        const { error, selected } = resolveProjectResources(projectFilePath);
+        const { error, selected } = await resolveProjectResources(projectFilePath);
 
         // then
         expect(error).not.to.exist;
@@ -591,10 +592,10 @@ describe('project-resources', function() {
     });
 
 
-    it('should error on invalid camunda.json', function() {
+    it('should error on invalid camunda.json', async function() {
 
       // when
-      const { error, selected } = resolve('{ "deployResources": [ ', [ 'a.bpmn' ]);
+      const { error, selected } = await resolve('{ "deployResources": [ ', [ 'a.bpmn' ]);
 
       // then
       expect(error).to.match(/Invalid camunda.json/);
@@ -602,20 +603,20 @@ describe('project-resources', function() {
     });
 
 
-    it('should error on camunda.json not being an object', function() {
+    it('should error on camunda.json not being an object', async function() {
 
       // when
-      const { error } = resolve('[ "a.bpmn" ]', [ 'a.bpmn' ]);
+      const { error } = await resolve('[ "a.bpmn" ]', [ 'a.bpmn' ]);
 
       // then
       expect(error).to.match(/Invalid camunda.json: must contain a JSON object/);
     });
 
 
-    it('should treat empty camunda.json as {}', function() {
+    it('should treat empty camunda.json as {}', async function() {
 
       // when
-      const { error, selected } = resolve('', [ 'a.bpmn' ]);
+      const { error, selected } = await resolve('', [ 'a.bpmn' ]);
 
       // then
       expect(error).not.to.exist;
@@ -627,10 +628,10 @@ describe('project-resources', function() {
 
   describe('.c8ignore (deployResources absent)', function() {
 
-    it('"the existing scan rules apply" (BPMN, DMN, form and RPA files, no hidden files)', function() {
+    it('"the existing scan rules apply" (BPMN, DMN, form and RPA files, no hidden files)', async function() {
 
       // when
-      const { selected } = resolve({}, [
+      const { selected } = await resolve({}, [
         'a.bpmn',
         'b.dmn',
         'c.form',
@@ -646,10 +647,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"filtered by .c8ignore (default directory exclusions ...)"', function() {
+    it('"filtered by .c8ignore (default directory exclusions ...)"', async function() {
 
       // when
-      const { selected } = resolve({}, [
+      const { selected } = await resolve({}, [
         'a.bpmn',
         'node_modules/b.bpmn',
         'target/c.bpmn',
@@ -662,10 +663,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"filtered by .c8ignore (... ordered rules ...)"', function() {
+    it('"filtered by .c8ignore (... ordered rules ...)"', async function() {
 
       // when
-      const { selected } = resolve({}, [
+      const { selected } = await resolve({}, [
         'a.bpmn',
         'keep.bpmn',
         'sub/keep.bpmn',
@@ -677,10 +678,10 @@ describe('project-resources', function() {
     });
 
 
-    it('"filtered by .c8ignore (... excluded-parent restriction)"', function() {
+    it('"filtered by .c8ignore (... excluded-parent restriction)"', async function() {
 
       // when
-      const { selected } = resolve({}, [
+      const { selected } = await resolve({}, [
         'a.bpmn',
         'drafts/b.bpmn',
         'drafts/keep.bpmn'
@@ -691,13 +692,13 @@ describe('project-resources', function() {
     });
 
 
-    it('should fail on unreadable .c8ignore (directory), not deploy files meant to be excluded', function() {
+    it('should fail on unreadable .c8ignore (directory), not deploy files meant to be excluded', async function() {
 
       // given
       fs.mkdirSync(path.join(projectPath, '.c8ignore'));
 
       // when
-      const { error, errorType, selected } = resolve({}, [ 'a.bpmn', 'drafts/b.bpmn' ]);
+      const { error, errorType, selected } = await resolve({}, [ 'a.bpmn', 'drafts/b.bpmn' ]);
 
       // then
       expect(errorType).to.eql('invalid-config');
@@ -706,7 +707,7 @@ describe('project-resources', function() {
     });
 
 
-    it('should fail on unreadable .c8ignore (permissions)', function() {
+    it('should fail on unreadable .c8ignore (permissions)', async function() {
 
       // assume
       if (process.platform === 'win32' || process.getuid?.() === 0) {
@@ -718,7 +719,7 @@ describe('project-resources', function() {
       fs.chmodSync(path.join(projectPath, '.c8ignore'), 0o000);
 
       // when
-      const { error, errorType } = resolve({}, [ 'a.bpmn', 'drafts/b.bpmn' ]);
+      const { error, errorType } = await resolve({}, [ 'a.bpmn', 'drafts/b.bpmn' ]);
 
       // then
       expect(errorType).to.eql('invalid-config');
@@ -726,13 +727,13 @@ describe('project-resources', function() {
     });
 
 
-    it('should not read .c8ignore with deployResources (unreadable .c8ignore)', function() {
+    it('should not read .c8ignore with deployResources (unreadable .c8ignore)', async function() {
 
       // given
       fs.mkdirSync(path.join(projectPath, '.c8ignore'));
 
       // when
-      const { error, selected } = resolve({ deployResources: [ '*.bpmn' ] }, [ 'a.bpmn' ]);
+      const { error, selected } = await resolve({ deployResources: [ '*.bpmn' ] }, [ 'a.bpmn' ]);
 
       // then
       expect(error).not.to.exist;
@@ -740,10 +741,10 @@ describe('project-resources', function() {
     });
 
 
-    it('should apply .c8ignore to legacy projects (.process-application)', function() {
+    it('should apply .c8ignore to legacy projects (.process-application)', async function() {
 
       // when
-      const { mode, selected } = resolve('', [
+      const { mode, selected } = await resolve('', [
         'a.bpmn',
         'b.bpmn',
         'target/c.bpmn'
@@ -755,10 +756,10 @@ describe('project-resources', function() {
     });
 
 
-    it('should NOT read deployResources from legacy project file', function() {
+    it('should NOT read deployResources from legacy project file', async function() {
 
       // when
-      const { mode, selected } = resolve({
+      const { mode, selected } = await resolve({
         deployResources: [ 'notes.md' ]
       }, [ 'a.bpmn', 'notes.md' ], { projectFile: '.process-application' });
 
@@ -772,15 +773,15 @@ describe('project-resources', function() {
 
   describe('nested projects', function() {
 
-    it('"a nested camunda.json does not exclude that folder from the parent\'s selection"', function() {
+    it('"a nested camunda.json does not exclude that folder from the parent\'s selection"', async function() {
 
       // given
       writeFile(path.join(projectPath, 'nested/camunda.json'), '{}');
 
       // when
-      const withDeployResources = resolve({ deployResources: [ '**/*.bpmn' ] }, [ 'a.bpmn', 'nested/b.bpmn' ]);
+      const withDeployResources = await resolve({ deployResources: [ '**/*.bpmn' ] }, [ 'a.bpmn', 'nested/b.bpmn' ]);
 
-      const withoutDeployResources = resolve({}, []);
+      const withoutDeployResources = await resolve({}, []);
 
       // then
       expect(withDeployResources.selected).to.eql([ 'a.bpmn', 'nested/b.bpmn' ]);
@@ -790,9 +791,113 @@ describe('project-resources', function() {
   });
 
 
+  describe('discovery', function() {
+
+    let readdirSpy;
+
+    beforeEach(function() {
+      readdirSpy = sinon.spy(fs.promises, 'readdir');
+    });
+
+    afterEach(function() {
+      readdirSpy.restore();
+    });
+
+    function readDirectories() {
+      return readdirSpy.getCalls().map(call => toRelative(projectPath, call.args[0]) || '.');
+    }
+
+
+    it('should not read directories nothing can be selected from (deployResources)', async function() {
+
+      // when
+      const { selected } = await resolve({ deployResources: [ 'resources/**' ] }, [
+        'resources/a.bpmn',
+        'resources/sub/b.bpmn',
+        'node_modules/pkg/c.bpmn',
+        'target/d.bpmn',
+        'src/main/e.bpmn',
+        '.git/f.bpmn'
+      ]);
+
+      // then
+      expect(selected).to.eql([ 'resources/a.bpmn', 'resources/sub/b.bpmn' ]);
+      expect(readDirectories()).to.have.members([ '.', 'resources', 'resources/sub' ]);
+    });
+
+
+    it('should not read default excluded or ignored directories (deployResources absent)', async function() {
+
+      // when
+      const { selected } = await resolve({}, [
+        'a.bpmn',
+        'node_modules/pkg/c.bpmn',
+        'target/d.bpmn',
+        '.git/f.bpmn',
+        'drafts/g.bpmn'
+      ], { c8ignore: 'drafts/\n' });
+
+      // then
+      expect(selected).to.eql([ 'a.bpmn' ]);
+      expect(readDirectories()).to.have.members([ '.' ]);
+    });
+
+
+    it('should read default excluded directory reached by a pattern', async function() {
+
+      // when
+      const { selected } = await resolve({ deployResources: [ 'node_modules/pkg/**' ] }, [
+        'node_modules/pkg/c.bpmn',
+        'node_modules/other/d.bpmn'
+      ]);
+
+      // then
+      expect(selected).to.eql([ 'node_modules/pkg/c.bpmn' ]);
+      expect(readDirectories()).to.have.members([ '.', 'node_modules', 'node_modules/pkg' ]);
+    });
+
+  });
+
+
+  describe('abort', function() {
+
+    it('should stop resolving once aborted', async function() {
+
+      // given
+      const controller = new AbortController();
+
+      const files = Array.from({ length: 20 }, (_, index) => `resources/${ index }.bpmn`);
+
+      for (const file of files) {
+        writeFile(path.join(projectPath, file), file);
+      }
+
+      writeFile(path.join(projectPath, 'camunda.json'), '{}');
+
+      // when
+      const resolution = resolveProjectResources(path.join(projectPath, 'camunda.json'), { signal: controller.signal });
+
+      controller.abort();
+
+      // then
+      let error;
+
+      try {
+        await resolution;
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).to.exist;
+      expect(error.name).to.eql('AbortError');
+    });
+
+  });
+
+
   describe('couldMatchBelow', function() {
 
-    it('should prune only directories nothing can be selected from', function() {
+    it('should prune only directories nothing can be selected from', async function() {
       expect(couldMatchBelow('resources/*', 'resources')).to.be.true;
       expect(couldMatchBelow('resources/*', 'node_modules')).to.be.false;
       expect(couldMatchBelow('resources/*', 'resources/sub')).to.be.false;

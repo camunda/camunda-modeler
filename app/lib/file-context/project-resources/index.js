@@ -47,6 +47,11 @@ const DEFAULT_EXTENSIONS = [ '.bpmn', '.dmn', '.form', '.rpa' ];
 const ERROR_INVALID_CONFIG = 'invalid-config';
 const ERROR_EMPTY_SELECTION = 'empty-selection';
 
+/**
+ * Number of directory entries to process before yielding to the event loop.
+ */
+const YIELD_EVERY_ENTRIES = 500;
+
 const MODE_DEPLOY_RESOURCES = 'deployResources';
 const MODE_C8IGNORE = 'c8ignore';
 
@@ -269,11 +274,17 @@ module.exports.selectResources = selectResources;
  * (realpath-based, as in c8ctl).
  *
  * @param { string } projectFilePath
- * @param { { contents?: string } } [options] - contents of the project file, read from disk if omitted
+ * @param { {
+ *   contents?: string,
+ *   signal?: AbortSignal
+ * } } [options] - contents of the project file, read from disk if omitted;
+ *   abort to stop resolving, e.g. once superseded, rejects with the abort reason
  *
- * @return { ProjectResources }
+ * @return { Promise<ProjectResources> }
  */
-function resolveProjectResources(projectFilePath, options = {}) {
+async function resolveProjectResources(projectFilePath, options = {}) {
+  const { signal } = options;
+
   const projectRoot = path.dirname(projectFilePath);
 
   let descriptor = null;
@@ -286,7 +297,7 @@ function resolveProjectResources(projectFilePath, options = {}) {
     // rather than falling back to the default scan
     if (contents === undefined) {
       try {
-        contents = decodeProjectFile(fs.readFileSync(projectFilePath));
+        contents = decodeProjectFile(await fs.promises.readFile(projectFilePath));
       } catch (error) {
         return {
           mode: MODE_C8IGNORE,
@@ -324,7 +335,7 @@ function resolveProjectResources(projectFilePath, options = {}) {
   // fails the resolution, rather than deploying files meant to be excluded
   if (!hasDeployResources(descriptor)) {
     try {
-      c8ignore = readC8ignore(projectRoot);
+      c8ignore = await readC8ignore(projectRoot);
     } catch (error) {
       return {
         mode: MODE_C8IGNORE,
@@ -341,7 +352,7 @@ function resolveProjectResources(projectFilePath, options = {}) {
     return { mode: selector.mode, selected: [], error: selector.error, errorType: ERROR_INVALID_CONFIG };
   }
 
-  const selected = discover(projectRoot, selector).sort();
+  const selected = (await discover(projectRoot, selector, { signal })).sort();
 
   return withEmptySelectionError({ mode: selector.mode, selected, error: null });
 }
@@ -368,14 +379,19 @@ function withEmptySelectionError(resources) {
 }
 
 /**
- * Walk the project, files of a directory first, then its sub-directories.
+ * Walk the project asynchronously, yielding to the event loop regularly so
+ * that large projects do not block it. Directories nothing can be selected
+ * from are not read.
  *
  * @param { string } projectRoot
  * @param { ResourceSelector } selector
+ * @param { { signal?: AbortSignal } } [options] - abort to stop walking, e.g. once superseded
  *
- * @return { string[] } absolute paths of selected files
+ * @return { Promise<string[]> } absolute paths of selected files
  */
-function discover(projectRoot, selector) {
+async function discover(projectRoot, selector, options = {}) {
+  const { signal } = options;
+
   const candidates = [];
 
   // real paths of the directories on the current descent, to cut cycles; a
@@ -383,9 +399,17 @@ function discover(projectRoot, selector) {
   // walked under each, as patterns match project-relative paths
   const ancestors = new Set();
 
-  const walk = (directoryPath, relativeDirectory) => {
-    const realDirectory = realpathOrSelf(directoryPath);
+  let entryCount = 0;
 
+  const checkpoint = async () => {
+    if (++entryCount % YIELD_EVERY_ENTRIES === 0) {
+      await yieldToEventLoop();
+    }
+
+    signal?.throwIfAborted();
+  };
+
+  const walk = async (directoryPath, relativeDirectory, realDirectory) => {
     if (ancestors.has(realDirectory)) {
       return;
     }
@@ -393,40 +417,53 @@ function discover(projectRoot, selector) {
     let entries;
 
     try {
-      entries = fs.readdirSync(directoryPath).sort();
+      entries = await fs.promises.readdir(directoryPath, { withFileTypes: true });
     } catch (error) {
       return;
     }
 
+    entries.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+
     ancestors.add(realDirectory);
 
     for (const entry of entries) {
-      const entryPath = path.join(directoryPath, entry);
-      const relativePath = relativeDirectory ? `${ relativeDirectory }/${ entry }` : entry;
+      await checkpoint();
 
-      let stats;
+      const entryPath = path.join(directoryPath, entry.name);
+      const relativePath = relativeDirectory ? `${ relativeDirectory }/${ entry.name }` : entry.name;
 
-      try {
-        stats = fs.statSync(entryPath);
-      } catch (error) {
+      let isDirectory = entry.isDirectory(),
+          isFile = entry.isFile(),
+          realPath = path.join(realDirectory, entry.name);
 
-        // e.g. broken symbolic link
-        continue;
+      // follow symbolic links (and entries of unknown type)
+      if (entry.isSymbolicLink() || (!isDirectory && !isFile)) {
+        try {
+          const stats = await fs.promises.stat(entryPath);
+
+          isDirectory = stats.isDirectory();
+          isFile = stats.isFile();
+          realPath = await fs.promises.realpath(entryPath);
+        } catch (error) {
+
+          // e.g. broken symbolic link
+          continue;
+        }
       }
 
-      if (stats.isDirectory()) {
+      if (isDirectory) {
         if (!selector.isDirectoryExcluded(relativePath)) {
-          walk(entryPath, relativePath);
+          await walk(entryPath, relativePath, realPath);
         }
-      } else if (stats.isFile() && selector.isFileSelected(relativePath)) {
-        candidates.push([ relativePath, entryPath ]);
+      } else if (isFile && selector.isFileSelected(relativePath)) {
+        candidates.push([ relativePath, entryPath, realPath ]);
       }
     }
 
     ancestors.delete(realDirectory);
   };
 
-  walk(projectRoot, '');
+  await walk(projectRoot, '', await realpathOrSelf(projectRoot));
 
   // a file reachable through several paths is selected once, by the first
   // project-relative path in sorted order (as c8ctl)
@@ -434,23 +471,25 @@ function discover(projectRoot, selector) {
 
   return candidates
     .sort(([ a ], [ b ]) => (a < b ? -1 : a > b ? 1 : 0))
-    .filter(([ , entryPath ]) => {
-      const realFile = realpathOrSelf(entryPath);
-
-      if (seenFiles.has(realFile)) {
+    .filter(([ , , realPath ]) => {
+      if (seenFiles.has(realPath)) {
         return false;
       }
 
-      seenFiles.add(realFile);
+      seenFiles.add(realPath);
 
       return true;
     })
     .map(([ , entryPath ]) => entryPath);
 }
 
-function realpathOrSelf(filePath) {
+function yieldToEventLoop() {
+  return new Promise(resolve => setImmediate(resolve));
+}
+
+async function realpathOrSelf(filePath) {
   try {
-    return fs.realpathSync(filePath);
+    return await fs.promises.realpath(filePath);
   } catch (error) {
     return filePath;
   }
@@ -486,13 +525,13 @@ function hasDeployResources(descriptor) {
  *
  * @param { string } projectRoot
  *
- * @return { string | null }
+ * @return { Promise<string | null> }
  *
  * @throws if `.c8ignore` exists but can not be read, e.g. it is a directory
  */
-function readC8ignore(projectRoot) {
+async function readC8ignore(projectRoot) {
   try {
-    return fs.readFileSync(path.join(projectRoot, C8IGNORE_FILE), 'utf8');
+    return await fs.promises.readFile(path.join(projectRoot, C8IGNORE_FILE), 'utf8');
   } catch (error) {
     if (error.code === 'ENOENT') {
       return null;

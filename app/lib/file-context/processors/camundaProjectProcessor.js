@@ -14,6 +14,13 @@ const {
   resolveProjectResources
 } = require('../project-resources');
 
+/**
+ * Resolutions in progress by project file; a newer one supersedes (aborts) an older one.
+ *
+ * @type { Map<string, AbortController> }
+ */
+const resolutions = new Map();
+
 module.exports = {
   id: 'camundaProject',
   extensions: [ '.process-application' ],
@@ -24,7 +31,7 @@ module.exports = {
 
       // read from disk rather than the indexed contents, to fail on read
       // errors and to decode byte order marks
-      resources: resolve(item.file.path)
+      resources: await resolve(item.file.path)
     };
   }
 };
@@ -32,12 +39,27 @@ module.exports = {
 /**
  * @param { string } projectFilePath
  *
- * @return { import('../project-resources').ProjectResources }
+ * @return { Promise<import('../project-resources').ProjectResources> }
+ *
+ * @throws if superseded by a newer resolution of the same project
  */
-function resolve(projectFilePath) {
+async function resolve(projectFilePath) {
+  const previous = resolutions.get(projectFilePath);
+
+  if (previous) {
+    previous.abort();
+  }
+
+  const controller = new AbortController();
+
+  resolutions.set(projectFilePath, controller);
+
   try {
-    return resolveProjectResources(projectFilePath);
+    return await resolveProjectResources(projectFilePath, { signal: controller.signal });
   } catch (error) {
+    if (controller.signal.aborted) {
+      throw error;
+    }
 
     // never lose the project to an unexpected error, report it instead
     return {
@@ -46,5 +68,9 @@ function resolve(projectFilePath) {
       error: `Failed to resolve project resources: ${ error.message }`,
       errorType: ERROR_INVALID_CONFIG
     };
+  } finally {
+    if (resolutions.get(projectFilePath) === controller) {
+      resolutions.delete(projectFilePath);
+    }
   }
 }

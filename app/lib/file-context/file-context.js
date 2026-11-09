@@ -21,6 +21,8 @@ const {
 
 const { isCamundaProjectFile } = require('./processors/util');
 
+const { CAMUNDA_PROJECT_FILE } = require('./project-resources');
+
 const Indexer = require('./indexer.js');
 const Processor = require('./processor.js');
 const Watcher = require('./watcher.js');
@@ -42,6 +44,9 @@ const DEFAULT_OPTIONS = {
 };
 
 const PROJECT_REFRESH_DELAY = 300;
+
+// number of selected files to check before yielding to the event loop
+const INDEX_YIELD_EVERY = 2000;
 
 // batches files indexed in a row, e.g. on startup
 const PROJECT_REFRESH_DELAY_INDEXED = 50;
@@ -213,6 +218,23 @@ module.exports = class FileContext extends EventEmitter {
   }
 
   /**
+   * Get the project files with resolved resources, without legacy project
+   * files shadowed by a `camunda.json` in the same directory.
+   *
+   * @return { import('./types').IndexItem[] }
+   */
+  _getProjectItems() {
+    const projectItems = this._indexer.getItems().filter(item => item.metadata && item.metadata.resources);
+
+    return projectItems.filter(item => {
+      return getFileName(item.file.path) === CAMUNDA_PROJECT_FILE || !projectItems.some(otherItem => {
+        return getFileName(otherItem.file.path) === CAMUNDA_PROJECT_FILE
+          && path.dirname(otherItem.file.path) === path.dirname(item.file.path);
+      });
+    });
+  }
+
+  /**
    * Re-resolve projects soon for a file indexed below them but not resolved
    * as their resource yet, e.g. a file just saved into the project, without
    * waiting for the file system change.
@@ -228,12 +250,11 @@ module.exports = class FileContext extends EventEmitter {
 
     const filePath = item.file.path;
 
-    const projectItems = this._indexer.getItems().filter(projectItem => {
-      const resources = projectItem.metadata && projectItem.metadata.resources;
+    const projectItems = this._getProjectItems().filter(projectItem => {
+      const { resources } = projectItem.metadata;
 
-      return resources
-        && filePath.startsWith(path.dirname(projectItem.file.path) + path.sep)
-        && !resources.selected.includes(filePath);
+      return filePath.startsWith(path.dirname(projectItem.file.path) + path.sep)
+        && !getSelectedSet(resources).has(filePath);
     });
 
     if (!projectItems.length) {
@@ -258,31 +279,48 @@ module.exports = class FileContext extends EventEmitter {
    * Index project resources the watcher does not discover, e.g. below
    * `node_modules` or behind directory links, so that they take part in
    * editor intelligence. Stop indexing those no longer selected.
+   *
+   * @return { Promise<void> }
    */
-  _indexProjectResources() {
-    const items = this._indexer.getItems();
+  async _indexProjectResources() {
 
-    const selected = new Set(items.flatMap(item => {
-      const resources = item.metadata && item.metadata.resources;
+    // a newer run supersedes this one
+    const run = this._indexProjectResourcesRun = {};
 
-      return resources ? resources.selected : [];
-    }));
+    const selected = new Set(this._getProjectItems().flatMap(item => item.metadata.resources.selected));
 
-    const watchedFiles = this._watcher ? this._watcher.getFiles() : [];
+    const watchedFiles = new Set(this._watcher ? this._watcher.getFiles() : []);
 
     for (const uri of this._projectResourceUris) {
       const filePath = toFilePath(uri);
 
-      if (!selected.has(filePath) && !watchedFiles.includes(filePath)) {
+      if (!selected.has(filePath) && !watchedFiles.has(filePath)) {
         this._projectResourceUris.delete(uri);
         this._indexer.remove(uri);
       }
     }
 
+    let count = 0;
+
     for (const filePath of selected) {
+
+      // projects may select many files, do not block the event loop
+      if (++count % INDEX_YIELD_EVERY === 0) {
+        await new Promise(resolve => setImmediate(resolve));
+
+        if (this._indexProjectResourcesRun !== run) {
+          return;
+        }
+      }
+
+      // check the (cheap) extension first
+      if (!this._isIndexable(filePath)) {
+        continue;
+      }
+
       const uri = toFileUrl(filePath);
 
-      if (this._indexer.items.has(uri) || !this._isIndexable(filePath)) {
+      if (this._indexer.items.has(uri)) {
         continue;
       }
 
@@ -301,10 +339,16 @@ module.exports = class FileContext extends EventEmitter {
       return false;
     }
 
-    return (this._processors || []).some(processor => {
-      return processor.extensions.includes(getFileExtension(filePath))
-        || (processor.fileNames || []).includes(getFileName(filePath));
-    });
+    if (!this._indexableNames) {
+      const processors = this._processors || [];
+
+      this._indexableNames = new Set([
+        ...processors.flatMap(processor => processor.extensions),
+        ...processors.flatMap(processor => processor.fileNames || [])
+      ]);
+    }
+
+    return this._indexableNames.has(getFileExtension(filePath)) || this._indexableNames.has(getFileName(filePath));
   }
 
   /**
@@ -338,3 +382,27 @@ module.exports = class FileContext extends EventEmitter {
   }
 
 };
+
+/**
+ * Selected files as set, cached per resolution, as projects may select many files.
+ *
+ * @type { WeakMap<Object, Set<string>> }
+ */
+const selectedSets = new WeakMap();
+
+/**
+ * @param { { selected: string[] } } resources
+ *
+ * @return { Set<string> }
+ */
+function getSelectedSet(resources) {
+  let selected = selectedSets.get(resources);
+
+  if (!selected) {
+    selected = new Set(resources.selected);
+
+    selectedSets.set(resources, selected);
+  }
+
+  return selected;
+}

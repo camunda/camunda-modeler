@@ -86,13 +86,13 @@ describe('project-resources - parity fixtures', function() {
 
         describe(name, function() {
 
-          it(`should resolve from file system${ expected.description ? ` (${ expected.description })` : '' }`, function() {
+          it(`should resolve from file system${ expected.description ? ` (${ expected.description })` : '' }`, async function() {
 
             // given
             const projectFilePath = createProject(casePath, tmpPath);
 
             // when
-            const resources = resolveProjectResources(projectFilePath);
+            const resources = await resolveProjectResources(projectFilePath);
 
             // then
             expectResolution(resources, expected, tmpPath);
