@@ -182,13 +182,19 @@ export default class CamundaProjects {
         .map(item => ({ path: item.file.path, type: item.metadata.type }));
     }
 
-    return resources.selected.map(path => {
+    return resources.selected.flatMap(path => {
       const item = this.findItem(path);
 
-      return {
+      // without `deployResources`, deploy only what the Modeler recognizes as
+      // deployable, e.g. no Camunda 7 BPMN; an explicit selection deploys as is
+      if (resources.mode !== 'deployResources' && !DEPLOYABLE_TYPES.includes(item?.metadata?.type)) {
+        return [];
+      }
+
+      return [ {
         path,
         type: getResourceType(path, item)
-      };
+      } ];
     });
   }
 
@@ -243,7 +249,8 @@ export default class CamundaProjects {
   _isActiveTabInCamundaProject(camundaProjectItem) {
     const path = this._activeTab && this._activeTab.file && this._activeTab.file.path;
 
-    if (!path || !this.findItem(path)) {
+    // a saved file is checked against the selection, even if not indexed (anymore)
+    if (!path) {
       return true;
     }
 

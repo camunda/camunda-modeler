@@ -102,6 +102,64 @@ describe('CamundaProjects - project membership', function() {
   });
 
 
+  describe('deployment eligibility', function() {
+
+    let CAMUNDA_7;
+
+    beforeEach(function() {
+      CAMUNDA_7 = createItem(`${ PROJECT_PATH }/camunda-7.bpmn`, null);
+
+      CAMUNDA_7.file.messages = [ { error: true, message: 'Not a Camunda 8 BPMN file', source: 'process-error' } ];
+    });
+
+    function emitItems(mode) {
+      camundaProjects.emit('items-changed', [
+        createCamundaProject({
+          resources: {
+            mode,
+            selected: [ PROCESS.file.path, CAMUNDA_7.file.path ],
+            error: null
+          }
+        }),
+        PROCESS,
+        CAMUNDA_7
+      ]);
+    }
+
+
+    it('should not deploy Camunda 7 BPMN next to Camunda 8 BPMN (deployResources absent)', function() {
+
+      // given
+      emitItems('c8ignore');
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      // then
+      expect(camundaProjects.getResourceConfigs()).to.eql([
+        { path: PROCESS.file.path, type: 'bpmn' }
+      ]);
+    });
+
+
+    it('should deploy Camunda 7 BPMN named by deployResources', function() {
+
+      // given
+      emitItems('deployResources');
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      // then
+      expect(camundaProjects.getResourceConfigs()).to.eql([
+        { path: PROCESS.file.path, type: 'bpmn' },
+        { path: CAMUNDA_7.file.path, type: 'bpmn' }
+      ]);
+    });
+
+  });
+
+
   describe('"An excluded file must not contribute project resources merely because it exists under the project root"', function() {
 
     it('should not include excluded file located in project directory', function() {
@@ -181,6 +239,49 @@ describe('CamundaProjects - project membership', function() {
       // then
       expect(camundaProjects.findCamundaProjectItemForResource(PROCESS)).to.equal(CAMUNDA_PROJECT);
       expect(camundaProjects.findCamundaProjectItemForResource(EXCLUDED)).not.to.exist;
+    });
+
+
+    it('should close project once active file is excluded and no longer indexed (e.g. behind directory link)', function() {
+
+      // given
+      const LINKED = createItem(`${ PROJECT_PATH }/linked/active.bpmn`, {
+        type: 'bpmn',
+        processes: [ { id: 'Linked', name: 'Linked' } ]
+      });
+
+      camundaProjects.emit('items-changed', [
+        createCamundaProject({
+          resources: {
+            mode: 'deployResources',
+            selected: [ PROCESS.file.path, LINKED.file.path ],
+            error: null
+          }
+        }),
+        PROCESS,
+        LINKED
+      ]);
+
+      camundaProjects.emit('activeTab-changed', { file: LINKED.file });
+
+      expect(camundaProjects.hasOpen()).to.be.true;
+
+      // when
+      // deselected, the explicitly indexed file is dropped from the index
+      camundaProjects.emit('items-changed', [
+        createCamundaProject({
+          resources: {
+            mode: 'deployResources',
+            selected: [ PROCESS.file.path ],
+            error: null
+          }
+        }),
+        PROCESS
+      ]);
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.false;
+      expect(camundaProjects.getResourceConfigs()).to.be.empty;
     });
 
 
