@@ -647,6 +647,16 @@ describe('project-resources', function() {
     });
 
 
+    it('should scan extensions case-insensitively, unlike c8ctl (Desktop Modeler opens .BPMN files)', async function() {
+
+      // when
+      const { selected } = await resolve({}, [ 'lower.bpmn', 'UPPER.BPMN', 'Mixed.Dmn', 'notes.MD' ]);
+
+      // then
+      expect(selected).to.eql([ 'Mixed.Dmn', 'UPPER.BPMN', 'lower.bpmn' ]);
+    });
+
+
     it('"filtered by .c8ignore (default directory exclusions ...)"', async function() {
 
       // when

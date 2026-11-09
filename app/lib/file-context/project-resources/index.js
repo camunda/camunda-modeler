@@ -163,7 +163,10 @@ function createC8ignoreSelector(c8ignore) {
         return false;
       }
 
-      if (!DEFAULT_EXTENSIONS.includes(path.posix.extname(name))) {
+      // unlike c8ctl, compare the extension lower case, as Desktop Modeler
+      // opens and indexes `.BPMN` files; `.c8ignore` patterns keep the case
+      // handling of the shared pattern engine
+      if (!DEFAULT_EXTENSIONS.includes(path.posix.extname(name).toLowerCase())) {
         return false;
       }
 

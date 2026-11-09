@@ -1,0 +1,10 @@
+{
+  "description": "Desktop Modeler only: without deployResources, the default scan compares extensions case-insensitively, as Desktop Modeler opens and indexes .BPMN files. c8ctl compares them case-sensitively, so this is not a shared parity case.",
+  "spec": "When deployResources is absent, the existing scan rules apply, filtered by .c8ignore.",
+  "selected": [
+    "Mixed.Dmn",
+    "UPPER.BPMN",
+    "form.FORM",
+    "lower.bpmn"
+  ]
+}

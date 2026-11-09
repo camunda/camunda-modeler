@@ -492,6 +492,38 @@ describe('CamundaProjects - project membership', function() {
 
   describe('special file names', function() {
 
+    it('should keep upper case extension diagram in project (deployResources absent)', function() {
+
+      // given
+      const upper = createItem(`${ PROJECT_PATH }/UPPER.BPMN`, {
+        type: 'bpmn',
+        processes: [ { id: 'Upper', name: 'Upper' } ]
+      });
+
+      camundaProjects.emit('items-changed', [
+        createCamundaProject({
+          resources: {
+            mode: 'c8ignore',
+            selected: [ PROCESS.file.path, upper.file.path ],
+            error: null
+          }
+        }),
+        PROCESS,
+        upper
+      ]);
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: upper.file });
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.true;
+      expect(camundaProjects.getResourceConfigs()).to.eql([
+        { path: PROCESS.file.path, type: 'bpmn' },
+        { path: upper.file.path, type: 'bpmn' }
+      ]);
+    });
+
+
     it('should deploy and list selected diagrams with dot-prefixed names or upper case extensions', function() {
 
       // given
