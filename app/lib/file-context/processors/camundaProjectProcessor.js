@@ -25,6 +25,17 @@ module.exports = {
   id: 'camundaProject',
   extensions: [ '.process-application' ],
   fileNames: [ 'camunda.json' ],
+
+  /**
+   * Abort all resolutions in progress, e.g. on reset.
+   */
+  cancel() {
+    for (const controller of resolutions.values()) {
+      controller.abort();
+    }
+
+    resolutions.clear();
+  },
   process: async (item) => {
     return {
       type: 'camundaProject',

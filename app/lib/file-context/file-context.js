@@ -151,16 +151,31 @@ module.exports = class FileContext extends EventEmitter {
    * Reset the file context, removing all roots and indexed files.
    */
   reset() {
-    this._indexer.getRoots().forEach(uri => this.removeRoot(uri));
 
-    this._indexer.removeAll();
+    // removing items must not trigger project work
+    this._resetting = true;
+
+    try {
+      this._cancelProjectWork();
+
+      this._indexer.getRoots().forEach(uri => this.removeRoot(uri));
+
+      this._indexer.removeAll();
+    } finally {
+      this._resetting = false;
+    }
+
+    this._cancelProjectWork();
+
+    this._checkedUris.clear();
+    this._projectResourceUris.clear();
   }
 
   /**
    * @return { Promise<undefined> }
    */
   close() {
-    clearTimeout(this._projectRefreshTimer);
+    this._cancelProjectWork();
 
     if (this._watcher) {
       return this._watcher.close();
@@ -208,6 +223,11 @@ module.exports = class FileContext extends EventEmitter {
 
     this.on('indexer:removed', (item) => {
       this._checkedUris.delete(item.uri);
+
+      // stop indexing resources of a removed project
+      if (!this._resetting && item.metadata && item.metadata.resources) {
+        this._indexProjectResources();
+      }
     });
 
     this.on('watcher:fs-change', (uri) => {
@@ -215,6 +235,24 @@ module.exports = class FileContext extends EventEmitter {
 
       this._scheduleProjectRefresh(PROJECT_REFRESH_DELAY);
     });
+  }
+
+  /**
+   * Cancel pending and in-flight project work (re-resolution, resource
+   * indexing), so that it can not add files back, e.g. after a reset.
+   */
+  _cancelProjectWork() {
+    clearTimeout(this._projectRefreshTimer);
+
+    this._changedPaths.clear();
+
+    this._indexProjectResourcesRun = null;
+
+    for (const processor of this._processors || []) {
+      if (typeof processor.cancel === 'function') {
+        processor.cancel();
+      }
+    }
   }
 
   /**

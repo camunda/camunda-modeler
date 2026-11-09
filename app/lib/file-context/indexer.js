@@ -226,7 +226,11 @@ module.exports = class Indexer {
 
     if (!_parsed) {
       _parsed = item._parsed = _read().then(_process).then((item) => {
-        this._updated(item);
+
+        // removed meanwhile, e.g. on reset
+        if (this.items.get(item.uri) === item) {
+          this._updated(item);
+        }
 
         return item;
       }, err => {
@@ -293,7 +297,8 @@ module.exports = class Indexer {
 
     // a newer processing of the item started meanwhile, e.g. on a newer
     // change; its result must not be overridden by this outdated one
-    const isSuperseded = () => processItem && item._process !== processItem;
+    // or the item was removed meanwhile, e.g. on reset
+    const isSuperseded = () => (processItem && item._process !== processItem) || this.items.get(item.uri) !== item;
 
     try {
       const metadata = await this._processor.process(item);
