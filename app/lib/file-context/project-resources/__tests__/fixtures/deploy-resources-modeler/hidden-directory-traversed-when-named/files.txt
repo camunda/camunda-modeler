@@ -1,0 +1,4 @@
+.config/a.bpmn
+.config/.secret
+resources/.hidden/b.bpmn
+resources/c.bpmn

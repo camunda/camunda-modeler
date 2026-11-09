@@ -486,10 +486,10 @@ describe('CamundaProjects', function() {
       camundaProjects.emit('items-changed', DEFAULT_ITEMS_CAMUNDA_PROJECT_PARSE_ERROR);
 
       // then
-      expect(camundaProjects.hasOpen()).to.be.false;
-      expect(camundaProjects.getItems()).to.have.length(0);
+      // project stays open to report the error, cf. `metadata.resources.error`
+      expect(camundaProjects.hasOpen()).to.be.true;
 
-      expect(changedSpy).not.to.have.been.called;
+      expect(changedSpy).to.have.been.calledOnce;
       expect(errorSpy).to.have.been.calledOnce;
     });
 

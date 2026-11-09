@@ -218,13 +218,19 @@ module.exports = class Indexer {
     if (!_process) {
       this._logger.info('indexer:processing item ' + item.uri);
 
-      _process = item._process = () => this._processItem(item);
+      const processItem = () => this._processItem(item, processItem);
+
+      _process = item._process = processItem;
       _parsed = null;
     }
 
     if (!_parsed) {
       _parsed = item._parsed = _read().then(_process).then((item) => {
-        this._updated(item);
+
+        // removed meanwhile, e.g. on reset
+        if (this.items.get(item.uri) === item) {
+          this._updated(item);
+        }
 
         return item;
       }, err => {
@@ -278,21 +284,37 @@ module.exports = class Indexer {
    * @internal
    *
    * @param { IndexItem } item
+   * @param { Function } [processItem] - the processing, to detect it being superseded
    *
    * @return { Promise<IndexItem> }
    */
-  async _processItem(item) {
+  async _processItem(item, processItem) {
     if (item.error) {
       item.metadata = null;
 
       return item;
     }
 
+    // a newer processing of the item started meanwhile, e.g. on a newer
+    // change; its result must not be overridden by this outdated one
+    // or the item was removed meanwhile, e.g. on reset
+    const isSuperseded = () => (processItem && item._process !== processItem) || this.items.get(item.uri) !== item;
+
     try {
-      item.metadata = await this._processor.process(item);
+      const metadata = await this._processor.process(item);
+
+      if (isSuperseded()) {
+        return item;
+      }
+
+      item.metadata = metadata;
 
       removeMessage(item.file, 'process-error');
     } catch (err) {
+      if (isSuperseded()) {
+        return item;
+      }
+
       this._logger.error('indexer:failed to process item ' + item.uri, err);
 
       item.metadata = null;

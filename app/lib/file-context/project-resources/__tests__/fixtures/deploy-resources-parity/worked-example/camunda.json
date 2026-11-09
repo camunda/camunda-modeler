@@ -1,0 +1,9 @@
+{
+  "deployResources": [
+    "resources/**",
+    "target/classes/**",
+    "!target/classes/drafts/**",
+    "target/classes/drafts/keep.bpmn",
+    "resources/.prompt.md"
+  ]
+}

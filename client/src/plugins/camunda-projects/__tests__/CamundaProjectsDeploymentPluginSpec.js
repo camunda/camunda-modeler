@@ -15,7 +15,7 @@ import React from 'react';
 
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
-import CamundaProjectsDeploymentPlugin, { canDeployItem } from '../CamundaProjectsDeploymentPlugin';
+import CamundaProjectsDeploymentPlugin, { getDeploymentDescription } from '../CamundaProjectsDeploymentPlugin';
 
 import { Slot, SlotFillRoot } from '../../../app/slot-fill';
 import { DEFAULT_ENDPOINT } from '../../../app/zeebe/Deployment';
@@ -88,7 +88,7 @@ describe('CamundaProjectsDeploymentPlugin', function() {
 
     const { container } = createCamundaProjectsDeploymentPlugin({
       camundaProject: DEFAULT_CAMUNDA_PROJECT,
-      camundaProjectItems: DEFAULT_ITEMS.filter((item) => [ 'bpmn', 'camundaProject' ].includes(item.metadata.type)),
+      resourceConfigs: DEFAULT_RESOURCE_CONFIGS.slice(0, 1),
       triggerAction
     });
 
@@ -134,7 +134,7 @@ describe('CamundaProjectsDeploymentPlugin', function() {
     // then
     const description = document.querySelector('[role="dialog"] .form-description');
 
-    expect(description.textContent).to.include('4 files will be deployed');
+    expect(description.textContent).to.include('5 files will be deployed');
   });
 
 
@@ -173,26 +173,147 @@ describe('CamundaProjectsDeploymentPlugin', function() {
   });
 
 
-  describe('#canDeployItem', function() {
+  it('should render error instead of number of deployed files ("Invalid configuration ... error")', async function() {
 
-    it('should allow supported file types', function() {
+    // given
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const { container } = createCamundaProjectsDeploymentPlugin({
+      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+      resourceConfigs: [],
+      resourcesError: 'Invalid camunda.json: `deployResources` must be an array of glob patterns.',
+      triggerAction
+    });
+
+    // when
+    fireEvent.click(container.querySelector('.btn'));
+
+    await waitFor(() => {
+      expect(document.querySelector('[role="dialog"]')).to.exist;
+    });
+
+    // then
+    const description = document.querySelector('[role="dialog"] .form-description');
+
+    expect(description.textContent).to.include('Invalid camunda.json: `deployResources` must be an array of glob patterns.');
+  });
+
+
+  describe('resources provider', function() {
+
+    function createDeploymentStub() {
+      const providers = [];
+
+      return {
+        providers,
+        deploy(resourceConfigs) {
+          return providers.reduce((configs, provider) => provider(configs), resourceConfigs);
+        },
+        registerResourcesProvider(provider) {
+          providers.push(provider);
+        },
+        unregisterResourcesProvider(provider) {
+          providers.splice(providers.indexOf(provider), 1);
+        }
+      };
+    }
+
+    function createWithDeployment(deployment, props = {}) {
+      return createCamundaProjectsDeploymentPlugin({
+        _getGlobal: (name) => name === 'deployment' ? deployment : null,
+        camundaProject: DEFAULT_CAMUNDA_PROJECT,
+        ...props
+      });
+    }
+
+
+    it('should add project resources to every deployment in project context (deploy, start instance, task testing)', function() {
 
       // given
-      const items = DEFAULT_ITEMS;
+      const deployment = createDeploymentStub();
+
+      createWithDeployment(deployment, { resourceConfigs: DEFAULT_RESOURCE_CONFIGS });
 
       // when
-      const canDeploy = items.map(canDeployItem);
+      // e.g. task testing deploys the active tab only
+      const resourceConfigs = deployment.deploy([ { path: 'process.bpmn', type: 'bpmn' } ]);
 
       // then
-      expect(canDeploy).to.eql([
-        true, // bpmn
-        true, // dmn
-        true, // form
-        true, // rpa
-        false, // camundaProject
-        false // foo
-      ]);
+      expect(resourceConfigs).to.eql(DEFAULT_RESOURCE_CONFIGS);
     });
+
+
+    it('should not add anything without open project (excluded file used standalone)', function() {
+
+      // given
+      const deployment = createDeploymentStub();
+
+      createWithDeployment(deployment, { camundaProject: null, resourceConfigs: [] });
+
+      // when
+      const resourceConfigs = deployment.deploy([ { path: 'excluded.bpmn', type: 'bpmn' } ]);
+
+      // then
+      expect(resourceConfigs).to.eql([ { path: 'excluded.bpmn', type: 'bpmn' } ]);
+    });
+
+
+    it('should prevent deployment on project error ("Invalid configuration / empty selection: error, no deployment")', function() {
+
+      // given
+      const deployment = createDeploymentStub();
+
+      createWithDeployment(deployment, {
+        resourceConfigs: [],
+        resourcesError: 'No deployable files found: `deployResources` in camunda.json selects no files.'
+      });
+
+      // when
+      const deploy = () => deployment.deploy([ { path: 'process.bpmn', type: 'bpmn' } ]);
+
+      // then
+      expect(deploy).to.throw('No deployable files found');
+    });
+
+
+    it('should update provider when project resources change (live refresh)', function() {
+
+      // given
+      const deployment = createDeploymentStub();
+
+      const { rerender } = createWithDeployment(deployment, { resourceConfigs: DEFAULT_RESOURCE_CONFIGS.slice(0, 1) });
+
+      // when
+      rerender({
+        _getGlobal: (name) => name === 'deployment' ? deployment : null,
+        camundaProject: DEFAULT_CAMUNDA_PROJECT,
+        resourceConfigs: DEFAULT_RESOURCE_CONFIGS
+      });
+
+      // then
+      expect(deployment.providers).to.have.length(1);
+      expect(deployment.deploy([])).to.eql(DEFAULT_RESOURCE_CONFIGS);
+    });
+
+  });
+
+
+  describe('#getDeploymentDescription', function() {
+
+    it('should describe number of files', function() {
+      expect(getDeploymentDescription(DEFAULT_RESOURCE_CONFIGS.slice(0, 1), null)).to.eql('1 file will be deployed');
+      expect(getDeploymentDescription(DEFAULT_RESOURCE_CONFIGS, null)).to.eql('5 files will be deployed');
+    });
+
+
+    it('should describe error', function() {
+      expect(getDeploymentDescription([], 'foo')).to.eql('foo');
+    });
+
   });
 
 
@@ -407,6 +528,14 @@ const DEFAULT_ITEMS = [
   }
 ];
 
+const DEFAULT_RESOURCE_CONFIGS = [
+  { path: 'process.bpmn', type: 'bpmn' },
+  { path: 'decision.dmn', type: 'dmn' },
+  { path: 'user.form', type: 'form' },
+  { path: 'script.rpa', type: 'rpa' },
+  { path: 'resources/.prompt.md', type: 'resource' }
+];
+
 function createCamundaProjectsDeploymentPlugin(props = {}) {
   const rendered = render(renderCamundaProjectsDeploymentPlugin(props));
 
@@ -437,6 +566,8 @@ function renderCamundaProjectsDeploymentPlugin(props) {
     log = () => {},
     camundaProject = null,
     camundaProjectItems = DEFAULT_ITEMS,
+    resourceConfigs = DEFAULT_RESOURCE_CONFIGS,
+    resourcesError = null,
     subscribe = () => ({ cancel() {} }),
     triggerAction = () => {}
   } = props;
@@ -451,6 +582,8 @@ function renderCamundaProjectsDeploymentPlugin(props) {
       log={ log }
       camundaProject={ camundaProject }
       camundaProjectItems={ camundaProjectItems }
+      resourceConfigs={ resourceConfigs }
+      resourcesError={ resourcesError }
       subscribe={ subscribe }
       triggerAction={ triggerAction } />
   </SlotFillRoot>;

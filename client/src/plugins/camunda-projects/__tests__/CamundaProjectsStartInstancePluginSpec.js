@@ -129,6 +129,58 @@ describe('CamundaProjectsStartInstancePlugin', function() {
   });
 
 
+  it('should deploy project resources on start instance ("run ... use(s) the same membership rules")', async function() {
+
+    // given
+    const deploySpy = sinon.spy(() => ({ success: false, response: { message: 'stop here' } }));
+
+    const triggerAction = sinon.spy(function(action) {
+      if (action === 'save-tab') {
+        return Promise.resolve(true);
+      }
+    });
+
+    const { container } = createCamundaProjectsStartInstancePlugin({
+      _getGlobal: (name) => {
+        if (name === 'deployment') {
+          return new Deployment({
+            async getConnectionForTab() {
+              return DEFAULT_ENDPOINT;
+            },
+            deploy: deploySpy
+          });
+        } else if (name === 'startInstance') {
+          return new StartInstance({
+            async getConfigForFile() {
+              return { variables: '', businessId: '' };
+            },
+            async setConfigForFile() {}
+          });
+        }
+      },
+      camundaProject: DEFAULT_CAMUNDA_PROJECT,
+      resourceConfigs: DEFAULT_RESOURCE_CONFIGS,
+      triggerAction
+    });
+
+    fireEvent.click(container.querySelector('.btn'));
+
+    await waitFor(() => {
+      expect(document.querySelector('[role="dialog"] button[type="submit"]')).to.exist;
+    });
+
+    // when
+    fireEvent.click(document.querySelector('[role="dialog"] button[type="submit"]'));
+
+    // then
+    await waitFor(() => {
+      expect(deploySpy).to.have.been.calledOnce;
+    });
+
+    expect(deploySpy.getCall(0).args[0]).to.eql(DEFAULT_RESOURCE_CONFIGS);
+  });
+
+
   it('should forward <emit> to overlay (deployment event)', async function() {
 
     // given
@@ -267,8 +319,18 @@ const DEFAULT_CAMUNDA_PROJECT = {
 };
 
 const DEFAULT_ACTIVE_TAB = {
-  type: 'cloud-bpmn'
+  type: 'cloud-bpmn',
+  file: {
+    name: 'process.bpmn',
+    path: 'process.bpmn'
+  }
 };
+
+const DEFAULT_RESOURCE_CONFIGS = [
+  { path: 'process.bpmn', type: 'bpmn' },
+  { path: 'decision.dmn', type: 'dmn' },
+  { path: 'resources/.prompt.md', type: 'resource' }
+];
 
 function createCamundaProjectsStartInstancePlugin(props = {}) {
   const rendered = render(renderCamundaProjectsStartInstancePlugin(props));
@@ -304,6 +366,8 @@ function renderCamundaProjectsStartInstancePlugin(props) {
     log = () => {},
     camundaProject = null,
     camundaProjectItems = [],
+    resourceConfigs = [],
+    resourcesError = null,
     subscribe = () => ({ cancel() {} }),
     triggerAction = () => {}
   } = props;
@@ -318,6 +382,8 @@ function renderCamundaProjectsStartInstancePlugin(props) {
       log={ log }
       camundaProject={ camundaProject }
       camundaProjectItems={ camundaProjectItems }
+      resourceConfigs={ resourceConfigs }
+      resourcesError={ resourcesError }
       subscribe={ subscribe }
       triggerAction={ triggerAction } />
   </SlotFillRoot>;

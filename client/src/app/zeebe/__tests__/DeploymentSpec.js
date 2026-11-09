@@ -359,6 +359,44 @@ describe('Deployment', function() {
     });
 
 
+    it('should fail deployment if resources provider throws (invalid project configuration => no deployment)', async function() {
+
+      // given
+      const resourceConfig = createMockResourceConfigs().pop(),
+            config = createMockConfig();
+
+      const zeebeAPI = new MockZeebeAPI({
+        deploy: sinon.stub().resolves(createMockDeploymentResult())
+      });
+
+      const deployment = createDeployment({
+        zeebeAPI
+      });
+
+      const deployedSpy = sinon.spy();
+
+      deployment.on('deployed', deployedSpy);
+
+      deployment.registerResourcesProvider(() => {
+        throw new Error('Invalid camunda.json: `deployResources` must be an array of glob patterns.');
+      });
+
+      // when
+      const result = await deployment.deploy(resourceConfig, config);
+
+      // then
+      expect(result).to.eql({
+        success: false,
+        response: {
+          message: 'Invalid camunda.json: `deployResources` must be an array of glob patterns.'
+        }
+      });
+
+      expect(zeebeAPI.deploy).not.to.have.been.called;
+      expect(deployedSpy).not.to.have.been.called;
+    });
+
+
     it('should fail deployment if no endpoint configured', async function() {
 
       // given

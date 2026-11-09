@@ -19,6 +19,8 @@ const {
   toFileUrl
 } = require('./util');
 
+const { C8IGNORE_FILE } = require('./project-resources');
+
 /**
  * @typedef { import('./types').Processor } Processor
  */
@@ -64,6 +66,10 @@ module.exports = class Watcher {
     });
 
     this._chokidar.on('add', path => {
+
+      // any file may change the resources of a Camunda project
+      this._emit('fs-change', toFileUrl(path));
+
       if (!isSupported(path)) {
         this._logger.info('watcher:ignore', path);
 
@@ -80,6 +86,10 @@ module.exports = class Watcher {
     });
 
     this._chokidar.on('change', path => {
+      if (getFileName(path) === C8IGNORE_FILE) {
+        this._emit('fs-change', toFileUrl(path));
+      }
+
       if (!isSupported(path)) {
         this._logger.info('watcher:ignore', path);
 
@@ -95,7 +105,20 @@ module.exports = class Watcher {
       this._changed();
     });
 
+    // a directory in place of `.c8ignore` makes the project configuration invalid
+    const onDirectoryChange = path => {
+      if (getFileName(path) === C8IGNORE_FILE) {
+        this._emit('fs-change', toFileUrl(path));
+      }
+    };
+
+    this._chokidar.on('addDir', onDirectoryChange);
+
+    this._chokidar.on('unlinkDir', onDirectoryChange);
+
     this._chokidar.on('unlink', path => {
+      this._emit('fs-change', toFileUrl(path));
+
       this._emit('remove', toFileUrl(path));
 
       this._files.delete(path);

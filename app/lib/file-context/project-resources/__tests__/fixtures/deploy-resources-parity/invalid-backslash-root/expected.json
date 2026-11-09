@@ -1,0 +1,5 @@
+{
+  "description": "A leading backslash is an absolute Windows path and invalid.",
+  "spec": "Containment: patterns are project-root-relative; absolute paths and .. are invalid.",
+  "error": "invalid-config"
+}

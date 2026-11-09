@@ -1,0 +1,11 @@
+{
+  "description": "A positive pattern that matches a file inside a default exclusion overrides the default (last match wins); here an unanchored *.bpmn reaches node_modules/ and target/, and an explicit name selects the root camunda.json.",
+  "spec": "Defaults: node_modules/, target/, .git/, and the project-root camunda.json remain excluded unless a matching positive pattern overrides them.",
+  "selected": [
+    ".git/info/process.bpmn",
+    "camunda.json",
+    "main.bpmn",
+    "node_modules/pkg/vendored.bpmn",
+    "target/classes/generated.bpmn"
+  ]
+}

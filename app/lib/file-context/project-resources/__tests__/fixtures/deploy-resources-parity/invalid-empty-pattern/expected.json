@@ -1,0 +1,5 @@
+{
+  "description": "An empty pattern is invalid.",
+  "spec": "Invalid field type or entries, and invalid patterns: error, no deployment.",
+  "error": "invalid-config"
+}

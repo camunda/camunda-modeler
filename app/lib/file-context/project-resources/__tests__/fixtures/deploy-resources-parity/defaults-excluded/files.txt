@@ -1,0 +1,4 @@
+src/main.bpmn
+node_modules/pkg/vendored.bpmn
+target/generated.bpmn
+.git/HEAD

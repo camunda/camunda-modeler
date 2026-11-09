@@ -1,0 +1,8 @@
+{
+  "description": "! patterns deselect files matched by an earlier positive pattern.",
+  "spec": "Positive patterns include, ! patterns exclude; the last matching pattern wins per file.",
+  "selected": [
+    "order.bpmn",
+    "processes/payment.bpmn"
+  ]
+}

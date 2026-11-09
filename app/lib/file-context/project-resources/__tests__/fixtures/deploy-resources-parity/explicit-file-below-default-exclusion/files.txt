@@ -1,0 +1,5 @@
+main.bpmn
+node_modules/@scope/pkg/resources/shared.bpmn
+node_modules/@scope/pkg/index.js
+target/generated-resources/gen.form
+target/other.form

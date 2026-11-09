@@ -1,0 +1,10 @@
+{
+  "description": "Order matters: the last matching pattern wins per file, in both directions.",
+  "spec": "Positive patterns include, ! patterns exclude; the last matching pattern wins per file.",
+  "selected": [
+    "a.bpmn",
+    "processes/current.bpmn",
+    "processes/legacy/retired/kept.bpmn",
+    "processes/legacy/still-used.bpmn"
+  ]
+}

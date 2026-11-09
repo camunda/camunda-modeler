@@ -1,0 +1,2 @@
+# Keep the byte-order-mark descriptors byte-for-byte (no text/EOL conversion).
+bom-*/camunda.json -text

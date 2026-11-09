@@ -1,0 +1,4 @@
+resources/a.bpmn
+resources/.env
+resources/.draft.bpmn
+.env

@@ -1,0 +1,12 @@
+README.md
+main.bpmn
+sub/nested/deep.dmn
+sub-project/camunda.json
+target/classes/generated.bpmn
+node_modules/pkg/index.js
+.git/HEAD
+.github/workflows/ci.yml
+.env
+.c8ignore
+.process-application
+sub/.hidden.bpmn

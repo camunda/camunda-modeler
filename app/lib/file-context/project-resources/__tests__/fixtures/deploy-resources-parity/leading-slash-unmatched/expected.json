@@ -1,0 +1,7 @@
+{
+  "description": "An absolute-looking pattern such as /Users/me/project/** is just a root-anchored pattern; it matches nothing here and is silently ignored.",
+  "spec": "A pattern matching no files: silently ignored, matching .c8ignore/npm files behavior.",
+  "selected": [
+    "resources/main.bpmn"
+  ]
+}

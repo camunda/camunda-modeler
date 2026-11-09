@@ -1,0 +1,13 @@
+{
+  "description": "Pattern syntax is inherited from the .c8ignore engine: unanchored names match at any depth, an embedded / anchors to the project root, ? and [...] classes work, and dir/** selects contents.",
+  "spec": "deployResources matching uses the same pattern engine and syntax as c8ctl's .c8ignore implementation (gitignore subset), evaluated relative to the project root with / separators.",
+  "selected": [
+    "agents/prompts/sub.md",
+    "decisions/approve.dmn",
+    "decisions/bonus.dmn",
+    "main.form",
+    "processes/order-1.bpmn",
+    "prompts/task.md",
+    "ui/forms/review.form"
+  ]
+}

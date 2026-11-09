@@ -1,0 +1,7 @@
+{
+  "deployResources": [
+    "*.bpmn",
+    "camunda.json",
+    ".git/info/process.bpmn"
+  ]
+}

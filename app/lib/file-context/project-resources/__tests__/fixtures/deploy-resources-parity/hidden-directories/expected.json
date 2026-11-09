@@ -1,0 +1,9 @@
+{
+  "description": "Wildcards do not cross a dot-prefixed directory segment (the engine's dot rule applies per path segment), but hidden directories are traversed, so a pattern naming the directory explicitly selects files inside it.",
+  "spec": "Hidden files: ... Hidden directories are traversed normally.",
+  "selected": [
+    ".camunda/extra.bpmn",
+    "resources/.generated/keep.bpmn",
+    "resources/visible.bpmn"
+  ]
+}

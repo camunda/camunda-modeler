@@ -1,0 +1,9 @@
+{
+  "description": "Wildcards never select dot-prefixed files; a pattern naming the dot-prefixed file explicitly selects it.",
+  "spec": "Hidden files: mirroring c8ctl's directory discovery, wildcard patterns never select files whose name starts with `.`. A pattern naming the dot-prefixed file explicitly (e.g. resources/.prompt.md) selects it.",
+  "selected": [
+    "resources/.prompt.md",
+    "resources/sub/.agent.md",
+    "resources/visible.bpmn"
+  ]
+}

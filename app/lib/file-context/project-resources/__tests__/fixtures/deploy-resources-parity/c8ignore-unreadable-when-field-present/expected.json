@@ -1,0 +1,7 @@
+{
+  "description": "With deployResources, .c8ignore is not read at all: a directory named .c8ignore (unreadable as a file) does not fail the resolution.",
+  "spec": "The default extension scan and .c8ignore do not apply.",
+  "selected": [
+    "resources/main.bpmn"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "deployResources": [
+    "resources/**",
+    "!resources/drafts/",
+    "resources/drafts/keep.bpmn",
+    "resources/drafts/deep/**"
+  ]
+}

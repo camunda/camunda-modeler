@@ -1,0 +1,5 @@
+{
+  "description": "An empty array is a valid type but selects nothing.",
+  "spec": "Empty final selection: error, no deployment.",
+  "error": "empty-selection"
+}

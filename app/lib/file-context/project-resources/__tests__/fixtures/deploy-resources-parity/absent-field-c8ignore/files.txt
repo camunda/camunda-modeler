@@ -1,0 +1,6 @@
+main.bpmn
+old.bpmn
+drafts/wip.bpmn
+drafts/keep.bpmn
+decisions/rules.dmn
+decisions/keep.dmn

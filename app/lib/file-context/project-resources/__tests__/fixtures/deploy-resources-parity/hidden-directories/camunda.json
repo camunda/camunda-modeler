@@ -1,0 +1,7 @@
+{
+  "deployResources": [
+    "resources/**",
+    ".camunda/**",
+    "resources/.generated/keep.bpmn"
+  ]
+}

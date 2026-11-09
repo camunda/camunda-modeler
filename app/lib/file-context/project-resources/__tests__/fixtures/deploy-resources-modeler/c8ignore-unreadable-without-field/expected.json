@@ -1,0 +1,5 @@
+{
+  "description": "Without deployResources, a .c8ignore that exists but can not be read (here a directory) fails the resolution instead of being treated as absent, so files meant to be excluded are not deployed.",
+  "spec": "When deployResources is absent, the existing scan rules apply, filtered by .c8ignore.",
+  "error": "invalid-config"
+}

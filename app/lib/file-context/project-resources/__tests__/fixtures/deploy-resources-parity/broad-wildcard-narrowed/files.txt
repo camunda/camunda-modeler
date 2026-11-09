@@ -1,0 +1,5 @@
+README.md
+main.bpmn
+docs/guide.md
+target/classes/generated.bpmn
+node_modules/pkg/index.js

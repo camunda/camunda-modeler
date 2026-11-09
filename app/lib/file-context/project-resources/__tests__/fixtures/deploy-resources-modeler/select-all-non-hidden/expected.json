@@ -1,0 +1,10 @@
+{
+  "selected": [
+    "README.md",
+    "a.bpmn",
+    "camunda.json",
+    "node_modules/pkg/x.js",
+    "resources/b.md",
+    "target/classes/t.bpmn"
+  ]
+}

@@ -30,7 +30,8 @@ export default function CamundaProjectsDeploymentPlugin(props) {
     emit,
     log,
     camundaProject,
-    camundaProjectItems,
+    resourceConfigs = [],
+    resourcesError = null,
     subscribe,
     triggerAction,
     connectionCheckResult
@@ -88,21 +89,14 @@ export default function CamundaProjectsDeploymentPlugin(props) {
     return () => subscription.cancel();
   }, [ subscribe, canOpen, activeTab ]);
 
-  const resourceConfigs = camundaProjectItems.filter(canDeployItem).map((item) => {
-    const { file, metadata } = item;
-
-    const { path } = file;
-
-    const { type } = metadata;
-
-    return {
-      path,
-      type
-    };
-  });
-
+  // every deployment in the context of the project (project deployment,
+  // start instance, task testing) deploys the project resources
   useEffect(() => {
     const getResourceConfigs = (previousResourceConfigs) => {
+      if (resourcesError) {
+        throw new Error(resourcesError);
+      }
+
       return [
         ...previousResourceConfigs,
         ...resourceConfigs.filter((resourceConfig) => {
@@ -116,7 +110,7 @@ export default function CamundaProjectsDeploymentPlugin(props) {
     deployment.registerResourcesProvider(getResourceConfigs);
 
     return () => deployment.unregisterResourcesProvider(getResourceConfigs);
-  }, [ camundaProjectItems ]);
+  }, [ resourceConfigs, resourcesError ]);
 
   if (!camundaProject) {
     return null;
@@ -147,7 +141,7 @@ export default function CamundaProjectsDeploymentPlugin(props) {
         log={ log }
         onClose={ () => setOverlayOpen(false) }
         displayNotification={ displayNotification }
-        renderDescription={ `${ resourceConfigs.length } ${ resourceConfigs.length === 1 ? 'file' : 'files' } will be deployed` }
+        renderDescription={ getDeploymentDescription(resourceConfigs, resourcesError) }
         renderHeader={ <>
           <CamundaProjectIcon width="16" height="16" />Deploy project
         </> }
@@ -162,19 +156,16 @@ function canDeployTab(tab) {
   return tab && [ 'cloud-bpmn', 'cloud-dmn', 'cloud-form', 'rpa' ].includes(tab.type);
 }
 
-export function canDeployItem(item) {
-  const { metadata } = item;
-
-  if (!metadata) {
-    return false;
+/**
+ * @param {Array<{ path: string, type: string }>} resourceConfigs
+ * @param {string|null} resourcesError
+ *
+ * @returns {string}
+ */
+export function getDeploymentDescription(resourceConfigs, resourcesError) {
+  if (resourcesError) {
+    return resourcesError;
   }
 
-  const { type } = metadata;
-
-  return [
-    'bpmn',
-    'dmn',
-    'form',
-    'rpa'
-  ].includes(type);
+  return `${ resourceConfigs.length } ${ resourceConfigs.length === 1 ? 'file' : 'files' } will be deployed`;
 }

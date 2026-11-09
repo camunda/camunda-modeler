@@ -1,0 +1,9 @@
+{
+  "description": ".c8ignore does not change a deployResources selection.",
+  "spec": "The default extension scan and .c8ignore do not apply.",
+  "selected": [
+    "resources/drafts/wip.bpmn",
+    "resources/main.bpmn",
+    "resources/notes.md"
+  ]
+}

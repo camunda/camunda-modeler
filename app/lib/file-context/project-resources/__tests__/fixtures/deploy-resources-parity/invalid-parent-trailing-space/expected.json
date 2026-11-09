@@ -1,0 +1,5 @@
+{
+  "description": "Validation checks the pattern the matcher sees: trailing whitespace is trimmed (gitignore rule), so 'resources/.. ' is a '..' segment and invalid.",
+  "spec": "Containment: patterns are project-root-relative; absolute paths and .. are invalid.",
+  "error": "invalid-config"
+}

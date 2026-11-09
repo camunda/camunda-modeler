@@ -1,0 +1,8 @@
+{
+  "description": "A nested camunda.json does not exclude its folder from the parent's selection.",
+  "spec": "Nested projects are unsupported. Tools are not required to detect or reject nesting; a nested camunda.json does not exclude that folder from the parent's selection — exclude it explicitly if needed.",
+  "selected": [
+    "child/inner.bpmn",
+    "main.bpmn"
+  ]
+}
