@@ -494,6 +494,103 @@ describe('project-resources', function() {
     });
 
 
+    it('should error on unreadable camunda.json (permissions), not fall back to the default scan', function() {
+
+      // assume
+      if (process.platform === 'win32' || process.getuid?.() === 0) {
+        return this.skip();
+      }
+
+      // given
+      writeFile(path.join(projectPath, 'a.bpmn'), 'a');
+      writeFile(path.join(projectPath, 'excluded.bpmn'), 'excluded');
+
+      const projectFilePath = path.join(projectPath, 'camunda.json');
+
+      writeFile(projectFilePath, JSON.stringify({ deployResources: [ 'a.bpmn' ] }));
+      fs.chmodSync(projectFilePath, 0o000);
+
+      // when
+      const { error, errorType, selected } = resolveProjectResources(projectFilePath);
+
+      // then
+      expect(errorType).to.eql('invalid-config');
+      expect(error).to.match(/Failed to read camunda.json/);
+      expect(selected).to.be.empty;
+    });
+
+
+    it('should error on camunda.json being a directory, not fall back to the default scan', function() {
+
+      // given
+      writeFile(path.join(projectPath, 'a.bpmn'), 'a');
+
+      const projectFilePath = path.join(projectPath, 'camunda.json');
+
+      fs.mkdirSync(projectFilePath);
+
+      // when
+      const { error, errorType, selected } = resolveProjectResources(projectFilePath);
+
+      // then
+      expect(errorType).to.eql('invalid-config');
+      expect(error).to.match(/Failed to read camunda.json/);
+      expect(selected).to.be.empty;
+    });
+
+
+    it('should error on camunda.json removed (e.g. during atomic save), not fall back to the default scan', function() {
+
+      // given
+      writeFile(path.join(projectPath, 'a.bpmn'), 'a');
+
+      // when
+      const { error, errorType, selected } = resolveProjectResources(path.join(projectPath, 'camunda.json'));
+
+      // then
+      expect(errorType).to.eql('invalid-config');
+      expect(error).to.match(/Failed to read camunda.json/);
+      expect(selected).to.be.empty;
+    });
+
+
+    it('should error on partially written camunda.json', function() {
+
+      // when
+      const { errorType, selected } = resolve('{ "deployResources": [ "a.bpmn"', [ 'a.bpmn', 'excluded.bpmn' ]);
+
+      // then
+      expect(errorType).to.eql('invalid-config');
+      expect(selected).to.be.empty;
+    });
+
+
+    it('should read camunda.json with byte order mark (UTF-8, UTF-16LE), as c8ctl', function() {
+
+      // given
+      writeFile(path.join(projectPath, 'a.bpmn'), 'a');
+      writeFile(path.join(projectPath, 'b.bpmn'), 'b');
+
+      const projectFilePath = path.join(projectPath, 'camunda.json');
+
+      const json = JSON.stringify({ deployResources: [ 'a.bpmn' ] });
+
+      for (const buffer of [
+        Buffer.concat([ Buffer.from([ 0xef, 0xbb, 0xbf ]), Buffer.from(json, 'utf8') ]),
+        Buffer.concat([ Buffer.from([ 0xff, 0xfe ]), Buffer.from(json, 'utf16le') ])
+      ]) {
+        fs.writeFileSync(projectFilePath, buffer);
+
+        // when
+        const { error, selected } = resolveProjectResources(projectFilePath);
+
+        // then
+        expect(error).not.to.exist;
+        expect(selected.map(filePath => toRelative(projectPath, filePath))).to.eql([ 'a.bpmn' ]);
+      }
+    });
+
+
     it('should error on invalid camunda.json', function() {
 
       // when

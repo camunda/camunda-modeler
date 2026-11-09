@@ -604,6 +604,34 @@ describe('FileContext', function() {
       });
 
 
+      it('should refresh live on camunda.json atomic save (write temporary file, rename)', async function() {
+
+        // given
+        const filePath = path.join(projectPath, 'camunda.json');
+
+        const uri = toFileUrl(filePath);
+
+        writeFile(filePath, JSON.stringify({ deployResources: [ 'foo.bpmn' ] }));
+
+        await waitFor(() => getItem(fileContext, uri)?.metadata?.resources.selected.length === 1);
+
+        // when
+        const tmpFilePath = path.join(projectPath, 'camunda.json.tmp');
+
+        writeFile(tmpFilePath, JSON.stringify({ deployResources: [ 'bar/bar.*' ] }));
+        fs.renameSync(tmpFilePath, filePath);
+
+        // then
+        await waitFor(() => {
+          const resources = getItem(fileContext, uri)?.metadata?.resources;
+
+          return resources && resources.selected.length === 2;
+        });
+
+        expect(getItem(fileContext, uri).metadata.resources).to.include({ error: null });
+      });
+
+
       it('should refresh live on camunda.json change', async function() {
 
         // given
@@ -980,6 +1008,41 @@ describe('FileContext', function() {
           error: null
         }
       });
+    });
+
+
+    it('Camunda project file not readable (indexed read failure)', async function() {
+
+      // assume
+      if (process.platform === 'win32' || process.getuid?.() === 0) {
+        return this.skip();
+      }
+
+      // given
+      const projectPath = path.resolve(__dirname, './tmp/foo-process-application');
+
+      const filePath = path.join(projectPath, 'camunda.json'),
+            uri = toFileUrl(filePath);
+
+      writeFile(filePath, JSON.stringify({ deployResources: [ 'foo.bpmn' ] }));
+      fs.chmodSync(filePath, 0o000);
+
+      // when
+      await waitForEvent(() => {
+        fileContext.addFile(filePath);
+      });
+
+      // then
+      // no fallback to the default scan, nothing deploys
+      const item = getItem(fileContext, uri);
+
+      expect(item.metadata.type).to.eql('camundaProject');
+      expect(item.metadata.resources).to.include({
+        errorType: 'invalid-config'
+      });
+      expect(item.metadata.resources.selected).to.be.empty;
+
+      fs.chmodSync(filePath, 0o644);
     });
 
 

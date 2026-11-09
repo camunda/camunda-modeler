@@ -8,20 +8,43 @@
  * except in compliance with the MIT License.
  */
 
-const { resolveProjectResources } = require('../project-resources');
+const {
+  ERROR_INVALID_CONFIG,
+  MODE_C8IGNORE,
+  resolveProjectResources
+} = require('../project-resources');
 
 module.exports = {
   id: 'camundaProject',
   extensions: [ '.process-application' ],
   fileNames: [ 'camunda.json' ],
   process: async (item) => {
-    const { file } = item;
-
     return {
       type: 'camundaProject',
-      resources: resolveProjectResources(file.path, {
-        contents: typeof file.contents === 'string' ? file.contents : undefined
-      })
+
+      // read from disk rather than the indexed contents, to fail on read
+      // errors and to decode byte order marks
+      resources: resolve(item.file.path)
     };
   }
 };
+
+/**
+ * @param { string } projectFilePath
+ *
+ * @return { import('../project-resources').ProjectResources }
+ */
+function resolve(projectFilePath) {
+  try {
+    return resolveProjectResources(projectFilePath);
+  } catch (error) {
+
+    // never lose the project to an unexpected error, report it instead
+    return {
+      mode: MODE_C8IGNORE,
+      selected: [],
+      error: `Failed to resolve project resources: ${ error.message }`,
+      errorType: ERROR_INVALID_CONFIG
+    };
+  }
+}

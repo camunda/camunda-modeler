@@ -269,7 +269,7 @@ module.exports.selectResources = selectResources;
  * (realpath-based, as in c8ctl).
  *
  * @param { string } projectFilePath
- * @param { { contents?: string } } [options]
+ * @param { { contents?: string } } [options] - contents of the project file, read from disk if omitted
  *
  * @return { ProjectResources }
  */
@@ -279,9 +279,23 @@ function resolveProjectResources(projectFilePath, options = {}) {
   let descriptor = null;
 
   if (path.basename(projectFilePath) === CAMUNDA_PROJECT_FILE) {
-    const contents = options.contents !== undefined
-      ? options.contents
-      : readFileOrNull(projectFilePath) || '';
+    let contents = options.contents;
+
+    // an existing project file that can not be read (e.g. no permission, a
+    // directory, or removed during an atomic save) fails the resolution,
+    // rather than falling back to the default scan
+    if (contents === undefined) {
+      try {
+        contents = decodeProjectFile(fs.readFileSync(projectFilePath));
+      } catch (error) {
+        return {
+          mode: MODE_C8IGNORE,
+          selected: [],
+          error: `Failed to read camunda.json: ${ error.message }`,
+          errorType: ERROR_INVALID_CONFIG
+        };
+      }
+    }
 
     try {
       descriptor = contents.trim() ? JSON.parse(contents) : {};
@@ -442,12 +456,20 @@ function realpathOrSelf(filePath) {
   }
 }
 
-function readFileOrNull(filePath) {
-  try {
-    return fs.readFileSync(filePath, 'utf8');
-  } catch (error) {
-    return null;
+/**
+ * Decode `camunda.json`, tolerating the byte order marks Windows tools
+ * write, as c8ctl: UTF-8 (stripped) and UTF-16LE (decoded).
+ *
+ * @param { Buffer } buffer
+ *
+ * @return { string }
+ */
+function decodeProjectFile(buffer) {
+  if (buffer.length >= 2 && buffer[0] === 0xff && buffer[1] === 0xfe) {
+    return buffer.subarray(2).toString('utf16le');
   }
+
+  return buffer.toString('utf8').replace(/^\uFEFF/, '');
 }
 
 /**

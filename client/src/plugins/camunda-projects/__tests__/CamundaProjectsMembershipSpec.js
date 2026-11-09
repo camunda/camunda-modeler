@@ -368,6 +368,31 @@ describe('CamundaProjects - project membership', function() {
     });
 
 
+    it('should keep project open with error on unreadable camunda.json', function() {
+
+      // given
+      camundaProjects.emit('items-changed', createItems());
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      // when
+      // read failure: no contents, resources report the error
+      camundaProjects.emit('items-changed', createItems({
+        contents: null,
+        resources: {
+          mode: 'c8ignore',
+          selected: [],
+          error: 'Failed to read camunda.json: EACCES: permission denied',
+          errorType: 'invalid-config'
+        }
+      }));
+
+      // then
+      expect(camundaProjects.hasOpen()).to.be.true;
+      expect(camundaProjects.getError()).to.match(/Failed to read camunda.json/);
+      expect(camundaProjects.getResourceConfigs()).to.be.empty;
+    });
+
+
     it('should keep project open with error on invalid camunda.json (no error listener)', function() {
 
       // given
