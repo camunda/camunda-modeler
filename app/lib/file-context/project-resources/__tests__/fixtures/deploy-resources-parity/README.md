@@ -66,8 +66,8 @@ or, for a case that must fail without deploying anything:
 | `defaults-*`, `broad-wildcard*`, `explicit-file-below-default-exclusion` | Default exclusions (`node_modules/`, `target/`, `.git/`, root `camunda.json`) and how a matching positive pattern overrides them. |
 | `hidden-*` | Hidden-file rule. |
 | `descendant-reinclusion` | Positive patterns select descendants directly and re-include below an excluded directory. |
-| `gitignore-syntax` | Syntax inherited from the `.c8ignore` engine. |
-| `unmatched-pattern-ignored`, `c8ignore-ignored-when-field-present`, `nested-project-not-excluded` | Ignored inputs. |
+| `gitignore-syntax`, `repeated-separator`, `dot-segment` | Syntax inherited from the `.c8ignore` engine. Repeated `/` separators and inner `.` segments are collapsed by the matcher, and directory discovery must agree with it. |
+| `unmatched-pattern-ignored`, `c8ignore-ignored-when-field-present`, `c8ignore-unreadable-when-field-present`, `nested-project-not-excluded` | Ignored inputs. With `deployResources`, `.c8ignore` is not read at all, so a directory named `.c8ignore` does no harm. |
 | `invalid-*`, `empty-*` | Validation errors. |
 | `absent-field-*` | No `deployResources`. The default c8ctl scan applies: extensions `.bpmn`, `.dmn`, `.form`; hidden files skipped, hidden directories scanned; `node_modules/`, `target/`, `.git/` excluded; filtered by `.c8ignore` with gitignore semantics, including the excluded-parent rule. |
 

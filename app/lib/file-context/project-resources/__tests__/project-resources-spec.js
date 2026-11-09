@@ -319,6 +319,58 @@ describe('project-resources', function() {
     });
 
 
+    it('should evaluate each path of a directory reachable through a symbolic link and its real path', function() {
+
+      // given
+      writeFile(path.join(projectPath, 'z-real/prompt.md'), 'prompt');
+      writeFile(path.join(projectPath, 'z-real/keep.bpmn'), 'keep');
+      symlink.call(this, path.join(projectPath, 'z-real'), path.join(projectPath, 'a-alias'), 'dir');
+
+      // when
+      const { selected } = resolve({ deployResources: [ 'a-alias/prompt.md', 'z-real/keep.bpmn' ] }, []);
+
+      // then
+      expect(selected).to.eql([ 'a-alias/prompt.md', 'z-real/keep.bpmn' ]);
+    });
+
+
+    it('should select a file reachable through several paths by the first path in sorted order', function() {
+
+      // given
+      writeFile(path.join(projectPath, 'a/x.bpmn'), 'x');
+      symlink.call(this, path.join(projectPath, 'a/x.bpmn'), path.join(projectPath, 'b.bpmn'), 'file');
+
+      // when
+      const { selected } = resolve({ deployResources: [ '**/*.bpmn' ] }, []);
+
+      // then
+      expect(selected).to.eql([ 'a/x.bpmn' ]);
+    });
+
+
+    it('should validate patterns with trailing whitespace trimmed', function() {
+
+      // when
+      const { error, errorType } = resolve({ deployResources: [ 'resources/**', 'resources/.. ' ] }, [ 'resources/a.bpmn' ]);
+
+      // then
+      expect(errorType).to.eql('invalid-config');
+      expect(error).to.match(/must not contain "\.\."/);
+    });
+
+
+    it('should select through repeated separators and "." segments', function() {
+
+      // when
+      const { selected } = resolve({
+        deployResources: [ 'resources//sub/*.bpmn', 'other/./sub/*.form' ]
+      }, [ 'resources/sub/a.bpmn', 'other/sub/b.form', 'resources/c.bpmn' ]);
+
+      // then
+      expect(selected).to.eql([ 'other/sub/b.form', 'resources/sub/a.bpmn' ]);
+    });
+
+
     it('should follow symbolic links to directories', function() {
 
       // given
@@ -604,6 +656,9 @@ describe('project-resources', function() {
       expect(couldMatchBelow('a/b', 'a/b')).to.be.false;
       expect(couldMatchBelow('a/b/**', 'a/b')).to.be.true;
       expect(couldMatchBelow('{a,b}/c', 'x')).to.be.true;
+      expect(couldMatchBelow('resources//sub/*.bpmn', 'resources/sub')).to.be.true;
+      expect(couldMatchBelow('resources/./sub/*.bpmn', 'resources/sub')).to.be.true;
+      expect(couldMatchBelow('./resources/*', 'resources')).to.be.true;
     });
 
   });

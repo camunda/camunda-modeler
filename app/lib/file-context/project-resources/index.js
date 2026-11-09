@@ -202,13 +202,16 @@ function validatePattern(entry) {
     return 'must be a string';
   }
 
-  const pattern = entry.startsWith('!') ? entry.slice(1) : entry;
+  // validate what is matched, trailing whitespace is trimmed
+  const trimmed = entry.trimEnd();
+
+  const pattern = trimmed.startsWith('!') ? trimmed.slice(1) : trimmed;
 
   if (!pattern.trim()) {
     return 'must not be empty';
   }
 
-  if (entry.startsWith('#')) {
+  if (trimmed.startsWith('#')) {
     return `must be a glob pattern, got comment "${ entry }"`;
   }
 
@@ -262,7 +265,8 @@ module.exports.selectResources = selectResources;
  * (`camunda.json` or legacy `.process-application`) from the file system.
  *
  * Symbolic links are followed; a file reachable through several paths is
- * selected once, by the first path discovered (realpath-based, as in c8ctl).
+ * selected once, by the first project-relative path in sorted order
+ * (realpath-based, as in c8ctl).
  *
  * @param { string } projectFilePath
  * @param { { contents?: string } } [options]
@@ -341,20 +345,19 @@ function withEmptySelectionError(resources) {
  * @return { string[] } absolute paths of selected files
  */
 function discover(projectRoot, selector) {
-  const selected = [];
+  const candidates = [];
 
-  const seenFiles = new Set();
-  const seenDirectories = new Set();
+  // real paths of the directories on the current descent, to cut cycles; a
+  // directory reachable through several paths (e.g. link and real path) is
+  // walked under each, as patterns match project-relative paths
+  const ancestors = new Set();
 
   const walk = (directoryPath, relativeDirectory) => {
     const realDirectory = realpathOrSelf(directoryPath);
 
-    // guard against symbolic link cycles
-    if (seenDirectories.has(realDirectory)) {
+    if (ancestors.has(realDirectory)) {
       return;
     }
-
-    seenDirectories.add(realDirectory);
 
     let entries;
 
@@ -364,7 +367,7 @@ function discover(projectRoot, selector) {
       return;
     }
 
-    const directories = [];
+    ancestors.add(realDirectory);
 
     for (const entry of entries) {
       const entryPath = path.join(directoryPath, entry);
@@ -382,24 +385,36 @@ function discover(projectRoot, selector) {
 
       if (stats.isDirectory()) {
         if (!selector.isDirectoryExcluded(relativePath)) {
-          directories.push([ entryPath, relativePath ]);
+          walk(entryPath, relativePath);
         }
       } else if (stats.isFile() && selector.isFileSelected(relativePath)) {
-        const realFile = realpathOrSelf(entryPath);
-
-        if (!seenFiles.has(realFile)) {
-          seenFiles.add(realFile);
-          selected.push(entryPath);
-        }
+        candidates.push([ relativePath, entryPath ]);
       }
     }
 
-    directories.forEach(([ entryPath, relativePath ]) => walk(entryPath, relativePath));
+    ancestors.delete(realDirectory);
   };
 
   walk(projectRoot, '');
 
-  return selected;
+  // a file reachable through several paths is selected once, by the first
+  // project-relative path in sorted order (as c8ctl)
+  const seenFiles = new Set();
+
+  return candidates
+    .sort(([ a ], [ b ]) => (a < b ? -1 : a > b ? 1 : 0))
+    .filter(([ , entryPath ]) => {
+      const realFile = realpathOrSelf(entryPath);
+
+      if (seenFiles.has(realFile)) {
+        return false;
+      }
+
+      seenFiles.add(realFile);
+
+      return true;
+    })
+    .map(([ , entryPath ]) => entryPath);
 }
 
 function realpathOrSelf(filePath) {

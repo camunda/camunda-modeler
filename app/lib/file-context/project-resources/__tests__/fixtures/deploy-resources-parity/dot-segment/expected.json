@@ -1,0 +1,7 @@
+{
+  "description": "A '.' path segment inside a pattern is collapsed by the matcher (resources/./sub/*.bpmn selects resources/sub/main.bpmn), and directory discovery must agree with it.",
+  "spec": "deployResources matching uses the same pattern engine and syntax as c8ctl's .c8ignore implementation (gitignore subset), evaluated relative to the project root with / separators.",
+  "selected": [
+    "resources/sub/main.bpmn"
+  ]
+}

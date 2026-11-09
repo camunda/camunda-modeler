@@ -170,8 +170,9 @@ function couldMatchBelow(glob, dir) {
     return true;
   }
 
-  const globSegments = glob.split('/');
-  const dirSegments = dir.split('/');
+  // the matcher collapses empty (`a//b`) and `.` (`a/./b`) segments
+  const globSegments = glob.split('/').filter(segment => segment !== '' && segment !== '.');
+  const dirSegments = dir.split('/').filter(Boolean);
 
   const match = (g, d) => {
 
