@@ -105,6 +105,17 @@ module.exports = class Watcher {
       this._changed();
     });
 
+    // a directory in place of `.c8ignore` makes the project configuration invalid
+    const onDirectoryChange = path => {
+      if (getFileName(path) === C8IGNORE_FILE) {
+        this._emit('fs-change', toFileUrl(path));
+      }
+    };
+
+    this._chokidar.on('addDir', onDirectoryChange);
+
+    this._chokidar.on('unlinkDir', onDirectoryChange);
+
     this._chokidar.on('unlink', path => {
       this._emit('fs-change', toFileUrl(path));
 

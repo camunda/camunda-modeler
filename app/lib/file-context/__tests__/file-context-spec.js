@@ -578,11 +578,13 @@ describe('FileContext', function() {
       });
 
 
-      it('should refresh live to an error on .c8ignore becoming unreadable', async function() {
+      it('should refresh live on empty .c8ignore directory added and removed (unreadable .c8ignore)', async function() {
+
+        // given
+        const c8ignorePath = path.join(projectPath, '.c8ignore');
 
         // when
-        fs.mkdirSync(path.join(projectPath, '.c8ignore'));
-        writeFile(path.join(projectPath, '.c8ignore/placeholder.txt'), '');
+        fs.mkdirSync(c8ignorePath);
 
         // then
         await waitFor(() => getItem(fileContext, projectFileUri).metadata.resources.error);
@@ -591,6 +593,14 @@ describe('FileContext', function() {
           errorType: 'invalid-config'
         });
         expect(getSelected()).to.be.empty;
+
+        // when
+        fs.rmdirSync(c8ignorePath);
+
+        // then
+        await waitFor(() => !getItem(fileContext, projectFileUri).metadata.resources.error);
+
+        expect(getSelected()).to.include('foo.bpmn');
       });
 
 
