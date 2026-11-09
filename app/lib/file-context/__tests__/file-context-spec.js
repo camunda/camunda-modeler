@@ -249,6 +249,39 @@ describe('FileContext', function() {
   });
 
 
+  describe('project resources', function() {
+
+    it('should resolve file saved into project without file system event', async function() {
+
+      // given
+      fileContext.close();
+
+      fileContext = new FileContext(console, { watch: false, processors: require('../processors') });
+
+      waitForEvent = createWaitForEvent(fileContext);
+
+      const projectPath = path.resolve(__dirname, './tmp/foo-process-application');
+
+      const projectFileUri = toFileUrl(path.join(projectPath, '.process-application'));
+
+      await waitForEvent(() => {
+        fileContext.addFile(path.join(projectPath, '.process-application'));
+      });
+
+      const newPath = path.join(projectPath, 'new.bpmn');
+
+      writeFile(newPath, fooXML);
+
+      // when
+      fileContext.fileOpened(toFileUrl(newPath));
+
+      // then
+      await waitFor(() => getItem(fileContext, projectFileUri).metadata.resources.selected.includes(newPath));
+    });
+
+  });
+
+
   describe('watching', function() {
 
     it('should watch by default', function() {
@@ -542,6 +575,22 @@ describe('FileContext', function() {
 
         // watched files stay indexed
         expect(getItem(fileContext, toFileUrl(path.join(projectPath, 'bar/bar.bpmn')))).to.exist;
+      });
+
+
+      it('should refresh live to an error on .c8ignore becoming unreadable', async function() {
+
+        // when
+        fs.mkdirSync(path.join(projectPath, '.c8ignore'));
+        writeFile(path.join(projectPath, '.c8ignore/placeholder.txt'), '');
+
+        // then
+        await waitFor(() => getItem(fileContext, projectFileUri).metadata.resources.error);
+
+        expect(getItem(fileContext, projectFileUri).metadata.resources).to.include({
+          errorType: 'invalid-config'
+        });
+        expect(getSelected()).to.be.empty;
       });
 
 

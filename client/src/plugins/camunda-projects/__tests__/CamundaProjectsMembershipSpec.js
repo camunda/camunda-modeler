@@ -142,6 +142,39 @@ describe('CamundaProjects - project membership', function() {
     });
 
 
+    it('should deploy resources not processed yet (deployResources absent)', function() {
+
+      // given
+      const pending = createItem(`${ PROJECT_PATH }/pending.dmn`, undefined);
+
+      camundaProjects.emit('items-changed', [
+        createCamundaProject({
+          resources: {
+            mode: 'c8ignore',
+            selected: [
+              PROCESS.file.path,
+              pending.file.path,
+              `${ PROJECT_PATH }/not-indexed-yet.form`
+            ],
+            error: null
+          }
+        }),
+        PROCESS,
+        pending
+      ]);
+
+      // when
+      camundaProjects.emit('activeTab-changed', { file: PROCESS.file });
+
+      // then
+      expect(camundaProjects.getResourceConfigs()).to.eql([
+        { path: PROCESS.file.path, type: 'bpmn' },
+        { path: pending.file.path, type: 'dmn' },
+        { path: `${ PROJECT_PATH }/not-indexed-yet.form`, type: 'form' }
+      ]);
+    });
+
+
     it('should deploy Camunda 7 BPMN named by deployResources', function() {
 
       // given

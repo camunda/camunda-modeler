@@ -43,6 +43,9 @@ const DEFAULT_OPTIONS = {
 
 const PROJECT_REFRESH_DELAY = 300;
 
+// batches files indexed in a row, e.g. on startup
+const PROJECT_REFRESH_DELAY_INDEXED = 50;
+
 /**
  * File context that indexes and processes files.
  */
@@ -187,19 +190,68 @@ module.exports = class FileContext extends EventEmitter {
     // project resources indexed explicitly, as the watcher does not discover them
     this._projectResourceUris = new Set();
 
+    // indexed files checked against project resources once
+    this._checkedUris = new Set();
+
     this.on('indexer:updated', (item) => {
       if (item.metadata && item.metadata.resources) {
         this._indexProjectResources();
+      } else {
+        this._refreshProjectsForItem(item);
       }
+    });
+
+    this.on('indexer:removed', (item) => {
+      this._checkedUris.delete(item.uri);
     });
 
     this.on('watcher:fs-change', (uri) => {
       this._changedPaths.add(toFilePath(uri));
 
-      clearTimeout(this._projectRefreshTimer);
-
-      this._projectRefreshTimer = setTimeout(() => this._refreshProjects(), PROJECT_REFRESH_DELAY);
+      this._scheduleProjectRefresh(PROJECT_REFRESH_DELAY);
     });
+  }
+
+  /**
+   * Re-resolve projects soon for a file indexed below them but not resolved
+   * as their resource yet, e.g. a file just saved into the project, without
+   * waiting for the file system change.
+   *
+   * @param { import('./types').IndexItem } item
+   */
+  _refreshProjectsForItem(item) {
+    if (this._checkedUris.has(item.uri)) {
+      return;
+    }
+
+    this._checkedUris.add(item.uri);
+
+    const filePath = item.file.path;
+
+    const projectItems = this._indexer.getItems().filter(projectItem => {
+      const resources = projectItem.metadata && projectItem.metadata.resources;
+
+      return resources
+        && filePath.startsWith(path.dirname(projectItem.file.path) + path.sep)
+        && !resources.selected.includes(filePath);
+    });
+
+    if (!projectItems.length) {
+      return;
+    }
+
+    this._changedPaths.add(filePath);
+
+    this._scheduleProjectRefresh(PROJECT_REFRESH_DELAY_INDEXED);
+  }
+
+  /**
+   * @param { number } delay
+   */
+  _scheduleProjectRefresh(delay) {
+    clearTimeout(this._projectRefreshTimer);
+
+    this._projectRefreshTimer = setTimeout(() => this._refreshProjects(), delay);
   }
 
   /**

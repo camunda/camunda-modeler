@@ -185,9 +185,10 @@ export default class CamundaProjects {
     return resources.selected.flatMap(path => {
       const item = this.findItem(path);
 
-      // without `deployResources`, deploy only what the Modeler recognizes as
-      // deployable, e.g. no Camunda 7 BPMN; an explicit selection deploys as is
-      if (resources.mode !== 'deployResources' && !DEPLOYABLE_TYPES.includes(item?.metadata?.type)) {
+      // without `deployResources`, do not deploy what the Modeler failed to
+      // process, e.g. Camunda 7 BPMN; files not processed yet deploy by
+      // extension; an explicit selection deploys as is
+      if (resources.mode !== 'deployResources' && isNotDeployable(item)) {
         return [];
       }
 
@@ -334,6 +335,22 @@ export default class CamundaProjects {
 }
 
 const DEPLOYABLE_TYPES = [ 'bpmn', 'dmn', 'form', 'rpa' ];
+
+/**
+ * Check whether an item was processed and found not deployable, e.g. a
+ * Camunda 7 BPMN file or a broken file.
+ *
+ * @param {Item} [item]
+ *
+ * @returns {boolean}
+ */
+function isNotDeployable(item) {
+  if (!item || item.metadata === undefined) {
+    return false;
+  }
+
+  return !DEPLOYABLE_TYPES.includes(item.metadata?.type);
+}
 
 /**
  * @param {Item} camundaProjectItem
