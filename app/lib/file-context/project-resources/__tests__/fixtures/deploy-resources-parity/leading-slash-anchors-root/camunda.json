@@ -1,5 +1,5 @@
 {
   "deployResources": [
-    "/resources/**"
+    "/process.bpmn"
   ]
 }

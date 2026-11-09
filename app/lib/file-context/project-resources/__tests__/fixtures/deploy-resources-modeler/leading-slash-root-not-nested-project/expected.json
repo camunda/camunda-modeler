@@ -1,0 +1,7 @@
+{
+  "description": "A leading / anchors to the project root, also with a nested camunda.json: /a.bpmn selects only the root a.bpmn.",
+  "spec": "A leading / anchors the pattern to the project root, as in .c8ignore.",
+  "selected": [
+    "a.bpmn"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "description": "A leading / anchors the pattern to the project root, as in .c8ignore/gitignore: /process.bpmn selects only the root file, while process.bpmn (no slash) would match at any depth.",
+  "spec": "deployResources matching uses the same pattern engine and syntax as c8ctl's .c8ignore implementation (gitignore subset), evaluated relative to the project root with / separators. Library, anchoring, case handling, Windows path behavior, and escaping are inherited from that engine.",
+  "selected": [
+    "process.bpmn"
+  ]
+}

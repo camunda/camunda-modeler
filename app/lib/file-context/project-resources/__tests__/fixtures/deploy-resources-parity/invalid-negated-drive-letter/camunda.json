@@ -1,0 +1,6 @@
+{
+  "deployResources": [
+    "resources/**",
+    "!C:/project/resources/drafts/**"
+  ]
+}

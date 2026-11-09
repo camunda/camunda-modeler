@@ -116,7 +116,9 @@ function createDeployResourcesSelector(deployResources) {
 
   const patterns = [
 
-    // default exclusions, overridable by a later matching positive pattern
+    // default exclusions, overridable by any later matching positive pattern:
+    // patterns behave as written, so `**/*` also selects inside `node_modules/`
+    // and the root `camunda.json`
     ...DEFAULT_EXCLUSIONS.map(exclusion => parsePattern(`!${ exclusion }`)),
     { negate: true, globs: [ CAMUNDA_PROJECT_FILE ] },
     ...userPatterns
@@ -223,7 +225,10 @@ function validatePattern(entry) {
     return `must be a glob pattern, got comment "${ entry }"`;
   }
 
-  if (/^([/\\]|[a-zA-Z]:)/.test(pattern)) {
+  // a single leading `/` anchors the pattern to the project root, as in
+  // `.c8ignore`, it is never a file system path; absolute paths that can not
+  // be anchors are invalid: drive letters, UNC roots and a leading backslash
+  if (/^[a-zA-Z]:/.test(pattern) || pattern.startsWith('//') || pattern.startsWith('\\')) {
     return `must be relative to the project root, got "${ entry }"`;
   }
 

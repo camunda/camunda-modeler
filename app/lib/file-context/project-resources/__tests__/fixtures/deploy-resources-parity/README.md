@@ -52,7 +52,9 @@ or, for a case that must fail without deploying anything:
   order-insensitive; the list is sorted for readability.
 - `error` is one of:
   - `invalid-config`: wrong field type, a wrong entry type, or an invalid
-    pattern (empty, a bare `!`, a `#` comment, absolute, or containing `..`).
+    pattern (empty, a bare `!`, a `#` comment, a drive letter, a UNC root
+    such as `//server`, a leading backslash, or containing `..`). A single
+    leading `/` is not invalid: it anchors the pattern to the project root.
   - `empty-selection`: the final selection is empty.
 
   Tools word their own messages; only the error class must match.
@@ -66,7 +68,7 @@ or, for a case that must fail without deploying anything:
 | `defaults-*`, `broad-wildcard*`, `explicit-file-below-default-exclusion` | Default exclusions (`node_modules/`, `target/`, `.git/`, root `camunda.json`) and how a matching positive pattern overrides them. |
 | `hidden-*` | Hidden-file rule. |
 | `descendant-reinclusion` | Positive patterns select descendants directly and re-include below an excluded directory. |
-| `gitignore-syntax`, `repeated-separator`, `dot-segment` | Syntax inherited from the `.c8ignore` engine. Repeated `/` separators and inner `.` segments are collapsed by the matcher, and directory discovery must agree with it. |
+| `gitignore-syntax`, `repeated-separator`, `dot-segment`, `leading-slash-*` | Syntax inherited from the `.c8ignore` engine, including the leading-`/` root anchor. Repeated `/` separators and inner `.` segments are collapsed by the matcher, and directory discovery must agree with it. |
 | `unmatched-pattern-ignored`, `c8ignore-ignored-when-field-present`, `c8ignore-unreadable-when-field-present`, `nested-project-not-excluded` | Ignored inputs. With `deployResources`, `.c8ignore` is not read at all, so a directory named `.c8ignore` does no harm. |
 | `invalid-*`, `empty-*` | Validation errors. |
 | `bom-utf8`, `bom-utf16le` | `camunda.json` starts with a UTF-8 or UTF-16LE byte-order mark; tools must decode it (a `.gitattributes` keeps these bytes unconverted). |
@@ -78,7 +80,9 @@ or, for a case that must fail without deploying anything:
   `node:path` `matchesGlob` globs, relative to the project root with `/`
   separators.
   - An unanchored name matches at any depth.
-  - An embedded `/` anchors the pattern to the project root.
+  - A leading `/` or an embedded `/` anchors the pattern to the project root,
+    exactly as in `.c8ignore`/`.gitignore`. `/Users/me/x` is therefore a
+    root-anchored pattern, not an absolute path.
   - `dir/` and `dir` select the directory's contents.
   - `dir/**` selects the contents only.
 - Selection starts empty. Patterns apply in order and the last match wins per
@@ -87,8 +91,9 @@ or, for a case that must fail without deploying anything:
   implicit `!` patterns placed **before** the user's patterns. Any later
   positive pattern that matches a file inside them therefore selects it, for
   example `**/*`, `*.bpmn`, or an explicit path.
-- Dot segments: wildcards (`*`, `?`, `**`, `[...]`) never match a path
-  segment that starts with `.`. This applies to directory segments as well as
+- Dot segments (a deliberate choice: patterns behave like standard globs):
+  wildcards (`*`, `?`, `**`, `[...]`) never match a path segment that starts
+  with `.`. This applies to directory segments as well as
   file names; it is the default `dot: false` glob behaviour.
   - A dot-prefixed file is selected only by a pattern that spells out the
     leading `.` for that segment, such as `resources/.prompt.md` or

@@ -6,7 +6,8 @@ supplementing them. Cases prefixed `c8ignore-` cover projects without `deployRes
 
 Decisions encoded here, beyond the shared fixtures:
 
-* A leading `/`, a drive letter, and any `..` segment are invalid, also in negated patterns.
+* A leading `/` anchors to the project root (not a nested project). Drive letters, UNC roots and a
+  leading backslash, and any `..` segment are invalid, also in negated patterns.
 * Invalid JSON in `camunda.json` is an `invalid-config` error.
 * `.c8ignore` keeps c8ctl's current engine behavior: a negation cannot re-include a path below an
   excluded directory, and this applies to the default exclusions too, so `!target/` does not

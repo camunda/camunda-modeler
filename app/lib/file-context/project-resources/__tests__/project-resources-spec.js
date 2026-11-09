@@ -276,9 +276,9 @@ describe('project-resources', function() {
     });
 
 
-    it('"Containment: ... absolute paths ... are invalid"', async function() {
+    it('"Containment: ... absolute paths ... are invalid" (drive letters, UNC roots, leading backslash)', async function() {
 
-      for (const pattern of [ '/a.bpmn', '!/a.bpmn', 'C:/a.bpmn', 'c:\\a.bpmn', '\\\\server\\a.bpmn' ]) {
+      for (const pattern of [ 'C:/a.bpmn', 'c:\\a.bpmn', '!C:/a.bpmn', '//server/a.bpmn', '!//server/a.bpmn', '\\\\server\\a.bpmn', '\\a.bpmn' ]) {
 
         // when
         const { error, selected } = await resolve({ deployResources: [ 'a.bpmn', pattern ] }, [ 'a.bpmn' ]);
@@ -287,6 +287,87 @@ describe('project-resources', function() {
         expect(error, pattern).to.match(/must be relative to the project root/);
         expect(selected).to.be.empty;
       }
+    });
+
+
+    it('should anchor a pattern with leading slash to the project root', async function() {
+
+      // when
+      const { error, selected } = await resolve({ deployResources: [ '/a.bpmn', 'b.bpmn' ] }, [
+        'a.bpmn',
+        'sub/a.bpmn',
+        'b.bpmn',
+        'sub/b.bpmn'
+      ]);
+
+      // then
+      // unanchored `b.bpmn` matches at any depth
+      expect(error).not.to.exist;
+      expect(selected).to.eql([ 'a.bpmn', 'b.bpmn', 'sub/b.bpmn' ]);
+    });
+
+
+    it('should deselect at the project root only with negated leading slash', async function() {
+
+      // when
+      const { selected } = await resolve({ deployResources: [ '**/*.bpmn', '!/a.bpmn' ] }, [ 'a.bpmn', 'sub/a.bpmn' ]);
+
+      // then
+      expect(selected).to.eql([ 'sub/a.bpmn' ]);
+    });
+
+
+    it('should anchor leading slash to the project root, not a nested project', async function() {
+
+      // given
+      writeFile(path.join(projectPath, 'nested/camunda.json'), '{}');
+
+      // when
+      const { selected } = await resolve({ deployResources: [ '/a.bpmn', '/nested/**' ] }, [
+        'a.bpmn',
+        'nested/a.bpmn',
+        'nested/b.bpmn'
+      ]);
+
+      // then
+      expect(selected).to.eql([ 'a.bpmn', 'nested/a.bpmn', 'nested/b.bpmn', 'nested/camunda.json' ]);
+    });
+
+
+    it('should anchor leading slash to project-relative paths through directory links', async function() {
+
+      // given
+      writeFile(path.join(projectPath, 'real/a.bpmn'), 'a');
+      symlink.call(this, path.join(projectPath, 'real'), path.join(projectPath, 'alias'), 'dir');
+
+      // when
+      const { selected } = await resolve({ deployResources: [ '/alias/a.bpmn' ] }, []);
+
+      // then
+      expect(selected).to.eql([ 'alias/a.bpmn' ]);
+    });
+
+
+    it('should treat a leading slash as root anchor, never as file system path (silently unmatched)', async function() {
+
+      // when
+      const { error, selected } = await resolve({
+        deployResources: [ `/${ projectPath.split(path.sep).filter(Boolean).join('/') }/a.bpmn`, 'b.bpmn' ]
+      }, [ 'a.bpmn', 'b.bpmn' ]);
+
+      // then
+      expect(error).not.to.exist;
+      expect(selected).to.eql([ 'b.bpmn' ]);
+    });
+
+
+    it('should reject a lone leading slash', async function() {
+
+      // when
+      const { errorType } = await resolve({ deployResources: [ 'a.bpmn', '/' ] }, [ 'a.bpmn' ]);
+
+      // then
+      expect(errorType).to.eql('invalid-config');
     });
 
 

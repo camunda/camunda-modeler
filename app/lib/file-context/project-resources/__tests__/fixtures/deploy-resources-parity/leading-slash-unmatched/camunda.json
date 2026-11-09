@@ -1,0 +1,6 @@
+{
+  "deployResources": [
+    "/Users/me/project/**",
+    "resources/**"
+  ]
+}
