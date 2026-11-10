@@ -148,10 +148,24 @@ export default function SidePanel(props) {
     });
   }, [ activeTabId, onLayoutChanged, sidePanel ]);
 
+  // Radix activates a tab on mousedown and again on the focus it triggers,
+  // both before we re-render; remember the request until the layout catches up
+  const requestedTab = useRef(null);
+
+  useEffect(() => {
+    requestedTab.current = null;
+  }, [ tab, open ]);
+
   const onTabClick = useCallback((tabId) => {
     if (tab === tabId && open) {
       return;
     }
+
+    if (requestedTab.current === tabId) {
+      return;
+    }
+
+    requestedTab.current = tabId;
 
     onLayoutChanged({
       sidePanel: {
