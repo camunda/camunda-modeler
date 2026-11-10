@@ -1,15 +1,34 @@
+/*
+ * Contrast overrides for design system tokens, applied to every `.c4-ui` scope
+ * (including portaled ones). The design system's translucent `--border` and
+ * light `--input` are hard to tell apart from the surfaces they separate in a
+ * dense, desktop UI:
+ *
+ * - `--border`: an opaque border, so sections, cards and lists stay apart
+ * - `--input`: control outlines (inputs, checkboxes, switches) at 3:1 against the
+ *   light surfaces they sit on, cf. WCAG 2.1 SC 1.4.11 (non-text contrast)
+ */
+.c4-ui {
+  --border: var(--neutral-border-strong);
+  --input: color-mix(in srgb, var(--color-zinc-400), var(--color-zinc-500));
+  --switch-background: var(--input);
+}
+
 :root {
   --link-color: var(--info-action-default);
 
   /* like IDEs: a shell around white content, panels next to the content */
-  --app-shell-background-color: var(--neutral-background-medium);
+  --app-shell-background-color: var(--neutral-background-strong);
   --app-content-background-color: var(--neutral-background-subtle);
   --app-panel-background-color: var(--background);
 
   /* app bars: tab bar, panel headers, status bar */
   --app-bar-background-color: var(--app-shell-background-color);
   --app-bar-border-color: var(--border);
+  --app-bar-separator-color: var(--color-zinc-400);
   --app-bar-item-background-color: var(--app-content-background-color);
-  --app-bar-item-hover-background-color: var(--neutral-background-strong);
-  --app-bar-item-active-background-color: var(--neutral-background-strong);
+
+  /* hover lightens, a toggled on item darkens: the two never look alike */
+  --app-bar-item-hover-background-color: var(--neutral-background-medium);
+  --app-bar-item-active-background-color: var(--neutral-border-strong);
 }
