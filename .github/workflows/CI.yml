@@ -66,6 +66,36 @@ jobs:
         CODECOV_TOKEN: ${{ steps.secrets.outputs.CODECOV_TOKEN }}
 
 
+  build-arm64:
+    name: Build (${{ matrix.platform }}-arm64)
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - os: ubuntu-24.04-arm
+          platform: linux
+        - os: windows-11-arm
+          platform: win
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+    - name: Use Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: 24
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Project setup
+      uses: bpmn-io/actions/setup@latest
+    - name: Build
+      run: npm run build -- --${{ matrix.platform }} --arm64 --no-compress
+
+
   e2e-tests:
     strategy:
       fail-fast: false
