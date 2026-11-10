@@ -6,7 +6,7 @@
   --tab-font-color: var(--neutral-foreground-subtle);
   --tab-font-size: var(--text-sm);
   --tab-icon-color: var(--neutral-foreground-subtle);
-  --tab-border-right-color: var(--app-bar-border-color);
+  --tab-border-right-color: var(--app-bar-separator-color);
   --tab-close-background-color: transparent;
   --tab-close-hover-background-color: var(--app-bar-item-active-background-color);
   --tab-close-icon-fill-color: var(--neutral-foreground-strong);
@@ -249,6 +249,9 @@
 
       color: var(--tab-active-font-color);
       background-color: var(--tab-active-background-color);
+
+      /* reach over the bar's bottom border to join the content below */
+      margin-bottom: -1px;
     }
 
     &.tab--group:after {
