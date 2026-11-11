@@ -62,19 +62,7 @@ export default function SettingsPlugin(props) {
 
   useEffect(() => {
     const subscription = subscribe('app.settings-open', (options) => {
-      if (options?.scrollToEntry) {
-        setTargetElement(options.scrollToEntry);
-        requestAnimationFrame(() => {
-          const element = document.getElementById(options.scrollToEntry);
-
-          if (element) {
-            element.scrollIntoView({ behavior: 'auto', block: 'start' });
-            element.focus();
-          }
-        });
-      } else {
-        setTargetElement(null);
-      }
+      setTargetElement(options?.scrollToEntry || null);
       setOpen(true);
     });
 
