@@ -10,7 +10,9 @@
 
 'use strict';
 
-const path = require('path');
+const fs = require('fs'),
+      os = require('os'),
+      path = require('path');
 
 const Dialog = require('../../lib/dialog');
 
@@ -28,15 +30,19 @@ const USER_CANCELED = { canceled: true };
 describe('Dialog', function() {
   let dialog,
       electronDialog,
-      config;
+      config,
+      platform;
 
   beforeEach(function() {
+    platform = 'linux';
+
     config = new Config(USER_PATH);
     electronDialog = new ElectronDialog();
 
     dialog = new Dialog({
       electronDialog,
       config,
+      platform,
       userDesktopPath: USER_DESKTOP_PATH
     });
   });
@@ -478,6 +484,132 @@ describe('Dialog', function() {
 
         // then
         expect(config.get('defaultPath')).to.equal(defaultPath);
+      });
+
+    });
+
+
+    describe('overwrite confirmation', function() {
+
+      let tmpDir, existingFilePath;
+
+      beforeEach(function() {
+        tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'camunda-dialog-'));
+
+        existingFilePath = path.join(tmpDir, 'existing.foo');
+        fs.writeFileSync(existingFilePath, 'contents');
+      });
+
+      afterEach(function() {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+      });
+
+
+      it('should confirm overwrite of existing file on Linux', async function() {
+
+        // given
+        electronDialog.setResponse([
+          { filePath: existingFilePath },
+          { response: 0 }
+        ]);
+
+        // when
+        const response = await dialog.showSaveDialog(assign({}, options, { file }));
+
+        // then
+        expect(response).to.equal(existingFilePath);
+
+        const dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+        expect(electronDialog.showMessageBox).to.have.been.called;
+        expect(dialogArgs.message).to.contain('existing.foo');
+        expect(dialogArgs.message).to.contain('already exists');
+      });
+
+
+      it('should NOT return filepath if overwrite is not confirmed', async function() {
+
+        // given
+        electronDialog.setResponse([
+          { filePath: existingFilePath },
+          { response: 1 }
+        ]);
+
+        // when
+        const response = await dialog.showSaveDialog(assign({}, options, { file }));
+
+        // then
+        expect(response).not.to.exist;
+      });
+
+
+      it('should NOT confirm overwrite on other platforms', async function() {
+
+        // given
+        dialog = new Dialog({
+          electronDialog,
+          config,
+          platform: 'win32',
+          userDesktopPath: USER_DESKTOP_PATH
+        });
+
+        electronDialog.setResponse({ filePath: existingFilePath });
+
+        // when
+        const response = await dialog.showSaveDialog(assign({}, options, { file }));
+
+        // then
+        expect(response).to.equal(existingFilePath);
+
+        expect(electronDialog.showMessageBox).not.to.have.been.called;
+      });
+
+
+      it('should NOT confirm overwrite if file does not exist', async function() {
+
+        // given
+        const filePath = path.join(tmpDir, 'new.foo');
+
+        electronDialog.setResponse({ filePath });
+
+        // when
+        const response = await dialog.showSaveDialog(assign({}, options, { file }));
+
+        // then
+        expect(response).to.equal(filePath);
+
+        expect(electronDialog.showMessageBox).not.to.have.been.called;
+      });
+
+
+      it('should confirm overwrite when extensionless selection matches existing extended file on Linux', async function() {
+
+        // given
+        const extensionlessPath = path.join(tmpDir, 'existing');
+        const saveOptions = {
+          file,
+          filters: [ {
+            name: 'foo',
+            extensions: [ 'foo' ]
+          } ],
+          title: 'Save as...'
+        };
+
+        electronDialog.setResponse([
+          { filePath: extensionlessPath },
+          { response: 1 }
+        ]);
+
+        // when
+        const response = await dialog.showSaveDialog(saveOptions);
+
+        // then
+        expect(response).not.to.exist;
+
+        const dialogArgs = getDialogArgs(electronDialog.showMessageBox);
+
+        expect(electronDialog.showMessageBox).to.have.been.called;
+        expect(dialogArgs.message).to.contain('existing.foo');
       });
 
     });
