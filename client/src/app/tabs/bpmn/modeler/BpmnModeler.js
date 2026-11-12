@@ -13,6 +13,7 @@ import BpmnModeler from 'camunda-bpmn-js/lib/camunda-platform/Modeler';
 import addExporterModule from '@bpmn-io/add-exporter';
 
 import completeDirectEditingModule from './features/complete-direct-editing';
+import contextPadShortcutHintsModule from './features/context-pad-shortcut-hints';
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from './features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
@@ -72,6 +73,7 @@ const defaultModules = BpmnModeler.prototype._modules;
 const extensionModules = [
   addExporterModule,
   completeDirectEditingModule,
+  contextPadShortcutHintsModule,
   globalClipboardModule,
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,

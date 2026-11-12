@@ -15,11 +15,18 @@ import {
 } from 'diagram-js/lib/features/keyboard/KeyboardUtil';
 
 import {
+  SHORTCUTS_KEY_BINDINGS
+} from 'bpmn-js/lib/features/keyboard/BpmnKeyboardBindings';
+
+import {
   findIndex,
   forEach,
   isArray,
   omit
 } from 'min-dash';
+
+export const APPEND_ELEMENT_SHORTCUT = 'A';
+export const REPLACE_ELEMENT_SHORTCUT = SHORTCUTS_KEY_BINDINGS.replaceElement.key;
 
 
 /**
@@ -324,7 +331,9 @@ function isRedo(event) {
 
 // r
 function isReplace(event) {
-  return isKey([ 'r', 'R' ], event) && !isCommandOrControl(event) && !isShift(event);
+  return isKey([ REPLACE_ELEMENT_SHORTCUT.toLowerCase(), REPLACE_ELEMENT_SHORTCUT ], event) &&
+    !isCommandOrControl(event) &&
+    !isShift(event);
 }
 
 // n
@@ -334,7 +343,9 @@ function isCreate(event) {
 
 // a
 function isAppend(event) {
-  return isKey([ 'a', 'A' ], event) && !isCommandOrControl(event) && !isShift(event);
+  return isKey([ APPEND_ELEMENT_SHORTCUT.toLowerCase(), APPEND_ELEMENT_SHORTCUT ], event) &&
+    !isCommandOrControl(event) &&
+    !isShift(event);
 }
 
 // Secondary delete shortcut
