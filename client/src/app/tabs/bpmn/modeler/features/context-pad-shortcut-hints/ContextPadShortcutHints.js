@@ -43,7 +43,7 @@ const TOOLTIP_OFFSET = 8;
 export default function ContextPadShortcutHints(eventBus, canvas, hoverTooltip) {
   const container = canvas.getContainer();
 
-  eventBus.on('contextPad.open', ({ current }) => {
+  eventBus.on('contextPad.open', 100, ({ current }) => {
     if (!current) {
       return;
     }
@@ -51,14 +51,21 @@ export default function ContextPadShortcutHints(eventBus, canvas, hoverTooltip) 
     Object.entries(ACTION_SHORTCUTS).forEach(([ id, shortcut ]) => {
       const entry = current.entries[ id ];
       const control = current.html.querySelector(`[data-action="${ id }"]`);
+      const title = entry && entry.title;
 
-      if (!entry || !entry.title || !control) {
+      if (!title || !control) {
         return;
       }
 
-      control.setAttribute('aria-label', entry.title);
+      control.setAttribute('aria-label', title);
       control.setAttribute('aria-keyshortcuts', shortcut);
       control.removeAttribute('title');
+
+      const tooltipWrapper = control.closest('.bio-properties-panel-tooltip-wrapper');
+
+      if (tooltipWrapper) {
+        tooltipWrapper.classList.add('djs-context-pad-tooltip--shortcut');
+      }
     });
   });
 

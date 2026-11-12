@@ -38,8 +38,8 @@ describe('ContextPadShortcutHints', function() {
     };
 
     const eventBus = {
-      on: (event, handler) => {
-        eventHandlers[ event ] = handler;
+      on: (event, priorityOrHandler, handler) => {
+        eventHandlers[ event ] = handler || priorityOrHandler;
       }
     };
 

@@ -3,6 +3,7 @@
   z-index: 1001;
 }
 
+.djs-context-pad-tooltip--shortcut .bio-properties-panel-tooltip,
 .djs-create-pad-tooltip--shortcut .bio-properties-panel-tooltip {
   display: none;
 }

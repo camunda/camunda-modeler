@@ -10,6 +10,7 @@
 
 import { expect } from 'chai';
 import TestContainer from 'mocha-test-container-support';
+import { waitFor } from '@testing-library/react';
 
 import BpmnModeler from '../../../src/app/tabs/bpmn/modeler/BpmnModeler';
 
@@ -39,12 +40,21 @@ inlineCSS(`
   }
 `);
 
+// The modeler integration harness does not load the application stylesheet.
+inlineCSS(`
+  .djs-context-pad-tooltip--shortcut .bio-properties-panel-tooltip,
+  .djs-create-pad-tooltip--shortcut .bio-properties-panel-tooltip {
+    display: none;
+  }
+`);
+
 
 describe('BpmnModeler', function() {
 
   this.timeout(10000);
 
   let modelerContainer;
+  let modelerForCleanup;
 
   beforeEach(function() {
     modelerContainer = document.createElement('div');
@@ -53,6 +63,13 @@ describe('BpmnModeler', function() {
     const container = TestContainer.get(this);
 
     container.appendChild(modelerContainer);
+  });
+
+  afterEach(function() {
+    if (modelerForCleanup) {
+      modelerForCleanup.destroy();
+      modelerForCleanup = null;
+    }
   });
 
 
@@ -112,6 +129,126 @@ describe('BpmnModeler', function() {
 
   });
 
+
+  describe('shortcut hints', function() {
+
+    it('should show the context-pad shortcut tooltip when the new context pad is enabled', async function() {
+
+      // given
+      const settings = {
+        get: () => true
+      };
+
+      const modeler = modelerForCleanup = await createModeler({
+        container: modelerContainer,
+        settings
+      });
+
+      const element = modeler.get('elementRegistry').get('StartEvent_1');
+
+      // when
+      modeler.get('contextPad').open(element);
+
+      const replaceEntry = modelerContainer.querySelector(
+        '.djs-context-pad [data-action="replace"]'
+      );
+
+      expect(replaceEntry).to.exist;
+
+      await assertShortcutTooltip({
+        container: modelerContainer,
+        target: replaceEntry,
+        title: 'Change element',
+        shortcut: 'R'
+      });
+
+      // then
+      expect(replaceEntry.getAttribute('aria-label')).to.equal('Change element');
+      expect(replaceEntry.getAttribute('aria-keyshortcuts')).to.equal('R');
+      expect(replaceEntry.hasAttribute('title')).to.equal(false);
+    });
+
+
+    it('should show the context-pad shortcut tooltip when the new context pad is disabled', async function() {
+
+      // given
+      const settings = {
+        get: () => false
+      };
+
+      const modeler = modelerForCleanup = await createModeler({
+        container: modelerContainer,
+        settings
+      });
+
+      const element = modeler.get('elementRegistry').get('StartEvent_1');
+
+      // when
+      modeler.get('contextPad').open(element);
+
+      const replaceEntry = modelerContainer.querySelector(
+        '.djs-context-pad [data-action="replace"]'
+      );
+
+      expect(replaceEntry).to.exist;
+
+      await assertShortcutTooltip({
+        container: modelerContainer,
+        target: replaceEntry,
+        title: 'Change element',
+        shortcut: 'R'
+      });
+
+      // then
+      expect(replaceEntry.getAttribute('aria-label')).to.equal('Change element');
+      expect(replaceEntry.getAttribute('aria-keyshortcuts')).to.equal('R');
+      expect(replaceEntry.hasAttribute('title')).to.equal(false);
+    });
+
+
+    it('should show one append-pad shortcut tooltip without a duplicate tooltip', async function() {
+
+      // given
+      const settings = {
+        get: () => true
+      };
+
+      const modeler = modelerForCleanup = await createModeler({
+        container: modelerContainer,
+        settings
+      });
+
+      const element = modeler.get('elementRegistry').get('StartEvent_1'),
+            appendCreatePad = modeler.get('appendCreatePad');
+
+      // when
+      appendCreatePad.open(element);
+
+      const appendEntry = modelerContainer.querySelector(
+        '.djs-create-pad [data-entry-id="append"]'
+      );
+
+      expect(appendEntry).to.exist;
+
+      await assertShortcutTooltip({
+        container: modelerContainer,
+        target: appendEntry,
+        title: 'Append element',
+        shortcut: 'A'
+      });
+
+      // then
+      const legacyTooltip = appendEntry.closest('.djs-create-pad-tooltip')
+        .querySelector('.bio-properties-panel-tooltip');
+
+      expect(appendEntry.getAttribute('aria-keyshortcuts')).to.equal('A');
+      expect(legacyTooltip).to.exist;
+      expect(getComputedStyle(legacyTooltip).display).to.equal('none');
+      expect(getVisibleTooltips(modelerContainer)).to.have.length(1);
+    });
+
+  });
+
 });
 
 // helpers //////////
@@ -128,6 +265,36 @@ async function createModeler(options = {}) {
   });
 
   return modeler.importXML(diagramXML).then(() => modeler);
+}
+
+async function assertShortcutTooltip({ container, target, title, shortcut }) {
+  const tooltipWrapper = target.closest('.bio-properties-panel-tooltip-wrapper');
+
+  if (tooltipWrapper) {
+    tooltipWrapper.dispatchEvent(new MouseEvent('mouseenter'));
+  }
+
+  target.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+
+  await waitFor(() => {
+    const tooltip = container.querySelector('.djs-hover-tooltip');
+
+    expect(tooltip).to.exist;
+    expect(tooltip.querySelector('.djs-palette-tooltip-label').textContent).to.equal(title);
+    expect(tooltip.querySelector('.djs-palette-tooltip-shortcut').textContent).to.equal(shortcut);
+    expect(getComputedStyle(tooltip).display).not.to.equal('none');
+  });
+
+  expect(getVisibleTooltips(container)).to.have.length(1);
+}
+
+function getVisibleTooltips(container) {
+  return Array.from(container.querySelectorAll(
+    '.djs-hover-tooltip, .bio-properties-panel-tooltip'
+  )).filter(tooltip => {
+    return getComputedStyle(tooltip).display !== 'none' &&
+      getComputedStyle(tooltip).visibility !== 'hidden';
+  });
 }
 
 function inlineCSS(css) {
