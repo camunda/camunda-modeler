@@ -34,6 +34,9 @@
     position: relative;
     background-color: var(--app-content-background-color);
 
+    /* tabIndex allows keyboard users to scroll the region,
+       even when the active tab has no focusable content
+       cf. https://github.com/camunda/camunda-modeler/issues/4446 */
     .panel__inner {
       position: absolute;
       inset: 0;
