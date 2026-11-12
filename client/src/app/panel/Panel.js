@@ -132,7 +132,7 @@ export default function Panel({ children, layout = {}, onLayoutChanged, onUpdate
       <div className="panel__body" onFocus={ updateMenu }>
         {
           isDefined(activeTab.id) && (
-            <TabsContent value={ activeTab.id } className="panel__inner">
+            <TabsContent value={ activeTab.id } className="panel__inner" tabIndex={ 0 }>
               {activeTab.body}
             </TabsContent>
           )

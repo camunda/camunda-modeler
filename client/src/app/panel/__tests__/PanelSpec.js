@@ -39,6 +39,26 @@ describe('<Panel>', function() {
   });
 
 
+  it('should make scrollable panel content keyboard accessible', function() {
+
+    // given
+    const tab = createTab({
+      children: <div data-testid="tab-content" />
+    });
+
+    // when
+    const { container } = renderPanel({
+      children: tab
+    });
+
+    // then
+    const panelInner = container.querySelector('.panel__inner');
+
+    expect(panelInner).to.exist;
+    expect(panelInner.getAttribute('tabindex')).to.equal('0');
+  });
+
+
   describe('tabs', function() {
 
     it('should render tab', function() {
