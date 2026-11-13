@@ -9,6 +9,10 @@
  */
 
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../util/Flags';
+import {
+  APPEND_ELEMENT_SHORTCUT,
+  REPLACE_ELEMENT_SHORTCUT
+} from '../KeyboardBindings';
 
 const SPACE_KEY = ' ';
 
@@ -276,7 +280,7 @@ export function getSelectionEntries({
   if (isDefined(appendElement)) {
     menuEntries.push({
       label: 'Append Element',
-      accelerator: 'A',
+      accelerator: APPEND_ELEMENT_SHORTCUT,
       enabled: appendElement,
       action: 'appendElement'
     });
@@ -297,7 +301,7 @@ export function getSelectionEntries({
   if (isDefined(replaceElement)) {
     menuEntries.push({
       label: 'Replace Element',
-      accelerator: 'R',
+      accelerator: REPLACE_ELEMENT_SHORTCUT,
       enabled: replaceElement,
       action: 'replaceElement'
     });
