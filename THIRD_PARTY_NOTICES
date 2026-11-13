@@ -135,14 +135,14 @@ This project incorporates components from the projects listed below. The origina
 128.  @formatjs/icu-messageformat-parser@2.11.4 (https://github.com/formatjs/formatjs.git)
 129.  @formatjs/icu-skeleton-parser@1.8.16 (https://github.com/formatjs/formatjs.git)
 130.  aria-hidden@1.2.6 (git+https://github.com/theKashey/aria-hidden.git)
-131.  camunda-modeler@5.52.0 (https://github.com/camunda/camunda-modeler)
-132.  bpmn-js-element-templates@2.40.1 (https://github.com/bpmn-io/bpmn-js-element-templates)
+131.  camunda-modeler@5.53.0-rc.0 (https://github.com/camunda/camunda-modeler)
+132.  bpmn-js-element-templates@2.40.2 (https://github.com/bpmn-io/bpmn-js-element-templates)
 133.  bpmnlint@12.0.0 (https://github.com/bpmn-io/bpmnlint)
 134.  bpmn-js-properties-panel@5.65.3 (https://github.com/bpmn-io/bpmn-js-properties-panel)
 135.  bpmn-js@18.31.1 (https://github.com/bpmn-io/bpmn-js)
 136.  bpmnlint-plugin-camunda-compat@2.63.0 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 137.  camunda-bpmn-js@5.38.0 (https://github.com/camunda/camunda-bpmn-js)
-138.  @bpmn-io/c4-theme@0.3.2 (git+https://github.com/bpmn-io/themes.git)
+138.  @bpmn-io/c4-theme@0.3.3 (git+https://github.com/bpmn-io/themes.git)
 139.  @camunda/design-system@0.76.0 (git+https://github.com/camunda/design-system.git)
 140.  @camunda/form-playground@0.28.0 (git+https://github.com/camunda/form-playground.git)
 141.  camunda-dmn-js@4.0.0 (https://github.com/camunda/camunda-dmn-js)
@@ -366,7 +366,6 @@ This project incorporates components from the projects listed below. The origina
 359.  temporal-polyfill@1.0.6 (https://github.com/fullcalendar/temporal-polyfill.git)
 360.  temporal-utils@1.0.3 (https://github.com/fullcalendar/temporal-polyfill.git)
 361.  @radix-ui/react-toggle-group@1.1.19 (git+https://github.com/radix-ui/primitives.git)
-362.  vscode-windows-ca-certs@0.3.0 (git+https://github.com/Microsoft/vscode-windows-ca-certs.git)
 
 
 %% parents@1.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -5007,14 +5006,14 @@ SOFTWARE.
 END OF aria-hidden@1.2.6 NOTICES AND INFORMATION
 
 
-%% camunda-modeler@5.52.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-modeler@5.53.0-rc.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 null
 ==========================================
-END OF camunda-modeler@5.52.0 NOTICES AND INFORMATION
+END OF camunda-modeler@5.53.0-rc.0 NOTICES AND INFORMATION
 
 
-%% bpmn-js-element-templates@2.40.1 NOTICES AND INFORMATION BEGIN HERE
+%% bpmn-js-element-templates@2.40.2 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -5038,7 +5037,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF bpmn-js-element-templates@2.40.1 NOTICES AND INFORMATION
+END OF bpmn-js-element-templates@2.40.2 NOTICES AND INFORMATION
 
 
 %% bpmnlint@12.0.0 NOTICES AND INFORMATION BEGIN HERE
@@ -5179,7 +5178,7 @@ THE SOFTWARE.
 END OF camunda-bpmn-js@5.38.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/c4-theme@0.3.2 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/c4-theme@0.3.3 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -5204,7 +5203,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF @bpmn-io/c4-theme@0.3.2 NOTICES AND INFORMATION
+END OF @bpmn-io/c4-theme@0.3.3 NOTICES AND INFORMATION
 
 
 %% @camunda/design-system@0.76.0 NOTICES AND INFORMATION BEGIN HERE
@@ -12387,40 +12386,3 @@ SOFTWARE.
 
 ==========================================
 END OF @radix-ui/react-toggle-group@1.1.19 NOTICES AND INFORMATION
-
-
-%% vscode-windows-ca-certs@0.3.0 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-BSD 3-Clause License
-
-Copyright (c) 2016, Stas Ukolov
-Copyright (c) Microsoft Corporation
-
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-==========================================
-END OF vscode-windows-ca-certs@0.3.0 NOTICES AND INFORMATION

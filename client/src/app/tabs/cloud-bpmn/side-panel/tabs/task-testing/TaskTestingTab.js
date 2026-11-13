@@ -42,13 +42,13 @@ export const CANNOT_CONNECT_TITLE = 'Couldn\'t connect to Camunda 8';
 export const CANNOT_CONNECT_DESCRIPTION = 'Configure a REST connection to Camunda 8.';
 
 export const UNSUPPORTED_PROTOCOL_TITLE = 'REST connection required';
-export const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Task testing requires a REST connection. The current connection uses gRPC.';
+export const UNSUPPORTED_PROTOCOL_DESCRIPTION = 'Validation requires a REST connection. The current connection uses gRPC.';
 
 export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_TITLE = 'Execution platform version not supported';
-export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Task testing requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
+export const UNSUPPORTED_EXECUTION_PLATFORM_VERSION_DESCRIPTION = `Validation requires Camunda ${MIN_SUPPORTED_EXECUTION_PLATFORM_VERSION} or higher`;
 
 export const LINTING_ERRORS_TITLE = 'Diagram has errors';
-export const LINTING_ERRORS_DESCRIPTION = 'Task testing requires a diagram without errors.';
+export const LINTING_ERRORS_DESCRIPTION = 'Validation requires a diagram without errors.';
 
 export const DEFAULT_CONFIGURE_DESCRIPTION = 'Configure connection.';
 
@@ -169,7 +169,7 @@ export default function TaskTestingTab(props) {
   const handleTaskExecutionInterrupted = useCallback(() => {
     onAction('display-notification', {
       type: 'info',
-      title: 'Test canceled',
+      title: 'Execution canceled',
     });
   }, [ onAction ]);
 

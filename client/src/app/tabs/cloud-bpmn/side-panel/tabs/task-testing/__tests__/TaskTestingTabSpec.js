@@ -55,7 +55,7 @@ describe('<TaskTestingTab>', function() {
     renderTab(modeler);
 
     // then
-    expect(screen.getByText('Select a task, subprocess, or call activity to start testing.')).to.exist;
+    expect(screen.getByText('Select a task, subprocess, or call activity to validate it.')).to.exist;
   });
 
 
@@ -68,7 +68,7 @@ describe('<TaskTestingTab>', function() {
     await selectElement(modeler, 'Task_1');
 
     // then
-    expect(screen.getByRole('button', { name: 'Run test' })).to.exist;
+    expect(screen.getByRole('button', { name: 'Execute' })).to.exist;
   });
 
 

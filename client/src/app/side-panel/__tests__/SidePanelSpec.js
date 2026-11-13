@@ -198,6 +198,35 @@ describe('<SidePanel>', function() {
   });
 
 
+  it('should switch back to previous tab after layout changed', function() {
+
+    // given
+    const onLayoutChanged = spy();
+
+    const renderPanel = tab => (
+      <SidePanel
+        layout={ { sidePanel: { open: true, width: DEFAULT_WIDTH, tab } } }
+        onLayoutChanged={ onLayoutChanged }>
+        <SidePanel.Tab id="foo" label="Foo"><div>Foo</div></SidePanel.Tab>
+        <SidePanel.Tab id="bar" label="Bar"><div>Bar</div></SidePanel.Tab>
+      </SidePanel>
+    );
+
+    const { container, rerender } = render(renderPanel('foo'));
+
+    fireEvent.mouseDown(container.querySelectorAll('.side-panel__tab')[1]);
+
+    rerender(renderPanel('bar'));
+
+    // when
+    fireEvent.mouseDown(container.querySelectorAll('.side-panel__tab')[0]);
+
+    // then
+    expect(onLayoutChanged).to.have.been.calledTwice;
+    expect(onLayoutChanged.secondCall.args[0].sidePanel.tab).to.equal('foo');
+  });
+
+
   it('should render header', function() {
 
     // when
