@@ -35,7 +35,7 @@ import {
   ENGINES
 } from '../util/Engines';
 
-import EmptyTab from './EmptyTab';
+import EmptyTab from './empty-tab';
 
 import parseDiagramType from './util/parseDiagramType';
 
@@ -213,6 +213,7 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'BPMN diagram',
+            description: 'Model and automate a process',
             group: 'Camunda 8',
             action: 'create-cloud-bpmn-diagram'
           } ];
@@ -261,6 +262,7 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'BPMN diagram',
+            description: 'Model and automate a process',
             group: 'Camunda 7',
             action: 'create-bpmn-diagram'
           } ];
@@ -328,6 +330,7 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'DMN diagram',
+            description: 'Define a business decision',
             group: 'Camunda 8',
             action: 'create-cloud-dmn-diagram'
           } ];
@@ -366,6 +369,7 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'DMN diagram',
+            description: 'Define a business decision',
             group: 'Camunda 7',
             action: 'create-dmn-diagram'
           } ];
@@ -411,6 +415,7 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'Form',
+            description: 'Design a form for a user task',
             group: 'Camunda 8',
             action: 'create-cloud-form'
           } ];
@@ -445,6 +450,7 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'Form',
+            description: 'Design a form for a user task',
             group: 'Camunda 7',
             action: 'create-form'
           } ];
@@ -479,6 +485,7 @@ export default class TabsProvider {
         getNewFileMenu() {
           return [ {
             label: 'RPA script',
+            description: 'Automate a task in a desktop or web app',
             group: 'Camunda 8',
             action: 'create-diagram',
             options: {

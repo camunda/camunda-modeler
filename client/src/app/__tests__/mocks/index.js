@@ -15,7 +15,7 @@ import {
   forEach
 } from 'min-dash';
 
-import EmptyTab from '../../EmptyTab';
+import EmptyTab from '../../empty-tab';
 
 import { Linter as BpmnLinter } from 'test/mocks/linting';
 
@@ -670,6 +670,10 @@ export class SystemClipboard extends Mock {
 
 export class Deployment extends Mock {
   getConnectionForTab() {}
+
+  getDefaultEndpoint() {
+    return null;
+  }
 
   deploy() {
     return { success: true };
