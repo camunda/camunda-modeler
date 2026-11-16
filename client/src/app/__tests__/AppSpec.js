@@ -2298,6 +2298,27 @@ describe('<App>', function() {
     });
 
 
+    it('should emit <app.recentTabsChanged> event', async function() {
+
+      // given
+      const eventSpy = sinon.spy();
+
+      const { app } = createApp();
+
+      const [ tab ] = await app.openFiles([ createFile('1.bpmn') ]);
+
+      app.on('app.recentTabsChanged', eventSpy);
+
+      // when
+      await app.closeTab(tab);
+
+      // then
+      await waitFor(() => {
+        expect(eventSpy).to.have.been.calledWith(sinon.match({ recentTabs: [ tab ] }));
+      });
+    });
+
+
     it('reopen recent tab', async function() {
 
       // given

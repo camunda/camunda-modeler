@@ -35,6 +35,8 @@ export default function useBuiltInSettings(settings) {
   }, []);
 }
 
+export const SETTINGS_KEY_START_PAGE_PREFERRED_ENGINE = 'app.startPagePreferredEngine';
+
 export const schema = {
   id: 'app',
   order: 0,
@@ -72,6 +74,19 @@ export const schema = {
       label: 'Disable plugins',
       documentationUrl: utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/plugins/#disabling-plugins'),
       restartRequired: true,
+      section: 'general'
+    },
+
+    // managed by the start page switch
+    [ SETTINGS_KEY_START_PAGE_PREFERRED_ENGINE ]: {
+      type: 'select',
+      options: [
+        { label: 'Camunda 8', value: '8' },
+        { label: 'Camunda 7', value: '7' }
+      ],
+      default: '8',
+      label: 'Camunda version shown on the start page',
+      hidden: true,
       section: 'general'
     },
 

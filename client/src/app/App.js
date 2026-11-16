@@ -1488,6 +1488,12 @@ export class App extends PureComponent {
       });
     }
 
+    if (recentTabs !== prevState.recentTabs) {
+      this.emit('app.recentTabsChanged', {
+        recentTabs
+      });
+    }
+
     if (layout !== prevState.layout) {
       this.emit('layout.changed', {
         prevLayout: prevState.layout,
