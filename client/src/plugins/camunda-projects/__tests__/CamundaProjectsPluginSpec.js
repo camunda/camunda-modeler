@@ -106,6 +106,167 @@ describe('<CamundaProjectsPlugin>', function() {
     }));
   });
 
+
+  describe('create Camunda project with files', function() {
+
+    const FILES = [
+      { name: 'diagram.bpmn', contents: '<bpmn />' },
+      { name: 'form.form', contents: '{}' }
+    ];
+
+
+    it('should show the given dialog title', async function() {
+
+      // given
+      const dialog = { showOpenFilesDialog: sinon.stub().resolves([]) };
+
+      const { emit } = createCamundaProjectsPlugin({ _getGlobal: createGlobals({ dialog }) });
+
+      // when
+      act(() => emit('create-camunda-project', { title: 'Create Project from Blueprint', files: FILES }));
+
+      // then
+      await waitFor(() => {
+        expect(dialog.showOpenFilesDialog).to.have.been.calledWithMatch({ title: 'Create Project from Blueprint' });
+      });
+    });
+
+
+    it('should write the project file and the files', async function() {
+
+      // given
+      const fileSystem = createFileSystem();
+
+      const { emit } = createCamundaProjectsPlugin({ _getGlobal: createGlobals({ fileSystem }) });
+
+      // when
+      act(() => emit('create-camunda-project', { files: FILES }));
+
+      // then
+      await waitFor(() => {
+        expect(fileSystem.writeFile.args.map(([ path ]) => path)).to.eql([
+          '/project/camunda.json',
+          '/project/diagram.bpmn',
+          '/project/form.form'
+        ]);
+      });
+    });
+
+
+    it('should open the files, the first one last', async function() {
+
+      // given
+      const triggerAction = sinon.spy();
+
+      const { emit } = createCamundaProjectsPlugin({ triggerAction, _getGlobal: createGlobals() });
+
+      // when
+      act(() => emit('create-camunda-project', { files: FILES }));
+
+      // then
+      await waitFor(() => {
+        expect(triggerAction.withArgs('open-diagram').args.map(([ , { path } ]) => path)).to.eql([
+          '/project/form.form',
+          '/project/diagram.bpmn'
+        ]);
+      });
+    });
+
+
+    it('should keep an existing project file', async function() {
+
+      // given
+      const fileSystem = createFileSystem([ '/project/camunda.json' ]);
+
+      const { emit } = createCamundaProjectsPlugin({ _getGlobal: createGlobals({ fileSystem }) });
+
+      // when
+      act(() => emit('create-camunda-project', { files: FILES }));
+
+      // then
+      await waitFor(() => expect(fileSystem.writeFile).to.have.been.calledTwice);
+
+      expect(fileSystem.writeFile).not.to.have.been.calledWith('/project/camunda.json');
+    });
+
+
+    it('should NOT overwrite existing files', async function() {
+
+      // given
+      const fileSystem = createFileSystem([ '/project/form.form' ]);
+      const triggerAction = sinon.spy();
+
+      const { emit } = createCamundaProjectsPlugin({ triggerAction, _getGlobal: createGlobals({ fileSystem }) });
+
+      // when
+      act(() => emit('create-camunda-project', { files: FILES }));
+
+      // then
+      await waitFor(() => {
+        expect(triggerAction).to.have.been.calledWith('display-notification', sinon.match({ type: 'error' }));
+      });
+
+      expect(fileSystem.writeFile).not.to.have.been.called;
+    });
+
+
+    it('should NOT create a project with files that cannot be opened', async function() {
+
+      // given
+      const fileSystem = createFileSystem();
+      const triggerAction = sinon.spy();
+
+      const tabsProvider = { hasProvider: type => type !== 'form' };
+
+      const { emit } = createCamundaProjectsPlugin({
+        tabsProvider,
+        triggerAction,
+        _getGlobal: createGlobals({ fileSystem })
+      });
+
+      // when
+      act(() => emit('create-camunda-project', { files: FILES }));
+
+      // then
+      await waitFor(() => {
+        expect(triggerAction).to.have.been.calledWith('display-notification', sinon.match({
+          type: 'error',
+          title: 'Project not created',
+          content: sinon.match('form.form')
+        }));
+      });
+
+      expect(fileSystem.writeFile).not.to.have.been.called;
+    });
+
+
+    it('should report a failed write', async function() {
+
+      // given
+      const fileSystem = createFileSystem();
+      const triggerAction = sinon.spy();
+
+      fileSystem.writeFile.onSecondCall().rejects(new Error('disk full'));
+
+      const { emit } = createCamundaProjectsPlugin({ triggerAction, _getGlobal: createGlobals({ fileSystem }) });
+
+      // when
+      act(() => emit('create-camunda-project', { files: FILES }));
+
+      // then
+      await waitFor(() => {
+        expect(triggerAction).to.have.been.calledWith('display-notification', sinon.match({
+          type: 'error',
+          title: 'Project not created',
+          content: sinon.match('disk full')
+        }));
+      });
+
+      expect(triggerAction).not.to.have.been.calledWith('open-diagram');
+    });
+
+  });
+
   describe('resources.reload dispatch', function() {
 
     it('should reload when the active tab is a cloud-bpmn editor', async function() {
@@ -258,6 +419,48 @@ describe('<CamundaProjectsPlugin>', function() {
 
 // helpers //////////
 
+/**
+ * @param {Array<string>} [existingPaths]
+ */
+function createFileSystem(existingPaths = []) {
+  return {
+    writeFile: sinon.stub().resolves(),
+    readFileStats: sinon.spy(async ({ path }) => ({ path, lastModified: existingPaths.includes(path) ? 1 : 0 }))
+  };
+}
+
+function createGlobals({
+  dialog = { showOpenFilesDialog: sinon.stub().resolves([ '/project' ]) },
+  fileSystem = createFileSystem()
+} = {}) {
+  return (name) => {
+    if (name === 'dialog') {
+      return dialog;
+    } else if (name === 'fileSystem') {
+      return fileSystem;
+    } else if (name === 'backend') {
+      return {
+        on() {
+          return { cancel() {} };
+        },
+        send() {}
+      };
+    } else if (name === 'deployment') {
+      return new Deployment({
+        async getConnectionForTab() {
+          return {};
+        },
+        registerResourcesProvider() {},
+        unregisterResourcesProvider() {}
+      });
+    } else if (name === 'zeebeAPI') {
+      return new ZeebeAPI();
+    } else if (name === 'startInstance') {
+      return {};
+    }
+  };
+}
+
 function createCamundaProjectsPlugin(props = {}) {
   const {
     triggerAction = () => {},
@@ -307,7 +510,7 @@ function createCamundaProjectsPlugin(props = {}) {
 
   const _getFromApp = (prop) => {
     if (prop === 'props') {
-      return { tabsProvider: {} };
+      return { tabsProvider: props.tabsProvider || { hasProvider: () => true } };
     }
   };
 
