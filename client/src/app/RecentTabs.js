@@ -8,7 +8,27 @@
  * except in compliance with the MIT License.
  */
 
+const CONFIG_KEY_RECENT_TABS = 'recentTabs';
+
 export class RecentTabs {
+
+  /**
+   * Get the saved files of the recently closed tabs, newest first.
+   *
+   * @param {Object} config
+   *
+   * @return {Promise<Array<{ name: string, path: string }>>}
+   */
+  static async getRecentFiles(config) {
+    const elements = await config.get(CONFIG_KEY_RECENT_TABS) || [];
+
+    return elements
+      .map(element => element?.file)
+      .filter(file => file?.path)
+      .reverse()
+      .map(({ name, path }) => ({ name, path }));
+  }
+
   constructor(options = {}) {
     const {
       config,
@@ -17,7 +37,7 @@ export class RecentTabs {
 
     this._setState = setState;
     this._config = config;
-    this._configKey = 'recentTabs';
+    this._configKey = CONFIG_KEY_RECENT_TABS;
     this._maxLength = 10;
     this._elements = [];
   }
