@@ -117,6 +117,11 @@ function LintingTabItem(props) {
 
   const documentationUrl = meta?.documentation?.url;
   const reportName = getReportName(report);
+  const action = report.action || (rule === 'element-templates/update' ? {
+    label: 'Update',
+    handler: 'applyLintFix',
+    options: report
+  } : null);
 
   return <div
     onClick={ onClick }
@@ -146,17 +151,17 @@ function LintingTabItem(props) {
         )
       }
       {
-        report.action && (
+        action && (
           <Link asChild>
             <button
               type="button"
               onClick={ (event) => {
                 event.preventDefault();
                 stopPropagation(event);
-                onAction(report.action.handler, report.action.options);
+                onAction(action.handler, action.options);
               } }
             >
-              { report.action.label }
+              { action.label }
             </button>
           </Link>
         )

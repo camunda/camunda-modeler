@@ -14,6 +14,8 @@ import debug from 'debug';
 
 import { isFunction } from 'min-dash';
 
+import { resolveFix } from '@camunda/linting-autofix';
+
 import {
   Loader
 } from '../../primitives';
@@ -905,6 +907,21 @@ export class BpmnEditor extends CachedComponent {
 
     if (action === 'showLintError') {
       this.getModeler().get('linting').showError(context);
+
+      return;
+    }
+
+    if (action === 'applyLintFix') {
+      const element = modeler.get('elementRegistry').get(context.id);
+      const fix = resolveFix(context, element, {
+        elementTemplates: modeler.get('elementTemplates', false)
+      });
+
+      if (fix) {
+        modeler.get('commandStack').execute('properties-panel.multi-command-executor', fix.apply());
+
+        this.triggerAction('showLintError', context);
+      }
 
       return;
     }
