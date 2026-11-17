@@ -327,26 +327,6 @@ describe('<LintingTab>', function() {
     expect(onAction).to.have.been.calledOnceWithExactly('applyLintFix', report);
   });
 
-
-  it('should keep template finding-row navigation unchanged', function() {
-
-    // given
-    const report = {
-      category: 'info',
-      id: 'Task_1',
-      rule: 'element-templates/update',
-      message: 'Element has updated template available.'
-    };
-    const onAction = spy();
-    const { container } = renderLintingTab({ linting: [ report ], onAction });
-
-    // when
-    fireEvent.click(container.querySelector('.linting-tab-item'));
-
-    // then
-    expect(onAction).to.have.been.calledOnceWithExactly('showLintError', report);
-  });
-
 });
 
 

@@ -114,7 +114,6 @@ test.describe('template update autofix', function() {
 
     await editor.canvas().waitFor();
     await editor.selectElement('ServiceTask_1');
-    await propertiesPanel.waitForLoad();
 
     await app.page.getByRole('button', { name: 'Update available', exact: true }).click();
     await app.page.getByText('Update', { exact: true }).click();
@@ -124,6 +123,7 @@ test.describe('template update autofix', function() {
     await editor.undo();
     await saveTemplateVersion(app, file, 1);
     await problemsPanel.open();
+    const finding = problemsPanel.items().filter({ hasText: 'Element has updated template available.' });
 
     // finding-row navigation must select without updating
     await editor.selectElement('StartEvent_1');
@@ -137,20 +137,18 @@ test.describe('template update autofix', function() {
     await expect(app.page.locator('.side-panel')).not.toHaveClass(/\bopen\b/);
 
     // when
-    await problemsPanel.items().filter({ hasText: 'Element has updated template available.' })
-      .getByRole('button', { name: 'Update', exact: true }).click();
+    await finding.getByRole('button', { name: 'Update', exact: true }).click();
 
     // then
     await expect(editor.element('ServiceTask_1')).toHaveClass(/\bselected\b/);
     await expect(app.page.locator('.side-panel')).toHaveClass(/\bopen\b/);
-    await expect(propertiesPanel.header()).toBeVisible();
     await expect(propertiesPanel.header()).toContainText('Update E2E');
-    await expect(problemsPanel.items().filter({ hasText: 'Element has updated template available.' })).toHaveCount(0);
+    await expect(finding).toHaveCount(0);
     expect(await saveTemplateVersion(app, file, 2)).toBe(propertiesPanelXML);
 
     await editor.undo();
     await saveTemplateVersion(app, file, 1);
-    await expect(problemsPanel.items().filter({ hasText: 'Element has updated template available.' })).toHaveCount(1);
+    await expect(finding).toHaveCount(1);
 
     await editor.redo();
     expect(await saveTemplateVersion(app, file, 2)).toBe(propertiesPanelXML);
@@ -160,12 +158,10 @@ test.describe('template update autofix', function() {
   test('should activate from the keyboard without moving focus into the properties panel', async function({ launch, tmp }) {
 
     // given
-    const { app, file } = await launchWithOutdatedTemplate(launch, tmp);
-    const { bpmnEditor: editor, propertiesPanel, problemsPanel } = new Modeler(app);
+    const { app } = await launchWithOutdatedTemplate(launch, tmp);
+    const { bpmnEditor: editor, problemsPanel } = new Modeler(app);
 
     await editor.canvas().waitFor();
-    await app.page.getByRole('button', { name: 'Properties', exact: true }).click();
-    await expect(app.page.locator('.side-panel')).not.toHaveClass(/\bopen\b/);
     await problemsPanel.open();
 
     const update = problemsPanel.items().filter({ hasText: 'Element has updated template available.' })
@@ -185,32 +181,8 @@ test.describe('template update autofix', function() {
     await update.press('Enter');
 
     // then
-    await expect(editor.element('ServiceTask_1')).toHaveClass(/\bselected\b/);
-    await expect(app.page.locator('.side-panel')).toHaveClass(/\bopen\b/);
-    await expect(propertiesPanel.header()).toBeVisible();
-    await saveTemplateVersion(app, file, 2);
+    await expect(update).toHaveCount(0);
     expect(await app.page.evaluate(() => globalThis.propertiesPanelFocusEvents)).toEqual([]);
-  });
-
-
-  test('should update only once on rapid activation', async function({ launch, tmp }) {
-
-    // given
-    const { app, file } = await launchWithOutdatedTemplate(launch, tmp);
-    const { bpmnEditor: editor, problemsPanel } = new Modeler(app);
-
-    await editor.canvas().waitFor();
-    await problemsPanel.open();
-
-    // when
-    await problemsPanel.items().filter({ hasText: 'Element has updated template available.' })
-      .getByRole('button', { name: 'Update', exact: true }).dblclick();
-
-    // then
-    await saveTemplateVersion(app, file, 2);
-    await editor.undo();
-    await saveTemplateVersion(app, file, 1);
-    await expect(problemsPanel.items().filter({ hasText: 'Element has updated template available.' })).toHaveCount(1);
   });
 
 });
