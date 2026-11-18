@@ -8,7 +8,11 @@
  * except in compliance with the MIT License.
  */
 
-import { registerClientPlugin } from 'camunda-modeler-plugin-helpers';
+import {
+  registerCloudFormJSPlugin,
+  registerFormJSPlugin,
+  registerPlatformFormJSPlugin
+} from 'camunda-modeler-plugin-helpers';
 
 import {
   EmailFieldModule,
@@ -18,23 +22,14 @@ import {
 
 /*
  * A custom form field must be known to both, the form editor
- * and the form preview (viewer).
- *
- * Plug-ins may use <registerFormJSPlugin>, <registerCloudFormJSPlugin> and
- * <registerPlatformFormJSPlugin> once available in camunda-modeler-plugin-helpers.
+ * and the form preview (viewer), which is the default of the helpers.
  */
 
 // Camunda 7 and Camunda 8
-registerFormField(EmailFieldModule, 'form.modeler');
+registerFormJSPlugin(EmailFieldModule);
 
 // Camunda 7
-registerFormField(PhoneFieldModule, 'form.platform.modeler');
+registerPlatformFormJSPlugin(PhoneFieldModule);
 
 // Camunda 8
-registerFormField(PercentageFieldModule, 'form.cloud.modeler');
-
-
-function registerFormField(module, prefix) {
-  registerClientPlugin(module, `${ prefix }.editor.additionalModules`);
-  registerClientPlugin(module, `${ prefix }.viewer.additionalModules`);
-}
+registerCloudFormJSPlugin(PercentageFieldModule);
