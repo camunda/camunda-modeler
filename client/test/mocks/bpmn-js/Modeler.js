@@ -169,6 +169,7 @@ export default class Modeler {
       variableResolver: {},
       feelPopup: {
         registerProvider() {},
+        commit() {},
         close() {}
       }
     };

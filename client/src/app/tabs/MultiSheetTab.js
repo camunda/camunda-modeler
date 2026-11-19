@@ -291,7 +291,11 @@ export class MultiSheetTab extends CachedComponent {
       });
     }
 
-    const xml = await this.editorRef.current.getXML();
+    const editor = this.editorRef.current;
+
+    editor.commitPendingEdits?.();
+
+    const xml = await editor.getXML();
 
     this.setCached({
       activeSheet: sheet,

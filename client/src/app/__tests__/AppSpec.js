@@ -5497,7 +5497,7 @@ describe('<App>', function() {
 
         // when
         dialog.setShowReloadModelerDialogResponse({ button: 'reload' });
-        app.reloadModeler();
+        await app.reloadModeler();
 
         // then
         expect(reload).to.have.been.called;
@@ -5580,7 +5580,7 @@ describe('<App>', function() {
 
         // when
         dialog.setShowReloadModelerDialogResponse({ button: 'cancel' });
-        app.reloadModeler();
+        await app.reloadModeler();
 
         // then
         expect(showReloadDialog).to.have.been.called;
