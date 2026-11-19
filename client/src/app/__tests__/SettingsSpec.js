@@ -353,5 +353,29 @@ describe('Settings', function() {
       expect(listener).to.not.have.been.called;
     });
 
+
+    it('should NOT fail loading because of a listener of an unregistered setting', async function() {
+
+      // given
+      const listener = sinon.spy();
+
+      const settings = new Settings({
+        config: {
+          get: sinon.stub().resolves({ 'test.name': 'foo' }),
+          set() {}
+        }
+      });
+
+      settings.register(settingsMock);
+      settings.subscribe('other.name', sinon.spy());
+      settings.subscribe('test.name', listener);
+
+      // when
+      await settings._load();
+
+      // then
+      expect(listener).to.have.been.calledWith({ value: 'foo' });
+    });
+
   });
 });

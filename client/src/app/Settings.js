@@ -281,6 +281,12 @@ export default class Settings {
    * @param {string} key
    */
   _notify(key) {
+
+    // listeners of a setting not registered yet are called on register
+    if (!this.getSchema(key)) {
+      return;
+    }
+
     forEach(this._listeners[key], listener => {
       listener({ value: this._get(key) });
     });
