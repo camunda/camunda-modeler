@@ -22,27 +22,31 @@ export default class LinkEventHandler {
 
     for (const parent of TRACKED_LINK_PARENT_IDS) {
 
-      if (target.matches(`#${parent} a[href]`)) {
+      // the click may land on the label or icon inside the link or button
+      const link = target.closest(`#${parent} a[href]`);
+      const button = target.closest(`#${parent} button`);
+
+      if (link) {
         payload = {
           parent,
-          label: target.textContent
+          label: link.textContent
         };
         payloadType = 'link';
 
         // Only provide href for external links
-        if (target.href.startsWith('http') && !target.href.startsWith('http://localhost')) {
-          payload.link = target.href;
+        if (link.href.startsWith('http') && !link.href.startsWith('http://localhost')) {
+          payload.link = link.href;
           payload.type = 'external-link';
         } else {
           payload.type = 'internal-link';
         }
       }
 
-      if (target.matches(`#${parent} button`)) {
+      if (button) {
         payloadType = 'button';
         payload = {
           parent,
-          label: target.textContent,
+          label: button.textContent,
           type: payloadType
         };
       }
