@@ -38,6 +38,7 @@
     "@lezer/highlight": "^1.2.5",
     "@sentry/electron": "^8.2.0",
     "@uiw/codemirror-theme-vscode": "^4.25.12",
+    "bpmn-auto-layout": "^1.3.0",
     "bpmn-js": "^18.31.1",
     "bpmn-js-element-templates": "^2.40.2",
     "bpmn-js-properties-panel": "^5.65.3",
