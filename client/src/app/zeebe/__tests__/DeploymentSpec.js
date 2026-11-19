@@ -403,6 +403,26 @@ describe('Deployment', function() {
 
   describe('#getEndpoints', function() {
 
+    it('should return empty array before the connections setting is registered', function() {
+
+      // given
+      const settings = {
+        get: () => {
+          throw new Error('not registered');
+        },
+        getSchema: () => undefined
+      };
+
+      const deployment = createDeployment({ settings });
+
+      // when
+      const endpoints = deployment.getEndpoints();
+
+      // then
+      expect(endpoints).to.deep.equal([]);
+    });
+
+
     it('should return empty array when settings returns null', function() {
 
       // given
@@ -936,10 +956,14 @@ function createDeployment(options = {}) {
     tabStorage = new MockTabStorage(),
     config = new MockConfig(),
     zeebeAPI = new MockZeebeAPI(),
-    settings = { get: () => [] }
+    settings = {}
   } = options;
 
-  return new Deployment(tabStorage, config, zeebeAPI, settings);
+  return new Deployment(tabStorage, config, zeebeAPI, {
+    get: () => [],
+    getSchema: () => ({}),
+    ...settings
+  });
 }
 
 function createMockFile(overrides = {}) {
