@@ -10,34 +10,9 @@
 
 import Flags, { DISABLE_ADJUST_ORIGIN } from '../../util/Flags';
 
-const SPACE_KEY = ' ';
+import { COLORS } from './colorPickerColors';
 
-const COLORS = [
-  {
-    title: 'Default',
-    fill: undefined,
-    stroke: undefined
-  }, {
-    title: 'Blue',
-    fill: '#BBDEFB',
-    stroke: '#0D4372'
-  }, {
-    title: 'Orange',
-    fill: '#FFE0B2',
-    stroke: '#6B3C00'
-  }, {
-    title: 'Green',
-    fill: '#C8E6C9',
-    stroke: '#205022'
-  }, {
-    title: 'Red',
-    fill: '#FFCDD2',
-    stroke: '#831311'
-  }, {
-    title: 'Purple',
-    fill: '#E1BEE7',
-    stroke: '#5B176D'
-  } ];
+const SPACE_KEY = ' ';
 
 export function getAlignDistributeEntries({
   align,
@@ -86,14 +61,14 @@ export function getColorEntries({
     enabled: setColor,
     submenu: COLORS.map(color => {
       return {
-        label: `${color.title}`,
+        label: `${color.label}`,
         enabled: setColor,
         action: 'setColor',
         options: {
           fill: color.fill,
           stroke: color.stroke
         },
-        icon: `resources/icons/${color.title.toLowerCase()}-circle.png`
+        icon: `resources/icons/${color.label.toLowerCase()}-circle.png`
       };
     })
   } ];

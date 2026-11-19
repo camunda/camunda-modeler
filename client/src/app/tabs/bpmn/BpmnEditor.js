@@ -59,6 +59,8 @@ import {
 
 import configureModeler from '../bpmn-shared/util/configure';
 
+import { COLORS } from '../colorPickerColors';
+
 import { GridBehavior } from '../util/grid';
 
 import Metadata from '../../../util/Metadata';
@@ -992,6 +994,9 @@ export class BpmnEditor extends CachedComponent {
       ...options,
       position: 'absolute',
       changeTemplateCommand: 'propertiesPanel.camunda.changeTemplate',
+      colorPicker: {
+        colors: COLORS
+      },
       linting: {
         active: layout.panel && layout.panel.open && layout.panel.tab === 'linting'
       },
