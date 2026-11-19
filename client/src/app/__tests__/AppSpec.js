@@ -2298,6 +2298,29 @@ describe('<App>', function() {
     });
 
 
+    it('should forget removed files on focus', async function() {
+
+      // given
+      const fileSystem = new FileSystem();
+
+      const { app } = createApp({ globals: { fileSystem } });
+
+      const [ tab ] = await app.openFiles([ createFile('1.bpmn') ]);
+
+      await app.closeTab(tab);
+
+      fileSystem.setReadFileStatsResponse({ lastModified: 0 });
+
+      // when
+      app.emit('app.focused');
+
+      // then
+      await waitFor(() => {
+        expect(app.state.recentTabs).to.be.empty;
+      });
+    });
+
+
     it('should emit <app.recentTabsChanged> event', async function() {
 
       // given

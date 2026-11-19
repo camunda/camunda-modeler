@@ -179,7 +179,8 @@ export class App extends PureComponent {
     this.closedTabs = new History();
     this.recentTabs = new RecentTabs({
       setState: value => this.setState({ recentTabs: value }),
-      config: this.getGlobal('config')
+      config: this.getGlobal('config'),
+      fileSystem: this.getGlobal('fileSystem')
     });
 
     this.tabRef = React.createRef();
@@ -228,6 +229,8 @@ export class App extends PureComponent {
     });
 
     this.on('app.focused', () => {
+      this.recentTabs.removeMissing();
+
       if (this.isDialogOpen()) {
         return;
       }

@@ -44,11 +44,13 @@ export class RecentTabs {
   constructor(options = {}) {
     const {
       config,
+      fileSystem,
       setState
     } = options;
 
     this._setState = setState;
     this._config = config;
+    this._fileSystem = fileSystem;
     this._configKey = CONFIG_KEY_RECENT_TABS;
     this._maxLength = 10;
     this._elements = [];
@@ -68,8 +70,24 @@ export class RecentTabs {
     const elements = await this._config.get(this._configKey);
 
     if (elements) {
-      this.elements = elements;
+      this.elements = await withoutRemovedFiles(elements, this._fileSystem);
     }
+  }
+
+  /**
+   * Remove the tabs of files that were removed from disk.
+   */
+  async removeMissing() {
+    const elements = this.elements;
+
+    const existing = await withoutRemovedFiles(elements, this._fileSystem);
+
+    // skip if nothing was removed or the tabs changed in the meantime
+    if (existing.length === elements.length || elements !== this.elements) {
+      return;
+    }
+
+    this.elements = existing;
   }
 
   push(element) {
@@ -80,4 +98,20 @@ export class RecentTabs {
       element
     ];
   }
+}
+
+
+// helpers //////////
+
+/**
+ * @param {Array<{ file: Object }>} tabs
+ * @param {Object} fileSystem
+ *
+ * @return {Promise<Array<{ file: Object }>>}
+ */
+async function withoutRemovedFiles(tabs, fileSystem) {
+  const stats = await Promise.all(tabs.map(({ file }) => fileSystem.readFileStats(file)));
+
+  // a removed file has no modification time
+  return tabs.filter((_, index) => stats[ index ]?.lastModified !== 0);
 }
