@@ -65,6 +65,9 @@ module.exports.readFile = function(filePath, options = {}) {
     encoding = ENCODING_UTF8;
   }
 
+  // callers may join paths with `/`, which on Windows gives mixed separators
+  filePath = path.normalize(filePath);
+
   const fileContents = encoding ? fs.readFileSync(filePath, encoding) : fs.readFileSync(filePath);
 
   return createFile({
@@ -118,6 +121,9 @@ module.exports.writeFile = function(filePath, file, options = {}) {
   if (fileType) {
     filePath = ensureExtension(filePath, fileType);
   }
+
+  // callers may join paths with `/`, which on Windows gives mixed separators
+  filePath = path.normalize(filePath);
 
   file = createFile(file, {
     path: filePath
