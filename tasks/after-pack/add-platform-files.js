@@ -28,7 +28,8 @@ module.exports = async function(context) {
 
   const {
     appOutDir,
-    electronPlatformName
+    electronPlatformName,
+    packager
   } = context;
 
   const tag = version.endsWith('-nightly') ? 'main' : `v${version}`;
@@ -37,7 +38,14 @@ module.exports = async function(context) {
     transform: replaceTag(tag)
   };
 
-  await copyGlob('resources/platform/base/**', appOutDir, options);
+  if (electronPlatformName === 'darwin') {
+
+    // files beside the app bundle are not installed; place them inside it
+    await copyGlob('resources/platform/base/resources/**', `${appOutDir}/${packager.appInfo.productFilename}.app/Contents/Resources`, options);
+  } else {
+    await copyGlob('resources/platform/base/**', appOutDir, options);
+  }
+
   await copyGlob(`resources/platform/${electronPlatformName}/**`, appOutDir, options);
 
   copy('LICENSE', `${appOutDir}/LICENSE.${name}.txt`);

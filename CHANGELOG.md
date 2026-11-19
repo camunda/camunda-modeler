@@ -11,6 +11,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: rename the _Test_ side panel tab to _Validate_ ([#6207](https://github.com/camunda/camunda-modeler/issues/6207))
 * `FIX`: explain FEEL playground connection issues and offer an action to configure the connection ([#6312](https://github.com/camunda/camunda-modeler/pull/6312))
 * `FIX`: show only the read error when opening a file that was moved or deleted ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
+* `FIX`: install the `resources` directory inside the app on macOS ([#6344](https://github.com/camunda/camunda-modeler/pull/6344))
 * `DEPS`: update to `electron@45.2.1`
 * `DEPS`: update to `@camunda/feel-playground@1.1.1`
 * `DEPS`: update to `@camunda/task-testing@7.1.0`
