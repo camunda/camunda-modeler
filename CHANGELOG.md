@@ -9,6 +9,7 @@ ___Note:__ Yet to be released changes appear here._
 * `FEAT`: rework the start page: create Camunda 8 or Camunda 7 files, see whether a local Camunda runs and set it up with `c8ctl`, open recent files, and create a project from an AI agent blueprint ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
 * `FEAT`: allow plug-ins to extend the form editor via `form.modeler.configure`, `form.modeler.{editor,viewer}.additionalModules`, and the Camunda 7 and Camunda 8 specific `form.{platform,cloud}.modeler.{editor,viewer}.additionalModules`, e.g. to add custom form fields ([#5426](https://github.com/camunda/camunda-modeler/issues/5426))
 * `FEAT`: rename the _Test_ side panel tab to _Validate_ ([#6207](https://github.com/camunda/camunda-modeler/issues/6207))
+* `FEAT`: ship the start page's AI agent blueprint as files, which can be replaced in `resources/blueprints` ([#6344](https://github.com/camunda/camunda-modeler/pull/6344))
 * `FIX`: explain FEEL playground connection issues and offer an action to configure the connection ([#6312](https://github.com/camunda/camunda-modeler/pull/6312))
 * `FIX`: show only the read error when opening a file that was moved or deleted ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
 * `FIX`: install the `resources` directory inside the app on macOS ([#6344](https://github.com/camunda/camunda-modeler/pull/6344))

@@ -58,8 +58,6 @@ import Flags, { DISABLE_ZEEBE, DISABLE_PLATFORM, DISPLAY_VERSION } from '../../u
 
 import { SETTINGS_KEY_START_PAGE_PREFERRED_ENGINE } from '../../plugins/settings/useBuiltInSettings';
 
-import aiAgentChatQuickStart from './ai-agent-chat-quick-start';
-
 import { RecentTabs } from '../RecentTabs';
 
 import { DEFAULT_ENDPOINT } from '../../plugins/zeebe-plugin/connection-manager-plugin/ConnectionManagerPlugin';
@@ -87,7 +85,12 @@ const PROMOTION = {
   description: 'Orchestrate AI agents with BPMN, and keep people in the loop where it matters.',
   action: {
     label: 'Create blueprint project',
-    project: aiAgentChatQuickStart
+
+    // shipped in resources/platform/base/resources/blueprints
+    blueprint: {
+      id: 'ai-agent-chat-with-tools',
+      name: 'AI Agent Chat Quick Start'
+    }
   },
   secondaryAction: {
     label: 'Read the guide',
@@ -132,6 +135,7 @@ export default class EmptyTab extends PureComponent {
       // undefined while checking, null if not running
       localCamunda: undefined,
       recentFiles: [],
+      blueprints: [],
       setupOpen: false
     };
   }
@@ -142,6 +146,7 @@ export default class EmptyTab extends PureComponent {
     this.props.onShown(this.props.tab);
 
     this.loadRecentFiles();
+    this.loadBlueprints();
 
     // the setting may be registered or loaded after the start page is shown
     this._unsubscribe = this.props.settings?.subscribe(SETTINGS_KEY_START_PAGE_PREFERRED_ENGINE, ({ value }) => {
@@ -180,6 +185,14 @@ export default class EmptyTab extends PureComponent {
 
     if (this._mounted) {
       this.setState({ recentFiles });
+    }
+  }
+
+  async loadBlueprints() {
+    const blueprints = await this.props.config?.get('blueprints');
+
+    if (this._mounted) {
+      this.setState({ blueprints: blueprints || [] });
     }
   }
 
@@ -419,6 +432,26 @@ export default class EmptyTab extends PureComponent {
   };
 
   /**
+   * @param {{ id: string, name: string }} blueprint
+   *
+   * @return {{ name: string, files: Array<Object> }|null} the project, with the diagram as the main file
+   */
+  getBlueprintProject({ id, name }) {
+    const blueprint = this.state.blueprints.find(blueprint => blueprint.id === id);
+
+    if (!blueprint) {
+      return null;
+    }
+
+    const isDiagram = ({ name }) => getFileExtension(name) === 'bpmn';
+
+    return {
+      name,
+      files: [ ...blueprint.files ].sort((a, b) => isDiagram(b) - isDiagram(a))
+    };
+  }
+
+  /**
    * A project can be created if every file type has an editor,
    * e.g. not with `disable-form`.
    *
@@ -432,9 +465,11 @@ export default class EmptyTab extends PureComponent {
     return files.every(({ name }) => tabsProvider?.hasProvider(getFileExtension(name)));
   }
 
-  renderPromotionAction({ label, href, project }) {
-    if (project) {
-      if (!this.canCreateProject(project)) {
+  renderPromotionAction({ label, href, blueprint }) {
+    if (blueprint) {
+      const project = this.getBlueprintProject(blueprint);
+
+      if (!project || !this.canCreateProject(project)) {
         return null;
       }
 
