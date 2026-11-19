@@ -15,6 +15,7 @@ import addExporterModule from '@bpmn-io/add-exporter';
 import completeDirectEditingModule from './features/complete-direct-editing';
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from './features/hand-tool-on-space';
+import canvasResizedRepositionModule from './features/canvas-resized-reposition';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
 import lintingAnnotationsModule from '@camunda/linting/modeler';
 
@@ -75,6 +76,7 @@ const extensionModules = [
   globalClipboardModule,
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,
+  canvasResizedRepositionModule,
   lintingAnnotationsModule,
   bpmnJSTracking,
   contextPadTracking,
