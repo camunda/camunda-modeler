@@ -13,6 +13,10 @@ ___Note:__ Yet to be released changes appear here._
 * `FIX`: explain FEEL playground connection issues and offer an action to configure the connection ([#6312](https://github.com/camunda/camunda-modeler/pull/6312))
 * `FIX`: show only the read error when opening a file that was moved or deleted ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
 * `FIX`: do not show deleted files as recent files ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
+* `FEAT`: resize BPMN FEEL and text popups and remember their size and position across sessions ([#4452](https://github.com/camunda/camunda-modeler/issues/4452))
+* `FEAT`: save pending BPMN FEEL popup edits without closing the popup ([#6313](https://github.com/camunda/camunda-modeler/pull/6313))
+* `FIX`: fix FEEL popup undo/redo by applying edits once on close or save ([#3902](https://github.com/camunda/camunda-modeler/issues/3902))
+* `FIX`: preserve FEEL mode when applying popup edits after toggling the underlying field to a static value ([bpmn-io/properties-panel#571](https://github.com/bpmn-io/properties-panel/pull/571))
 * `DEPS`: update to `electron@45.2.1`
 * `DEPS`: update to `@camunda/feel-playground@1.1.1`
 * `DEPS`: update to `@camunda/task-testing@7.1.0`

@@ -461,6 +461,25 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
       );
 
 
+      it('should not lint after the FEEL popup commits during unmount', function() {
+
+        // given
+        instance.linting.flush();
+        onActionSpy.resetHistory();
+
+        sinon.stub(modeler.get('feelPopup'), 'close').callsFake(() => {
+          modeler._emit('commandStack.changed');
+        });
+
+        // when
+        unmount();
+        instance.linting.flush();
+
+        // then
+        expect(onActionSpy).not.to.have.been.calledWith('lint-tab');
+      });
+
+
       it('should resume pending lint on remount', async function() {
 
         // given
@@ -1147,6 +1166,44 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
 
   describe('#triggerAction', function() {
 
+    [ false, true ].forEach(dirty => {
+
+      it(`should save pending popup edits without closing the popup (${dirty ? 'dirty' : 'clean'} diagram)`, async function() {
+
+        // given
+        const editorActions = { trigger: sinon.spy() };
+        const modeler = new BpmnModeler({ modules: { editorActions } });
+        const cache = new Cache();
+
+        cache.add('editor', { cached: { modeler } });
+
+        const { instance } = await renderEditor(diagramXML, { cache });
+        const popup = modeler.get('feelPopup');
+        const updatedXML = diagramXML.replace('name="Task"', 'name="=1 + 1"');
+        const closeSpy = sinon.spy(popup, 'close');
+        const commitStub = sinon.stub(popup, 'commit').callsFake(() => {
+          modeler.xml = updatedXML;
+          modeler.get('commandStack').execute(1);
+        });
+
+        if (dirty) {
+          modeler.get('commandStack').execute(1);
+        }
+
+        // when
+        instance.triggerAction('saveTab.start');
+        const xml = await instance.getXML();
+
+        // then
+        expect(xml).to.equal(updatedXML);
+        expect(commitStub).to.have.been.calledOnce;
+        expect(closeSpy).not.to.have.been.called;
+        expect(editorActions.trigger).to.have.been.calledWithExactly('saveTab.start', {});
+      });
+
+    });
+
+
     it('should return value of editor action', async function() {
 
       // given
@@ -1209,6 +1266,33 @@ describe('cloud-bpmn - <BpmnEditor>', function() {
     describe('side panel', function() {
 
       describe('properties panel', function() {
+
+        it('should persist popup layout before detaching the editor', async function() {
+
+          // given
+          const onLayoutChanged = sinon.spy();
+          const { instance, unmount } = await renderEditor(diagramXML, { onLayoutChanged });
+          const modeler = instance.getModeler();
+          const popups = {
+            feel: {
+              size: { width: 450, height: 300 },
+              position: { top: 25, left: 35 }
+            }
+          };
+          sinon.stub(modeler.get('feelPopup'), 'close').callsFake(() => {
+            modeler._emit('propertiesPanel.layoutChanged', { layout: { popups } });
+          });
+          onLayoutChanged.resetHistory();
+
+          // when
+          unmount();
+
+          // then
+          expect(onLayoutChanged).to.have.been.calledWithExactly({
+            propertiesPanel: { popups }
+          });
+        });
+
 
         it('should react to new layout', async function() {
 

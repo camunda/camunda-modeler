@@ -205,9 +205,11 @@ export class BpmnEditor extends CachedComponent {
   componentWillUnmount() {
     this._isMounted = false;
 
-    this.linting.cancel();
-
     const modeler = this.getModeler();
+
+    modeler.get('feelPopup').close();
+
+    this.linting.cancel();
 
     this.listen('off');
 
@@ -766,6 +768,12 @@ export class BpmnEditor extends CachedComponent {
     return modeler;
   }
 
+  commitPendingEdits() {
+    this.getModeler().get('feelPopup').commit();
+
+    return this.isDirty();
+  }
+
   async getXML() {
     const {
       lastXML,
@@ -924,6 +932,14 @@ export class BpmnEditor extends CachedComponent {
 
     if (action === 'resources.reload') {
       return modeler.get('resources.resourceLoader').reload();
+    }
+
+    if (action === 'commitPendingEdits') {
+      return this.commitPendingEdits();
+    }
+
+    if (action === 'saveTab.start') {
+      this.commitPendingEdits();
     }
 
     // TODO(nikku): handle all editor actions

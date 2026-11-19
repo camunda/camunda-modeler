@@ -40,6 +40,114 @@ import integrationSpec2XML from './IntegrationSpec.2.xml';
 
 describe('Integration', function() {
 
+  it('should prompt before closing a saved diagram with pending FEEL popup edits', async function() {
+
+    // given
+    const dialog = new Dialog();
+    const showCloseFileDialog = sinon.stub(dialog, 'showCloseFileDialog').resolves({ button: 'cancel' });
+    const { app } = createApp({ globals: { dialog } });
+    const [ tab ] = await app.openFiles([ createCloudBpmnFile() ]);
+    const editor = app.tabRef.current.tabRef.current.editorRef.current;
+    const modeler = editor.getModeler();
+
+    sinon.stub(modeler.get('feelPopup'), 'commit').callsFake(() => {
+      modeler.get('commandStack').execute(1);
+      modeler._emit('commandStack.changed');
+    });
+
+    expect(app.isDirty(tab)).to.be.false;
+
+    // when
+    const closed = await app.closeTab(tab);
+
+    // then
+    expect(showCloseFileDialog).to.have.been.calledOnceWithExactly({ name: tab.file.name });
+    expect(closed).to.be.false;
+  });
+
+
+  it('should auto-save pending FEEL popup edits when switching away from a saved diagram', async function() {
+
+    // given
+    const file = createCloudBpmnFile();
+    const fileSystem = new FileSystem();
+    const writeFile = sinon.stub(fileSystem, 'writeFile').resolves(file);
+    const { app } = createApp({ globals: { fileSystem } });
+    const [ otherTab ] = await app.openFiles([ createFile('other.bpmn'), file ]);
+    const updatedXML = stubPendingFeelEdit(app);
+
+    // when
+    await app.selectTab(otherTab);
+
+    // then
+    await waitFor(() => {
+      expect(writeFile).to.have.been.calledOnceWith(file.path, sinon.match({ contents: updatedXML }));
+    });
+  });
+
+
+  it('should include pending FEEL popup edits in Save All', async function() {
+
+    // given
+    const file = createCloudBpmnFile();
+    const fileSystem = new FileSystem();
+    const writeFile = sinon.stub(fileSystem, 'writeFile').resolves(file);
+    const { app } = createApp({ globals: { fileSystem } });
+    await app.openFiles([ file ]);
+    const updatedXML = stubPendingFeelEdit(app);
+
+    // when
+    await app.saveAllTabs();
+
+    // then
+    expect(writeFile).to.have.been.calledOnceWith(file.path, sinon.match({ contents: updatedXML }));
+  });
+
+
+  it('should prompt before reloading with pending FEEL popup edits', async function() {
+
+    // given
+    const dialog = new Dialog();
+    const showReloadDialog = sinon.stub(dialog, 'showReloadDialog').resolves({ button: 'cancel' });
+    const { app } = createApp({ globals: { dialog } });
+    await app.openFiles([ createCloudBpmnFile() ]);
+    stubPendingFeelEdit(app);
+
+    // when
+    const reloaded = await app.reloadModeler();
+
+    // then
+    expect(showReloadDialog).to.have.been.calledOnceWithExactly(true);
+    expect(reloaded).to.be.false;
+  });
+
+
+  it('should include pending FEEL popup edits when switching to XML', async function() {
+
+    // given
+    const { app } = createApp();
+    await app.openFiles([ createCloudBpmnFile() ]);
+    const multiSheetTab = app.tabRef.current.tabRef.current;
+    const modeler = multiSheetTab.editorRef.current.getModeler();
+    const xmlSheet = multiSheetTab.getCached().sheets.find(sheet => sheet.type === 'xml');
+    const updatedXML = modeler.xml.replace('id="Process_1"', 'id="Process_1" name="=1 + 1"');
+
+    sinon.stub(modeler.get('feelPopup'), 'commit').callsFake(() => {
+      modeler.xml = updatedXML;
+      modeler.get('commandStack').execute(1);
+    });
+
+    // when
+    await multiSheetTab.switchSheet(xmlSheet);
+
+    // then
+    await waitFor(async () => {
+      expect(multiSheetTab.getCached().activeSheet).to.equal(xmlSheet);
+      expect(await multiSheetTab.editorRef.current.getXML()).to.equal(updatedXML);
+    });
+  });
+
+
   describe('reimport', function() {
 
     let app, file2, tab1, tab2;
@@ -199,6 +307,32 @@ function createFile(name) {
     contents: integrationSpec1XML,
     name,
     path: name
+  };
+}
+
+function stubPendingFeelEdit(app) {
+  const editor = app.tabRef.current.tabRef.current.editorRef.current;
+  const modeler = editor.getModeler();
+  const updatedXML = modeler.xml.replace('id="Process_1"', 'id="Process_1" name="=1 + 1"');
+  const commit = sinon.stub(modeler.get('feelPopup'), 'commit');
+
+  commit.onFirstCall().callsFake(() => {
+    modeler.xml = updatedXML;
+    modeler.get('commandStack').execute(1);
+    modeler._emit('commandStack.changed');
+  });
+
+  return updatedXML;
+}
+
+function createCloudBpmnFile() {
+  const file = createFile('diagram.bpmn');
+
+  return {
+    ...file,
+    contents: file.contents
+      .replace('executionPlatform="Camunda Platform"', 'executionPlatform="Camunda Cloud"')
+      .replace('executionPlatformVersion="7.15.0"', 'executionPlatformVersion="8.8.0"')
   };
 }
 
