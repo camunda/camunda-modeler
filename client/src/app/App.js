@@ -2347,7 +2347,7 @@ export class App extends PureComponent {
         const { path } = options;
 
         if (path) {
-          return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
+          return this.readFileFromPath(path).then(file => file ? this.openFiles([ file ]) : []);
         }
 
         return this.showOpenFilesDialog();
