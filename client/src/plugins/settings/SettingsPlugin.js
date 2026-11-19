@@ -195,7 +195,7 @@ export default function SettingsPlugin(props) {
  * Settings API uses dots to group settings, but we want a flat dictionary.
  *
  * @param {Object} formikValues
- * @returns {Object<string, string|boolean>}
+ * @returns {Object<string, string|number|boolean>}
  */
 function flattenFormikValues(formikValues) {
 

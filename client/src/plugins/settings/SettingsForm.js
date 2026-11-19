@@ -136,7 +136,7 @@ export function SettingsField(props) {
       return props.component;
     }
 
-    if (type === 'text' || type === 'password') {
+    if (type === 'text' || type === 'password' || type === 'number') {
       return TextInput;
     }
 
@@ -174,6 +174,9 @@ export function SettingsField(props) {
   if (type === 'password') {
     restProps.type = 'password';
   }
+  if (type === 'number') {
+    restProps.type = 'number';
+  }
 
   const disabledByFlag = flagValue !== undefined;
 
@@ -184,20 +187,32 @@ export function SettingsField(props) {
 
   return <>
     <Field name={ name } validate={ validate }>
-      {({ field, form }) => (
-        <FieldComponent
-          field={ field }
-          form={ form }
-          disabled={ disabledByFlag }
-          label={ label }
-          description={ description }
-          hint={ hint }
-          options={ options }
-          values={ options }
-          documentationUrl={ documentationUrl }
-          { ...restProps }
-        />
-      )}
+      {({ field, form }) => {
+        const fieldProps = type === 'number' ? {
+          ...field,
+          onChange: event => {
+            const { value } = event.target;
+            const numberValue = value === '' ? undefined : Number(value);
+
+            form.setFieldValue(field.name, Number.isNaN(numberValue) ? undefined : numberValue);
+          }
+        } : field;
+
+        return (
+          <FieldComponent
+            field={ fieldProps }
+            form={ form }
+            disabled={ disabledByFlag }
+            label={ label }
+            description={ description }
+            hint={ hint }
+            options={ options }
+            values={ options }
+            documentationUrl={ documentationUrl }
+            { ...restProps }
+          />
+        );
+      }}
     </Field>
     { disabledByFlag &&
       <div className="flag-warning">
