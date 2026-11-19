@@ -16,6 +16,7 @@ import completeDirectEditingModule from './features/complete-direct-editing';
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from './features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from './features/properties-panel-keyboard-bindings';
+import canvasHoverFocusFixModule from './features/canvas-hover-focus-fix';
 import lintingAnnotationsModule from '@camunda/linting/modeler';
 
 import { BpmnJSTracking as bpmnJSTracking } from 'bpmn-js-tracking';
@@ -75,6 +76,7 @@ const extensionModules = [
   globalClipboardModule,
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,
+  canvasHoverFocusFixModule,
   lintingAnnotationsModule,
   bpmnJSTracking,
   contextPadTracking,

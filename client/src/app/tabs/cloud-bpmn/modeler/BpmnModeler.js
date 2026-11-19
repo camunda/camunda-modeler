@@ -16,6 +16,7 @@ import completeDirectEditingModule from '../../bpmn/modeler/features/complete-di
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from '../../bpmn/modeler/features/hand-tool-on-space';
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
+import canvasHoverFocusFixModule from '../../bpmn/modeler/features/canvas-hover-focus-fix';
 import lintingAnnotationsModule from '@camunda/linting/modeler';
 import { agentConfigAutofillModule } from '@camunda/linting-autofix';
 
@@ -78,6 +79,7 @@ CloudBpmnModeler.prototype._modules = [
   globalClipboardModule,
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,
+  canvasHoverFocusFixModule,
   lintingAnnotationsModule,
   agentConfigAutofillModule,
   bpmnJSTracking,
