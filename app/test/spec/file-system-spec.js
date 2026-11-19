@@ -48,6 +48,21 @@ describe('FileSystem', function() {
 
   describe('#readFile', function() {
 
+    it('should return a normalized path', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      writeFile(fooPath, { contents: 'foo' });
+
+      // when
+      const file = readFile(fooPath);
+
+      // then
+      expect(file.path).to.eql(path.join(os.tmpdir(), 'modeler_foo.file'));
+    });
+
+
     it('should read file (default encoding=utf8)', function() {
 
       // given
@@ -170,6 +185,19 @@ describe('FileSystem', function() {
 
   describe('#writeFile', function() {
 
+    it('should return a normalized path', function() {
+
+      // given
+      const fooPath = getTestFilePath('foo.file');
+
+      // when
+      const file = writeFile(fooPath, { contents: 'foo' });
+
+      // then
+      expect(file.path).to.eql(path.join(os.tmpdir(), 'modeler_foo.file'));
+    });
+
+
     it('should write file (default encoding=utf8)', function() {
 
       // given
@@ -256,7 +284,7 @@ describe('FileSystem', function() {
       });
 
       // then
-      expect(file.path).to.eql(`${fooPath}.file`);
+      expect(file.path).to.eql(path.normalize(`${fooPath}.file`));
     });
 
 
