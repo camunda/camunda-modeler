@@ -78,6 +78,7 @@ describe('RecentTabs', function() {
         set: NOOP,
         get: () => [ tab ]
       },
+      fileSystem: createFileSystem(),
       setState: setStateSpy
     });
 
@@ -87,6 +88,63 @@ describe('RecentTabs', function() {
     expect(setStateSpy).to.have.been.calledWith([
       tab
     ]);
+  });
+
+
+  it('should NOT load tabs of removed files', async function() {
+
+    // given
+    const setStateSpy = spy();
+
+    const existingTab = createTab('/existing.bpmn');
+    const removedTab = createTab('/removed.bpmn');
+
+    const recentTabs = new RecentTabs({
+      config: {
+        set: NOOP,
+        get: () => [ existingTab, removedTab ]
+      },
+      fileSystem: createFileSystem([ '/removed.bpmn' ]),
+      setState: setStateSpy
+    });
+
+    // when
+    await recentTabs.load();
+
+    // then
+    expect(setStateSpy).to.have.been.calledOnceWith([ existingTab ]);
+  });
+
+
+  it('should remove tabs of removed files', async function() {
+
+    // given
+    const setConfigSpy = spy();
+
+    const existingTab = createTab('/existing.bpmn');
+    const removedTab = createTab('/removed.bpmn');
+
+    const removed = [];
+
+    const recentTabs = new RecentTabs({
+      config: {
+        set: setConfigSpy,
+        get: NOOP
+      },
+      fileSystem: createFileSystem(removed),
+      setState: NOOP
+    });
+
+    recentTabs.push(existingTab);
+    recentTabs.push(removedTab);
+
+    removed.push('/removed.bpmn');
+
+    // when
+    await recentTabs.removeMissing();
+
+    // then
+    expect(setConfigSpy.lastCall).to.have.been.calledWith('recentTabs', [ existingTab ]);
   });
 
 
@@ -162,5 +220,14 @@ function createTab(path) {
     file: {
       path
     }
+  };
+}
+
+function createFileSystem(removedPaths = []) {
+  return {
+    readFileStats: async file => ({
+      ...file,
+      lastModified: removedPaths.includes(file.path) ? 0 : 1
+    })
   };
 }
