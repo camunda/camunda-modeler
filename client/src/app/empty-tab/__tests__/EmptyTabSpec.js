@@ -34,6 +34,14 @@ import {
 
 import { DELAYS } from '../../../plugins/zeebe-plugin/deployment-plugin/ConnectionChecker';
 
+const BLUEPRINT = {
+  id: 'ai-agent-chat-with-tools',
+  files: [
+    { name: 'ai-agent-chat-initial-request.form', contents: '{}' },
+    { name: 'ai-agent-chat-with-tools.bpmn', contents: '<bpmn />' }
+  ]
+};
+
 
 describe('<EmptyTab>', function() {
 
@@ -141,13 +149,15 @@ describe('<EmptyTab>', function() {
     });
 
 
-    it('should NOT offer the blueprint project on flag', function() {
+    it('should NOT offer the blueprint project on flag', async function() {
 
       // given
       stubFlags({ [ DISABLE_FORM ]: true });
 
-      // when
       const { queryByRole } = createEmptyTab();
+
+      // when
+      await act(async () => {});
 
       // then
       expect(queryByRole('button', { name: 'Create blueprint project' })).not.to.exist;
@@ -631,10 +641,12 @@ describe('<EmptyTab>', function() {
     it('should explain that the blueprint project needs a folder', async function() {
 
       // given
-      const { getByRole, findByRole } = createEmptyTab();
+      const { findByRole } = createEmptyTab();
+
+      const button = await findByRole('button', { name: 'Create blueprint project' });
 
       // when
-      act(() => getByRole('button', { name: 'Create blueprint project' }).focus());
+      act(() => button.focus());
 
       // then
       expect((await findByRole('tooltip')).textContent).to.include('Saves the blueprint files to a folder you choose, and the blueprint opens as a project.');
@@ -651,25 +663,39 @@ describe('<EmptyTab>', function() {
     });
 
 
-    it('should open the AI agent blueprint as a project', function() {
+    it('should open the AI agent blueprint as a project, with the diagram first', async function() {
 
       // given
       const emit = sinon.spy();
 
-      const { getByRole } = createEmptyTab({ emit });
+      const { findByRole } = createEmptyTab({ emit });
+
+      const button = await findByRole('button', { name: 'Create blueprint project' });
 
       // when
-      fireEvent.click(getByRole('button', { name: 'Create blueprint project' }));
+      fireEvent.click(button);
 
       // then
-      expect(emit).to.have.been.calledWith('create-camunda-project', sinon.match({
+      expect(emit).to.have.been.calledWith('create-camunda-project', {
         title: 'Create Project from AI Agent Chat Quick Start',
         files: [
-          sinon.match({ name: 'ai-agent-chat-with-tools.bpmn' }),
-          sinon.match({ name: 'ai-agent-chat-initial-request.form' }),
-          sinon.match({ name: 'ai-agent-chat-user-feedback.form' })
+          { name: 'ai-agent-chat-with-tools.bpmn', contents: '<bpmn />' },
+          { name: 'ai-agent-chat-initial-request.form', contents: '{}' }
         ]
-      }));
+      });
+    });
+
+
+    it('should NOT offer the blueprint project without the blueprint', async function() {
+
+      // given
+      const { queryByRole } = createEmptyTab({ blueprints: [] });
+
+      // when
+      await act(async () => {});
+
+      // then
+      expect(queryByRole('button', { name: 'Create blueprint project' })).not.to.exist;
     });
 
   });
@@ -687,7 +713,10 @@ describe('<EmptyTab>', function() {
           settings={ options.settings || createSettings() }
           tabsProvider={ tabsProvider }
           deployment={ options.deployment }
-          config={ createConfig({ recentTabs: options.recentTabs }) }
+          config={ createConfig({
+            recentTabs: options.recentTabs,
+            blueprints: options.blueprints || [ BLUEPRINT ]
+          }) }
           zeebeApi={ options.zeebeApi || { checkConnection: sinon.stub().resolves({ success: false }) } }
         />
       </React.StrictMode>

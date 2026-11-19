@@ -10,6 +10,7 @@
 
 const path = require('path');
 
+const BlueprintsProvider = require('./providers/BlueprintsProvider');
 const DefaultProvider = require('./providers/DefaultProvider');
 const ElementTemplatesProvider = require('./providers/ElementTemplatesProvider');
 const UUIDProvider = require('./providers/UUIDProvider');
@@ -25,7 +26,7 @@ const { isFunction } = require('min-dash');
 class Config {
   constructor(options) {
     const {
-      resourcesPaths,
+      resourcesPaths = [],
       userPath,
       ignoredPaths = []
     } = options;
@@ -33,6 +34,7 @@ class Config {
     const defaultProvider = this._defaultProvider = new DefaultProvider(path.join(userPath, 'config.json'));
 
     this._providers = {
+      'blueprints': new BlueprintsProvider(resourcesPaths),
       'bpmn.elementTemplates': new ElementTemplatesProvider(resourcesPaths, ignoredPaths, defaultProvider),
       'editor.id': new UUIDProvider(path.join(userPath, '.editorid')),
       'os.info': new OSInfoProvider(),

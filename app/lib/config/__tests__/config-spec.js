@@ -177,6 +177,63 @@ describe('Config', function() {
 
   });
 
+  describe('<blueprints>', function() {
+
+    it('should get blueprints from the resources paths', function() {
+
+      // given
+      const config = new Config({
+        resourcesPaths: [
+          getAbsolutePath('fixtures/ok'),
+          getAbsolutePath('fixtures/blueprints/app')
+        ],
+        userPath: 'foo'
+      });
+
+      // when
+      const blueprints = config.get('blueprints');
+
+      // then
+      expect(blueprints).to.eql([
+        {
+          id: 'foo',
+          files: [
+            { name: 'foo.bpmn', contents: '<bpmn:definitions />\n' },
+            { name: 'foo.form', contents: '{}\n' }
+          ]
+        }
+      ]);
+    });
+
+
+    it('should replace a blueprint with the same name', function() {
+
+      // given
+      const config = new Config({
+        resourcesPaths: [
+          getAbsolutePath('fixtures/blueprints/app'),
+          getAbsolutePath('fixtures/blueprints/user')
+        ],
+        userPath: 'foo'
+      });
+
+      // when
+      const blueprints = config.get('blueprints');
+
+      // then
+      expect(blueprints).to.eql([
+        {
+          id: 'foo',
+          files: [
+            { name: 'foo.bpmn', contents: '<bpmn:definitions id="custom" />\n' }
+          ]
+        }
+      ]);
+    });
+
+  });
+
+
   describe('<bpmn.elementTemplates>', function() {
 
     it('should get', function() {

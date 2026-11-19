@@ -826,12 +826,17 @@ function bootstrap() {
 
   let resourcesPaths = [
     path.join(appPath, 'resources'),
+
+    // on macOS, shipped resources are in `Contents/Resources` of the app bundle,
+    // not next to the executable in `Contents/MacOS`
+    ...(platform === 'darwin' ? [ process.resourcesPath ] : []),
     path.join(userPath, 'resources')
   ];
 
   if (process.env.NODE_ENV === 'development') {
     resourcesPaths = [
       ...resourcesPaths,
+      path.join(cwd, 'resources/platform/base/resources'),
       path.join(cwd, 'resources')
     ];
   }
