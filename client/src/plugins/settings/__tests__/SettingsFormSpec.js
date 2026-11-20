@@ -255,6 +255,64 @@ describe('SettingsForm', function() {
     });
 
 
+    it('should show initial zero number value', async function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.number': {
+            type: 'number',
+            label: 'Number Input'
+          }
+        }
+      } ];
+
+      // when
+      const { getByLabelText } = createSettingsForm({
+        schema,
+        initialValues: {
+          'test': {
+            'number': 0
+          }
+        }
+      });
+
+      // then
+      await waitFor(() => {
+        expect(getByLabelText('Number Input').value).to.equal('0');
+      });
+    });
+
+
+    it('should show zero number value after entering it', async function() {
+
+      // given
+      const onChange = sinon.spy();
+      const schema = [ {
+        properties: {
+          'test.number': {
+            type: 'number',
+            label: 'Number Input'
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
+
+      const field = container.querySelector('input[id="test.number"]');
+
+      // when
+      fireEvent.change(field, { target: { value: '0' } });
+
+      // then
+      await waitFor(() => {
+        expect(onChange).to.have.been.called;
+        expect(onChange.lastCall.args[ 0 ].test.number).to.equal(0);
+        expect(field.value).to.equal('0');
+      });
+    });
+
+
     it('should store the value as number', async function() {
 
       // given

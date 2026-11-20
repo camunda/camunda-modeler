@@ -190,6 +190,10 @@ export function SettingsField(props) {
       {({ field, form }) => {
         const fieldProps = type === 'number' ? {
           ...field,
+
+          // TextInput hides falsy values, so pass the value as a string
+          // to keep a zero value visible
+          value: String(field.value ?? ''),
           onChange: event => {
             const { value } = event.target;
             const numberValue = value === '' ? undefined : Number(value);
