@@ -17,6 +17,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `@camunda/feel-playground@1.1.1`
 * `DEPS`: update to `@camunda/task-testing@7.1.0`
 * `DEPS`: update to `@camunda/design-system@1.3.0`
+* `DEPS`: update to `@bpmn-io/c4-theme@0.3.5`
 
 ## 5.53.0
 
