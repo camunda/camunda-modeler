@@ -187,6 +187,20 @@ describe('<CamundaProjectsStatusBar>', function() {
 
   describe('<Overlay>', function() {
 
+    it('should link to the projects documentation from an open project', function() {
+
+      // given
+      createCamundaProjectsStatusBar();
+
+      // when
+      fireEvent.click(screen.getByRole('button'));
+
+      // then
+      const link = screen.getByRole('link', { name: 'Learn more' });
+      expect(link.href).to.equal('https://docs.camunda.io/docs/components/modeler/desktop-modeler/projects/?utm_source=modeler&utm_medium=referral');
+    });
+
+
     it('should render name of Camunda project file', function() {
 
       // when

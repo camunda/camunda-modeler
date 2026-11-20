@@ -27,6 +27,10 @@ import ErrorIcon from '../../../resources/icons/Error.svg';
 
 import * as css from './CamundaProjectsStatusBar.css';
 
+const DOCUMENTATION_URL = utmTag(
+  'https://docs.camunda.io/docs/components/modeler/desktop-modeler/projects/'
+);
+
 export default function CamundaProjectsStatusBar(props) {
   const ref = useRef();
 
@@ -89,7 +93,7 @@ export default function CamundaProjectsStatusBar(props) {
             ? <>
               <Section className="camunda-project-section">
                 <Section.Body>
-                  <p>Create a <a href={ utmTag('https://docs.camunda.io/docs/components/modeler/desktop-modeler/projects/') }>project</a>:</p>
+                  <p>Create a <a href={ DOCUMENTATION_URL }>project</a>:</p>
                   <ul>
                     <li>Deploy and test resources (BPMN, DMN, forms) as a single unit</li>
                     <li>Benefit from cross-file editor intelligence and improved discovery</li>
@@ -102,9 +106,10 @@ export default function CamundaProjectsStatusBar(props) {
             </>
             : <>
               <Section>
-                <Section.Header>
-                  Project
-                </Section.Header>
+                <div className="camunda-project-header">
+                  <Section.Header>Project</Section.Header>
+                  <a href={ DOCUMENTATION_URL }>Learn more</a>
+                </div>
                 <Section.Body>
                   <ul className="files camunda-project-file" role="menu">
                     <li role="menuitem" className="file" key={ camundaProject.file.path } title={ camundaProject.file.path }>
