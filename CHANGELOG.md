@@ -6,23 +6,56 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
-* `FEAT`: rework the start page: create Camunda 8 or Camunda 7 files, see whether a local Camunda runs and set it up with `c8ctl`, open recent files, and create a project from an AI agent blueprint ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
-* `FEAT`: allow plug-ins to extend the form editor via `form.modeler.configure`, `form.modeler.{editor,viewer}.additionalModules`, and the Camunda 7 and Camunda 8 specific `form.{platform,cloud}.modeler.{editor,viewer}.additionalModules`, e.g. to add custom form fields ([#5426](https://github.com/camunda/camunda-modeler/issues/5426))
+* `FEAT`: rework the start page ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
 * `FEAT`: rename the _Test_ side panel tab to _Validate_ ([#6207](https://github.com/camunda/camunda-modeler/issues/6207))
+* `FEAT`: improve FEEL built-in function descriptions ([camunda/feel-builtins#47](https://github.com/camunda/feel-builtins/pull/47))
 * `FIX`: improve contrast of the tab bar, panel borders, form controls and resize handles ([#6346](https://github.com/camunda/camunda-modeler/pull/6346))
-* `FIX`: explain FEEL playground connection issues and offer an action to configure the connection ([#6312](https://github.com/camunda/camunda-modeler/pull/6312))
 * `FIX`: show only the read error when opening a file that was moved or deleted ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
 * `FIX`: do not show deleted files as recent files ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
-* `FEAT`: resize BPMN FEEL and text popups and remember their size and position across sessions ([#4452](https://github.com/camunda/camunda-modeler/issues/4452))
-* `FEAT`: save pending BPMN FEEL popup edits without closing the popup ([#6313](https://github.com/camunda/camunda-modeler/pull/6313))
-* `FIX`: fix FEEL popup undo/redo by applying edits once on close or save ([#3902](https://github.com/camunda/camunda-modeler/issues/3902))
-* `FIX`: preserve FEEL mode when applying popup edits after toggling the underlying field to a static value ([bpmn-io/properties-panel#571](https://github.com/bpmn-io/properties-panel/pull/571))
+* `FIX`: allow wheel navigation over diagram overlays ([bpmn-io/diagram-js#1128](https://github.com/bpmn-io/diagram-js/pull/1128))
+* `FIX`: prevent hangs when measuring certain diagram labels ([GHSA-h54p-wcrm-cv7w](https://github.com/bpmn-io/diagram-js/security/advisories/GHSA-h54p-wcrm-cv7w))
+* `FIX`: correctly escape namespace URIs and references in exported XML ([GHSA-7f6h-27xg-f2fh](https://github.com/bpmn-io/moddle-xml/security/advisories/GHSA-7f6h-27xg-f2fh))
 * `DEPS`: update to `electron@45.2.1`
 * `DEPS`: update to `@camunda/feel-playground@1.1.1`
 * `DEPS`: update to `@camunda/task-testing@7.1.0`
-* `DEPS`: update to `@camunda/design-system@1.3.0`
+* `DEPS`: update to `@camunda/design-system@1.4.0`
 * `DEPS`: update to `@bpmn-io/c4-theme@0.3.5`
-* `DEPS`: update to `@bpmn-io/properties-panel@3.60.1`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.60.2`
+* `DEPS`: update to `@bpmn-io/dmn-migrate@0.8.0`
+* `DEPS`: update to `@bpmn-io/form-js@2.2.0`
+* `DEPS`: update to `@bpmn-io/release@0.8.0`
+* `DEPS`: update to `@camunda/form-playground@0.28.1`
+* `DEPS`: update to `@camunda/linting@4.4.0`
+* `DEPS`: update to `@camunda/linting-autofix@0.3.1`
+* `DEPS`: update to `@camunda8/sdk@8.8.23`
+* `DEPS`: update to `bpmn-js@18.33.1`
+* `DEPS`: update to `bpmn-js-element-templates@2.40.3`
+* `DEPS`: update to `bpmn-js-properties-panel@5.65.4`
+* `DEPS`: update to `camunda-bpmn-js@5.39.0`
+* `DEPS`: update to `camunda-dmn-js@4.1.0`
+* `DEPS`: update to `diagram-js@15.30.1`
+* `DEPS`: update to `dmn-js@18.1.0`
+
+### BPMN
+
+* `FEAT`: resize FEEL and text popups in Camunda 8 BPMN, remember their size and position across sessions, and save FEEL edits without closing the popup ([#4452](https://github.com/camunda/camunda-modeler/issues/4452), [#6313](https://github.com/camunda/camunda-modeler/pull/6313))
+* `FIX`: correct FEEL popup undo/redo and preserve FEEL mode when applying edits ([#3902](https://github.com/camunda/camunda-modeler/issues/3902), [bpmn-io/properties-panel#571](https://github.com/bpmn-io/properties-panel/pull/571))
+* `FIX`: explain FEEL playground connection issues and offer an action to configure the connection ([#6312](https://github.com/camunda/camunda-modeler/pull/6312))
+* `FIX`: place referenced message labels correctly on message flows and preserve shape colors when dropping them on a flow ([bpmn-io/bpmn-js#2516](https://github.com/bpmn-io/bpmn-js/pull/2516), [bpmn-io/bpmn-js#2515](https://github.com/bpmn-io/bpmn-js/pull/2515))
+* `FIX`: prevent labels from moving twice during multi-element moves ([bpmn-io/bpmn-js#2517](https://github.com/bpmn-io/bpmn-js/pull/2517))
+* `FIX`: accept more valid ISO 8601 date forms in timer and task-schedule validation ([camunda/bpmnlint-plugin-camunda-compat#281](https://github.com/camunda/bpmnlint-plugin-camunda-compat/issues/281))
+* `FIX`: correct AI agent input suggestions and fixes ([#6216](https://github.com/camunda/camunda-modeler/issues/6216), [#6240](https://github.com/camunda/camunda-modeler/issues/6240))
+
+### DMN
+
+* `FIX`: preserve imported type references when migrating older DMN diagrams ([bpmn-io/dmn-migrate#60](https://github.com/bpmn-io/dmn-migrate/issues/60))
+* `FIX`: show expression language badges in every decision table row ([bpmn-io/dmn-js#647](https://github.com/bpmn-io/dmn-js/issues/647))
+* `FIX`: prevent hangs when parsing malformed decision table ranges ([bpmn-io/dmn-js advisory](https://github.com/bpmn-io/dmn-js/security/advisories/GHSA-827x-p4p3-vpw8))
+
+### Forms
+
+* `FEAT`: allow plug-ins to extend the form editor ([#5426](https://github.com/camunda/camunda-modeler/issues/5426))
+* `FIX`: cancel dragging in the form editor with Escape ([bpmn-io/form-js#580](https://github.com/bpmn-io/form-js/issues/580))
 
 ## 5.53.0
 
