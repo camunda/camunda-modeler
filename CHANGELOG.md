@@ -15,6 +15,7 @@ ___Note:__ Yet to be released changes appear here._
 * `DEPS`: update to `electron@45.2.1`
 * `DEPS`: update to `@camunda/feel-playground@1.1.1`
 * `DEPS`: update to `@camunda/task-testing@7.1.0`
+* `DEPS`: update to `@camunda/design-system@1.3.0`
 
 ## 5.53.0
 
