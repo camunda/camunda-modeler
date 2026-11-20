@@ -23,7 +23,7 @@
     "mri": "^1.1.6",
     "p-limit": "^7.3.3",
     "parents": "^1.0.1",
-    "saxen": "^11.2.0",
+    "saxen": "^12.0.0",
     "semver": "^7.8.5",
     "zeebe-bpmn-moddle": "^2.0.0"
   },
