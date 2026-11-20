@@ -6,7 +6,8 @@
   --tab-font-color: var(--neutral-foreground-subtle);
   --tab-font-size: var(--text-sm);
   --tab-icon-color: var(--neutral-foreground-subtle);
-  --tab-border-right-color: var(--app-bar-border-color);
+  /* no neutral border token sits between `--neutral-border-strong` and `--input` */
+  --tab-border-right-color: var(--color-zinc-400);
   --tab-close-background-color: transparent;
   --tab-close-hover-background-color: var(--app-bar-item-active-background-color);
   --tab-close-icon-fill-color: var(--neutral-foreground-strong);

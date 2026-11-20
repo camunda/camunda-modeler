@@ -13,7 +13,7 @@
     gap: 8px;
     padding-inline: 8px;
     border-block: 1px solid var(--app-bar-border-color);
-    background-color: var(--app-bar-background-color);
+    background-color: var(--app-panel-bar-background-color);
   }
 
   .panel__actions {
@@ -24,7 +24,7 @@
 
   /* the design system ghost hover is the bar color itself */
   .panel__action:hover {
-    background-color: var(--app-bar-item-hover-background-color);
+    background-color: var(--app-panel-bar-item-hover-background-color);
   }
 
   .panel__body {

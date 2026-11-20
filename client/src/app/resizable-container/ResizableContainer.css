@@ -85,12 +85,12 @@
   }
 
   .handlebar {
-    fill: var(--neutral-border-subtle);
+    fill: var(--input);
   }
 
   &.resizing .handlebar,
   .resizer:hover .handlebar {
-    fill: var(--neutral-border-strong);
+    fill: var(--neutral-foreground-subtle);
   }
 
   &.open .handlebar {
