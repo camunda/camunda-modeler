@@ -19,21 +19,34 @@ var spyOn = require('../../util/spy-on');
 function ElectronDialog() {
 
   this.response = null;
+  this.responses = null;
 
   this.setResponse = function(response) {
-    this.response = response;
+    if (Array.isArray(response)) {
+      this.responses = [ ...response ];
+    } else {
+      this.response = response;
+    }
+  };
+
+  this._nextResponse = function() {
+    if (this.responses && this.responses.length) {
+      return this.responses.shift();
+    }
+
+    return this.response;
   };
 
   this.showOpenDialog = function(browserWindow, opts) {
-    return Promise.resolve(this.response);
+    return Promise.resolve(this._nextResponse());
   };
 
   this.showSaveDialog = function(browserWindow, opts) {
-    return Promise.resolve(this.response);
+    return Promise.resolve(this._nextResponse());
   };
 
   this.showMessageBox = function(browserWindow, opts) {
-    return Promise.resolve(this.response);
+    return Promise.resolve(this._nextResponse());
   };
 
   this.showErrorBox = function(title, message) {

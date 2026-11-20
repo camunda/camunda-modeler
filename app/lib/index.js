@@ -865,6 +865,7 @@ function bootstrap() {
   const dialog = new Dialog({
     config,
     electronDialog,
+    platform,
     userDesktopPath
   });
 

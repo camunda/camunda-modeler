@@ -10,13 +10,16 @@
 
 'use strict';
 
-const path = require('path');
+const fs = require('fs'),
+      path = require('path');
 
 const ensureOptions = require('./util/ensure-opts');
 
 const { assign } = require('min-dash');
 
 const log = require('./log')('app:dialog');
+
+const PLATFORM_LINUX = 'linux';
 
 /**
  * @typedef { import('electron').Dialog } ElectronDialog
@@ -32,16 +35,18 @@ class Dialog {
    * @param { {
    *   electronDialog: ElectronDialog,
    *   config: Config,
+   *   platform: string,
    *   userDesktopPath: string
    * } } options
    */
   constructor(options) {
-    ensureOptions([ 'electronDialog', 'config', 'userDesktopPath' ], options);
+    ensureOptions([ 'electronDialog', 'config', 'platform', 'userDesktopPath' ], options);
 
     this.browserWindow = null;
 
     this.electronDialog = options.electronDialog;
     this.config = options.config;
+    this.platform = options.platform;
 
     this.userDesktopPath = options.userDesktopPath;
   }
@@ -79,8 +84,10 @@ class Dialog {
     // add default extension as specified by filter
     // this prevents users on Linux to run into export / save-as issues,
     // cf. https://github.com/camunda/camunda-modeler/issues/1699
-    if (filters && filters[0] && filters[0].extensions && filters[0].extensions[0]) {
-      name = name + '.' + filters[0].extensions[0];
+    const defaultExtension = filters && filters[0] && filters[0].extensions && filters[0].extensions[0];
+
+    if (defaultExtension) {
+      name = name + '.' + defaultExtension;
     }
 
     let { defaultPath } = options;
@@ -93,7 +100,7 @@ class Dialog {
       defaultPath: `${ defaultPath }/${ name }`,
       filters,
       title: title || `Save "${ name }" as...`
-    }).then(response => {
+    }).then(async response => {
 
       const {
         filePath
@@ -101,6 +108,30 @@ class Dialog {
 
       if (filePath) {
         this.setDefaultPath(path.dirname(filePath));
+
+        const targetPath = (defaultExtension && defaultExtension !== '*' && !path.extname(filePath))
+          ? `${ filePath }.${ defaultExtension }`
+          : filePath;
+
+        // on Linux the native save dialog does not ask for confirmation
+        // when the selected file already exists,
+        // cf. https://github.com/camunda/camunda-modeler/issues/4764
+        if (this.platform === PLATFORM_LINUX && fs.existsSync(targetPath)) {
+          const { button } = await this.showDialog({
+            type: 'question',
+            title: 'Confirm overwrite',
+            message: `The file "${ path.basename(targetPath) }" already exists. Replace it?`,
+            buttons: [
+              { id: 'overwrite', label: 'Replace' },
+              { id: 'cancel', label: 'Cancel' }
+            ],
+            cancelId: 1
+          });
+
+          if (button !== 'overwrite') {
+            return null;
+          }
+        }
       }
 
       return filePath;
