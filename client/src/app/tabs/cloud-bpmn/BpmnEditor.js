@@ -68,6 +68,8 @@ import applyDefaultTemplates from '../bpmn-shared/modeler/features/apply-default
 
 import configureModeler from '../bpmn-shared/util/configure';
 
+import { COLORS } from '../colorPickerColors';
+
 import Metadata from '../../../util/Metadata';
 
 import { GridBehavior } from '../util/grid';
@@ -1191,6 +1193,9 @@ export class BpmnEditor extends CachedComponent {
       ...options,
       position: 'absolute',
       changeTemplateCommand: 'propertiesPanel.zeebe.changeTemplate',
+      colorPicker: {
+        colors: COLORS
+      },
       linting: {
         active: layout.panel && layout.panel.open && layout.panel.tab === 'linting'
       },
