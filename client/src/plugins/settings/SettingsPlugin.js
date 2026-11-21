@@ -113,6 +113,14 @@ export default function SettingsPlugin(props) {
   const handleSave = (data) => {
     const formikValues = flattenFormikValues(data);
 
+    // Formik removes keys assigned undefined,
+    // forward them so cleared overrides are persisted
+    map(flattenSchema(schema), (_, key) => {
+      if (!(key in formikValues)) {
+        formikValues[key] = undefined;
+      }
+    });
+
     const changedValues = omitBy(formikValues, (value, key) => isEqual(values[key], value));
 
     if (!Object.keys(changedValues).length) {
@@ -195,7 +203,7 @@ export default function SettingsPlugin(props) {
  * Settings API uses dots to group settings, but we want a flat dictionary.
  *
  * @param {Object} formikValues
- * @returns {Object<string, string|boolean>}
+ * @returns {Object<string, string|number|boolean>}
  */
 function flattenFormikValues(formikValues) {
 

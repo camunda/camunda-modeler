@@ -227,6 +227,45 @@ describe('SettingsPlugin', function() {
   });
 
 
+  it('should remove a cleared number override', async function() {
+
+    // given
+    const schema = {
+      id: 'test',
+      title: 'Test settings',
+      properties: {
+        'test.maxItems': {
+          type: 'number',
+          label: 'Max Items',
+          default: 7
+        }
+      }
+    };
+
+    const { settings, reopen } = await renderSettings({ 'test.maxItems': 42 }, schema);
+
+    const field = screen.getByLabelText('Max Items');
+
+    // assume
+    expect(field.value).to.equal('42');
+
+    // when
+    fireEvent.change(field, { target: { value: '' } });
+    await flushSave();
+
+    // then
+    expect(settings.get('test.maxItems')).to.equal(7);
+
+    // when
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }));
+    act(reopen);
+    await flushSave();
+
+    // then
+    expect(screen.getByLabelText('Max Items').value).to.equal('');
+  });
+
+
   async function flushSave() {
     await act(async () => {
       await clock.tickAsync(250);
@@ -247,12 +286,16 @@ function getDialogs() {
   return screen.getAllByRole('dialog', { hidden: true });
 }
 
-async function renderSettings(values = {}) {
+async function renderSettings(values = {}, schema) {
   const saved = sinon.spy();
   const settings = new Settings({ config: { get: () => values, set: saved } });
 
   // Let the real Settings provider finish loading before the modal is opened.
   await Promise.resolve();
+
+  if (schema) {
+    settings.register(schema);
+  }
 
   let open;
   const subscribe = (_, cb) => {
