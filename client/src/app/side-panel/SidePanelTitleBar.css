@@ -7,7 +7,7 @@
   height: 37px;
   padding: 0 8px 0 12px;
   border-bottom: 1px solid var(--app-bar-border-color);
-  background-color: var(--app-bar-background-color);
+  background-color: var(--app-panel-bar-background-color);
 
   .side-panel-title-bar__title {
     min-width: 0;
@@ -21,6 +21,6 @@
 
   /* the design system ghost hover is the bar color itself */
   button:hover {
-    background-color: var(--app-bar-item-hover-background-color);
+    background-color: var(--app-panel-bar-item-hover-background-color);
   }
 }

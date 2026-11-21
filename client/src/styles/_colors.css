@@ -2,14 +2,22 @@
   --link-color: var(--info-action-default);
 
   /* like IDEs: a shell around white content, panels next to the content */
-  --app-shell-background-color: var(--neutral-background-medium);
+  --app-shell-background-color: var(--neutral-background-strong);
   --app-content-background-color: var(--neutral-background-subtle);
-  --app-panel-background-color: var(--background);
+  --app-panel-background-color: var(--neutral-background-subtle);
 
-  /* app bars: tab bar, panel headers, status bar */
+  /* panel bars: a step lighter than the shell, a step darker than the content */
+  --app-panel-bar-background-color: var(--neutral-background-medium);
+  --app-panel-bar-item-hover-background-color: var(--neutral-background-strong);
+
+  /* app bars: tab bar, status bar */
   --app-bar-background-color: var(--app-shell-background-color);
-  --app-bar-border-color: var(--border);
+  --app-bar-border-color: var(--neutral-border-strong);
   --app-bar-item-background-color: var(--app-content-background-color);
-  --app-bar-item-hover-background-color: var(--neutral-background-strong);
-  --app-bar-item-active-background-color: var(--neutral-background-strong);
+
+  /* no neutral background token is darker than the bar */
+  --app-bar-item-active-background-color: var(--color-zinc-300);
+
+  /* hover lightens, a toggled on item darkens: the two never look alike */
+  --app-bar-item-hover-background-color: var(--neutral-background-medium);
 }

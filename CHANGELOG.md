@@ -6,12 +6,23 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+* `FEAT`: rework the start page: create Camunda 8 or Camunda 7 files, see whether a local Camunda runs and set it up with `c8ctl`, open recent files, and create a project from an AI agent blueprint ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
 * `FEAT`: allow plug-ins to extend the form editor via `form.modeler.configure`, `form.modeler.{editor,viewer}.additionalModules`, and the Camunda 7 and Camunda 8 specific `form.{platform,cloud}.modeler.{editor,viewer}.additionalModules`, e.g. to add custom form fields ([#5426](https://github.com/camunda/camunda-modeler/issues/5426))
 * `FEAT`: rename the _Test_ side panel tab to _Validate_ ([#6207](https://github.com/camunda/camunda-modeler/issues/6207))
+* `FIX`: improve contrast of the tab bar, panel borders, form controls and resize handles ([#6346](https://github.com/camunda/camunda-modeler/pull/6346))
 * `FIX`: explain FEEL playground connection issues and offer an action to configure the connection ([#6312](https://github.com/camunda/camunda-modeler/pull/6312))
+* `FIX`: show only the read error when opening a file that was moved or deleted ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
+* `FIX`: do not show deleted files as recent files ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
+* `FEAT`: resize BPMN FEEL and text popups and remember their size and position across sessions ([#4452](https://github.com/camunda/camunda-modeler/issues/4452))
+* `FEAT`: save pending BPMN FEEL popup edits without closing the popup ([#6313](https://github.com/camunda/camunda-modeler/pull/6313))
+* `FIX`: fix FEEL popup undo/redo by applying edits once on close or save ([#3902](https://github.com/camunda/camunda-modeler/issues/3902))
+* `FIX`: preserve FEEL mode when applying popup edits after toggling the underlying field to a static value ([bpmn-io/properties-panel#571](https://github.com/bpmn-io/properties-panel/pull/571))
 * `DEPS`: update to `electron@45.2.1`
 * `DEPS`: update to `@camunda/feel-playground@1.1.1`
 * `DEPS`: update to `@camunda/task-testing@7.1.0`
+* `DEPS`: update to `@camunda/design-system@1.3.0`
+* `DEPS`: update to `@bpmn-io/c4-theme@0.3.5`
+* `DEPS`: update to `@bpmn-io/properties-panel@3.60.1`
 
 ## 5.53.0
 

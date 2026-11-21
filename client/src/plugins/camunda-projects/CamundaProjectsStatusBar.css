@@ -12,6 +12,18 @@
     overflow: hidden;
   }
 
+  .camunda-project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: var(--overlay-spacing);
+
+    a {
+      cursor: pointer;
+      white-space: nowrap;
+    }
+  }
+
   .section__body {
     a {
       cursor: pointer;

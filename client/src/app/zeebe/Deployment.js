@@ -255,6 +255,12 @@ export default class Deployment extends EventEmitter {
    * @returns {Array<Endpoint>}
    */
   getEndpoints() {
+
+    // the connections setting is registered by a plugin, after the app starts
+    if (!this._settings.getSchema(SETTINGS_KEY_CONNECTIONS)) {
+      return [];
+    }
+
     const connections = this._settings.get(SETTINGS_KEY_CONNECTIONS);
 
     if (!connections || !Array.isArray(connections)) {

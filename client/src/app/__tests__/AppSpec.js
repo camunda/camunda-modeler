@@ -2298,6 +2298,50 @@ describe('<App>', function() {
     });
 
 
+    it('should forget removed files on focus', async function() {
+
+      // given
+      const fileSystem = new FileSystem();
+
+      const { app } = createApp({ globals: { fileSystem } });
+
+      const [ tab ] = await app.openFiles([ createFile('1.bpmn') ]);
+
+      await app.closeTab(tab);
+
+      fileSystem.setReadFileStatsResponse({ lastModified: 0 });
+
+      // when
+      app.emit('app.focused');
+
+      // then
+      await waitFor(() => {
+        expect(app.state.recentTabs).to.be.empty;
+      });
+    });
+
+
+    it('should emit <app.recentTabsChanged> event', async function() {
+
+      // given
+      const eventSpy = sinon.spy();
+
+      const { app } = createApp();
+
+      const [ tab ] = await app.openFiles([ createFile('1.bpmn') ]);
+
+      app.on('app.recentTabsChanged', eventSpy);
+
+      // when
+      await app.closeTab(tab);
+
+      // then
+      await waitFor(() => {
+        expect(eventSpy).to.have.been.calledWith(sinon.match({ recentTabs: [ tab ] }));
+      });
+    });
+
+
     it('reopen recent tab', async function() {
 
       // given
@@ -5453,7 +5497,7 @@ describe('<App>', function() {
 
         // when
         dialog.setShowReloadModelerDialogResponse({ button: 'reload' });
-        app.reloadModeler();
+        await app.reloadModeler();
 
         // then
         expect(reload).to.have.been.called;
@@ -5536,7 +5580,7 @@ describe('<App>', function() {
 
         // when
         dialog.setShowReloadModelerDialogResponse({ button: 'cancel' });
-        app.reloadModeler();
+        await app.reloadModeler();
 
         // then
         expect(showReloadDialog).to.have.been.called;

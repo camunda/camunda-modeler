@@ -97,6 +97,46 @@ describe('<LinkEventHandler>', function() {
       });
     });
 
+
+    it('button, clicked on its content', function() {
+
+      // given
+      const label = document.createElement('span');
+      label.textContent = 'label';
+
+      button.appendChild(label);
+
+      // when
+      label.click();
+
+      // then
+      expect(track).to.have.been.calledOnceWith('button:clicked', {
+        type: 'button',
+        label: 'click-melabel',
+        parent: 'version-info-overlay'
+      });
+    });
+
+
+    it('link, clicked on its content', function() {
+
+      // given
+      const label = document.createElement('span');
+      label.textContent = 'label';
+
+      linkInside.appendChild(label);
+
+      // when
+      label.click();
+
+      // then
+      expect(track).to.have.been.calledOnceWith('link:opened', {
+        type: 'internal-link',
+        label: 'insidelabel',
+        parent: 'version-info-overlay'
+      });
+    });
+
   });
 
 

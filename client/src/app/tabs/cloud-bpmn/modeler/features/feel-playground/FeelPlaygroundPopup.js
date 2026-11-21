@@ -51,7 +51,9 @@ export function createFeelPlaygroundPopup(feelPlayground) {
       sourceElement,
       title,
       value = '',
-      variables = []
+      variables = [],
+      width = POPUP_WIDTH,
+      height = POPUP_HEIGHT
     } = props;
 
     const containerRef = useRef();
@@ -111,8 +113,9 @@ export function createFeelPlaygroundPopup(feelPlayground) {
         allowFocusMove={ (event) => !isSnippetNavigation(event) }
         onPostDeactivate={ handleReturnFocus }
         onClose={ onClose }
-        width={ POPUP_WIDTH }
-        height={ POPUP_HEIGHT }
+        width={ width }
+        height={ height }
+        resizable
       >
         <PopupTitle
           title={ title }

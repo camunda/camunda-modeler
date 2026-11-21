@@ -179,7 +179,8 @@ export class App extends PureComponent {
     this.closedTabs = new History();
     this.recentTabs = new RecentTabs({
       setState: value => this.setState({ recentTabs: value }),
-      config: this.getGlobal('config')
+      config: this.getGlobal('config'),
+      fileSystem: this.getGlobal('fileSystem')
     });
 
     this.tabRef = React.createRef();
@@ -228,6 +229,8 @@ export class App extends PureComponent {
     });
 
     this.on('app.focused', () => {
+      this.recentTabs.removeMissing();
+
       if (this.isDialogOpen()) {
         return;
       }
@@ -507,8 +510,10 @@ export class App extends PureComponent {
       return tabShown.promise;
     }
 
+    const editorDirty = autoSavePreviousTab && await this.commitActiveTabEdits();
+
     // auto-save the previously active tab when switching (async, non-blocking)
-    if (autoSavePreviousTab && activeTab !== tab && this.shouldAutoSave(activeTab)) {
+    if (autoSavePreviousTab && this.shouldAutoSave(activeTab, editorDirty)) {
 
       const contents = await this.getActiveTabContents();
 
@@ -546,6 +551,17 @@ export class App extends PureComponent {
   }
 
   /**
+   * Commit pending edits without closing the editor and return its current dirty state.
+   *
+   * @return {Promise<boolean>|undefined}
+   */
+  commitActiveTabEdits() {
+    if (this.state.activeTab.type === 'cloud-bpmn') {
+      return this.tabRef.current?.triggerAction('commitPendingEdits');
+    }
+  }
+
+  /**
    * Handle the saving dialog when closing a tab.
    *
    * @param {Tab} tab
@@ -557,9 +573,11 @@ export class App extends PureComponent {
 
     const { name } = file;
 
+    const editorDirty = tab === this.state.activeTab && await this.commitActiveTabEdits();
+
     // auto-save is suppressed while the close dialog is open (cf.
     // #isDialogOpen), so it can not interfere with the user's save decision
-    if (this.isDirty(tab)) {
+    if (editorDirty || this.isDirty(tab)) {
       const { button } = await this.showCloseFileDialog({ name });
 
       if (button === 'save') {
@@ -610,7 +628,8 @@ export class App extends PureComponent {
    */
   reloadModeler = async (restart) => {
     const dialog = this.getGlobal('dialog');
-    const hasUnsavedTabs = this.hasUnsavedTabs();
+    const editorDirty = await this.commitActiveTabEdits();
+    const hasUnsavedTabs = editorDirty || this.hasUnsavedTabs();
 
     const reloadFn = restart === true ? this.restart : this.reload;
 
@@ -1488,6 +1507,12 @@ export class App extends PureComponent {
       });
     }
 
+    if (recentTabs !== prevState.recentTabs) {
+      this.emit('app.recentTabsChanged', {
+        recentTabs
+      });
+    }
+
     if (layout !== prevState.layout) {
       this.emit('layout.changed', {
         prevLayout: prevState.layout,
@@ -1924,11 +1949,12 @@ export class App extends PureComponent {
    * - Previously saved (has a file path)
    *
    * @param {Tab} [tab] - the tab to check
+   * @param {boolean} [editorDirty] - dirty state after committing pending edits
    *
    * @returns {boolean} - whether the tab should be auto-saved
    */
-  shouldAutoSave(tab) {
-    return tab && !this.isEmptyTab(tab) && this.isDirty(tab) && !this.isUnsaved(tab);
+  shouldAutoSave(tab, editorDirty) {
+    return tab && !this.isEmptyTab(tab) && (editorDirty || this.isDirty(tab)) && !this.isUnsaved(tab);
   }
 
   /**
@@ -2021,15 +2047,18 @@ export class App extends PureComponent {
     });
   }
 
-  saveAllTabs = () => {
+  saveAllTabs = async () => {
 
     const {
+      activeTab,
       tabs
     } = this.state;
 
+    const editorDirty = await this.commitActiveTabEdits();
+
     const saveTasks = tabs
       .filter((tab) => {
-        return this.isDirty(tab) || this.isUnsaved(tab);
+        return (tab === activeTab && editorDirty) || this.isDirty(tab) || this.isUnsaved(tab);
       }).map((tab) => {
         return () => this.saveTab(tab);
       });
@@ -2347,7 +2376,7 @@ export class App extends PureComponent {
         const { path } = options;
 
         if (path) {
-          return this.readFileFromPath(path).then(file => this.openFiles([ file ]));
+          return this.readFileFromPath(path).then(file => file ? this.openFiles([ file ]) : []);
         }
 
         return this.showOpenFilesDialog();

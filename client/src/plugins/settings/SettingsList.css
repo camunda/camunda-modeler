@@ -4,7 +4,7 @@
   list-style: none;
 
   /* box the list: stacked items read as one unit (cf. Chrome settings) */
-  border: 1px solid var(--border);
+  border: 1px solid var(--neutral-border-strong);
   border-radius: var(--radius);
 
   /* two-line items: name and description, with actions */
@@ -18,7 +18,7 @@
   }
 
   .settings-list-item + .settings-list-item {
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--neutral-border-strong);
   }
 
   .settings-list-item__content {
