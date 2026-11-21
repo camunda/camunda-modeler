@@ -259,6 +259,153 @@ describe('<MultiSheetTab>', function() {
   });
 
 
+  describe('generate diagram on missing diagram error', function() {
+
+    const missingDiagramError = new Error('no diagram to display');
+
+    const bpmnTab = {
+      ...defaultTab,
+      type: 'bpmn'
+    };
+
+    const noDIXML = '<?xml version="1.0" encoding="UTF-8"?>' +
+      '<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
+      'id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">' +
+      '<process id="Process_1" isExecutable="false">' +
+      '<startEvent id="StartEvent_1"/>' +
+      '</process>' +
+      '</definitions>';
+
+    function dialogOptions(actionSpy) {
+      return actionSpy.args
+        .map(([ action, options ]) => ({ action, options }))
+        .find(({ action }) => action === 'show-dialog').options;
+    }
+
+    it('should include generate button for missing diagram error on bpmn tabs', function() {
+
+      // given
+      const actionSpy = spy(() => ({ button: 'close' }));
+      const { instance } = renderTab({ onAction: actionSpy, tab: bpmnTab });
+
+      // when
+      instance.showImportErrorDialog(missingDiagramError);
+
+      // then
+      const options = dialogOptions(actionSpy);
+      expect(options.buttons.map(({ id }) => id)).to.eql([
+        'generate-diagram',
+        'close',
+        'ask-in-forum'
+      ]);
+    });
+
+
+    it('should NOT include generate button for generic errors', function() {
+
+      // given
+      const actionSpy = spy(() => ({ button: 'close' }));
+      const { instance } = renderTab({ onAction: actionSpy, tab: bpmnTab });
+
+      // when
+      instance.showImportErrorDialog(new Error('error'));
+
+      // then
+      const options = dialogOptions(actionSpy);
+      expect(options.buttons.map(({ id }) => id)).to.eql([
+        'close',
+        'ask-in-forum'
+      ]);
+    });
+
+
+    it('should NOT include generate button for non-bpmn tabs', function() {
+
+      // given
+      const actionSpy = spy(() => ({ button: 'close' }));
+      const { instance } = renderTab({
+        onAction: actionSpy,
+        tab: { ...defaultTab, type: 'dmn' }
+      });
+
+      // when
+      instance.showImportErrorDialog(missingDiagramError);
+
+      // then
+      const options = dialogOptions(actionSpy);
+      expect(options.buttons.map(({ id }) => id)).to.eql([
+        'close',
+        'ask-in-forum'
+      ]);
+    });
+
+
+    it('should generate diagram and switch back to editor sheet', async function() {
+
+      // given
+      const actionSpy = spy((action) => {
+        if (action === 'show-dialog') {
+          return { button: 'generate-diagram' };
+        }
+      });
+
+      const errorSpy = spy();
+
+      const { instance } = renderTab({
+        onAction: actionSpy,
+        onError: errorSpy,
+        tab: bpmnTab
+      });
+
+      instance.editorRef.current.setXML(noDIXML);
+
+      instance.openFallback();
+
+      // when
+      await instance.showImportErrorDialog(missingDiagramError);
+
+      // then
+      await waitFor(() => {
+        const cached = instance.getCached();
+        expect(cached.activeSheet.id).to.equal('editor');
+        expect(cached.lastXML).to.contain('bpmndi');
+      });
+      expect(errorSpy).not.to.have.been.called;
+    });
+
+
+    it('should report error when diagram generation fails', async function() {
+
+      // given
+      const actionSpy = spy((action) => {
+        if (action === 'show-dialog') {
+          return { button: 'generate-diagram' };
+        }
+      });
+
+      const errorSpy = spy();
+
+      const { instance } = renderTab({
+        onAction: actionSpy,
+        onError: errorSpy,
+        tab: bpmnTab
+      });
+
+      instance.editorRef.current.setXML('not valid xml');
+
+      // when
+      const generated = await instance.showImportErrorDialog(missingDiagramError);
+
+      // then
+      expect(generated).to.be.false;
+      expect(actionSpy).to.have.been.calledWith('display-notification', sinon.match({
+        type: 'warning'
+      }));
+    });
+
+  });
+
+
   describe('#openFallback', function() {
 
     it('should open fallback', async function() {

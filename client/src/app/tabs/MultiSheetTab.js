@@ -154,16 +154,67 @@ export class MultiSheetTab extends CachedComponent {
       type
     } = tab;
 
-    const { button } = await onAction('show-dialog', getErrorDialog({
+    const allowGenerate = isMissingDiagramError(error) &&
+      (type === 'bpmn' || type === 'cloudBpmn');
+
+    const { button } = (await onAction('show-dialog', getErrorDialog({
       error,
       name,
-      type
-    }));
+      type,
+      allowGenerate
+    }))) || {};
 
     if (button === 'ask-in-forum') {
       onAction('open-external-url', {
         url: 'https://forum.camunda.io/c/bpmn-modeling/'
       });
+
+      return false;
+    }
+
+    if (button === 'generate-diagram') {
+      return this.generateDiagram();
+    }
+
+    return false;
+  }
+
+  async generateDiagram() {
+    try {
+      const xml = await this.editorRef.current.getXML();
+
+      const { layoutProcess } = await import('bpmn-auto-layout');
+
+      const layoutedXml = await layoutProcess(xml);
+
+      const {
+        sheets
+      } = this.getCached();
+
+      const editorSheet = sheets && sheets.find(sheet => !sheet.provider.isFallback);
+
+      this.handleContentUpdated(layoutedXml);
+
+      if (editorSheet) {
+        this.setCached({
+          activeSheet: editorSheet
+        });
+
+        this.props.emit('tab.activeSheetChanged', {
+          activeSheet: editorSheet
+        });
+      }
+
+      return true;
+    } catch (err) {
+      this.props.onAction('display-notification', {
+        type: 'warning',
+        title: 'Diagram could not be generated',
+        content: (err && err.message) || String(err),
+        duration: 10000
+      });
+
+      return false;
     }
   }
 
@@ -487,27 +538,43 @@ function SheetSwitch(props) {
 function getErrorDialog({
   error,
   name,
-  type
+  type,
+  allowGenerate
 }) {
+  const buttons = [];
+
+  if (allowGenerate) {
+    buttons.push({
+      id: 'generate-diagram',
+      label: 'Generate diagram'
+    });
+  }
+
+  buttons.push(
+    { id: 'close', label: 'Close' }, { id: 'ask-in-forum', label: 'Ask in Forum' }
+  );
+
+  const detail = [
+    error.message,
+    '',
+    'It seems that "' + name + '" is not a valid ' + type.toUpperCase() + ' diagram.',
+    '',
+    allowGenerate
+      ? 'You can generate the diagram layout automatically, or post this error with your diagram in our forum for help.'
+      : 'Post this error with your diagram in our forum for help.'
+  ].join('\n');
+
   return {
     type: 'error',
     title: 'Import Error',
     message: 'Import Error',
-    buttons: [ {
-      id: 'close',
-      label: 'Close'
-    }, {
-      id: 'ask-in-forum',
-      label: 'Ask in Forum'
-    } ],
-    detail: [
-      error.message,
-      '',
-      'It seems that "' + name + '" is not a valid ' + type.toUpperCase() + ' diagram.',
-      '',
-      'Post this error with your diagram in our forum for help.'
-    ].join('\n')
+    buttons,
+    detail
   };
+}
+
+function isMissingDiagramError(error) {
+  return /no diagram to display/i.test(error && error.message || '');
 }
 
 function isXMLChange(prevXML, xml) {
