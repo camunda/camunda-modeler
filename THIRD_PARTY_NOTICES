@@ -110,9 +110,9 @@ This project incorporates components from the projects listed below. The origina
 103.  reflect-metadata@0.2.2 (https://github.com/rbuckton/reflect-metadata.git)
 104.  web-vitals@6.2.3 (https://github.com/GoogleChrome/web-vitals.git)
 105.  zod@4.6.7 (git+https://github.com/colinhacks/zod.git)
-106.  chokidar@5.0.0 (git+https://github.com/paulmillr/chokidar.git)
+106.  chokidar@6.0.0 (git+https://github.com/paulmillr/chokidar.git)
 107.  p-limit@7.3.3 (sindresorhus/p-limit)
-108.  readdirp@5.0.0 (https://github.com/paulmillr/readdirp.git)
+108.  readdirp@5.1.1 (https://github.com/paulmillr/readdirp.git)
 109.  yocto-queue@1.2.2 (sindresorhus/yocto-queue)
 110.  bpmn-moddle@10.3.1 (https://github.com/bpmn-io/bpmn-moddle)
 111.  dmn-moddle@12.2.1 (https://github.com/bpmn-io/dmn-moddle)
@@ -135,7 +135,7 @@ This project incorporates components from the projects listed below. The origina
 128.  @formatjs/icu-messageformat-parser@2.11.4 (https://github.com/formatjs/formatjs.git)
 129.  @formatjs/icu-skeleton-parser@1.8.16 (https://github.com/formatjs/formatjs.git)
 130.  aria-hidden@1.2.6 (git+https://github.com/theKashey/aria-hidden.git)
-131.  camunda-modeler@5.53.0-rc.0 (https://github.com/camunda/camunda-modeler)
+131.  camunda-modeler@5.53.0 (https://github.com/camunda/camunda-modeler)
 132.  bpmn-js-element-templates@2.40.2 (https://github.com/bpmn-io/bpmn-js-element-templates)
 133.  bpmnlint@12.0.0 (https://github.com/bpmn-io/bpmnlint)
 134.  bpmn-js-properties-panel@5.65.3 (https://github.com/bpmn-io/bpmn-js-properties-panel)
@@ -143,7 +143,7 @@ This project incorporates components from the projects listed below. The origina
 136.  bpmnlint-plugin-camunda-compat@2.63.0 (https://github.com/camunda/bpmnlint-plugin-camunda-compat)
 137.  camunda-bpmn-js@5.38.0 (https://github.com/camunda/camunda-bpmn-js)
 138.  @bpmn-io/c4-theme@0.3.3 (git+https://github.com/bpmn-io/themes.git)
-139.  @camunda/design-system@0.76.0 (git+https://github.com/camunda/design-system.git)
+139.  @camunda/design-system@1.3.0 (git+https://github.com/camunda/design-system.git)
 140.  @camunda/form-playground@0.28.0 (git+https://github.com/camunda/form-playground.git)
 141.  camunda-dmn-js@4.0.0 (https://github.com/camunda/camunda-dmn-js)
 142.  @bpmn-io/variable-outline@4.0.1 (git+https://github.com/bpmn-io/variable-outline.git)
@@ -189,7 +189,7 @@ This project incorporates components from the projects listed below. The origina
 182.  @bpmn-io/element-templates-validator@2.26.0 (git+https://github.com/bpmn-io/element-templates-validator.git)
 183.  @bpmn-io/extract-process-variables@2.2.1 (git+https://github.com/bpmn-io/extract-process-variables.git)
 184.  @bpmn-io/feel-analyzer@0.3.0 (git+https://github.com/bpmn-io/feel-analyzer.git)
-185.  @bpmn-io/feel-editor@2.7.1 (git+https://github.com/bpmn-io/feel-editor.git)
+185.  @bpmn-io/feel-editor@2.8.1 (git+https://github.com/bpmn-io/feel-editor.git)
 186.  @bpmn-io/feel-lint@3.2.0 (git+https://github.com/bpmn-io/feel-lint.git)
 187.  @bpmn-io/lezer-feel@3.0.1 (https://github.com/bpmn-io/lezer-feel.git)
 188.  @bpmn-io/feelers-editor@1.1.1 (git+https://github.com/bpmn-io/feelers.git)
@@ -220,43 +220,43 @@ This project incorporates components from the projects listed below. The origina
 213.  @lezer/markdown@1.7.2 (git+https://code.haverbeke.berlin/lezer/markdown.git)
 214.  @marijn/find-cluster-break@1.0.2 (git+https://github.com/marijnh/find-cluster-break.git)
 215.  @radix-ui/number@1.1.3 (git+https://github.com/radix-ui/primitives.git)
-216.  @radix-ui/primitive@1.1.7 (git+https://github.com/radix-ui/primitives.git)
-217.  @radix-ui/react-arrow@1.1.15 (git+https://github.com/radix-ui/primitives.git)
-218.  @radix-ui/react-checkbox@1.3.11 (git+https://github.com/radix-ui/primitives.git)
-219.  @radix-ui/react-collapsible@1.1.20 (git+https://github.com/radix-ui/primitives.git)
-220.  @radix-ui/react-collection@1.1.15 (git+https://github.com/radix-ui/primitives.git)
+216.  @radix-ui/primitive@1.2.0 (git+https://github.com/radix-ui/primitives.git)
+217.  @radix-ui/react-arrow@1.1.17 (git+https://github.com/radix-ui/primitives.git)
+218.  @radix-ui/react-checkbox@1.4.1 (git+https://github.com/radix-ui/primitives.git)
+219.  @radix-ui/react-collapsible@1.2.1 (git+https://github.com/radix-ui/primitives.git)
+220.  @radix-ui/react-collection@1.2.0 (git+https://github.com/radix-ui/primitives.git)
 221.  @radix-ui/react-compose-refs@1.1.5 (git+https://github.com/radix-ui/primitives.git)
-222.  @radix-ui/react-context@1.2.2 (git+https://github.com/radix-ui/primitives.git)
-223.  @radix-ui/react-dialog@1.1.23 (git+https://github.com/radix-ui/primitives.git)
-224.  @radix-ui/react-direction@1.1.4 (git+https://github.com/radix-ui/primitives.git)
-225.  @radix-ui/react-dismissable-layer@1.1.19 (git+https://github.com/radix-ui/primitives.git)
-226.  @radix-ui/react-dropdown-menu@2.1.24 (git+https://github.com/radix-ui/primitives.git)
-227.  @radix-ui/react-focus-guards@1.1.6 (git+https://github.com/radix-ui/primitives.git)
-228.  @radix-ui/react-focus-scope@1.1.16 (git+https://github.com/radix-ui/primitives.git)
+222.  @radix-ui/react-context@1.3.0 (git+https://github.com/radix-ui/primitives.git)
+223.  @radix-ui/react-dialog@1.3.1 (git+https://github.com/radix-ui/primitives.git)
+224.  @radix-ui/react-direction@1.2.0 (git+https://github.com/radix-ui/primitives.git)
+225.  @radix-ui/react-dismissable-layer@1.2.1 (git+https://github.com/radix-ui/primitives.git)
+226.  @radix-ui/react-dropdown-menu@2.2.1 (git+https://github.com/radix-ui/primitives.git)
+227.  @radix-ui/react-focus-guards@1.2.0 (git+https://github.com/radix-ui/primitives.git)
+228.  @radix-ui/react-focus-scope@1.3.1 (git+https://github.com/radix-ui/primitives.git)
 229.  @radix-ui/react-id@1.1.4 (git+https://github.com/radix-ui/primitives.git)
-230.  @radix-ui/react-label@2.1.15 (git+https://github.com/radix-ui/primitives.git)
-231.  @radix-ui/react-menu@2.1.24 (git+https://github.com/radix-ui/primitives.git)
-232.  @radix-ui/react-popover@1.1.23 (git+https://github.com/radix-ui/primitives.git)
-233.  @radix-ui/react-popper@1.3.7 (git+https://github.com/radix-ui/primitives.git)
-234.  @radix-ui/react-portal@1.1.17 (git+https://github.com/radix-ui/primitives.git)
-235.  @radix-ui/react-presence@1.1.10 (git+https://github.com/radix-ui/primitives.git)
-236.  @radix-ui/react-primitive@2.1.10 (git+https://github.com/radix-ui/primitives.git)
-237.  @radix-ui/react-radio-group@1.4.7 (git+https://github.com/radix-ui/primitives.git)
-238.  @radix-ui/react-roving-focus@1.1.19 (git+https://github.com/radix-ui/primitives.git)
-239.  @radix-ui/react-select@2.3.7 (git+https://github.com/radix-ui/primitives.git)
-240.  @radix-ui/react-separator@1.1.15 (git+https://github.com/radix-ui/primitives.git)
-241.  @radix-ui/react-slot@1.3.3 (git+https://github.com/radix-ui/primitives.git)
-242.  @radix-ui/react-switch@1.3.7 (git+https://github.com/radix-ui/primitives.git)
-243.  @radix-ui/react-tabs@1.1.21 (git+https://github.com/radix-ui/primitives.git)
-244.  @radix-ui/react-tooltip@1.2.16 (git+https://github.com/radix-ui/primitives.git)
-245.  @radix-ui/react-use-callback-ref@1.1.4 (git+https://github.com/radix-ui/primitives.git)
-246.  @radix-ui/react-use-controllable-state@1.2.6 (git+https://github.com/radix-ui/primitives.git)
-247.  @radix-ui/react-use-effect-event@0.0.5 (git+https://github.com/radix-ui/primitives.git)
-248.  @radix-ui/react-use-is-hydrated@0.1.3 (git+https://github.com/radix-ui/primitives.git)
-249.  @radix-ui/react-use-layout-effect@1.1.4 (git+https://github.com/radix-ui/primitives.git)
-250.  @radix-ui/react-use-previous@1.1.4 (git+https://github.com/radix-ui/primitives.git)
-251.  @radix-ui/react-use-size@1.1.4 (git+https://github.com/radix-ui/primitives.git)
-252.  @radix-ui/react-visually-hidden@1.2.11 (git+https://github.com/radix-ui/primitives.git)
+230.  @radix-ui/react-label@2.1.17 (git+https://github.com/radix-ui/primitives.git)
+231.  @radix-ui/react-menu@2.2.1 (git+https://github.com/radix-ui/primitives.git)
+232.  @radix-ui/react-popover@1.3.1 (git+https://github.com/radix-ui/primitives.git)
+233.  @radix-ui/react-popper@1.4.0 (git+https://github.com/radix-ui/primitives.git)
+234.  @radix-ui/react-portal@1.2.0 (git+https://github.com/radix-ui/primitives.git)
+235.  @radix-ui/react-presence@1.1.11 (git+https://github.com/radix-ui/primitives.git)
+236.  @radix-ui/react-primitive@2.2.0 (git+https://github.com/radix-ui/primitives.git)
+237.  @radix-ui/react-radio-group@1.5.1 (git+https://github.com/radix-ui/primitives.git)
+238.  @radix-ui/react-roving-focus@1.2.1 (git+https://github.com/radix-ui/primitives.git)
+239.  @radix-ui/react-select@2.4.1 (git+https://github.com/radix-ui/primitives.git)
+240.  @radix-ui/react-slot@1.5.0 (git+https://github.com/radix-ui/primitives.git)
+241.  @radix-ui/react-switch@1.4.1 (git+https://github.com/radix-ui/primitives.git)
+242.  @radix-ui/react-tabs@1.2.1 (git+https://github.com/radix-ui/primitives.git)
+243.  @radix-ui/react-toggle-group@1.2.1 (git+https://github.com/radix-ui/primitives.git)
+244.  @radix-ui/react-toggle@1.2.1 (git+https://github.com/radix-ui/primitives.git)
+245.  @radix-ui/react-tooltip@1.4.1 (git+https://github.com/radix-ui/primitives.git)
+246.  @radix-ui/react-use-callback-ref@1.1.5 (git+https://github.com/radix-ui/primitives.git)
+247.  @radix-ui/react-use-controllable-state@1.3.0 (git+https://github.com/radix-ui/primitives.git)
+248.  @radix-ui/react-use-effect-event@0.0.5 (git+https://github.com/radix-ui/primitives.git)
+249.  @radix-ui/react-use-is-hydrated@0.1.3 (git+https://github.com/radix-ui/primitives.git)
+250.  @radix-ui/react-use-layout-effect@1.1.4 (git+https://github.com/radix-ui/primitives.git)
+251.  @radix-ui/react-use-size@1.1.5 (git+https://github.com/radix-ui/primitives.git)
+252.  @radix-ui/react-visually-hidden@1.2.13 (git+https://github.com/radix-ui/primitives.git)
 253.  @sentry/browser-utils@11.7.0 (git://github.com/getsentry/sentry-javascript.git)
 254.  @sentry/browser@11.7.0 (git://github.com/getsentry/sentry-javascript.git)
 255.  @sentry/conventions@0.27.0 (git+https://github.com/getsentry/sentry-conventions.git)
@@ -291,81 +291,79 @@ This project incorporates components from the projects listed below. The origina
 284.  saxen@11.2.0 (https://github.com/nikku/saxen)
 285.  sonner@2.0.8 (git+https://github.com/emilkowalski/sonner.git)
 286.  style-mod@4.1.0 (git+https://github.com/marijnh/style-mod.git)
-287.  tailwind-merge@3.6.0 (https://github.com/dcastil/tailwind-merge.git)
+287.  tailwind-merge@3.7.0 (https://github.com/dcastil/tailwind-merge.git)
 288.  tslib@2.8.1 (https://github.com/Microsoft/tslib.git)
 289.  w3c-keyname@2.2.6 (git+https://github.com/marijnh/w3c-keyname.git)
 290.  web-vitals@6.2.3 (https://github.com/GoogleChrome/web-vitals.git)
 291.  camunda-bpmn-moddle@8.0.2 (https://github.com/camunda/camunda-bpmn-moddle)
 292.  modeler-moddle@0.2.0 (https://github.com/camunda/modeler-moddle)
 293.  zeebe-bpmn-moddle@2.0.0 (https://github.com/camunda/zeebe-bpmn-moddle)
-294.  @radix-ui/react-toggle@1.1.18 (git+https://github.com/radix-ui/primitives.git)
-295.  didi@11.0.0 (git://github.com/nikku/didi.git)
-296.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
-297.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
-298.  @camunda/improved-canvas@1.12.2 (git+https://github.com/camunda/improved-canvas.git)
-299.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
-300.  diagram-js-direct-editing@3.6.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
-301.  diagram-js-origin@1.4.2 (https://github.com/bpmn-io/diagram-js-origin)
-302.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
-303.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
-304.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
-305.  @bpmn-io/element-template-icon-renderer@1.0.1 (git+ssh://git@github.com/bpmn-io/element-template-icon-renderer.git)
-306.  @camunda/example-data-properties-provider@1.5.2 (git+https://github.com/camunda/example-data-properties-provider.git)
-307.  @camunda/feel-playground@1.0.3 (git+https://github.com/camunda/feel-playground.git)
-308.  @camunda/linting-autofix@0.3.0 (https://github.com/camunda/linting-autofix)
-309.  @camunda/task-testing@7.0.1 (https://github.com/camunda/task-testing)
-310.  camunda-bpmn-js-behaviors@1.18.0 (https://github.com/camunda/camunda-bpmn-js-behaviors)
-311.  @bpmn-io/element-template-chooser@3.0.0 (https://github.com/bpmn-io/element-template-chooser.git)
-312.  @bpmn-io/variable-resolver@3.3.1 (https://github.com/bpmn-io/variable-resolver)
-313.  bpmn-js-color-picker@0.7.2 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
-314.  bpmn-js-create-append-anything@2.2.0 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
-315.  bpmn-js-executable-fix@0.2.2 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
-316.  bpmn-js-native-copy-paste@0.3.0 (git+https://github.com/nikku/bpmn-js-native-copy-paste.git)
-317.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
-318.  diagram-js-minimap@5.6.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
-319.  @bpmn-io/dmn-variable-resolver@0.7.1 (git+https://github.com/bpmn-io/dmn-variable-resolver.git)
-320.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
-321.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
-322.  dmn-js-boxed-expression@18.0.1 (https://github.com/bpmn-io/dmn-js)
-323.  dmn-js-decision-table@18.0.1 (https://github.com/bpmn-io/dmn-js)
-324.  dmn-js-drd@18.0.1 (https://github.com/bpmn-io/dmn-js)
-325.  dmn-js-literal-expression@18.0.1 (https://github.com/bpmn-io/dmn-js)
-326.  dmn-js-shared@18.0.1 (https://github.com/bpmn-io/dmn-js)
-327.  dmn-js@18.0.1 (https://github.com/bpmn-io/dmn-js)
-328.  escape-html@1.0.3 (component/escape-html)
-329.  inferno@5.6.3 (https://github.com/infernojs/inferno)
-330.  table-js@9.4.0 (https://github.com/bpmn-io/table-js)
-331.  @bpmn-io/form-js-editor@2.1.1 (git+https://github.com/bpmn-io/form-js.git)
-332.  @bpmn-io/form-js-playground@2.1.1 (git+https://github.com/bpmn-io/form-js.git)
-333.  @bpmn-io/form-js-viewer@2.1.1 (git+https://github.com/bpmn-io/form-js.git)
-334.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
-335.  flatpickr@4.6.13 (git+https://github.com/chmln/flatpickr.git)
-336.  @bpmn-io/svg-to-image@1.0.1 (git+https://github.com/bpmn-io/svg-to-image.git)
-337.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
-338.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
-339.  canvg@4.0.3 (https://github.com/canvg/canvg)
-340.  diagram-js-grid@2.1.0 (git@github.com:bpmn-io/diagram-js-grid.git)
-341.  path-intersection@4.1.0 (https://github.com/bpmn-io/path-intersection)
-342.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
-343.  tiny-svg@4.1.4 (https://github.com/bpmn-io/tiny-svg)
-344.  bpmn-js-copy-as-image@0.4.1 (git+https://github.com/barmac/bpmn-js-copy-as-image.git)
-345.  @bpmn-io/dmn-migrate@0.7.1 (git+https://github.com/bpmn-io/dmn-migrate.git)
-346.  dmn-moddle@12.2.1 (https://github.com/bpmn-io/dmn-moddle)
-347.  selection-ranges@4.1.1 (git+ssh://git@github.com/nikku/selection-ranges.git)
-348.  selection-update@1.1.1 (git+ssh://git@github.com/nikku/selection-update.git)
-349.  camunda-dmn-moddle@1.3.1 (https://github.com/camunda/camunda-dmn-moddle)
-350.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
-351.  luxon@3.7.2 (https://github.com/moment/luxon)
-352.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
-353.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
-354.  @bpmn-io/feelin@7.0.0 (https://github.com/bpmn-io/feelin)
-355.  dompurify@3.4.17 (git://github.com/cure53/DOMPurify.git)
-356.  feelers@3.2.0 (git+https://github.com/bpmn-io/feelers.git)
-357.  file-drops@0.7.0 (git+ssh://git@github.com/nikku/file-drops.git)
-358.  marked@18.1.1 (git+https://github.com/markedjs/marked.git)
-359.  temporal-polyfill@1.0.6 (https://github.com/fullcalendar/temporal-polyfill.git)
-360.  temporal-utils@1.0.3 (https://github.com/fullcalendar/temporal-polyfill.git)
-361.  @radix-ui/react-toggle-group@1.1.19 (git+https://github.com/radix-ui/primitives.git)
+294.  didi@11.0.0 (git://github.com/nikku/didi.git)
+295.  @bpmn-io/add-exporter@0.2.0 (git+ssh://git@github.com/bpmn-io/add-exporter.git)
+296.  @bpmn-io/align-to-origin@0.7.0 (git+ssh://git@github.com/bpmn-io/align-to-origin.git)
+297.  @camunda/improved-canvas@1.12.2 (git+https://github.com/camunda/improved-canvas.git)
+298.  rgbcolor@1.0.1 (https://github.com/yetzt/node-rgbcolor.git)
+299.  diagram-js-direct-editing@3.6.0 (https://github.com/bpmn-io/diagram-js-direct-editing)
+300.  diagram-js-origin@1.4.2 (https://github.com/bpmn-io/diagram-js-origin)
+301.  performance-now@2.1.0 (git://github.com/braveg1rl/performance-now.git)
+302.  raf@3.4.1 (git://github.com/chrisdickinson/raf.git)
+303.  stackblur-canvas@2.5.0 (https://github.com/flozz/StackBlur.git)
+304.  @bpmn-io/element-template-icon-renderer@1.0.1 (git+ssh://git@github.com/bpmn-io/element-template-icon-renderer.git)
+305.  @camunda/example-data-properties-provider@1.5.2 (git+https://github.com/camunda/example-data-properties-provider.git)
+306.  @camunda/feel-playground@1.1.1 (git+https://github.com/camunda/feel-playground.git)
+307.  @camunda/linting-autofix@0.3.0 (https://github.com/camunda/linting-autofix)
+308.  @camunda/task-testing@7.1.0 (https://github.com/camunda/task-testing)
+309.  camunda-bpmn-js-behaviors@1.18.0 (https://github.com/camunda/camunda-bpmn-js-behaviors)
+310.  @bpmn-io/element-template-chooser@3.0.0 (https://github.com/bpmn-io/element-template-chooser.git)
+311.  @bpmn-io/variable-resolver@3.3.1 (https://github.com/bpmn-io/variable-resolver)
+312.  bpmn-js-color-picker@0.7.2 (https://github.com/bpmn-io/bpmn-js-color-picker.git)
+313.  bpmn-js-create-append-anything@2.2.0 (git+https://github.com/bpmn-io/bpmn-js-create-append-anything.git)
+314.  bpmn-js-executable-fix@0.2.2 (git+https://github.com/bpmn-io/bpmn-js-executable-fix.git)
+315.  bpmn-js-native-copy-paste@0.3.0 (git+https://github.com/nikku/bpmn-js-native-copy-paste.git)
+316.  bpmn-js-tracking@0.6.0 (git+https://github.com/bpmn-io/bpmn-js-tracking.git)
+317.  diagram-js-minimap@5.6.0 (git@github.com:bpmn-io/diagram-js-minimap.git)
+318.  @bpmn-io/dmn-variable-resolver@0.7.1 (git+https://github.com/bpmn-io/dmn-variable-resolver.git)
+319.  @camunda/execution-platform@0.3.2 (git+ssh://git@github.com/camunda/execution-platform.git)
+320.  css.escape@1.5.1 (https://github.com/mathiasbynens/CSS.escape.git)
+321.  dmn-js-boxed-expression@18.0.1 (https://github.com/bpmn-io/dmn-js)
+322.  dmn-js-decision-table@18.0.1 (https://github.com/bpmn-io/dmn-js)
+323.  dmn-js-drd@18.0.1 (https://github.com/bpmn-io/dmn-js)
+324.  dmn-js-literal-expression@18.0.1 (https://github.com/bpmn-io/dmn-js)
+325.  dmn-js-shared@18.0.1 (https://github.com/bpmn-io/dmn-js)
+326.  dmn-js@18.0.1 (https://github.com/bpmn-io/dmn-js)
+327.  escape-html@1.0.3 (component/escape-html)
+328.  inferno@5.6.3 (https://github.com/infernojs/inferno)
+329.  table-js@9.4.0 (https://github.com/bpmn-io/table-js)
+330.  @bpmn-io/form-js-editor@2.1.1 (git+https://github.com/bpmn-io/form-js.git)
+331.  @bpmn-io/form-js-playground@2.1.1 (git+https://github.com/bpmn-io/form-js.git)
+332.  @bpmn-io/form-js-viewer@2.1.1 (git+https://github.com/bpmn-io/form-js.git)
+333.  downloadjs@1.4.7 (https://github.com/rndme/download.git)
+334.  flatpickr@4.6.13 (git+https://github.com/chmln/flatpickr.git)
+335.  @bpmn-io/svg-to-image@1.0.1 (git+https://github.com/bpmn-io/svg-to-image.git)
+336.  @codemirror/lang-xml@6.1.0 (https://github.com/codemirror/lang-xml.git)
+337.  @lezer/xml@1.0.1 (https://github.com/lezer-parser/xml.git)
+338.  canvg@4.0.3 (https://github.com/canvg/canvg)
+339.  diagram-js-grid@2.1.0 (git@github.com:bpmn-io/diagram-js-grid.git)
+340.  path-intersection@4.1.0 (https://github.com/bpmn-io/path-intersection)
+341.  svg-pathdata@6.0.3 (https://github.com/nfroidure/svg-pathdata.git)
+342.  tiny-svg@4.1.4 (https://github.com/bpmn-io/tiny-svg)
+343.  bpmn-js-copy-as-image@0.4.1 (git+https://github.com/barmac/bpmn-js-copy-as-image.git)
+344.  @bpmn-io/dmn-migrate@0.7.1 (git+https://github.com/bpmn-io/dmn-migrate.git)
+345.  dmn-moddle@12.2.1 (https://github.com/bpmn-io/dmn-moddle)
+346.  selection-ranges@4.1.1 (git+ssh://git@github.com/nikku/selection-ranges.git)
+347.  selection-update@1.1.1 (git+ssh://git@github.com/nikku/selection-update.git)
+348.  camunda-dmn-moddle@1.3.1 (https://github.com/camunda/camunda-dmn-moddle)
+349.  zeebe-dmn-moddle@1.0.0 (https://github.com/camunda/zeebe-dmn-moddle)
+350.  luxon@3.7.2 (https://github.com/moment/luxon)
+351.  @bpmn-io/draggle@4.1.2 (https://github.com/bpmn-io/draggle.git)
+352.  big.js@7.0.1 (https://github.com/MikeMcl/big.js.git)
+353.  @bpmn-io/feelin@7.0.0 (https://github.com/bpmn-io/feelin)
+354.  dompurify@3.4.17 (git://github.com/cure53/DOMPurify.git)
+355.  feelers@3.2.0 (git+https://github.com/bpmn-io/feelers.git)
+356.  file-drops@0.7.0 (git+ssh://git@github.com/nikku/file-drops.git)
+357.  marked@18.1.1 (git+https://github.com/markedjs/marked.git)
+358.  temporal-polyfill@1.0.6 (https://github.com/fullcalendar/temporal-polyfill.git)
+359.  temporal-utils@1.0.3 (https://github.com/fullcalendar/temporal-polyfill.git)
 
 
 %% parents@1.0.1 NOTICES AND INFORMATION BEGIN HERE
@@ -4375,7 +4373,7 @@ SOFTWARE.
 END OF zod@4.6.7 NOTICES AND INFORMATION
 
 
-%% chokidar@5.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% chokidar@6.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -4400,7 +4398,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ==========================================
-END OF chokidar@5.0.0 NOTICES AND INFORMATION
+END OF chokidar@6.0.0 NOTICES AND INFORMATION
 
 
 %% p-limit@7.3.3 NOTICES AND INFORMATION BEGIN HERE
@@ -4419,7 +4417,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 END OF p-limit@7.3.3 NOTICES AND INFORMATION
 
 
-%% readdirp@5.0.0 NOTICES AND INFORMATION BEGIN HERE
+%% readdirp@5.1.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -4444,7 +4442,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF readdirp@5.0.0 NOTICES AND INFORMATION
+END OF readdirp@5.1.1 NOTICES AND INFORMATION
 
 
 %% yocto-queue@1.2.2 NOTICES AND INFORMATION BEGIN HERE
@@ -5006,11 +5004,11 @@ SOFTWARE.
 END OF aria-hidden@1.2.6 NOTICES AND INFORMATION
 
 
-%% camunda-modeler@5.53.0-rc.0 NOTICES AND INFORMATION BEGIN HERE
+%% camunda-modeler@5.53.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 null
 ==========================================
-END OF camunda-modeler@5.53.0-rc.0 NOTICES AND INFORMATION
+END OF camunda-modeler@5.53.0 NOTICES AND INFORMATION
 
 
 %% bpmn-js-element-templates@2.40.2 NOTICES AND INFORMATION BEGIN HERE
@@ -5206,7 +5204,7 @@ THE SOFTWARE.
 END OF @bpmn-io/c4-theme@0.3.3 NOTICES AND INFORMATION
 
 
-%% @camunda/design-system@0.76.0 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/design-system@1.3.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
                                  Apache License
                            Version 2.0, January 2004
@@ -5388,7 +5386,7 @@ END OF @bpmn-io/c4-theme@0.3.3 NOTICES AND INFORMATION
    limitations under the License.
 
 ==========================================
-END OF @camunda/design-system@0.76.0 NOTICES AND INFORMATION
+END OF @camunda/design-system@1.3.0 NOTICES AND INFORMATION
 
 
 %% @camunda/form-playground@0.28.0 NOTICES AND INFORMATION BEGIN HERE
@@ -7115,7 +7113,7 @@ SOFTWARE.
 END OF @bpmn-io/feel-analyzer@0.3.0 NOTICES AND INFORMATION
 
 
-%% @bpmn-io/feel-editor@2.7.1 NOTICES AND INFORMATION BEGIN HERE
+%% @bpmn-io/feel-editor@2.8.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License (MIT)
 
@@ -7139,7 +7137,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ==========================================
-END OF @bpmn-io/feel-editor@2.7.1 NOTICES AND INFORMATION
+END OF @bpmn-io/feel-editor@2.8.1 NOTICES AND INFORMATION
 
 
 %% @bpmn-io/feel-lint@3.2.0 NOTICES AND INFORMATION BEGIN HERE
@@ -7934,7 +7932,7 @@ SOFTWARE.
 END OF @radix-ui/number@1.1.3 NOTICES AND INFORMATION
 
 
-%% @radix-ui/primitive@1.1.7 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/primitive@1.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -7959,10 +7957,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/primitive@1.1.7 NOTICES AND INFORMATION
+END OF @radix-ui/primitive@1.2.0 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-arrow@1.1.15 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-arrow@1.1.17 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -7987,10 +7985,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-arrow@1.1.15 NOTICES AND INFORMATION
+END OF @radix-ui/react-arrow@1.1.17 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-checkbox@1.3.11 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-checkbox@1.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8015,10 +8013,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-checkbox@1.3.11 NOTICES AND INFORMATION
+END OF @radix-ui/react-checkbox@1.4.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-collapsible@1.1.20 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-collapsible@1.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8043,10 +8041,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-collapsible@1.1.20 NOTICES AND INFORMATION
+END OF @radix-ui/react-collapsible@1.2.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-collection@1.1.15 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-collection@1.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8071,7 +8069,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-collection@1.1.15 NOTICES AND INFORMATION
+END OF @radix-ui/react-collection@1.2.0 NOTICES AND INFORMATION
 
 
 %% @radix-ui/react-compose-refs@1.1.5 NOTICES AND INFORMATION BEGIN HERE
@@ -8102,7 +8100,7 @@ SOFTWARE.
 END OF @radix-ui/react-compose-refs@1.1.5 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-context@1.2.2 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-context@1.3.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8127,10 +8125,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-context@1.2.2 NOTICES AND INFORMATION
+END OF @radix-ui/react-context@1.3.0 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-dialog@1.1.23 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-dialog@1.3.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8155,10 +8153,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-dialog@1.1.23 NOTICES AND INFORMATION
+END OF @radix-ui/react-dialog@1.3.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-direction@1.1.4 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-direction@1.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8183,10 +8181,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-direction@1.1.4 NOTICES AND INFORMATION
+END OF @radix-ui/react-direction@1.2.0 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-dismissable-layer@1.1.19 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-dismissable-layer@1.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8211,10 +8209,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-dismissable-layer@1.1.19 NOTICES AND INFORMATION
+END OF @radix-ui/react-dismissable-layer@1.2.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-dropdown-menu@2.1.24 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-dropdown-menu@2.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8239,10 +8237,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-dropdown-menu@2.1.24 NOTICES AND INFORMATION
+END OF @radix-ui/react-dropdown-menu@2.2.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-focus-guards@1.1.6 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-focus-guards@1.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8267,10 +8265,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-focus-guards@1.1.6 NOTICES AND INFORMATION
+END OF @radix-ui/react-focus-guards@1.2.0 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-focus-scope@1.1.16 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-focus-scope@1.3.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8295,7 +8293,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-focus-scope@1.1.16 NOTICES AND INFORMATION
+END OF @radix-ui/react-focus-scope@1.3.1 NOTICES AND INFORMATION
 
 
 %% @radix-ui/react-id@1.1.4 NOTICES AND INFORMATION BEGIN HERE
@@ -8326,7 +8324,7 @@ SOFTWARE.
 END OF @radix-ui/react-id@1.1.4 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-label@2.1.15 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-label@2.1.17 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8351,10 +8349,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-label@2.1.15 NOTICES AND INFORMATION
+END OF @radix-ui/react-label@2.1.17 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-menu@2.1.24 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-menu@2.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8379,10 +8377,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-menu@2.1.24 NOTICES AND INFORMATION
+END OF @radix-ui/react-menu@2.2.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-popover@1.1.23 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-popover@1.3.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8407,10 +8405,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-popover@1.1.23 NOTICES AND INFORMATION
+END OF @radix-ui/react-popover@1.3.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-popper@1.3.7 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-popper@1.4.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8435,10 +8433,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-popper@1.3.7 NOTICES AND INFORMATION
+END OF @radix-ui/react-popper@1.4.0 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-portal@1.1.17 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-portal@1.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8463,10 +8461,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-portal@1.1.17 NOTICES AND INFORMATION
+END OF @radix-ui/react-portal@1.2.0 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-presence@1.1.10 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-presence@1.1.11 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8491,10 +8489,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-presence@1.1.10 NOTICES AND INFORMATION
+END OF @radix-ui/react-presence@1.1.11 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-primitive@2.1.10 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-primitive@2.2.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8519,10 +8517,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-primitive@2.1.10 NOTICES AND INFORMATION
+END OF @radix-ui/react-primitive@2.2.0 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-radio-group@1.4.7 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-radio-group@1.5.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8547,10 +8545,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-radio-group@1.4.7 NOTICES AND INFORMATION
+END OF @radix-ui/react-radio-group@1.5.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-roving-focus@1.1.19 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-roving-focus@1.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8575,10 +8573,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-roving-focus@1.1.19 NOTICES AND INFORMATION
+END OF @radix-ui/react-roving-focus@1.2.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-select@2.3.7 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-select@2.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8603,10 +8601,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-select@2.3.7 NOTICES AND INFORMATION
+END OF @radix-ui/react-select@2.4.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-separator@1.1.15 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-slot@1.5.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8631,10 +8629,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-separator@1.1.15 NOTICES AND INFORMATION
+END OF @radix-ui/react-slot@1.5.0 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-slot@1.3.3 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-switch@1.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8659,10 +8657,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-slot@1.3.3 NOTICES AND INFORMATION
+END OF @radix-ui/react-switch@1.4.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-switch@1.3.7 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-tabs@1.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8687,10 +8685,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-switch@1.3.7 NOTICES AND INFORMATION
+END OF @radix-ui/react-tabs@1.2.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-tabs@1.1.21 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-toggle-group@1.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8715,10 +8713,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-tabs@1.1.21 NOTICES AND INFORMATION
+END OF @radix-ui/react-toggle-group@1.2.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-tooltip@1.2.16 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-toggle@1.2.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8743,10 +8741,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-tooltip@1.2.16 NOTICES AND INFORMATION
+END OF @radix-ui/react-toggle@1.2.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-use-callback-ref@1.1.4 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-tooltip@1.4.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8771,10 +8769,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-use-callback-ref@1.1.4 NOTICES AND INFORMATION
+END OF @radix-ui/react-tooltip@1.4.1 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-use-controllable-state@1.2.6 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-use-callback-ref@1.1.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8799,7 +8797,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-use-controllable-state@1.2.6 NOTICES AND INFORMATION
+END OF @radix-ui/react-use-callback-ref@1.1.5 NOTICES AND INFORMATION
+
+
+%% @radix-ui/react-use-controllable-state@1.3.0 NOTICES AND INFORMATION BEGIN HERE
+==========================================
+MIT License
+
+Copyright (c) 2022 WorkOS
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==========================================
+END OF @radix-ui/react-use-controllable-state@1.3.0 NOTICES AND INFORMATION
 
 
 %% @radix-ui/react-use-effect-event@0.0.5 NOTICES AND INFORMATION BEGIN HERE
@@ -8886,7 +8912,7 @@ SOFTWARE.
 END OF @radix-ui/react-use-layout-effect@1.1.4 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-use-previous@1.1.4 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-use-size@1.1.5 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8911,10 +8937,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-use-previous@1.1.4 NOTICES AND INFORMATION
+END OF @radix-ui/react-use-size@1.1.5 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-use-size@1.1.4 NOTICES AND INFORMATION BEGIN HERE
+%% @radix-ui/react-visually-hidden@1.2.13 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -8939,35 +8965,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @radix-ui/react-use-size@1.1.4 NOTICES AND INFORMATION
-
-
-%% @radix-ui/react-visually-hidden@1.2.11 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2022 WorkOS
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF @radix-ui/react-visually-hidden@1.2.11 NOTICES AND INFORMATION
+END OF @radix-ui/react-visually-hidden@1.2.13 NOTICES AND INFORMATION
 
 
 %% @sentry/browser-utils@11.7.0 NOTICES AND INFORMATION BEGIN HERE
@@ -10015,7 +10013,7 @@ THE SOFTWARE.
 END OF style-mod@4.1.0 NOTICES AND INFORMATION
 
 
-%% tailwind-merge@3.6.0 NOTICES AND INFORMATION BEGIN HERE
+%% tailwind-merge@3.7.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -10040,7 +10038,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF tailwind-merge@3.6.0 NOTICES AND INFORMATION
+END OF tailwind-merge@3.7.0 NOTICES AND INFORMATION
 
 
 %% tslib@2.8.1 NOTICES AND INFORMATION BEGIN HERE
@@ -10377,34 +10375,6 @@ THE SOFTWARE.
 END OF zeebe-bpmn-moddle@2.0.0 NOTICES AND INFORMATION
 
 
-%% @radix-ui/react-toggle@1.1.18 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2022 WorkOS
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF @radix-ui/react-toggle@1.1.18 NOTICES AND INFORMATION
-
-
 %% didi@11.0.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 The MIT License
@@ -10713,7 +10683,7 @@ THE SOFTWARE.
 END OF @camunda/example-data-properties-provider@1.5.2 NOTICES AND INFORMATION
 
 
-%% @camunda/feel-playground@1.0.3 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/feel-playground@1.1.1 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -10738,7 +10708,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ==========================================
-END OF @camunda/feel-playground@1.0.3 NOTICES AND INFORMATION
+END OF @camunda/feel-playground@1.1.1 NOTICES AND INFORMATION
 
 
 %% @camunda/linting-autofix@0.3.0 NOTICES AND INFORMATION BEGIN HERE
@@ -10769,7 +10739,7 @@ SOFTWARE.
 END OF @camunda/linting-autofix@0.3.0 NOTICES AND INFORMATION
 
 
-%% @camunda/task-testing@7.0.1 NOTICES AND INFORMATION BEGIN HERE
+%% @camunda/task-testing@7.1.0 NOTICES AND INFORMATION BEGIN HERE
 ==========================================
 MIT License
 
@@ -10793,7 +10763,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==========================================
-END OF @camunda/task-testing@7.0.1 NOTICES AND INFORMATION
+END OF @camunda/task-testing@7.1.0 NOTICES AND INFORMATION
 
 
 %% camunda-bpmn-js-behaviors@1.18.0 NOTICES AND INFORMATION BEGIN HERE
@@ -12358,31 +12328,3 @@ SOFTWARE.
 
 ==========================================
 END OF temporal-utils@1.0.3 NOTICES AND INFORMATION
-
-
-%% @radix-ui/react-toggle-group@1.1.19 NOTICES AND INFORMATION BEGIN HERE
-==========================================
-MIT License
-
-Copyright (c) 2022 WorkOS
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-==========================================
-END OF @radix-ui/react-toggle-group@1.1.19 NOTICES AND INFORMATION
