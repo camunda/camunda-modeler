@@ -694,7 +694,7 @@ describe('<EmptyTab>', function() {
 
       // then
       expect(emit).to.have.been.calledWith('create-camunda-project', sinon.match({
-        title: 'Create Project from AI Agent Chat Quick Start',
+        title: 'Select a folder to create the AI Agent Chat Blueprint project in',
         files: [
           sinon.match({ name: 'ai-agent-chat-with-tools.bpmn' }),
           sinon.match({ name: 'ai-agent-chat-initial-request.form' }),
