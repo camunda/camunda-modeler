@@ -57,7 +57,7 @@
     "url": "https://github.com/camunda/camunda-modeler"
   },
   "devDependencies": {
-    "@bpmn-io/release": "^0.7.0",
+    "@bpmn-io/release": "^0.8.0",
     "@playwright/test": "^1.64.1",
     "chai": "^6.3.0",
     "chai-subset": "^1.6.0",
