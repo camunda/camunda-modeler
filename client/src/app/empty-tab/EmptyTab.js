@@ -432,7 +432,7 @@ export default class EmptyTab extends PureComponent {
   }
 
   createProject = ({ name, files }) => {
-    this.props.emit('create-camunda-project', { title: `Create Project from ${ name }`, files });
+    this.props.emit('create-camunda-project', { title: `Select a folder to create the ${ name } project in`, files });
   };
 
   /**
@@ -579,7 +579,7 @@ export default class EmptyTab extends PureComponent {
           <CamundaLogo className="welcome-hero__logo" />
           <div className="welcome-hero__text">
             <Heading as="h2" variant="heading-lg">Welcome to Camunda Modeler</Heading>
-            <Text as="p" variant="body-md">Model, run and test your processes with Camunda.</Text>
+            <Text as="p" variant="body-md">Design, validate and run your processes with Camunda.</Text>
             <Text as="p" variant="body-subtle">
               Version { version } · <Link inline asChild><button type="button" className="welcome-hero__whats-new" onClick={ () => this.props.emit('versionInfo.open') }>What&apos;s new</button></Link>
             </Text>

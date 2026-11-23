@@ -22,7 +22,7 @@ import userFeedbackForm from './ai-agent-chat-user-feedback.form';
  * authentication, as the Camunda-provided LLM exists on SaaS only. An annotation explains the setup.
  */
 export default {
-  name: 'AI Agent Chat Quick Start',
+  name: 'AI Agent Chat Blueprint',
 
   // the main diagram comes first, it is shown after opening
   files: [
