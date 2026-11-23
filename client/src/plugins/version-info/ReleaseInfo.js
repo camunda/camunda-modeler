@@ -47,20 +47,16 @@ export function ReleaseInfo(props) {
     <div className={ css.ReleaseInfo }>
       <ul className="dashed">
         <li>
-          <h4>Revamped Modeler UI</h4>
-          The Modeler now uses the Camunda design system. Plug-ins using Carbon need to switch to the plug-in helper components instead.
+          <h4>New start page</h4>
+          Create diagrams, reopen recent files, check your local Camunda setup, or start from an AI agent blueprint.
         </li>
         <li>
-          <h4>Camunda 8 connections as a list</h4>
-          Camunda 8 connections are now displayed in a list. Use the new dialog-based UI to add and modify them.
+          <h4>More flexible FEEL editing</h4>
+          Resize FEEL and text popup editors, retain their size and position, and save FEEL edits without closing the popup.
         </li>
         <li>
-          <h4>Custom element template sources</h4>
-          In addition to the Camunda Marketplace endpoint, you can now add custom registries to automatically download and update element templates.
-        </li>
-        <li>
-          <h4>Clearer create and append menu</h4>
-          The menu now shows all element types in each category, with less common task and gateway options listed last.
+          <h4>Form editor plug-ins</h4>
+          Extend the form editor with plug-ins, including custom form fields.
         </li>
       </ul>
     </div>
