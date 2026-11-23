@@ -52,7 +52,7 @@ export function ReleaseInfo(props) {
         </li>
         <li>
           <h4>More flexible FEEL editing</h4>
-          Resize BPMN FEEL and text popups, retain their size and position, and save FEEL edits without closing the popup.
+          Resize FEEL and text popup editors, retain their size and position, and save FEEL edits without closing the popup.
         </li>
         <li>
           <h4>Form editor plug-ins</h4>
