@@ -15,6 +15,7 @@ import addExporterModule from '@bpmn-io/add-exporter';
 import completeDirectEditingModule from '../../bpmn/modeler/features/complete-direct-editing';
 import globalClipboardModule from './features/global-clipboard';
 import handToolOnSpaceModule from '../../bpmn/modeler/features/hand-tool-on-space';
+import canvasResizedRepositionModule from '../../bpmn/modeler/features/canvas-resized-reposition';
 import propertiesPanelKeyboardBindingsModule from '../../bpmn/modeler/features/properties-panel-keyboard-bindings';
 import lintingAnnotationsModule from '@camunda/linting/modeler';
 import { agentConfigAutofillModule } from '@camunda/linting-autofix';
@@ -78,6 +79,7 @@ CloudBpmnModeler.prototype._modules = [
   globalClipboardModule,
   handToolOnSpaceModule,
   propertiesPanelKeyboardBindingsModule,
+  canvasResizedRepositionModule,
   lintingAnnotationsModule,
   agentConfigAutofillModule,
   bpmnJSTracking,
