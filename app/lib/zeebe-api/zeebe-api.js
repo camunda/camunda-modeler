@@ -16,12 +16,6 @@
  * @typedef {import('@camunda8/sdk/dist/zeebe/types').DeployResourceResponse} GrpcDeployResourceResponse
  */
 
-/**
- * @typedef CamundaResource
- * @property {string} content
- * @property {string} name
- */
-
 'use strict';
 
 const path = require('path');
@@ -81,6 +75,13 @@ const {
  * @typedef {import("./endpoints").ClusterVariable} ClusterVariable
  */
 
+/**
+ * Camunda 8 calls through the SDK. REST endpoints are served by
+ * `app/lib/c8ctl` for deploy, start instance, gateway version and the task
+ * testing searches; here, those calls are gRPC-only. The other calls (element
+ * instances, message subscriptions, authorizations, cluster variables,
+ * secrets) still use the REST client.
+ */
 class ZeebeAPI {
 
   /**
@@ -121,6 +122,20 @@ class ZeebeAPI {
   }
 
   /**
+   * Whether the endpoint resolves to the REST API (not gRPC), with the
+   * same protocol detection as every other call.
+   *
+   * @param {import("./endpoints").Endpoint} endpoint
+   *
+   * @returns {Promise<boolean>}
+   */
+  async usesRest(endpoint) {
+    const { camundaRestClient } = await this._getClients(endpoint);
+
+    return !!camundaRestClient;
+  }
+
+  /**
    * @param {import("./endpoints").Endpoint} endpoint
    */
   _getClients(endpoint) {
@@ -146,8 +161,7 @@ class ZeebeAPI {
 
     try {
       const {
-        zeebeGrpcClient,
-        camundaRestClient
+        zeebeGrpcClient
       } = await this._getClients(endpoint);
 
       if (zeebeGrpcClient) {
@@ -173,56 +187,6 @@ class ZeebeAPI {
         };
       }
 
-      if (camundaRestClient) {
-        const resources = this._getCamundaResources(resourceConfigs);
-
-        let response = await camundaRestClient.deployResources(resources);
-
-        // mapping response to be compatible with grpcResponse
-        return {
-          success: true,
-          response: {
-            ...response,
-            key: response.deploymentKey,
-            deployments: response.deployments.map(deployment=>{
-              if (deployment.processDefinition) {
-                return {
-                  ...deployment,
-                  process: {
-                    ...deployment.processDefinition,
-                    bpmnProcessId: deployment.processDefinition.processDefinitionId,
-                    version: deployment.processDefinition.processDefinitionVersion
-                  }
-                };
-              }
-              if (deployment.decisionDefinition) {
-                return {
-                  ...deployment,
-                  decision: {
-                    ...deployment.decisionDefinition,
-                    decisionId: deployment.decisionDefinition.decisionDefinitionId,
-                    dmnDecisionId: deployment.decisionDefinition.decisionDefinitionId,
-                    dmnDecisionName: deployment.decisionDefinition.name,
-                    dmnDecisionRequirementsId: deployment.decisionDefinition.decisionRequirementsId,
-                    decisionKey: deployment.decisionDefinition.decisionDefinitionKey,
-                  }
-                };
-              }
-              if (deployment.decisionRequirements) {
-                return {
-                  ...deployment,
-                  decisionRequirements: {
-                    ...deployment.decisionRequirements,
-                    dmnDecisionRequirementsId: deployment.decisionRequirements.decisionRequirementsId,
-                    dmnDecisionRequirementsName: deployment.decisionRequirements.decisionRequirementsName
-                  }
-                };
-              }
-              return deployment;
-            })
-          }
-        };
-      }
       return {
         success: false,
         response: {
@@ -250,7 +214,6 @@ class ZeebeAPI {
     const {
       endpoint,
       variables,
-      processDefinitionKey,
       processId,
       startInstructions,
       runtimeInstructions,
@@ -263,8 +226,7 @@ class ZeebeAPI {
 
     try {
       const {
-        zeebeGrpcClient,
-        camundaRestClient
+        zeebeGrpcClient
       } = await this._getClients(endpoint);
 
       if (zeebeGrpcClient) {
@@ -289,28 +251,12 @@ class ZeebeAPI {
         };
       }
 
-      if (camundaRestClient) {
-
-        const requestBody = {
-          variables,
-          startInstructions,
-          runtimeInstructions,
-          businessId
-        };
-
-        if (processDefinitionKey) {
-          requestBody.processDefinitionKey = processDefinitionKey;
-        } else {
-          requestBody.processDefinitionId = processId;
+      return {
+        success: false,
+        response: {
+          message: 'No client available to start an instance'
         }
-
-        const response = await camundaRestClient.createProcessInstance(requestBody);
-
-        return {
-          success: true,
-          response: response
-        };
-      }
+      };
     } catch (err) {
       this._log.error('start instance failed', {
         parameters: sanitizeConfigWithEndpoint(config)
@@ -341,8 +287,7 @@ class ZeebeAPI {
 
     try {
       const {
-        zeebeGrpcClient,
-        camundaRestClient
+        zeebeGrpcClient
       } = await this._getClients(endpoint);
 
       if (zeebeGrpcClient) {
@@ -357,123 +302,9 @@ class ZeebeAPI {
         };
       }
 
-      if (camundaRestClient) {
-        const topologyResponse = await camundaRestClient.getTopology();
-
-        return {
-          success: true,
-          response: {
-            protocol: 'rest',
-            gatewayVersion: topologyResponse.gatewayVersion
-          }
-        };
-      }
-
       return { success: false };
     } catch (err) {
       this._log.error('fetch gateway version failed', {
-        parameters: sanitizeConfigWithEndpoint(config)
-      }, err);
-
-      return {
-        success: false,
-        reason: getErrorReason(err, endpoint)
-      };
-    }
-  }
-
-  /**
-   * Search process instances, either by their own key or by the key of their
-   * parent. Requires Camunda REST client.
-   *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey?: string, parentProcessInstanceKey?: string }} config
-   *
-   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
-   */
-  async searchProcessInstances(config) {
-    const {
-      endpoint,
-      processInstanceKey,
-      parentProcessInstanceKey
-    } = config;
-
-    this._log.debug('search process instances', {
-      parameters: sanitizeConfigWithEndpoint(config)
-    });
-
-    try {
-      const { camundaRestClient } = await this._getClients(endpoint);
-
-      if (!camundaRestClient) {
-        throw new Error('Camunda REST client is not available');
-      }
-
-      const response = await camundaRestClient.searchProcessInstances({
-        filter: {
-          processInstanceKey,
-          parentProcessInstanceKey
-        }
-      });
-
-      return {
-        success: true,
-        response: response
-      };
-    } catch (err) {
-      this._log.error('search process instances failed', {
-        parameters: sanitizeConfigWithEndpoint(config)
-      }, err);
-
-      return {
-        success: false,
-        reason: getErrorReason(err, endpoint)
-      };
-    }
-  }
-
-  /**
-   * Search variables. Requires Camunda REST client.
-   *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
-   *
-   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
-   */
-  async searchVariables(config) {
-    const {
-      endpoint,
-      processInstanceKey
-    } = config;
-
-    this._log.debug('search variables', {
-      parameters: sanitizeConfigWithEndpoint(config)
-    });
-
-    try {
-      const { camundaRestClient } = await this._getClients(endpoint);
-
-      if (!camundaRestClient) {
-        throw new Error('Camunda REST client is not available');
-      }
-
-      const response = await camundaRestClient.callApiEndpoint({
-        method: 'POST',
-        urlPath: 'variables/search',
-        body: {
-          filter: {
-            processInstanceKey
-          },
-        },
-        queryParams: {
-          truncateValues: false
-        }
-      });
-
-      return {
-        success: true,
-        response: response
-      };
-    } catch (err) {
-      this._log.error('search variables failed', {
         parameters: sanitizeConfigWithEndpoint(config)
       }, err);
 
@@ -578,56 +409,6 @@ class ZeebeAPI {
   }
 
   /**
-   * Search jobs. Requires Camunda REST client.
-   *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
-   *
-   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
-   */
-  async searchJobs(config) {
-    const {
-      endpoint,
-      processInstanceKey
-    } = config;
-
-    this._log.debug('search jobs', {
-      parameters: sanitizeConfigWithEndpoint(config)
-    });
-
-    try {
-      const { camundaRestClient } = await this._getClients(endpoint);
-
-      if (!camundaRestClient) {
-        throw new Error('Camunda REST client is not available');
-      }
-
-      const response = await camundaRestClient.callApiEndpoint({
-        urlPath: 'jobs/search',
-        method: 'POST',
-        body: {
-          filter: {
-            processInstanceKey
-          }
-        }
-      });
-
-      return {
-        success: true,
-        response: response
-      };
-    } catch (err) {
-      this._log.error('search jobs failed', {
-        parameters: sanitizeConfigWithEndpoint(config)
-      }, err);
-
-      return {
-        success: false,
-        reason: getErrorReason(err, endpoint)
-      };
-    }
-  }
-
-  /**
    * Search message subscriptions. Requires Camunda REST client.
    *
    * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
@@ -667,56 +448,6 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('search message subscriptions failed', {
-        parameters: sanitizeConfigWithEndpoint(config)
-      }, err);
-
-      return {
-        success: false,
-        reason: getErrorReason(err, endpoint)
-      };
-    }
-  }
-
-  /**
-   * Search user tasks. Requires Camunda REST client.
-   *
-   * @param {{ endpoint: import("./endpoints").Endpoint, processInstanceKey: string }} config
-   *
-   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
-   */
-  async searchUserTasks(config) {
-    const {
-      endpoint,
-      processInstanceKey
-    } = config;
-
-    this._log.debug('search user tasks', {
-      parameters: sanitizeConfigWithEndpoint(config)
-    });
-
-    try {
-      const { camundaRestClient } = await this._getClients(endpoint);
-
-      if (!camundaRestClient) {
-        throw new Error('Camunda REST client is not available');
-      }
-
-      const response = await camundaRestClient.callApiEndpoint({
-        urlPath: 'user-tasks/search',
-        method: 'POST',
-        body: {
-          filter: {
-            processInstanceKey
-          }
-        }
-      });
-
-      return {
-        success: true,
-        response: response
-      };
-    } catch (err) {
-      this._log.error('search user tasks failed', {
         parameters: sanitizeConfigWithEndpoint(config)
       }, err);
 
@@ -774,56 +505,6 @@ class ZeebeAPI {
       };
     } catch (err) {
       this._log.error('get authorizations failed', {
-        parameters: sanitizeConfigWithEndpoint(config)
-      }, err);
-
-      return {
-        success: false,
-        reason: getErrorReason(err, endpoint)
-      };
-    }
-  }
-
-  /**
-   * Evaluate a FEEL expression. Requires Camunda REST client.
-   *
-   * @param {{ endpoint: import("./endpoints").Endpoint, expression: string, variables: object }} config
-   *
-   * @returns {Promise<{ success: boolean, response?: object, reason?: string }>}
-   */
-  async evaluateExpression(config) {
-    const {
-      endpoint,
-      expression,
-      variables
-    } = config;
-
-    this._log.debug('evaluate expression', {
-      parameters: sanitizeConfigWithEndpoint(config)
-    });
-
-    try {
-      const { camundaRestClient } = await this._getClients(endpoint);
-
-      if (!camundaRestClient) {
-        throw new Error('Camunda REST client is not available');
-      }
-
-      const response = await camundaRestClient.callApiEndpoint({
-        method: 'POST',
-        urlPath: 'expression/evaluation',
-        body: {
-          expression,
-          variables
-        }
-      });
-
-      return {
-        success: true,
-        response
-      };
-    } catch (err) {
-      this._log.error('evaluate expression failed', {
         parameters: sanitizeConfigWithEndpoint(config)
       }, err);
 
@@ -1107,28 +788,6 @@ class ZeebeAPI {
     });
   }
 
-  /**
-   * Get resources based on the provided configs
-   *
-   * @param {Array<{ path: string, type?: 'bpmn'|'dmn'|'form' | 'rpa' }>} resourceConfigs
-   *
-   * @returns {Array<CamundaResource>}
-   */
-  _getCamundaResources(resourceConfigs) {
-
-    return resourceConfigs.map(resourceConfig => {
-      const { contents } = this._fs.readFile(resourceConfig.path, { encoding: false });
-
-      const extension = `.${ resourceConfig.type }`;
-
-      const name = `${ path.basename(resourceConfig.path, path.extname(resourceConfig.path)) }${ extension }`;
-
-      return {
-        content: contents,
-        name: name
-      };
-    });
-  }
 }
 
 module.exports = ZeebeAPI;
