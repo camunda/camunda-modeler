@@ -45,7 +45,6 @@ _To be done after code freeze to prepare and test the release._
   * [ ] create a draft following [our guidelines](https://github.com/bpmn-io/internal-docs/blob/main/releases/modeler/CAMUNDA_MODELER.md#whats-new-communication) and based on priorities which were aligned with the team (PM, UX, and Engineering side)
   * [ ] create PR to merge the draft into `develop`. Assign to PM, UX and Engineering for review
 * [ ] update [`CHANGELOG`](https://github.com/camunda/camunda-modeler/blob/develop/CHANGELOG.md)
-* [ ] compile a list of blog worthy changes as input to [release blog](https://lamppost.camunda-it.rocks/handbook/index.html?continue#departments/marketing/product-marketing/product-release-process-bom/monthly-alpha-and-software-release-blog-post-process/index.md)
 * [ ] merge to main: `git checkout main && git merge develop`
 * [ ] create release candidate (`npm run release:rc`), cf. [release schema](https://github.com/bpmn-io/internal-docs/blob/main/releases/RELEASE_SCHEMA.md)
   * [ ] pick the bump when prompted: `preminor` / `premajor` / `prepatch` to start a fresh candidate (e.g. `5.51.0` → `5.52.0-rc.0`), then review the plan and confirm
