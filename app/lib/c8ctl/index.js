@@ -188,6 +188,24 @@ class C8ctl {
     return this._search('searchUserTasks', endpoint, { processInstanceKey });
   }
 
+  searchElementInstances({ endpoint, processInstanceKey }) {
+    return this._search('searchElementInstances', endpoint, { processInstanceKey });
+  }
+
+  searchMessageSubscriptions({ endpoint, processInstanceKey }) {
+    return this._search('searchMessageSubscriptions', endpoint, { processInstanceKey });
+  }
+
+  /**
+   * Incidents of the process instance and of the instances it called.
+   */
+  searchIncidents({ endpoint, processInstanceKey }) {
+    return this._search('searchIncidents', endpoint, {
+      processInstanceKey,
+      includeCalled: true
+    });
+  }
+
   async evaluateExpression({ endpoint, expression, variables }) {
     try {
       const response = await this._getApi().evaluateExpression({
@@ -288,6 +306,9 @@ const C8CTL_ONLY_CALLS = [
   'searchVariables',
   'searchJobs',
   'searchUserTasks',
+  'searchElementInstances',
+  'searchMessageSubscriptions',
+  'searchIncidents',
   'evaluateExpression'
 ];
 

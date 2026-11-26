@@ -136,6 +136,29 @@ describe('C8ctl', function() {
       expect(input.startInstructions).to.eql([ { elementId: 'Task_1' } ]);
     });
 
+
+    it('should search the incidents of the instance and the instances it called', async function() {
+
+      // given
+      const api = createApi({
+        searchIncidents: async () => ({ items: [ { incidentKey: '30' } ] })
+      });
+      const c8ctl = createC8ctl(api);
+
+      // when
+      const result = await c8ctl.searchIncidents({
+        endpoint: SELF_MANAGED,
+        processInstanceKey: '20'
+      });
+
+      // then
+      expect(result).to.eql({ success: true, response: { items: [ { incidentKey: '30' } ] } });
+      expect(api.searchIncidents.firstCall.args[0]).to.include({
+        processInstanceKey: '20',
+        includeCalled: true
+      });
+    });
+
   });
 
 

@@ -375,7 +375,7 @@ renderer.on('zeebe:searchVariables', async function(options, done) {
 
 renderer.on('zeebe:searchIncidents', async function(options, done) {
   try {
-    const searchIncidentsResponse = await zeebeAPI.searchIncidents(options);
+    const searchIncidentsResponse = await routeZeebe('searchIncidents', options);
 
     done(null, searchIncidentsResponse);
   } catch (err) {
@@ -385,7 +385,7 @@ renderer.on('zeebe:searchIncidents', async function(options, done) {
 
 renderer.on('zeebe:searchElementInstances', async function(options, done) {
   try {
-    const searchElementInstancesResponse = await zeebeAPI.searchElementInstances(options);
+    const searchElementInstancesResponse = await routeZeebe('searchElementInstances', options);
 
     done(null, searchElementInstancesResponse);
   } catch (err) {
@@ -405,7 +405,7 @@ renderer.on('zeebe:searchJobs', async function(options, done) {
 
 renderer.on('zeebe:searchMessageSubscriptions', async function(options, done) {
   try {
-    const searchMessageSubscriptionsResponse = await zeebeAPI.searchMessageSubscriptions(options);
+    const searchMessageSubscriptionsResponse = await routeZeebe('searchMessageSubscriptions', options);
 
     done(null, searchMessageSubscriptionsResponse);
   } catch (err) {

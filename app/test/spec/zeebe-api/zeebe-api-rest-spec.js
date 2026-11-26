@@ -33,541 +33,6 @@ describe('ZeebeAPI (REST)', function() {
   setupSystemCertificatesStub();
 
 
-  describe('#searchElementInstances', function() {
-
-    it('should set success=true on success', async function() {
-
-      // given
-      const zeebeAPI = createZeebeAPI({
-        CamundaRestClient: {
-          searchElementInstances: () => ({ items: [] })
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
-        },
-        processInstanceKey: '123'
-      };
-
-      // when
-      const result = await zeebeAPI.searchElementInstances(parameters);
-
-      // then
-      expect(result.success).to.be.true;
-      expect(result.response).to.exist;
-    });
-
-
-    it('should set success=false on failure', async function() {
-
-      // given
-      const zeebeAPI = createZeebeAPI({
-        CamundaRestClient: {
-          searchElementInstances: () => { throw new Error('TEST ERROR.'); }
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
-        },
-        processInstanceKey: '123'
-      };
-
-      // when
-      const result = await zeebeAPI.searchElementInstances(parameters);
-
-      // then
-      expect(result.success).to.be.false;
-      expect(result.reason).to.exist;
-    });
-
-
-    describe('should return correct error reason on failure', function() {
-
-      it('for <endpoint-unavailable> (Cloud) - error 14', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('TEST ERROR.', 14);
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
-      });
-
-
-      it('for <endpoint-unavailable> (Cloud) - error 13', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('TEST ERROR.', 13);
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
-      });
-
-
-      it('for <connection-refused> (Self-Managed)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('connect ECONNREFUSED 127.0.0.1:8080', 'ECONNREFUSED');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'http://localhost:8080'
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        // then
-        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
-      });
-
-
-      it('for <connection-refused> (Cloud)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('connect ECONNREFUSED 127.0.0.1:8080', 'ECONNREFUSED');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        // then
-        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
-      });
-
-
-      it('for <service-unavailable> (Cloud), e.g. paused cluster', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new HttpError(503, 'Service Unavailable');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        // then
-        expect(result.reason).to.eql('CLUSTER_TEMPORARILY_UNAVAILABLE');
-      });
-
-
-      it('for <bad-gateway> (Self-Managed)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new HttpError(502, 'Bad Gateway');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.SELF_HOSTED,
-            url: 'http://localhost:8080'
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        // then
-        expect(result.reason).to.eql('CLUSTER_TEMPORARILY_UNAVAILABLE');
-      });
-
-
-      it('for <not-found> (Cloud)', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('ENOTFOUND');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        expect(result.reason).to.eql('INVALID_CLIENT_ID');
-      });
-
-
-
-
-      it('for <unauthorized> - Cloud', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('Unauthorized');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        expect(result.reason).to.eql('INVALID_CREDENTIALS');
-      });
-
-
-      it('for <forbidden>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('Forbidden');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        expect(result.reason).to.eql('FORBIDDEN');
-      });
-
-
-      it('for <unsupported-protocol>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('Unsupported protocol');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            authType: AUTH_TYPES.OAUTH,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        expect(result.reason).to.eql('OAUTH_URL');
-      });
-
-
-      it('for <unknown>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('Some random error');
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        expect(result.reason).to.eql('UNKNOWN');
-      });
-
-
-      it('for no message', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError();
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        expect(result.reason).to.eql('UNKNOWN');
-      });
-
-
-      it('for <Method not found>', async function() {
-
-        // given
-        const zeebeAPI = createZeebeAPI({
-          CamundaRestClient: {
-            searchElementInstances: function() {
-              throw new NetworkError('Method not found', 12);
-            }
-          }
-        });
-
-        const parameters = {
-          endpoint: {
-            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
-            url: TEST_URL
-          }
-        };
-
-        // when
-        const result = await zeebeAPI.searchElementInstances(parameters);
-
-        // then
-        expect(result.reason).to.eql('UNSUPPORTED_ENGINE');
-
-      });
-
-    });
-
-  });
-
-
-  describe('#searchIncidents', function() {
-
-    it('should set success=true on success', async function() {
-
-      // given
-      const zeebeAPI = createZeebeAPI({
-        CamundaRestClient: {
-          callApiEndpoint: () => ({ items: [] })
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
-        },
-        processInstanceKey: '123'
-      };
-
-      // when
-      const result = await zeebeAPI.searchIncidents(parameters);
-
-      // then
-      expect(result.success).to.be.true;
-      expect(result.response).to.exist;
-    });
-
-
-    it('should set success=false on failure', async function() {
-
-      // given
-      const zeebeAPI = createZeebeAPI({
-        CamundaRestClient: {
-          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
-        },
-        processInstanceKey: '123'
-      };
-
-      // when
-      const result = await zeebeAPI.searchIncidents(parameters);
-
-      // then
-      expect(result.success).to.be.false;
-      expect(result.reason).to.exist;
-    });
-
-
-    it('should search incidents of called process instances', async function() {
-
-      // given
-      const callApiEndpointSpy = sinon.spy(() => ({ items: [] }));
-
-      const zeebeAPI = createZeebeAPI({
-        CamundaRestClient: {
-          callApiEndpoint: callApiEndpointSpy
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
-        },
-        processInstanceKey: '123'
-      };
-
-      // when
-      await zeebeAPI.searchIncidents(parameters);
-
-      // then
-      expect(callApiEndpointSpy).to.have.been.calledWithMatch({
-        urlPath: 'process-instances/123/incidents/search'
-      });
-    });
-
-  });
-
-
-  describe('#searchMessageSubscriptions', function() {
-
-    it('should set success=true on success', async function() {
-
-      // given
-      const zeebeAPI = createZeebeAPI({
-        CamundaRestClient: {
-          callApiEndpoint: () => ({ items: [] })
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
-        },
-        processInstanceKey: '123'
-      };
-
-      // when
-      const result = await zeebeAPI.searchMessageSubscriptions(parameters);
-
-      // then
-      expect(result.success).to.be.true;
-      expect(result.response).to.exist;
-    });
-
-
-    it('should set success=false on failure', async function() {
-
-      // given
-      const zeebeAPI = createZeebeAPI({
-        CamundaRestClient: {
-          callApiEndpoint: () => { throw new Error('TEST ERROR.'); }
-        }
-      });
-
-      const parameters = {
-        endpoint: {
-          type: ENDPOINT_TYPES.SELF_HOSTED,
-          url: TEST_URL
-        },
-        processInstanceKey: '123'
-      };
-
-      // when
-      const result = await zeebeAPI.searchMessageSubscriptions(parameters);
-
-      // then
-      expect(result.success).to.be.false;
-      expect(result.reason).to.exist;
-    });
-
-  });
-
-
   describe('#getAuthorizations', function() {
 
     it('should set success=false when the REST client is not available', async function() {
@@ -709,6 +174,344 @@ describe('ZeebeAPI (REST)', function() {
       });
     });
 
+
+
+    describe('should return correct error reason on failure', function() {
+
+      it('for <endpoint-unavailable> (Cloud) - error 14', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('TEST ERROR.', 14);
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+      });
+
+
+      it('for <endpoint-unavailable> (Cloud) - error 13', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('TEST ERROR.', 13);
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+      });
+
+
+      it('for <connection-refused> (Self-Managed)', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('connect ECONNREFUSED 127.0.0.1:8080', 'ECONNREFUSED');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: 'http://localhost:8080'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        // then
+        expect(result.reason).to.eql('CONTACT_POINT_UNAVAILABLE');
+      });
+
+
+      it('for <connection-refused> (Cloud)', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('connect ECONNREFUSED 127.0.0.1:8080', 'ECONNREFUSED');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        // then
+        expect(result.reason).to.eql('CLUSTER_UNAVAILABLE');
+      });
+
+
+      it('for <service-unavailable> (Cloud), e.g. paused cluster', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new HttpError(503, 'Service Unavailable');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        // then
+        expect(result.reason).to.eql('CLUSTER_TEMPORARILY_UNAVAILABLE');
+      });
+
+
+      it('for <bad-gateway> (Self-Managed)', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new HttpError(502, 'Bad Gateway');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.SELF_HOSTED,
+            url: 'http://localhost:8080'
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        // then
+        expect(result.reason).to.eql('CLUSTER_TEMPORARILY_UNAVAILABLE');
+      });
+
+
+      it('for <not-found> (Cloud)', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('ENOTFOUND');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        expect(result.reason).to.eql('INVALID_CLIENT_ID');
+      });
+
+
+
+
+      it('for <unauthorized> - Cloud', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('Unauthorized');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        expect(result.reason).to.eql('INVALID_CREDENTIALS');
+      });
+
+
+      it('for <forbidden>', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('Forbidden');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        expect(result.reason).to.eql('FORBIDDEN');
+      });
+
+
+      it('for <unsupported-protocol>', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('Unsupported protocol');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            authType: AUTH_TYPES.OAUTH,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        expect(result.reason).to.eql('OAUTH_URL');
+      });
+
+
+      it('for <unknown>', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('Some random error');
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        expect(result.reason).to.eql('UNKNOWN');
+      });
+
+
+      it('for no message', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError();
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        expect(result.reason).to.eql('UNKNOWN');
+      });
+
+
+      it('for <Method not found>', async function() {
+
+        // given
+        const zeebeAPI = createZeebeAPI({
+          CamundaRestClient: {
+            callApiEndpoint: function() {
+              throw new NetworkError('Method not found', 12);
+            }
+          }
+        });
+
+        const parameters = {
+          endpoint: {
+            type: ENDPOINT_TYPES.CAMUNDA_CLOUD,
+            url: TEST_URL
+          }
+        };
+
+        // when
+        const result = await zeebeAPI.getAuthorizations(parameters);
+
+        // then
+        expect(result.reason).to.eql('UNSUPPORTED_ENGINE');
+
+      });
+
+    });
   });
 
 
