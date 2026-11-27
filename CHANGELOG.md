@@ -6,6 +6,8 @@ All notable changes to the [Camunda Modeler](https://github.com/camunda/camunda-
 
 ___Note:__ Yet to be released changes appear here._
 
+## 5.54.0
+
 * `FEAT`: rework the start page ([#6335](https://github.com/camunda/camunda-modeler/pull/6335))
 * `FEAT`: rename the _Test_ side panel tab to _Validate_ ([#6207](https://github.com/camunda/camunda-modeler/issues/6207))
 * `FEAT`: improve FEEL built-in function descriptions ([camunda/feel-builtins#47](https://github.com/camunda/feel-builtins/pull/47))
