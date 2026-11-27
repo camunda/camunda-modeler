@@ -101,10 +101,17 @@ export default function VariablesSidePanel(props) {
       <SidePanelTitleBar title="Variables" onClose={ onClose } />
 
       <div className="variables-side-panel__body" ref={ bodyRef }>
-        <VariableOutline
-          injector={ injector }
-          learnMoreUrl={ DOCUMENTATION_URL }
-        />
+        {
+
+          // mount only while open as the outline re-queries
+          // the variable resolver on every command
+          open && (
+            <VariableOutline
+              injector={ injector }
+              learnMoreUrl={ DOCUMENTATION_URL }
+            />
+          )
+        }
       </div>
     </ResizableContainer>
   );
