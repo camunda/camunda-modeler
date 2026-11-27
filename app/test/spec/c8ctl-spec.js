@@ -159,6 +159,77 @@ describe('C8ctl', function() {
       });
     });
 
+
+    it('should get the own authorizations and whether they are enabled', async function() {
+
+      // given
+      const api = createApi({
+        searchAuthorizations: async () => ({ items: [], authorizationsEnabled: false })
+      });
+      const c8ctl = createC8ctl(api);
+
+      // when
+      const result = await c8ctl.getAuthorizations({
+        endpoint: SELF_MANAGED,
+        resourceType: 'CLUSTER_VARIABLE'
+      });
+
+      // then
+      expect(result).to.eql({
+        success: true,
+        response: { items: [], authorizationsEnabled: false }
+      });
+      expect(api.searchAuthorizations.firstCall.args[0]).to.include({
+        own: true,
+        resourceType: 'CLUSTER_VARIABLE'
+      });
+    });
+
+
+    it('should search cluster variables by metadata', async function() {
+
+      // given
+      const api = createApi({
+        searchClusterVariables: async () => ({ items: [ { name: 'API_KEY' } ] })
+      });
+      const c8ctl = createC8ctl(api);
+
+      // when
+      const result = await c8ctl.searchClusterVariables({
+        endpoint: SELF_MANAGED,
+        filter: {
+          metadata: {
+            kind: { '$eq': 'CREDENTIAL' },
+            configurationTemplate: { '$eq': 'io.camunda:http' }
+          }
+        }
+      });
+
+      // then
+      expect(result).to.eql({ success: true, response: { items: [ { name: 'API_KEY' } ] } });
+      expect(api.searchClusterVariables.firstCall.args[0].metadata).to.eql({
+        kind: 'CREDENTIAL',
+        configurationTemplate: 'io.camunda:http'
+      });
+    });
+
+
+    it('should report the status of a rejected cluster variable search', async function() {
+
+      // given
+      const c8ctl = createC8ctl(createApi({
+        searchClusterVariables: async () => {
+          throw createC8ctlError('not-found', { status: 404 });
+        }
+      }));
+
+      // when
+      const result = await c8ctl.searchClusterVariables({ endpoint: SELF_MANAGED });
+
+      // then
+      expect(result).to.eql({ success: false, reason: 'UNKNOWN', status: 404 });
+    });
+
   });
 
 

@@ -222,6 +222,80 @@ class C8ctl {
     }
   }
 
+  /**
+   * The authenticated user's own authorizations for a resource type, and
+   * whether the cluster checks authorizations at all.
+   */
+  getAuthorizations({ endpoint, resourceType }) {
+    return this._call('get authorizations', endpoint, async (target, context) => {
+      const { items, authorizationsEnabled } = await this._getApi().searchAuthorizations({
+        target,
+        own: true,
+        resourceType
+      }, context);
+
+      return { items, authorizationsEnabled };
+    });
+  }
+
+  /**
+   * Search cluster variables. The renderer filters by metadata only
+   * (`{ metadata: { <key>: { $eq: <value> } } }`).
+   */
+  searchClusterVariables({ endpoint, filter = {} }) {
+    return this._call('search cluster variables', endpoint, async (target, context) => {
+      const { items } = await this._getApi().searchClusterVariables({
+        target,
+        metadata: toMetadataFilter(filter.metadata)
+      }, context);
+
+      return { items };
+    });
+  }
+
+  getClusterVariable({ endpoint, name }) {
+    return this._call('get cluster variable', endpoint, (target, context) => {
+      return this._getApi().getClusterVariable({ target, name }, context);
+    });
+  }
+
+  createClusterVariable({ endpoint, variable }) {
+    return this._call('create cluster variable', endpoint, (target, context) => {
+      return this._getApi().createClusterVariable({ target, ...variable }, context);
+    });
+  }
+
+  updateClusterVariable({ endpoint, name, variable }) {
+    return this._call('update cluster variable', endpoint, (target, context) => {
+      return this._getApi().updateClusterVariable({
+        target,
+        name,
+        value: variable.value,
+        metadata: variable.metadata
+      }, context);
+    });
+  }
+
+  /**
+   * Run a c8ctl service on the endpoint's cluster. A failure carries the
+   * error reason and, if the cluster answered, its HTTP status (the
+   * credential manager tells an older cluster from an unreachable one).
+   */
+  async _call(operation, endpoint, run) {
+    try {
+      const response = await run(toTarget(endpoint), await this._context());
+
+      return { success: true, response };
+    } catch (error) {
+      const status = error && error.problem && error.problem.status;
+
+      return this._failure(operation, error, {
+        reason: toErrorReason(error, endpoint),
+        ...(status ? { status } : {})
+      });
+    }
+  }
+
   async _search(operation, endpoint, filter) {
     try {
       const { items } = await this._getApi()[operation]({
@@ -309,7 +383,12 @@ const C8CTL_ONLY_CALLS = [
   'searchElementInstances',
   'searchMessageSubscriptions',
   'searchIncidents',
-  'evaluateExpression'
+  'evaluateExpression',
+  'getAuthorizations',
+  'searchClusterVariables',
+  'getClusterVariable',
+  'createClusterVariable',
+  'updateClusterVariable'
 ];
 
 /**
@@ -350,6 +429,19 @@ module.exports.createZeebeRouter = function createZeebeRouter(c8ctl, zeebeAPI) {
  */
 function toTarget(endpoint) {
   return { cluster: toClusterConfig(endpoint) };
+}
+
+/**
+ * `{ <key>: { $eq: <value> } }` → `{ <key>: <value> }`
+ */
+function toMetadataFilter(metadata) {
+  if (!metadata) {
+    return undefined;
+  }
+
+  return Object.fromEntries(
+    Object.entries(metadata).map(([ key, filter ]) => [ key, filter.$eq ])
+  );
 }
 
 function toClusterConfig(endpoint) {

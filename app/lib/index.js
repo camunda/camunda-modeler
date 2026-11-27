@@ -425,7 +425,7 @@ renderer.on('zeebe:searchUserTasks', async function(options, done) {
 
 renderer.on('zeebe:getAuthorizations', async function(options, done) {
   try {
-    const getAuthorizationsResponse = await zeebeAPI.getAuthorizations(options);
+    const getAuthorizationsResponse = await routeZeebe('getAuthorizations', options);
 
     done(null, getAuthorizationsResponse);
   } catch (err) {
@@ -445,7 +445,7 @@ renderer.on('zeebe:evaluateExpression', async function(options, done) {
 
 renderer.on('zeebe:searchClusterVariables', async function(options, done) {
   try {
-    const searchClusterVariablesResponse = await zeebeAPI.searchClusterVariables(options);
+    const searchClusterVariablesResponse = await routeZeebe('searchClusterVariables', options);
 
     done(null, searchClusterVariablesResponse);
   } catch (err) {
@@ -455,7 +455,7 @@ renderer.on('zeebe:searchClusterVariables', async function(options, done) {
 
 renderer.on('zeebe:getClusterVariable', async function(options, done) {
   try {
-    const getClusterVariableResponse = await zeebeAPI.getClusterVariable(options);
+    const getClusterVariableResponse = await routeZeebe('getClusterVariable', options);
 
     done(null, getClusterVariableResponse);
   } catch (err) {
@@ -465,7 +465,7 @@ renderer.on('zeebe:getClusterVariable', async function(options, done) {
 
 renderer.on('zeebe:createClusterVariable', async function(options, done) {
   try {
-    const createClusterVariableResponse = await zeebeAPI.createClusterVariable(options);
+    const createClusterVariableResponse = await routeZeebe('createClusterVariable', options);
 
     done(null, createClusterVariableResponse);
   } catch (err) {
@@ -475,7 +475,7 @@ renderer.on('zeebe:createClusterVariable', async function(options, done) {
 
 renderer.on('zeebe:updateClusterVariable', async function(options, done) {
   try {
-    const updateClusterVariableResponse = await zeebeAPI.updateClusterVariable(options);
+    const updateClusterVariableResponse = await routeZeebe('updateClusterVariable', options);
 
     done(null, updateClusterVariableResponse);
   } catch (err) {
