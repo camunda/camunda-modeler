@@ -146,6 +146,27 @@ describe('SettingsForm', function() {
       // then
       expect(getByRole('radiogroup', { name: 'Radio' })).to.exist;
     });
+
+
+    it('number input', function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.number': {
+            type: 'number',
+            label: 'Number Input'
+          }
+        }
+      } ];
+
+      // when
+      const { container } = createSettingsForm({ schema });
+
+      // then
+      const field = container.querySelector('input[type="number"]');
+      expect(field).to.exist;
+    });
   });
 
   describe('values', function() {
@@ -201,6 +222,182 @@ describe('SettingsForm', function() {
         expect(getByRole('checkbox', { name: 'Checkbox' }).getAttribute('aria-checked')).to.equal('true');
         expect(getByRole('combobox', { name: 'Select' }).textContent).to.equal('Two');
         expect(getByRole('radio', { name: 'Two' }).getAttribute('aria-checked')).to.equal('true');
+      });
+    });
+
+
+    it('should show initial number value', async function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.number': {
+            type: 'number',
+            label: 'Number Input'
+          }
+        }
+      } ];
+
+      // when
+      const { getByLabelText } = createSettingsForm({
+        schema,
+        initialValues: {
+          'test': {
+            'number': 42
+          }
+        }
+      });
+
+      // then
+      await waitFor(() => {
+        expect(getByLabelText('Number Input').value).to.equal('42');
+      });
+    });
+
+
+    it('should show initial zero number value', async function() {
+
+      // given
+      const schema = [ {
+        properties: {
+          'test.number': {
+            type: 'number',
+            label: 'Number Input'
+          }
+        }
+      } ];
+
+      // when
+      const { getByLabelText } = createSettingsForm({
+        schema,
+        initialValues: {
+          'test': {
+            'number': 0
+          }
+        }
+      });
+
+      // then
+      await waitFor(() => {
+        expect(getByLabelText('Number Input').value).to.equal('0');
+      });
+    });
+
+
+    it('should show zero number value after entering it', async function() {
+
+      // given
+      const onChange = sinon.spy();
+      const schema = [ {
+        properties: {
+          'test.number': {
+            type: 'number',
+            label: 'Number Input'
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
+
+      const field = container.querySelector('input[id="test.number"]');
+
+      // when
+      fireEvent.change(field, { target: { value: '0' } });
+
+      // then
+      await waitFor(() => {
+        expect(onChange).to.have.been.called;
+        expect(onChange.lastCall.args[ 0 ].test.number).to.equal(0);
+        expect(field.value).to.equal('0');
+      });
+    });
+
+
+    it('should store the value as number', async function() {
+
+      // given
+      const onChange = sinon.spy();
+      const schema = [ {
+        properties: {
+          'test.number': {
+            type: 'number',
+            label: 'Number Input'
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
+
+      const field = container.querySelector('input[id="test.number"]');
+
+      // when
+      fireEvent.change(field, { target: { value: '42' } });
+
+      // then
+      await waitFor(() => {
+        expect(onChange).to.have.been.called;
+        expect(onChange.lastCall.args[ 0 ].test.number).to.equal(42);
+      });
+    });
+
+
+    it('should store undefined when the number input is cleared', async function() {
+
+      // given
+      const onChange = sinon.spy();
+      const schema = [ {
+        properties: {
+          'test.number': {
+            type: 'number',
+            label: 'Number Input',
+            default: 42
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({
+        schema,
+        initialValues: { test: { number: 42 } },
+        onChange
+      });
+
+      const field = container.querySelector('input[id="test.number"]');
+
+      // when
+      fireEvent.change(field, { target: { value: '' } });
+
+      // then
+      await waitFor(() => {
+        expect(onChange).to.have.been.called;
+        expect(onChange.lastCall.args[ 0 ].test.number).to.be.undefined;
+      });
+    });
+
+
+    it('should store undefined for an invalid number', async function() {
+
+      // given
+      const onChange = sinon.spy();
+      const schema = [ {
+        properties: {
+          'test.number': {
+            type: 'number',
+            label: 'Number Input'
+          }
+        }
+      } ];
+
+      const { container } = createSettingsForm({ schema, initialValues: { test: {} }, onChange });
+
+      const field = container.querySelector('input[id="test.number"]');
+
+      // when
+      fireEvent.change(field, { target: { value: 'not-a-number' } });
+
+      // then
+      await waitFor(() => {
+        expect(onChange).to.have.been.called;
+        expect(onChange.lastCall.args[ 0 ].test.number).to.be.undefined;
       });
     });
   });

@@ -45,11 +45,11 @@ import { Flags } from '../util';
  *
  * @typedef {Object} SettingsProperty
  *
- * @property {'text' | 'password' | 'boolean' | 'select' | 'radio' | 'custom'} type - one of the supported types
+ * @property {'text' | 'password' | 'number' | 'boolean' | 'select' | 'radio' | 'custom'} type - one of the supported types
  * @property {any} component - custom React component for 'custom' type
  * @property {string} label - label on the settings page
  * @property {string} [hint] - hint/placeholder for input based fields
- * @property {string|boolean} [default] - the default value
+ * @property {string|number|boolean} [default] - the default value
  * @property {Array<{label: string, value: string}>} [options] - options for select/radio type
  * @property {string} [flag] - indicates that the setting can be overridden by a flag
  * @property {string} [description] - description on the settings page
@@ -95,7 +95,7 @@ export default class Settings {
     /**
      * Dictionary of setting keys and their default values, if provided.
      *
-     * @type { Record<string, string|boolean> }
+     * @type { Record<string, string|number|boolean> }
      */
     this._defaults = {};
 
@@ -103,7 +103,7 @@ export default class Settings {
      * Dictionary of all the settings keys and their values.
      * This is stored in the `settings.json` file.
      *
-     * @type { Record<string, string|boolean>}
+     * @type { Record<string, string|number|boolean>}
      */
     this._values = {};
 
@@ -131,7 +131,7 @@ export default class Settings {
    *
    * @param { SettingsGroup } settings
    *
-   * @returns { Record<string, string|boolean> } Dictionary of setting keys and their values.
+   * @returns { Record<string, string|number|boolean> } Dictionary of setting keys and their values.
   */
   register(settings) {
     const {
@@ -241,7 +241,7 @@ export default class Settings {
    *
    * Calls the listeners for each setting that has changed. Saves the file.
    *
-   * @param {Record<string, string|boolean>} settings - Dictionary of setting keys and their values.
+   * @param {Record<string, string|number|boolean>} settings - Dictionary of setting keys and their values.
    */
   set(settings) {
 
