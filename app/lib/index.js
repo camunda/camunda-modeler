@@ -39,6 +39,9 @@ const Plugins = require('./plugins');
 const WindowManager = require('./window-manager');
 const Workspace = require('./workspace');
 const ZeebeAPI = require('./zeebe-api');
+const C8ctl = require('./c8ctl');
+
+const { createZeebeRouter } = C8ctl;
 const { getTemplateSourceConfig } = require('./template-updater/sources');
 const { TemplateUpdater } = require('./template-updater/template-updater');
 
@@ -95,8 +98,11 @@ const {
   plugins,
   cleanupTemplateSourcesCache,
   windowManager,
-  zeebeAPI
+  zeebeAPI,
+  c8ctl
 } = bootstrap();
+
+const routeZeebe = createZeebeRouter(c8ctl, zeebeAPI);
 
 app.flags = flags;
 app.metadata = {
@@ -306,9 +312,10 @@ renderer.on('file:write', function(filePath, file, options = {}, done) {
 
 // zeebe api //////////
 
+
 renderer.on('zeebe:checkConnection', async function(options, done) {
   try {
-    const connectivity = await zeebeAPI.checkConnection(options);
+    const connectivity = await routeZeebe('checkConnection', options);
 
     done(null, connectivity);
   } catch (err) {
@@ -318,7 +325,7 @@ renderer.on('zeebe:checkConnection', async function(options, done) {
 
 renderer.on('zeebe:deploy', async function(options, done) {
   try {
-    const deploymentResult = await zeebeAPI.deploy(options);
+    const deploymentResult = await routeZeebe('deploy', options);
 
     done(null, deploymentResult);
   } catch (err) {
@@ -328,7 +335,7 @@ renderer.on('zeebe:deploy', async function(options, done) {
 
 renderer.on('zeebe:startInstance', async function(options, done) {
   try {
-    const runResult = await zeebeAPI.startInstance(options);
+    const runResult = await routeZeebe('startInstance', options);
 
     done(null, runResult);
   } catch (err) {
@@ -338,7 +345,7 @@ renderer.on('zeebe:startInstance', async function(options, done) {
 
 renderer.on('zeebe:getGatewayVersion', async function(options, done) {
   try {
-    const gatewayVersionResponse = await zeebeAPI.getGatewayVersion(options);
+    const gatewayVersionResponse = await routeZeebe('getGatewayVersion', options);
 
     done(null, gatewayVersionResponse);
   } catch (err) {
@@ -348,7 +355,7 @@ renderer.on('zeebe:getGatewayVersion', async function(options, done) {
 
 renderer.on('zeebe:searchProcessInstances', async function(options, done) {
   try {
-    const searchProcessInstancesResponse = await zeebeAPI.searchProcessInstances(options);
+    const searchProcessInstancesResponse = await routeZeebe('searchProcessInstances', options);
 
     done(null, searchProcessInstancesResponse);
   } catch (err) {
@@ -358,7 +365,7 @@ renderer.on('zeebe:searchProcessInstances', async function(options, done) {
 
 renderer.on('zeebe:searchVariables', async function(options, done) {
   try {
-    const searchVariablesResponse = await zeebeAPI.searchVariables(options);
+    const searchVariablesResponse = await routeZeebe('searchVariables', options);
 
     done(null, searchVariablesResponse);
   } catch (err) {
@@ -368,7 +375,7 @@ renderer.on('zeebe:searchVariables', async function(options, done) {
 
 renderer.on('zeebe:searchIncidents', async function(options, done) {
   try {
-    const searchIncidentsResponse = await zeebeAPI.searchIncidents(options);
+    const searchIncidentsResponse = await routeZeebe('searchIncidents', options);
 
     done(null, searchIncidentsResponse);
   } catch (err) {
@@ -378,7 +385,7 @@ renderer.on('zeebe:searchIncidents', async function(options, done) {
 
 renderer.on('zeebe:searchElementInstances', async function(options, done) {
   try {
-    const searchElementInstancesResponse = await zeebeAPI.searchElementInstances(options);
+    const searchElementInstancesResponse = await routeZeebe('searchElementInstances', options);
 
     done(null, searchElementInstancesResponse);
   } catch (err) {
@@ -388,7 +395,7 @@ renderer.on('zeebe:searchElementInstances', async function(options, done) {
 
 renderer.on('zeebe:searchJobs', async function(options, done) {
   try {
-    const searchJobsResponse = await zeebeAPI.searchJobs(options);
+    const searchJobsResponse = await routeZeebe('searchJobs', options);
 
     done(null, searchJobsResponse);
   } catch (err) {
@@ -398,7 +405,7 @@ renderer.on('zeebe:searchJobs', async function(options, done) {
 
 renderer.on('zeebe:searchMessageSubscriptions', async function(options, done) {
   try {
-    const searchMessageSubscriptionsResponse = await zeebeAPI.searchMessageSubscriptions(options);
+    const searchMessageSubscriptionsResponse = await routeZeebe('searchMessageSubscriptions', options);
 
     done(null, searchMessageSubscriptionsResponse);
   } catch (err) {
@@ -408,7 +415,7 @@ renderer.on('zeebe:searchMessageSubscriptions', async function(options, done) {
 
 renderer.on('zeebe:searchUserTasks', async function(options, done) {
   try {
-    const searchUserTasksResponse = await zeebeAPI.searchUserTasks(options);
+    const searchUserTasksResponse = await routeZeebe('searchUserTasks', options);
 
     done(null, searchUserTasksResponse);
   } catch (err) {
@@ -418,7 +425,7 @@ renderer.on('zeebe:searchUserTasks', async function(options, done) {
 
 renderer.on('zeebe:getAuthorizations', async function(options, done) {
   try {
-    const getAuthorizationsResponse = await zeebeAPI.getAuthorizations(options);
+    const getAuthorizationsResponse = await routeZeebe('getAuthorizations', options);
 
     done(null, getAuthorizationsResponse);
   } catch (err) {
@@ -428,7 +435,7 @@ renderer.on('zeebe:getAuthorizations', async function(options, done) {
 
 renderer.on('zeebe:evaluateExpression', async function(options, done) {
   try {
-    const evaluateExpressionResponse = await zeebeAPI.evaluateExpression(options);
+    const evaluateExpressionResponse = await routeZeebe('evaluateExpression', options);
 
     done(null, evaluateExpressionResponse);
   } catch (err) {
@@ -438,7 +445,7 @@ renderer.on('zeebe:evaluateExpression', async function(options, done) {
 
 renderer.on('zeebe:searchClusterVariables', async function(options, done) {
   try {
-    const searchClusterVariablesResponse = await zeebeAPI.searchClusterVariables(options);
+    const searchClusterVariablesResponse = await routeZeebe('searchClusterVariables', options);
 
     done(null, searchClusterVariablesResponse);
   } catch (err) {
@@ -448,7 +455,7 @@ renderer.on('zeebe:searchClusterVariables', async function(options, done) {
 
 renderer.on('zeebe:getClusterVariable', async function(options, done) {
   try {
-    const getClusterVariableResponse = await zeebeAPI.getClusterVariable(options);
+    const getClusterVariableResponse = await routeZeebe('getClusterVariable', options);
 
     done(null, getClusterVariableResponse);
   } catch (err) {
@@ -458,7 +465,7 @@ renderer.on('zeebe:getClusterVariable', async function(options, done) {
 
 renderer.on('zeebe:createClusterVariable', async function(options, done) {
   try {
-    const createClusterVariableResponse = await zeebeAPI.createClusterVariable(options);
+    const createClusterVariableResponse = await routeZeebe('createClusterVariable', options);
 
     done(null, createClusterVariableResponse);
   } catch (err) {
@@ -468,7 +475,7 @@ renderer.on('zeebe:createClusterVariable', async function(options, done) {
 
 renderer.on('zeebe:updateClusterVariable', async function(options, done) {
   try {
-    const updateClusterVariableResponse = await zeebeAPI.updateClusterVariable(options);
+    const updateClusterVariableResponse = await routeZeebe('updateClusterVariable', options);
 
     done(null, updateClusterVariableResponse);
   } catch (err) {
@@ -904,6 +911,8 @@ function bootstrap() {
   // (9) zeebe API
   const zeebeAPI = new ZeebeAPI({ readFile }, Camunda8, flags);
 
+  const c8ctl = new C8ctl({ modelerDir: userPath, flags });
+
   // (10) template updater
   const templateUpdater = new TemplateUpdater(userPath, endpoints);
 
@@ -965,7 +974,8 @@ function bootstrap() {
     plugins,
     cleanupTemplateSourcesCache,
     windowManager,
-    zeebeAPI
+    zeebeAPI,
+    c8ctl
   };
 }
 
