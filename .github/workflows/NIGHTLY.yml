@@ -16,6 +16,7 @@ jobs:
         - os: ubuntu-latest
           files:
           - 'dist/camunda-modeler-nightly-linux-x64.tar.gz'
+          - 'dist/camunda-modeler-nightly-linux-arm64.tar.gz'
         - os: macos-latest
           files:
           - 'dist/camunda-modeler-nightly-mac-arm64.dmg'
@@ -25,6 +26,7 @@ jobs:
         - os: windows-2022
           files:
           - 'dist/camunda-modeler-nightly-win-x64.zip'
+          - 'dist/camunda-modeler-nightly-win-arm64.zip'
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
