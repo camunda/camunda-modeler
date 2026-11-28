@@ -198,7 +198,8 @@ export default function CamundaProjectsPlugin(props) {
 
   const tabGroups = useMemo(() => {
     return tabs.reduce((tabGroups, tab) => {
-      if (!tab.file) {
+      // only Camunda 8 tabs are part of a Camunda project
+      if (!tab.file || !tab.type?.startsWith('cloud-')) {
         return {
           ...tabGroups,
           [ tab.id ]: null
